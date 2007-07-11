@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlParser.java,v $
- * Date   : $Date: 2007/07/04 16:57:30 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/11 09:28:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.2.0
  */
@@ -129,7 +129,6 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
         m_noAutoCloseTags = new ArrayList(32);
     }
 
-
     /**
      * Internally degrades Composite tags that do have children in the DOM tree 
      * to simple single tags. This allows to avoid auto correction of unclosed HTML tags.<p>
@@ -193,19 +192,20 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#process(java.lang.String, java.lang.String)
      */
     public String process(String html, String encoding) throws ParserException {
+
         m_result = new StringBuffer();
         Parser parser = new Parser();
         Lexer lexer = new Lexer();
 
-        // initialize the page with the given charset
+        // initialize the page with the given char set
         Page page = new Page(html, encoding);
         lexer.setPage(page);
         parser.setLexer(lexer);
 
         if (m_noAutoCloseTags != null && m_noAutoCloseTags.size() > 0) {
             // Degrade Composite tags that do have children in the DOM tree 
-            // to simple single tags: This allows to finish this tag with openend HTML tags without the effect 
-            // that htmlparser will generate the closing tags. 
+            // to simple single tags: This allows to finish this tag with opened HTML tags without the effect 
+            // that html parser will generate the closing tags. 
             PrototypicalNodeFactory factory = configureNoAutoCorrectionTags();
             lexer.setNodeFactory(factory);
         }
@@ -309,7 +309,6 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
 
     /**
      * Returns a list of upper case tag names for which parsing / visiting will not correct missing closing tags.<p>
-     * 
      * 
      * @return a List of upper case tag names for which parsing / visiting will not correct missing closing tags
      */

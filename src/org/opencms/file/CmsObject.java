@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/07/04 16:57:12 $
- * Version: $Revision: 1.148 $
+ * Date   : $Date: 2007/07/11 09:28:12 $
+ * Version: $Revision: 1.149 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.148 $
+ * @version $Revision: 1.149 $
  * 
  * @since 6.0.0 
  */
@@ -116,7 +116,7 @@ public final class CmsObject {
      * use <code>{@link org.opencms.main.OpenCms#initCmsObject(String)}</code>.<p>
      * 
      * @param securityManager the security manager
-     * @param context the request context that contains the user authentification
+     * @param context the request context that contains the user authentication
      */
     public CmsObject(CmsSecurityManager securityManager, CmsRequestContext context) {
 
@@ -161,7 +161,7 @@ public final class CmsObject {
      *
      * @param name the name for the new web user
      * @param password the password for the user
-     * @param group the default groupname for the user
+     * @param group the default group name for the user
      * @param description the description for the user
      * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user
      * 
@@ -169,7 +169,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @deprecated there are no more webusers, use a user without any role!
+     * @deprecated there are no more web users, use a user without any role!
      */
     public CmsUser addWebUser(String name, String password, String group, String description, Map additionalInfos)
     throws CmsException {
@@ -185,7 +185,7 @@ public final class CmsObject {
      * @param versionId the version of the backup
      * @param publishDate the date of publishing
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      * 
      * @deprecated Use {@link #writeHistoryProject(int,long)} instead
      */
@@ -204,8 +204,8 @@ public final class CmsObject {
      *          <li><code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}</code></li>
      *      </ul>
      * @param principalName name of the principal
-     * @param allowedPermissions bitset of allowed permissions
-     * @param deniedPermissions bitset of denied permissions
+     * @param allowedPermissions bit set of allowed permissions
+     * @param deniedPermissions bit set of denied permissions
      * @param flags additional flags of the access control entry
      * 
      * @throws CmsException if something goes wrong
@@ -316,7 +316,9 @@ public final class CmsObject {
                 // check for role
                 CmsRole role = CmsRole.valueOfRoleName(principalName);
                 // role based permissions can only be set in the system folder
-                if ((role == null) || (!res.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM) && !res.getRootPath().equals("/") && !res.getRootPath().equals("/system"))) {
+                if ((role == null)
+                    || (!res.getRootPath().startsWith(CmsWorkplace.VFS_PATH_SYSTEM) && !res.getRootPath().equals("/") && !res.getRootPath().equals(
+                        "/system"))) {
                     throw e;
                 }
                 acEntry = new CmsAccessControlEntry(res.getResourceId(), role.getId(), permissionString);
@@ -781,7 +783,7 @@ public final class CmsObject {
     /**
      * Deletes all published resource entries.<p>
      * 
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @param linkType the type of resource deleted (0= non-parameter, 1=parameter)
      * 
      * @throws CmsException if something goes wrong
      */
@@ -791,15 +793,15 @@ public final class CmsObject {
     }
 
     /**
-     * Deletes the versions from the backup tables that are older then the given timestamp  
+     * Deletes the versions from the backup tables that are older then the given time stamp  
      * and/or number of remaining versions.<p>
      * 
-     * The number of verions always wins, i.e. if the given timestamp would delete more versions 
-     * than given in the versions parameter, the timestamp will be ignored. <p>
+     * The number of versions always wins, i.e. if the given time stamp would delete more versions 
+     * than given in the versions parameter, the time stamp will be ignored. <p>
      * 
      * Deletion will delete file header, content and properties. <p>
      * 
-     * @param timestamp timestamp which defines the date after which backup resources must be deleted.
+     * @param timestamp time stamp which defines the date after which backup resources must be deleted.
      *                  This parameter must be 0 if the backup should be deleted by number of version
      * @param versions the number of versions per file which should kept in the system. 
      * @param report the report for output logging
@@ -851,13 +853,13 @@ public final class CmsObject {
     /**
      * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
      * 
-     * @param folderName the name of the folder (with subresources) to delete historical versions for 
+     * @param folderName the name of the folder (with sub resources) to delete historical versions for 
      * @param versionsToKeep number of versions to keep, is ignored if negative 
      * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
      * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
      * @param report the report for output logging
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public void deleteHistoricalVersions(
         String folderName,
@@ -995,7 +997,7 @@ public final class CmsObject {
      * Deletes a published resource entry.<p>
      * 
      * @param resourceName The name of the resource to be deleted in the static export
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @param linkType the type of resource deleted (0= non-parameter, 1=parameter)
      * @param linkParameter the parameters of the resource
      * 
      * @throws CmsException if something goes wrong
@@ -1051,7 +1053,7 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      * 
-     * @deprecated there are no more webusers, use a user without any role!
+     * @deprecated there are no more web users, use a user without any role!
      */
     public void deleteWebUser(CmsUUID userId) throws CmsException {
 
@@ -1192,7 +1194,7 @@ public final class CmsObject {
      * @return list of <code>{@link CmsHistoryProject}</code> objects 
      *           with all projects from history.
      *
-     * @throws CmsException  if operation was not succesful
+     * @throws CmsException  if operation was not successful
      * 
      * @deprecated Use {@link #getAllHistoricalProjects()} instead
      */
@@ -1207,7 +1209,7 @@ public final class CmsObject {
      * @return list of <code>{@link CmsHistoryProject}</code> objects 
      *           with all projects from history
      *
-     * @throws CmsException  if operation was not succesful
+     * @throws CmsException  if operation was not successful
      */
     public List getAllHistoricalProjects() throws CmsException {
 
@@ -1265,7 +1267,7 @@ public final class CmsObject {
      *
      * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getChildren(String groupname, boolean includeSubChildren) throws CmsException {
 
@@ -1366,7 +1368,7 @@ public final class CmsObject {
      * 
      * @return a list of <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      * 
      * @deprecated use {@link #getGroupsOfUser(String, boolean)} instead
      */
@@ -1383,7 +1385,7 @@ public final class CmsObject {
      * 
      * @return a list of <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getGroupsOfUser(String username, boolean directGroupsOnly) throws CmsException {
 
@@ -1399,7 +1401,7 @@ public final class CmsObject {
      * 
      * @return a list of <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getGroupsOfUser(String username, boolean directGroupsOnly, boolean includeOtherOus) throws CmsException {
 
@@ -1416,7 +1418,7 @@ public final class CmsObject {
      * 
      * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getGroupsOfUser(String username, boolean directGroupsOnly, boolean includeOtherOus, String remoteAddress)
     throws CmsException {
@@ -1433,7 +1435,8 @@ public final class CmsObject {
      * 
      * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
+     * 
      * @deprecated use {@link #getGroupsOfUser(String, boolean, boolean, String)} instead
      */
     public List getGroupsOfUser(String username, String remoteAddress) throws CmsException {
@@ -1529,7 +1532,7 @@ public final class CmsObject {
      * 
      * @param resourceName the name of the resource
      * 
-     * @return the bitset of the permissions of the current user
+     * @return the bit set of the permissions of the current user
      * 
      * @throws CmsException if something goes wrong
      */
@@ -1639,7 +1642,7 @@ public final class CmsObject {
     }
 
     /**
-     * Returns all relations for the given resource mathing the given filter.<p> 
+     * Returns all relations for the given resource matching the given filter.<p> 
      * 
      * You should have view/read permissions on the given resource.<p>
      * 
@@ -1724,12 +1727,12 @@ public final class CmsObject {
     }
 
     /**
-     * Returns a list with all subresources of the given parent folder (and all of it's subfolders) 
+     * Returns a list with all sub resources of the given parent folder (and all of it's subfolders) 
      * that have been modified in the given time range.<p>
      * 
      * The result list is descending sorted (newest resource first).<p>
      *
-     * @param folder the folder to get the subresources from
+     * @param folder the folder to get the sub resources from
      * @param starttime the begin of the time range
      * @param endtime the end of the time range
      * 
@@ -2023,8 +2026,8 @@ public final class CmsObject {
      * @param id the id of the user
      * @param name the new name for the user
      * @param password the new password for the user
-     * @param firstname the firstname of the user
-     * @param lastname the lastname of the user
+     * @param firstname the first name of the user
+     * @param lastname the last name of the user
      * @param email the email of the user
      * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
      * @param dateCreated the creation date
@@ -2065,8 +2068,8 @@ public final class CmsObject {
      * @param name the new name for the user
      * @param password the new password for the user
      * @param description the description for the user
-     * @param firstname the firstname of the user
-     * @param lastname the lastname of the user
+     * @param firstname the first name of the user
+     * @param lastname the last name of the user
      * @param email the email of the user
      * @param address the address of the user
      * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
@@ -2154,7 +2157,7 @@ public final class CmsObject {
     /**
      * Locks a resource.<p>
      *
-     * This will be an exclusive, persistant lock that is removed only if the user unlocks it.<p>
+     * This will be an exclusive, persistent lock that is removed only if the user unlocks it.<p>
      *
      * @param resourcename the name of the resource to lock (full current site relative path)
      * 
@@ -2251,7 +2254,7 @@ public final class CmsObject {
      *
      * @throws CmsException if the login was not successful
      * 
-     * @deprecated there are no more webusers, use a user without any role!
+     * @deprecated there are no more web users, use a user without any role!
      */
     public String loginWebUser(String username, String password) throws CmsException {
 
@@ -2641,7 +2644,7 @@ public final class CmsObject {
      *   <li>if still no file could be found, the configured default files in the 
      *       <code>opencms-vfs.xml</code> configuration are iterated until a match is 
      *       found, and
-     *   <li>if still no file could be found, <code>null</code> is retuned
+     *   <li>if still no file could be found, <code>null</code> is returned
      * </ol>
      * 
      * @param resourceNameOrID the name or id of the folder to read the default file for
@@ -2671,11 +2674,11 @@ public final class CmsObject {
      * The result list may include resources with the same name of  
      * resources (with different id's).<p>
      * 
-     * Us in conjuction with the {@link #restoreDeletedResource(CmsUUID)} 
+     * Us in conjunction with the {@link #restoreDeletedResource(CmsUUID)} 
      * method.<p>
      * 
      * @param resourcename the parent path to read the resources from
-     * @param readTree <code>true</code> to read all subresources
+     * @param readTree <code>true</code> to read all sub resources
      * 
      * @return a list of <code>{@link I_CmsHistoryResource}</code> objects
      * 
@@ -2692,7 +2695,7 @@ public final class CmsObject {
 
     /**
      * Reads a file resource (including it's binary content) from the VFS,
-     * for the given resource (this may also be an historical version of the resoource).<p>
+     * for the given resource (this may also be an historical version of the resource).<p>
      * 
      * In case you do not need the file content, 
      * use <code>{@link #readResource(String, CmsResourceFilter)}</code> or
@@ -3149,7 +3152,7 @@ public final class CmsObject {
 
     /**
      * Reads the (compound) value of a property mapped to a specified resource 
-     * with optional direcory upward cascading, a default value will be returned if the property 
+     * with optional directory upward cascading, a default value will be returned if the property 
      * is not found on the resource (or it's parent folders in case search is set to <code>true</code>).<p>
      * 
      * @param resourcePath the resource to look up the property for
@@ -3246,7 +3249,7 @@ public final class CmsObject {
      * properties directly attached to the resource. While merging, a property
      * on a parent folder that has already been found will be ignored.
      * So e.g. if a resource has a property "Title" attached, and it's parent folder 
-     * has the same property attached but with a differrent value, the result list will
+     * has the same property attached but with a different value, the result list will
      * contain only the property with the value from the resource, not form the parent folder(s).<p>
      * 
      * @param resource the resource where the property is mapped to
@@ -3274,7 +3277,7 @@ public final class CmsObject {
      * properties directly attached to the resource. While merging, a property
      * on a parent folder that has already been found will be ignored.
      * So e.g. if a resource has a property "Title" attached, and it's parent folder 
-     * has the same property attached but with a differrent value, the result list will
+     * has the same property attached but with a different value, the result list will
      * contain only the property with the value from the resource, not form the parent folder(s).<p>
      * 
      * @param resourcePath the name of resource where the property is mapped to
@@ -3294,7 +3297,7 @@ public final class CmsObject {
     /**
      * Reads the resources that were published in a publish task for a given publish history ID.<p>
      * 
-     * @param publishHistoryId unique int ID to identify each publish task in the publish history
+     * @param publishHistoryId unique ID to identify each publish task in the publish history
      * 
      * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects
      * 
@@ -3340,7 +3343,7 @@ public final class CmsObject {
      * <code>{@link CmsFolder}</code>. In case of
      * a file, the resource will not contain the binary file content. Since reading 
      * the binary content is a cost-expensive database operation, it's recommended 
-     * to work with resources if possible, and only read the file content when absolutly
+     * to work with resources if possible, and only read the file content when absolutely
      * required. To "upgrade" a resource to a file, 
      * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
      *
@@ -3374,7 +3377,7 @@ public final class CmsObject {
      * <code>{@link CmsFolder}</code>. In case of a file, the resource will not 
      * contain the binary file content. Since reading the binary content is a 
      * cost-expensive database operation, it's recommended to work with resources 
-     * if possible, and only read the file content when absolutly required. To 
+     * if possible, and only read the file content when absolutely required. To 
      * "upgrade" a resource to a file, use 
      * <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
      *
@@ -3437,7 +3440,7 @@ public final class CmsObject {
      * <code>{@link CmsFolder}</code>. In case of
      * a file, the resource will not contain the binary file content. Since reading 
      * the binary content is a cost-expensive database operation, it's recommended 
-     * to work with resources if possible, and only read the file content when absolutly
+     * to work with resources if possible, and only read the file content when absolutely
      * required. To "upgrade" a resource to a file, 
      * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
      *
@@ -3511,7 +3514,7 @@ public final class CmsObject {
      * 
      * @param resourcename the parent path to read the resources from
      * @param filter the filter
-     * @param readTree <code>true</code> to read all subresources
+     * @param readTree <code>true</code> to read all sub resources
      * 
      * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria
      * 
@@ -3648,7 +3651,7 @@ public final class CmsObject {
      * 
      * @param parameterResources flag for reading resources with parameters (1) or without (0)
      * 
-     * @param timestamp a timestamp for reading the data from the db
+     * @param timestamp a time stamp for reading the data from the db
      * 
      * @return a list of template resources as <code>{@link String}</code> objects
      * 
@@ -3682,7 +3685,7 @@ public final class CmsObject {
      * 
      * @return the user with the given name
      * 
-     * @throws CmsException if somthing goes wrong
+     * @throws CmsException if something goes wrong
      */
     public CmsUser readUser(String username) throws CmsException {
 
@@ -3707,15 +3710,15 @@ public final class CmsObject {
     }
 
     /**
-     * Returns a webuser.<p>
+     * Returns a web user.<p>
      *
-     * @param username the username of the webuser that is to be read
+     * @param username the user name of the web user that is to be read
      * 
-     * @return the webuser
+     * @return the web user
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      * 
-     * @deprecated there are no more webusers, use a user without any role!
+     * @deprecated there are no more web users, use a user without any role!
      */
     public CmsUser readWebUser(String username) throws CmsException {
 
@@ -3725,16 +3728,16 @@ public final class CmsObject {
     /**
      * Returns a web user if the password for the user is correct.<p>
      *
-     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
+     * If the user/password pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
-     * @param username the username of the user that is to be read
+     * @param username the user name of the user that is to be read
      * @param password the password of the user that is to be read
      * 
      * @return a web user
      *
      * @throws CmsException if something goes wrong
      * 
-     * @deprecated there are no more webusers, use a user without any role!
+     * @deprecated there are no more web users, use a user without any role!
      */
     public CmsUser readWebUser(String username, String password) throws CmsException {
 
@@ -3854,7 +3857,7 @@ public final class CmsObject {
     }
 
     /**
-     * Removes an access control entry of a griven principal from a given resource.<p>
+     * Removes an access control entry of a given principal from a given resource.<p>
      * 
      * @param resourceName name of the resource
      * @param principalType the type of the principal (currently group or user)
@@ -3890,7 +3893,7 @@ public final class CmsObject {
      * 
      * @param resourcename the name of the resource to change (full current site relative path)
      * @param dateExpired the new expire date of the changed resource
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
      * 
      * @throws CmsException if something goes wrong
      */
@@ -3901,11 +3904,11 @@ public final class CmsObject {
     }
 
     /**
-     * Changes the "last modified" timestamp of a resource.<p>
+     * Changes the "last modified" time stamp of a resource.<p>
      * 
      * @param resourcename the name of the resource to change (full current site relative path)
-     * @param dateLastModified timestamp the new timestamp of the changed resource
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param dateLastModified time stamp the new time stamp of the changed resource
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
      * 
      * @throws CmsException if something goes wrong
      */
@@ -3920,7 +3923,7 @@ public final class CmsObject {
      * 
      * @param resourcename the name of the resource to change (full current site relative path)
      * @param dateReleased the new release date of the changed resource
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
      * 
      * @throws CmsException if something goes wrong
      */
@@ -3973,19 +3976,19 @@ public final class CmsObject {
     }
 
     /**
-     * Changes the timestamp information of a resource.<p>
+     * Changes the time stamp information of a resource.<p>
      * 
      * This method is used to set the "last modified" date
      * of a resource, the "release" date of a resource, 
      * and also the "expire" date of a resource.<p>
      * 
      * @param resourcename the name of the resource to change (full current site relative path)
-     * @param dateLastModified timestamp the new timestamp of the changed resource
+     * @param dateLastModified time stamp the new time stamp of the changed resource
      * @param dateReleased the new release date of the changed resource, 
      *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param dateExpired the new expire date of the changed resource. 
      *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
      * 
      * @deprecated use <code>{@link #setDateLastModified(String, long, boolean)}</code>, 
      *                 <code>{@link #setDateReleased(String, long, boolean)}</code> or
@@ -4013,7 +4016,7 @@ public final class CmsObject {
      * Only resources that have already been published once can be undeleted,
      * if a "new" resource is deleted it can not be undeleted.<p>
      * 
-     * Internally, this method undos all changes to a resource by restoring 
+     * Internally, this method undoes all changes to a resource by restoring 
      * the version from the online project, that is to the state of last 
      * publishing.<p>
      * 
@@ -4035,7 +4038,7 @@ public final class CmsObject {
      * if a "new" resource is deleted it can not be undeleted.<p>
      * 
      * @param resourcename the name of the resource to undelete
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
      *
      * @throws CmsException if something goes wrong
      * 
@@ -4048,11 +4051,11 @@ public final class CmsObject {
     }
 
     /**
-     * Undos all changes to a resource by restoring the version from the 
+     * Undoes all changes to a resource by restoring the version from the 
      * online project to the current offline project.<p>
      * 
      * @param resourcename the name of the resource to undo the changes for (full path)
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
      *
      * @throws CmsException if something goes wrong
      * 
@@ -4068,7 +4071,7 @@ public final class CmsObject {
     }
 
     /**
-     * Undos all changes to a resource by restoring the version from the 
+     * Undoes all changes to a resource by restoring the version from the 
      * online project to the current offline project.<p>
      * 
      * @param resourcename the name of the resource to undo the changes for
@@ -4184,7 +4187,7 @@ public final class CmsObject {
      *
      * @param file the file to write
      *
-     * @throws CmsException if resourcetype is set to folder, or
+     * @throws CmsException if resource type is set to folder, or
      *                      if the user has not the rights to write the file header.
      *                      
      * @deprecated use {@link #writeResource(CmsResource)} instead
@@ -4199,7 +4202,7 @@ public final class CmsObject {
      *
      * The group has to be a valid OpenCms group.<br>
      * 
-     * The group will be completely overriden by the given data.<p>
+     * The group will be completely overridden by the given data.<p>
      *
      * @param group the group that should be written
      * 
@@ -4216,7 +4219,7 @@ public final class CmsObject {
      * @param publishTag the correlative publish tag
      * @param publishDate the date of publishing
 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public void writeHistoryProject(int publishTag, long publishDate) throws CmsException {
 
@@ -4228,7 +4231,7 @@ public final class CmsObject {
      *
      * The project id has to be a valid OpenCms project id.<br>
      * 
-     * The project with the given id will be completely overriden
+     * The project with the given id will be completely overridden
      * by the given data.<p>
      *
      * @param project the project that should be written
@@ -4244,7 +4247,7 @@ public final class CmsObject {
      * Writes a couple of properties as structure values for a file or folder.
      *
      * @param resourceName the resource-name of which the Property has to be set
-     * @param properties a Hashtable with property-definitions and property values as Strings
+     * @param properties a map with property-definitions and property values as Strings
      * 
      * @throws CmsException if operation was not successful
      * 
@@ -4259,7 +4262,7 @@ public final class CmsObject {
      * Writes a couple of Properties for a file or folder.
      *
      * @param name the resource-name of which the Property has to be set
-     * @param properties a Hashtable with property-definitions and property values as Strings
+     * @param properties a map with property-definitions and property values as Strings
      * @param addDefinition flag to indicate if unknown definitions should be added
      * 
      * @throws CmsException if operation was not successful
@@ -4352,7 +4355,7 @@ public final class CmsObject {
      *
      * @param resource the file to write
      *
-     * @throws CmsException if resourcetype is set to folder, or
+     * @throws CmsException if resource type is set to folder, or
      *                      if the user has not the rights to write the file header.
      */
     public void writeResource(CmsResource resource) throws CmsException {
@@ -4366,9 +4369,9 @@ public final class CmsObject {
      * This is done during static export.<p>
      * 
      * @param resourceName The name of the resource to be added to the static export
-     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
+     * @param linkType the type of resource exported (0= non-parameter, 1=parameter)
      * @param linkParameter the parameters added to the resource
-     * @param timestamp a timestamp for writing the data into the db
+     * @param timestamp a time stamp for writing the data into the db
      * 
      * @throws CmsException if something goes wrong
      */
@@ -4410,14 +4413,14 @@ public final class CmsObject {
      *
      * The user id has to be a valid OpenCms user id.<br>
      * 
-     * The user with the given id will be completely overriden
+     * The user with the given id will be completely overridden
      * by the given data.<p>
      *
      * @param user the user to be written
      *
      * @throws CmsException if operation was not successful
      * 
-     * @deprecated there are no more webusers, use a user without any role!
+     * @deprecated there are no more web users, use a user without any role!
      */
     public void writeWebUser(CmsUser user) throws CmsException {
 
@@ -4512,7 +4515,7 @@ public final class CmsObject {
      * Initializes this <code>{@link CmsObject}</code> with the provided user context and database connection.<p>
      * 
      * @param securityManager the security manager
-     * @param context the request context that contains the user authentification
+     * @param context the request context that contains the user authentication
      */
     private void init(CmsSecurityManager securityManager, CmsRequestContext context) {
 

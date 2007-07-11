@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/07/04 16:57:22 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2007/07/11 09:28:12 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.64 $ 
+ * @version $Revision: 1.65 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,8 +204,9 @@ public class CmsLinkManager {
      * </pre>
      * 
      * @param cms the cms object
-     * @param relativePath path to use as prefix if neccessary
+     * @param relativePath path to use as prefix if necessary
      * @param targetUri the target uri
+     * 
      * @return the root path for the target uri or null
      */
     public static String getSitePath(CmsObject cms, String relativePath, String targetUri) {
@@ -223,7 +224,6 @@ public class CmsLinkManager {
 
         // malformed uri
         try {
-
             uri = new URI(targetUri);
             path = uri.getPath();
 
@@ -240,7 +240,6 @@ public class CmsLinkManager {
             } else {
                 query = "";
             }
-
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(Messages.LOG_MALFORMED_URI_1, targetUri), e);
@@ -248,7 +247,7 @@ public class CmsLinkManager {
             return null;
         }
 
-        // concat fragment and query 
+        // concatenate fragment and query 
         suffix = fragment.concat(query);
 
         // opaque URI
@@ -282,7 +281,6 @@ public class CmsLinkManager {
         String context = OpenCms.getSystemInfo().getOpenCmsContext();
         if ((context != null) && path.startsWith(context)) {
             // URI is starting with opencms context
-
             String siteRoot = null;
             if (relativePath != null) {
                 siteRoot = CmsSiteManager.getSiteRoot(relativePath);
