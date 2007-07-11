@@ -37,7 +37,6 @@ createFolder "/system/" "lost-found/"
 # Apply folder permissions
 chacc "/" "user" "ALL_OTHERS" "+v+r+i"
 chacc "/" "role" "ROOT_ADMIN" "+v+w+r+c+d+i"
-chacc "/" "role" "DEVELOPER" "+v+w+r+c+d+i"
 chacc "/system" "role" "WORKPLACE_USER" "+v+r+i"
 chacc "/system/lost-found" "role" "WORKPLACE_MANAGER" "+v+w+r+c+d+i"
 chacc "/system/orgunits" "role" "ACCOUNT_MANAGER" "+v+w+r+c+d+i"
