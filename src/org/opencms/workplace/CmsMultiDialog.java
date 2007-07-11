@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsMultiDialog.java,v $
- * Date   : $Date: 2007/07/04 16:57:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/11 10:59:58 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -83,7 +83,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
     /** Collects all eventually thrown exceptions during a multi operation. */
     private CmsMultiException m_multiOperationException;
 
-    /** The resourcelist parameter value. */
+    /** The resource list parameter value. */
     private String m_paramResourcelist;
 
     /** The list of resource names for the multi operation. */
@@ -192,7 +192,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
     }
 
     /**
-     * Checks if an exception occured during a multi resource operation, and throws a new exception if necessary.<p>
+     * Checks if an exception occurred during a multi resource operation, and throws a new exception if necessary.<p>
      * 
      * @param messages the message bundle to use for the exception message generation
      * @param key the key for the exception to throw with one parameter
@@ -210,11 +210,11 @@ public abstract class CmsMultiDialog extends CmsDialog {
     }
 
     /**
-     * Returns the value of the resourcelist parameter, or null if the parameter is not provided.<p>
+     * Returns the value of the resource list parameter, or null if the parameter is not provided.<p>
      * 
      * This parameter selects the resources to perform operations on.<p>
      *  
-     * @return the value of the resourcelist parameter or null, if the parameter is not provided
+     * @return the value of the resource list parameter or null, if the parameter is not provided
      */
     public String getParamResourcelist() {
 
@@ -310,12 +310,12 @@ public abstract class CmsMultiDialog extends CmsDialog {
         m_paramResourcelist = paramResourcelist;
         m_resourceList = null;
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsDialog#setParamResource(java.lang.String)
      */
     public void setParamResource(String value) {
-    
+
         super.setParamResource(value);
         m_resourceList = null;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2007/07/04 16:57:10 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2007/07/11 10:59:58 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.98 $ 
+ * @version $Revision: 1.99 $ 
  * 
  * @since 6.0.0 
  */
@@ -1415,8 +1415,8 @@ public class CmsDialog extends CmsToolDialog {
      * Displays the throwable on the error page and logs the error.<p>
      * 
      * @param wp the workplace class
-     * @param t the throwable to be displayed on the errorpage
-     * @throws JspException if the include of the errorpage jsp fails
+     * @param t the throwable to be displayed on the error page
+     * @throws JspException if the include of the error page jsp fails
      */
     public void includeErrorpage(CmsWorkplace wp, Throwable t) throws JspException {
 
