@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/07/04 18:50:05 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2007/07/11 14:51:42 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -250,10 +250,10 @@ public abstract class CmsEditor extends CmsEditorBase {
         List contentLocales = new ArrayList();
         try {
 
-            CmsResource res = getCms().readResource(resourceName);
+            CmsResource res = getCms().readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION);
             String temporaryFilename = CmsWorkplace.getTemporaryFileName(resourceName);
-            if (getCms().existsResource(temporaryFilename)) {
-                res = getCms().readResource(temporaryFilename);
+            if (getCms().existsResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                res = getCms().readResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION);
             }
             CmsFile file = CmsFile.upgrade(res, getCms());
             CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
