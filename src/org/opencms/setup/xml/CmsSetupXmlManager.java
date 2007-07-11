@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2007/07/04 16:57:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/11 12:04:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,10 @@
 
 package org.opencms.setup.xml;
 
+import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.setup.CmsSetupBean;
+import org.opencms.setup.CmsUpdateBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.1.8 
  */
@@ -151,6 +153,13 @@ public class CmsSetupXmlManager {
         Iterator itFiles = m_sortedPlugins.keySet().iterator();
         while (itFiles.hasNext()) {
             String fileName = (String)itFiles.next();
+            if (setupBean instanceof CmsUpdateBean) {
+                if (!((CmsUpdateBean)setupBean).isNeedDbUpdate()) {
+                    if (CmsWorkplaceConfiguration.DEFAULT_XML_FILE_NAME.equals(fileName)) {
+                        continue;
+                    }
+                }
+            }
             Iterator itPlugins = ((List)m_sortedPlugins.get(fileName)).iterator();
             StringBuffer code = new StringBuffer(256);
             for (int i = 0; itPlugins.hasNext(); i++) {

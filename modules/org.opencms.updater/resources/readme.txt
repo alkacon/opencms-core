@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 6.x to OpenCms 7.0
+            Instructions for updating OpenCms 6.x/7.x to OpenCms 7.0.1
 
 
                                     WARNING:
@@ -17,7 +17,7 @@ IMPORTANT: Before using this upgrade wizard, make sure you have a full backup
 of your OpenCms installation and database.
 
 
-Follow the following steps to update from OpenCms 6.x to OpenCms 7.0:
+Follow the following steps to update from OpenCms 6.x/7.x to OpenCms 7.0.1:
 
 
 1. Shutdown your OpenCms servlet container
@@ -27,7 +27,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7.0.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7.0.1.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
@@ -44,7 +44,7 @@ wizard.enabled=true
 in the config file WEB-INF/config/opencms.properties.
 
 
-3.a. Manual configuration files update
+3.a. Important Note only for 6.x Updates: Manual configuration files update
 
 The automatic configuration files update from OpenCms 6.x to OpenCms 7.0 is working, 
 but just for the essentials.
@@ -85,17 +85,20 @@ The update wizard should appear which looks very similar to the OpenCms setup
 wizard. Make sure to read the instructions and the disclaimer on the start 
 page. Then execute the wizard which guides you through the update process.
 
+--------------------------------------
+Important Note only for 6.x Updates: 
+
 The first step is a database update, please notice that until now this is working
 and has been tested only for MySQL versions 4.1 and 5.0, and for Oracle versions 
 9i and 10g.
 
 This process is very time and space consuming, for instance, for a system with 
 3,128 resources it takes about 5 minutes, but an update of a system with 120,000+ 
-resources takes about 2 hours (with historical data).
+resources takes about 2 hours (without historical data).
 
 By default, this process deletes all historical data. But you can decide to keep
 them, but this is not recommended since it is not really possible to convert the
-data to the new schema, so that the converted data might be unusuable any how, 
+data to the new schema, so that the converted data might be unusable any how, 
 and second, the process might be more than 10 times slower if this option is 
 activated.
 
@@ -109,6 +112,7 @@ settings may get lost, but this is unfortunately inevitable.
 
 After the database update is finished, you need the Admin password to continue 
 with the upgrade. 
+--------------------------------------
 
 When asked to select the modules to update you should definitely select all
 org.opencms.editors.* and org.opencms.workplace.* modules. You only require 
@@ -139,7 +143,7 @@ You should now be able to log into the OpenCms workplace as before.
 7. After restarting
 
 You might need to uninstall no longer supported legacy (OpenCms5) modules, 
-like, org.opencms.legacy (which including the old workflow engine) 
+like, org.opencms.legacy (which includes the old workflow engine) 
 
 
 IMPORTANT: PLEASE READ THIS

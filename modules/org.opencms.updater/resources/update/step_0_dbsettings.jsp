@@ -15,7 +15,8 @@ d<%@ page session="true" %><%--
 		response.sendRedirect(nextPage);
 		return;
 	}
-	if (!dbBean.needUpdate()) {
+    Bean.setNeedDbUpdate(dbBean.needUpdate());
+	if (!Bean.isNeedDbUpdate()) {
 		response.sendRedirect("step_2_settings.jsp");
 		return;
 	}

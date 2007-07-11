@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/07/04 16:57:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/11 12:04:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,7 +107,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** The new logging offset in the database update thread. */
     protected int m_newLoggingDBOffset;
 
-    /** The lod logging offset in the database update thread. */
+    /** The old logging offset in the database update thread. */
     protected int m_oldLoggingDBOffset;
 
     /** The used admin user name. */
@@ -127,6 +127,9 @@ public class CmsUpdateBean extends CmsSetupBean {
 
     /** List of module to be updated. */
     private List m_modulesToUpdate;
+
+    /** Signalizes if a DB update is needed. */
+    private boolean m_needDbUpdate = false;
 
     /** the update project. */
     private String m_updateProject = "_tmpUpdateProject" + (System.currentTimeMillis() % 1000);
@@ -408,6 +411,16 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Returns <code>true</code> if a DB update is needed.<p>
+     *
+     * @return <code>true</code> if a DB update is needed
+     */
+    public boolean isNeedDbUpdate() {
+
+        return m_needDbUpdate;
+    }
+
+    /**
      * Prepares step 1 of the update wizard.<p>
      */
     public void prepareUpdateStep1() {
@@ -618,6 +631,16 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Sets the DB update flag.<p>
+     *
+     * @param needDbUpdate the value to set
+     */
+    public void setNeedDbUpdate(boolean needDbUpdate) {
+
+        m_needDbUpdate = needDbUpdate;
+    }
+
+    /**
      * Sets the update Project.<p>
      *
      * @param updateProject the update Project to set
@@ -712,6 +735,10 @@ public class CmsUpdateBean extends CmsSetupBean {
      */
     public void updateRelations() throws Exception {
 
+        if (!m_needDbUpdate) {
+            // skip if not updating from 6.x
+            return;
+        }
         I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
 
         report.println(Messages.get().container(Messages.RPT_START_UPDATE_RELATIONS_0), I_CmsReport.FORMAT_HEADLINE);
@@ -800,7 +827,6 @@ public class CmsUpdateBean extends CmsSetupBean {
             report.println(
                 Messages.get().container(Messages.RPT_FINISH_UPDATE_RELATIONS_0),
                 I_CmsReport.FORMAT_HEADLINE);
-
         }
     }
 
