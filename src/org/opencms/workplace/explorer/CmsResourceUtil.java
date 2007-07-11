@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/07/10 13:03:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/11 09:30:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
@@ -46,6 +47,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.A_CmsModeIntEnumeration;
@@ -67,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,6 +81,9 @@ public final class CmsResourceUtil {
      */
     public static class CmsResourceProjectState extends A_CmsModeIntEnumeration {
 
+        /** Constant for the project state unlocked. */
+        protected static final CmsResourceProjectState CLEAN = new CmsResourceProjectState(0);
+
         /** Constant for the project state locked for publishing. */
         protected static final CmsResourceProjectState LOCKED_FOR_PUBLISHING = new CmsResourceProjectState(5);
 
@@ -86,9 +92,6 @@ public final class CmsResourceUtil {
 
         /** Constant for the project state locked in other project. */
         protected static final CmsResourceProjectState MODIFIED_IN_OTHER_PROJECT = new CmsResourceProjectState(2);
-
-        /** Constant for the project state unlocked. */
-        protected static final CmsResourceProjectState CLEAN = new CmsResourceProjectState(0);
 
         private static final long serialVersionUID = 4580450220255428716L;
 
@@ -634,30 +637,71 @@ public final class CmsResourceUtil {
     }
 
     /**
+     * Returns the permission set for the given resource.<p>
+     * 
+     * @return the permission set for the given resource
+     */
+    public CmsPermissionSet getPermissionSet() {
+
+        CmsPermissionSetCustom pset = new CmsPermissionSetCustom();
+        CmsResource resource = getResource();
+        try {
+            if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_CONTROL, false, CmsResourceFilter.ALL)) {
+                pset.grantPermissions(CmsPermissionSet.PERMISSION_CONTROL);
+            } else {
+                pset.denyPermissions(CmsPermissionSet.PERMISSION_CONTROL);
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage());
+        }
+        try {
+            if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL)) {
+                pset.grantPermissions(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH);
+            } else {
+                pset.denyPermissions(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH);
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage());
+        }
+        try {
+            if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL)) {
+                pset.grantPermissions(CmsPermissionSet.PERMISSION_READ);
+            } else {
+                pset.denyPermissions(CmsPermissionSet.PERMISSION_READ);
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage());
+        }
+        try {
+            if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ALL)) {
+                pset.grantPermissions(CmsPermissionSet.PERMISSION_VIEW);
+            } else {
+                pset.denyPermissions(CmsPermissionSet.PERMISSION_VIEW);
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage());
+        }
+        try {
+            if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL)) {
+                pset.grantPermissions(CmsPermissionSet.PERMISSION_WRITE);
+            } else {
+                pset.denyPermissions(CmsPermissionSet.PERMISSION_WRITE);
+            }
+        } catch (CmsException e) {
+            LOG.error(e.getLocalizedMessage());
+        }
+
+        return pset;
+    }
+
+    /**
      * Returns the permissions string for the given resource.<p>
      * 
      * @return the permissions string for the given resource
      */
-    public String getPermissions() {
+    public String getPermissionString() {
 
-        String permissions;
-        try {
-            permissions = getCms().getPermissions(getCms().getSitePath(getResource())).getPermissionString();
-        } catch (Throwable e) {
-            String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
-            try {
-                getCms().getRequestContext().setSiteRoot("");
-                permissions = getCms().getPermissions(getResource().getRootPath()).getPermissionString();
-            } catch (Throwable e1) {
-                permissions = e1.getMessage();
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e1);
-                }
-            } finally {
-                getCms().getRequestContext().setSiteRoot(storedSiteRoot);
-            }
-        }
-        return permissions;
+        return getPermissionSet().getPermissionString();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2007/07/09 15:11:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/11 09:30:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.0 
  */
@@ -69,7 +69,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsListResourceCollector.class);
 
-    /** The colelctor parameter. */
+    /** The collector parameter. */
     protected String m_collectorParameter;
 
     /** List item cache. */
@@ -216,6 +216,37 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 progressOffset = thread.getProgress();
             }
 
+            CmsListColumnDefinition colPermissions = list.getMetadata().getColumnDefinition(
+                A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS);
+            boolean showPermissions = (colPermissions.isVisible() || colPermissions.isPrintable());
+            CmsListColumnDefinition colDateLastMod = list.getMetadata().getColumnDefinition(
+                A_CmsListExplorerDialog.LIST_COLUMN_DATELASTMOD);
+            boolean showDateLastMod = (colDateLastMod.isVisible() || colDateLastMod.isPrintable());
+            CmsListColumnDefinition colUserLastMod = list.getMetadata().getColumnDefinition(
+                A_CmsListExplorerDialog.LIST_COLUMN_USERLASTMOD);
+            boolean showUserLastMod = (colUserLastMod.isVisible() || colUserLastMod.isPrintable());
+            CmsListColumnDefinition colDateCreate = list.getMetadata().getColumnDefinition(
+                A_CmsListExplorerDialog.LIST_COLUMN_DATECREATE);
+            boolean showDateCreate = (colDateCreate.isVisible() || colDateCreate.isPrintable());
+            CmsListColumnDefinition colUserCreate = list.getMetadata().getColumnDefinition(
+                A_CmsListExplorerDialog.LIST_COLUMN_USERCREATE);
+            boolean showUserCreate = (colUserCreate.isVisible() || colUserCreate.isPrintable());
+            CmsListColumnDefinition colDateRel = list.getMetadata().getColumnDefinition(
+                A_CmsListExplorerDialog.LIST_COLUMN_DATEREL);
+            boolean showDateRel = (colDateRel.isVisible() || colDateRel.isPrintable());
+            CmsListColumnDefinition colDateExp = list.getMetadata().getColumnDefinition(
+                A_CmsListExplorerDialog.LIST_COLUMN_DATEEXP);
+            boolean showDateExp = (colDateExp.isVisible() || colDateExp.isPrintable());
+            CmsListColumnDefinition colState = list.getMetadata().getColumnDefinition(
+                A_CmsListExplorerDialog.LIST_COLUMN_STATE);
+            boolean showState = (colState.isVisible() || colState.isPrintable());
+            CmsListColumnDefinition colLockedBy = list.getMetadata().getColumnDefinition(
+                A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY);
+            boolean showLockedBy = (colLockedBy.isVisible() || colLockedBy.isPrintable());
+            CmsListColumnDefinition colSite = list.getMetadata().getColumnDefinition(
+                A_CmsListExplorerDialog.LIST_COLUMN_SITE);
+            boolean showSite = (colSite.isVisible() || colSite.isPrintable());
+
             // get content
             Iterator itRes = resources.iterator();
             int count = 0;
@@ -242,7 +273,19 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 CmsResource resource = (CmsResource)obj;
                 CmsListItem item = (CmsListItem)m_liCache.get(resource.getStructureId().toString());
                 if (item == null) {
-                    item = createResourceListItem(resource, list);
+                    item = createResourceListItem(
+                        resource,
+                        list,
+                        showPermissions,
+                        showDateLastMod,
+                        showUserLastMod,
+                        showDateCreate,
+                        showUserCreate,
+                        showDateRel,
+                        showDateExp,
+                        showState,
+                        showLockedBy,
+                        showSite);
                     m_liCache.put(resource.getStructureId().toString(), item);
                 }
                 ret.add(item);
@@ -446,9 +489,32 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      * 
      * @param resource the resource to create the list item from
      * @param list the list
+     * @param showPermissions if to show permissions
+     * @param showDateLastMod if to show the last modification date
+     * @param showUserLastMod if to show the last modification user
+     * @param showDateCreate if to show the creation date
+     * @param showUserCreate if to show the creation date
+     * @param showDateRel if to show the date released
+     * @param showDateExp if to show the date expired
+     * @param showState if to show the state
+     * @param showLockedBy if to show the lock user
+     * @param showSite if to show the site
+     * 
      * @return a list item created from the resource information
      */
-    protected CmsListItem createResourceListItem(CmsResource resource, CmsHtmlList list) {
+    protected CmsListItem createResourceListItem(
+        CmsResource resource,
+        CmsHtmlList list,
+        boolean showPermissions,
+        boolean showDateLastMod,
+        boolean showUserLastMod,
+        boolean showDateCreate,
+        boolean showUserCreate,
+        boolean showDateRel,
+        boolean showDateExp,
+        boolean showState,
+        boolean showLockedBy,
+        boolean showSite) {
 
         CmsListItem item = list.newItem(resource.getStructureId().toString());
         // get an initialized resource utility
@@ -459,16 +525,36 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_TITLE, resUtil.getTitle());
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_TYPE, resUtil.getResourceTypeName());
         item.set(A_CmsListExplorerDialog.LIST_COLUMN_SIZE, resUtil.getSizeString());
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS, resUtil.getPermissions());
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATELASTMOD, new Date(resource.getDateLastModified()));
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERLASTMOD, resUtil.getUserLastModified());
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATECREATE, new Date(resource.getDateCreated()));
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERCREATE, resUtil.getUserCreated());
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEREL, new Date(resource.getDateReleased()));
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEEXP, new Date(resource.getDateExpired()));
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_STATE, resUtil.getStateName());
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
-        item.set(A_CmsListExplorerDialog.LIST_COLUMN_SITE, resUtil.getSiteTitle());
+        if (showPermissions) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_PERMISSIONS, resUtil.getPermissionString());
+        }
+        if (showDateLastMod) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATELASTMOD, new Date(resource.getDateLastModified()));
+        }
+        if (showUserLastMod) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERLASTMOD, resUtil.getUserLastModified());
+        }
+        if (showDateCreate) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATECREATE, new Date(resource.getDateCreated()));
+        }
+        if (showUserCreate) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_USERCREATE, resUtil.getUserCreated());
+        }
+        if (showDateRel) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEREL, new Date(resource.getDateReleased()));
+        }
+        if (showDateExp) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_DATEEXP, new Date(resource.getDateExpired()));
+        }
+        if (showState) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_STATE, resUtil.getStateName());
+        }
+        if (showLockedBy) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_LOCKEDBY, resUtil.getLockedByName());
+        }
+        if (showSite) {
+            item.set(A_CmsListExplorerDialog.LIST_COLUMN_SITE, resUtil.getSiteTitle());
+        }
         setAdditionalColumns(item, resUtil);
         return item;
     }

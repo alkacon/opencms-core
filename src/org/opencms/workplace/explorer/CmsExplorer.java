@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2007/07/04 16:57:17 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2007/07/11 09:30:32 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -403,7 +403,7 @@ public class CmsExplorer extends CmsWorkplace {
         // position 16: permissions
         if (showPermissions) {
             content.append("\"");
-            content.append(CmsStringUtil.escapeJavaScript(resUtil.getPermissions()));
+            content.append(CmsStringUtil.escapeJavaScript(resUtil.getPermissionString()));
             content.append("\",");
         } else {
             content.append("\"\",");

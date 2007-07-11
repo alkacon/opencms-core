@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/07/09 08:43:39 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/07/11 09:30:33 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,6 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
@@ -53,6 +52,7 @@ import org.opencms.widgets.CmsPrincipalWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -1721,34 +1721,8 @@ public class CmsChacc extends CmsDialog {
      */
     private CmsPermissionSet buildPermissionsForCurrentUser() throws CmsException {
 
-        CmsPermissionSetCustom pset = new CmsPermissionSetCustom();
-        CmsResource resource = getCms().readResource(getParamResource());
-        if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_CONTROL, false, CmsResourceFilter.ALL)) {
-            pset.grantPermissions(CmsPermissionSet.PERMISSION_CONTROL);
-        } else {
-            pset.denyPermissions(CmsPermissionSet.PERMISSION_CONTROL);
-        }
-        if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false, CmsResourceFilter.ALL)) {
-            pset.grantPermissions(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH);
-        } else {
-            pset.denyPermissions(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH);
-        }
-        if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL)) {
-            pset.grantPermissions(CmsPermissionSet.PERMISSION_READ);
-        } else {
-            pset.denyPermissions(CmsPermissionSet.PERMISSION_READ);
-        }
-        if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ALL)) {
-            pset.grantPermissions(CmsPermissionSet.PERMISSION_VIEW);
-        } else {
-            pset.denyPermissions(CmsPermissionSet.PERMISSION_VIEW);
-        }
-        if (getCms().hasPermissions(resource, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL)) {
-            pset.grantPermissions(CmsPermissionSet.PERMISSION_WRITE);
-        } else {
-            pset.denyPermissions(CmsPermissionSet.PERMISSION_WRITE);
-        }
-        return pset;
+        CmsResourceUtil resUtil = new CmsResourceUtil(getCms(), getCms().readResource(getParamResource()));
+        return resUtil.getPermissionSet();
     }
 
     /**
