@@ -6,6 +6,7 @@
       <links>
         <link name="link0" internal="true" type="A">
           <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
+          <uuid>f0d8f8ae-11b7-11db-91cd-fdbae480bac9</uuid>
         </link>
         <link name="link1" internal="false" type="A">
           <target><![CDATA[http://bugzilla.opencms.org/]]></target>
@@ -13,7 +14,7 @@
       </links>
       <content><![CDATA[<h1>Release Notes for OpenCms 7.0.1</h1>
 <p>July 11, 2007: This is the release of OpenCms 7.0.1. OpenCms 7 is a major upgrade, and it vastly
-expands the features of OpenCms 6. Version 7.0.1 is a bugfix release that fixes a critical issues
+expands the features of OpenCms 6. Version 7.0.1 is a bugfix release that fixes a critical issue
 present in the first 7.0.0 release, as well as a number of other issues.</p>
 <h2><strong>Features of the OpenCms 7 release</strong></h2>
 <ul>
@@ -92,7 +93,7 @@ screenshots</li>
 OpenCms 7.0.0 has a critical bug that makes it impossible to apply permissions to resources outside
 the /system/ folder. In case you are using one of the previous versions (OpenCms 7 alpha, beta or
 release candidates), there have been a lot of issues fixed in the final release.</p>
-<p>OpenCms 7 is largely&nbsp;backward compatible with version 6. Most templates and other OpenCms
+<p>OpenCms 7 is largely backward compatible with version 6. Most templates and other OpenCms
 developed code from version 6 should work "out of the box" with version 7. A number of API methods
 from OpenCms 6 have been marked as "deprecated". In case you have made extensive use of OpenCms
 internal classes and APIs from version 6, there may be some changes required in your code. However,
@@ -105,7 +106,7 @@ change. You must edit the "web-app" node in the OpenCms web.xml file to do that.
 the optional "Java 1.4 compatibility package". It won't work with Java 1.3. We have tested only
 with SUNs version of the JDK. However, OpenCms has no dependencies to sun.* packages so it should
 in theory run with all compliant JVMs.</p>
-<p>We have tested this release on the Tomcat servlet engine. OpenCms 7.0.0 works "out of the box"
+<p>We have tested this release on the Tomcat servlet engine. OpenCms 7.0.1 works "out of the box"
 with Tomcat 5.5, which we recommend. Others have reported deploying 7 development versions
 successfully on other servlet containers like JBoss, BEA and Websphere. We appreciate any feedback
 regarding other servlet containers.</p>
@@ -114,16 +115,16 @@ Oracle 10.x, as well as PostgreSQL 8.2.x and 7.4.x. The automatic update wizard 
 supports MySQL and Oracle.</p>
 <h2>Regarding version numbers and CVS build tags</h2>
 <p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS
-tag numbers&nbsp;for all OpenCms 7&nbsp;final&nbsp;releases&nbsp;are "build_7_0_x", so the 7.0.1
+tag numbers for all OpenCms 7 final releases are "build_7_0_x", so the 7.0.1
 release is tagged "build_7_0_1". Development of maintenance releases (like 7.0.1) is currently done
 in CVS HEAD.</p>
 <h2>How you can help</h2>
 <p>Contributions to the OpenCms core development are most welcome. Please contact the core
-development team on the <a href="%(link0)" target="extern">opencms-dev</a> mailing list 
-in case you are interested in supporting the development of OpenCms.</p>
-<p>Please use our Bugzilla to report bugs in this release: <a href="%(link1)"
-target="extern">http://bugzilla.opencms.org/<br>
-</a></p>
+development team on the <a target="extern" href=
+"%(link0)">opencms-dev</a> mailing list in case you are interested in
+supporting the development of OpenCms.</p>
+<p>Please use our Bugzilla to report bugs in this release: <a target="extern" href=
+"%(link1)">http://bugzilla.opencms.org/<br></a></p>
 <p>Thank you for using OpenCms and have fun with OpenCms 7.0.1 :-)</p>]]></content>
     </element>
   </page>
