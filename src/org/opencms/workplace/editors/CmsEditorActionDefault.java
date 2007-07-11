@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2007/07/04 16:57:16 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/07/11 13:32:00 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.editors;
 
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
@@ -48,7 +49,7 @@ import javax.servlet.jsp.JspException;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,7 +134,10 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
     public boolean isButtonActive(CmsJspActionElement jsp, String resourceName) {
 
         try {
-            OpenCms.getPublishManager().getPublishList(jsp.getCmsObject(), jsp.getCmsObject().readResource(resourceName), false);
+            OpenCms.getPublishManager().getPublishList(
+                jsp.getCmsObject(),
+                jsp.getCmsObject().readResource(resourceName, CmsResourceFilter.IGNORE_EXPIRATION),
+                false);
             return true;
         } catch (Exception e) {
             return false;
