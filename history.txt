@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/10 13:13:59 $
- * Version: $Revision: 1.834 $
+ * Date   : $Date: 2007/07/11 09:27:00 $
+ * Version: $Revision: 1.835 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ OpenCms 7.0.1 - July 11, 2007
 * Fixed issue showing the lock dialog during publishing in some irrelevant cases
 * Fixed issue with wrong resource filter preventing permission check on deleted resources
 * Fixed issue forcing display widgets to be valid
+* Fixed FCKeditor issue gallery buttons not working after pressing save
 
 OpenCms 7.0.0 - July 4, 2007
 * Fixed bug during concurrent publishing
