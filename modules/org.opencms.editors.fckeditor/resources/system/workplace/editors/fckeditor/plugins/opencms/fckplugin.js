@@ -244,7 +244,7 @@ FCKToolbarItems.RegisterItem('oc-publish', new FCKToolbarButton('oc-publish','<%
 var saveCommand = function() { this.Name = 'Save'; }
 saveCommand.prototype.GetState = function() { return FCK_TRISTATE_OFF; }
 saveCommand.prototype.Execute = function() {
-	execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_SAVE %>','_top');
+	execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_SAVE %>','_self');
 }
 FCKCommands.RegisterCommand('oc-save', new saveCommand());
 FCKToolbarItems.RegisterItem('oc-save', new FCKToolbarButton('oc-save','<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0) %>', null, null, true));
