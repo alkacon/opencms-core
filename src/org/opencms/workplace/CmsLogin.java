@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/07/04 16:57:10 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/11 09:03:12 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -614,7 +614,7 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     protected String displayLoginForm() {
 
-        StringBuffer html = new StringBuffer();
+        StringBuffer html = new StringBuffer(4096);
 
         html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">\n");
         html.append("<html><head>\n");
@@ -630,8 +630,14 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append(encoding);
         html.append("\">\n");
 
+        // append workplace css
         html.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         html.append(CmsWorkplace.getStyleUri(this, "workplace.css"));
+        html.append("\">\n");
+
+        // append favicon relation
+        html.append("<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"");
+        html.append(CmsWorkplace.getSkinUri()).append("commons/favicon.ico");
         html.append("\">\n");
 
         if (m_action == ACTION_DISPLAY) {

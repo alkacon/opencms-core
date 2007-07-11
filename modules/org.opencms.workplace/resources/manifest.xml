@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace base files.</p>
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.0</version>
+		<version>7.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -69,6 +69,7 @@
 			<resource uri="/system/workplace/resources/buttons/wizard.png"/>
 			<resource uri="/system/workplace/resources/buttons/wizard_in.png"/>
 			<resource uri="/system/workplace/resources/commons/error.png"/>
+			<resource uri="/system/workplace/resources/commons/favicon.ico"/>
 			<resource uri="/system/workplace/resources/commons/help.png"/>
 			<resource uri="/system/workplace/resources/commons/login.png"/>
 			<resource uri="/system/workplace/resources/commons/login_logo.png"/>
@@ -2679,6 +2680,21 @@
 					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/favicon.ico</source>
+			<destination>system/workplace/resources/commons/favicon.ico</destination>
+			<type>image</type>
+			<uuidstructure>710a07eb-2f89-11dc-bf9a-8d625826ae79</uuidstructure>
+			<uuidresource>710a07ec-2f89-11dc-bf9a-8d625826ae79</uuidresource>
+			<datelastmodified>Wed, 11 Jul 2007 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 11 Jul 2007 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
