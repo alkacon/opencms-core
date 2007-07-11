@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2007/07/04 16:57:20 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2007/07/11 14:53:01 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,7 +81,7 @@ public class CmsSecure extends CmsDialog {
     /** Export parameter. */
     private String m_paramExport;
 
-    /** Exportname parameter. */
+    /** Export name parameter. */
     private String m_paramExportname;
 
     /** Intern parameter. */
@@ -115,7 +115,7 @@ public class CmsSecure extends CmsDialog {
     /**
      * Performs the Security and Export Change.<p>
      * 
-     * @throws JspException if including a JSP subelement is not successful
+     * @throws JspException if including a JSP sub element is not successful
      */
     public void actionChangeSecureExport() throws JspException {
 
@@ -125,7 +125,7 @@ public class CmsSecure extends CmsDialog {
         String filename = getParamResource();
 
         try {
-            // lock resource if autolock is enabled
+            // lock resource if auto lock is enabled
             checkLock(getParamResource());
 
             // write the properties
@@ -153,7 +153,9 @@ public class CmsSecure extends CmsDialog {
      * Builds the radio input to set the export and secure property.
      *
      * @param propName the name of the property to build the radio input for
+     * 
      * @return html for the radio input
+     * 
      * @throws CmsException if the reading of a property fails
      */
     public String buildRadio(String propName) throws CmsException {
@@ -183,9 +185,9 @@ public class CmsSecure extends CmsDialog {
     }
 
     /**
-     * Returns the value of the exportname parameter.<p>
+     * Returns the value of the export name parameter.<p>
      * 
-     * @return the value of the exportname parameter
+     * @return the value of the export name parameter
      */
     public String getParamExportname() {
 
@@ -240,9 +242,9 @@ public class CmsSecure extends CmsDialog {
     }
 
     /**
-     * Returns the path under which the resource is accessable.
+     * Returns the path under which the resource is accessible.<p>
      *  
-     * @return the path under which the resource is accessable
+     * @return the path under which the resource is accessible
      */
     public String getResourceUrl() {
 
@@ -274,7 +276,7 @@ public class CmsSecure extends CmsDialog {
     }
 
     /**
-     * Returns value of the the intern property of the resource.
+     * Returns value of the the intern property of the resource.<p>
      *  
      * @return the value of the intern property of the resource
      */
@@ -292,9 +294,10 @@ public class CmsSecure extends CmsDialog {
     }
 
     /**
-     * Returns value of the property of the resource.
+     * Returns value of the property of the resource.<p>
      * 
      * @param propertyName the name of the property to read 
+     * 
      * @return the value of the secure property of the resource
      */
     public String readProperty(String propertyName) {
@@ -314,8 +317,10 @@ public class CmsSecure extends CmsDialog {
     }
 
     /**
-     * returns if the resource to be changed is a folder.
+     * returns if the resource to be changed is a folder.<p>
+     * 
      * @return true if the resource is a folder
+     * 
      * @throws CmsException if the reading of the resource fails
      */
     public boolean resourceIsFolder() throws CmsException {
@@ -334,9 +339,9 @@ public class CmsSecure extends CmsDialog {
     }
 
     /**
-     * Sets the value of the exportname parameter.<p>
+     * Sets the value of the export name parameter.<p>
      * 
-     * @param value for the exportname parameter
+     * @param value for the export name parameter
      */
     public void setParamExportname(String value) {
 
@@ -410,6 +415,7 @@ public class CmsSecure extends CmsDialog {
      * 
      * @param propertyName the name of the property
      * @param propertyValue the new value of the property
+     * 
      * @throws CmsException if something goes wrong
      */
     protected void writeProperty(String propertyName, String propertyValue) throws CmsException {
@@ -461,6 +467,5 @@ public class CmsSecure extends CmsDialog {
         if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
             getCms().writePropertyObject(getParamResource(), newProp);
         }
-
     }
 }
