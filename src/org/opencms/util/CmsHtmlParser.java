@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlParser.java,v $
- * Date   : $Date: 2007/07/11 09:28:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/12 15:01:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,14 +60,14 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.2.0
  */
 public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
 
     /** List of upper case tag name strings of tags that should not be auto-corrected if closing divs are missing. */
-    private List m_noAutoCloseTags;
+    protected List m_noAutoCloseTags;
 
     /** The array of supported tag names. */
     // important: don't change the order of these tags in the source, subclasses may expect the tags
@@ -135,7 +135,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
      * 
      * @return A node factory that will not autocorrect open tags specified via <code>{@link #setNoAutoCloseTags(List)}</code>
      */
-    private PrototypicalNodeFactory configureNoAutoCorrectionTags() {
+    protected PrototypicalNodeFactory configureNoAutoCorrectionTags() {
 
         PrototypicalNodeFactory factory = new PrototypicalNodeFactory();
 
@@ -244,7 +244,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     public void visitRemarkNode(Remark remark) {
 
         if (m_echo) {
-            m_result.append(remark.toHtml());
+            m_result.append(remark.toHtml(true));
         }
     }
 
@@ -269,8 +269,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     }
 
     /**
-     * Collapse HTML whitespace in the given String.
-     * <p>
+     * Collapse HTML whitespace in the given String.<p>
      * 
      * @param string the string to collapse
      * 
