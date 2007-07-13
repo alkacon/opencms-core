@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2007/07/04 16:57:42 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/07/13 13:35:38 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,12 +77,13 @@ public class CmsDisplayWidget extends A_CmsWidget {
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String value = param.getStringValue(cms);
+        String localizedValue = value;
         if (CmsStringUtil.TRUE.equalsIgnoreCase(value) || CmsStringUtil.FALSE.equalsIgnoreCase(value)) {
             boolean booleanValue = Boolean.valueOf(value).booleanValue();
             if (booleanValue) {
-                value = Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_LABEL_TRUE_0);
+                localizedValue = Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_LABEL_TRUE_0);
             } else {
-                value = Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_LABEL_FALSE_0);
+                localizedValue = Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_LABEL_FALSE_0);
             }
         }
 
@@ -93,7 +94,7 @@ public class CmsDisplayWidget extends A_CmsWidget {
         if (CmsStringUtil.isNotEmpty(getConfiguration())) {
             result.append(getConfiguration());
         } else {
-            result.append(value);
+            result.append(localizedValue);
         }
         result.append("</span>");
         result.append("<input type=\"hidden\"");
