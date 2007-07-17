@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageScaler.java,v $
- * Date   : $Date: 2007/07/04 16:57:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/17 13:58:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.2.0
  */
@@ -726,6 +726,79 @@ public class CmsImageScaler {
     }
 
     /**
+     * Parses the given parameters and sets the internal scaler variables accordingly.<p>
+     * 
+     * The parameter String must have the format <code>"h:100,w:200,t:1"</code>,
+     * that is a comma separated list of attributes followed by a colon ":", followed by a value.
+     * As possible attributes, use the constants from this class that start with <code>SCALE_PARAM</Code>
+     * for example {@link #SCALE_PARAM_HEIGHT} or {@link #SCALE_PARAM_WIDTH}.<p>
+     * 
+     * @param parameters the parameters to parse
+     */
+    public void parseParameters(String parameters) {
+
+        m_width = -1;
+        m_height = -1;
+        m_position = 0;
+        m_type = 0;
+        m_color = Color.WHITE;
+
+        List tokens = CmsStringUtil.splitAsList(parameters, ',');
+        Iterator it = tokens.iterator();
+        String k;
+        String v;
+        while (it.hasNext()) {
+            String t = (String)it.next();
+            // extract key and value
+            k = null;
+            v = null;
+            int idx = t.indexOf(':');
+            if (idx >= 0) {
+                k = t.substring(0, idx).trim();
+                if (t.length() > idx) {
+                    v = t.substring(idx + 1).trim();
+                }
+            }
+            if (CmsStringUtil.isNotEmpty(k) && CmsStringUtil.isNotEmpty(v)) {
+                // key and value are available
+                if (SCALE_PARAM_HEIGHT.equals(k)) {
+                    // image height
+                    m_height = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
+                } else if (SCALE_PARAM_WIDTH.equals(k)) {
+                    // image width
+                    m_width = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
+                } else if (SCALE_PARAM_TYPE.equals(k)) {
+                    // scaling type
+                    setType(CmsStringUtil.getIntValue(v, -1, CmsImageScaler.SCALE_PARAM_TYPE));
+                } else if (SCALE_PARAM_COLOR.equals(k)) {
+                    // image background color
+                    setColor(v);
+                } else if (SCALE_PARAM_POS.equals(k)) {
+                    // image position (depends on scale type)
+                    setPosition(CmsStringUtil.getIntValue(v, -1, CmsImageScaler.SCALE_PARAM_POS));
+                } else if (SCALE_PARAM_QUALITY.equals(k)) {
+                    // image position (depends on scale type)
+                    setQuality(CmsStringUtil.getIntValue(v, 0, k));
+                } else if (SCALE_PARAM_RENDERMODE.equals(k)) {
+                    // image position (depends on scale type)
+                    setRenderMode(CmsStringUtil.getIntValue(v, 0, k));
+                } else if (SCALE_PARAM_FILTER.equals(k)) {
+                    // image filters to apply
+                    setFilters(v);
+                } else {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.ERR_INVALID_IMAGE_SCALE_PARAMS_2, k, v));
+                    }
+                }
+            } else {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.ERR_INVALID_IMAGE_SCALE_PARAMS_2, k, v));
+                }
+            }
+        }
+    }
+
+    /**
      * Returns a scaled version of the given image byte content according this image scalers parameters.<p>
      *  
      * @param content the image byte content to scale
@@ -1114,73 +1187,5 @@ public class CmsImageScaler {
         m_color = source.m_color;
         m_filters = new ArrayList(source.m_filters);
         m_maxBlurSize = source.m_maxBlurSize;
-    }
-
-    /**
-     * Parses the scaler parameters.<p>
-     * 
-     * @param parameters the parameters to parse
-     */
-    private void parseParameters(String parameters) {
-
-        m_width = -1;
-        m_height = -1;
-        m_position = 0;
-        m_type = 0;
-        m_color = Color.WHITE;
-
-        List tokens = CmsStringUtil.splitAsList(parameters, ',');
-        Iterator it = tokens.iterator();
-        String k;
-        String v;
-        while (it.hasNext()) {
-            String t = (String)it.next();
-            // extract key and value
-            k = null;
-            v = null;
-            int idx = t.indexOf(':');
-            if (idx >= 0) {
-                k = t.substring(0, idx).trim();
-                if (t.length() > idx) {
-                    v = t.substring(idx + 1).trim();
-                }
-            }
-            if (CmsStringUtil.isNotEmpty(k) && CmsStringUtil.isNotEmpty(v)) {
-                // key and value are available
-                if (SCALE_PARAM_HEIGHT.equals(k)) {
-                    // image height
-                    m_height = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
-                } else if (SCALE_PARAM_WIDTH.equals(k)) {
-                    // image width
-                    m_width = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
-                } else if (SCALE_PARAM_TYPE.equals(k)) {
-                    // scaling type
-                    setType(CmsStringUtil.getIntValue(v, -1, CmsImageScaler.SCALE_PARAM_TYPE));
-                } else if (SCALE_PARAM_COLOR.equals(k)) {
-                    // image background color
-                    setColor(v);
-                } else if (SCALE_PARAM_POS.equals(k)) {
-                    // image position (depends on scale type)
-                    setPosition(CmsStringUtil.getIntValue(v, -1, CmsImageScaler.SCALE_PARAM_POS));
-                } else if (SCALE_PARAM_QUALITY.equals(k)) {
-                    // image position (depends on scale type)
-                    setQuality(CmsStringUtil.getIntValue(v, 0, k));
-                } else if (SCALE_PARAM_RENDERMODE.equals(k)) {
-                    // image position (depends on scale type)
-                    setRenderMode(CmsStringUtil.getIntValue(v, 0, k));
-                } else if (SCALE_PARAM_FILTER.equals(k)) {
-                    // image filters to apply
-                    setFilters(v);
-                } else {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.ERR_INVALID_IMAGE_SCALE_PARAMS_2, k, v));
-                    }
-                }
-            } else {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.ERR_INVALID_IMAGE_SCALE_PARAMS_2, k, v));
-                }
-            }
-        }
     }
 }
