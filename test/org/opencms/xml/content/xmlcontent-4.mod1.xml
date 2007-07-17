@@ -30,11 +30,13 @@
             <target><![CDATA[/sites/default/noexist/index.html]]></target>
           </link>
         </links>
-        <content><![CDATA[<a href="%(link0)">Alkacon</a> 
-<a href="%(link1)">Index page</a> 
-<a href="%(link2)">Index page</a> Please note:
-The internal link targets must not exist, because otherwise the link management will add nodes
-which are unknown in the test case.]]></content>
+        <content><![CDATA[
+<a href="%(link0)">Alkacon</a>
+<a href="%(link1)">Index page</a>
+<a href="%(link2)">Index page</a>
+Please note: The internal link targets must not exist,
+because otherwise the link management will add <uuid> nodes which are unknown in the test case.
+]]></content>
       </Html>
     </Cascade>
     <Cascade>
