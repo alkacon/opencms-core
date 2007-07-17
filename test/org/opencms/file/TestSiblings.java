@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2007/07/04 16:57:06 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/07/17 14:00:33 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.util.CmsResourceTranslator;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -64,7 +65,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -85,10 +86,10 @@ public class TestSiblings extends OpenCmsTestCase {
      * @param cms the current user's Cms object
      * @param source path/resource name of the existing resource 
      * @param target path/resource name of the new sibling
-     * @throws Throwable if something goes wrong
+     * @throws Exception if something goes wrong
      */
     public static void copyResourceAsSibling(OpenCmsTestCase tc, CmsObject cms, String source, String target)
-    throws Throwable {
+    throws Exception {
 
         // save the source in the store
         tc.storeResources(cms, source);
@@ -128,9 +129,9 @@ public class TestSiblings extends OpenCmsTestCase {
      * @param cms the current user's Cms object
      * @param source path/resource name of the existing resource 
      * @param target path/resource name of the new sibling
-     * @throws Throwable if something goes wrong
+     * @throws Exception if something goes wrong
      */
-    public static void createSibling(OpenCmsTestCase tc, CmsObject cms, String source, String target) throws Throwable {
+    public static void createSibling(OpenCmsTestCase tc, CmsObject cms, String source, String target) throws Exception {
 
         // save the source in the store
         tc.storeResources(cms, source);
@@ -184,6 +185,7 @@ public class TestSiblings extends OpenCmsTestCase {
         suite.addTest(new TestSiblings("testSiblingsRelations"));
         suite.addTest(new TestSiblings("testSiblingProjects"));
         suite.addTest(new TestSiblings("testSiblingsCreateIssue"));
+        suite.addTest(new TestSiblings("testSiblingsV7PublishIssue"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -695,5 +697,97 @@ public class TestSiblings extends OpenCmsTestCase {
         // verify the state of the resources after the change
         assertState(cms, copy1, CmsResource.STATE_NEW);
         assertState(cms, sibling1, CmsResource.STATE_NEW);
+    }
+    
+    /**
+     * Tests an issue present in OpenCms 7 where online content was not replaced after publish.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSiblingsV7PublishIssue() throws Exception {
+        
+        echo("Tests OpenCms v7 publish issue siblings");
+        CmsObject cms = getCmsObject();
+
+        CmsProject offlineProject = cms.getRequestContext().currentProject();
+        CmsProject onlineProject = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+        
+        // first we create a complete new folder as base for the test
+        String folder = "/folder_v7issue/";
+        cms.createResource(folder, CmsResourceTypeFolder.getStaticTypeId());
+        
+        String firstContent = "This is the first content";
+        byte[] firstContentBytes = firstContent.getBytes();
+        
+        CmsProperty firstTitleProperty = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "The first title", null); 
+        List firstProperties = new ArrayList();
+        firstProperties.add(firstTitleProperty);
+        
+        String source = folder + "test_en.txt";
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId(), firstContentBytes, firstProperties);
+        
+        assertState(cms, folder, CmsResourceState.STATE_NEW);
+        assertState(cms, source, CmsResourceState.STATE_NEW);
+
+        // publish the folder
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check both online and offline project
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertState(cms, folder, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertContent(cms, source, firstContentBytes);
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        assertState(cms, folder, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertContent(cms, source, firstContentBytes);
+        
+        // create a new sibling using the "copy as" option
+        String sibling = folder + "test_de.txt";
+        copyResourceAsSibling(this, cms, source, sibling);        
+        assertState(cms, sibling, CmsResourceState.STATE_NEW);
+        assertContent(cms, sibling, firstContentBytes);
+        
+        // change the content (this should affect both siblings)
+        String secondContent = "++++++++ This is the SECOND content ++++++++++";
+        byte[] secondContentBytes = secondContent.getBytes();
+        CmsFile sourceFile = cms.readFile(source);
+        sourceFile.setContents(secondContentBytes);
+        cms.writeFile(sourceFile);
+        
+        assertState(cms, sibling, CmsResourceState.STATE_NEW);
+        assertState(cms, source, CmsResourceState.STATE_CHANGED);
+        assertContent(cms, sibling, secondContentBytes);
+        assertContent(cms, source, secondContentBytes);
+        
+        // now change a property on the first sibling
+        CmsProperty secondTitleProperty = new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "The SECOND title", null); 
+        cms.writePropertyObject(source, secondTitleProperty);
+        
+        // publish the folder again
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+        
+        // get the content first for printing it to the console
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        String contentOnline = new String(cms.readFile(source).getContents());
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        String contentOffline = new String(cms.readFile(source).getContents());
+        
+        echo("Online Content:\n" + contentOnline);
+        echo("Offline Content:\n" + contentOffline);        
+        
+        // check both online and offline project
+        cms.getRequestContext().setCurrentProject(offlineProject);
+        assertState(cms, folder, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertContent(cms, sibling, secondContentBytes);
+        assertContent(cms, source, secondContentBytes);
+        cms.getRequestContext().setCurrentProject(onlineProject);
+        assertState(cms, folder, CmsResourceState.STATE_UNCHANGED);
+        assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
+        assertContent(cms, sibling, secondContentBytes);
+        assertContent(cms, source, secondContentBytes);
     }
 }

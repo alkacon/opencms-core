@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/07/09 12:34:58 $
- * Version: $Revision: 1.244 $
+ * Date   : $Date: 2007/07/17 14:00:33 $
+ * Version: $Revision: 1.245 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.244 $
+ * @version $Revision: 1.245 $
  * 
  * @since 6.0.0 
  */
@@ -1063,8 +1063,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     publishTag,
                     true,
                     needToUpdateContent);
+                
+                // only add offline resource to set of published resources the sibling was not new (ie. created)
+                // otherwise content of new siblings that are published before their "originals" will not be written
+                publishedResourceIds.add(offlineResource.getResourceId());
             }
-            publishedResourceIds.add(offlineResource.getResourceId());
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(

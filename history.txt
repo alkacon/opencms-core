@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/13 13:35:38 $
- * Version: $Revision: 1.840 $
+ * Date   : $Date: 2007/07/17 14:00:32 $
+ * Version: $Revision: 1.841 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,8 +19,10 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.0.2 - 
+OpenCms 7.0.2 - xxxxx, 2007
 * Fixed issue with validation errors using the display widget on boolean values
+* Fixed several spelling issues in the German locale
+* Fixed issue with "new" siblings causing content changes in "old" siblings not to be published
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog
