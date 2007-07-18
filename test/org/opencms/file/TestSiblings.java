@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2007/07/17 14:00:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/07/18 10:08:02 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import org.opencms.util.CmsResourceTranslator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -65,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -186,6 +187,7 @@ public class TestSiblings extends OpenCmsTestCase {
         suite.addTest(new TestSiblings("testSiblingProjects"));
         suite.addTest(new TestSiblings("testSiblingsCreateIssue"));
         suite.addTest(new TestSiblings("testSiblingsV7PublishIssue"));
+        suite.addTest(new TestSiblings("testSiblingsV7HistoryIssue"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -706,14 +708,14 @@ public class TestSiblings extends OpenCmsTestCase {
      */
     public void testSiblingsV7PublishIssue() throws Exception {
         
-        echo("Tests OpenCms v7 publish issue siblings");
+        echo("Tests OpenCms v7 publish issue with siblings");
         CmsObject cms = getCmsObject();
 
         CmsProject offlineProject = cms.getRequestContext().currentProject();
         CmsProject onlineProject = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
         
         // first we create a complete new folder as base for the test
-        String folder = "/folder_v7issue/";
+        String folder = "/publish_v7issue/";
         cms.createResource(folder, CmsResourceTypeFolder.getStaticTypeId());
         
         String firstContent = "This is the first content";
@@ -789,5 +791,99 @@ public class TestSiblings extends OpenCmsTestCase {
         assertState(cms, source, CmsResourceState.STATE_UNCHANGED);
         assertContent(cms, sibling, secondContentBytes);
         assertContent(cms, source, secondContentBytes);
+    }
+    
+    /**
+     * Tests an issue present in OpenCms 7 siblings have a wrong history.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSiblingsV7HistoryIssue() throws Exception {
+        
+        echo("Tests OpenCms v7 history issue with siblings");
+        CmsObject cms = getCmsObject();
+
+        // first we create a complete new folder as base for the test
+        String folderA = "/history_v7issue_a/";
+        cms.createResource(folderA, CmsResourceTypeFolder.getStaticTypeId());
+        
+        String firstContent = "This is the first content";
+        byte[] firstContentBytes = firstContent.getBytes();
+        
+        String source = folderA + "1.txt";
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId(), firstContentBytes, null);
+        
+        assertState(cms, folderA, CmsResourceState.STATE_NEW);
+        assertState(cms, source, CmsResourceState.STATE_NEW);
+
+        // publish the folder
+        OpenCms.getPublishManager().publishResource(cms, folderA);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertHistory(cms, source, 1);
+        
+        String secondContent = "This is the second content";
+        byte[] secondContentBytes = secondContent.getBytes();
+        
+        CmsFile sourceFile = cms.readFile(source);
+        cms.lockResource(source);
+        sourceFile.setContents(secondContentBytes);
+        cms.writeFile(sourceFile);
+        
+        // publish the folder again
+        OpenCms.getPublishManager().publishResource(cms, folderA);
+        OpenCms.getPublishManager().waitWhileRunning();
+        
+        assertHistory(cms, source, 2);      
+        
+        // create a another new folder as base for the test
+        String folderB = "/history_v7issue_b/";
+        cms.createResource(folderB, CmsResourceTypeFolder.getStaticTypeId());
+        
+        // publish the new folder
+        OpenCms.getPublishManager().publishResource(cms, folderB);
+        OpenCms.getPublishManager().waitWhileRunning();
+        
+        // copy the source to the new folder
+        String destination = folderB + "2.txt";        
+        cms.copyResource(source, destination, CmsResource.COPY_AS_SIBLING);
+        
+        // now publish the sibling
+        OpenCms.getPublishManager().publishResource(cms, destination, false, null);
+        OpenCms.getPublishManager().waitWhileRunning();
+        
+        assertHistory(cms, source, 2);      
+        assertHistory(cms, destination, 2);      
+    }
+   
+    /**
+     * Checks if the given resource has the correct history count, also
+     * check if all entries in the histroy can be read.<p>
+     * 
+     * @param cms the current user OpenCms contextr
+     * @param resourcename the name of the resource to check the history for
+     * @param versionCount the expected version number of the resource
+     *  
+     * @throws Exception if the test fails
+     */
+    public void assertHistory(CmsObject cms, String resourcename, int versionCount) throws Exception {
+        
+        CmsResource res = cms.readResource(resourcename);
+        // assert we have the right version number
+        assertEquals(versionCount, res.getVersion());
+        // read all available version
+        List versions = cms.readAllAvailableVersions(resourcename);
+        Iterator i = versions.iterator();
+        // apparently the list is sorted descending, ie. last version is first in list
+        int count = versionCount;
+        while (i.hasNext()) {            
+            // walk through the list and read all version files
+            CmsResource hRes = (CmsResource)i.next();
+            CmsFile hFile = CmsFile.upgrade(hRes, cms);
+            assertEquals(count, hFile.getVersion());
+            count--;
+        }
+        // finally assert the list size if equal to the history version 
+        assertEquals(versionCount, versions.size());
     }
 }

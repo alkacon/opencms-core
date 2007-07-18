@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/07/10 16:27:08 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2007/07/18 10:08:02 $
+ * Version: $Revision: 1.102 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3289,7 +3289,14 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readFile(dbc, resource);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_FILE_1, context.getSitePath(resource)), e);
+            if (resource instanceof I_CmsHistoryResource) {
+                dbc.report(null, Messages.get().container(
+                    Messages.ERR_READ_FILE_HISTORY_2,
+                    context.getSitePath(resource),
+                    new Integer(resource.getVersion())), e);
+            } else {
+                dbc.report(null, Messages.get().container(Messages.ERR_READ_FILE_1, context.getSitePath(resource)), e);
+            }
         } finally {
             dbc.clear();
         }
