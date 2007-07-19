@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2007/07/04 16:57:43 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2007/07/19 10:13:07 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -458,9 +458,10 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         List result = new ArrayList();
         int count = 1;
         Object o;
-        name = CmsXmlUtils.removeXpathIndex(name);
+        String xpath = CmsXmlUtils.createXpath(name, 1);
+        xpath = CmsXmlUtils.removeXpathIndex(xpath);
         do {
-            String path = CmsXmlUtils.createXpathElement(name, count);
+            String path = CmsXmlUtils.createXpathElement(xpath, count);
             o = getBookmark(path, locale);
             if (o != null) {
                 result.add(o);

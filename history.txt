@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/17 14:00:32 $
- * Version: $Revision: 1.841 $
+ * Date   : $Date: 2007/07/19 10:13:07 $
+ * Version: $Revision: 1.842 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 * Fixed issue with validation errors using the display widget on boolean values
 * Fixed several spelling issues in the German locale
 * Fixed issue with "new" siblings causing content changes in "old" siblings not to be published
+* Fixed issue in A_CmlXmlDocument where the xpath for #getValues(...) was not correctly accessing the bookmarks
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog
