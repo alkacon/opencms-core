@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2007/07/04 16:57:20 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/07/19 09:44:46 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.mail.CmsHtmlMail;
 import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsByteArrayDataSource;
@@ -70,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,6 +100,8 @@ public class CmsFormHandler extends CmsJspActionElement {
     
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormHandler.class);
+    
+    private static final String MODULE="org.opencms.frontend.templateone.form";
 
     /** Contains eventual validation errors. */
     private Map m_errors;
@@ -330,7 +333,10 @@ public class CmsFormHandler extends CmsJspActionElement {
         m_isValidatedCorrect = null;
         setInitial(CmsStringUtil.isEmpty(formAction));
         // get the localized messages
-        setMessages(new CmsMessages("/org/opencms/frontend/templateone/form/workplace", getRequestContext().getLocale()));
+        CmsModule module=OpenCms.getModuleManager().getModule(MODULE);
+        String para=module.getParameter("message", "/org/opencms/frontend/templateone/form/workplace");
+        
+        setMessages(new CmsMessages(para, getRequestContext().getLocale()));
         // get the form configuration
         setFormConfiguration(new CmsForm(this, getMessages(), isInitial(), formConfigUri, formAction));
     }
@@ -707,14 +713,15 @@ public class CmsFormHandler extends CmsJspActionElement {
         Iterator i = fieldValues.iterator();
         while (i.hasNext()) {
             I_CmsField current = (I_CmsField)i.next();
-            if (isHtmlMail) {
+            // dont show the letter of agreement (CmsPrivacyField)
+            if (isHtmlMail && !(current instanceof CmsPrivacyField)) {
                 // format output as HTML
                 result.append("<tr><td class=\"fieldlabel\">");
                 result.append(current.getLabel());
                 result.append("</td><td class=\"fieldvalue\">");
                 result.append(convertToHtmlValue(current.toString()));
                 result.append("</td></tr>\n");
-            } else {
+            } else if(!(current instanceof CmsPrivacyField)){
                 // format output as plain text
                 result.append(current.getLabel());
                 result.append("\t");

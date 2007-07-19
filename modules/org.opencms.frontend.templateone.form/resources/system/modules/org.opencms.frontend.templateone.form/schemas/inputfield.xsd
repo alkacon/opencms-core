@@ -26,7 +26,7 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.frontend.templateone.form.workplace"/>
 			<layouts>
-				<layout element="FieldType" widget="SelectorWidget" configuration="text*:${key.form.field.type.text}|textarea:${key.form.field.type.textarea}|checkbox:${key.form.field.type.checkbox}|radio:${key.form.field.type.radio}|select:${key.form.field.type.select}|hidden:${key.form.field.type.hidden}|file:${key.form.field.type.fileupload}|email:${key.form.field.type.email}" />
+				<layout element="FieldType" widget="SelectorWidget" configuration="text*:${key.form.field.type.text}|textarea:${key.form.field.type.textarea}|checkbox:${key.form.field.type.checkbox}|privacy:${key.form.field.type.privacy}|radio:${key.form.field.type.radio}|select:${key.form.field.type.select}|hidden:${key.form.field.type.hidden}|file:${key.form.field.type.fileupload}|email:${key.form.field.type.email}|empty:${key.form.field.type.empty}" />
 			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  

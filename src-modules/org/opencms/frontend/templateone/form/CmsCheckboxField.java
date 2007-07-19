@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCheckboxField.java,v $
- * Date   : $Date: 2005/09/09 10:31:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/19 09:44:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Iterator;
  * Represents a check box.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsCheckboxField extends A_CmsField {
 
@@ -118,7 +118,7 @@ public class CmsCheckboxField extends A_CmsField {
             buf.append("<input type=\"checkbox\" name=\"").append(getName()).append("\" value=\"").append(curOption.getValue()).append("\"").append(checked).append(">").append(curOption.getLabel());
             
             if (i.hasNext()) {
-                buf.append("<br>");
+                buf.append(messages.key("form.html.checkbox.seperator"));
             }
             
             buf.append("\n");

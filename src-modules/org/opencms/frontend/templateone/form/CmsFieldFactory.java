@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldFactory.java,v $
- * Date   : $Date: 2007/07/04 16:57:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/19 09:44:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * A factory to create form field instances of a specified type.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public final class CmsFieldFactory {
 
@@ -83,6 +83,8 @@ public final class CmsFieldFactory {
         registerFieldType(CmsSelectionField.getStaticType(), CmsSelectionField.class.getName());
         registerFieldType(CmsTextField.getStaticType(), CmsTextField.class.getName());
         registerFieldType(CmsTextareaField.getStaticType(), CmsTextareaField.class.getName());
+        registerFieldType(CmsEmptyField.getStaticType(), CmsEmptyField.class.getName());
+        registerFieldType(CmsPrivacyField.getStaticType(), CmsPrivacyField.class.getName());
 
         File propertyFile = null;
         try {

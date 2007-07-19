@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsRadioButtonField.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsPrivacyField.java,v $
  * Date   : $Date: 2007/07/19 09:44:46 $
- * Version: $Revision: 1.4 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software, please see the
+ * For further information about Alkacon Software GmbH, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -28,25 +28,17 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.frontend.templateone.form;
 
 import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.Iterator;
+public class CmsPrivacyField extends CmsCheckboxField {
 
-/**
- * Represents a radio button.<p>
- * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
- */
-public class CmsRadioButtonField extends A_CmsField {
+    /** HTML field type: checkbox. */
+    private static final String TYPE = "privacy";
 
-    /** HTML field type: radio button. */
-    private static final String TYPE = "radio";
-    
     /**
      * @see org.opencms.frontend.templateone.form.I_CmsField#getType()
      */
@@ -54,29 +46,39 @@ public class CmsRadioButtonField extends A_CmsField {
 
         return TYPE;
     }
-    
+
     /**
      * Returns the type of the input field, e.g. "text" or "select".<p>
      * 
      * @return the type of the input field
      */
     public static String getStaticType() {
-        
+
         return TYPE;
     }
-    
+
     /**
      * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler, org.opencms.i18n.CmsMessages, String)
      */
     public String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey) {
-        
+
         StringBuffer buf = new StringBuffer();
         String fieldLabel = getLabel();
         String errorMessage = "";
         String mandatory = "";
+        boolean showMandatory = false;
         
+        if (isMandatory()) {
+            mandatory = messages.key("form.html.mandatory");
+        }
+        // show the text with the mandatory, if exits
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(fieldLabel)) {
+            fieldLabel=fieldLabel+mandatory;
+            showMandatory = true;
+        }
+
         if (CmsStringUtil.isNotEmpty(errorKey)) {
-            
+
             if (CmsFormHandler.ERROR_MANDATORY.equals(errorKey)) {
                 errorMessage = messages.key("form.error.mandatory");
             } else if (CmsStringUtil.isNotEmpty(getErrorMessage())) {
@@ -84,53 +86,54 @@ public class CmsRadioButtonField extends A_CmsField {
             } else {
                 errorMessage = messages.key("form.error.validation");
             }
-            
+
             errorMessage = messages.key("form.html.error.start") + errorMessage + messages.key("form.html.error.end");
-            fieldLabel = messages.key("form.html.label.error.start") + fieldLabel + messages.key("form.html.label.error.end");
+            fieldLabel = messages.key("form.html.label.error.start")
+                + fieldLabel
+                + messages.key("form.html.label.error.end");
         }
-        
-        if (isMandatory()) {
-            mandatory = messages.key("form.html.mandatory");
-        }
-        
+
+
+
         // line #1
         buf.append(messages.key("form.html.row.start")).append("\n");
-        
-        // line #2
-        buf.append(messages.key("form.html.label.start"))
-            .append(fieldLabel)
-            .append(mandatory)
-            .append(messages.key("form.html.label.end")).append("\n");
-        
-        // line #3
-        buf.append(messages.key("form.html.field.start")).append("\n");
-        
-        // add the items
-        Iterator k = getItems().iterator();
-        while (k.hasNext()) {
+
+        // add the item
+        if (getItems().size() > 0) {
             
-            CmsFieldItem curOption = (CmsFieldItem)k.next();
+            // line #2
+            buf.append(messages.key("form.html.label.start")).append(fieldLabel).append(messages.key("form.html.label.end")).append("\n");
+            
+
+            // line #3
+            buf.append(messages.key("form.html.field.start")).append("\n");
+
+            CmsFieldItem curOption = (CmsFieldItem)getItems().get(0);
             String checked = "";
             if (curOption.isSelected()) {
                 checked = " checked=\"checked\"";
             }
+            //checks if intern link
+            String link = curOption.getLabel();
+            if (link.startsWith("/"))
+                link = formHandler.link(link);
             
-            buf.append("<input type=\"radio\" name=\"").append(getName()).append("\" value=\"").append(curOption.getValue()).append("\"").append(checked).append(">").append(curOption.getLabel());
-            
-            if (k.hasNext()) {
-                buf.append(messages.key("form.html.radio.seperator"));
-            }
-            
+           buf.append("<input type=\"checkbox\" name=\"").append(getName()).append("\" value=\"").append(
+                curOption.getValue()).append("\"").append(checked).append(">");
+            //insert a link
+            buf.append("<a href=\"").append(link).append("\" rel=\"_blank\">").append(curOption.getValue()).append(
+                showMandatory ? "" : mandatory).append("</a>");
+
             buf.append("\n");
         }
-        
+
         buf.append(errorMessage).append("\n");
-            
+
         buf.append(messages.key("form.html.field.end")).append("\n");
-        
+
         buf.append(messages.key("form.html.row.end")).append("\n");
-        
+
         return buf.toString();
     }
-
+    
 }
