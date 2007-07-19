@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/07/04 16:57:24 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2007/07/19 13:35:17 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 6.0.0
  */
@@ -784,9 +784,9 @@ public class CmsUserSettings {
             m_uploadApplet = OpenCms.getWorkplaceManager().getDefaultUserSettings().useUploadApplet();
         }
         // locale
-        m_locale = CmsLocaleManager.getLocale((String)m_user.getAdditionalInfo(PREFERENCES
+        m_locale = CmsLocaleManager.getLocale(String.valueOf(m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-            + CmsWorkplaceConfiguration.N_LOCALE));
+            + CmsWorkplaceConfiguration.N_LOCALE)));
         if (m_locale == null) {
             m_locale = OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale();
         }
