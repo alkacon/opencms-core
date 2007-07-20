@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsTextField.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/07/20 09:21:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * Represents a text input field.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsTextField extends A_CmsField {
 
@@ -64,7 +64,7 @@ public class CmsTextField extends A_CmsField {
     }
     
     /**
-     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler, org.opencms.i18n.CmsMessages, String)
+     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler, org.opencms.i18n.CmsMessages, String, int)
      */
     public String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey) {
         
@@ -92,7 +92,10 @@ public class CmsTextField extends A_CmsField {
         }
         
         // line #1
-        buf.append(messages.key("form.html.row.start")).append("\n");
+        //if(!messages.key("form.html.useCounter").equalsIgnoreCase("true") || !(pos % 2==0)){
+        if(showRowStart(messages.key("form.html.col.two"))){
+            buf.append(messages.key("form.html.row.start")).append("\n");
+        }
         
         // line #2
         buf.append(messages.key("form.html.label.start"))
@@ -104,13 +107,16 @@ public class CmsTextField extends A_CmsField {
         buf.append(messages.key("form.html.field.start"))
             .append("<input type=\"text\" name=\"").append(getName()).append("\" value=\"").append(CmsStringUtil.escapeHtml(getValue())).append("\"")
             .append(formHandler.getFormConfiguration().getFormFieldAttributes())
-            .append(">")
+            .append("/>")
             .append(errorMessage)
             .append(messages.key("form.html.field.end")).append("\n");
         
         // line #4
-        buf.append(messages.key("form.html.row.end")).append("\n");
-        
+        //if(!messages.key("form.html.useCounter").equalsIgnoreCase("true") || (pos % 2==0)){
+        if(showRowEnd(messages.key("form.html.col.two"))){
+            buf.append(messages.key("form.html.row.end")).append("\n");
+        }
+
         return buf.toString();
     }
 

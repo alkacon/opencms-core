@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsEmptyField.java,v $
- * Date   : $Date: 2007/07/19 09:44:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/07/20 09:21:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.frontend.templateone.form;
 
 import org.opencms.i18n.CmsMessages;
@@ -38,23 +38,24 @@ public class CmsEmptyField extends A_CmsField {
     /** HTML field type: hidden field. */
     private static final String TYPE = "empty";
 
-    
-
     public String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey) {
 
         StringBuffer buf = new StringBuffer();
         //line #1 start
-        buf.append(messages.key("form.html.row.start")).append("\n");
-        //has colspan=2
-        
+        if (showRowStart(messages.key("form.html.col.two"))) {
+            buf.append(messages.key("form.html.row.start")).append("\n");
+        }
+
         //line #2 start
-        buf.append(messages.key("form.html.label.start")).append(messages.key("form.html.label.end")).append("\n");
-        
+        buf.append(messages.key("form.html.label.start")).append("&nbsp;").append(messages.key("form.html.label.end")).append("\n");
+
         //line #3 start
-        buf.append(messages.key("form.html.field.start")).append(messages.key("form.html.field.end")).append("\n");
-        
+        buf.append(messages.key("form.html.field.start")).append("&nbsp;").append(messages.key("form.html.field.end")).append("\n");
+
         //line #1 end
-        buf.append(messages.key("form.html.row.end")).append("\n");
+        if (showRowEnd(messages.key("form.html.col.two"))) {
+            buf.append(messages.key("form.html.row.end")).append("\n");
+        }
         return buf.toString();
     }
 
@@ -62,14 +63,14 @@ public class CmsEmptyField extends A_CmsField {
 
         return TYPE;
     }
-    
+
     /**
      * Returns the type of the input field, e.g. "text" or "select".<p>
      * 
      * @return the type of the input field
      */
     public static String getStaticType() {
-        
+
         return TYPE;
     }
 

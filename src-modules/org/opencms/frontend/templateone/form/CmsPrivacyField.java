@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsPrivacyField.java,v $
- * Date   : $Date: 2007/07/19 09:44:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/07/20 09:21:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,14 +67,16 @@ public class CmsPrivacyField extends CmsCheckboxField {
         String errorMessage = "";
         String mandatory = "";
         boolean showMandatory = false;
-        
+
         if (isMandatory()) {
             mandatory = messages.key("form.html.mandatory");
         }
         // show the text with the mandatory, if exits
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(fieldLabel)) {
-            fieldLabel=fieldLabel+mandatory;
+            fieldLabel = fieldLabel + mandatory;
             showMandatory = true;
+        } else {
+            fieldLabel = "&nbsp;";
         }
 
         if (CmsStringUtil.isNotEmpty(errorKey)) {
@@ -93,17 +95,17 @@ public class CmsPrivacyField extends CmsCheckboxField {
                 + messages.key("form.html.label.error.end");
         }
 
-
-
         // line #1
-        buf.append(messages.key("form.html.row.start")).append("\n");
+        if (showRowStart(messages.key("form.html.col.two"))) {
+            buf.append(messages.key("form.html.row.start")).append("\n");
+        }
 
         // add the item
         if (getItems().size() > 0) {
-            
+
             // line #2
-            buf.append(messages.key("form.html.label.start")).append(fieldLabel).append(messages.key("form.html.label.end")).append("\n");
-            
+            buf.append(messages.key("form.html.label.start")).append(fieldLabel).append(
+                messages.key("form.html.label.end")).append("\n");
 
             // line #3
             buf.append(messages.key("form.html.field.start")).append("\n");
@@ -117,9 +119,9 @@ public class CmsPrivacyField extends CmsCheckboxField {
             String link = curOption.getLabel();
             if (link.startsWith("/"))
                 link = formHandler.link(link);
-            
-           buf.append("<input type=\"checkbox\" name=\"").append(getName()).append("\" value=\"").append(
-                curOption.getValue()).append("\"").append(checked).append(">");
+
+            buf.append("<input type=\"checkbox\" name=\"").append(getName()).append("\" value=\"").append(
+                curOption.getValue()).append("\"").append(checked).append("/>");
             //insert a link
             buf.append("<a href=\"").append(link).append("\" rel=\"_blank\">").append(curOption.getValue()).append(
                 showMandatory ? "" : mandatory).append("</a>");
@@ -131,9 +133,11 @@ public class CmsPrivacyField extends CmsCheckboxField {
 
         buf.append(messages.key("form.html.field.end")).append("\n");
 
-        buf.append(messages.key("form.html.row.end")).append("\n");
+        if (showRowEnd(messages.key("form.html.col.two"))) {
+            buf.append(messages.key("form.html.row.end")).append("\n");
+        }
 
         return buf.toString();
     }
-    
+
 }

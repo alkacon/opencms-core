@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCheckboxField.java,v $
- * Date   : $Date: 2007/07/19 09:44:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/07/20 09:21:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.frontend.templateone.form;
 
 import org.opencms.i18n.CmsMessages;
@@ -40,13 +40,13 @@ import java.util.Iterator;
  * Represents a check box.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsCheckboxField extends A_CmsField {
 
     /** HTML field type: checkbox. */
     private static final String TYPE = "checkbox";
-    
+
     /**
      * @see org.opencms.frontend.templateone.form.I_CmsField#getType()
      */
@@ -54,29 +54,29 @@ public class CmsCheckboxField extends A_CmsField {
 
         return TYPE;
     }
-    
+
     /**
      * Returns the type of the input field, e.g. "text" or "select".<p>
      * 
      * @return the type of the input field
      */
     public static String getStaticType() {
-        
+
         return TYPE;
     }
-    
+
     /**
      * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler, org.opencms.i18n.CmsMessages, String)
      */
     public String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey) {
-        
+
         StringBuffer buf = new StringBuffer();
         String fieldLabel = getLabel();
         String errorMessage = "";
         String mandatory = "";
-        
+
         if (CmsStringUtil.isNotEmpty(errorKey)) {
-            
+
             if (CmsFormHandler.ERROR_MANDATORY.equals(errorKey)) {
                 errorMessage = messages.key("form.error.mandatory");
             } else if (CmsStringUtil.isNotEmpty(getErrorMessage())) {
@@ -84,52 +84,56 @@ public class CmsCheckboxField extends A_CmsField {
             } else {
                 errorMessage = messages.key("form.error.validation");
             }
-            
+
             errorMessage = messages.key("form.html.error.start") + errorMessage + messages.key("form.html.error.end");
-            fieldLabel = messages.key("form.html.label.error.start") + fieldLabel + messages.key("form.html.label.error.end");
+            fieldLabel = messages.key("form.html.label.error.start")
+                + fieldLabel
+                + messages.key("form.html.label.error.end");
         }
-        
+
         if (isMandatory()) {
             mandatory = messages.key("form.html.mandatory");
         }
-        
+
         // line #1
-        buf.append(messages.key("form.html.row.start")).append("\n");
-        
+        if (showRowStart(messages.key("form.html.col.two"))) {
+            buf.append(messages.key("form.html.row.start")).append("\n");
+        }
+
         // line #2
-        buf.append(messages.key("form.html.label.start"))
-            .append(fieldLabel)
-            .append(mandatory)
-            .append(messages.key("form.html.label.end")).append("\n");
-        
+        buf.append(messages.key("form.html.label.start")).append(fieldLabel).append(mandatory).append(
+            messages.key("form.html.label.end")).append("\n");
+
         // line #3
         buf.append(messages.key("form.html.field.start")).append("\n");
-        
+
         // add the items
         Iterator i = getItems().iterator();
         while (i.hasNext()) {
-            
+
             CmsFieldItem curOption = (CmsFieldItem)i.next();
             String checked = "";
             if (curOption.isSelected()) {
                 checked = " checked=\"checked\"";
             }
-            
-            buf.append("<input type=\"checkbox\" name=\"").append(getName()).append("\" value=\"").append(curOption.getValue()).append("\"").append(checked).append(">").append(curOption.getLabel());
-            
+
+            buf.append("<input type=\"checkbox\" name=\"").append(getName()).append("\" value=\"").append(
+                curOption.getValue()).append("\"").append(checked).append("/>").append(curOption.getLabel());
+
             if (i.hasNext()) {
                 buf.append(messages.key("form.html.checkbox.seperator"));
             }
-            
+
             buf.append("\n");
         }
-        
+
         buf.append(errorMessage).append("\n");
-            
+
         buf.append(messages.key("form.html.field.end")).append("\n");
-        
-        buf.append(messages.key("form.html.row.end")).append("\n");
-        
+
+        if (showRowEnd(messages.key("form.html.col.two"))) {
+            buf.append(messages.key("form.html.row.end")).append("\n");
+        }
         return buf.toString();
     }
 

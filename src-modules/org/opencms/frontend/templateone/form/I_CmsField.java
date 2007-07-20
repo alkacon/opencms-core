@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/I_CmsField.java,v $
- * Date   : $Date: 2005/09/09 10:31:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/07/20 09:21:14 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.List;
  * Defines the methods required for form fields.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public interface I_CmsField {
 
@@ -131,5 +131,34 @@ public interface I_CmsField {
      * @return the HTML input element for this element to be used in a frontend JSP
      */
     String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey);
+    
+    
+    /**
+     * Returns the placeholder.<p>
+     *
+     * @return the placeholder
+     */
+    int getPlaceholder();
+
+    /**
+     * Sets the placeholder.<p>
+     *
+     * @param placeholder the placeholder to set
+     */
+    void setPlaceholder(int placeholder);
+
+    /**
+     * Returns the position.<p>
+     *
+     * @return the position
+     */
+    int getPosition();
+    
+    /**
+     * Sets the position.<p>
+     *
+     * @param position the position to set
+     */
+    void setPosition(int position);
     
 }

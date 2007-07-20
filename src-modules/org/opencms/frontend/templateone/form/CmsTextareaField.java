@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsTextareaField.java,v $
- * Date   : $Date: 2007/07/04 16:57:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/07/20 09:21:14 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsStringUtil;
  * Represents a text area.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsTextareaField extends A_CmsField {
 
@@ -93,24 +93,30 @@ public class CmsTextareaField extends A_CmsField {
         }
         
         // line #1
-        buf.append(messages.key("form.html.row.start")).append("\n");
+        if(showRowStart(messages.key("form.html.col.two"))){
+            buf.append(messages.key("form.html.row.start")).append("\n");
+        }
         
         // line #2
-        buf.append(messages.key("form.html.label.start"))
+        buf.append(messages.key("form.html.multiline.label.start"))
             .append(fieldLabel)
             .append(mandatory)
-            .append(messages.key("form.html.label.end")).append("\n");
+            .append(messages.key("form.html.multiline.label.end")).append("\n");
         
         // line #3
-        buf.append(messages.key("form.html.field.start"))
+        buf.append(messages.key("form.html.multiline.field.start"))
             .append("<textarea name=\"").append(getName()).append("\"")
             .append(formHandler.getFormConfiguration().getFormFieldAttributes())
             .append(">").append(CmsEncoder.escapeXml(getValue())).append("</textarea>")
             .append(errorMessage)
-            .append(messages.key("form.html.field.end")).append("\n");
+            .append(messages.key("form.html.multiline.field.end")).append("\n");
         
         // line #4
-        buf.append(messages.key("form.html.row.end")).append("\n");
+        if(showRowEnd(messages.key("form.html.col.two"))){
+            buf.append(messages.key("form.html.row.end")).append("\n");
+        }
+        
+        incrementPlaceholder(messages.key("form.html.multiline.placeholder"));
         
         return buf.toString();
     }

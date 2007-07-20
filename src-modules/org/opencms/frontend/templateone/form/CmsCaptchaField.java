@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaField.java,v $
- * Date   : $Date: 2007/07/04 16:57:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/20 09:21:14 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsCaptchaField extends A_CmsField {
 
@@ -141,7 +141,9 @@ public class CmsCaptchaField extends A_CmsField {
         }
 
         // line #1
-        buf.append(messages.key("form.html.row.start")).append("\n");
+        if (showRowStart(messages.key("form.html.col.two"))) {
+            buf.append(messages.key("form.html.row.start")).append("\n");
+        }
 
         // line #2
         buf.append(messages.key("form.html.label.start")).append(fieldLabel).append(mandatory).append(
@@ -155,18 +157,20 @@ public class CmsCaptchaField extends A_CmsField {
             formHandler.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha?"
                 + captchaSettings.toRequestParams(formHandler.getCmsObject()))).append("\" width=\"").append(
             captchaSettings.getImageWidth()).append("\" height=\"").append(captchaSettings.getImageHeight()).append(
-            "\" alt=\"\">").append("\n");
+            "\" alt=\"\"/>").append("\n");
 
         // line #5
-        buf.append("<br>\n");
+        buf.append("<br/>\n");
 
         // line #6
         buf.append("<input type=\"text\" name=\"").append(getName()).append("\" value=\"").append(getValue()).append(
-            "\"").append(formHandler.getFormConfiguration().getFormFieldAttributes()).append(">").append(errorMessage).append(
+            "\"").append(formHandler.getFormConfiguration().getFormFieldAttributes()).append("/>").append(errorMessage).append(
             messages.key("form.html.field.end")).append("\n");
 
         // line #7
-        buf.append(messages.key("form.html.row.end")).append("\n");
+        if (showRowEnd(messages.key("form.html.col.two"))) {
+            buf.append(messages.key("form.html.row.end")).append("\n");
+        }
 
         return buf.toString();
     }
