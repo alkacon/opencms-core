@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/07/04 16:57:11 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2007/07/21 03:55:31 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,9 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
@@ -100,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.78 $ 
+ * @version $Revision: 1.79 $ 
  * 
  * @since 6.0.0 
  */
@@ -981,7 +983,14 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             OpenCms.getRoleManager().checkRole(cms, CmsRole.WORKPLACE_MANAGER);
 
             // set the workplace encoding
-            m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+            try {
+                // workplace encoding is set on the workplace parent folder /system/workplace/ 
+                CmsResource wpFolderRes = cms.readResource(CmsWorkplace.VFS_PATH_WORKPLACE);
+                m_encoding = CmsLocaleManager.getResourceEncoding(cms, wpFolderRes);
+            } catch (CmsVfsResourceNotFoundException e) {
+                // workplace parent folder could not be read - use configured default encoding
+                m_encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+            }
 
             // configure direct edit provider with default if not available
             if (m_directEditProvider == null) {

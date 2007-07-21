@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2007/07/04 16:57:22 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2007/07/21 03:55:31 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,6 +213,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 paramMap,
                 req,
                 res);
+            // check if the target actually exists in the OpenCms VFS
+            controller.getCmsObject().readResource(target);
         } catch (CmsException e) {
             // store exception in controller and discontinue
             controller.setThrowable(e, target);
