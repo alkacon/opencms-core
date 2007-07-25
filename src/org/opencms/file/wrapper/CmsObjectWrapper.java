@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/07/04 16:57:05 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/25 12:36:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.2.4
  */
@@ -678,6 +678,10 @@ public class CmsObjectWrapper {
      */
     public String restoreLink(String path) {
 
+        if ((path != null) && (path.startsWith("#"))) {
+            return path;
+        }
+        
         String ret = null;
 
         // iterate through all wrappers and call "restoreLink" till one does not return null
