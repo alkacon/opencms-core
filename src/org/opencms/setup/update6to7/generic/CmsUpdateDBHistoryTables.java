@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBHistoryTables.java,v $
- * Date   : $Date: 2007/07/04 16:56:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/26 09:03:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.setup.update6to7.generic;
 
+import org.opencms.setup.CmsSetupDBWrapper;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +61,7 @@ import java.util.List;
  * 
  * @author Roland Metzler
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0
  */
@@ -109,14 +109,21 @@ public class CmsUpdateDBHistoryTables extends A_CmsUpdateDBPart {
             if (dbCon.hasTableOrColumn(table, null)) {
                 HashMap replacer = new HashMap();
                 replacer.put(REPLACEMENT_TABLENAME, table);
-                ResultSet set = dbCon.executeSqlStatement(readQuery(QUERY_SELECT_COUNT_HISTORY_TABLE), replacer);
+                CmsSetupDBWrapper db = null;
                 boolean update = false;
-                if (set.next()) {
-                    if (set.getInt("COUNT") <= 0) {
-                        update = true;
+                try {
+                    db = dbCon.executeSqlStatement(readQuery(QUERY_SELECT_COUNT_HISTORY_TABLE), replacer);
+
+                    if (db.getResultSet().next()) {
+                        if (db.getResultSet().getInt("COUNT") <= 0) {
+                            update = true;
+                        }
+                    }
+                } finally {
+                    if (db != null) {
+                        db.close();
                     }
                 }
-                set.close();
                 if (update) {
                     String query = readQuery(table);
                     dbCon.updateSqlStatement(query, null, null);

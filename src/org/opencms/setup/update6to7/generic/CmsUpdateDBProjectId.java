@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/07/04 16:56:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/26 09:03:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,13 @@ package org.opencms.setup.update6to7.generic;
 
 import org.opencms.file.CmsProject;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.setup.CmsSetupDBWrapper;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ import java.util.Map;
  * 
  * @author Roland Metzler
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0
  */
@@ -383,36 +383,59 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
             }
         }
 
-        ResultSet set = dbCon.executeSqlStatement(readQuery(QUERY_SELECT_COUNT_HISTORY_TABLE), null);
+        CmsSetupDBWrapper db = null;
         boolean update = false;
-        if (set.next()) {
-            if (set.getInt("COUNT") <= 0) {
-                update = true;
+        try {
+            db = dbCon.executeSqlStatement(readQuery(QUERY_SELECT_COUNT_HISTORY_TABLE), null);
+
+            if (db.getResultSet().next()) {
+                if (db.getResultSet().getInt("COUNT") <= 0) {
+                    update = true;
+                }
+            }
+        } finally {
+            if (db != null) {
+                db.close();
             }
         }
-        set.close();
         if (update) {
             System.out.println("table " + HISTORY_PROJECTS_TABLE + " has no content, create a dummy entry");
 
             CmsUUID userId = CmsUUID.getNullUUID();
-            set = dbCon.executeSqlStatement(readQuery(QUERY_READ_ADMIN_USER), null);
-            if (set.next()) {
-                userId = new CmsUUID(set.getString(1));
+            try {
+                db = dbCon.executeSqlStatement(readQuery(QUERY_READ_ADMIN_USER), null);
+                if (db.getResultSet().next()) {
+                    userId = new CmsUUID(db.getResultSet().getString(1));
+                }
+            } finally {
+                if (db != null) {
+                    db.close();
+                }
             }
             CmsUUID groupId = CmsUUID.getNullUUID();
-            set = dbCon.executeSqlStatement(readQuery(QUERY_READ_ADMIN_GROUP), null);
-            if (set.next()) {
-                groupId = new CmsUUID(set.getString(1));
+            try {
+                db = dbCon.executeSqlStatement(readQuery(QUERY_READ_ADMIN_GROUP), null);
+                if (db.getResultSet().next()) {
+                    groupId = new CmsUUID(db.getResultSet().getString(1));
+                }
+            } finally {
+                if (db != null) {
+                    db.close();
+                }
             }
-
             // read publish tag
             int pubTag = 1;
             String query = readQuery(QUERY_READ_MAX_PUBTAG);
-            ResultSet res = dbCon.executeSqlStatement(query, null);
-            if (res.next()) {
-                pubTag = res.getInt(1);
+            try {
+                db = dbCon.executeSqlStatement(query, null);
+                if (db.getResultSet().next()) {
+                    pubTag = db.getResultSet().getInt(1);
+                }
+            } finally {
+                if (db != null) {
+                    db.close();
+                }
             }
-            res.close();
 
             List params = new ArrayList();
             params.add(new CmsUUID().toString());
@@ -453,20 +476,28 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
         String query = readQuery(QUERY_DESCRIBE_TABLE);
         Map replacer = new HashMap();
         replacer.put(REPLACEMENT_TABLENAME, tablename);
-        ResultSet set = dbCon.executeSqlStatement(query, replacer);
+        CmsSetupDBWrapper db = null;
 
-        while (set.next()) {
-            String fieldname = set.getString("Field");
-            if (fieldname.equals(COLUMN_PROJECT_ID) || fieldname.equals(COLUMN_PROJECT_LASTMODIFIED)) {
-                try {
-                    String fieldtype = set.getString("Type");
-                    // If the type is varchar then no update needs to be done.
-                    if (fieldtype.indexOf("varchar") > 0) {
-                        return false;
+        try {
+            db = dbCon.executeSqlStatement(query, replacer);
+
+            while (db.getResultSet().next()) {
+                String fieldname = db.getResultSet().getString("Field");
+                if (fieldname.equals(COLUMN_PROJECT_ID) || fieldname.equals(COLUMN_PROJECT_LASTMODIFIED)) {
+                    try {
+                        String fieldtype = db.getResultSet().getString("Type");
+                        // If the type is varchar then no update needs to be done.
+                        if (fieldtype.indexOf("varchar") > 0) {
+                            return false;
+                        }
+                    } catch (SQLException e) {
+                        result = true;
                     }
-                } catch (SQLException e) {
-                    result = true;
                 }
+            }
+        } finally {
+            if (db != null) {
+                db.close();
             }
         }
         return result;
@@ -489,28 +520,36 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
         System.out.println(new Exception().getStackTrace()[0].toString());
         // Get the data from the CMS_BACKUP table
         String query = readQuery(QUERY_SELECT_DATA_FROM_BACKUP_PROJECTS);
-        ResultSet set = dbCon.executeSqlStatement(query, null);
+        CmsSetupDBWrapper db = null;
+        try {
+            db = dbCon.executeSqlStatement(query, null);
 
-        String insertQuery = readQuery(QUERY_INSERT_CMS_HISTORY_TABLE);
-        while (set.next()) {
-            // Add the values to be inserted into the CMS_HISTORY_PROJECTS table
-            List params = new ArrayList();
-            params.add(set.getString("PROJECT_UUID"));
-            params.add(set.getString("PROJECT_NAME"));
-            params.add(set.getString("PROJECT_DESCRIPTION"));
-            params.add(new Integer(set.getInt("PROJECT_TYPE")));
-            params.add(set.getString("USER_ID"));
-            params.add(set.getString("GROUP_ID"));
-            params.add(set.getString("MANAGERGROUP_ID"));
-            params.add(new Long(set.getLong("DATE_CREATED")));
-            params.add(new Integer(set.getInt("PUBLISH_TAG")));
-            Date date = set.getDate("PROJECT_PUBLISHDATE");
-            params.add(new Long(date.getTime()));
-            params.add(set.getString("PROJECT_PUBLISHED_BY"));
-            params.add(set.getString("PROJECT_OU"));
+            String insertQuery = readQuery(QUERY_INSERT_CMS_HISTORY_TABLE);
+            while (db.getResultSet().next()) {
+                // Add the values to be inserted into the CMS_HISTORY_PROJECTS table
+                List params = new ArrayList();
+                params.add(db.getResultSet().getString("PROJECT_UUID"));
+                params.add(db.getResultSet().getString("PROJECT_NAME"));
+                params.add(db.getResultSet().getString("PROJECT_DESCRIPTION"));
+                params.add(new Integer(db.getResultSet().getInt("PROJECT_TYPE")));
+                params.add(db.getResultSet().getString("USER_ID"));
+                params.add(db.getResultSet().getString("GROUP_ID"));
+                params.add(db.getResultSet().getString("MANAGERGROUP_ID"));
+                params.add(new Long(db.getResultSet().getLong("DATE_CREATED")));
+                params.add(new Integer(db.getResultSet().getInt("PUBLISH_TAG")));
+                Date date = db.getResultSet().getDate("PROJECT_PUBLISHDATE");
+                params.add(new Long(date.getTime()));
+                params.add(db.getResultSet().getString("PROJECT_PUBLISHED_BY"));
+                params.add(db.getResultSet().getString("PROJECT_OU"));
 
-            dbCon.updateSqlStatement(insertQuery, null, params);
+                dbCon.updateSqlStatement(insertQuery, null, params);
+            }
+        } finally {
+            if (db != null) {
+                db.close();
+            }
         }
+
     }
 
     /**
@@ -586,48 +625,55 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
         System.out.println(new Exception().getStackTrace()[0].toString());
         String query = readQuery(QUERY_GET_PROJECT_IDS);
 
-        ResultSet set = dbCon.executeSqlStatement(query, null);
-        ResultSetMetaData metaData = set.getMetaData();
-        // Check the type of the column if it is integer, then create the new uuids
-        int columnType = metaData.getColumnType(1);
-        if (checkColumnTypeProjectId(columnType)) {
-            if (!dbCon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
-                createTempTable(dbCon);
+        CmsSetupDBWrapper db = null;
+        try {
+            db = dbCon.executeSqlStatement(query, null);
+            ResultSetMetaData metaData = db.getResultSet().getMetaData();
+            // Check the type of the column if it is integer, then create the new uuids
+            int columnType = metaData.getColumnType(1);
+            if (checkColumnTypeProjectId(columnType)) {
+                if (!dbCon.hasTableOrColumn(TEMPORARY_TABLE_NAME, null)) {
+                    createTempTable(dbCon);
 
-                String updateQuery = readQuery(QUERY_INSERT_UUIDS);
-                List params = new ArrayList();
-                // Get the project id and insert it with a new uuid into the temp table
-                boolean hasNullId = false;
-                while (set.next()) {
-                    int id = set.getInt("PROJECT_ID");
-                    params.add(new Integer(id)); // Add the number
-                    CmsUUID uuid = new CmsUUID();
+                    String updateQuery = readQuery(QUERY_INSERT_UUIDS);
+                    List params = new ArrayList();
+                    // Get the project id and insert it with a new uuid into the temp table
+                    boolean hasNullId = false;
+                    while (db.getResultSet().next()) {
+                        int id = db.getResultSet().getInt("PROJECT_ID");
+                        params.add(new Integer(id)); // Add the number
+                        CmsUUID uuid = new CmsUUID();
 
-                    // Check for 0 project id
-                    if (id == 0) {
-                        hasNullId = true;
-                        uuid = CmsUUID.getNullUUID();
+                        // Check for 0 project id
+                        if (id == 0) {
+                            hasNullId = true;
+                            uuid = CmsUUID.getNullUUID();
+                        }
+                        // Check for the online project
+                        if (id == 1) {
+                            uuid = CmsProject.ONLINE_PROJECT_ID;
+                        }
+                        params.add(uuid.toString()); // Add the uuid
+
+                        // Insert the values to the temp table
+                        dbCon.updateSqlStatement(updateQuery, null, params);
+
+                        params.clear();
                     }
-                    // Check for the online project
-                    if (id == 1) {
-                        uuid = CmsProject.ONLINE_PROJECT_ID;
+
+                    // If no project id with value 0 was found 
+                    if (!hasNullId) {
+                        params.add(new Integer(0));
+                        params.add(CmsUUID.getNullUUID().toString());
+                        dbCon.updateSqlStatement(updateQuery, null, params);
                     }
-                    params.add(uuid.toString()); // Add the uuid
-
-                    // Insert the values to the temp table
-                    dbCon.updateSqlStatement(updateQuery, null, params);
-
-                    params.clear();
+                } else {
+                    System.out.println("table " + TEMPORARY_TABLE_NAME + " already exists");
                 }
-
-                // If no project id with value 0 was found 
-                if (!hasNullId) {
-                    params.add(new Integer(0));
-                    params.add(CmsUUID.getNullUUID().toString());
-                    dbCon.updateSqlStatement(updateQuery, null, params);
-                }
-            } else {
-                System.out.println("table " + TEMPORARY_TABLE_NAME + " already exists");
+            }
+        } finally {
+            if (db != null) {
+                db.close();
             }
         }
     }
@@ -647,12 +693,19 @@ public class CmsUpdateDBProjectId extends A_CmsUpdateDBPart {
         Map result = new HashMap();
 
         String query = readQuery(QUERY_GET_UUIDS);
-        ResultSet set = dbCon.executeSqlStatement(query, null);
-        while (set.next()) {
-            String key = Integer.toString(set.getInt(COLUMN_PROJECT_ID));
-            String value = set.getString(COLUMN_PROJECT_UUID);
+        CmsSetupDBWrapper db = null;
+        try {
+            db = dbCon.executeSqlStatement(query, null);
+            while (db.getResultSet().next()) {
+                String key = Integer.toString(db.getResultSet().getInt(COLUMN_PROJECT_ID));
+                String value = db.getResultSet().getString(COLUMN_PROJECT_UUID);
 
-            result.put(key, value);
+                result.put(key, value);
+            }
+        } finally {
+            if (db != null) {
+                db.close();
+            }
         }
         return result;
     }

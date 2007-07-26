@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBAlterTables.java,v $
- * Date   : $Date: 2007/07/04 16:56:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/26 09:03:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.setup.update6to7.generic;
 
+import org.opencms.setup.CmsSetupDBWrapper;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +56,7 @@ import java.util.List;
  * 
  * @author Roland Metzler
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0
  */
@@ -207,16 +207,23 @@ public class CmsUpdateDBAlterTables extends A_CmsUpdateDBPart {
 
                 // Update the entries of the newly created column
                 String structureVersion = readQuery(QUERY_SELECT_CMS_STRUCTURE_VERSION);
-                ResultSet set = dbCon.executeSqlStatement(structureVersion, replacer);
-                // update each row
-                while (set.next()) {
-                    String updateQuery = readQuery(QUERY_UPDATE_STRUCTURE_VERSION);
-                    String structureId = set.getString("STRUCTURE_ID");
-                    int version = set.getInt("STRUCTURE_VERSION");
-                    List params = new ArrayList();
-                    params.add(new Integer(version)); // add the version
-                    params.add(structureId);
-                    dbCon.updateSqlStatement(updateQuery, replacer, params);
+                CmsSetupDBWrapper db = null;
+                try {
+                    db = dbCon.executeSqlStatement(structureVersion, replacer);
+                    // update each row
+                    while (db.getResultSet().next()) {
+                        String updateQuery = readQuery(QUERY_UPDATE_STRUCTURE_VERSION);
+                        String structureId = db.getResultSet().getString("STRUCTURE_ID");
+                        int version = db.getResultSet().getInt("STRUCTURE_VERSION");
+                        List params = new ArrayList();
+                        params.add(new Integer(version)); // add the version
+                        params.add(structureId);
+                        dbCon.updateSqlStatement(updateQuery, replacer, params);
+                    }
+                } finally {
+                    if (db != null) {
+                        db.close();
+                    }
                 }
             } else {
                 System.out.println("column "

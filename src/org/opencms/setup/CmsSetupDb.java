@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2007/07/04 16:57:46 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/07/26 09:03:25 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -299,23 +299,24 @@ public class CmsSetupDb extends Object {
      * 
      * @throws SQLException if something goes wrong
      */
-    public ResultSet executeSqlStatement(String query, Map replacer) throws SQLException {
+    public CmsSetupDBWrapper executeSqlStatement(String query, Map replacer) throws SQLException {
 
-        Statement stmt = null;
-        ResultSet resultSet = null;
-
-        stmt = m_con.createStatement();
+        CmsSetupDBWrapper dbwrapper = new CmsSetupDBWrapper(m_con);
+        dbwrapper.createStatement();
+ 
         String queryToExecute = query;
 
         // Check if a map of replacements is given
         if (replacer != null) {
             queryToExecute = replaceTokens(query, replacer);
         }
-
         // do the query
-        resultSet = stmt.executeQuery(queryToExecute);
+        dbwrapper.excecuteQuery(queryToExecute);
 
-        return resultSet;
+        // return the result
+        return dbwrapper; 
+        
+    
     }
 
     /** Creates and executes a database statment from a String returning the result set.<p>

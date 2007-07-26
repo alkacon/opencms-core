@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBCreateIndexes7.java,v $
- * Date   : $Date: 2007/07/04 16:56:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/26 09:03:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,15 @@
 
 package org.opencms.setup.update6to7.oracle;
 
+import org.opencms.setup.CmsSetupDBWrapper;
+import org.opencms.setup.CmsSetupDb;
+
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import org.opencms.setup.CmsSetupDb;
 
 /**
  * Oracle implementation for the creation of the indexes of the tables in version 7.<p>
@@ -47,7 +47,7 @@ import org.opencms.setup.CmsSetupDb;
  * @author Roland Metzler
  * @author Peter Bonrad
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.0
  */
@@ -289,15 +289,21 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.update6to7.gene
         String tableConstraints = readQuery(QUERY_SHOW_CONSTRAINTS);
         HashMap replacer = new HashMap();
         replacer.put(REPLACEMENT_TABLENAME, tablename);
-        ResultSet set = dbCon.executeSqlStatement(tableConstraints, replacer);
-        while (set.next()) {
-            String constraint = set.getString(FIELD_CONSTRAINT);
-            if (!constraints.contains(constraint)) {
-                constraints.add(constraint);
-            }
+        CmsSetupDBWrapper db = null;
+        try {
+            db = dbCon.executeSqlStatement(tableConstraints, replacer);
+            while (db.getResultSet().next()) {
+                String constraint = db.getResultSet().getString(FIELD_CONSTRAINT);
+                if (!constraints.contains(constraint)) {
+                    constraints.add(constraint);
+                }
 
+            }
+        } finally {
+            if (db != null) {
+                db.close();
+            }
         }
-        set.close();
         return constraints;
     }
 
@@ -315,17 +321,22 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.update6to7.gene
         String tableIndex = readQuery(QUERY_SHOW_INDEX);
         HashMap replacer = new HashMap();
         replacer.put(REPLACEMENT_TABLENAME, tablename);
+        CmsSetupDBWrapper db = null;
         try {
-            ResultSet set = dbCon.executeSqlStatement(tableIndex, replacer);
-            while (set.next()) {
-                String index = set.getString(FIELD_INDEX);
+            db = dbCon.executeSqlStatement(tableIndex, replacer);
+            while (db.getResultSet().next()) {
+                String index = db.getResultSet().getString(FIELD_INDEX);
                 if (!indexes.contains(index)) {
                     indexes.add(index);
                 }
             }
-            set.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (db != null) {
+                db.close();
+            }
         }
 
         return indexes;

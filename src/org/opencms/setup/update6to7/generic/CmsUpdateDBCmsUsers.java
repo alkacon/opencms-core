@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2007/07/04 16:56:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/26 09:03:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.setup.update6to7.generic;
 
+import org.opencms.setup.CmsSetupDBWrapper;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 import org.opencms.util.CmsStringUtil;
@@ -40,7 +41,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.sql.Blob;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,7 +54,7 @@ import java.util.Map;
  * 
  * @author Roland Metzler
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.0
  */
@@ -157,37 +157,44 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
                 createUserDataTable(dbCon); // Could throw Exception during table creation
 
                 String query = readQuery(QUERY_SELECT_USER_DATA);
-                ResultSet set = dbCon.executeSqlStatement(query, null);
-                while (set.next()) {
-                    String userID = (String)set.getObject(RESULTSET_USER_ID);
-                    System.out.println("UserId: " + userID);
+                CmsSetupDBWrapper db = null;
+                try {
+                    db = dbCon.executeSqlStatement(query, null);
+                    while (db.getResultSet().next()) {
+                        String userID = (String)db.getResultSet().getObject(RESULTSET_USER_ID);
+                        System.out.println("UserId: " + userID);
 
-                    try {
-                        Blob blob = set.getBlob(RESULTSET_USER_INFO);
+                        try {
+                            Blob blob = db.getResultSet().getBlob(RESULTSET_USER_INFO);
 
-                        ByteArrayInputStream bin = new ByteArrayInputStream(blob.getBytes(1, (int)blob.length()));
-                        ObjectInputStream oin = new ObjectInputStream(bin);
+                            ByteArrayInputStream bin = new ByteArrayInputStream(blob.getBytes(1, (int)blob.length()));
+                            ObjectInputStream oin = new ObjectInputStream(bin);
 
-                        Map infos = (Map)oin.readObject();
+                            Map infos = (Map)oin.readObject();
 
-                        if (infos == null) {
-                            infos = new HashMap();
+                            if (infos == null) {
+                                infos = new HashMap();
+                            }
+
+                            // Add user address and user description of the current user
+                            String userAddress = (String)db.getResultSet().getObject(USER_ADDRESS);
+                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userAddress)) {
+                                infos.put(USER_ADDRESS, userAddress);
+                            }
+                            String userDescription = (String)db.getResultSet().getObject(USER_DESCRIPTION);
+                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userDescription)) {
+                                infos.put(USER_DESCRIPTION, userDescription);
+                            }
+
+                            // Write the user data to the table
+                            writeAdditionalUserInfo(dbCon, userID, infos);
+                        } catch (Throwable e) {
+                            e.printStackTrace();
                         }
-
-                        // Add user address and user description of the current user
-                        String userAddress = (String)set.getObject(USER_ADDRESS);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userAddress)) {
-                            infos.put(USER_ADDRESS, userAddress);
-                        }
-                        String userDescription = (String)set.getObject(USER_DESCRIPTION);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userDescription)) {
-                            infos.put(USER_DESCRIPTION, userDescription);
-                        }
-
-                        // Write the user data to the table
-                        writeAdditionalUserInfo(dbCon, userID, infos);
-                    } catch (Throwable e) {
-                        e.printStackTrace();
+                    }
+                } finally {
+                    if (db != null) {
+                        db.close();
                     }
                 }
 

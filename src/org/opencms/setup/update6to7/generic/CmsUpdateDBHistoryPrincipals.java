@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBHistoryPrincipals.java,v $
- * Date   : $Date: 2007/07/04 16:56:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/26 09:03:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.setup.update6to7.generic;
 
+import org.opencms.setup.CmsSetupDBWrapper;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,7 @@ import java.util.List;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0
  */
@@ -144,10 +144,17 @@ public class CmsUpdateDBHistoryPrincipals extends A_CmsUpdateDBPart {
         System.out.println(new Exception().getStackTrace()[0].toString());
         boolean result = false;
         String query = readQuery(QUERY_SELECT_COUNT_HISTORY_PRINCIPALS);
-        ResultSet set = dbCon.executeSqlStatement(query, null);
-        if (set.next()) {
-            if (set.getInt("COUNT") > 0) {
-                result = true;
+        CmsSetupDBWrapper db = null;
+        try {
+            db = dbCon.executeSqlStatement(query, null);
+            if (db.getResultSet().next()) {
+                if (db.getResultSet().getInt("COUNT") > 0) {
+                    result = true;
+                }
+            }
+        } finally {
+            if (db != null) {
+                db.close();
             }
         }
 

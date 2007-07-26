@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/21 03:55:31 $
- * Version: $Revision: 1.843 $
+ * Date   : $Date: 2007/07/26 09:03:26 $
+ * Version: $Revision: 1.844 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 * Fixed issue with validation errors using the display widget on boolean values
 * Fixed several spelling issues in the German locale
 * Fixed issue with "new" siblings causing content changes in "old" siblings not to be published
+- Different handling of DB statements and result sets in update wizard
 * Fixed issue in A_CmlXmlDocument where the xpath for #getValues(...) was not correctly accessing the bookmarks
 * Fixed issue with workplace encoding being system default while workplace folder was set to UTF-8
 * Fixed issue with no Exception being thrown in case a <cms:include> of a non-existing file is done

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/07/04 16:56:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/26 09:03:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.setup.update6to7.generic;
 
+import org.opencms.setup.CmsSetupDBWrapper;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.setup.update6to7.A_CmsUpdateDBPart;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Roland Metzler
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0
  */
@@ -124,11 +124,17 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
         if (dbCon.hasTableOrColumn(TABLE_CMS_ONLINE_CONTENTS, null)) {
             int pubTag = 1;
             String query = readQuery(QUERY_READ_MAX_PUBTAG);
-            ResultSet res = dbCon.executeSqlStatement(query, null);
-            if (res.next()) {
-                pubTag = res.getInt(1);
+            CmsSetupDBWrapper db = null;
+            try {
+                db = dbCon.executeSqlStatement(query, null);
+                if (db.getResultSet().next()) {
+                    pubTag = db.getResultSet().getInt(1);
+                }
+            } finally {
+                if (db != null) {
+                    db.close();
+                }
             }
-            res.close();
             transferOnlineContents(dbCon, pubTag);
         } else {
             System.out.println("no table " + TABLE_CMS_ONLINE_CONTENTS + " found");

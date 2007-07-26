@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/A_CmsUpdateDBPart.java,v $
- * Date   : $Date: 2007/07/04 16:57:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/26 09:03:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,11 @@
 
 package org.opencms.setup.update6to7;
 
+import org.opencms.setup.CmsSetupDBWrapper;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,7 +47,7 @@ import java.util.Properties;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.9.2 
  */
@@ -102,7 +102,7 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
         if (dbName.indexOf("mysql") > -1) {
             String engine = "MYISAM";
             CmsSetupDb setupDb = new CmsSetupDb(null);
-
+            CmsSetupDBWrapper db = null;
             try {
                 setupDb.setConnection(
                     (String)m_poolData.get("driver"),
@@ -111,14 +111,17 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
                     (String)m_poolData.get("user"),
                     (String)m_poolData.get("pwd"));
 
-                ResultSet res = setupDb.executeSqlStatement("SHOW TABLE STATUS LIKE 'CMS_GROUPS';", null);
-                if (res.next()) {
-                    engine = res.getString("Engine").toUpperCase();
+                db = setupDb.executeSqlStatement("SHOW TABLE STATUS LIKE 'CMS_GROUPS';", null);
+                if (db.getResultSet().next()) {
+                    engine = db.getResultSet().getString("Engine").toUpperCase();
                 }
-                res.close();
+
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
+                if (db != null) {
+                    db.close();
+                }
                 setupDb.closeConnection();
             }
             m_poolData.put("engine", engine);
@@ -140,18 +143,28 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
                     (String)m_poolData.get("pwd"));
 
                 // read tablespace for data
-                ResultSet res = setupDb.executeSqlStatement("SELECT DISTINCT tablespace_name FROM user_tables", null);
-                if (res.next()) {
-                    dataTablespace = res.getString(1).toLowerCase();
+                CmsSetupDBWrapper db = null;
+                try {
+                    db = setupDb.executeSqlStatement("SELECT DISTINCT tablespace_name FROM user_tables", null);
+                    if (db.getResultSet().next()) {
+                        dataTablespace = db.getResultSet().getString(1).toLowerCase();
+                    }
+                } finally {
+                    if (db != null) {
+                        db.close();
+                    }
                 }
-                res.close();
-
                 // read tablespace for indexes
-                res = setupDb.executeSqlStatement("SELECT DISTINCT tablespace_name FROM user_indexes", null);
-                if (res.next()) {
-                    indexTablespace = res.getString(1).toLowerCase();
+                try {
+                    db = setupDb.executeSqlStatement("SELECT DISTINCT tablespace_name FROM user_indexes", null);
+                    if (db.getResultSet().next()) {
+                        indexTablespace = db.getResultSet().getString(1).toLowerCase();
+                    }
+                } finally {
+                    if (db != null) {
+                        db.close();
+                    }
                 }
-                res.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {

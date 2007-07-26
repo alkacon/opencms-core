@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBProjectId.java,v $
- * Date   : $Date: 2007/07/04 16:56:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/26 09:03:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
 
 package org.opencms.setup.update6to7.oracle;
 
+import org.opencms.setup.CmsSetupDBWrapper;
 import org.opencms.setup.CmsSetupDb;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +45,7 @@ import java.util.Map;
  * @author Roland Metzler
  * @author Peter Bonrad
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.0
  */
@@ -179,20 +179,27 @@ public class CmsUpdateDBProjectId extends org.opencms.setup.update6to7.generic.C
         String query = readQuery(QUERY_DESCRIBE_TABLE);
         Map replacer = new HashMap();
         replacer.put(REPLACEMENT_TABLENAME, tablename);
-        ResultSet set = dbCon.executeSqlStatement(query, replacer);
+        CmsSetupDBWrapper db = null;
+        try {
+            db = dbCon.executeSqlStatement(query, replacer);
 
-        while (set.next()) {
-            String fieldname = set.getString("COLUMN_NAME");
-            if (fieldname.equals(COLUMN_PROJECT_ID) || fieldname.equals(COLUMN_PROJECT_LASTMODIFIED)) {
-                try {
-                    String fieldtype = set.getString("DATA_TYPE");
-                    // If the type is varchar then no update needs to be done.
-                    if (fieldtype.indexOf("VARCHAR") > -1) {
-                        return false;
+            while (db.getResultSet().next()) {
+                String fieldname = db.getResultSet().getString("COLUMN_NAME");
+                if (fieldname.equals(COLUMN_PROJECT_ID) || fieldname.equals(COLUMN_PROJECT_LASTMODIFIED)) {
+                    try {
+                        String fieldtype = db.getResultSet().getString("DATA_TYPE");
+                        // If the type is varchar then no update needs to be done.
+                        if (fieldtype.indexOf("VARCHAR") > -1) {
+                            return false;
+                        }
+                    } catch (SQLException e) {
+                        result = true;
                     }
-                } catch (SQLException e) {
-                    result = true;
                 }
+            }
+        } finally {
+            if (db != null) {
+                db.close();
             }
         }
 
