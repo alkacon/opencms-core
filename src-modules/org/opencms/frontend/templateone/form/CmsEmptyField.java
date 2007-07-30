@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsEmptyField.java,v $
- * Date   : $Date: 2007/07/20 09:21:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/30 10:55:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,28 @@ package org.opencms.frontend.templateone.form;
 
 import org.opencms.i18n.CmsMessages;
 
+/**
+ * Represents a empty field.<p>
+ * 
+ */
 public class CmsEmptyField extends A_CmsField {
 
     /** HTML field type: hidden field. */
     private static final String TYPE = "empty";
 
+    /**
+     * Returns the type of the input field, e.g. "text" or "select".<p>
+     * 
+     * @return the type of the input field
+     */
+    public static String getStaticType() {
+
+        return TYPE;
+    }
+
+    /**
+     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler, org.opencms.i18n.CmsMessages, String)
+     */
     public String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey) {
 
         StringBuffer buf = new StringBuffer();
@@ -47,10 +64,12 @@ public class CmsEmptyField extends A_CmsField {
         }
 
         //line #2 start
-        buf.append(messages.key("form.html.label.start")).append("&nbsp;").append(messages.key("form.html.label.end")).append("\n");
+        buf.append(messages.key("form.html.label.start")).append("&nbsp;").append(messages.key("form.html.label.end")).append(
+            "\n");
 
         //line #3 start
-        buf.append(messages.key("form.html.field.start")).append("&nbsp;").append(messages.key("form.html.field.end")).append("\n");
+        buf.append(messages.key("form.html.field.start")).append("&nbsp;").append(messages.key("form.html.field.end")).append(
+            "\n");
 
         //line #1 end
         if (showRowEnd(messages.key("form.html.col.two"))) {
@@ -59,17 +78,10 @@ public class CmsEmptyField extends A_CmsField {
         return buf.toString();
     }
 
-    public String getType() {
-
-        return TYPE;
-    }
-
     /**
-     * Returns the type of the input field, e.g. "text" or "select".<p>
-     * 
-     * @return the type of the input field
+     * @see org.opencms.frontend.templateone.form.I_CmsField#getType()
      */
-    public static String getStaticType() {
+    public String getType() {
 
         return TYPE;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/A_CmsField.java,v $
- * Date   : $Date: 2007/07/20 09:21:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/07/30 10:55:09 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Thomas Weckert
  * @author Jan Baudisch
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * @since 6.0.0 
  */
 public abstract class A_CmsField implements I_CmsField {
@@ -61,67 +61,10 @@ public abstract class A_CmsField implements I_CmsField {
     private String m_label;
     private boolean m_mandatory;
     private String m_name;
-    private String m_validationExpression;
-    private String m_value;
     private int m_placeholder;
     private int m_position;
-
-    /**
-     * This functions looks if the row should be end. By one colsize, its 
-     * everytime ending. By two colsize every second cell its ending.
-     * 
-     * @return true the row end must shown
-     */
-    protected boolean showRowEnd(String colSizeTwo) {
-
-        if(CmsStringUtil.isEmptyOrWhitespaceOnly(colSizeTwo) || !colSizeTwo.trim().equalsIgnoreCase("true")){
-            return true;
-        }
-        
-        boolean result = false;
-        if (m_position != 0) {
-            result = true;
-        }
-        if (m_position == 0) m_position = 1;
-        else m_position = 0;
-        //if its need a placeholder
-        if (m_position == 1 && m_placeholder >= 1) {
-            result = true;
-            m_position = 0;
-            m_placeholder --;
-        }
-        return result;
-    }
-
-    /**
-     * This functions looks if the row should be start. By one colsize, its 
-     * everytime starting. By two colsize every second cell its starting.
-     * 
-     * @return
-     */
-    protected boolean showRowStart(String colSizeTwo) {
-
-        if(CmsStringUtil.isEmptyOrWhitespaceOnly(colSizeTwo) || !colSizeTwo.trim().equalsIgnoreCase("true")){
-            return true;
-        }
-        if (m_position == 0 ) {
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * This function sets the cells of placeholder. Its only work with 
-     * a col size of 2 
-     * @param message
-     */
-    protected void incrementPlaceholder(String message)
-    {
-        int parse=0;
-        if(!CmsStringUtil.isEmptyOrWhitespaceOnly(message) && !message.startsWith("?"))
-            parse=Integer.parseInt(message.trim());
-        m_placeholder +=parse;
-    }
+    private String m_validationExpression;
+    private String m_value;
 
     /**
      * Default constructor.<p>
@@ -134,8 +77,8 @@ public abstract class A_CmsField implements I_CmsField {
         m_mandatory = false;
         m_value = "";
         m_validationExpression = "";
-        m_placeholder=0;
-        m_position=0;
+        m_placeholder = 0;
+        m_position = 0;
     }
 
     /**
@@ -171,6 +114,26 @@ public abstract class A_CmsField implements I_CmsField {
     }
 
     /**
+     * Returns the placeholder.<p>
+     *
+     * @return the placeholder
+     */
+    public int getPlaceholder() {
+
+        return m_placeholder;
+    }
+
+    /**
+     * Returns the position.<p>
+     *
+     * @return the position
+     */
+    public int getPosition() {
+
+        return m_position;
+    }
+
+    /**
      * @see org.opencms.frontend.templateone.form.I_CmsField#getValidationExpression()
      */
     public String getValidationExpression() {
@@ -201,6 +164,26 @@ public abstract class A_CmsField implements I_CmsField {
 
         return (CmsCheckboxField.class.isAssignableFrom(getClass())
             || CmsSelectionField.class.isAssignableFrom(getClass()) || CmsRadioButtonField.class.isAssignableFrom(getClass()));
+    }
+
+    /**
+     * Sets the placeholder.<p>
+     *
+     * @param placeholder the placeholder to set
+     */
+    public void setPlaceholder(int placeholder) {
+
+        m_placeholder = placeholder;
+    }
+
+    /**
+     * Sets the position.<p>
+     *
+     * @param position the position to set
+     */
+    public void setPosition(int position) {
+
+        m_position = position;
     }
 
     /**
@@ -263,6 +246,19 @@ public abstract class A_CmsField implements I_CmsField {
             // ignore
         }
         super.finalize();
+    }
+
+    /**
+     * This function sets the cells of placeholder. Its only work with 
+     * a col size of 2 
+     * @param message
+     */
+    protected void incrementPlaceholder(String message) {
+
+        int parse = 0;
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(message) && !message.startsWith("?"))
+            parse = Integer.parseInt(message.trim());
+        m_placeholder += parse;
     }
 
     /**
@@ -343,6 +339,53 @@ public abstract class A_CmsField implements I_CmsField {
     }
 
     /**
+     * This functions looks if the row should be end. By one colsize, its 
+     * everytime ending. By two colsize every second cell its ending.
+     * 
+     * @param colSizeTwo if two cols should be shown
+     * @return true the row end must shown
+     */
+    protected boolean showRowEnd(String colSizeTwo) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(colSizeTwo) || !colSizeTwo.trim().equalsIgnoreCase("true")) {
+            return true;
+        }
+
+        boolean result = false;
+        if (m_position != 0) {
+            result = true;
+        }
+        if (m_position == 0)
+            m_position = 1;
+        else m_position = 0;
+        //if its need a placeholder
+        if (m_position == 1 && m_placeholder >= 1) {
+            result = true;
+            m_position = 0;
+            m_placeholder--;
+        }
+        return result;
+    }
+
+    /**
+     * This functions looks if the row should be start. By one colsize, its 
+     * everytime starting. By two colsize every second cell its starting.
+     * 
+     * @param colSizeTwo if two cols should be shown
+     * @return true if the row should shown
+     */
+    protected boolean showRowStart(String colSizeTwo) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(colSizeTwo) || !colSizeTwo.trim().equalsIgnoreCase("true")) {
+            return true;
+        }
+        if (m_position == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Validates the constraints if this field is mandatory.<p>
      * 
      * @return {@link CmsFormHandler#ERROR_MANDATORY} if a constraint is violated
@@ -409,45 +452,5 @@ public abstract class A_CmsField implements I_CmsField {
         }
 
         return null;
-    }
-
-    /**
-     * Returns the placeholder.<p>
-     *
-     * @return the placeholder
-     */
-    public int getPlaceholder() {
-
-        return m_placeholder;
-    }
-
-    /**
-     * Sets the placeholder.<p>
-     *
-     * @param placeholder the placeholder to set
-     */
-    public void setPlaceholder(int placeholder) {
-
-        m_placeholder = placeholder;
-    }
-
-    /**
-     * Returns the position.<p>
-     *
-     * @return the position
-     */
-    public int getPosition() {
-
-        return m_position;
-    }
-
-    /**
-     * Sets the position.<p>
-     *
-     * @param position the position to set
-     */
-    public void setPosition(int position) {
-
-        m_position = position;
     }
 }

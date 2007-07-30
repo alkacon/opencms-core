@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsPrivacyField.java,v $
- * Date   : $Date: 2007/07/20 09:21:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/07/30 10:55:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,18 +34,14 @@ package org.opencms.frontend.templateone.form;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 
+/**
+ * Represents a check box with a link.<p>
+ * 
+ */
 public class CmsPrivacyField extends CmsCheckboxField {
 
     /** HTML field type: checkbox. */
     private static final String TYPE = "privacy";
-
-    /**
-     * @see org.opencms.frontend.templateone.form.I_CmsField#getType()
-     */
-    public String getType() {
-
-        return TYPE;
-    }
 
     /**
      * Returns the type of the input field, e.g. "text" or "select".<p>
@@ -138,6 +134,14 @@ public class CmsPrivacyField extends CmsCheckboxField {
         }
 
         return buf.toString();
+    }
+
+    /**
+     * @see org.opencms.frontend.templateone.form.I_CmsField#getType()
+     */
+    public String getType() {
+
+        return TYPE;
     }
 
 }
