@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
- * Date   : $Date: 2007/07/06 09:52:13 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/07/30 10:29:47 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.CmsWorkplace;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,7 +109,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
      */
     public CmsVfsFileWidget(boolean showSiteSelector, String startSite, boolean includeFiles) {
 
-        this(showSiteSelector, startSite, true, true);
+        this(showSiteSelector, startSite, includeFiles, true);
     }
 
     /**
@@ -171,9 +171,9 @@ public class CmsVfsFileWidget extends A_CmsWidget {
         // append flag for project awareness
         result.append("|");
         if (m_projectAware) {
-            result.append(CONFIGURATION_INCLUDEFILES);
+            result.append(CONFIGURATION_PROJECTAWARE);
         } else {
-            result.append(CONFIGURATION_EXCLUDEFILES);
+            result.append(CONFIGURATION_NOTPROJECTAWARE);
         }
 
         return result.toString();
@@ -340,7 +340,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
             }
             if (configuration.indexOf(CONFIGURATION_NOTPROJECTAWARE) != -1) {
                 // resources outside of the current project should not be disabled
-                m_includeFiles = false;
+                m_projectAware = false;
             }
         }
         super.setConfiguration(configuration);
