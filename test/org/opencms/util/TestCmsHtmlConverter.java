@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlConverter.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/07/30 09:19:40 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.io.File;
 
 /** 
  * @author Michael Emmerich 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     
@@ -48,7 +48,7 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     private static final String STRING_1_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df";     
     private static final String STRING_2_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac";
   
-    private static final String SIMPLE_HTML = "<h1>Test</h1><div><p>This is a test<p>some content<p>last line</div><pre>Some pre<br>\r\n   More pre\r\n</pre>Final line.";
+    private static final String SIMPLE_HTML = "<h1>Test</h1><div><p>This is a test<p>some content<p>last line</div><pre>Some pre<br>\r\n   More pre\r\n</pre>Final line.";      
     
     /**
      * Default JUnit constructor.<p>
@@ -126,5 +126,29 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
         assertContainsNot(outputContent, "<o:p>");
         assertContainsNot(outputContent, "<o:smarttagtype");
         assertContainsNot(outputContent, "<?xml:namespace ");
+    }
+    
+    /**
+     * Tests an issue with white space insertion after href tags.<p>
+     * 
+     * Tidy sometimes inserts unwanted, visible whitespace in a href tag because of 
+     * the formatting used.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testHrefWhitespaceIssue() throws Exception {
+
+        System.out.println("Testing href whitespace issue");
+        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, CmsHtmlConverter.PARAM_XHTML);        
+        String input = CmsFileUtil.readFile("org/opencms/util/testConverter_03.html", CmsEncoder.ENCODING_ISO_8859_1);
+        // the input has the right (that is no) white-spacing between the tags
+        assertContains(input, "</a></code>).");
+        String output = converter.convertToString(input);
+        System.out.println("----------------");
+        System.out.println(output);        
+        System.out.println("----------------");
+        // the output should also have no whitespace between the tags
+        // but this is the case when xhtml conversion is enabled in JTidy
+        assertContains(output, "</a></code>).");
     }
 }
