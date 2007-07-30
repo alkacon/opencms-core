@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/07/04 16:56:41 $
- * Version: $Revision: 1.224 $
+ * Date   : $Date: 2007/07/30 10:42:41 $
+ * Version: $Revision: 1.225 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -138,7 +138,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.224 $ 
+ * @version $Revision: 1.225 $ 
  * 
  * @since 6.0.0 
  */
@@ -1247,14 +1247,14 @@ public final class OpenCmsCore {
         // output startup message and copyright to STDERR
         System.err.println(Messages.get().getBundle().key(
             Messages.LOG_STARTUP_CONSOLE_NOTE_2,
-            OpenCms.getSystemInfo().getVersionName(),
+            OpenCms.getSystemInfo().getVersionNumber(),
             getSystemInfo().getWebApplicationName()));
         for (int i = 0; i < Messages.COPYRIGHT_BY_ALKACON.length; i++) {
             System.err.println(Messages.COPYRIGHT_BY_ALKACON[i]);
         }
         System.err.println();
 
-        // output startup message to logfile
+        // output startup message to log file
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
@@ -1269,7 +1269,7 @@ public final class OpenCmsCore {
                 new Date(System.currentTimeMillis())));
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_OPENCMS_VERSION_1,
-                OpenCms.getSystemInfo().getVersionName()));
+                OpenCms.getSystemInfo().getVersionNumber()));
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SERVLET_CONTAINER_1, context.getServerInfo()));
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_WEBAPP_NAME_1,
@@ -1500,7 +1500,7 @@ public final class OpenCmsCore {
             if (getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE) {
                 System.err.println(Messages.get().getBundle().key(
                     Messages.LOG_SHUTDOWN_CONSOLE_NOTE_2,
-                    getSystemInfo().getVersionName(),
+                    getSystemInfo().getVersionNumber(),
                     getSystemInfo().getWebApplicationName()));
                 if (CmsLog.INIT.isInfoEnabled()) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DOT_0));
@@ -1508,7 +1508,7 @@ public final class OpenCmsCore {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_LINE_0));
                     CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_SHUTDOWN_START_1,
-                        getSystemInfo().getVersionName()));
+                        getSystemInfo().getVersionNumber()));
                     CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_CURRENT_RUNLEVEL_1,
                         new Integer(getRunLevel())));
@@ -1729,12 +1729,11 @@ public final class OpenCmsCore {
                 m_instance.m_securityManager.readLocks();
             } catch (CmsException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        org.opencms.lock.Messages.get().getBundle().key(org.opencms.lock.Messages.ERR_READ_LOCKS_0),
-                        e);
+                    LOG.error(org.opencms.lock.Messages.get().getBundle().key(
+                        org.opencms.lock.Messages.ERR_READ_LOCKS_0), e);
                 }
             }
-            
+
             return m_instance;
         }
     }
