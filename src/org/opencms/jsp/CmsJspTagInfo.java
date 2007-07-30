@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInfo.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/07/30 08:54:39 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *  
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,7 +133,7 @@ public class CmsJspTagInfo extends TagSupport {
         String result = null;
         switch (SYSTEM_PROPERTIES_LIST.indexOf(property)) {
             case 0: // opencms.version
-                result = OpenCms.getSystemInfo().getVersionName();
+                result = OpenCms.getSystemInfo().getVersionNumber();
                 break;
             case 1: // opencms.url
                 result = req.getRequestURL().toString();

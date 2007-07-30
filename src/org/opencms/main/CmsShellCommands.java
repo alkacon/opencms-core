@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2007/07/05 13:03:07 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2007/07/30 08:54:49 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.86 $ 
+ * @version $Revision: 1.87 $ 
  * 
  * @since 6.0.0 
  */
@@ -1134,7 +1134,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void version() {
 
         System.out.println();
-        System.out.println(getMessages().key(Messages.GUI_SHELL_VERSION_1, OpenCms.getSystemInfo().getVersionName()));
+        System.out.println(getMessages().key(Messages.GUI_SHELL_VERSION_1, OpenCms.getSystemInfo().getVersionNumber()));
     }
 
     /**

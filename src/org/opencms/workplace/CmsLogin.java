@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/07/11 09:03:12 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/07/30 08:55:38 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -621,7 +621,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("<title>");
 
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TITLE_0));
-        html.append("OpenCms " + OpenCms.getSystemInfo().getVersionName());
+        html.append("OpenCms " + OpenCms.getSystemInfo().getVersionNumber());
 
         html.append("</title>\n");
 

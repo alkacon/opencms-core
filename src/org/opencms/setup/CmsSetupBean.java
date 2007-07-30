@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2007/07/04 16:57:46 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2007/07/30 08:55:11 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,7 +110,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
@@ -1822,7 +1822,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         for (int i = copy.length - 1; i >= 0; i--) {
             System.out.println(copy[i]);
         }
-        System.out.println("This is OpenCms " + OpenCms.getSystemInfo().getVersionName());
+        System.out.println("This is OpenCms " + OpenCms.getSystemInfo().getVersionNumber());
         System.out.println();
         System.out.println();
     }

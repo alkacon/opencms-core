@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/07/04 16:57:12 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2007/07/30 08:54:16 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.86 $ 
+ * @version $Revision: 1.87 $ 
  * 
  * @since 6.0.0 
  */
@@ -714,7 +714,7 @@ public class CmsExport {
         // add the info element. it contains all infos for this export
         Element info = exportNode.addElement(CmsImportExportManager.N_INFO);
         info.addElement(CmsImportExportManager.N_CREATOR).addText(getCms().getRequestContext().currentUser().getName());
-        info.addElement(CmsImportExportManager.N_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionName());
+        info.addElement(CmsImportExportManager.N_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionNumber());
         info.addElement(CmsImportExportManager.N_DATE).addText(CmsDateUtil.getHeaderDate(System.currentTimeMillis()));
         info.addElement(CmsImportExportManager.N_PROJECT).addText(
             getCms().getRequestContext().currentProject().getName());

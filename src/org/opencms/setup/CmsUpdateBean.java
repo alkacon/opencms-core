@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/07/11 12:04:13 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/07/30 08:55:11 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -682,7 +682,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         for (int i = copy.length - 1; i >= 0; i--) {
             System.out.println(copy[i]);
         }
-        System.out.println("This is OpenCms " + OpenCms.getSystemInfo().getVersionName());
+        System.out.println("This is OpenCms " + OpenCms.getSystemInfo().getVersionNumber());
         System.out.println();
         System.out.println();
     }

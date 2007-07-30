@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2007/07/04 16:56:41 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2007/07/30 08:53:25 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,7 +76,7 @@ public class CmsSystemInfo {
     private static final String DEFAULT_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
     /** Static version number to use if version.properties can not be read. */
-    private static final String DEFAULT_VERSION_NUMBER = "7.0 development";
+    private static final String DEFAULT_VERSION_NUMBER = "7.0.x";
 
     /** The abolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
@@ -437,11 +437,23 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the version name (that is the version number) of this OpenCms system.<p>
+     * Returns the version name (that is the version number) of this OpenCms system, for example <code>7.0.0</code>.<p>
      *
      * @return the version name (that is the version number) of this OpenCms system
+     * 
+     * @deprecated use {@link #getVersionNumber()} instead
      */
     public String getVersionName() {
+
+        return getVersionNumber();
+    }
+    
+    /**
+     * Returns the version number of this OpenCms system, for example <code>7.0.0</code>.<p>
+     *
+     * @return the version number of this OpenCms system
+     */
+    public String getVersionNumber() {
 
         return m_versionNumber;
     }
