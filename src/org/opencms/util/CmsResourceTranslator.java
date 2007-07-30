@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2006/03/27 14:52:41 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/07/30 08:52:02 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,46 +41,61 @@ import org.apache.oro.text.perl.Perl5Util;
 import org.apache.oro.text.regex.MalformedPatternException;
 
 /**
- * This class provides a resource name translation facility.<p>
+ * Provides a resource name / path translation facility.<p>
  * 
- * Resource name translation is required for backward compatibility
- * to the old OpenCms (pre 5.0 beta 2) directory layout.
- * It can also be used to translate special characters or 
- * names automatically.<p>
- * 
- * It is also used for translating new resource names that contain
+ * This facility is used for translating new file names that contain
  * illegal chars to legal names. This feature is most useful (and currently
  * only used) for uploaded files. It is also applied to uploded ZIP directories
- * that are extracted after upload.<p> 
+ * that are extracted after upload. 
+ * The rules that are used for resource name translation are available from 
+ * {@link org.opencms.file.CmsRequestContext#getFileTranslator()}.<p> 
  * 
- * The translations can be configured in the opencms.properties.<p>
+ * Optionally, resource name translation is also applied to all files read 
+ * from the VFS, so it can be used for accessing files out of teir usual context.
+ * This feature is called directoy translation, and the configured directory 
+ * translations are available from {@link org.opencms.file.CmsRequestContext#getDirectoryTranslator()}.<p> 
  * 
- * The default directory translation setting is:<br>
- * <pre>
- * directory.translation.rules=s#/default/vfs/content/bodys/(.*)#/default/vfs/system/bodies/$1#, \ 
- * s#/default/vfs/pics/system/(.*)#/default/vfs/system/workplace/resources/$1#, \ 
- * s#/default/vfs/pics/(.*)#/default/vfs/system/galleries/pics/$1#, \ 
- * s#/default/vfs/download/(.*)#/default/vfs/system/galleries/download/$1#, \ 
- * s#/default/vfs/externallinks/(.*)#/default/vfs/system/galleries/externallinks/$1#, \ 
- * s#/default/vfs/htmlgalleries/(.*)#/default/vfs/system/galleries/htmlgalleries/$1#, \ 
- * s#/default/vfs/content/(.*)#/default/vfs/system/modules/default/$1#, \ 
- * s#/default/vfs/moduledemos/(.*)#/default/vfs/system/moduledemos/$1#, \ 
- * s#/default/vfs/system/workplace/config/language/(.*)#/default/vfs/system/workplace/locales/$1#, \ 
- * s#/default/vfs/system/workplace/css/(.*)#/default/vfs/system/workplace/resources/$1#, \
- * s#/default/vfs/system/workplace/templates/js/(.*)#/default/vfs/system/workplace/scripts/$1#
- * </pre><p>
+ * Directory translation was originally required for backward compatibility
+ * to the directory layout before OpenCms 5.0 beta 2. In a modern installation,
+ * directory translation is usually disabled.<p>
+ *  
+ * The translations can be configured in <code>opencms-vfs.xml</code>
+ * in the <code>opencms\vfs\resources\translations</code> node.<p>
  * 
  * The default file name translation setting is:<br>
  * <pre>
- * filename.translation.rules=s#[\s]+#_#g, \
- * s#\\#/#g, \
- * s#[^0-9a-zA-Z_\.\-\/]#!#g, \
- * s#!+#x#g
+ * &lt;filetranslations enabled="true"&gt;
+ *    &lt;translation&gt;s#[\s]+#_#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#\\#/#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#ä#ae#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#Ä#Ae#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#ö#oe#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#Ö#Oe#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#ü#ue#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#Ü#Ue#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#ß#ss#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#[^0-9a-zA-Z_$~\.\-\/]#!#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#!+#x#g&lt;/translation&gt;
+ * &lt;/filetranslations&gt;
+ * </pre><p>
+ * 
+ * Directory translation is now usually not required and since disabled by default.
+ * The directory translation setting to convert an OpenCms 5.0 to 6.0 VFS is:<br>
+ * <pre>
+ * &lt;foldertranslations enabled="true"&gt;
+ *    &lt;translation&gt;s#/content/bodys/(.*)#/system/bodies/$1#&lt;/translation&gt;
+ *    &lt;translation&gt;s#/pics/system/(.*)#/system/workplace/resources/$1#&lt;/translation&gt;
+ *    &lt;translation&gt;s#/pics/(.*)#/system/galleries/pics/$1#&lt;/translation&gt;
+ *    &lt;translation&gt;s#/download/(.*)#/system/galleries/download/$1#&lt;/translation&gt;
+ *    &lt;translation&gt;s#/externallinks/(.*)#/system/galleries/externallinks/$1#&lt;/translation&gt;
+ *    &lt;translation&gt;s#/htmlgalleries/(.*)#/system/galleries/htmlgalleries/$1#&lt;/translation&gt;
+ *    &lt;translation&gt;s#/content/(.*)#/system/$1#&lt;/translation&gt;
+ * &lt;/foldertranslations&gt;
  * </pre><p>
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -148,7 +163,7 @@ public class CmsResourceTranslator {
 
     /**
      * Translate a resource name according to the expressions set in 
-     * the opencms.properties. If no match is found, 
+     * <code>opencms-vfs.xml</code>. If no match is found, 
      * the resource name is returned unchanged.<p>
      * 
      * @param resourceName The resource name to translate

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2007/07/09 15:11:06 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2007/07/30 08:55:23 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 6.0.0 
  */
@@ -262,6 +262,10 @@ public final class CmsSiteManager {
     /**
      * Returns the site root part of the resources root path, 
      * or null if the path does not match any site root.<p>
+     * 
+     * The site root returned will have the form:
+     * <code>/sites/default</code>.<br>That means there will a leading, 
+     * but no trailing slash.<p>
      * 
      * @param path the root path of a resource
      * @return the site root part of the resources root path, or null if the path does not match any site root

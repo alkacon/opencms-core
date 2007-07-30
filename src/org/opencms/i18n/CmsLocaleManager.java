@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2007/07/04 16:57:47 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2007/07/30 08:50:58 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 6.0.0 
  */
@@ -408,9 +408,22 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the list of available locales configured in.<p>
+     * Returns the list of available {@link Locale}s configured in <code>opencms-system.xml</code>, 
+     * in the <code>opencms/system/internationalization/localesconfigured</code> node.<p>
+     *
+     * The list of configured available locales contains all locales that are allowed to be used in the VFS,
+     * for example as languages in XML content files.<p>
+     * 
+     * The available locales are a superset of the default locales, see {@link #getDefaultLocales()}.<p>
+     * 
+     * It's possible to reduce the system default by setting the propery 
+     * <code>{@link CmsPropertyDefinition#PROPERTY_AVAILABLE_LOCALES}</code> 
+     * to a comma separated list of locale names. However, you can not add new available locales, 
+     * only remove from the configured list.<p>
      *
      * @return the list of available locale names, e.g. <code>en, de</code>
+     * 
+     * @see #getDefaultLocales()
      */
     public List getAvailableLocales() {
 
@@ -422,7 +435,10 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * @param cms the current cms permission object
      * @param resourceName the name of the resource
+     * 
      * @return an array of available locale names
+     * 
+     * @see #getAvailableLocales()
      */
     public List getAvailableLocales(CmsObject cms, String resourceName) {
 
@@ -451,10 +467,12 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * Returns a List of available locales from a comma separated string of locale names.<p>
      * 
      * All names are filtered against the allowed available locales 
-     * configured in <code>opencms.properties</code>.<P>
+     * configured in <code>opencms-system.xml</code>.<P>
      * 
      * @param names a comma-separated String of locale names
      * @return List of locales created from the given locale names
+     * 
+     * @see #getAvailableLocales()
      */
     public List getAvailableLocales(String names) {
 
@@ -515,6 +533,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * @param resourceName the name of the resource
      * @return an array of default locale names
      * 
+     * @see #getDefaultLocales()
      * @see #getDefaultLocales(CmsObject, String)
      */
     public Locale getDefaultLocale(CmsObject cms, String resourceName) {
@@ -530,9 +549,27 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the list of default locale names configured in <code>opencms.properties</code>.<p>
+     * Returns the list of default {@link Locale}s configured in <code>opencms-system.xml</code>,
+     * in the <code>opencms/system/internationalization/localesdefault</code> node.<p>
+     * 
+     * The default locales must be a subset of the available locales, see {@link #getAvailableLocales()}.<p>
+     * 
+     * It's possible to override the system default by setting the propery 
+     * <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> to a comma separated list of locale names.<p>
+     * 
+     * The default locale names are used as a fallback mechanism in case a locale is requested 
+     * that can not be found, for example when delivering content form an XML content.<p>
+     * 
+     * There is a list of default locales (instead of just one default locale) since there
+     * are scenarios when one default is not enough. Consider the following example:<i>
+     * The main default locale is set to "en". An example XML content file contains just one language, 
+     * in this case "de" and not "en". Now a request is made to the file for the locale "fr". If 
+     * there would be only one default locale ("en"), we would have to give up. But since we allow more then 
+     * one default, we can deliver the "de" content instead of a blank page.</I><p>
      * 
      * @return the list of default locale names, e.g. <code>en, de</code>
+     * 
+     * @see #getAvailableLocales()
      */
     public List getDefaultLocales() {
 
@@ -550,6 +587,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * @param resourceName the name of the resource
      * @return an array of default locale names
      * 
+     * @see #getDefaultLocales()
      * @see #getDefaultLocale(CmsObject, String)
      */
     public List getDefaultLocales(CmsObject cms, String resourceName) {
@@ -704,7 +742,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
     /**
      * Returns the configured locale handler.<p>
-     * This handler is used to derive the appropriate locale/encoding for a request.
+     * 
+     * This handler is used to derive the appropriate locale/encoding for a request.<p>
      * 
      * @return the locale handler
      */
