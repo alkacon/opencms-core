@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsUUID.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/07/31 17:32:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,18 @@
 
 package org.opencms.util;
 
-import java.util.Random;
+import org.opencms.test.OpenCmsTestCase;
 
-import junit.framework.TestCase;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 import org.doomdark.uuid.UUID;
 
@@ -42,11 +51,14 @@ import org.doomdark.uuid.UUID;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
-public class TestCmsUUID extends TestCase {
+public class TestCmsUUID extends OpenCmsTestCase {
+
+    /** Map to store serialized objects with a name. */
+    private Map m_serializedMap = new HashMap();
 
     /**
      * Default JUnit constructor.<p>
@@ -81,21 +93,52 @@ public class TestCmsUUID extends TestCase {
         assertTrue(id4.isNullUUID());
         assertTrue(id4.equals(CmsUUID.getNullUUID()));
     }
-    
+
     /**
-     * Tests the {@link CmsUUID#isValidUUID(String)} method.<p> 
+     * Tests serialization of the CmsUUID.<p> 
      * 
      * @throws Exception if the test fails
      */
-    public void testUUIDisValid() throws Exception {
-        
-        assertTrue(CmsUUID.isValidUUID((new CmsUUID()).toString()));
-        assertTrue(CmsUUID.isValidUUID(CmsUUID.getNullUUID().toString()));
-        assertFalse(CmsUUID.isValidUUID(CmsUUID.getNullUUID().toString() + "0"));
-        assertFalse(CmsUUID.isValidUUID("0" + CmsUUID.getNullUUID().toString()));
-        assertFalse(CmsUUID.isValidUUID(null));
-        assertFalse(CmsUUID.isValidUUID(""));
-        assertFalse(CmsUUID.isValidUUID("kaputt"));
+    public void testUUIDSerialization() throws Exception {
+
+        CmsUUID.init(CmsUUID.getDummyEthernetAddress());
+        CmsUUID id1 = new CmsUUID();
+        serializeObject("id1", id1);
+        CmsUUID d_id1 = (CmsUUID)deSerializeObject("id1");
+        assertEquals(id1, d_id1);
+
+        // serializeObjectToFile("org/opencms/util/uuid_v535.bmp", id1);
+    }
+
+    /**
+     * Tests de-serialization of CmsUUIDs from various OpenCms versions.<p> 
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testUUIDDeSerialization() throws Exception {
+
+        CmsUUID uuid_v702 = (CmsUUID)deSerializeObjectFromFile("org/opencms/util/uuid_v702.bmp");
+        System.out.println("De-Serialized from version 7.0.2: " + uuid_v702.toString());
+
+        CmsUUID uuid_v701 = (CmsUUID)deSerializeObjectFromFile("org/opencms/util/uuid_v701.bmp");
+        System.out.println("De-Serialized from version 7.0.1: " + uuid_v701.toString());
+
+        CmsUUID uuid_v623 = (CmsUUID)deSerializeObjectFromFile("org/opencms/util/uuid_v623.bmp");
+        System.out.println("De-Serialized from version 6.2.3: " + uuid_v623.toString());
+
+        CmsUUID uuid_v620 = (CmsUUID)deSerializeObjectFromFile("org/opencms/util/uuid_v620.bmp");
+        System.out.println("De-Serialized from version 6.2.0: " + uuid_v620.toString());
+
+        // de-serialization of CmsUUIDs before 6.2.0 is impossible because of changes to the UUID implementation
+
+        //        CmsUUID uuid_v605 = (CmsUUID)deSerializeObjectFromFile("org/opencms/util/uuid_v605.bmp");
+        //        System.out.println("De-Serialized from version 6.0.5: " + uuid_v605.toString());
+        //        
+        //        CmsUUID uuid_v600 = (CmsUUID)deSerializeObjectFromFile("org/opencms/util/uuid_v600.bmp");
+        //        System.out.println("De-Serialized from version 6.0.0: " + uuid_v600.toString());
+        //        
+        //        CmsUUID uuid_v535 = (CmsUUID)deSerializeObjectFromFile("org/opencms/util/uuid_v535.bmp");
+        //        System.out.println("De-Serialized from version 5.3.5: " + uuid_v535.toString());
     }
 
     /**
@@ -166,5 +209,91 @@ public class TestCmsUUID extends TestCase {
         //        }
         //        long time2 = System.currentTimeMillis() - start;
         //        System.out.println("Time 2 for equals(): " + time2);
+    }
+
+    /**
+     * Tests the {@link CmsUUID#isValidUUID(String)} method.<p> 
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testUUIDisValid() throws Exception {
+
+        assertTrue(CmsUUID.isValidUUID((new CmsUUID()).toString()));
+        assertTrue(CmsUUID.isValidUUID(CmsUUID.getNullUUID().toString()));
+        assertFalse(CmsUUID.isValidUUID(CmsUUID.getNullUUID().toString() + "0"));
+        assertFalse(CmsUUID.isValidUUID("0" + CmsUUID.getNullUUID().toString()));
+        assertFalse(CmsUUID.isValidUUID(null));
+        assertFalse(CmsUUID.isValidUUID(""));
+        assertFalse(CmsUUID.isValidUUID("kaputt"));
+    }
+
+    /**
+     * De-Serializes an object with the given name from the internal Map.<p>
+     * 
+     * @param name the name to use
+     * 
+     * @return the de-serialized Object
+     * 
+     * @throws Exception if something goes wrong
+     */
+    protected Object deSerializeObject(String name) throws Exception {
+
+        byte[] bytes = (byte[])m_serializedMap.get(name);
+        ByteArrayInputStream bin = new ByteArrayInputStream(bytes);
+        ObjectInputStream oin = new ObjectInputStream(bin);
+        return oin.readObject();
+    }
+
+    /**
+     * De-Serializes an object from an external File with the given name.<p>
+     * 
+     * @param name the name to use
+     * 
+     * @return the de-serialized Object
+     * 
+     * @throws Exception if something goes wrong
+     */
+    protected Object deSerializeObjectFromFile(String name) throws Exception {
+
+        File inputFile = new File(getClass().getClassLoader().getResource(name).toURI());
+        // System.out.println(inputFile.getAbsolutePath());
+        FileInputStream fin = new FileInputStream(inputFile);
+        ObjectInputStream oin = new ObjectInputStream(fin);
+        return oin.readObject();
+    }
+
+    /**
+     * Serializes an object and stores the result into an internal Map using the given name.<p>
+     * 
+     * @param name the name to use
+     * @param o the Object to serialize
+     * 
+     * @throws Exception if something goes wrong
+     */
+    protected void serializeObject(String name, Object o) throws Exception {
+
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ObjectOutputStream oout = new ObjectOutputStream(bout);
+        oout.writeObject(o);
+        oout.close();
+        m_serializedMap.put(name, bout.toByteArray());
+    }
+
+    /**
+     * Serializes an object and stores the result into a file with the given name.<p>
+     * 
+     * @param name the name to use
+     * @param o the Object to serialize
+     * 
+     * @throws Exception if something goes wrong
+     */
+    protected void serializeObjectToFile(String name, Object o) throws Exception {
+
+        File outputFile = new File(getClass().getClassLoader().getResource(name).toURI());
+        // System.out.println(outputFile.getAbsolutePath());
+        FileOutputStream fout = new FileOutputStream(outputFile);
+        ObjectOutputStream oout = new ObjectOutputStream(fout);
+        oout.writeObject(o);
+        oout.close();
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/07/26 09:03:26 $
- * Version: $Revision: 1.844 $
+ * Date   : $Date: 2007/07/31 17:32:34 $
+ * Version: $Revision: 1.845 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,6 +27,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 * Fixed issue in A_CmlXmlDocument where the xpath for #getValues(...) was not correctly accessing the bookmarks
 * Fixed issue with workplace encoding being system default while workplace folder was set to UTF-8
 * Fixed issue with no Exception being thrown in case a <cms:include> of a non-existing file is done
+- Improved implementation of CmsUUID serialization, added Junit tests for de-serialization of old versions
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog
