@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/db/TestQueryProperties.java,v $
- * Date   : $Date: 2007/07/04 16:57:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/01 13:29:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import junit.framework.TestSuite;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestQueryProperties extends OpenCmsTestCase {
 
@@ -102,7 +102,6 @@ public class TestQueryProperties extends OpenCmsTestCase {
         suite.addTest(new TestQueryProperties("testQueryPropertiesMaxdb"));
         suite.addTest(new TestQueryProperties("testQueryPropertiesMssql"));
         suite.addTest(new TestQueryProperties("testQueryPropertiesMysql"));
-        suite.addTest(new TestQueryProperties("testQueryPropertiesMysql3"));
         suite.addTest(new TestQueryProperties("testQueryPropertiesOracle8"));
         suite.addTest(new TestQueryProperties("testQueryPropertiesPostgresql"));
 
@@ -176,23 +175,6 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
         // mysql
         File queries = new File("src/org/opencms/db/mysql/query.properties");
-        parseQueryProperties(queries);
-    }
-
-    /**
-     * Test the mysql3 query.properties file within the workspace for format errors.
-     * <p>
-     * 
-     * @throws ParseException if the format of a tested query.properties file is invalid.
-     * 
-     * @throws IOException if sth. goes wrong.
-     * 
-     * 
-     */
-    public void testQueryPropertiesMysql3() throws IOException, ParseException {
-
-        // mysql3
-        File queries = new File("src/org/opencms/db/mysql3/query.properties");
         parseQueryProperties(queries);
     }
 
