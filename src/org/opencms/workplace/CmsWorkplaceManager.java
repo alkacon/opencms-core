@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/07/21 03:55:31 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2007/08/01 13:35:40 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.79 $ 
+ * @version $Revision: 1.80 $ 
  * 
  * @since 6.0.0 
  */
@@ -523,9 +523,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns all instanciated dialog handlers for the workplace.<p>
+     * Returns all instantiated dialog handlers for the workplace.<p>
      * 
-     * @return all instanciated dialog handlers for the workplace
+     * @return all instantiated dialog handlers for the workplace
      */
     public Map getDialogHandler() {
 
@@ -1215,7 +1215,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_DEFAULT_USER_SETTINGS_1,
-                m_defaultUserSettings));
+                m_defaultUserSettings.getClass().getName()));
         }
     }
 

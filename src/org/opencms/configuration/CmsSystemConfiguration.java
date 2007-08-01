@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2007/07/04 16:57:34 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2007/08/01 13:33:48 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 6.0.0
  */
@@ -601,7 +601,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /**
      * Adds a new instance of a resource init handler class.<p>
      * 
-     * @param clazz the class name of the resource init handler to instanciate and add
+     * @param clazz the class name of the resource init handler to instantiate and add
      */
     public void addResourceInitHandler(String clazz) {
 
@@ -615,11 +615,11 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (initClass instanceof I_CmsResourceInit) {
             m_resourceInitHandlers.add(initClass);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_RESOURCE_INIT_SUCCESS_1, initClass));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_RESOURCE_INIT_SUCCESS_1, clazz));
             }
         } else {
             if (CmsLog.INIT.isErrorEnabled()) {
-                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_RESOURCE_INIT_INVALID_CLASS_1, initClass));
+                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_RESOURCE_INIT_INVALID_CLASS_1, clazz));
             }
         }
     }
