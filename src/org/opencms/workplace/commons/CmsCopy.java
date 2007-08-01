@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2007/07/04 16:57:19 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/08/01 17:14:48 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -485,7 +485,7 @@ public class CmsCopy extends CmsMultiDialog {
                     }
                 }
             }
-            // check if exceptions occured
+            // check if exceptions occurred
             checkMultiOperationException(Messages.get(), Messages.ERR_COPY_MULTI_0);
         } finally {
             // restore the site root

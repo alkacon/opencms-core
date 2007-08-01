@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/07/11 10:59:33 $
- * Version: $Revision: 1.583 $
+ * Date   : $Date: 2007/08/01 17:13:25 $
+ * Version: $Revision: 1.584 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1844,7 +1844,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             throw new CmsVfsException(Messages.get().container(Messages.ERR_VFS_FOLDERS_DONT_SUPPORT_SIBLINGS_0));
         }
 
-        // determine desitnation folder and resource name        
+        // determine destination folder and resource name        
         String destinationFoldername = CmsResource.getParentFolder(destination);
 
         // read the destination folder (will also check read permissions)

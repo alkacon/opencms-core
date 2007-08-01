@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2007/07/04 16:57:12 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/08/01 17:13:44 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.file;
 
 import org.opencms.db.CmsResourceState;
 
-
 /**
  * Provides filters for resource result sets obtained from requests to the OpenCms VFS.<p>
  * 
@@ -48,7 +47,7 @@ import org.opencms.db.CmsResourceState;
  * @author Carsten Weinholz 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 6.0.0 
  */
@@ -689,7 +688,7 @@ public final class CmsResourceFilter {
     /**
      * Check if deleted resources should be filtered.<p>
      * 
-     * @return true if deleted resources should be included, false otherwiese
+     * @return true if deleted resources should be included, false otherwise
      */
     public boolean includeDeleted() {
 
