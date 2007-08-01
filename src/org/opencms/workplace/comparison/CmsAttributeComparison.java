@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparison.java,v $
- * Date   : $Date: 2006/03/27 14:52:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/01 17:15:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package org.opencms.workplace.comparison;
 import org.opencms.util.CmsStringUtil;
 
 /**
- * Comparison of resource properties.<p>
+ * Comparison of resource attributes.<p>
  * 
  * @author Jan Baudisch
  */
@@ -43,13 +43,13 @@ public class CmsAttributeComparison {
     /** The name of the property.<p> */
     private String m_name;
 
-    /** The type of the property comparison.<p> */
+    /** The type of the attribute comparison.<p> */
     private String m_status;
 
-    /** The first value of the property.<p> */
+    /** The first value of the attribute.<p> */
     private String m_version1;
 
-    /** The second value of the property.<p> */
+    /** The second value of the attribute.<p> */
     private String m_version2;
 
     /** 
@@ -57,7 +57,7 @@ public class CmsAttributeComparison {
      */
     public CmsAttributeComparison() {
 
-        // no-op   
+        // empty  
     }
 
     /** 
@@ -65,7 +65,7 @@ public class CmsAttributeComparison {
      * 
      * @param name the name to set
      * @param version1 the first value of the property
-     * @param version2 the seconf value of the property
+     * @param version2 the second value of the property
      */
     public CmsAttributeComparison(String name, String version1, String version2) {
 
@@ -90,9 +90,13 @@ public class CmsAttributeComparison {
      * 
      * @param name the name to set
      * @param version1 the first value of the property
-     * @param version2 the seconf value of the property
+     * @param version2 the second value of the property
      * @param type the type indicating if the element value has been added, removed, modified or is unchanged 
-     * {@link CmsResourceComparison#TYPE_ADDED}.
+     *              
+     * @see CmsResourceComparison#TYPE_ADDED
+     * @see CmsResourceComparison#TYPE_CHANGED
+     * @see CmsResourceComparison#TYPE_REMOVED
+     * @see CmsResourceComparison#TYPE_UNCHANGED
      */
     public CmsAttributeComparison(String name, String version1, String version2, String type) {
 
@@ -181,5 +185,4 @@ public class CmsAttributeComparison {
 
         m_version2 = type;
     }
-
 }
