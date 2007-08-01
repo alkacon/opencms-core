@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/07/26 09:03:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/01 10:32:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Roland Metzler
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.0
  */
@@ -99,7 +99,7 @@ public class CmsUpdateDBContentTables extends A_CmsUpdateDBPart {
      *  
      * @param dbCon the db connection interface
      * 
-     * @throws SQLException if soemthing goes wrong
+     * @throws SQLException if something goes wrong
      */
     protected void createContentsTable(CmsSetupDb dbCon) throws SQLException {
 
