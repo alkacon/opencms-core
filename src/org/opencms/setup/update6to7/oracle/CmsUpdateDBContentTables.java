@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/07/04 16:56:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/01 10:32:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * @author Roland Metzler
  * @author Peter Bonrad
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.0
  */
@@ -53,6 +53,9 @@ public class CmsUpdateDBContentTables extends org.opencms.setup.update6to7.gener
 
     /** Constant for the sql query to transfer the online contents.<p> */
     protected static final String QUERY_UPDATE_ONLINE_CONTENTS_PUBLISH_TAG_FROM = "Q_UPDATE_ONLINE_CONTENTS_PUBLISH_TAG_FROM";
+
+    /** Constant for the sql query to transfer the online contents.<p> */
+    protected static final String QUERY_UPDATE_ONLINE_CONTENTS_PUBLISH_TAG_FROM2 = "Q_UPDATE_ONLINE_CONTENTS_PUBLISH_TAG_FROM2";
 
     /** Constant for the sql query to transfer the online contents.<p> */
     protected static final String QUERY_UPDATE_ONLINE_CONTENTS_PUBLISH_TAG_TO = "Q_UPDATE_ONLINE_CONTENTS_PUBLISH_TAG_TO";
@@ -107,8 +110,10 @@ public class CmsUpdateDBContentTables extends org.opencms.setup.update6to7.gener
         query = readQuery(QUERY_UPDATE_ONLINE_CONTENTS_PUBLISH_TAG_FROM);
         dbCon.updateSqlStatement(query, null, null);
 
+        query = readQuery(QUERY_UPDATE_ONLINE_CONTENTS_PUBLISH_TAG_FROM2);
+        dbCon.updateSqlStatement(query, null, Collections.singletonList(new Integer(pubTag)));
+
         query = readQuery(QUERY_UPDATE_ONLINE_CONTENTS_PUBLISH_TAG_TO);
         dbCon.updateSqlStatement(query, null, null);
     }
-
 }
