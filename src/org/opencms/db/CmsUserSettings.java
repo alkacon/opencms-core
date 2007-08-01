@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/07/19 13:35:17 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2007/08/01 12:42:30 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 6.0.0
  */
@@ -139,9 +139,9 @@ public class CmsUserSettings {
     public static final String ADDITIONAL_INFO_ADDRESS = "USER_ADDRESS";
 
     /** Key for additional info city. */
-    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN"; // Value must unfortunatly still be "USER_TOWN" or existing serialized user information will be lost
+    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN"; // Value must unfortunately still be "USER_TOWN" or existing serialized user information will be lost
 
-    /** Key for additional info of resources that were confirmemed by the user. */
+    /** Key for additional info of resources that were confirmed by the user. */
     public static final String ADDITIONAL_INFO_CONFIRMED_RESOURCES = "ADDITIONAL_INFO_CONFIRMED_RESOURCES";
 
     /** Key for additional info address. */
@@ -196,7 +196,7 @@ public class CmsUserSettings {
     /** Flag for displaying the name column. */
     public static final int FILELIST_NAME = 512;
 
-    /** Flag for displaying the navtext column. */
+    /** Flag for displaying the navigation text column. */
     public static final int FILELIST_NAVTEXT = 64;
 
     /** Flag for displaying the access column. */
@@ -211,7 +211,7 @@ public class CmsUserSettings {
     /** Flag for displaying the title column. */
     public static final int FILELIST_TITLE = 1;
 
-    /** Flag for displaying the filetype column. */
+    /** Flag for displaying the file type column. */
     public static final int FILELIST_TYPE = 2;
 
     /** Flag for displaying the owner column. */
@@ -275,10 +275,10 @@ public class CmsUserSettings {
 
     private Locale m_locale;
 
-    /** Controls if the "create index page" checkbox in the new folder dialog should be initially be checked or not. */
+    /** Controls if the "create index page" check box in the new folder dialog should be initially be checked or not. */
     private Boolean m_newFolderCreateIndexPage;
 
-    /** Controls if the "edit properties" checkbox in the new folder dialog should be initially be checked or not. */
+    /** Controls if the "edit properties" check box in the new folder dialog should be initially be checked or not. */
     private Boolean m_newFolderEditProperties;
 
     private String m_project;
@@ -360,7 +360,7 @@ public class CmsUserSettings {
     /**
      * Creates a user settings object with initialized settings of the user.<p>
      * 
-     * Some default settings will be unset, if no cms object is given.<p>
+     * Some default settings will not be set, if no cms object is given.<p>
      *  
      * @param user the current CmsUser
      * 
@@ -524,7 +524,7 @@ public class CmsUserSettings {
     /** 
      * Returns the locale of the user.<p>
      * 
-     * @return the loclae of the user
+     * @return the locale of the user
      */
     public Locale getLocale() {
 
@@ -532,10 +532,10 @@ public class CmsUserSettings {
     }
 
     /**
-     * Returns <code>{@link Boolean#TRUE}</code> if the "create index page" checkbox in the new folder 
+     * Returns <code>{@link Boolean#TRUE}</code> if the "create index page" check box in the new folder 
      * dialog should be initially be checked. <p>
      * 
-     * @return <code>{@link Boolean#TRUE}</code> if the "create index page" checkbox in the new folder 
+     * @return <code>{@link Boolean#TRUE}</code> if the "create index page" check box in the new folder 
      *      dialog should be initially be checked. 
      */
     public Boolean getNewFolderCreateIndexPage() {
@@ -544,10 +544,10 @@ public class CmsUserSettings {
     }
 
     /**
-     * Returns <code>{@link Boolean#TRUE}</code> if the "edit properties" checkbox in the new folder 
+     * Returns <code>{@link Boolean#TRUE}</code> if the "edit properties" check box in the new folder 
      * dialog should be initially be checked. <p>
      * 
-     * @return <code>{@link Boolean#TRUE}</code> if the "edit properties" checkbox in the new folder 
+     * @return <code>{@link Boolean#TRUE}</code> if the "edit properties" check box in the new folder 
      *      dialog should be initially be checked. 
      */
     public Boolean getNewFolderEditProperties() {
@@ -663,11 +663,11 @@ public class CmsUserSettings {
     }
 
     /**
-     * Returns the current users timewarp time, or
+     * Returns the current users time warp time, or
      * {@link org.opencms.main.CmsContextInfo#CURRENT_TIME} if this feature is disabled and the current time
      * is used for each user request.<p>
      * 
-     * @return the current users timewarp time, or
+     * @return the current users time warp time, or
      *      {@link org.opencms.main.CmsContextInfo#CURRENT_TIME} if this feature is disabled
      */
     public long getTimeWarp() {
@@ -755,7 +755,7 @@ public class CmsUserSettings {
         } catch (Throwable t) {
             m_workplaceButtonStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceButtonStyle();
         }
-        // worplace timewarp setting
+        // workplace time warp setting
         Object timeWarpObj = m_user.getAdditionalInfo(ADDITIONAL_INFO_TIMEWARP);
         try {
             m_timeWarp = ((Long)timeWarpObj).longValue();
@@ -775,7 +775,7 @@ public class CmsUserSettings {
         if (m_workplaceReportType == null) {
             m_workplaceReportType = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceReportType();
         }
-        // workplace uploadapplet mode
+        // workplace upload applet mode
         try {
             m_uploadApplet = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
@@ -784,9 +784,14 @@ public class CmsUserSettings {
             m_uploadApplet = OpenCms.getWorkplaceManager().getDefaultUserSettings().useUploadApplet();
         }
         // locale
-        m_locale = CmsLocaleManager.getLocale(String.valueOf(m_user.getAdditionalInfo(PREFERENCES
+        Object obj = m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-            + CmsWorkplaceConfiguration.N_LOCALE)));
+            + CmsWorkplaceConfiguration.N_LOCALE);
+        if (obj == null) {
+            m_locale = null;
+        } else {
+            m_locale = CmsLocaleManager.getLocale(String.valueOf(obj));
+        }
         if (m_locale == null) {
             m_locale = OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale();
         }
@@ -821,7 +826,7 @@ public class CmsUserSettings {
         } catch (Throwable t) {
             m_explorerButtonStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getExplorerButtonStyle();
         }
-        // explorer file entires        
+        // explorer file entries        
         try {
             m_explorerFileEntries = ((Integer)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_EXPLORERGENERALOPTIONS
@@ -861,7 +866,7 @@ public class CmsUserSettings {
         } catch (Throwable t) {
             m_dialogFileDelete = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogDeleteFileMode();
         }
-        // dialog directpublish mode
+        // dialog direct publish mode
         try {
             m_dialogDirectpublish = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
@@ -885,7 +890,7 @@ public class CmsUserSettings {
         } catch (Throwable t) {
             m_showExportSettings = OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogShowExportSettings();
         }
-        // dialog permissions inheritation mode
+        // dialog permissions inheriting mode
         try {
             m_dialogPermissionsInheritOnFolder = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
@@ -917,7 +922,7 @@ public class CmsUserSettings {
         } catch (Throwable t) {
             m_editorButtonStyle = OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorButtonStyle();
         }
-        // directedit button style
+        // direct edit button style
         try {
             m_directeditButtonStyle = ((Integer)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS
@@ -962,7 +967,7 @@ public class CmsUserSettings {
         }
         // workplace search
         m_workplaceSearchIndexName = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceSearchIndexName();
-        
+
         m_workplaceSearchViewStyle = CmsSearchResultStyle.valueOf((String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESEARCH
             + CmsWorkplaceConfiguration.N_SEARCHVIEWSTYLE));
@@ -1035,7 +1040,7 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
                 + CmsWorkplaceConfiguration.N_REPORTTYPE);
         }
-        // workplace uploadapplet
+        // workplace upload applet
         if (useUploadApplet() != OpenCms.getWorkplaceManager().getDefaultUserSettings().useUploadApplet()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
@@ -1055,7 +1060,7 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
                 + CmsWorkplaceConfiguration.N_LOCALE);
         }
-        // startproject       
+        // start project       
         if (!getStartProject().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject())) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
@@ -1166,7 +1171,7 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
                 + CmsWorkplaceConfiguration.N_FILEDELETION);
         }
-        // dialog directpublish mode
+        // dialog direct publish mode
         if (getDialogPublishSiblings() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDialogPublishSiblings()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_DIALOGSDEFAULTSETTINGS
@@ -1230,7 +1235,7 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS
                 + CmsWorkplaceConfiguration.N_BUTTONSTYLE);
         }
-        // directedit button style    
+        // direct edit button style    
         if (getDirectEditButtonStyle() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getDirectEditButtonStyle()) {
             m_user.setAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS
@@ -1240,7 +1245,7 @@ public class CmsUserSettings {
                 + CmsWorkplaceConfiguration.N_EDITORGENERALOPTIONS
                 + CmsWorkplaceConfiguration.N_DIRECTEDITSTYLE);
         }
-        // editorsettings
+        // editor settings
         if (m_editorSettings.size() > 0) {
             Iterator itEntries = m_editorSettings.entrySet().iterator();
             while (itEntries.hasNext()) {
@@ -1272,8 +1277,9 @@ public class CmsUserSettings {
         }
         // synchronize settings        
         if (getSynchronizeSettings() != null) {
-            m_user.setAdditionalInfo(PREFERENCES + SYNC_SETTINGS + SYNC_ENABLED, Boolean.valueOf(
-                getSynchronizeSettings().isEnabled()));
+            m_user.setAdditionalInfo(
+                PREFERENCES + SYNC_SETTINGS + SYNC_ENABLED,
+                Boolean.valueOf(getSynchronizeSettings().isEnabled()));
             m_user.setAdditionalInfo(
                 PREFERENCES + SYNC_SETTINGS + SYNC_DESTINATION,
                 getSynchronizeSettings().getDestinationPathInRfs());
@@ -1291,7 +1297,7 @@ public class CmsUserSettings {
         } else {
             m_user.deleteAdditionalInfo(ADDITIONAL_INFO_UPLOADAPPLET_CLIENTFOLDER);
         }
-        // workplace user surf time (timewarp) 
+        // workplace user surf time (time warp) 
         if (getTimeWarp() != CmsContextInfo.CURRENT_TIME) {
             m_user.setAdditionalInfo(ADDITIONAL_INFO_TIMEWARP, new Long(getTimeWarp()));
         } else if (cms != null) {
@@ -1447,7 +1453,7 @@ public class CmsUserSettings {
     /**
      * Sets the explorer start settings.<p>
      * 
-     * @param settings explorer start settings tu use
+     * @param settings explorer start settings to use
      */
     public void setExplorerSettings(int settings) {
 
@@ -1465,10 +1471,10 @@ public class CmsUserSettings {
     }
 
     /**
-     * Sets if the "create index page" checkbox in the new folder 
+     * Sets if the "create index page" check box in the new folder 
      * dialog should be initially be checked or not. <p>
      * 
-     * @param setting if the "create index page" checkbox in the new folder 
+     * @param setting if the "create index page" check box in the new folder 
      *      dialog should be initially be checked or not.
      */
     public void setNewFolderCreateIndexPage(Boolean setting) {
@@ -1477,10 +1483,10 @@ public class CmsUserSettings {
     }
 
     /**
-     * Sets if the "edit properties" checkbox in the new folder 
+     * Sets if the "edit properties" check box in the new folder 
      * dialog should be initially be checked or not. <p>
      * 
-     * @param setting if the "edit properties" checkbox in the new folder 
+     * @param setting if the "edit properties" check box in the new folder 
      *      dialog should be initially be checked or not.
      */
     public void setNewFolderEditPropertes(Boolean setting) {
@@ -1738,16 +1744,16 @@ public class CmsUserSettings {
     }
 
     /**
-     * Sets the user specific custom "timewarp" time.<p>
+     * Sets the user specific custom "time warp" time.<p>
      * 
-     * Use {@link org.opencms.main.CmsContextInfo#CURRENT_TIME} to unset this feature, ie. enable the
+     * Use {@link org.opencms.main.CmsContextInfo#CURRENT_TIME} to disable this feature, ie. enable the
      * current time for each new request.<p>
      * 
      * If this value is set, auto time warping will be disabled: Clicking on a resource that 
      * has not been released at the given time or is already expired at the given time will not 
      * be shown - an error message will pop up  ("out of time window").<p>
      * 
-     * @param timewarp the timewarp time to set
+     * @param timewarp the time warp time to set
      */
     public void setTimeWarp(long timewarp) {
 
@@ -1875,9 +1881,9 @@ public class CmsUserSettings {
     }
 
     /**
-     * Determines if the file navtext should be shown in explorer view.<p>
+     * Determines if the file navigation text should be shown in explorer view.<p>
      * 
-     * @return true if the file navtext should be shown, otherwise false
+     * @return true if the file navigation text should be shown, otherwise false
      */
     public boolean showExplorerFileNavText() {
 
