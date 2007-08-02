@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeleteBrokenRelationsList.java,v $
- * Date   : $Date: 2007/07/09 15:11:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/02 07:44:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.4 
  */
@@ -176,6 +176,7 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListExplorerDialog {
                     if (relationName.startsWith(infoEntry.getSiteRoot())) {
                         // same site
                         relationName = relationName.substring(infoEntry.getSiteRoot().length());
+                        relationName = CmsStringUtil.formatResourceName(relationName, 50);
                     } else {
                         // other site
                         String site = CmsSiteManager.getSiteRoot(relationName);
@@ -186,9 +187,9 @@ public class CmsDeleteBrokenRelationsList extends A_CmsListExplorerDialog {
                         } else {
                             siteName = "/";
                         }
+                        relationName = CmsStringUtil.formatResourceName(relationName, 50);
                         relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {siteName, relationName});
                     }
-                    relationName = CmsStringUtil.formatResourceName(relationName, 50);
                     html.append(relationName);
                     html.append("&nbsp;<span style='color: #666666;'>(");
                     html.append(relation.getType().getLocalizedName(getLocale()));

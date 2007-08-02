@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/07/09 15:11:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/02 07:44:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.5 
  */
@@ -192,8 +192,9 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                 LOG.error(e.getLocalizedMessage(getLocale()), e);
                             }
                         }
+                    } else {
+                        m_publishList = getSettings().getPublishList();
                     }
-                    m_publishList = getSettings().getPublishList();
                     return m_publishList.getAllResources();
                 }
 
@@ -249,11 +250,9 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
         Iterator itResourceNames = resourceNames.iterator();
         int count = 0;
         while (itResourceNames.hasNext()) {
-
             // set progress in thread
             count++;
             if (thread != null) {
-
                 if (thread.isInterrupted()) {
                     throw new CmsIllegalStateException(org.opencms.workplace.commons.Messages.get().container(
                         org.opencms.workplace.commons.Messages.ERR_PROGRESS_INTERRUPTED_0));
@@ -298,6 +297,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                 if (relationName.startsWith(cms.getRequestContext().getSiteRoot())) {
                                     // same site
                                     relationName = cms.getSitePath(target);
+                                    relationName = CmsStringUtil.formatResourceName(relationName, 50);
                                 } else {
                                     // other site
                                     String site = CmsSiteManager.getSiteRoot(relationName);
@@ -308,11 +308,11 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                     } else {
                                         siteName = "/";
                                     }
+                                    relationName = CmsStringUtil.formatResourceName(relationName, 50);
                                     relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
                                         siteName,
                                         relationName});
                                 }
-                                relationName = CmsStringUtil.formatResourceName(relationName, 50);
                                 if (!cms.getLock(target).isLockableBy(cms.getRequestContext().currentUser())) {
                                     // mark not lockable resources
                                     relationName = relationName + "*";
@@ -344,6 +344,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                     if (relationName.startsWith(cms.getRequestContext().getSiteRoot())) {
                                         // same site
                                         relationName = cms.getSitePath(source);
+                                        relationName = CmsStringUtil.formatResourceName(relationName, 50);
                                     } else {
                                         // other site
                                         String site = CmsSiteManager.getSiteRoot(relationName);
@@ -354,11 +355,11 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                         } else {
                                             siteName = "/";
                                         }
+                                        relationName = CmsStringUtil.formatResourceName(relationName, 50);
                                         relationName = key(Messages.GUI_DELETE_SITE_RELATION_2, new Object[] {
                                             siteName,
                                             relationName});
                                     }
-                                    relationName = CmsStringUtil.formatResourceName(relationName, 50);
                                     // mark as reverse reference
                                     relationName = relationName + "$";
                                     if (!resourceNames.contains(relationName)) {

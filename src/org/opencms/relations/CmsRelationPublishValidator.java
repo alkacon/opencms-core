@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationPublishValidator.java,v $
- * Date   : $Date: 2007/07/04 16:56:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/02 07:44:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.5
  */
@@ -74,11 +74,13 @@ public class CmsRelationPublishValidator {
      * @param cms the cms object
      * @param publishList a publish list to validate
      */
-    public CmsRelationPublishValidator(
-        CmsObject cms,
-        CmsPublishList publishList) {
+    public CmsRelationPublishValidator(CmsObject cms, CmsPublishList publishList) {
 
-        m_cms = cms;
+        try {
+            m_cms = OpenCms.initCmsObject(cms);
+        } catch (CmsException e) {
+            m_cms = cms;
+        }
         try {
             m_brokenRelations = OpenCms.getPublishManager().validateRelations(m_cms, publishList, null);
         } catch (CmsException e) {
@@ -109,7 +111,7 @@ public class CmsRelationPublishValidator {
             siteName = siteRoot;
             if (siteRoot != null) {
                 String oldSite = m_cms.getRequestContext().getSiteRoot();
-                try {                    
+                try {
                     m_cms.getRequestContext().setSiteRoot("/");
                     siteName = m_cms.readPropertyObject(siteRoot, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
                         siteRoot);
