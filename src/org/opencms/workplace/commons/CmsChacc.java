@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/07/11 09:30:33 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/08/02 07:45:07 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -1328,7 +1328,7 @@ public class CmsChacc extends CmsDialog {
         // try to read the internal flag from the resource
         try {
             resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-            internal = ((resource.getFlags() & CmsResource.FLAG_INTERNAL) > 0);
+            internal = resource.isInternal();
         } catch (CmsException e) {
             // an error occurred reading the resource 
             LOG.error(e.getLocalizedMessage());

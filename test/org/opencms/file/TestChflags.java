@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChflags.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/08/02 07:45:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chflags" method of the CmsObject.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 6.0 alpha 2
  */
 public class TestChflags extends OpenCmsTestCase {
@@ -114,20 +114,16 @@ public class TestChflags extends OpenCmsTestCase {
 
         CmsResource resource = cms.readResource(resource1, CmsResourceFilter.ALL);
         tc.storeResources(cms, resource1);
-        
+
         int existingFlags = resource.getFlags();
         int flags = existingFlags;
         long timestamp = System.currentTimeMillis();
 
         // the "internal" flag is not set
-        assertEquals((existingFlags & CmsResource.FLAG_INTERNAL), 0);
+        assertFalse(resource.isInternal());
 
         // add the "internal" flag
-        if ((flags & CmsResource.FLAG_INTERNAL) == 0) {
-            flags += CmsResource.FLAG_INTERNAL;
-        } else {
-            fail("Resource " + resource1 + " has the \"internal\" flag already set!");
-        }
+        flags += CmsResource.FLAG_INTERNAL;
 
         // change the flag
         cms.lockResource(resource1);

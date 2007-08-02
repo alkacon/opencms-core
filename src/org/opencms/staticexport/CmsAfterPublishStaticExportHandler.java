@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2007/07/04 16:57:22 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/08/02 07:45:07 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  * 
@@ -624,7 +624,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                     // we cannot export with an internal flag
                     if (cms.existsResource(pubResource.getRootPath())) {
                         CmsResource vfsResource = cms.readResource(pubResource.getRootPath());
-                        if ((vfsResource.getFlags() & CmsResource.FLAG_INTERNAL) != CmsResource.FLAG_INTERNAL) {
+                        if (!vfsResource.isInternal()) {
                             // add only if not internal
                             // additionally, add all siblings of the resource
                             Iterator itSiblings = getSiblings(cms, pubResource).iterator();
