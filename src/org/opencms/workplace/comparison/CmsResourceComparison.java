@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparison.java,v $
- * Date   : $Date: 2007/07/04 16:56:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/02 07:44:46 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.comparison;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.history.I_CmsHistoryResource;
@@ -138,8 +139,8 @@ public class CmsResourceComparison {
         comparedAttributes.add(new CmsAttributeComparison(Messages.GUI_LABEL_DATE_EXPIRED_0, expire1, expire2));
         comparedAttributes.add(new CmsAttributeComparison(
             Messages.GUI_PERMISSION_INTERNAL_0,
-            String.valueOf((resource1.getFlags() & CmsResource.FLAG_INTERNAL) > 0),
-            String.valueOf((resource2.getFlags() & CmsResource.FLAG_INTERNAL) > 0)));
+            String.valueOf(resource1.isInternal()),
+            String.valueOf(resource2.isInternal())));
         String dateLastModified1 = CmsDateUtil.getDateTime(
             new Date(resource1.getDateLastModified()),
             DateFormat.SHORT,
@@ -192,26 +193,54 @@ public class CmsResourceComparison {
      * 
      * @param cms the CmsObject to use
      * @param resource1 the first resource to read the properties from
+     * @param version1 the version of the first resource
      * @param resource2 the second resource to read the properties from
+     * @param version2 the version of the second resource
      * 
      * @return a list of the compared attributes
      * 
      * @throws CmsException if something goes wrong
      */
-    public static List compareProperties(CmsObject cms, CmsResource resource1, CmsResource resource2)
-    throws CmsException {
+    public static List compareProperties(
+        CmsObject cms,
+        CmsResource resource1,
+        String version1,
+        CmsResource resource2,
+        String version2) throws CmsException {
 
         List properties1;
         if (resource1 instanceof I_CmsHistoryResource) {
             properties1 = cms.readHistoryPropertyObjects((I_CmsHistoryResource)resource1);
         } else {
-            properties1 = cms.readPropertyObjects(resource1, false);
+            if (Integer.parseInt(version1) < 0) {
+                // switch to the online project
+                CmsProject prj = cms.getRequestContext().currentProject();
+                try {
+                    cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                    properties1 = cms.readPropertyObjects(resource1, false);
+                } finally {
+                    cms.getRequestContext().setCurrentProject(prj);
+                }
+            } else {
+                properties1 = cms.readPropertyObjects(resource1, false);
+            }
         }
         List properties2;
         if (resource2 instanceof I_CmsHistoryResource) {
             properties2 = cms.readHistoryPropertyObjects((I_CmsHistoryResource)resource2);
         } else {
-            properties2 = cms.readPropertyObjects(resource2, false);
+            if (Integer.parseInt(version2) < 0) {
+                // switch to the online project
+                CmsProject prj = cms.getRequestContext().currentProject();
+                try {
+                    cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                    properties2 = cms.readPropertyObjects(resource2, false);
+                } finally {
+                    cms.getRequestContext().setCurrentProject(prj);
+                }
+            } else {
+                properties2 = cms.readPropertyObjects(resource2, false);
+            }
         }
         List comparedProperties = new ArrayList();
         List removedProperties = new ArrayList(properties1);

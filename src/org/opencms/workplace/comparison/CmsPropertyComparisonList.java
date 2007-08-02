@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2007/07/04 16:56:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/08/02 07:44:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -338,7 +338,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
      */
     protected void fillDetails(String detailId) {
 
-        // no-op
+        // no details
     }
 
     /**
@@ -347,7 +347,12 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
-        Iterator diffs = CmsResourceComparison.compareProperties(getCms(), getResource1(), getResource2()).iterator();
+        Iterator diffs = CmsResourceComparison.compareProperties(
+            getCms(),
+            getResource1(),
+            getParamVersion1(),
+            getResource2(),
+            getParamVersion2()).iterator();
         while (diffs.hasNext()) {
             CmsAttributeComparison comparison = (CmsAttributeComparison)diffs.next();
             CmsListItem item = getList().newItem(comparison.getName());

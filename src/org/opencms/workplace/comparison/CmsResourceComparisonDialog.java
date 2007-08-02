@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2007/07/09 15:11:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/08/02 07:44:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -159,7 +159,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     /** The difference dialog. */
     private CmsDifferenceDialog m_differenceDialog;
 
-    /** Parameter value indicating wether to compare properties, attributes or elements. */
+    /** Parameter value indicating whether to compare properties, attributes or elements. */
     private String m_paramCompare;
 
     /** Parameter value for the element name. */
@@ -254,7 +254,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     protected static CmsResource readResource(CmsObject cms, CmsUUID id, String version) throws CmsException {
 
         if (Integer.parseInt(version) == CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION) {
-            return cms.readResource(id);
+            return cms.readResource(id, CmsResourceFilter.IGNORE_EXPIRATION);
         } else {
             int ver = Integer.parseInt(version);
             if (ver < 0) {
@@ -652,7 +652,12 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 m_differenceDialog.setOriginalSource(attributeStrings[0]);
                 m_differenceDialog.setCopySource(attributeStrings[1]);
             } else if (CmsResourceComparisonDialog.COMPARE_PROPERTIES.equals(getParamCompare())) {
-                List comparedProperties = CmsResourceComparison.compareProperties(getCms(), resource1, resource2);
+                List comparedProperties = CmsResourceComparison.compareProperties(
+                    getCms(),
+                    resource1,
+                    getParamVersion1(),
+                    resource2,
+                    getParamVersion2());
                 String[] propertyStrings = getPropertiesAsString(comparedProperties);
                 m_differenceDialog.setOriginalSource(propertyStrings[0]);
                 m_differenceDialog.setCopySource(propertyStrings[1]);
