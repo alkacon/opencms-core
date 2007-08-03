@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDBWrapper.java,v $
- * Date   : $Date: 2007/07/26 09:03:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/08/03 07:38:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,15 @@
 
 package org.opencms.setup;
 
+import org.opencms.util.CmsDataTypeUtil;
+
+import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 /**
  * Wrapper to encapsulate, connection, statment and result set for the setup
@@ -50,7 +55,9 @@ public class CmsSetupDBWrapper {
 
     /** the result set returned by the db wrapper. */
     private ResultSet m_resultset;
-
+    
+    /** the prepared statement. */
+    private PreparedStatement m_preparedStatement;
     /**
      * Constructor, creates a new CmsSetupDBWrapper.<p>
      * @param con the connection to use in this db wrapper. 
@@ -83,7 +90,17 @@ public class CmsSetupDBWrapper {
 
             }
         }
+        // prepared statement
+        if (m_preparedStatement != null) {
+            try {
+                m_preparedStatement.close();
+            } catch (Exception e) {
+                e.printStackTrace();
 
+            }
+        }
+        
+        
     }
 
     /** 
@@ -93,6 +110,46 @@ public class CmsSetupDBWrapper {
     public void createStatement() throws SQLException {
 
         m_statement = m_connection.createStatement();
+    }
+    
+    /** 
+     * Creates a new SQL Statement on the connetcion of this db wrapper.<p>
+     * @param params List of additional parameters
+     * @throws SQLException if statement cannot be created
+     */
+    public void createPreparedStatement(String query, List params) throws SQLException {
+
+        m_preparedStatement = m_connection.prepareStatement(query);
+        
+        // Check the params
+        if (params != null) {
+            for (int i = 0; i < params.size(); i++) {
+                Object item = params.get(i);
+
+                // Check if the parameter is a string
+                if (item instanceof String) {
+                    m_preparedStatement.setString(i + 1, (String)item);
+                }
+                if (item instanceof Integer) {
+                    Integer number = (Integer)item;
+                    m_preparedStatement.setInt(i + 1, number.intValue());
+                }
+                if (item instanceof Long) {
+                    Long longNumber = (Long)item;
+                    m_preparedStatement.setLong(i + 1, longNumber.longValue());
+                }
+
+                // If item is none of types above set the statement to use the bytes
+                if (!(item instanceof Integer) && !(item instanceof String) && !(item instanceof Long)) {
+                    try {
+                        m_preparedStatement.setBytes(i + 1, CmsDataTypeUtil.dataSerialize(item));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
     }
 
     /** 
@@ -105,6 +162,15 @@ public class CmsSetupDBWrapper {
         m_resultset = m_statement.executeQuery(query);
     }
 
+    /** 
+     * Excecutes a query on the connetcion and prepared statement of this db wrapper.<p>
+     * @throws SQLException if statement cannot be created
+     */
+    public void excecutePreparedQuery() throws SQLException {
+
+        m_resultset = m_preparedStatement.executeQuery();
+    }
+    
 
     /**
      * Returns the res.<p>

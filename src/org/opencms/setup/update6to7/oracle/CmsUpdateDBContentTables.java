@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2007/08/01 10:32:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/03 07:38:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * @author Roland Metzler
  * @author Peter Bonrad
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.0.0
  */

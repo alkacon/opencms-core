@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/oracle/Attic/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2007/07/04 16:56:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/03 07:38:15 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,12 @@
 package org.opencms.setup.update6to7.oracle;
 
 import org.opencms.db.oracle.CmsUserDriver;
+import org.opencms.setup.CmsSetupDBWrapper;
 import org.opencms.setup.CmsSetupDb;
 import org.opencms.util.CmsDataTypeUtil;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ import java.util.List;
  * @author Roland Metzler
  * @author Peter Bonrad
  *
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.0
  */
@@ -129,8 +129,10 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.update6to7.generic.Cm
         }
 
         // update user_info in this special way because of using blob
-        ResultSet res = null;
+
         boolean wasInTransaction = false;
+
+        CmsSetupDBWrapper db = null;
 
         try {
 
@@ -146,11 +148,11 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.update6to7.generic.Cm
             params.add(id);
             params.add(key);
 
-            res = dbCon.executeSqlStatement(stmt, null, params);
-            if (res.next()) {
+            db = dbCon.executeSqlStatement(stmt, null, params);
+            if (db.getResultSet().next()) {
 
                 // write serialized user info 
-                OutputStream output = CmsUserDriver.getOutputStreamFromBlob(res, "DATA_VALUE");
+                OutputStream output = CmsUserDriver.getOutputStreamFromBlob(db.getResultSet(), "DATA_VALUE");
                 output.write(CmsDataTypeUtil.dataSerialize(value));
                 output.close();
 
@@ -159,8 +161,15 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.update6to7.generic.Cm
             }
 
             if (!wasInTransaction) {
-                String commit = readQuery("Q_COMMIT");
-                dbCon.executeSqlStatement(commit, null);
+                CmsSetupDBWrapper db2 = null;
+                try {
+                    String commit = readQuery("Q_COMMIT");
+                    db2 = dbCon.executeSqlStatement(commit, null);
+                } finally {
+                    if (db2 != null) {
+                        db2.close();
+                    }
+                }
             }
 
         } catch (Exception e) {
@@ -168,22 +177,23 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.update6to7.generic.Cm
         } finally {
 
             // close result set
-            try {
-                if (res != null) {
-                    res.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (db != null) {
+                db.close();
             }
 
             // rollback
+            CmsSetupDBWrapper db2 = null;
             try {
                 if (!wasInTransaction) {
                     String rollback = readQuery("Q_ROLLBACK");
-                    dbCon.executeSqlStatement(rollback, null);
+                    db2 = dbCon.executeSqlStatement(rollback, null);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            } finally {
+                if (db2 != null) {
+                    db2.close();
+                }
             }
 
             // set auto commit back to original value

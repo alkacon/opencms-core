@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2007/07/26 09:03:25 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/08/03 07:38:15 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -329,10 +329,9 @@ public class CmsSetupDb extends Object {
      * 
      * @throws SQLException if something goes wrong
      */
-    public ResultSet executeSqlStatement(String query, Map replacer, List params) throws SQLException {
+    public CmsSetupDBWrapper executeSqlStatement(String query, Map replacer, List params) throws SQLException {
 
-        PreparedStatement stmt = null;
-        ResultSet resultSet = null;
+        CmsSetupDBWrapper dbwrapper = new CmsSetupDBWrapper(m_con);
 
         String queryToExecute = query;
 
@@ -341,41 +340,11 @@ public class CmsSetupDb extends Object {
             queryToExecute = replaceTokens(query, replacer);
         }
 
-        stmt = m_con.prepareStatement(queryToExecute);
+        dbwrapper.createPreparedStatement(queryToExecute, params);
 
-        // Check the params
-        if (params != null) {
-            for (int i = 0; i < params.size(); i++) {
-                Object item = params.get(i);
+        dbwrapper.excecutePreparedQuery();
 
-                // Check if the parameter is a string
-                if (item instanceof String) {
-                    stmt.setString(i + 1, (String)item);
-                }
-                if (item instanceof Integer) {
-                    Integer number = (Integer)item;
-                    stmt.setInt(i + 1, number.intValue());
-                }
-                if (item instanceof Long) {
-                    Long longNumber = (Long)item;
-                    stmt.setLong(i + 1, longNumber.longValue());
-                }
-
-                // If item is none of types above set the statement to use the bytes
-                if (!(item instanceof Integer) && !(item instanceof String) && !(item instanceof Long)) {
-                    try {
-                        stmt.setBytes(i + 1, CmsDataTypeUtil.dataSerialize(item));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-
-        // do the query
-        resultSet = stmt.executeQuery();
-
-        return resultSet;
+        return dbwrapper;
     }
 
     /**
@@ -493,6 +462,14 @@ public class CmsSetupDb extends Object {
      */
     public void setConnection(String DbDriver, String DbConStr, String DbConStrParams, String DbUser, String DbPwd) {
 
+        System.out.println("Connection to DB:");
+        System.out.println("DbDriver: "+DbDriver);
+        System.out.println("DbConStr: "+DbConStr);
+        System.out.println("DbConStrParams: "+DbConStrParams);
+        System.out.println("DbUser: "+DbUser);
+        System.out.println("DbPwd: "+DbPwd);
+        
+        
         String jdbcUrl = DbConStr;
         try {
             if (DbConStrParams != null) {
@@ -500,10 +477,17 @@ public class CmsSetupDb extends Object {
             }
             Class.forName(DbDriver).newInstance();
             m_con = DriverManager.getConnection(jdbcUrl, DbUser, DbPwd);
+            
+            System.out.println("Connection established: "+m_con);
+            System.out.println("Connection autocommit: "+m_con.getAutoCommit());
+            
+            
         } catch (ClassNotFoundException e) {
+            System.out.println("Class not found exception: "+e);
             m_errors.addElement(Messages.get().getBundle().key(Messages.ERR_LOAD_JDBC_DRIVER_1, DbDriver));
             m_errors.addElement(CmsException.getStackTraceAsString(e));
         } catch (Exception e) {
+            System.out.println("Exception: "+e);
             m_errors.addElement(Messages.get().getBundle().key(Messages.ERR_DB_CONNECT_1, DbConStr));
             m_errors.addElement(CmsException.getStackTraceAsString(e));
         }
