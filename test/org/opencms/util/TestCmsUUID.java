@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsUUID.java,v $
- * Date   : $Date: 2007/07/31 17:32:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/08/03 09:54:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,10 @@ import org.opencms.test.OpenCmsTestCase;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -51,7 +51,7 @@ import org.doomdark.uuid.UUID;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -178,6 +178,7 @@ public class TestCmsUUID extends OpenCmsTestCase {
         CmsUUID id4 = CmsUUID.getNullUUID();
         assertEquals(idNull, id4);
 
+        System.out.println("Generating a lot of UUIDs in a loop very fast - warnings may pe printed to console...");
         int testSize = 100000;
         CmsUUID[] ids = new CmsUUID[testSize];
         for (int i = 0; i < testSize; i++) {
@@ -195,20 +196,7 @@ public class TestCmsUUID extends OpenCmsTestCase {
             }
         }
         long time1 = System.currentTimeMillis() - start;
-        System.out.println("Time for UUID equals() implementation: " + time1);
-
-        //        
-        //        int hits2 = 0;
-        //        start = System.currentTimeMillis();
-        //        for (int i=0; i<testSize; i++) {            
-        //            int pos1 = r.nextInt(testSize);
-        //            int pos2 = r.nextInt(testSize);
-        //            if (ids[pos1].equals2(ids[pos2])) {
-        //                hits2++;
-        //            }
-        //        }
-        //        long time2 = System.currentTimeMillis() - start;
-        //        System.out.println("Time 2 for equals(): " + time2);
+        System.out.println("Time for UUID equals() implementation for " + testSize + " UUIDs : " + time1);
     }
 
     /**
@@ -255,10 +243,7 @@ public class TestCmsUUID extends OpenCmsTestCase {
      */
     protected Object deSerializeObjectFromFile(String name) throws Exception {
 
-        File inputFile = new File(getClass().getClassLoader().getResource(name).toURI());
-        // System.out.println(inputFile.getAbsolutePath());
-        FileInputStream fin = new FileInputStream(inputFile);
-        ObjectInputStream oin = new ObjectInputStream(fin);
+        ObjectInputStream oin = new ObjectInputStream(getClass().getClassLoader().getResourceAsStream(name));
         return oin.readObject();
     }
 
@@ -289,7 +274,7 @@ public class TestCmsUUID extends OpenCmsTestCase {
      */
     protected void serializeObjectToFile(String name, Object o) throws Exception {
 
-        File outputFile = new File(getClass().getClassLoader().getResource(name).toURI());
+        File outputFile = new File(new URI(getClass().getClassLoader().getResource(name).toString()));
         // System.out.println(outputFile.getAbsolutePath());
         FileOutputStream fout = new FileOutputStream(outputFile);
         ObjectOutputStream oout = new ObjectOutputStream(fout);
