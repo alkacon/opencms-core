@@ -754,5 +754,5 @@
 <!--
 # Include the explorer types DTD.
 -->
-<!ENTITY % opencms-explorertypes SYSTEM "http://www.opencms.org/dtd/6.0/opencms-explorertypes.dtd"> 
+<!ENTITY % opencms-explorertypes SYSTEM "http://www.opencms.org/dtd/%(current-dtd-version)/opencms-explorertypes.dtd"> 
 %opencms-explorertypes;
