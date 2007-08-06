@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/07/04 16:57:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/06 08:40:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,14 +75,14 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 
 /**
- * Generic (ANSI-SQL) database server implementation of the hitory driver methods.<p>
+ * Generic (ANSI-SQL) database server implementation of the history driver methods.<p>
  * 
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.9.1
  */
@@ -447,6 +447,8 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         try {
             conn = m_sqlManager.getConnection(dbc);
 
+            // get all direct versions (where the structure entry has been written)
+            // sorted from the NEWEST to the OLDEST version (publish tag descendant)
             List historyResources = new ArrayList();
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_ALL_VERSIONS");
             stmt.setString(1, structureId.toString());
@@ -458,67 +460,116 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
             if (!historyResources.isEmpty()) {
                 // look for newer versions
+                // this is the NEWEST version, with the HIGHEST publish tag
                 I_CmsHistoryResource histRes = (I_CmsHistoryResource)historyResources.get(0);
 
+                // look for later resource entries
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_NEW_VERSIONS");
                 stmt.setString(1, histRes.getResourceId().toString());
                 stmt.setInt(2, histRes.getPublishTag());
                 res = stmt.executeQuery();
 
                 I_CmsHistoryResource lastHistRes = histRes;
+                // these are sorted from the oldest to the newest version (publish tag ascendent)
                 while (res.next()) {
-                    int pubTag = res.getInt(1);
-                    I_CmsHistoryResource newHistRes = internalReadMergedResource(dbc, histRes, pubTag);
-                    if (newHistRes.getVersion() == lastHistRes.getVersion()) {
-                        lastHistRes = newHistRes;
+                    int resVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
+                    if (resVersion == lastHistRes.getResourceVersion()) {
+                        // skip not interesting versions
                         continue;
                     }
+                    I_CmsHistoryResource newHistRes = internalMergeResource(dbc, histRes, res, 0);
+                    // add interesting versions, in the right order
+                    result.add(0, newHistRes);
                     lastHistRes = newHistRes;
-                    result.add(0, lastHistRes); // put them in the right order
                 }
                 m_sqlManager.closeAll(dbc, null, stmt, res);
             }
+            // iterate from the NEWEST to the OLDEST versions (publish tag descendant)
             for (int i = 0; i < historyResources.size(); i++) {
                 I_CmsHistoryResource histRes = (I_CmsHistoryResource)historyResources.get(i);
                 result.add(histRes);
                 if (i < historyResources.size() - 1) {
-                    // look in between
+                    // this is one older direct version than histRes (histRes.getPublishTag() > histRes2.getPublishTag())
                     I_CmsHistoryResource histRes2 = (I_CmsHistoryResource)historyResources.get(i + 1);
 
+                    // look for resource changes in between of the direct versions in ascendent order                    
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_BTW_VERSIONS");
                     stmt.setString(1, histRes.getResourceId().toString());
-                    stmt.setInt(2, histRes.getPublishTag());
-                    stmt.setInt(3, histRes2.getPublishTag());
+                    stmt.setInt(2, histRes2.getPublishTag()); // lower limit
+                    stmt.setInt(3, histRes.getPublishTag()); // upper limit
                     res = stmt.executeQuery();
 
-                    I_CmsHistoryResource lastHistRes = histRes;
+                    int pos = result.size();
+                    I_CmsHistoryResource lastHistRes = histRes2;
                     while (res.next()) {
-                        int pubTag = res.getInt(1);
-                        I_CmsHistoryResource newHistRes = internalReadMergedResource(dbc, histRes, pubTag);
-                        if (newHistRes.getVersion() == lastHistRes.getVersion()) {
-                            lastHistRes = newHistRes;
+                        int resVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
+                        if (resVersion == lastHistRes.getResourceVersion()) {
+                            // skip not interesting versions
                             continue;
                         }
+                        I_CmsHistoryResource newHistRes = internalMergeResource(dbc, histRes2, res, 0);
+                        // add interesting versions, in the right order
+                        result.add(pos, newHistRes);
                         lastHistRes = newHistRes;
-                        result.add(lastHistRes);
                     }
                     m_sqlManager.closeAll(dbc, null, stmt, res);
                 }
             }
             if (!result.isEmpty()) {
-                // look for older versions
+                // get the oldest version
                 I_CmsHistoryResource histRes = (I_CmsHistoryResource)result.get(result.size() - 1);
 
                 if (histRes.getVersion() > 1) {
+                    // look for older resource versions, in descendant order
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_OLD_VERSIONS");
                     stmt.setString(1, histRes.getResourceId().toString());
                     stmt.setInt(2, histRes.getPublishTag());
                     res = stmt.executeQuery();
 
+                    int offset = (histRes.getStructureVersion() > 0 ? 1 : 0);
+
+                    I_CmsHistoryResource lastHistRes = histRes;
+                    while (res.next()) {
+                        I_CmsHistoryResource newHistRes = internalMergeResource(dbc, histRes, res, offset);
+                        if (newHistRes.getResourceVersion() != lastHistRes.getResourceVersion()) {
+                            // only add interesting versions
+                            if (offset == 1) {
+                                result.add(lastHistRes);
+                            } else {
+                                result.add(newHistRes);
+                            }
+                        }
+                        lastHistRes = newHistRes;
+                    }
+                    // add the last one if there is one
+                    if ((offset == 1) && (lastHistRes != histRes)) {
+                        result.add(lastHistRes);
+                    }
+                    m_sqlManager.closeAll(dbc, null, stmt, res);
+                }
+            } else {
+                // new resources have no history entries (despite they could be computed for siblings)
+                /*
+                // look for older resource versions, and merge with online or offline entry
+                CmsResource resource;
+                try {
+                    // first try online
+                    resource = m_driverManager.getVfsDriver().readResource(dbc, CmsProject.ONLINE_PROJECT_ID, structureId, true);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    // then try offline
+                    resource = m_driverManager.getVfsDriver().readResource(dbc, dbc.getProjectId(), structureId, true);
+                }
+
+                if (resource.getVersion() > 1) {
+                    stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_OLD_VERSIONS_ALL");
+                    stmt.setString(1, resource.getResourceId().toString());
+                    res = stmt.executeQuery();
+
+                    I_CmsHistoryResource histRes = new CmsHistoryFile(resource);
                     I_CmsHistoryResource lastHistRes = histRes;
                     while (res.next()) {
                         int pubTag = res.getInt(1);
-                        I_CmsHistoryResource newHistRes = internalReadMergedResource(dbc, histRes, pubTag);
+                        I_CmsHistoryResource newHistRes = internalReadMergedResource(dbc, histRes, pubTag); // this needs improvement
                         if (newHistRes.getVersion() == lastHistRes.getVersion()) {
                             lastHistRes = newHistRes;
                             continue;
@@ -528,6 +579,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                     }
                     m_sqlManager.closeAll(dbc, null, stmt, res);
                 }
+                */
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1265,25 +1317,58 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     public void writeResource(CmsDbContext dbc, CmsResource resource, List properties, int publishTag)
     throws CmsDataAccessException {
 
-        // read the version numbers
-        Map versions = m_driverManager.getVfsDriver().readVersions(
-            dbc,
-            resource.getState().isDeleted() ? dbc.currentProject().getUuid() : CmsProject.ONLINE_PROJECT_ID,
-            resource.getStructureId());
-        int structureVersion = ((Integer)versions.get("structure")).intValue();
-        int resourceVersion = ((Integer)versions.get("resource")).intValue();
-
         Connection conn = null;
         PreparedStatement stmt = null;
 
         try {
             conn = m_sqlManager.getConnection(dbc);
 
-            int sibCount = m_driverManager.getVfsDriver().countSiblings(
+            int sibCount = resource.getSiblingCount();
+
+            boolean valResource = internalValidateResource(dbc, resource, publishTag);
+
+            // if deleted
+            if (resource.getState().isDeleted()) {
+                // if it is a file
+                if (resource instanceof CmsFile) {
+                    if (!valResource) {
+                        if (sibCount < 2) {
+                            // copy from offline content to content tables
+                            // so that the history contains the last state of the file
+                            m_driverManager.getVfsDriver().createOnlineContent(
+                                dbc,
+                                resource.getResourceId(),
+                                ((CmsFile)resource).getContents(),
+                                publishTag,
+                                false,
+                                true);
+                        } else {
+                            // put the content definitively in the history if no sibling is left
+                            m_driverManager.getVfsDriver().createOnlineContent(
+                                dbc,
+                                resource.getResourceId(),
+                                ((CmsFile)resource).getContents(),
+                                publishTag,
+                                true,
+                                false);
+                        }
+                    }
+                }
+
+                // update version numbers
+                m_driverManager.getVfsDriver().publishVersions(dbc, resource, !valResource);
+            }
+
+            // read the version numbers
+            Map versions = m_driverManager.getVfsDriver().readVersions(
                 dbc,
-                dbc.currentProject().getUuid(),
-                resource.getResourceId());
-            if (!internalValidateResource(dbc, resource, publishTag)) {
+                CmsProject.ONLINE_PROJECT_ID,
+                resource.getResourceId(),
+                resource.getStructureId());
+            int structureVersion = ((Integer)versions.get("structure")).intValue();
+            int resourceVersion = ((Integer)versions.get("resource")).intValue();
+
+            if (!valResource) {
                 // write the resource
                 stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_WRITE");
                 stmt.setString(1, resource.getResourceId().toString());
@@ -1303,57 +1388,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 stmt.executeUpdate();
 
                 m_sqlManager.closeAll(dbc, null, stmt, null);
-
-                // if it is a file
-                if (resource instanceof CmsFile) {
-                    // if deleted
-                    if (resource.getState().isDeleted()) {
-                        CmsResource onlineResource;
-                        try {
-                            // read the file header online                   
-                            onlineResource = m_driverManager.getVfsDriver().readResource(
-                                dbc,
-                                CmsProject.ONLINE_PROJECT_ID,
-                                resource.getStructureId(),
-                                true);
-                        } catch (CmsDataAccessException e) {
-                            if (LOG.isErrorEnabled()) {
-                                LOG.error(e.getLocalizedMessage(), e);
-                            }
-                            throw e;
-                        }
-
-                        // copy content from offline to online content tables
-                        // so that the history contains the last state of the file
-                        m_driverManager.getVfsDriver().createOnlineContent(
-                            dbc,
-                            resource.getResourceId(),
-                            ((CmsFile)resource).getContents(),
-                            publishTag,
-                            (sibCount > 1),
-                            (onlineResource.getDateContent() < resource.getDateContent()));
-                    }
-                }
-            } else {
-                // if it is a file
-                if (resource instanceof CmsFile) {
-                    // if deleted
-                    if (resource.getState().isDeleted()) {
-                        // if no more siblings
-                        if (sibCount < 2) {
-                            // put the content definitively in the history if no sibling is left
-                            m_driverManager.getVfsDriver().createOnlineContent(
-                                dbc,
-                                resource.getResourceId(),
-                                ((CmsFile)resource).getContents(),
-                                publishTag,
-                                false,
-                                false);
-                        }
-                    }
-                }
             }
-
             CmsUUID parentId = CmsUUID.getNullUUID();
             CmsFolder parent = m_driverManager.getVfsDriver().readParentFolder(
                 dbc,
@@ -1549,7 +1584,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     /**
      * Creates a historical project from the given result set and resources.<p>
      * @param res the resource set
-     * @param resources the hsitorical resources
+     * @param resources the historical resources
      * 
      * @return the historical project
      *  
@@ -1586,7 +1621,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
      */
     protected I_CmsHistoryResource internalCreateResource(ResultSet res) throws SQLException {
 
-        int version = res.getInt(m_sqlManager.readQuery("C_RESOURCES_HISTORY_VERSION"));
         int resourceVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
         int structureVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_VERSION"));
         int tagId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PUBLISH_TAG"));
@@ -1627,7 +1661,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 userLastModified,
                 dateReleased,
                 dateExpired,
-                version,
+                resourceVersion + structureVersion,
                 parentId,
                 resourceVersion,
                 structureVersion);
@@ -1649,7 +1683,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 dateExpired,
                 resourceSize,
                 dateContent,
-                version,
+                resourceVersion + structureVersion,
                 parentId,
                 null,
                 resourceVersion,
@@ -1691,49 +1725,90 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     }
 
     /**
-     * Reads an historical entry for a sibling, based on the structure entry for the given sibling
-     * and a publish tag for a resource entry made by a modification of other sibling.<p>
+     * Merges an historical entry for a sibling, based on the structure data from the given historical resource
+     * and result set for the resource entry.<p>
      * 
      * @param dbc the current database context 
      * @param histRes the original historical entry
-     * @param pubTag the publish tag to get the resource entry from
+     * @param res the result set of the resource entry
+     * @param versionOffset the offset for the structure version
      * 
      * @return a merged historical entry for the sibling
      * 
-     * @throws CmsDataAccessException if something goes wrong
+     * @throws SQLException if something goes wrong
      */
-    protected I_CmsHistoryResource internalReadMergedResource(CmsDbContext dbc, I_CmsHistoryResource histRes, int pubTag)
-    throws CmsDataAccessException {
+    protected I_CmsHistoryResource internalMergeResource(
+        CmsDbContext dbc,
+        I_CmsHistoryResource histRes,
+        ResultSet res,
+        int versionOffset) throws SQLException {
 
-        Connection conn = null;
-        I_CmsHistoryResource result = null;
-        ResultSet res = null;
-        PreparedStatement stmt = null;
+        int resourceVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
+        int structureVersion = histRes.getStructureVersion() - versionOffset;
+        int tagId = res.getInt(m_sqlManager.readQuery("C_RESOURCES_PUBLISH_TAG"));
+        CmsUUID structureId = histRes.getStructureId();
+        CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
+        int resourceType = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_TYPE"));
+        int resourceFlags = res.getInt(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_FLAGS"));
+        CmsUUID projectLastModified = new CmsUUID(
+            res.getString(m_sqlManager.readQuery("C_RESOURCES_PROJECT_LASTMODIFIED")));
+        int state = histRes.getState().getState(); // may be we have to compute something here?
+        long dateCreated = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CREATED"));
+        long dateLastModified = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_LASTMODIFIED"));
+        long dateReleased = histRes.getDateReleased();
+        long dateExpired = histRes.getDateExpired();
+        int resourceSize = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIZE"));
+        CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
+        CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
+        // here we could use the path/parent id for the sibling where the modification really occurred
+        String resourcePath = histRes.getRootPath();
+        CmsUUID parentId = histRes.getParentId();
+        long dateContent = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CONTENT"));
 
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_MERGED_VERSION");
-            stmt.setInt(1, pubTag < histRes.getPublishTag() ? 1 : 0);
-            stmt.setInt(2, pubTag < histRes.getPublishTag() ? 1 : 0);
-            stmt.setString(3, histRes.getStructureId().toString());
-            stmt.setInt(4, histRes.getPublishTag());
-            stmt.setInt(5, pubTag);
-            res = stmt.executeQuery();
-            if (res.next()) {
-                result = internalCreateResource(res);
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        if (histRes.isFolder()) {
+            return new CmsHistoryFolder(
+                tagId,
+                structureId,
+                resourceId,
+                resourcePath,
+                resourceType,
+                resourceFlags,
+                projectLastModified,
+                CmsResourceState.valueOf(state),
+                dateCreated,
+                userCreated,
+                dateLastModified,
+                userLastModified,
+                dateReleased,
+                dateExpired,
+                resourceVersion + structureVersion,
+                parentId,
+                resourceVersion,
+                structureVersion);
+        } else {
+            return new CmsHistoryFile(
+                tagId,
+                structureId,
+                resourceId,
+                resourcePath,
+                resourceType,
+                resourceFlags,
+                projectLastModified,
+                CmsResourceState.valueOf(state),
+                dateCreated,
+                userCreated,
+                dateLastModified,
+                userLastModified,
+                dateReleased,
+                dateExpired,
+                resourceSize,
+                dateContent,
+                resourceVersion + structureVersion,
+                parentId,
+                null,
+                resourceVersion,
+                structureVersion);
         }
-
-        return result;
     }
 
     /**
@@ -1743,7 +1818,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
      * @param resource the resource to test
      * @param publishTag the publish tag of the resource to test
      * 
-     * @return <code>true</code> if the resource already exists, <code>false</code> otherweise
+     * @return <code>true</code> if the resource already exists, <code>false</code> otherwise
      * 
      * @throws CmsDataAccessException if something goes wrong
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/07/04 16:57:06 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/08/06 08:40:35 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -95,6 +95,7 @@ public class TestPublishing extends OpenCmsTestCase {
         suite.addTest(new TestPublishing("testPublishStructureProperty"));
         suite.addTest(new TestPublishing("testPublishResourceProperty"));
         suite.addTest(new TestPublishing("testPublishSiblings"));
+        suite.addTest(new TestPublishing("testPublishCopySibling"));
         suite.addTest(new TestPublishing("testPublishNewFiles"));
         suite.addTest(new TestPublishing("testPublishNewFilesInNewFolder"));
         suite.addTest(new TestPublishing("testPublishChangedFiles"));
@@ -382,7 +383,7 @@ public class TestPublishing extends OpenCmsTestCase {
         synchronized (this) {
             wait(50);
         }
-        
+
         assertTrue(offlineFile.getDateContent() < System.currentTimeMillis());
         assertDateContentAfter(cms, resName, time);
         assertDateContentAfter(cms, sibName, time);
@@ -419,7 +420,7 @@ public class TestPublishing extends OpenCmsTestCase {
         // this will write the content for updating links
         cms.moveResource(resName, movedName);
         offlineFile = cms.readFile(movedName);
-        
+
         assertDateContentAfter(cms, movedName, time);
         assertDateContentAfter(cms, sibName, time);
         time = offlineFile.getDateContent();
@@ -444,6 +445,45 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(onlineProject);
         assertDateContentAfter(cms, movedName, time);
         assertDateContentAfter(cms, sibName, time);
+    }
+
+    /**
+     * Tests the publishing of a fresh created sibling.<p>
+     * 
+     * take a modified resource:
+     * - create a sibling of it 
+     * - publish only the sibling 
+     * - compare online/offline versions of the sibling
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishCopySibling() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        String source = "/folder1/page1.html";
+        echo("testing the publishing of a fresh created sibling");
+
+        long time = System.currentTimeMillis();
+        cms.lockResource(source);
+        cms.setDateLastModified(source, time, false);
+        synchronized (this) {
+            wait(100);
+        }
+
+        String destination = "/folder1/sibling2.html";
+        cms.copyResource(source, destination, CmsResource.COPY_AS_SIBLING);
+
+        OpenCms.getPublishManager().publishResource(cms, destination);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        long newTime = cms.readResource(destination).getDateLastModified();
+
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        assertEquals(
+            "File is unchanged and online date last modified is not the same as offline",
+            newTime,
+            cms.readResource(destination).getDateLastModified());
+        assertState(cms, destination, CmsResource.STATE_UNCHANGED);
     }
 
     /**
@@ -561,6 +601,192 @@ public class TestPublishing extends OpenCmsTestCase {
 
         cms.getRequestContext().setCurrentProject(offlineProject);
 
+    }
+
+    /**
+     * Tests the publishing of deleted siblings.<p>
+     * 
+     * take 2 siblings (s1 and s2):
+     *  - delete one 
+     *  - publish the deleted one 
+     *  - the remaining sibling should be readable in online project
+     *  - the deleted sibling should be eligible for restoration
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishDeletedSiblings() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+
+        String source = "/testdeletesib1.html";
+        String sibling = "/testdeletesib2.html";
+
+        echo("testing publishing of deleted siblings");
+
+        // create the siblings
+        CmsResource src = cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
+        CmsFile file = CmsFile.upgrade(src, cms);
+        file.setContents("test text".getBytes());
+        cms.writeFile(file);
+
+        cms.createSibling(source, sibling, null);
+
+        // publish both
+        OpenCms.getPublishManager().publishResource(
+            cms,
+            source,
+            true,
+            new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+        CmsProject offline = cms.getRequestContext().currentProject();
+
+        // store the online versions
+        cms.getRequestContext().setCurrentProject(online);
+        storeResources(cms, source);
+        storeResources(cms, sibling);
+        cms.getRequestContext().setCurrentProject(offline);
+
+        // delete one sibling
+        cms.lockResource(sibling);
+        cms.deleteResource(sibling, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.unlockResource(sibling);
+
+        // check the online versions
+        cms.getRequestContext().setCurrentProject(online);
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        assertFilter(cms, sibling, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        cms.getRequestContext().setCurrentProject(offline);
+
+        // publish just the deleted sibling
+        OpenCms.getPublishManager().publishResource(
+            cms,
+            sibling,
+            false,
+            new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.getRequestContext().setCurrentProject(online);
+        assertFalse(cms.existsResource(sibling, CmsResourceFilter.ALL));
+        assertTrue(cms.existsResource(source, CmsResourceFilter.ALL));
+        assertEquals(new String("test text".getBytes()), new String(cms.readFile(source).getContents()));
+        cms.getRequestContext().setCurrentProject(offline);
+
+        List list = cms.readDeletedResources("/", false);
+        CmsHistoryFile histFile = (CmsHistoryFile)list.get(0);
+        assertEquals(cms.getRequestContext().addSiteRoot(sibling), histFile.getRootPath());
+        assertEquals(2, histFile.getVersion());
+        file = CmsFile.upgrade(histFile, cms);
+        assertEquals(new String("test text".getBytes()), new String(file.getContents()));
+
+        // now delete the 2nd sibling
+        cms.lockResource(source);
+        cms.deleteResource(source, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.unlockResource(source);
+
+        // publish the deleted sibling
+        OpenCms.getPublishManager().publishResource(cms, source);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.getRequestContext().setCurrentProject(online);
+        assertFalse(cms.existsResource(sibling, CmsResourceFilter.ALL));
+        assertFalse(cms.existsResource(source, CmsResourceFilter.ALL));
+        cms.getRequestContext().setCurrentProject(offline);
+
+        list = cms.readDeletedResources("/", false);
+        assertEquals(2, list.size());
+        histFile = (CmsHistoryFile)list.get(0);
+        assertEquals(cms.getRequestContext().addSiteRoot(source), histFile.getRootPath());
+        assertEquals(2, histFile.getVersion());
+        file = CmsFile.upgrade(histFile, cms);
+        assertEquals(new String("test text".getBytes()), new String(file.getContents()));
+        CmsHistoryFile histFile2 = (CmsHistoryFile)list.get(1);
+        assertEquals(cms.getRequestContext().addSiteRoot(sibling), histFile2.getRootPath());
+        assertEquals(2, histFile2.getVersion());
+        file = CmsFile.upgrade(histFile2, cms);
+        assertEquals(new String("test text".getBytes()), new String(file.getContents()));
+    }
+
+    /**
+     * Tests the publishing of deleted siblings, 2nd issue.<p>
+     * 
+     * take 2 siblings (s1 and s2):
+     *  - delete all
+     *  - publish all
+     *  - non of them should be readable
+     *  - both siblings should be eligible for restoration
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishDeletedSiblings2() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+
+        String folder = "/testdelete";
+        String source = "/testdelete/testdeletesib2-1.html";
+        String sibling = "/testdelete/testdeletesib2-2.html";
+
+        echo("testing publishing of deleted siblings, 2nd issue");
+
+        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        // create the siblings
+        CmsResource src = cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
+        CmsFile file = CmsFile.upgrade(src, cms);
+        file.setContents("test text".getBytes());
+        cms.writeFile(file);
+
+        cms.createSibling(source, sibling, null);
+
+        // publish all
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
+        CmsProject offline = cms.getRequestContext().currentProject();
+
+        // store the online versions
+        cms.getRequestContext().setCurrentProject(online);
+        storeResources(cms, source);
+        storeResources(cms, sibling);
+        cms.getRequestContext().setCurrentProject(offline);
+
+        // delete both siblings
+        cms.lockResource(sibling);
+        cms.deleteResource(sibling, CmsResource.DELETE_REMOVE_SIBLINGS);
+        cms.unlockResource(sibling);
+
+        // check the online versions
+        cms.getRequestContext().setCurrentProject(online);
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        assertFilter(cms, sibling, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        cms.getRequestContext().setCurrentProject(offline);
+
+        // publish both deleted siblings
+        OpenCms.getPublishManager().publishResource(
+            cms,
+            sibling,
+            true,
+            new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.getRequestContext().setCurrentProject(online);
+        assertFalse(cms.existsResource(sibling, CmsResourceFilter.ALL));
+        assertFalse(cms.existsResource(source, CmsResourceFilter.ALL));
+        cms.getRequestContext().setCurrentProject(offline);
+
+        List list = cms.readDeletedResources(folder, false);
+        assertEquals(2, list.size());
+        CmsHistoryFile histFile = (CmsHistoryFile)list.get(0);
+        assertEquals(cms.getRequestContext().addSiteRoot(source), histFile.getRootPath());
+        assertEquals(2, histFile.getVersion());
+        file = CmsFile.upgrade(histFile, cms);
+        assertEquals(new String("test text".getBytes()), new String(file.getContents()));
+        CmsHistoryFile histFile2 = (CmsHistoryFile)list.get(1);
+        assertEquals(cms.getRequestContext().addSiteRoot(sibling), histFile2.getRootPath());
+        assertEquals(2, histFile2.getVersion());
+        file = CmsFile.upgrade(histFile2, cms);
+        assertEquals(new String("test text".getBytes()), new String(file.getContents()));
     }
 
     /**
@@ -763,7 +989,7 @@ public class TestPublishing extends OpenCmsTestCase {
         }
         assertFilter(cms, destination1, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
 
-        // check if the file in the offline project is unchancged now
+        // check if the file in the offline project is unchanged now
         cms.getRequestContext().setCurrentProject(offlineProject);
         assertState(cms, destination1, CmsResource.STATE_UNCHANGED);
 
@@ -799,7 +1025,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         assertFilter(cms, destination2, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
 
-        // check if the file in the offline project is unchancged now
+        // check if the file in the offline project is unchanged now
         cms.getRequestContext().setCurrentProject(offlineProject);
         assertState(cms, destination2, CmsResource.STATE_UNCHANGED);
         // the other siblings in the offline project must still be shown as new
@@ -829,7 +1055,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertFilter(cms, destination3, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
         assertFilter(cms, destination4, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
 
-        // check if the file in the offline project is unchancged now
+        // check if the file in the offline project is unchanged now
         cms.getRequestContext().setCurrentProject(offlineProject);
         assertState(cms, destination3, CmsResource.STATE_UNCHANGED);
         assertState(cms, destination4, CmsResource.STATE_UNCHANGED);
@@ -938,47 +1164,6 @@ public class TestPublishing extends OpenCmsTestCase {
         assertFilter(cms, newSibling, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
         assertState(cms, newSibling, CmsResource.STATE_UNCHANGED);
 
-    }
-
-    /**
-     * Test publishing a replaced file.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testPublishReplacedFile() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing publishing a replaced file");
-
-        String resourcename = "testReplace.txt";
-        byte[] orgCnt = "original content".getBytes();
-        byte[] newCnt = "new content".getBytes();
-
-        // create new file
-        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), orgCnt, null);
-        // assert offline
-        assertContent(cms, resourcename, orgCnt);
-        // publish
-        OpenCms.getPublishManager().publishResource(cms, resourcename);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        // assert online
-        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
-        assertContent(cms, resourcename, orgCnt);
-        cms = getCmsObject();
-        
-        // replace
-        cms.lockResource(resourcename);
-        cms.replaceResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), newCnt, null);
-        // assert offline
-        assertContent(cms, resourcename, newCnt);
-        // publish again
-        OpenCms.getPublishManager().publishResource(cms, resourcename);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        // assert online
-        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
-        assertContent(cms, resourcename, newCnt);
     }
 
     /**
@@ -1326,6 +1511,47 @@ public class TestPublishing extends OpenCmsTestCase {
     }
 
     /**
+     * Test publishing a replaced file.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishReplacedFile() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publishing a replaced file");
+
+        String resourcename = "testReplace.txt";
+        byte[] orgCnt = "original content".getBytes();
+        byte[] newCnt = "new content".getBytes();
+
+        // create new file
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), orgCnt, null);
+        // assert offline
+        assertContent(cms, resourcename, orgCnt);
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, resourcename);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // assert online
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        assertContent(cms, resourcename, orgCnt);
+        cms = getCmsObject();
+
+        // replace
+        cms.lockResource(resourcename);
+        cms.replaceResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), newCnt, null);
+        // assert offline
+        assertContent(cms, resourcename, newCnt);
+        // publish again
+        OpenCms.getPublishManager().publishResource(cms, resourcename);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // assert online
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        assertContent(cms, resourcename, newCnt);
+    }
+
+    /**
      * Test publishing a single resource with an iteration.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -1516,192 +1742,6 @@ public class TestPublishing extends OpenCmsTestCase {
 
         assertFilter(cms, sibling, OpenCmsTestResourceFilter.FILTER_PUBLISHRESOURCE);
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
-    }
-
-    /**
-     * Tests the publishing of deleted siblings.<p>
-     * 
-     * take 2 siblings (s1 and s2):
-     *  - delete one 
-     *  - publish the deleted one 
-     *  - the remaining sibling should be readable in online project
-     *  - the deleted sibling should be eligible for restoration
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testPublishDeletedSiblings() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-
-        String source = "/testdeletesib1.html";
-        String sibling = "/testdeletesib2.html";
-
-        echo("testing publishing of deleted siblings");
-
-        // create the siblings
-        CmsResource src = cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
-        CmsFile file = CmsFile.upgrade(src, cms);
-        file.setContents("test text".getBytes());
-        cms.writeFile(file);
-
-        cms.createSibling(source, sibling, null);
-
-        // publish both
-        OpenCms.getPublishManager().publishResource(
-            cms,
-            source,
-            true,
-            new CmsShellReport(cms.getRequestContext().getLocale()));
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
-        CmsProject offline = cms.getRequestContext().currentProject();
-
-        // store the online versions
-        cms.getRequestContext().setCurrentProject(online);
-        storeResources(cms, source);
-        storeResources(cms, sibling);
-        cms.getRequestContext().setCurrentProject(offline);
-
-        // delete one sibling
-        cms.lockResource(sibling);
-        cms.deleteResource(sibling, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        cms.unlockResource(sibling);
-
-        // check the online versions
-        cms.getRequestContext().setCurrentProject(online);
-        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
-        assertFilter(cms, sibling, OpenCmsTestResourceFilter.FILTER_EQUAL);
-        cms.getRequestContext().setCurrentProject(offline);
-
-        // publish just the deleted sibling
-        OpenCms.getPublishManager().publishResource(
-            cms,
-            sibling,
-            false,
-            new CmsShellReport(cms.getRequestContext().getLocale()));
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        cms.getRequestContext().setCurrentProject(online);
-        assertFalse(cms.existsResource(sibling, CmsResourceFilter.ALL));
-        assertTrue(cms.existsResource(source, CmsResourceFilter.ALL));
-        assertEquals(new String("test text".getBytes()), new String(cms.readFile(source).getContents()));
-        cms.getRequestContext().setCurrentProject(offline);
-
-        List list = cms.readDeletedResources("/", false);
-        CmsHistoryFile histFile = (CmsHistoryFile)list.get(0);
-        assertEquals(cms.getRequestContext().addSiteRoot(sibling), histFile.getRootPath());
-        assertEquals(2, histFile.getVersion());
-        file = CmsFile.upgrade(histFile, cms);
-        assertEquals(new String("test text".getBytes()), new String(file.getContents()));
-
-        // now delete the 2nd sibling
-        cms.lockResource(source);
-        cms.deleteResource(source, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        cms.unlockResource(source);
-
-        // publish the deleted sibling
-        OpenCms.getPublishManager().publishResource(cms, source);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        cms.getRequestContext().setCurrentProject(online);
-        assertFalse(cms.existsResource(sibling, CmsResourceFilter.ALL));
-        assertFalse(cms.existsResource(source, CmsResourceFilter.ALL));
-        cms.getRequestContext().setCurrentProject(offline);
-
-        list = cms.readDeletedResources("/", false);
-        assertEquals(2, list.size());
-        histFile = (CmsHistoryFile)list.get(0);
-        assertEquals(cms.getRequestContext().addSiteRoot(source), histFile.getRootPath());
-        assertEquals(2, histFile.getVersion());
-        file = CmsFile.upgrade(histFile, cms);
-        assertEquals(new String("test text".getBytes()), new String(file.getContents()));
-        CmsHistoryFile histFile2 = (CmsHistoryFile)list.get(1);
-        assertEquals(cms.getRequestContext().addSiteRoot(sibling), histFile2.getRootPath());
-        assertEquals(2, histFile2.getVersion());
-        file = CmsFile.upgrade(histFile2, cms);
-        assertEquals(new String("test text".getBytes()), new String(file.getContents()));
-    }
-
-    /**
-     * Tests the publishing of deleted siblings, 2nd issue.<p>
-     * 
-     * take 2 siblings (s1 and s2):
-     *  - delete all
-     *  - publish all
-     *  - non of them should be readable
-     *  - both siblings should be eligible for restoration
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testPublishDeletedSiblings2() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-
-        String folder = "/testdelete";
-        String source = "/testdelete/testdeletesib2-1.html";
-        String sibling = "/testdelete/testdeletesib2-2.html";
-
-        echo("testing publishing of deleted siblings, 2nd issue");
-
-        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
-        // create the siblings
-        CmsResource src = cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
-        CmsFile file = CmsFile.upgrade(src, cms);
-        file.setContents("test text".getBytes());
-        cms.writeFile(file);
-
-        cms.createSibling(source, sibling, null);
-
-        // publish all
-        OpenCms.getPublishManager().publishResource(cms, folder);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        CmsProject online = cms.readProject(CmsProject.ONLINE_PROJECT_ID);
-        CmsProject offline = cms.getRequestContext().currentProject();
-
-        // store the online versions
-        cms.getRequestContext().setCurrentProject(online);
-        storeResources(cms, source);
-        storeResources(cms, sibling);
-        cms.getRequestContext().setCurrentProject(offline);
-
-        // delete both siblings
-        cms.lockResource(sibling);
-        cms.deleteResource(sibling, CmsResource.DELETE_REMOVE_SIBLINGS);
-        cms.unlockResource(sibling);
-
-        // check the online versions
-        cms.getRequestContext().setCurrentProject(online);
-        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
-        assertFilter(cms, sibling, OpenCmsTestResourceFilter.FILTER_EQUAL);
-        cms.getRequestContext().setCurrentProject(offline);
-
-        // publish both deleted siblings
-        OpenCms.getPublishManager().publishResource(
-            cms,
-            sibling,
-            true,
-            new CmsShellReport(cms.getRequestContext().getLocale()));
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        cms.getRequestContext().setCurrentProject(online);
-        assertFalse(cms.existsResource(sibling, CmsResourceFilter.ALL));
-        assertFalse(cms.existsResource(source, CmsResourceFilter.ALL));
-        cms.getRequestContext().setCurrentProject(offline);
-
-        List list = cms.readDeletedResources(folder, false);
-        assertEquals(2, list.size());
-        CmsHistoryFile histFile = (CmsHistoryFile)list.get(0);
-        assertEquals(cms.getRequestContext().addSiteRoot(source), histFile.getRootPath());
-        assertEquals(2, histFile.getVersion());
-        file = CmsFile.upgrade(histFile, cms);
-        assertEquals(new String("test text".getBytes()), new String(file.getContents()));
-        CmsHistoryFile histFile2 = (CmsHistoryFile)list.get(1);
-        assertEquals(cms.getRequestContext().addSiteRoot(sibling), histFile2.getRootPath());
-        assertEquals(2, histFile2.getVersion());
-        file = CmsFile.upgrade(histFile2, cms);
-        assertEquals(new String("test text".getBytes()), new String(file.getContents()));
     }
 
     /**

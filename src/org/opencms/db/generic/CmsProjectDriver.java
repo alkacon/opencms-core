@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/07/17 14:00:33 $
- * Version: $Revision: 1.245 $
+ * Date   : $Date: 2007/08/06 08:40:35 $
+ * Version: $Revision: 1.246 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.245 $
+ * @version $Revision: 1.246 $
  * 
  * @since 6.0.0 
  */
@@ -1046,28 +1046,38 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 }
             }
 
+            // only update the content if it was not updated before
+            boolean alreadyPublished = publishedResourceIds.contains(offlineResource.getResourceId());
+            needToUpdateContent &= !alreadyPublished;
+
             if (createSibling) {
-                // create the sibling online
-                m_driverManager.getVfsDriver().createSibling(dbc, onlineProject, offlineResource);
+                if (!alreadyPublished) {
+                    // create the file online, the first time a sibling is published also the resource entry has to be actualized
+                    m_driverManager.getVfsDriver().createResource(dbc, onlineProject.getUuid(), newFile, null);
+                } else {
+                    // create the sibling online
+                    m_driverManager.getVfsDriver().createSibling(dbc, onlineProject, offlineResource);
+                }
                 newFile = new CmsFile(offlineResource);
                 newFile.setContents(offlineContent);
             } else {
                 // update the online/offline structure and resource records of the file
                 m_driverManager.getVfsDriver().publishResource(dbc, onlineProject, newFile, offlineFile);
-
-                // create the file content online
-                m_driverManager.getVfsDriver().createOnlineContent(
-                    dbc,
-                    offlineFile.getResourceId(),
-                    offlineFile.getContents(),
-                    publishTag,
-                    true,
-                    needToUpdateContent);
-                
-                // only add offline resource to set of published resources the sibling was not new (ie. created)
-                // otherwise content of new siblings that are published before their "originals" will not be written
-                publishedResourceIds.add(offlineResource.getResourceId());
             }
+            // update version numbers
+            m_driverManager.getVfsDriver().publishVersions(dbc, offlineResource, !alreadyPublished);
+
+            // create/update the content
+            m_driverManager.getVfsDriver().createOnlineContent(
+                dbc,
+                offlineFile.getResourceId(),
+                offlineFile.getContents(),
+                publishTag,
+                true,
+                needToUpdateContent);
+
+            // mark the resource as written to avoid that the same content is written for each sibling instance
+            publishedResourceIds.add(offlineResource.getResourceId());
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
@@ -1122,6 +1132,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         onlineProject.getUuid(),
                         newFolder,
                         null);
+                    m_driverManager.getVfsDriver().publishResource(dbc, onlineProject, onlineFolder, offlineFolder);
+                    // update version numbers
+                    m_driverManager.getVfsDriver().publishVersions(dbc, offlineFolder, true);
                 } catch (CmsVfsResourceAlreadyExistsException e) {
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(Messages.get().getBundle().key(
@@ -1134,6 +1147,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                             onlineProject.getUuid(),
                             offlineFolder.getRootPath());
                         m_driverManager.getVfsDriver().publishResource(dbc, onlineProject, onlineFolder, offlineFolder);
+                        // update version numbers
+                        m_driverManager.getVfsDriver().publishVersions(dbc, offlineFolder, true);
                     } catch (CmsDataAccessException e1) {
                         if (LOG.isErrorEnabled()) {
                             LOG.error(Messages.get().getBundle().key(
@@ -1183,6 +1198,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 try {
                     // update the folder online
                     m_driverManager.getVfsDriver().publishResource(dbc, onlineProject, onlineFolder, offlineFolder);
+                    // update version numbers
+                    m_driverManager.getVfsDriver().publishVersions(dbc, offlineFolder, true);
                 } catch (CmsDataAccessException e) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().getBundle().key(
@@ -1480,6 +1497,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             }
             throw new CmsDataAccessException(message, o);
         } finally {
+            // reset vfs driver internal info after publishing
+            m_driverManager.getVfsDriver().publishVersions(dbc, null, false);
             Object[] msgArgs = new Object[] {
                 String.valueOf(publishedFileCount),
                 String.valueOf(publishedFolderCount),
@@ -2465,7 +2484,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     }
 
     /**
-     * Resets the state to UNCHANGED and the last-modified-in-project-ID to the current project for a specified resource.<p>
+     * Resets the state to UNCHANGED for a specified resource.<p>
      * 
      * @param dbc the current database context
      * @param resource the Cms resource
@@ -2475,22 +2494,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     protected void internalResetResourceState(CmsDbContext dbc, CmsResource resource) throws CmsDataAccessException {
 
         try {
-
-            // reset the resource state and the last-modified-in-project ID offline
-            if (!resource.getState().isUnchanged()) {
-                resource.setState(CmsResource.STATE_UNCHANGED);
-                m_driverManager.getVfsDriver().writeResourceState(
-                    dbc,
-                    dbc.currentProject(),
-                    resource,
-                    CmsDriverManager.UPDATE_ALL,
-                    true);
-            }
-
-            // important: the project id must be set to the current project because of siblings 
-            // that might have not been published, otherwise the siblings would belong to a non-valid 
-            // project (e.g. with id 0) and show a grey flag
-
+            // reset the resource state
+            resource.setState(CmsResource.STATE_UNCHANGED);
+            m_driverManager.getVfsDriver().writeResourceState(
+                dbc,
+                dbc.currentProject(),
+                resource,
+                CmsDriverManager.UPDATE_ALL,
+                true);
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(
@@ -2615,7 +2626,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // deleted also offline. if this is the case, the online and offline structure
             // ID's do match, but the resource ID's are different. structure IDs are reused
             // to prevent orphan structure records in the online project.
-
             if (!onlineResource.getResourceId().equals(offlineResource.getResourceId())) {
                 List offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(
                     dbc,
@@ -2646,8 +2656,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         CmsFile newFile;
         try {
             boolean needToUpdateContent = (onlineResource.getDateContent() < offlineResource.getDateContent());
-            needToUpdateContent = needToUpdateContent
-                && !publishedResourceIds.contains(offlineResource.getResourceId());
             // publish the file content
             newFile = m_driverManager.getProjectDriver().publishFileContent(
                 dbc,

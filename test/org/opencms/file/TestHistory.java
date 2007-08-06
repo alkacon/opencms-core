@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/07/09 12:26:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/06 08:40:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -31,6 +31,8 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsResourceState;
+import org.opencms.file.history.CmsHistoryFile;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -56,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.9.1
  */
@@ -84,9 +86,12 @@ public class TestHistory extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestHistory.class.getName());
 
-        suite.addTest(new TestHistory("testSiblingVersions"));
         suite.addTest(new TestHistory("testFileRestore"));
         suite.addTest(new TestHistory("testFileRestoreIteration"));
+        suite.addTest(new TestHistory("testSiblingsRestoration"));
+        suite.addTest(new TestHistory("testSiblingsEdition"));
+        suite.addTest(new TestHistory("testSiblingsV7HistoryIssue2"));
+        suite.addTest(new TestHistory("testSiblingVersions"));
         suite.addTest(new TestHistory("testSiblingRestoreIteration"));
         suite.addTest(new TestHistory("testCreateAndDeleteFile"));
         suite.addTest(new TestHistory("testCreateAndDeleteFolder"));
@@ -96,6 +101,7 @@ public class TestHistory extends OpenCmsTestCase {
         suite.addTest(new TestHistory("testFileHistoryFileWithSibling"));
         suite.addTest(new TestHistory("testFileVersions"));
         suite.addTest(new TestHistory("testVersioningLimit"));
+        suite.addTest(new TestHistory("testSiblingsV7HistoryIssue"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -111,6 +117,870 @@ public class TestHistory extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Test a create and edit siblings scenario.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingsEdition() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing history with siblings edition");
+
+        // first we create a complete new folder as base for the test
+        String folder = "/siblings_edition/";
+        cms.createResource(folder, CmsResourceTypeFolder.getStaticTypeId());
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // 1. create first sibling
+        String s1name = folder + "s1.txt";
+        CmsResource s1 = cms.createResource(
+            s1name,
+            CmsResourceTypePlain.getStaticTypeId(),
+            "first sibling".getBytes(),
+            null);
+
+        // check the history
+        assertHistory(cms, s1name, 1);
+
+        // 2. publish s1
+        OpenCms.getPublishManager().publishResource(cms, s1name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history
+        assertHistory(cms, s1name, 1);
+        I_CmsHistoryResource histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+
+        // remember pub tag to be able to check the next operations
+        int basePubTag = histRes.getPublishTag();
+
+        // 3. create second sibling
+        String s2name = folder + "s2.txt";
+        CmsResource s2 = cms.createSibling(s1name, s2name, null);
+
+        // check the history
+        assertHistory(cms, s1name, 1);
+        assertHistory(cms, s2name, 2);
+
+        // 4. publish s2
+        OpenCms.getPublishManager().publishResource(cms, s2name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 1);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+
+        // check the history for s2
+        assertHistory(cms, s2name, 2);
+        histRes = cms.readResource(s2.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 2);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+
+        // 5. make a resource change
+        cms.lockResource(s1name);
+        cms.writePropertyObject(s1name, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, "resource change"));
+
+        // check history
+        assertHistory(cms, s1name, 2);
+        assertHistory(cms, s2name, 3);
+
+        // 6. make a structure change on s2
+        cms.changeLock(s2name);
+        cms.writePropertyObject(s2name, new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_NAVTEXT,
+            "structure change",
+            null));
+
+        // check history
+        assertHistory(cms, s1name, 2);
+        assertHistory(cms, s2name, 3);
+
+        // 7. publish s1
+        OpenCms.getPublishManager().publishResource(cms, s1name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 2);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+
+        // check the history for s2
+        assertHistory(cms, s2name, 4);
+        histRes = cms.readResource(s2.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 2);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+
+        // 8. publish s2
+        OpenCms.getPublishManager().publishResource(cms, s2name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 2);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+
+        // check the history for s2
+        assertHistory(cms, s2name, 4);
+        histRes = cms.readResource(s2.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 2);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 4);
+        assertEquals(2, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 3, histRes.getPublishTag());
+
+        // 9. change structure on s1
+        cms.lockResource(s1name);
+        cms.setDateExpired(s1name, System.currentTimeMillis(), false);
+
+        // check history
+        assertHistory(cms, s1name, 3);
+        assertHistory(cms, s2name, 4);
+
+        // 10. change structure on s2
+        cms.changeLock(s2name);
+        cms.setDateReleased(s2name, System.currentTimeMillis(), false);
+
+        // check history
+        assertHistory(cms, s1name, 3);
+        assertHistory(cms, s2name, 5);
+
+        // 11. publish s1+s2
+        OpenCms.getPublishManager().publishResource(cms, s2name, true, null);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 3);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+
+        // check the history for s2
+        assertHistory(cms, s2name, 5);
+        histRes = cms.readResource(s2.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 2);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 4);
+        assertEquals(2, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 3, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 5);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+
+        // 12. make a resource change
+        CmsFile file = cms.readFile(s1name);
+        file.setContents("resource changed".getBytes());
+        cms.lockResource(s1name);
+        cms.writeFile(file);
+
+        // check history
+        assertHistory(cms, s1name, 4);
+        assertHistory(cms, s2name, 6);
+
+        // 13. make a structure change
+        cms.changeLock(s2name);
+        cms.writePropertyObject(s2name, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "structure change", null));
+
+        // check history
+        assertHistory(cms, s1name, 4);
+        assertHistory(cms, s2name, 6);
+
+        // 14. publish s2 (s1 will be unchanged after that)
+        OpenCms.getPublishManager().publishResource(cms, s2name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 4);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 4);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+
+        // check the history for s2
+        assertHistory(cms, s2name, 6);
+        histRes = cms.readResource(s2.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 2);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 4);
+        assertEquals(2, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 3, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 5);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 6);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+
+        // 15. make a resource change
+        cms.lockResource(s1name);
+        cms.writePropertyObject(s1name, new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            null,
+            "new resource change"));
+
+        // check history
+        assertHistory(cms, s1name, 5);
+        assertHistory(cms, s2name, 7);
+
+        // 16. make a structure change on s1
+        cms.writePropertyObject(s1name, new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_NAVTEXT,
+            "new structure change",
+            null));
+
+        // check history
+        assertHistory(cms, s1name, 5);
+        assertHistory(cms, s2name, 7);
+
+        // 17. make a structure change on s2
+        cms.changeLock(s2name);
+        cms.writePropertyObject(s2name, new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_TITLE,
+            "new structure change",
+            null));
+
+        // check history
+        assertHistory(cms, s1name, 5);
+        assertHistory(cms, s2name, 7);
+
+        // 18. publish s2
+        OpenCms.getPublishManager().publishResource(cms, s2name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 6);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 4);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 5);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertEquals(basePubTag + 6, histRes.getPublishTag());
+
+        // check the history for s2
+        assertHistory(cms, s2name, 7);
+        histRes = cms.readResource(s2.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 2);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 4);
+        assertEquals(2, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 3, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 5);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 6);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 7);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertEquals(basePubTag + 6, histRes.getPublishTag());
+
+        // 19. publish s1
+        OpenCms.getPublishManager().publishResource(cms, s1name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 6);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 4);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 5);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertEquals(basePubTag + 6, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 6);
+        assertEquals(2, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertEquals(basePubTag + 7, histRes.getPublishTag());
+
+        // check the history for s2
+        assertHistory(cms, s2name, 7);
+        histRes = cms.readResource(s2.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 2);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 4);
+        assertEquals(2, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 3, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 5);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 6);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 7);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertEquals(basePubTag + 6, histRes.getPublishTag());
+
+        // 20. create a third sibling
+        String s3name = folder + "s3.txt";
+        CmsResource s3 = cms.createSibling(s1name, s3name, null);
+
+        // check history
+        assertHistory(cms, s1name, 6);
+        assertHistory(cms, s2name, 7);
+        assertHistory(cms, s3name, 5);
+
+        // 21. publish s3
+        OpenCms.getPublishManager().publishResource(cms, s3name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 6);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 4);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 5);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertEquals(basePubTag + 6, histRes.getPublishTag());
+        histRes = cms.readResource(s1.getStructureId(), 6);
+        assertEquals(2, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertEquals(basePubTag + 7, histRes.getPublishTag());
+
+        // check the history for s2
+        assertHistory(cms, s2name, 7);
+        histRes = cms.readResource(s2.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 2);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 4);
+        assertEquals(2, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 3, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 5);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 6);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+        histRes = cms.readResource(s2.getStructureId(), 7);
+        assertEquals(3, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertEquals(basePubTag + 6, histRes.getPublishTag());
+
+        // check the history for s3
+        assertHistory(cms, s3name, 5);
+        histRes = cms.readResource(s3.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        histRes = cms.readResource(s3.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 2, histRes.getPublishTag());
+        histRes = cms.readResource(s3.getStructureId(), 3);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+        histRes = cms.readResource(s3.getStructureId(), 4);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertEquals(basePubTag + 6, histRes.getPublishTag());
+        histRes = cms.readResource(s3.getStructureId(), 5);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertEquals(basePubTag + 8, histRes.getPublishTag());
+    }
+
+    /**
+     * Test a sibling restoration scenario.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSiblingsRestoration() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing history with siblings restoration");
+
+        // first we create a complete new folder as base for the test
+        String folder = "/siblings_restoration/";
+        cms.createResource(folder, CmsResourceTypeFolder.getStaticTypeId());
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // 1. create first sibling
+        String s1name = folder + "s1.txt";
+        String txt1 = "first sibling";
+        CmsResource s1 = cms.createResource(s1name, CmsResourceTypePlain.getStaticTypeId(), txt1.getBytes(), null);
+
+        // check the history
+        assertHistory(cms, s1name, 1);
+
+        // 2. create second sibling
+        String s2name = folder + "s2.txt";
+        CmsResource s2 = cms.createSibling(s1name, s2name, null);
+
+        // check the history
+        assertHistory(cms, s1name, 1);
+        assertHistory(cms, s2name, 1);
+
+        // 3. publish both
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 1);
+        I_CmsHistoryResource histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+
+        // check the history for s2
+        assertHistory(cms, s2name, 1);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+
+        // remember pub tag to be able to check the next operations
+        int basePubTag = histRes.getPublishTag();
+
+        // 4. create third sibling
+        String s3name = folder + "s3.txt";
+        CmsResource s3 = cms.createSibling(s1name, s3name, null);
+
+        // check the history
+        assertHistory(cms, s1name, 1);
+        assertHistory(cms, s2name, 1);
+        assertHistory(cms, s3name, 2);
+
+        // 5. make a resource change
+        cms.changeLock(s1name);
+        cms.writePropertyObject(s1name, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, null, "resource change"));
+
+        // check the history
+        assertHistory(cms, s1name, 2);
+        assertHistory(cms, s2name, 2);
+        assertHistory(cms, s3name, 2);
+
+        // 6. publish s3
+        OpenCms.getPublishManager().publishResource(cms, s3name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 2);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+
+        // check the history for s2
+        assertHistory(cms, s2name, 2);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s2.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+
+        // check the history for s3
+        assertHistory(cms, s3name, 2);
+        histRes = cms.readResource(s3.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s3.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+
+        // 7. delete s3
+        cms.lockResource(s3name);
+        cms.deleteResource(s3name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // check history
+        assertHistory(cms, s1name, 2);
+        assertHistory(cms, s2name, 2);
+        assertEquals(3, cms.readResource(s3name, CmsResourceFilter.ALL).getVersion());
+
+        // 8. publish s3
+        OpenCms.getPublishManager().publishResource(cms, s3name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 2);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+
+        // check the history for s2
+        assertHistory(cms, s2name, 2);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s2.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+
+        // 9. delete s2
+        cms.lockResource(s2name);
+        cms.deleteResource(s2name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // check history
+        assertHistory(cms, s1name, 2);
+        assertEquals(3, cms.readResource(s2name, CmsResourceFilter.ALL).getVersion());
+
+        // 10. make a resource change
+        CmsFile file = cms.readFile(s1name);
+        String txt2 = "resource changed";
+        file.setContents(txt2.getBytes());
+        cms.changeLock(s1name);
+        cms.writeFile(file);
+
+        // check history
+        assertHistory(cms, s1name, 3);
+
+        // 11. publish s2
+        OpenCms.getPublishManager().publishResource(cms, s2name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check online contents
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        assertContent(cms, s1name, txt1.getBytes());
+        // go back to offline
+        cms = getCmsObject();
+
+        // check the history for s1
+        assertState(cms, s1name, CmsResource.STATE_CHANGED);
+        assertHistory(cms, s1name, 3);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+
+        // 12. delete s1
+        cms.lockResource(s1name);
+        cms.deleteResource(s1name, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // assert version
+        assertEquals(3, cms.readResource(s1name, CmsResourceFilter.ALL).getVersion());
+
+        // 13. publish s1
+        OpenCms.getPublishManager().publishResource(cms, s1name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // 14. restore s1
+        cms.restoreDeletedResource(s1.getStructureId());
+
+        // check history
+        assertHistoryForRestored(cms, s1name, 4);
+
+        // 15. publish s1
+        OpenCms.getPublishManager().publishResource(cms, s1name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 4);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s1.getStructureId(), 3);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertTrue(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s1.getStructureId(), 4);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+
+        // 16. restore s2
+        cms.restoreDeletedResource(s2.getStructureId());
+
+        // check history
+        assertHistory(cms, s1name, 5);
+        assertHistoryForRestored(cms, s2name, 6);
+
+        // 17. publish s2
+        OpenCms.getPublishManager().publishResource(cms, s2name);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the history for s1
+        assertHistory(cms, s1name, 5);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s1.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s1.getStructureId(), 3);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertTrue(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s1.getStructureId(), 4);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s1.getStructureId(), 5);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(5, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 6, histRes.getPublishTag());
+        // we deleted s2 before publishing the contents, so the restored version has the old content
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+
+        // check the history for s2
+        assertHistory(cms, s2name, 6);
+        histRes = cms.readResource(s1.getStructureId(), 1);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(1, histRes.getResourceVersion());
+        assertEquals(basePubTag, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s2.getStructureId(), 2);
+        assertEquals(0, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 1, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s2.getStructureId(), 3);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(2, histRes.getResourceVersion());
+        assertEquals(basePubTag + 3, histRes.getPublishTag());
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s2.getStructureId(), 4);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(3, histRes.getResourceVersion());
+        assertTrue(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 4, histRes.getPublishTag());
+        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s2.getStructureId(), 5);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(4, histRes.getResourceVersion());
+        assertTrue(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 5, histRes.getPublishTag());
+        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        histRes = cms.readResource(s2.getStructureId(), 6);
+        assertEquals(1, histRes.getStructureVersion());
+        assertEquals(5, histRes.getResourceVersion());
+        assertFalse(histRes.getState().isDeleted());
+        assertEquals(basePubTag + 6, histRes.getPublishTag());
+        // we deleted s2 before publishing the contents, so the restored version has the old content
+        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
     }
 
     /**
@@ -212,13 +1082,19 @@ public class TestHistory extends OpenCmsTestCase {
         cms.unlockResource(folderName);
         OpenCms.getPublishManager().publishResource(cms, folderName);
         OpenCms.getPublishManager().waitWhileRunning();
+        // check
+        assertHistory(cms, folderName, 1);
 
         for (int i = 1; i <= counter; i++) {
             cms.lockResource(folderName);
             cms.writePropertyObject(folderName, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "title version "
                 + i, null));
+            // check
+            assertHistory(cms, folderName, 1 + i);
             OpenCms.getPublishManager().publishResource(cms, folderName);
             OpenCms.getPublishManager().waitWhileRunning();
+            // check
+            assertHistory(cms, folderName, 1 + i);
         }
         cms.lockResource(folderName);
         cms.writePropertyObject(folderName, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "title version "
@@ -439,7 +1315,7 @@ public class TestHistory extends OpenCmsTestCase {
         // 3 the number of versions that should remain for the sibling
         // 3 the number of versions that should remain for the second sibling
         // 2 additional remaining versions of the original file (one overlap)
-        assertEquals(3 + counterSibl2, allFiles.size()); // it is not 3 since there are more versions comming from the siblings!
+        assertEquals(3 + counterSibl2, allFiles.size()); // it is not 3 since there are more versions coming from the siblings!
 
         I_CmsHistoryResource history = (I_CmsHistoryResource)allFiles.get(1);
         cms.lockResource(siblingname);
@@ -451,10 +1327,10 @@ public class TestHistory extends OpenCmsTestCase {
         // assert that the content and version fit together
         String restoredContent = getContentString(cms, file.getContents());
 
-        // the content is comming from a sibling2 modification
+        // the content is coming from a sibling2 modification
         assertEquals("sibling2 content version 12", restoredContent);
         CmsProperty prop = cms.readPropertyObject(siblingname, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        // the property is comming from the sibling's last set title
+        // the property is coming from the sibling's last set title
         assertEquals("SiblingTitle4", prop.getValue());
 
         // create a new empty resource
@@ -613,39 +1489,34 @@ public class TestHistory extends OpenCmsTestCase {
         try {
             OpenCms.getSystemInfo().setVersionHistorySettings(true, 10, 10);
 
-            // 1. create new resource
+            // create new resource
             CmsResource res = cms.createResource(resName, CmsResourceTypePlain.getStaticTypeId());
             // check offline
-            assertVersion(cms, resName, 1);
-            assertTrue(cms.readAllAvailableVersions(resName).isEmpty());
+            assertHistory(cms, resName, 1);
 
             // publish
             OpenCms.getPublishManager().publishResource(cms, resName);
             OpenCms.getPublishManager().waitWhileRunning();
             // check after publish
-            assertVersion(cms, resName, 1);
-            assertEquals(cms.readAllAvailableVersions(resName).size(), 1);
+            assertHistory(cms, resName, 1);
 
             for (int i = 0; i < 3; i++) {
                 cms.lockResource(resName);
                 cms.deleteResource(resName, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 // check offline
-                assertVersion(cms, resName, 2 + (i * 2));
-                assertEquals(cms.readAllAvailableVersions(resName).size(), 1 + (i * 2));
+                assertHistory(cms, resName, 2 + (i * 2));
                 // publish
                 OpenCms.getPublishManager().publishResource(cms, resName);
                 OpenCms.getPublishManager().waitWhileRunning();
                 // restore
                 cms.restoreDeletedResource(res.getStructureId());
                 // check offline
-                assertVersion(cms, resName, 3 + (i * 2));
-                assertEquals(cms.readAllAvailableVersions(resName).size(), 2 + (i * 2));
+                assertHistoryForRestored(cms, resName, 3 + (i * 2));
                 // publish
                 OpenCms.getPublishManager().publishResource(cms, resName);
                 OpenCms.getPublishManager().waitWhileRunning();
                 // check after publish
-                assertVersion(cms, resName, 3 + (i * 2));
-                assertEquals(cms.readAllAvailableVersions(resName).size(), 3 + (i * 2));
+                assertHistory(cms, resName, 3 + (i * 2));
             }
         } finally {
             OpenCms.getSystemInfo().setVersionHistorySettings(true, vers, delVers);
@@ -670,7 +1541,7 @@ public class TestHistory extends OpenCmsTestCase {
         // 1. create new resource
         cms.createResource(resName, CmsResourceTypePlain.getStaticTypeId());
         // check offline
-        assertVersion(cms, resName, 1);
+        assertHistory(cms, resName, 1);
 
         // publish
         OpenCms.getPublishManager().publishResource(cms, resName);
@@ -678,18 +1549,19 @@ public class TestHistory extends OpenCmsTestCase {
 
         // check after publish
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 1);
+        assertHistory(cms, resName, 1);
 
         // 2. modify resource
         cms.getRequestContext().setCurrentProject(offline);
         cms.lockResource(resName);
         cms.setDateLastModified(resName, System.currentTimeMillis(), false);
+
         // check offline
-        assertVersion(cms, resName, 2);
+        assertHistory(cms, resName, 2);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 1);
+        assertHistory(cms, resName, 1);
 
         // publish
         cms.getRequestContext().setCurrentProject(offline);
@@ -698,53 +1570,63 @@ public class TestHistory extends OpenCmsTestCase {
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 2);
+        assertHistory(cms, resName, 2);
+
+        // check offline
+        cms.getRequestContext().setCurrentProject(offline);
+        assertHistory(cms, resName, 2);
 
         // 3. modify structure
-        cms.getRequestContext().setCurrentProject(offline);
         cms.lockResource(resName);
         cms.writePropertyObject(resName, new CmsProperty(CmsPropertyDefinition.PROPERTY_TITLE, "test", null));
+
         // check offline
-        assertVersion(cms, resName, 3);
+        assertHistory(cms, resName, 3);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 2);
+        assertHistory(cms, resName, 2);
 
         // publish
         cms.getRequestContext().setCurrentProject(offline);
-        assertVersion(cms, resName, 3);
+        assertHistory(cms, resName, 3);
         OpenCms.getPublishManager().publishResource(cms, resName);
         OpenCms.getPublishManager().waitWhileRunning();
-        assertVersion(cms, resName, 3);
+
+        // check offline
+        assertHistory(cms, resName, 3);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 3);
+        assertHistory(cms, resName, 3);
 
         String sibName = "fileVersionTest_sib.txt";
 
-        // 4. create sibling cms.readResource(resName)
+        // 4. create sibling
         cms.getRequestContext().setCurrentProject(offline);
         cms.createSibling(resName, sibName, null);
 
         // check offline
-        assertVersion(cms, resName, 3);
-        assertVersion(cms, sibName, 2);
+        assertHistory(cms, resName, 3);
+        assertHistory(cms, sibName, 3);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 3);
+        assertHistory(cms, resName, 3);
 
         // publish sibling
         cms.getRequestContext().setCurrentProject(offline);
         OpenCms.getPublishManager().publishResource(cms, sibName);
         OpenCms.getPublishManager().waitWhileRunning();
 
+        // check offline
+        assertHistory(cms, resName, 3);
+        assertHistory(cms, sibName, 3);
+
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 3);
-        assertVersion(cms, sibName, 2);
+        assertHistory(cms, resName, 3);
+        assertHistory(cms, sibName, 3);
 
         // 5. modify sibling resource
         cms.getRequestContext().setCurrentProject(offline);
@@ -753,93 +1635,113 @@ public class TestHistory extends OpenCmsTestCase {
             CmsPropertyDefinition.PROPERTY_DESCRIPTION,
             null,
             "test description"));
+
         // check offline
-        assertVersion(cms, resName, 4);
-        assertVersion(cms, sibName, 3);
+        assertHistory(cms, resName, 4);
+        assertHistory(cms, sibName, 4);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 3);
-        assertVersion(cms, sibName, 2);
+        assertHistory(cms, resName, 3);
+        assertHistory(cms, sibName, 3);
 
         // publish
         cms.getRequestContext().setCurrentProject(offline);
         OpenCms.getPublishManager().publishResource(cms, sibName);
         OpenCms.getPublishManager().waitWhileRunning();
 
+        // check offline
+        assertHistory(cms, resName, 4);
+        assertHistory(cms, sibName, 4);
+
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 4);
-        assertVersion(cms, sibName, 3);
+        assertHistory(cms, resName, 4);
+        assertHistory(cms, sibName, 4);
 
         // 6. modify structure
         cms.getRequestContext().setCurrentProject(offline);
         cms.lockResource(resName);
         cms.setDateExpired(resName, System.currentTimeMillis() + 100000, false);
+
         // check offline
-        assertVersion(cms, resName, 5);
-        assertVersion(cms, sibName, 3);
+        assertHistory(cms, resName, 5);
+        assertHistory(cms, sibName, 4);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 4);
-        assertVersion(cms, sibName, 3);
+        assertHistory(cms, resName, 4);
+        assertHistory(cms, sibName, 4);
 
         // publish
         cms.getRequestContext().setCurrentProject(offline);
         OpenCms.getPublishManager().publishResource(cms, resName);
         OpenCms.getPublishManager().waitWhileRunning();
 
+        // check offline
+        assertHistory(cms, resName, 5);
+        assertHistory(cms, sibName, 4);
+
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 5);
-        assertVersion(cms, sibName, 3);
+        assertHistory(cms, resName, 5);
+        assertHistory(cms, sibName, 4);
 
         // 7. modify resource
         cms.getRequestContext().setCurrentProject(offline);
         cms.lockResource(resName);
         cms.writePropertyObject(resName, new CmsProperty(CmsPropertyDefinition.PROPERTY_NAVPOS, null, "1.5"));
+
         // check offline
-        assertVersion(cms, resName, 6);
-        assertVersion(cms, sibName, 4);
+        assertHistory(cms, resName, 6);
+        assertHistory(cms, sibName, 5);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 5);
-        assertVersion(cms, sibName, 3);
+        assertHistory(cms, resName, 5);
+        assertHistory(cms, sibName, 4);
 
         // publish
         cms.getRequestContext().setCurrentProject(offline);
         OpenCms.getPublishManager().publishResource(cms, resName);
         OpenCms.getPublishManager().waitWhileRunning();
 
+        // check offline
+        assertHistory(cms, resName, 6);
+        assertHistory(cms, sibName, 5);
+
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 6);
-        assertVersion(cms, sibName, 4);
+        assertHistory(cms, resName, 6);
+        assertHistory(cms, sibName, 5);
 
         // 8. modify sibling structure
         cms.getRequestContext().setCurrentProject(offline);
         cms.lockResource(sibName);
         cms.setDateReleased(sibName, System.currentTimeMillis() - 1000, false);
+
         // check offline
-        assertVersion(cms, resName, 6);
-        assertVersion(cms, sibName, 5);
+        assertHistory(cms, resName, 6);
+        assertHistory(cms, sibName, 6);
 
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 6);
-        assertVersion(cms, sibName, 4);
+        assertHistory(cms, resName, 6);
+        assertHistory(cms, sibName, 5);
 
         // publish
         cms.getRequestContext().setCurrentProject(offline);
         OpenCms.getPublishManager().publishResource(cms, sibName);
         OpenCms.getPublishManager().waitWhileRunning();
 
+        // check offline
+        assertHistory(cms, resName, 6);
+        assertHistory(cms, sibName, 6);
+
         // check online
         cms.getRequestContext().setCurrentProject(online);
-        assertVersion(cms, resName, 6);
-        assertVersion(cms, sibName, 5);
+        assertHistory(cms, resName, 6);
+        assertHistory(cms, sibName, 6);
 
         /*
 
@@ -935,7 +1837,7 @@ public class TestHistory extends OpenCmsTestCase {
     /**
      * Tests reconstructing the resource path for the history.<p>
      * 
-     * @throws Throwable if somethingg oes wrong
+     * @throws Throwable if something goes wrong
      */
     public void testPathHistory() throws Throwable {
 
@@ -1088,69 +1990,193 @@ public class TestHistory extends OpenCmsTestCase {
             // create new resource
             cms.createResource(resName, CmsResourceTypePlain.getStaticTypeId());
             // check offline
-            assertVersion(cms, resName, 1);
-            assertTrue(cms.readAllAvailableVersions(resName).isEmpty());
+            assertHistory(cms, resName, 1);
 
             // publish
             OpenCms.getPublishManager().publishResource(cms, resName);
             OpenCms.getPublishManager().waitWhileRunning();
             // check after publish
-            assertVersion(cms, resName, 1);
-            assertEquals(1, cms.readAllAvailableVersions(resName).size());
+            assertHistory(cms, resName, 1);
 
             // create sibling
             cms.copyResource(resName, sibName, CmsResource.COPY_AS_SIBLING);
             CmsResource sib = cms.readResource(sibName);
             // check offline
-            assertVersion(cms, resName, 1);
-            assertEquals(1, cms.readAllAvailableVersions(resName).size());
-            assertVersion(cms, sibName, 1);
+            assertHistory(cms, resName, 1);
             // new siblings have no history until they get first published
-            assertTrue(cms.readAllAvailableVersions(sibName).isEmpty());
+            assertVersion(cms, sibName, 2);
 
             // publish
             OpenCms.getPublishManager().publishResource(cms, sibName);
             OpenCms.getPublishManager().waitWhileRunning();
             // check after publish
-            assertVersion(cms, resName, 1);
-            assertEquals(1, cms.readAllAvailableVersions(resName).size());
-            assertVersion(cms, sibName, 1);
+            assertHistory(cms, resName, 1);
             // after publishing the sibling gets the history of the resource
-            assertEquals(1, cms.readAllAvailableVersions(sibName).size());
+            assertHistory(cms, sibName, 2);
 
             for (int i = 0; i < 3; i++) {
                 cms.lockResource(sibName);
                 cms.deleteResource(sibName, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 // check offline
-                assertVersion(cms, resName, 1);
-                assertEquals(1, cms.readAllAvailableVersions(resName).size());
-                assertVersion(cms, sibName, 2 + (i * 2));
-                assertEquals(1 + (i * 2), cms.readAllAvailableVersions(sibName).size());
+                assertHistory(cms, resName, 1 + i);
+                assertHistory(cms, sibName, 3 + (i * 2));
                 // publish
                 OpenCms.getPublishManager().publishResource(cms, sibName);
                 OpenCms.getPublishManager().waitWhileRunning();
                 // check after publish
-                assertVersion(cms, resName, 1);
-                assertEquals(1, cms.readAllAvailableVersions(resName).size());
+                assertHistory(cms, resName, 1 + i);
                 // restore
                 cms.restoreDeletedResource(sib.getStructureId());
                 // check offline
-                assertVersion(cms, resName, 1);
-                assertEquals(1, cms.readAllAvailableVersions(resName).size());
-                assertVersion(cms, sibName, 3 + (i * 2));
-                assertEquals(2 + (i * 2), cms.readAllAvailableVersions(sibName).size());
+                assertVersion(cms, resName, 2 + i);
+                assertHistoryForRestored(cms, sibName, 4 + (i * 2));
                 // publish
                 OpenCms.getPublishManager().publishResource(cms, sibName);
                 OpenCms.getPublishManager().waitWhileRunning();
                 // check after publish
-                assertVersion(cms, resName, 1);
-                assertEquals(1, cms.readAllAvailableVersions(resName).size());
-                assertVersion(cms, sibName, 3 + (i * 2));
-                assertEquals(3 + (i * 2), cms.readAllAvailableVersions(sibName).size());
+                assertVersion(cms, resName, 2 + i);
+                assertHistory(cms, sibName, 4 + (i * 2));
             }
         } finally {
             OpenCms.getSystemInfo().setVersionHistorySettings(true, vers, delVers);
         }
+    }
+
+    /**
+     * Tests an issue present in OpenCms 7 siblings have a wrong history.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSiblingsV7HistoryIssue() throws Exception {
+
+        echo("Tests OpenCms v7 history issue with siblings");
+        CmsObject cms = getCmsObject();
+
+        // first we create a complete new folder as base for the test
+        String folderA = "/history_v7issue_a/";
+        cms.createResource(folderA, CmsResourceTypeFolder.getStaticTypeId());
+
+        String firstContent = "This is the first content";
+        byte[] firstContentBytes = firstContent.getBytes();
+
+        String source = folderA + "1.txt";
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId(), firstContentBytes, null);
+
+        assertState(cms, folderA, CmsResourceState.STATE_NEW);
+        assertState(cms, source, CmsResourceState.STATE_NEW);
+
+        // publish the folder
+        OpenCms.getPublishManager().publishResource(cms, folderA);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertHistory(cms, source, 1);
+
+        String secondContent = "This is the second content";
+        byte[] secondContentBytes = secondContent.getBytes();
+
+        CmsFile sourceFile = cms.readFile(source);
+        cms.lockResource(source);
+        sourceFile.setContents(secondContentBytes);
+        cms.writeFile(sourceFile);
+
+        // publish the folder again
+        OpenCms.getPublishManager().publishResource(cms, folderA);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertHistory(cms, source, 2);
+
+        // create a another new folder as base for the test
+        String folderB = "/history_v7issue_b/";
+        cms.createResource(folderB, CmsResourceTypeFolder.getStaticTypeId());
+
+        // publish the new folder
+        OpenCms.getPublishManager().publishResource(cms, folderB);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // copy the source to the new folder
+        String destination = folderB + "2.txt";
+        cms.copyResource(source, destination, CmsResource.COPY_AS_SIBLING);
+
+        // now publish the sibling
+        OpenCms.getPublishManager().publishResource(cms, destination, false, null);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertHistory(cms, source, 2);
+        assertHistory(cms, destination, 3);
+    }
+
+    /**
+     * Tests an issue present in OpenCms 7 siblings have a wrong history.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSiblingsV7HistoryIssue2() throws Exception {
+
+        echo("Tests OpenCms v7 history issue with siblings");
+        CmsObject cms = getCmsObject();
+
+        // first we create a complete new folder as base for the test
+        String folderA = "/history_v7issue2_a/";
+        cms.createResource(folderA, CmsResourceTypeFolder.getStaticTypeId());
+
+        // create a new resource
+        String firstContent = "This is the first content";
+        byte[] firstContentBytes = firstContent.getBytes();
+
+        String source = folderA + "1.txt";
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId(), firstContentBytes, null);
+
+        // check
+        assertState(cms, folderA, CmsResourceState.STATE_NEW);
+        assertState(cms, source, CmsResourceState.STATE_NEW);
+
+        assertHistory(cms, source, 1);
+
+        // publish the folder and resource
+        OpenCms.getPublishManager().publishResource(cms, folderA);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check
+        assertHistory(cms, source, 1);
+
+        // modify the resource (resource entry)
+        String secondContent = "This is the second content";
+        byte[] secondContentBytes = secondContent.getBytes();
+
+        CmsFile sourceFile = cms.readFile(source);
+        cms.lockResource(source);
+        sourceFile.setContents(secondContentBytes);
+        cms.writeFile(sourceFile);
+
+        // check
+        assertHistory(cms, source, 2);
+
+        // create a another new folder as base for the test
+        String folderB = "/history_v7issue2_b/";
+        cms.createResource(folderB, CmsResourceTypeFolder.getStaticTypeId());
+
+        // publish the new folder
+        OpenCms.getPublishManager().publishResource(cms, folderB);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check
+        assertHistory(cms, source, 2);
+
+        // copy the source to the new folder as sibling
+        String destination = folderB + "2.txt";
+        cms.copyResource(source, destination, CmsResource.COPY_AS_SIBLING);
+
+        // check
+        assertHistory(cms, source, 2);
+        assertHistory(cms, destination, 2);
+
+        // now publish the sibling
+        OpenCms.getPublishManager().publishResource(cms, destination, false, null);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check
+        assertHistory(cms, source, 2);
+        assertHistory(cms, destination, 2);
     }
 
     /**
@@ -1170,21 +2196,25 @@ public class TestHistory extends OpenCmsTestCase {
         cms.createSibling(sib1, sib2, null);
 
         // check offline
-        assertVersion(cms, sib1, 1);
-        assertTrue(cms.readAllAvailableVersions(sib1).isEmpty());
-        assertVersion(cms, sib2, 1);
-        assertTrue(cms.readAllAvailableVersions(sib2).isEmpty());
+        assertHistory(cms, sib1, 1);
+        assertHistory(cms, sib2, 1);
 
         OpenCms.getPublishManager().publishResource(cms, sib1, true, new CmsShellReport(Locale.ENGLISH));
         OpenCms.getPublishManager().waitWhileRunning();
 
         // check after publish
-        assertVersion(cms, sib1, 1);
-        assertEquals(1, cms.readAllAvailableVersions(sib1).size());
-        // here the second published sibling get the history from the first one
-        assertVersion(cms, sib2, 1);
-        assertEquals(1, cms.readAllAvailableVersions(sib2).size());
+        assertHistory(cms, sib1, 1);
+        // siblings where published together
+        assertHistory(cms, sib2, 1);
 
+        // check online
+        cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+        assertHistory(cms, sib2, 1);
+
+        // back to offline
+        cms = getCmsObject();
+
+        // now the same but in a different sequence
         String sib3 = "/sibVer3.txt";
         String sib4 = "/sibVer4.txt";
 
@@ -1192,28 +2222,22 @@ public class TestHistory extends OpenCmsTestCase {
         cms.createSibling(sib3, sib4, null);
 
         // check offline
-        assertVersion(cms, sib3, 1);
-        assertTrue(cms.readAllAvailableVersions(sib3).isEmpty());
-        assertVersion(cms, sib4, 1);
-        assertTrue(cms.readAllAvailableVersions(sib4).isEmpty());
-
-        OpenCms.getPublishManager().publishResource(cms, sib4);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        // check after publish
-        assertVersion(cms, sib4, 1);
-        assertEquals(1, cms.readAllAvailableVersions(sib4).size());
-        assertVersion(cms, sib3, 1);
-        assertTrue(cms.readAllAvailableVersions(sib3).isEmpty());
+        assertHistory(cms, sib3, 1);
+        assertHistory(cms, sib4, 1);
 
         OpenCms.getPublishManager().publishResource(cms, sib3);
         OpenCms.getPublishManager().waitWhileRunning();
 
-        // check after publish
-        assertVersion(cms, sib3, 1);
-        assertEquals(1, cms.readAllAvailableVersions(sib3).size());
-        assertVersion(cms, sib4, 1);
-        assertEquals(1, cms.readAllAvailableVersions(sib4).size());
+        // check after publish of sib3
+        assertHistory(cms, sib3, 1);
+        assertHistory(cms, sib4, 2);
+
+        OpenCms.getPublishManager().publishResource(cms, sib4);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check after publish of sib3
+        assertHistory(cms, sib3, 1);
+        assertHistory(cms, sib4, 2);
     }
 
     /**
@@ -1230,7 +2254,7 @@ public class TestHistory extends OpenCmsTestCase {
         String source = "/index.html";
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
-        // set the versioning settings
+        // set the history version settings
         OpenCms.getSystemInfo().setVersionHistorySettings(true, 3, 3);
 
         // make 5 versions

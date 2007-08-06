@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/08/01 17:14:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/06 08:40:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.5
  */
@@ -672,13 +672,14 @@ public class CmsPublishManager {
         int i = 0;
         // wait until it is done or time is over
         synchronized (this) {
-            try {
-                while (isRunning() && ((MS_ONE_SECOND * i) <= ms)) {
+            while (isRunning() && ((MS_ONE_SECOND * i) <= ms)) {
+                try {
                     this.wait(MS_ONE_SECOND); // wait a second
-                    i++;
+                } catch (InterruptedException e) {
+                    // ignore
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                // ignore
+                i++;
             }
         }
     }

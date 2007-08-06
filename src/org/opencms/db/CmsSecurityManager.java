@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/07/18 10:08:02 $
- * Version: $Revision: 1.102 $
+ * Date   : $Date: 2007/08/06 08:40:35 $
+ * Version: $Revision: 1.103 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3081,7 +3081,7 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads all propertydefinitions for the given mapping type.<p>
+     * Reads all property definitions for the given mapping type.<p>
      *
      * @param context the current request context
      * 

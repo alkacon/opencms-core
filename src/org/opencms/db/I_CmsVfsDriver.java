@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/07/09 12:34:59 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2007/08/06 08:40:35 $
+ * Version: $Revision: 1.117 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.116 $
+ * @version $Revision: 1.117 $
  * 
  * @since 6.0.0 
  */
@@ -312,6 +312,18 @@ public interface I_CmsVfsDriver {
         CmsProject onlineProject,
         CmsResource onlineResource,
         CmsResource offlineResource) throws CmsDataAccessException;
+
+    /**
+     * Copies the version number from the offline resource to the online resource,
+     * this has to be done during publishing, direct after copying the resource itself.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource that has been publish
+     * @param firstSibling if this is the first sibling to be publish
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void publishVersions(CmsDbContext dbc, CmsResource resource, boolean firstSibling) throws CmsDataAccessException;
 
     /**
      * Reads all child-files and/or child-folders of a specified parent resource.<p>
@@ -629,15 +641,17 @@ public interface I_CmsVfsDriver {
      * 
      * @param dbc the current database context
      * @param projectId the project to read the versions from
+     * @param resourceId the resource id of the resource to read the versions from
      * @param structureId the structure id of the resource to read the versions from
      * 
      * @return a map with two entries with keys "structure" and "resource" for the
      *         structure and resource version number respectively, the values are {@link Integer} 
-     *         objects and may be <code>-1</code> if no resource entry could be found
+     *         objects and may be <code>-1</code> if an entry could be found
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    Map readVersions(CmsDbContext dbc, CmsUUID projectId, CmsUUID structureId) throws CmsDataAccessException;
+    Map readVersions(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, CmsUUID structureId)
+    throws CmsDataAccessException;
 
     /**
      * Removes a file physically in the database.<p>

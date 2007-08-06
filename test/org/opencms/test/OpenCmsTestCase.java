@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/07/04 16:57:50 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2007/08/06 08:40:36 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.history.CmsHistoryFile;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
@@ -97,7 +98,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.94 $
+ * @version $Revision: 1.95 $
  * 
  * @since 6.0.0
  */
@@ -115,7 +116,7 @@ public class OpenCmsTestCase extends TestCase {
         /** The database url. */
         public String m_jdbcUrl;
 
-        /** Additional database params. */
+        /** Additional database parameters. */
         public String m_jdbcUrlParams;
 
         /** The name of the user. */
@@ -1952,6 +1953,102 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Checks if the given resource has the correct history count, also
+     * check if all entries in the history can be read.<p>
+     * 
+     * @param cms the current user OpenCms context
+     * @param resourcename the name of the resource to check the history for
+     * @param versionCount the expected version number of the resource
+     *  
+     * @throws Exception if the test fails
+     */
+    public void assertHistory(CmsObject cms, String resourcename, int versionCount) throws Exception {
+
+        CmsResource res = cms.readResource(resourcename, CmsResourceFilter.ALL);
+
+        // assert we have the right version number
+        assertEquals(versionCount, res.getVersion());
+
+        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+            // no additional test possible for the online project
+            return;
+        }
+
+        // read all available versions
+        List versions = cms.readAllAvailableVersions(resourcename);
+
+        // new files have no historical entry despite the version number may be greater than 1 for siblings
+        if (res.getState().isNew()) {
+            assertTrue(versions.isEmpty());
+            return;
+        }
+
+        // if the resource has not been published yet, the available versions will be one less
+        boolean unchanged = res.getState().isUnchanged();
+        // the list is sorted descending, ie. last version is first in list
+        int count = versionCount - (unchanged ? 0 : 1);
+
+        Iterator i = versions.iterator();
+        while (i.hasNext()) {
+            // walk through the list and read all version files
+            CmsResource hRes = (CmsResource)i.next();
+            if (hRes instanceof CmsHistoryFile) {
+                CmsFile hFile = CmsFile.upgrade(hRes, cms);
+                assertEquals(count, hFile.getVersion());
+            } else {
+                assertEquals(count, hRes.getVersion());
+            }
+            count--;
+        }
+        // finally assert the list size if equal to the history version 
+        assertEquals(versionCount - (unchanged ? 0 : 1), versions.size());
+    }
+
+    /**
+     * Checks if the given resource has the correct history count, also
+     * check if all entries in the history can be read.<p>
+     * 
+     * Use this method only for resources that has been restored.<p>
+     * 
+     * @param cms the current user OpenCms context
+     * @param resourcename the name of the resource to check the history for
+     * @param versionCount the expected version number of the resource
+     *  
+     * @throws Exception if the test fails
+     */
+    public void assertHistoryForRestored(CmsObject cms, String resourcename, int versionCount) throws Exception {
+
+        CmsResource res = cms.readResource(resourcename, CmsResourceFilter.ALL);
+
+        // assert we have the right version number
+        assertEquals(versionCount, res.getVersion());
+
+        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+            // no additional test possible for the online project
+            return;
+        }
+
+        // read all available versions
+        List versions = cms.readAllAvailableVersions(resourcename);
+
+        // if the resource has not been published yet, the available versions will be one less
+        boolean unchanged = res.getState().isUnchanged();
+        // the list is sorted descending, ie. last version is first in list
+        int count = versionCount - (unchanged ? 0 : 1);
+
+        Iterator i = versions.iterator();
+        while (i.hasNext()) {
+            // walk through the list and read all version files
+            CmsResource hRes = (CmsResource)i.next();
+            CmsFile hFile = CmsFile.upgrade(hRes, cms);
+            assertEquals(count, hFile.getVersion());
+            count--;
+        }
+        // finally assert the list size if equal to the history version 
+        assertEquals(versionCount - (unchanged ? 0 : 1), versions.size());
+    }
+
+    /**
      * Ensures that the given resource is a folder.<p>
      * 
      * @param cms the CmsObject
@@ -2747,9 +2844,7 @@ public class OpenCmsTestCase extends TestCase {
             // get the actual resource from the vfs
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
-            if (res.getVersion() != version) {
-                fail("[Version " + version + " != " + res.getVersion() + "]");
-            }
+            assertEquals("Version", version, res.getVersion());
         } catch (CmsException e) {
             fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
         }

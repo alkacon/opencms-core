@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/08/01 17:13:25 $
- * Version: $Revision: 1.584 $
+ * Date   : $Date: 2007/08/06 08:40:35 $
+ * Version: $Revision: 1.585 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -7033,6 +7033,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         newResource.setDateLastModified(newResource.getDateLastModified());
         // restore the resource!
         CmsResource resource = createResource(dbc, path + resName, newResource, contents, properties, true);
+        // set resource state to changed
+        newResource.setState(CmsResource.STATE_CHANGED);
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), newResource, UPDATE_RESOURCE_STATE, false);
+        newResource.setState(CmsResource.STATE_NEW);
         // fire the event
         HashMap data = new HashMap(2);
         data.put("resource", resource);

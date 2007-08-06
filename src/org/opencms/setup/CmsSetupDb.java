@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2007/08/03 07:38:15 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2007/08/06 08:40:36 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -303,7 +303,7 @@ public class CmsSetupDb extends Object {
 
         CmsSetupDBWrapper dbwrapper = new CmsSetupDBWrapper(m_con);
         dbwrapper.createStatement();
- 
+
         String queryToExecute = query;
 
         // Check if a map of replacements is given
@@ -314,9 +314,8 @@ public class CmsSetupDb extends Object {
         dbwrapper.excecuteQuery(queryToExecute);
 
         // return the result
-        return dbwrapper; 
-        
-    
+        return dbwrapper;
+
     }
 
     /** Creates and executes a database statment from a String returning the result set.<p>
@@ -462,14 +461,6 @@ public class CmsSetupDb extends Object {
      */
     public void setConnection(String DbDriver, String DbConStr, String DbConStrParams, String DbUser, String DbPwd) {
 
-        System.out.println("Connection to DB:");
-        System.out.println("DbDriver: "+DbDriver);
-        System.out.println("DbConStr: "+DbConStr);
-        System.out.println("DbConStrParams: "+DbConStrParams);
-        System.out.println("DbUser: "+DbUser);
-        System.out.println("DbPwd: "+DbPwd);
-        
-        
         String jdbcUrl = DbConStr;
         try {
             if (DbConStrParams != null) {
@@ -477,17 +468,16 @@ public class CmsSetupDb extends Object {
             }
             Class.forName(DbDriver).newInstance();
             m_con = DriverManager.getConnection(jdbcUrl, DbUser, DbPwd);
-            
-            System.out.println("Connection established: "+m_con);
-            System.out.println("Connection autocommit: "+m_con.getAutoCommit());
-            
-            
+
+            System.out.println("Connection established: " + m_con);
+            System.out.println("Connection autocommit: " + m_con.getAutoCommit());
+
         } catch (ClassNotFoundException e) {
-            System.out.println("Class not found exception: "+e);
+            System.out.println("Class not found exception: " + e);
             m_errors.addElement(Messages.get().getBundle().key(Messages.ERR_LOAD_JDBC_DRIVER_1, DbDriver));
             m_errors.addElement(CmsException.getStackTraceAsString(e));
         } catch (Exception e) {
-            System.out.println("Exception: "+e);
+            System.out.println("Exception: " + e);
             m_errors.addElement(Messages.get().getBundle().key(Messages.ERR_DB_CONNECT_1, DbConStr));
             m_errors.addElement(CmsException.getStackTraceAsString(e));
         }
