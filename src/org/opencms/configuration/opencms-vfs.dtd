@@ -141,5 +141,5 @@
 <!--
 # Include the resource types DTD.
 -->
-<!ENTITY % opencms-resourcetypes SYSTEM "http://www.opencms.org/dtd/%(current-dtd-version)/opencms-resourcetypes.dtd"> 
+<!ENTITY % opencms-resourcetypes SYSTEM "http://www.opencms.org/dtd/6.0/opencms-resourcetypes.dtd"> 
 %opencms-resourcetypes;
