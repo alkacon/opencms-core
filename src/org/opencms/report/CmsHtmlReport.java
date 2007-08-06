@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2007/07/04 16:56:59 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2007/08/06 14:14:29 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -251,9 +251,9 @@ public class CmsHtmlReport extends A_CmsReport {
     }
 
     /**
-     * Returns the corrent linebreak notation depending on the output style of this report.
+     * Returns the correct line break notation depending on the output style of this report.
      * 
-     * @return the corrent linebreak notation
+     * @return the correct line break notation
      */
     protected String getLineBreak() {
 
