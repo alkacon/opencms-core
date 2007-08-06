@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/07/04 16:57:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/06 14:15:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,11 +58,11 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 
 /**
- * This class is responsable for the publish process.<p>
+ * This class is responsible for the publish process.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.5.5
  */
@@ -140,7 +140,7 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * All resources should already be locked.<p>
      * 
-     * If possible, the publish job starts inmediatly.<p>
+     * If possible, the publish job starts immediately.<p>
      * 
      * @param cms the cms context to publish for
      * @param publishList the resources to publish
@@ -170,7 +170,7 @@ public final class CmsPublishEngine implements Runnable {
         m_publishQueue.add(publishJob);
         // notify all listeners
         m_listeners.fireEnqueued(new CmsPublishJobBase(publishJob));
-        // start publish job immediatly if possible
+        // start publish job immediately if possible
         if (!isRunning) {
             run();
         }
@@ -181,7 +181,7 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * The returned publish job may be an enqueued, running or finished publish job.<p>
      * 
-     * @param publishHistoryId the publish hostory id to search for
+     * @param publishHistoryId the publish history id to search for
      * 
      * @return the publish job with the given publish history id, or <code>null</code>
      */
@@ -341,13 +341,13 @@ public final class CmsPublishEngine implements Runnable {
         // then write an abort message to the report
         if (m_currentPublishThread != null) {
 
-            // if a shutdowntime is defined, wait  if a publish process is running
+            // if a shutdown time is defined, wait  if a publish process is running
             if (m_publishQueueShutdowntime > 0) {
                 synchronized (this) {
                     try {
                         wait(m_publishQueueShutdowntime * 1000);
                     } catch (InterruptedException exc) {
-                        // noop
+                        // ignore
                     }
                 }
             }
@@ -501,7 +501,7 @@ public final class CmsPublishEngine implements Runnable {
      * @param publishJob the published job
      * @return the content of the assigned publish report
      * 
-     * @throws CmsException if somethign goes wrong
+     * @throws CmsException if something goes wrong
      */
     protected byte[] getReportContents(CmsPublishJobFinished publishJob) throws CmsException {
 
@@ -576,7 +576,7 @@ public final class CmsPublishEngine implements Runnable {
      * Sets publish locks of resources in a publish list.<p>
      *
      * @param publishJob the publish job
-     * @throws CmsException if somethiong goes wrong
+     * @throws CmsException if something goes wrong
      */
     protected void lockPublishList(CmsPublishJobInfoBean publishJob) throws CmsException {
 
@@ -603,7 +603,7 @@ public final class CmsPublishEngine implements Runnable {
      */
     protected synchronized void publishJobFinished(CmsPublishJobInfoBean publishJob) throws CmsException {
 
-        // in order to avoid unremovable pub lish locks, unlock all assigned resources again
+        // in order to avoid not removable publish locks, unlock all assigned resources again
         unlockPublishList(publishJob);
 
         if ((m_currentPublishThread != null) && (m_currentPublishThread.isAborted())) {
@@ -663,27 +663,9 @@ public final class CmsPublishEngine implements Runnable {
      */
     protected void publishJobStarted(CmsPublishJobInfoBean publishJob) throws CmsException {
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(publishJob.getCmsObject().getRequestContext());
-
         // update the job
         m_publishQueue.update(publishJob);
 
-        // trigger the old event mechanism
-        try {
-            // fire an event that a project is to be published
-            Map eventData = new HashMap();
-            eventData.put(I_CmsEventListener.KEY_REPORT, publishJob.getPublishReport());
-            eventData.put(I_CmsEventListener.KEY_PUBLISHLIST, publishJob.getPublishList());
-            eventData.put(I_CmsEventListener.KEY_PROJECTID, dbc.currentProject().getUuid());
-            eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
-            CmsEvent beforePublishEvent = new CmsEvent(I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT, eventData);
-            OpenCms.fireCmsEvent(beforePublishEvent);
-        } catch (Throwable t) {
-            publishJob.getPublishReport().println(t);
-        } finally {
-            dbc.clear();
-            dbc = null;
-        }
         // fire the publish start event
         m_listeners.fireStart(new CmsPublishJobEnqueued(publishJob));
     }
@@ -718,7 +700,7 @@ public final class CmsPublishEngine implements Runnable {
     }
 
     /**
-     * Starts the publish engine, i.e. publish josb are accepted and processed.<p>
+     * Starts the publish engine, i.e. publish jobs are accepted and processed.<p>
      */
     protected synchronized void startEngine() {
 

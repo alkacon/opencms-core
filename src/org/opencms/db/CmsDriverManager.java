@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/08/06 08:40:35 $
- * Version: $Revision: 1.585 $
+ * Date   : $Date: 2007/08/06 14:15:00 $
+ * Version: $Revision: 1.586 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -5146,6 +5146,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // check the parent folders
         checkParentFolders(dbc, publishList);
 
+        try {
+            // fire an event that a project is to be published
+            Map eventData = new HashMap();
+            eventData.put(I_CmsEventListener.KEY_REPORT, report);
+            eventData.put(I_CmsEventListener.KEY_PUBLISHLIST, publishList);
+            eventData.put(I_CmsEventListener.KEY_PROJECTID, dbc.currentProject().getUuid());
+            eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
+            CmsEvent beforePublishEvent = new CmsEvent(I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT, eventData);
+            OpenCms.fireCmsEvent(beforePublishEvent);
+        } catch (Throwable t) {
+            report.addError(t);
+            report.println(t);
+        }
+
         // lock all resources with the special publish lock
         Iterator itResources = new ArrayList(publishList.getAllResources()).iterator();
         while (itResources.hasNext()) {
@@ -5170,7 +5184,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // this is needed to fix TestPublishIsssues#testPublishScenarioE
                 changeLock(dbc, resource, CmsLockType.PUBLISH);
             }
-            // now recheck the lock state
+            // now re-check the lock state
             lock = m_lockManager.getLock(dbc, resource, false);
             if (!lock.getSystemLock().isPublish()) {
                 if (report != null) {
