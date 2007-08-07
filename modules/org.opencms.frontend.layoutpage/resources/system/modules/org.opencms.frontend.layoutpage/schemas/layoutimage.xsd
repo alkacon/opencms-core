@@ -23,7 +23,8 @@
 			<resourcebundle name="org.opencms.frontend.layoutpage.workplace"/>
 			<layouts>
 				<layout element="Image" widget="ImageGalleryWidget" />
-				<layout element="Align" widget="SelectorWidget" configuration="imageleft:${key.layoutpage.imageleft}|imageleft_desc:${key.layoutpage.imageleft_desc}|imageright:${key.layoutpage.imageright}|imageright_desc:${key.layoutpage.imageright_desc}|imageleft_textright:${key.layoutpage.imageleft_textright}|imageleft_textright_desc:${key.layoutpage.imageleft_textright_desc}|imageright_textleft:${key.layoutpage.imageright_textleft}|imageright_textleft_desc:${key.layoutpage.imageright_textleft_desc}|imagetop:${key.layoutpage.imagetop}|imagetop_desc:${key.layoutpage.imagetop_desc}|imagebottom:${key.layoutpage.imagebottom}|imagebottom_desc:${key.layoutpage.imagebottom_desc}" />			</layouts>
+				<layout element="Align" widget="SelectorWidget" configuration="imageleft:${key.layoutpage.imageleft}|imageleft_desc:${key.layoutpage.imageleft_desc}|imageright:${key.layoutpage.imageright}|imageright_desc:${key.layoutpage.imageright_desc}|imageleft_textright:${key.layoutpage.imageleft_textright}|imageleft_textright_desc:${key.layoutpage.imageleft_textright_desc}|imageright_textleft:${key.layoutpage.imageright_textleft}|imageright_textleft_desc:${key.layoutpage.imageright_textleft_desc}|imagetop:${key.layoutpage.imagetop}|imagetop_desc:${key.layoutpage.imagetop_desc}|imagebottom:${key.layoutpage.imagebottom}|imagebottom_desc:${key.layoutpage.imagebottom_desc}" />
+			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>
