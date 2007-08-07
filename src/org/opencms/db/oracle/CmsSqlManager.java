@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsSqlManager.java,v $
- * Date   : $Date: 2007/07/04 16:57:47 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/08/07 14:25:20 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 6.0.0 
  */
@@ -73,8 +73,9 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     }
 
     /**
-     * Attemts to close the connection, statement and result set after a statement has been executed.<p>
+     * Attempts to close the connection, statement and result set after a statement has been executed.<p>
      * 
+     * @param sqlManager the sql manager to use
      * @param dbc the current database context
      * @param con the JDBC connection
      * @param stmnt the statement
@@ -82,7 +83,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      * @param commit the additional statement for the 'commit' command
      * @param wasInTransaction if using transactions
      */
-    public synchronized void closeAllInTransaction(
+    public static synchronized void closeAllInTransaction(
+        org.opencms.db.generic.CmsSqlManager sqlManager,
         CmsDbContext dbc,
         Connection con,
         PreparedStatement stmnt,
@@ -117,7 +119,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
         if (!wasInTransaction) {
             if (stmnt != null) {
                 try {
-                    PreparedStatement rollback = getPreparedStatement(con, "C_ROLLBACK");
+                    PreparedStatement rollback = sqlManager.getPreparedStatement(con, "C_ROLLBACK");
                     rollback.execute();
                     rollback.close();
                 } catch (SQLException se) {

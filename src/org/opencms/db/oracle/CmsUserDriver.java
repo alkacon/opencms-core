@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2007/07/04 16:57:47 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2007/08/07 14:25:19 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 6.0.0 
  */
@@ -190,7 +190,8 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
         } catch (IOException e) {
             throw new CmsDbIoException(Messages.get().container(Messages.ERR_SERIALIZING_USER_DATA_1, userId), e);
         } finally {
-            ((org.opencms.db.oracle.CmsSqlManager)m_sqlManager).closeAllInTransaction(
+            org.opencms.db.oracle.CmsSqlManager.closeAllInTransaction(
+                m_sqlManager,
                 dbc,
                 conn,
                 stmt,

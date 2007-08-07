@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/07/04 16:57:47 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2007/08/07 14:25:20 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 6.0.0 
  */
@@ -245,7 +245,8 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
                 org.opencms.db.generic.Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
-            ((org.opencms.db.oracle.CmsSqlManager)m_sqlManager).closeAllInTransaction(
+            org.opencms.db.oracle.CmsSqlManager.closeAllInTransaction(
+                m_sqlManager,
                 dbc,
                 conn,
                 stmt,
