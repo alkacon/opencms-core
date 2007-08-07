@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/07/09 12:24:45 $
- * Version: $Revision: 1.113 $
+ * Date   : $Date: 2007/08/07 14:23:33 $
+ * Version: $Revision: 1.114 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.113 $
+ * @version $Revision: 1.114 $
  * 
  * @since 6.0.0 
  */
@@ -2547,7 +2547,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     }
 
     /**
-     * Writes a property for an orgnaizational unit resource, online AND offline.<p>
+     * Writes a property for an organizational unit resource, online AND offline.<p>
      * 
      * @param dbc the current database context
      * @param resource the resource representing the organizational unit
