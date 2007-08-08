@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspLinkMacroResolver.java,v $
- * Date   : $Date: 2007/07/04 16:57:35 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/08 10:46:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.4 
  */
@@ -179,7 +179,7 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
                 path = path.substring(1);
             }
             if (isAbsolute && !path.startsWith(m_cms.getRequestContext().getSiteRoot())) {
-                // remove the site root if needed
+                // add the site root if needed
                 path = m_cms.getRequestContext().addSiteRoot(path);
             } else if (m_jspRootPath != null) {
                 // get the site aware absolute path
