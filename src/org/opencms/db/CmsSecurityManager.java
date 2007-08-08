@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/08/06 08:40:35 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2007/08/08 08:55:31 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -5709,13 +5709,13 @@ public final class CmsSecurityManager {
         Iterator itGroups = roles.iterator();
         while (itGroups.hasNext()) {
             String groupName = ((CmsGroup)itGroups.next()).getName();
-            // iterate the role hierarchie
+            // iterate the role hierarchy
             Iterator itDistinctGroupNames = role.getDistinctGroupNames().iterator();
             while (itDistinctGroupNames.hasNext()) {
                 String distictGroupName = (String)itDistinctGroupNames.next();
                 if (distictGroupName.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
                     // this is a ou independent role 
-                    // we need an exact match, and we ignore the ou param
+                    // we need an exact match, and we ignore the ou parameter
                     if (groupName.equals(distictGroupName.substring(1))) {
                         return true;
                     }
@@ -5725,7 +5725,7 @@ public final class CmsSecurityManager {
                         || groupName.equals(distictGroupName)) {
                         // this is a ou dependent role
                         if (role.getOuFqn() == null) {
-                            // ou param is null, so the user needs to have the role in at least one ou does not matter which
+                            // ou parameter is null, so the user needs to have the role in at least one ou does not matter which
                             return true;
                         } else {
                             // the user needs to have the role in the given ou or in a parent ou
