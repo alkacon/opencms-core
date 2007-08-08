@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/07/04 16:57:39 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/08/08 10:03:46 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,7 +96,6 @@ public final class CmsRole {
 
     /** The "DIRECT_EDIT_USER" role. */
     // public static final CmsRole DIRECT_EDIT_USER;
-
     /** The "PROJECT_MANAGER" role. */
     public static final CmsRole PROJECT_MANAGER;
 
@@ -639,6 +638,16 @@ public final class CmsRole {
     public boolean isOrganizationalUnitIndependent() {
 
         return !m_ouDependent;
+    }
+
+    /**
+     * Check if this role is a system role.<p>
+     *
+     * @return <code>true</code> if this role is a system role
+     */
+    public boolean isSystemRole() {
+
+        return m_systemRole;
     }
 
     /**

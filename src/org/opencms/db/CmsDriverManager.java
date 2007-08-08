@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/08/06 14:15:00 $
- * Version: $Revision: 1.586 $
+ * Date   : $Date: 2007/08/08 10:03:46 $
+ * Version: $Revision: 1.587 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3487,7 +3487,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @return a list of <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getGroupsOfUser(
         CmsDbContext dbc,
@@ -3548,7 +3548,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     Iterator itChildRoles = role.getChildren(true).iterator();
                     while (itChildRoles.hasNext()) {
                         CmsRole childRole = (CmsRole)itChildRoles.next();
-                        allGroups.add(readGroup(dbc, childRole.getGroupName()));
+                        if (childRole.isSystemRole()) {
+                            // include system roles only
+                            allGroups.add(readGroup(dbc, childRole.getGroupName()));
+                        }
                     }
                     if (includeChildOus) {
                         // if needed include the roles of child ous 
