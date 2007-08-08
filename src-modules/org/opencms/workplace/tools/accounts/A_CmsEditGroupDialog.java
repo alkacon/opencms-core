@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditGroupDialog.java,v $
- * Date   : $Date: 2007/07/04 16:56:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/08 10:37:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
@@ -63,7 +64,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,6 +156,25 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the description of the parent ou.<p>
+     * 
+     * @return the description of the parent ou
+     */
+    public String getAssignedOu() {
+
+        try {
+            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getDescription(
+                getLocale())
+                + " ("
+                + CmsOrganizationalUnit.SEPARATOR
+                + getParamOufqn()
+                + ")";
+        } catch (CmsException e) {
+            return null;
+        }
+    }
+
+    /**
      * Returns the localized description of a group.<p>
      * 
      * @return the localized description of a group
@@ -162,6 +182,16 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     public String getDescription() {
 
         return m_group.getDescription(getLocale());
+    }
+
+    /**
+     * Returns the simple name of the group object.<p>
+     * 
+     * @return the simple name of the group object
+     */
+    public String getName() {
+
+        return m_group.getSimpleName();
     }
 
     /**
@@ -195,6 +225,17 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     }
 
     /**
+     * The method is just needed for displaying reasons.<p>
+     * 
+     * @param assignedOu nothing to do with this parameter
+     */
+    public void setAssignedOu(String assignedOu) {
+
+        // nothing will be done here, just to avoid warnings
+        assignedOu.length();
+    }
+
+    /**
      * Sets the description for a group.<p>
      * 
      * @param description the description for a group
@@ -202,6 +243,16 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
     public void setDescription(String description) {
 
         m_group.setDescription(description);
+    }
+
+    /**
+     * Sets the name of the group object.<p>
+     * 
+     * @param name the name of the group object
+     */
+    public void setName(String name) {
+
+        m_group.setName(name);
     }
 
     /**
@@ -430,5 +481,4 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
         return getCurrentToolPath().equals(getListRootPath() + "/new");
     }
-
 }

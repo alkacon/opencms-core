@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2007/07/04 16:56:44 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/08/08 10:37:50 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,6 @@ package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.security.CmsOrganizationalUnit;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +43,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,56 +69,6 @@ public class CmsEditGroupDialog extends A_CmsEditGroupDialog {
     public CmsEditGroupDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * Returns the description of the parent ou.<p>
-     * 
-     * @return the description of the parent ou
-     */
-    public String getAssignedOu() {
-
-        try {
-            return OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getDescription(
-                getLocale())
-                + " ("
-                + CmsOrganizationalUnit.SEPARATOR
-                + getParamOufqn()
-                + ")";
-        } catch (CmsException e) {
-            return null;
-        }
-    }
-
-    /**
-     * Returns the simple name of the group object.<p>
-     * 
-     * @return the simple name of the group object
-     */
-    public String getName() {
-
-        return m_group.getSimpleName();
-    }
-
-    /**
-     * The method is just needed for displaying reasons.<p>
-     * 
-     * @param assignedOu nothing to do with this parameter
-     */
-    public void setAssignedOu(String assignedOu) {
-
-        // nothing will be done here, just to avoid warnings
-        assignedOu.length();
-    }
-
-    /**
-     * Sets the name of the group object.<p>
-     * 
-     * @param name the name of the group object
-     */
-    public void setName(String name) {
-
-        m_group.setName(name);
     }
 
     /**
