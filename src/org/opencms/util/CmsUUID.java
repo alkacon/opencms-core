@@ -1,7 +1,7 @@
 /* 
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2007/07/31 17:32:51 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/08/08 07:44:50 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,9 +100,9 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     public CmsUUID() {
 
         if (m_ethernetAddress == null) {
-            // if no ethernet addess is available, generate a dummy
+            // if no ethernet address is available, generate a dummy
             // this is required because otherwise we can't ever de-serialize a CmsUUID outside of OpenCms, 
-            // since the emtpy constructor is called when the de-serialization takes place
+            // since the empty constructor is called when the de-serialization takes place
             init(getDummyEthernetAddress());
         }
         m_uuid = UUIDGenerator.getInstance().generateTimeBasedUUID(m_ethernetAddress);
