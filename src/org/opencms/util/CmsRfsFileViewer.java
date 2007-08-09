@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2007/07/04 16:57:31 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/08/09 13:49:04 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public class CmsRfsFileViewer implements Cloneable {
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsRfsFileViewer.class);
 
-    /** Decides whethter the view onto the underlying file via readFilePortion is enabled. */
+    /** Decides whether the view onto the underlying file via readFilePortion is enabled. */
     private boolean m_enabled;
 
     /** The character encoding of the underlying file. */

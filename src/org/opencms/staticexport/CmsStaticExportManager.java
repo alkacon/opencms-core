@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2007/07/04 16:57:22 $
- * Version: $Revision: 1.123 $
+ * Date   : $Date: 2007/08/09 13:48:54 $
+ * Version: $Revision: 1.124 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,13 +79,13 @@ import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides the functionaility to export resources from the OpenCms VFS
+ * Provides the functionality to export resources from the OpenCms VFS
  * to the file system.<p>
  *
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.123 $ 
+ * @version $Revision: 1.124 $ 
  * 
  * @since 6.0.0 
  */
