@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/08/02 07:45:07 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/08/09 14:15:04 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,11 +79,13 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsChacc extends CmsDialog {
+
+    private static final String UNKNOWN_TYPE = "Unknown";
 
     /** Value for the action: add an access control entry. */
     public static final int ACTION_ADDACE = 300;
@@ -575,7 +577,6 @@ public class CmsChacc extends CmsDialog {
         List parentResources = new ArrayList();
         Map responsibles = new HashMap();
         CmsObject cms = getCms();
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(getParamResource());
         try {
             // get all parent folders of the current file
             parentResources = cms.readPath(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
@@ -585,105 +586,116 @@ public class CmsChacc extends CmsDialog {
                 LOG.info(e.getLocalizedMessage());
             }
         }
-        Iterator i = parentResources.iterator();
-        while (i.hasNext()) {
-            CmsResource resource = (CmsResource)i.next();
-            try {
-                String sitePath = resource.getRootPath();
-                Iterator entries = cms.getAccessControlEntries(cms.getRequestContext().removeSiteRoot(sitePath), false).iterator();
-                while (entries.hasNext()) {
-                    CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
-                    if (ace.isResponsible()) {
-                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
-                        if (principal != null) {
-                            responsibles.put(principal, sitePath);
-                        } else {
-                            responsibles.put(ace.getPrincipal(), sitePath);
+
+        String resourceRootPath = cms.getRequestContext().addSiteRoot(getParamResource());
+        String site = cms.getRequestContext().getSiteRoot();
+        try {
+            cms.getRequestContext().setSiteRoot("");
+            Iterator i = parentResources.iterator();
+            while (i.hasNext()) {
+                CmsResource resource = (CmsResource)i.next();
+                try {
+                    String rootPath = resource.getRootPath();
+                    Iterator entries = cms.getAccessControlEntries(rootPath, false).iterator();
+                    while (entries.hasNext()) {
+                        CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
+                        if (ace.isResponsible()) {
+                            I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
+                            if (principal != null) {
+                                responsibles.put(principal, rootPath);
+                            } else {
+                                responsibles.put(ace.getPrincipal(), rootPath);
+                            }
                         }
                     }
-                }
-            } catch (CmsException e) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage());
-                }
-            }
-        }
-
-        if (responsibles.size() == 0) {
-            return key(Messages.GUI_AVAILABILITY_NO_RESPONSIBLES_0);
-        }
-        StringBuffer result = new StringBuffer(512);
-        result.append(dialogToggleStart(key(Messages.GUI_AVAILABILITY_RESPONSIBLES_0), "responsibles", show));
-
-        result.append(dialogWhiteBoxStart());
-        i = responsibles.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            String name;
-            String ou = null;
-            String image;
-            if (entry.getKey() instanceof I_CmsPrincipal) {
-                I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
-                if (principal instanceof CmsGroup) {
-                    name = ((CmsGroup)principal).getDescription(getLocale()) + " (" + principal.getSimpleName() + ")";
-                    image = "commons/group.png";
-                } else {
-                    name = ((CmsUser)principal).getFullName();
-                    image = "commons/user.png";
-                }
-                ou = principal.getOuFqn();
-            } else {
-                // check if it is the case of a role
-                CmsRole role = CmsRole.valueOfId((CmsUUID)entry.getKey());
-                if (role != null) {
-                    name = role.getName(getLocale());
-                    image = "commons/role.png";
-                } else {
-                    name = entry.getKey().toString();
-                    image = "explorer/project_none.gif";
-                }
-            }
-            result.append("<div class=\"dialogrow\"><img src=\"");
-            result.append(getSkinUri());
-            result.append(image);
-            result.append("\" class='noborder' width='16' height='16' alt='Principal' title='Principal'>&nbsp;<span class=\"textbold\">");
-            result.append(name);
-            result.append("</span>");
-            if ("long".equals(getSettings().getPermissionDetailView())) {
-                String resourceName = (String)entry.getValue();
-                if (!resourceSitePath.equals(resourceName)) {
-                    result.append("<div class=\"dialogpermissioninherit\">");
-                    result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
-                    result.append("</div>");
-                }
-            }
-            try {
-                if ((ou != null) && (OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), "", true).size() > 1)) {
-                    result.append("<br>");
-                    result.append("<img src='").append(getSkinUri()).append(
-                        "explorer/project_none.gif' class='noborder' width='16' height='16' >");
-                    result.append("<img src='").append(getSkinUri()).append(
-                        "explorer/project_none.gif' class='noborder' width='16' height='16' >");
-                    result.append("&nbsp;");
-                    try {
-                        result.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), ou).getDisplayName(
-                            getLocale()));
-                    } catch (CmsException e) {
-                        result.append(ou);
+                } catch (CmsException e) {
+                    // can usually be ignored
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e.getLocalizedMessage());
                     }
                 }
-            } catch (CmsException e) {
-                // should never happen
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
             }
+            if (responsibles.size() == 0) {
+                return key(Messages.GUI_AVAILABILITY_NO_RESPONSIBLES_0);
+            }
+            StringBuffer result = new StringBuffer(512);
+            result.append(dialogToggleStart(key(Messages.GUI_AVAILABILITY_RESPONSIBLES_0), "responsibles", show));
+
+            result.append(dialogWhiteBoxStart());
+            i = responsibles.entrySet().iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry)i.next();
+                String name;
+                String ou = null;
+                String image;
+                if (entry.getKey() instanceof I_CmsPrincipal) {
+                    I_CmsPrincipal principal = (I_CmsPrincipal)entry.getKey();
+                    if (principal instanceof CmsGroup) {
+                        name = ((CmsGroup)principal).getDescription(getLocale())
+                            + " ("
+                            + principal.getSimpleName()
+                            + ")";
+                        image = "commons/group.png";
+                    } else {
+                        name = ((CmsUser)principal).getFullName();
+                        image = "commons/user.png";
+                    }
+                    ou = principal.getOuFqn();
+                } else {
+                    // check if it is the case of a role
+                    CmsRole role = CmsRole.valueOfId((CmsUUID)entry.getKey());
+                    if (role != null) {
+                        name = role.getName(getLocale());
+                        image = "commons/role.png";
+                    } else {
+                        name = entry.getKey().toString();
+                        image = "explorer/project_none.gif";
+                    }
+                }
+                result.append("<div class=\"dialogrow\"><img src=\"");
+                result.append(getSkinUri());
+                result.append(image);
+                result.append("\" class='noborder' width='16' height='16' alt='Principal' title='Principal'>&nbsp;<span class=\"textbold\">");
+                result.append(name);
+                result.append("</span>");
+                if ("long".equals(getSettings().getPermissionDetailView())) {
+                    String resourceName = (String)entry.getValue();
+                    if (!resourceRootPath.equals(resourceName)) {
+                        result.append("<div class=\"dialogpermissioninherit\">");
+                        result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
+                        result.append("</div>");
+                    }
+                }
+                try {
+                    if ((ou != null)
+                        && (OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), "", true).size() > 1)) {
+                        result.append("<br>");
+                        result.append("<img src='").append(getSkinUri()).append(
+                            "explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                        result.append("<img src='").append(getSkinUri()).append(
+                            "explorer/project_none.gif' class='noborder' width='16' height='16' >");
+                        result.append("&nbsp;");
+                        try {
+                            result.append(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), ou).getDisplayName(
+                                getLocale()));
+                        } catch (CmsException e) {
+                            result.append(ou);
+                        }
+                    }
+                } catch (CmsException e) {
+                    // should never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+                result.append("</div>\n");
+            }
+            result.append(dialogWhiteBoxEnd());
             result.append("</div>\n");
+            return result.toString();
+        } finally {
+            cms.getRequestContext().setSiteRoot(site);
         }
-        result.append(dialogWhiteBoxEnd());
-        result.append("</div>\n");
-        return result.toString();
     }
 
     /**
@@ -999,7 +1011,7 @@ public class CmsChacc extends CmsDialog {
                 return getTypes(all)[i];
             }
         }
-        return "Unknown";
+        return UNKNOWN_TYPE;
     }
 
     /**
@@ -1390,27 +1402,57 @@ public class CmsChacc extends CmsDialog {
         String id = (principal != null) ? principal.getName() : entry.getPrincipal().toString();
         String name;
         String ou = null;
+        int flags = 0;
         if (principal instanceof CmsGroup) {
             name = key(org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2, new Object[] {
                 ((CmsGroup)principal).getDescription(getLocale()),
                 principal.getSimpleName()});
             ou = CmsOrganizationalUnit.getParentFqn(id);
+            flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
         } else if (principal instanceof CmsUser) {
             name = ((CmsUser)principal).getFullName();
             ou = CmsOrganizationalUnit.getParentFqn(id);
+            flags = CmsAccessControlEntry.ACCESS_FLAGS_USER;
         } else if ((id != null) && id.equals(CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_ID.toString())) {
             name = key(Messages.GUI_LABEL_ALLOTHERS_0);
+            flags = CmsAccessControlEntry.ACCESS_FLAGS_ALLOTHERS;
         } else if ((id != null) && id.equals(CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_ID.toString())) {
             name = key(Messages.GUI_LABEL_OVERWRITEALL_0);
+            flags = CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE_ALL;
         } else {
             // check if it is the case of a role
             CmsRole role = CmsRole.valueOfId(entry.getPrincipal());
             if (role != null) {
                 name = role.getName(getLocale());
                 id = role.getRoleName();
+                flags = CmsAccessControlEntry.ACCESS_FLAGS_ROLE;
             } else {
                 name = entry.getPrincipal().toString();
             }
+        }
+
+        if ((flags > 0) && ((entry.getFlags() & flags) == 0)) {
+            // the flag is set to the wrong principal type
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle(getLocale()).key(Messages.ERR_INVALID_ACE_1, entry.toString()));
+            }
+            entry = new CmsAccessControlEntry(
+                entry.getResource(),
+                entry.getPrincipal(),
+                entry.getAllowedPermissions(),
+                entry.getDeniedPermissions(),
+                (entry.getFlags() | flags));
+        } else if (entry.getFlags() < CmsAccessControlEntry.ACCESS_FLAGS_USER) {
+            // the flag is set to NO principal type
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle(getLocale()).key(Messages.ERR_INVALID_ACE_1, entry.toString()));
+            }
+            entry = new CmsAccessControlEntry(
+                entry.getResource(),
+                entry.getPrincipal(),
+                entry.getAllowedPermissions(),
+                entry.getDeniedPermissions(),
+                (entry.getFlags() | CmsAccessControlEntry.ACCESS_FLAGS_GROUP));
         }
 
         String type = getEntryType(entry.getFlags(), false);
@@ -1427,17 +1469,24 @@ public class CmsChacc extends CmsDialog {
         String idValue = type + id + entry.getResource();
 
         // get the localized type label
-        String typeLocalized = getTypesLocalized()[getEntryTypeInt(entry.getFlags())];
+        int typeInt = getEntryTypeInt(entry.getFlags());
+        String typeLocalized = UNKNOWN_TYPE;
+        if (typeInt >= 0) {
+            typeLocalized = getTypesLocalized()[typeInt];
+        }
 
         // determine the right image to display
-        String typeImg = getEntryType(entry.getFlags(), true).toLowerCase();
+        String typeImg = getTypes(true)[0];
+        if (typeInt >= 0) {
+            typeImg = getEntryType(entry.getFlags(), true).toLowerCase();
+        }
 
         // get all permissions of the current entry
         CmsPermissionSet permissions = entry.getPermissions();
 
         // build String for disabled check boxes
         String disabled = "";
-        if (!editable) {
+        if (!editable || (typeInt < 0)) {
             disabled = " disabled=\"disabled\"";
         }
 
