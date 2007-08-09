@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/07/09 12:34:59 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2007/08/09 14:17:04 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  * 
@@ -136,7 +136,7 @@ public final class CmsLockManager {
         // handle collisions with exclusive locked sub-resources in case of a folder
         if (resource.isFolder() && newLock.getSystemLock().isUnlocked()) {
             String resourceName = resource.getRootPath();
-            Iterator itLocks = new ArrayList(OpenCms.getMemoryMonitor().getAllCachedLocks()).iterator(); // prevent CMExceptions
+            Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
             while (itLocks.hasNext()) {
                 CmsLock lock = (CmsLock)itLocks.next();
                 String lockedPath = lock.getResourceName();
@@ -235,7 +235,7 @@ public final class CmsLockManager {
      * 
      * @return a list of root paths
      * 
-     * @throws CmsException if somehting goes wrong 
+     * @throws CmsException if something goes wrong 
      */
     public List getLocks(CmsDbContext dbc, String resourceName, CmsLockFilter filter) throws CmsException {
 
@@ -244,7 +244,13 @@ public final class CmsLockManager {
         while (itLocks.hasNext()) {
             CmsLock lock = (CmsLock)itLocks.next();
             if (filter.isSharedExclusive()) {
-                CmsResource resource = m_driverManager.readResource(dbc, lock.getResourceName(), CmsResourceFilter.ALL);
+                CmsResource resource;
+                try {
+                    resource = m_driverManager.readResource(dbc, lock.getResourceName(), CmsResourceFilter.ALL);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    OpenCms.getMemoryMonitor().uncacheLock(lock.getResourceName());
+                    continue;
+                }
                 if (resource.getSiblingCount() > 1) {
                     Iterator itSiblings = internalReadSiblings(dbc, resource).iterator();
                     while (itSiblings.hasNext()) {
@@ -291,10 +297,19 @@ public final class CmsLockManager {
                 if (lock.getResourceName().startsWith(resource.getRootPath())) {
                     return true;
                 }
-                CmsResource lockedResource = m_driverManager.readResource(
-                    dbc,
-                    lock.getResourceName(),
-                    CmsResourceFilter.ALL);
+                try {
+                    resource = m_driverManager.readResource(dbc, lock.getResourceName(), CmsResourceFilter.ALL);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    OpenCms.getMemoryMonitor().uncacheLock(lock.getResourceName());
+                    continue;
+                }
+                CmsResource lockedResource;
+                try {
+                    lockedResource = m_driverManager.readResource(dbc, lock.getResourceName(), CmsResourceFilter.ALL);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    OpenCms.getMemoryMonitor().uncacheLock(lock.getResourceName());
+                    continue;
+                }
                 if (lockedResource.getSiblingCount() > 1) {
                     Iterator itSiblings = internalReadSiblings(dbc, lockedResource).iterator();
                     while (itSiblings.hasNext()) {
@@ -487,7 +502,7 @@ public final class CmsLockManager {
      */
     public void removeResourcesInProject(CmsUUID projectId, boolean forceUnlock) {
 
-        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator(); // prevent CME
+        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
             CmsLock currentLock = (CmsLock)itLocks.next();
             if (!currentLock.getSystemLock().isUnlocked()) {
