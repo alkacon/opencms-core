@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/08/10 12:58:50 $
- * Version: $Revision: 1.588 $
+ * Date   : $Date: 2007/08/10 15:32:03 $
+ * Version: $Revision: 1.589 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4736,18 +4736,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /**
      * Moves a resource.<p>
      * 
-     * You must ensure that the destination path is an absolute, valid and
-     * existing VFS path. Relative paths from the source are currently not supported.<p>
+     * You must ensure that the parent of the destination path is an absolute, valid and
+     * existing VFS path. Relative paths from the source are not supported.<p>
      * 
      * The moved resource will always be locked to the current user
      * after the move operation.<p>
      * 
-     * In case the target resource already exists, it is overwritten with the 
-     * source resource.<p>
+     * In case the target resource already exists, it will be overwritten with the 
+     * source resource if possible.<p>
      * 
      * @param dbc the current database context
-     * @param source the resource to copy
-     * @param destination the name of the copy destination with complete path
+     * @param source the resource to move
+     * @param destination the name of the move destination with complete path
      * @param internal if set nothing more than the path is modified
      * 
      * @throws CmsException if something goes wrong
@@ -4777,7 +4777,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_lockManager.moveResource(source.getRootPath(), destination);
 
         if (!internal) {
-            source.setState(source.getState().isNew() ? CmsResource.STATE_NEW : CmsResource.STATE_CHANGED);
+            CmsResourceState newState = CmsResource.STATE_CHANGED;
+            if (source.getState().isNew()) {
+                newState = CmsResource.STATE_NEW;
+            } else if (source.getState().isDeleted()) {
+                newState = CmsResource.STATE_DELETED;
+            }
+            source.setState(newState);
             // safe since this operation always uses the ids instead of the resource path
             m_vfsDriver.writeResourceState(
                 dbc,
