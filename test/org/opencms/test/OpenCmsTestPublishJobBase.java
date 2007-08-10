@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestPublishJobBase.java,v $
- * Date   : $Date: 2007/07/04 16:57:50 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/10 15:32:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.test;
 
 import org.opencms.publish.CmsPublishJobBase;
@@ -42,20 +42,20 @@ public class OpenCmsTestPublishJobBase extends CmsPublishJobBase {
     /**
      * Constructor using the passed data.<p>
      * 
-     * @param job the job used to initialze
+     * @param job the job used to initialize
      */
     public OpenCmsTestPublishJobBase(CmsPublishJobBase job) {
-        
+
         super(job);
     }
-    
+
     /**
      * Returns the internal publish job info bean.<p>
      * 
      * @return the internal publish job info bean
      */
     public CmsPublishJobInfoBean getInfoBean() {
-        
+
         return m_publishJob;
     }
 }
