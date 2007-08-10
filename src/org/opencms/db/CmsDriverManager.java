@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/08/08 10:03:46 $
- * Version: $Revision: 1.587 $
+ * Date   : $Date: 2007/08/10 12:58:50 $
+ * Version: $Revision: 1.588 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2093,7 +2093,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             while (itUsers.hasNext()) {
                 CmsUser user = (CmsUser)itUsers.next();
                 if (userInGroup(dbc, user.getName(), group.getName(), group.isRole())) {
-                    removeUserFromGroup(dbc, user.getName(), group.getName(), true);
+                    removeUserFromGroup(dbc, user.getName(), group.getName(), group.isRole());
                 }
             }
             // transfer children to grandfather if possible
@@ -6765,7 +6765,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param groupname the name of the group
      * @param readRoles if to read roles or groups
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      * @throws CmsIllegalArgumentException if the given user was not member in the given group
      * @throws CmsDbEntryNotFoundException if the given group was not found 
      * @throws CmsSecurityException if the given user was <b>read as 'null' from the database</b>
