@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestGroupOperations.java,v $
- * Date   : $Date: 2007/07/04 16:57:06 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/08/10 15:32:18 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,9 +28,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file;
 
+import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -45,60 +47,108 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestGroupOperations extends OpenCmsTestCase {
-  
+
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestGroupOperations(String arg0) {
+
         super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestGroupOperations.class.getName());
 
         suite.addTest(new TestGroupOperations("testGetUsersOfGroup"));
         suite.addTest(new TestGroupOperations("testParentGroups"));
-        
+        suite.addTest(new TestGroupOperations("testDeleteGroup"));
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms(null, null, false);
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
-    }     
-    
+    }
+
+    /**
+     * Tests group deletion.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testDeleteGroup() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing group deletion");
+
+        // get all groups
+        List groups = OpenCms.getOrgUnitManager().getGroups(cms, "", true);
+
+        CmsGroup group = cms.createGroup("testDeleteGroup", "group for deletion", 0, null);
+        assertTrue(cms.getUsersOfGroup(group.getName()).isEmpty());
+        assertEquals(groups.size() + 1, OpenCms.getOrgUnitManager().getGroups(cms, "", true).size());
+        assertTrue(OpenCms.getOrgUnitManager().getGroups(cms, "", true).contains(group));
+
+        CmsUser user = cms.readUser("Guest");
+        List userGroups = cms.getGroupsOfUser(user.getName(), true);
+
+        cms.addUserToGroup(user.getName(), group.getName());
+        assertEquals(1, cms.getUsersOfGroup(group.getName()).size());
+        assertTrue(cms.getUsersOfGroup(group.getName()).contains(user));
+
+        assertEquals(userGroups.size() + 1, cms.getGroupsOfUser(user.getName(), true).size());
+        assertTrue(cms.getGroupsOfUser(user.getName(), true).contains(group));
+
+        cms.deleteGroup(group.getName());
+        try {
+            cms.readGroup(group.getName());
+            fail("should not be able to read a deleted group");
+        } catch (CmsDbEntryNotFoundException e) {
+            // ok, ignore
+        }
+
+        assertEquals(groups.size(), OpenCms.getOrgUnitManager().getGroups(cms, "", true).size());
+        assertFalse(OpenCms.getOrgUnitManager().getGroups(cms, "", true).contains(group));
+
+        assertEquals(userGroups.size(), cms.getGroupsOfUser(user.getName(), true).size());
+        assertFalse(cms.getGroupsOfUser(user.getName(), true).contains(group));
+    }
+
     /**
      * Tests the "getUsersOfGroup" method.<p>
      * 
      * @throws Throwable if something goes wrong
      */
     public void testGetUsersOfGroup() throws Throwable {
-        
+
         CmsObject cms = getCmsObject();
         echo("Testing testGetUsersOfGroup");
-        
+
         List users = cms.getUsersOfGroup("Guests");
-        assertEquals("/Export", ((CmsUser)users.get(0)).getName());
-        assertEquals("/Guest", ((CmsUser)users.get(1)).getName());
+        assertEquals("Export", ((CmsUser)users.get(0)).getName());
+        assertEquals("Guest", ((CmsUser)users.get(1)).getName());
     }
 
     /**
@@ -107,7 +157,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public void testParentGroups() throws Throwable {
-        
+
         CmsObject cms = getCmsObject();
         echo("Testing the parent group mechanism");
 
@@ -116,10 +166,10 @@ public class TestGroupOperations extends OpenCmsTestCase {
         CmsGroup g3 = cms.createGroup("g3", "g3", 0, g1.getName());
         CmsGroup g4 = cms.createGroup("g4", "g4", 0, g2.getName());
         CmsGroup g5 = cms.createGroup("g5", "g5", 0, g2.getName());
-        
+
         CmsUser u1 = cms.createUser("u1", "password", "u1", null);
         cms.addUserToGroup(u1.getName(), g1.getName());
-        
+
         List g1Users = cms.getUsersOfGroup(g1.getName());
         assertEquals(1, g1Users.size());
         assertTrue(g1Users.contains(u1));
@@ -134,7 +184,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
         List u1Groups = cms.getGroupsOfUser(u1.getName(), false);
         assertEquals(1, u1Groups.size());
         assertTrue(u1Groups.contains(g1));
-        
+
         CmsUser u2 = cms.createUser("u2", "password", "u2", null);
         cms.addUserToGroup(u2.getName(), g2.getName());
 
@@ -222,7 +272,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
 
         CmsUser u5 = cms.createUser("u5", "password", "u5", null);
         cms.addUserToGroup(u5.getName(), g5.getName());
-        
+
         g1Users = cms.getUsersOfGroup(g1.getName());
         assertEquals(1, g1Users.size());
         assertTrue(g1Users.contains(u1));

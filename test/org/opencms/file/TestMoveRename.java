@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2007/07/04 16:57:05 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/08/10 15:32:18 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
 
@@ -90,6 +90,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         suite.addTest(new TestMoveRename("testMoveFolderToOwnSubfolder"));
         suite.addTest(new TestMoveRename("testOverwriteMovedResource"));
         suite.addTest(new TestMoveRename("testMoveWithoutPermissions"));
+        suite.addTest(new TestMoveRename("testMoveDeleted"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -105,6 +106,64 @@ public class TestMoveRename extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Tests to move a folder with deleted subresources.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMoveDeleted() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to move a folder with deleted subresources");
+
+        // Creating paths
+        String folder = "/testMoveDeleted/";
+        String destinationFolder = "/testMoveDeleted2/";
+        String file = "index.html";
+
+        // create the resources
+        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(folder + file, CmsResourceTypePlain.getStaticTypeId());
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // delete the file
+        cms.lockResource(folder);
+        cms.deleteResource(folder + file, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        storeResources(cms, folder, true);
+
+        // now move the folder
+        cms.moveResource(folder, destinationFolder);
+
+        // assert the folder
+
+        // project must be current project
+        assertProject(cms, destinationFolder, cms.getRequestContext().currentProject());
+        // state must be "changed"
+        assertState(cms, destinationFolder, CmsResource.STATE_CHANGED);
+        // assert lock state
+        assertLock(cms, destinationFolder, CmsLockType.EXCLUSIVE);
+
+        // set filter mapping
+        setMapping(destinationFolder, folder);
+        // now assert the filter for the rest of the attributes
+        assertFilter(cms, destinationFolder, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
+
+        // assert the file
+
+        // project must be current project
+        assertProject(cms, destinationFolder + file, cms.getRequestContext().currentProject());
+        // state must still be "deleted"
+        assertState(cms, destinationFolder + file, CmsResource.STATE_DELETED);
+        // assert lock state
+        assertLock(cms, destinationFolder + file, CmsLockType.INHERITED);
+        // now assert the filter for the rest of the attributes
+        assertFilter(cms, destinationFolder + file, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
     }
 
     /**
@@ -132,51 +191,6 @@ public class TestMoveRename extends OpenCmsTestCase {
     }
 
     /**
-     * Tests to move a resource with no write permission on the destination folder.<p>
-     * 
-     * @throws Exception if the test fails
-     */
-    public void testMoveWithoutPermissions() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing to move a resource with no write permission on the destination folder");
-
-        // Creating paths
-        String folder = "/mytestfolder3/";
-        String destinationFolder = "/folder1/";
-        String file = "index3.html";
-
-        // create the new files as test2
-        cms.loginUser("test2", "test2");
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-
-        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
-        cms.createResource(folder + file, CmsResourceTypePlain.getStaticTypeId());
-
-        // login as Admin
-        cms.loginUser("Admin", "admin");
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-
-        // remove write permission for test2
-        cms.lockResource(destinationFolder);
-        cms.chacc(destinationFolder, I_CmsPrincipal.PRINCIPAL_USER, "test2", "+r-w+v+i");
-        cms.unlockResource(destinationFolder);
-
-        // login again as test2
-        cms.loginUser("test2", "test2");
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-
-        cms.lockResource(folder + file);
-        // move the file
-        try {
-            cms.moveResource(folder + file, destinationFolder + file);
-            fail("to move a resource with no write permission on the destination folder should fail");
-        } catch (CmsPermissionViolationException e) {
-            // ok
-        }
-    }
-
-    /**
      * Tests the "move a single new resource" operation.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -199,7 +213,7 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         // check lock
         assertFalse(cms.getLockedResources("/folder1", CmsLockFilter.FILTER_ALL).contains(source));
-        
+
         // source resource must be gone
         try {
             cms.readResource(source, CmsResourceFilter.ALL);
@@ -247,7 +261,7 @@ public class TestMoveRename extends OpenCmsTestCase {
         } catch (CmsException e) {
             // ok
         }
-        
+
         // check lock
         assertFalse(cms.getLockedResources("/folder1", CmsLockFilter.FILTER_ALL).contains(source));
 
@@ -296,6 +310,51 @@ public class TestMoveRename extends OpenCmsTestCase {
         cms.undoChanges(deletedFolder, CmsResource.UNDO_CONTENT_RECURSIVE);
         cms.unlockResource(deletedFolder);
         cms.unlockResource(file);
+    }
+
+    /**
+     * Tests to move a resource with no write permission on the destination folder.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMoveWithoutPermissions() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to move a resource with no write permission on the destination folder");
+
+        // Creating paths
+        String folder = "/mytestfolder3/";
+        String destinationFolder = "/folder1/";
+        String file = "index3.html";
+
+        // create the new files as test2
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(folder + file, CmsResourceTypePlain.getStaticTypeId());
+
+        // login as Admin
+        cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        // remove write permission for test2
+        cms.lockResource(destinationFolder);
+        cms.chacc(destinationFolder, I_CmsPrincipal.PRINCIPAL_USER, "test2", "+r-w+v+i");
+        cms.unlockResource(destinationFolder);
+
+        // login again as test2
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        cms.lockResource(folder + file);
+        // move the file
+        try {
+            cms.moveResource(folder + file, destinationFolder + file);
+            fail("to move a resource with no write permission on the destination folder should fail");
+        } catch (CmsPermissionViolationException e) {
+            // ok
+        }
     }
 
     /**
@@ -382,7 +441,7 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         // move the resource 
         cms.lockResource(originalResource);
-        
+
         cms.moveResource(originalResource, intermediaryDestination);
 
         // check lock
@@ -392,7 +451,7 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         // check lock
         assertFalse(cms.getLockedResources("/xmlcontent", CmsLockFilter.FILTER_ALL).contains(intermediaryDestination));
-        
+
         // try to overwrite by move
         try {
             cms.lockResource(copySource);
@@ -461,10 +520,10 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         cms.lockResource(filename);
         cms.moveResource(filename, filename2);
-        
+
         // check lock
         assertFalse(cms.getLockedResources("/folder1", CmsLockFilter.FILTER_ALL).contains(filename));
-        
+
         cms.getRequestContext().setUri(uri);
         CmsResource res3 = new CmsPermalinkResourceHandler().initResource(null, cms, null, null);
 
