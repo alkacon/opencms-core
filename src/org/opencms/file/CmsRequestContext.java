@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2007/07/06 09:49:46 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2007/08/13 07:29:00 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 6.0.0 
  */
@@ -293,7 +293,7 @@ public final class CmsRequestContext {
      */
     public String getFolderUri() {
 
-        return getUri().substring(0, getUri().lastIndexOf("/") + 1);
+        return CmsResource.getFolderPath(m_uri);
     }
 
     /**
