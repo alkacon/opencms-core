@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/tree.js,v $
- * Date   : $Date: 2007/07/06 09:52:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/08/13 16:30:19 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

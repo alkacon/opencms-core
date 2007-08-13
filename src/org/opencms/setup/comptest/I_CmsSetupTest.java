@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/I_CmsSetupTest.java,v $
- * Date   : $Date: 2006/03/27 14:52:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/13 16:30:01 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,7 +38,7 @@ import org.opencms.setup.CmsSetupBean;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.8 
  */

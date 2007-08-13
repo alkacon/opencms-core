@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2007/07/11 13:46:29 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2007/08/13 16:30:09 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -62,7 +62,7 @@ import org.htmlparser.util.SimpleNodeIterator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 6.0.0 
  */

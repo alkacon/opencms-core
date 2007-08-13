@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/I_CmsEditorCssHandler.java,v $
- * Date   : $Date: 2007/07/04 16:57:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/13 16:29:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,7 @@ import org.opencms.file.CmsObject;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.9.2 
  */

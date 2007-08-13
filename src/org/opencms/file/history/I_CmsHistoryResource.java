@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/I_CmsHistoryResource.java,v $
- * Date   : $Date: 2007/07/04 16:57:44 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/13 16:29:45 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,7 +51,7 @@ import java.io.Serializable;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.9.1
  */

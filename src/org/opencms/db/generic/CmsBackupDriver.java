@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2007/07/04 16:57:06 $
- * Version: $Revision: 1.142 $
+ * Date   : $Date: 2007/08/13 16:30:15 $
+ * Version: $Revision: 1.143 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (C) 2006 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,7 @@ import org.opencms.db.I_CmsBackupDriver;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.142 $
+ * @version $Revision: 1.143 $
  * 
  * @since 6.0.0
  * 

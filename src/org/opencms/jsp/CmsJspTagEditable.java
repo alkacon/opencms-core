@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2007/07/04 16:57:23 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/08/13 16:29:55 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * placing, or the manual tags will be ignored and the HTML will be inserted at the automatic position. 
  * A provider which support manual placing is the {@link org.opencms.workplace.editors.directedit.CmsDirectEditTextButtonProvider}.<p>
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */

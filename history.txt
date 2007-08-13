@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/13 16:13:44 $
- * Version: $Revision: 1.847 $
+ * Date   : $Date: 2007/08/13 16:30:18 $
+ * Version: $Revision: 1.848 $
  *
  * This file is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  */
 
 History of changes for the OpenCms project.
@@ -37,6 +37,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 - Updated jug.jar used by CmsUUID to version 2.0.0 (from doomdark.org to safehaus.org version)
 - Split XSD for default XML content appinfo elements in 2 files, one for elements, the other for the base "appinfo" node
 - Deprecated CmsFile#upgrade(CmsResource) method as this is now done automatically in CmsObject#readFile(CmsResource)
+- Updated year information in file comment headers to 2007
 ! Added <cms:contentaccess> tag and bean for easy access to XML contents on JSP using the EL with JSTL 
 
 OpenCms 7.0.1 - July 11, 2007

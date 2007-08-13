@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaSettings.java,v $
- * Date   : $Date: 2007/07/04 16:57:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/08/13 16:29:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Achim Westermann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public final class CmsCaptchaSettings implements Cloneable {
 

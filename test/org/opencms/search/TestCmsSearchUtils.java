@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchUtils.java,v $
- * Date   : $Date: 2007/07/04 16:57:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/08/13 16:29:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,7 +37,7 @@ import junit.framework.TestCase;
  * Tests some search utils that don't require an OpenCms context.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestCmsSearchUtils extends TestCase {
 

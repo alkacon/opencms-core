@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/09/09 11:06:11 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/08/13 16:30:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -52,7 +52,7 @@ import org.dom4j.io.XMLWriter;
  * Tests for generating an XML content definition.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestCmsXmlContentDefinition extends TestCase {
 

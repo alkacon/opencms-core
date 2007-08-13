@@ -1,12 +1,12 @@
 /* 
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2007/08/13 16:13:44 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/08/13 16:29:56 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -65,7 +65,7 @@ import org.safehaus.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */

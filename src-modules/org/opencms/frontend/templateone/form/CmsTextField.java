@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsTextField.java,v $
- * Date   : $Date: 2007/07/30 10:43:09 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/08/13 16:29:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * Represents a text input field.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class CmsTextField extends A_CmsField {
 

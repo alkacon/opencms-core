@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjectHistory.java,v $
- * Date   : $Date: 2007/07/04 16:57:05 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/08/13 16:29:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
  * Unit test for the project history function of the CmsObject.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 6.0 alpha 2
  */
 public class TestProjectHistory extends OpenCmsTestCase {

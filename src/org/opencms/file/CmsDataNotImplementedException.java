@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsDataNotImplementedException.java,v $
- * Date   : $Date: 2005/07/03 09:41:51 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/08/13 16:29:58 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,7 @@ import org.opencms.main.CmsException;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0 
  */

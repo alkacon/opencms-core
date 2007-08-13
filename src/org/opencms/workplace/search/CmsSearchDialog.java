@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchDialog.java,v $
- * Date   : $Date: 2007/07/04 16:56:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/13 16:30:16 $
+ * Version: $Revision: 1.3 $
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
  * 
  * This source code is the intellectual property of Alkacon Software GmbH.
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.2.0 
  */

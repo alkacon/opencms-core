@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2007/08/10 15:32:18 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/08/13 16:29:57 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
 
