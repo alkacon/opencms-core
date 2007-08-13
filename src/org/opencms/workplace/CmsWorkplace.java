@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/07/04 16:57:11 $
- * Version: $Revision: 1.162 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.163 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.162 $ 
+ * @version $Revision: 1.163 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,7 +140,7 @@ public abstract class CmsWorkplace {
 
     /** Prefix char for temporary files in the VFS. */
     private static final char TEMP_FILE_PREFIX_CHAR = '~';
-    
+
     /** 
      * Prefix for temporary files in the VFS. 
      * 
@@ -422,7 +422,7 @@ public abstract class CmsWorkplace {
     /**
      * Returns the temporary file name for the given resource name.<p>
      * 
-     * To create a temporary file name of a resource name, the prefix {@link #TEMP_FILE_PREFIX_CHAR}
+     * To create a temporary file name of a resource name, the prefix char <code>'~'</code> (tilde)
      * is added to the file name after all parent folder names have been removed.<p>
      * 
      * @param resourceName the resource name to return the temporary file name for
@@ -563,7 +563,7 @@ public abstract class CmsWorkplace {
      * 
      * A resource is considered a temporary file it is a file where the
      * {@link CmsResource#FLAG_TEMPFILE} flag has been set, or if the file name (without parent folders)
-     * starts with the prefix char {@link #TEMP_FILE_PREFIX_CHAR}.<p>
+     * starts with the prefix char <code>'~'</code> (tilde).<p>
      * 
      * @param resource the resource name to check
      * 
@@ -583,7 +583,7 @@ public abstract class CmsWorkplace {
      * Returns <code>true</code> if the given resource name is a temporary file name.<p>
      * 
      * A resource name is considered a temporary file name if the name of the file 
-     * (without parent folders) starts with the prefix char {@link #TEMP_FILE_PREFIX_CHAR}.<p>
+     * (without parent folders) starts with the prefix char <code>'~'</code> (tilde).<p>
      * 
      * @param resourceName the resource name to check
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2007/07/04 16:57:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import java.util.Locale;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.5.6
  */
@@ -100,7 +100,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
             ArrayList ret = new ArrayList();
 
-            CmsFile file = CmsFile.upgrade(xmlPage, cms);
+            CmsFile file = cms.readFile(xmlPage);
             CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
 
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
@@ -201,7 +201,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
                     if (srcTokens.length == destTokens.length) {
 
-                        CmsFile srcFile = CmsFile.upgrade(srcXmlPage, cms);
+                        CmsFile srcFile = cms.readFile(srcXmlPage);
                         CmsXmlPage srcXml = CmsXmlPageFactory.unmarshal(cms, srcFile);
 
                         if (srcTokens.length == 1) {
@@ -271,7 +271,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             // and the path without the site root
             String rootPath = cms.getRequestContext().removeSiteRoot(xmlPage.getRootPath());
 
-            CmsFile file = CmsFile.upgrade(xmlPage, cms);
+            CmsFile file = cms.readFile(xmlPage);
             CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
 
             // mark virtual files as created in temp file table
@@ -371,7 +371,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 return true;
             }
 
-            CmsFile file = CmsFile.upgrade(xmlPage, cms);
+            CmsFile file = cms.readFile(xmlPage);
             CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
 
             String[] tokens = path.split("/");
@@ -492,7 +492,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
                     if (srcTokens.length == destTokens.length) {
 
-                        CmsFile srcFile = CmsFile.upgrade(srcXmlPage, cms);
+                        CmsFile srcFile = cms.readFile(srcXmlPage);
                         CmsXmlPage srcXml = CmsXmlPageFactory.unmarshal(cms, srcFile);
 
                         if (srcTokens.length == 1) {
@@ -543,7 +543,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
             String[] tokens = path.split("/");
             if (tokens.length == 1) {
 
-                CmsFile file = CmsFile.upgrade(xmlPage, cms);
+                CmsFile file = cms.readFile(xmlPage);
 
                 // check temp file table to remove deleted virtual files
                 if ((TMP_FILE_TABLE.containsKey(resourcename))
@@ -563,7 +563,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 }
             } else if (tokens.length == 2) {
 
-                CmsFile file = CmsFile.upgrade(xmlPage, cms);
+                CmsFile file = cms.readFile(xmlPage);
                 CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
 
                 // cut off the html suffix
@@ -627,7 +627,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
                 // get the path below the xml page
                 String path = getSubPath(cms, xmlPage, resourcename);
 
-                CmsFile file = CmsFile.upgrade(xmlPage, cms);
+                CmsFile file = cms.readFile(xmlPage);
                 CmsXmlPage xml = CmsXmlPageFactory.unmarshal(cms, file);
 
                 String[] tokens = path.split("/");
@@ -757,7 +757,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
                 String path = getSubPath(cms, xmlPage, cms.getRequestContext().removeSiteRoot(resource.getRootPath()));
 
-                CmsFile file = CmsFile.upgrade(xmlPage, cms);
+                CmsFile file = cms.readFile(xmlPage);
 
                 String[] tokens = path.split("/");
                 if (tokens.length == 2) {

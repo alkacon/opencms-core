@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2007/07/04 16:57:46 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.loader;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
@@ -54,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,7 +109,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         HttpServletRequest req,
         HttpServletResponse res) throws CmsException {
 
-        return CmsFile.upgrade(resource, cms).getContents();
+        return cms.readFile(resource).getContents();
     }
 
     /**
@@ -119,7 +118,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
 
-        String pointer = new String(CmsFile.upgrade(resource, cms).getContents());
+        String pointer = new String(cms.readFile(resource).getContents());
         StringBuffer result = new StringBuffer(128);
         result.append(EXPORT_PREFIX);
         if (pointer.indexOf(':') < 0) {
@@ -218,7 +217,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
             return;
         }
 
-        String pointer = new String(CmsFile.upgrade(resource, cms).getContents());
+        String pointer = new String(cms.readFile(resource).getContents());
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(pointer)) {
             throw new CmsLoaderException(Messages.get().container(
                 Messages.ERR_INVALID_POINTER_FILE_1,

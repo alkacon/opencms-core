@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2007/07/05 13:03:07 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.site;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -49,7 +50,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,14 +174,22 @@ public final class CmsSite implements Cloneable {
     }
 
     /**
-     * Returns the server prefix for the given resource in this site.<p>
+     * Returns the server prefix for the given resource in this site, used to distinguish between 
+     * secure (https) and non-secure (http) sites.<p>
      * 
-     * Like, <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
+     * This is required since a resource may have an individual "secure" setting using the property
+     * {@link CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
+     * must be delivered only using a secure protocol.<p>
      * 
-     * @param cms the cms context
+     * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
+     * 
+     * @param cms the current users OpenCms context
      * @param resourceName the resource name
      * 
      * @return the server prefix for the given resource in this site
+     * 
+     * @see #getSecureUrl()
+     * @see #getUrl()
      */
     public String getServerPrefix(CmsObject cms, String resourceName) {
 
@@ -192,6 +201,43 @@ public final class CmsSite implements Cloneable {
             try {
                 secure = Boolean.valueOf(
                     cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
+            } catch (CmsException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        return (secure ? getSecureUrl() : getUrl());
+    }
+
+    /**
+     * Returns the server prefix for the given resource in this site, used to distinguish between 
+     * secure (https) and non-secure (http) sites.<p>
+     * 
+     * This is required since a resource may have an individual "secure" setting using the property
+     * {@link CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
+     * must be delivered only using a secure protocol.<p>
+     * 
+     * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
+     * 
+     * @param cms the current users OpenCms context
+     * @param resource the resource to use
+     * 
+     * @return the server prefix for the given resource in this site
+     * 
+     * @see #getSecureUrl()
+     * @see #getUrl()
+     */
+    public String getServerPrefix(CmsObject cms, CmsResource resource) {
+
+        if (equals(OpenCms.getSiteManager().getDefaultSite())) {
+            return OpenCms.getSiteManager().getWorkplaceServer();
+        }
+        boolean secure = false;
+        if (hasSecureServer()) {
+            try {
+                secure = Boolean.valueOf(
+                    cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
             } catch (CmsException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.getLocalizedMessage(), e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/08/08 08:55:31 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2007/08/13 16:13:42 $
+ * Version: $Revision: 1.105 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3263,17 +3263,10 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads a file resource (including it's binary content) from the VFS,
-     * using the specified resource filter.<p>
+     * Reads a file resource (including it's binary content) from the VFS.<p>
      * 
      * In case you do not need the file content, 
      * use <code>{@link #readResource(CmsRequestContext, String, CmsResourceFilter)}</code> instead.<p>
-     * 
-     * The specified filter controls what kind of resources should be "found" 
-     * during the read operation. This will depend on the application. For example, 
-     * using <code>{@link CmsResourceFilter#DEFAULT}</code> will only return currently
-     * "valid" resources, while using <code>{@link CmsResourceFilter#IGNORE_EXPIRATION}</code>
-     * will ignore the date release / date expired information of the resource.<p>
      *
      * @param context the current request context
      * @param resource the resource to be read
@@ -3851,7 +3844,7 @@ public final class CmsSecurityManager {
      *
      * @throws CmsException if the resource could not be read for any reason
      * 
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     * @see CmsObject#readFile(CmsResource)
      * @see CmsObject#restoreResourceVersion(CmsUUID, int)
      * @see CmsObject#readResource(CmsUUID, int)
      */
@@ -3881,9 +3874,9 @@ public final class CmsSecurityManager {
      * <code>{@link CmsFolder}</code>. In case of
      * a file, the resource will not contain the binary file content. Since reading 
      * the binary content is a cost-expensive database operation, it's recommended 
-     * to work with resources if possible, and only read the file content when absolutly
+     * to work with resources if possible, and only read the file content when absolutely
      * required. To "upgrade" a resource to a file, 
-     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     * use <code>{@link CmsObject#readFile(CmsResource)}</code>.<p> 
      *
      * The specified filter controls what kind of resources should be "found" 
      * during the read operation. This will depend on the application. For example, 
@@ -3901,7 +3894,7 @@ public final class CmsSecurityManager {
      * 
      * @see CmsObject#readResource(CmsUUID, CmsResourceFilter)
      * @see CmsObject#readResource(CmsUUID)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     * @see CmsObject#readFile(CmsResource)
      */
     public CmsResource readResource(CmsRequestContext context, CmsUUID structureID, CmsResourceFilter filter)
     throws CmsException {
@@ -3926,9 +3919,9 @@ public final class CmsSecurityManager {
      * <code>{@link CmsFolder}</code>. In case of
      * a file, the resource will not contain the binary file content. Since reading 
      * the binary content is a cost-expensive database operation, it's recommended 
-     * to work with resources if possible, and only read the file content when absolutly
+     * to work with resources if possible, and only read the file content when absolutely
      * required. To "upgrade" a resource to a file, 
-     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     * use <code>{@link CmsObject#readFile(CmsResource)}</code>.<p> 
      *
      * The specified filter controls what kind of resources should be "found" 
      * during the read operation. This will depend on the application. For example, 
@@ -3946,7 +3939,7 @@ public final class CmsSecurityManager {
      * 
      * @see CmsObject#readResource(String, CmsResourceFilter)
      * @see CmsObject#readResource(String)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     * @see CmsObject#readFile(CmsResource)
      */
     public CmsResource readResource(CmsRequestContext context, String resourcePath, CmsResourceFilter filter)
     throws CmsException {
@@ -5820,7 +5813,7 @@ public final class CmsSecurityManager {
      * 
      * @see CmsObject#readResource(CmsUUID, CmsResourceFilter)
      * @see CmsObject#readResource(CmsUUID)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     * @see CmsObject#readFile(CmsResource)
      */
     protected CmsResource readResource(CmsDbContext dbc, CmsUUID structureID, CmsResourceFilter filter)
     throws CmsException {
@@ -5848,7 +5841,7 @@ public final class CmsSecurityManager {
      * 
      * @see CmsObject#readResource(String, CmsResourceFilter)
      * @see CmsObject#readResource(String)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     * @see CmsObject#readFile(CmsResource)
      */
     protected CmsResource readResource(CmsDbContext dbc, String resourcePath, CmsResourceFilter filter)
     throws CmsException {

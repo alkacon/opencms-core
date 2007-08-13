@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2007/07/19 10:13:07 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -61,13 +61,13 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
 
-    /** The content conversion to use for this xml document. */
+    /** The content conversion to use for this XML document. */
     protected String m_conversion;
 
     /** The document object of the document. */
@@ -189,9 +189,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
-     * Corrects the structure of this XML content.<p>
+     * Corrects the structure of this XML document.<p>
      * 
-     * @param cms the current cms object
+     * @param cms the current OpenCms user context
      * 
      * @return the file that contains the corrected XML structure
      * 
@@ -297,7 +297,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
             }
         }
 
-        // write the modifed xml back to the VFS file 
+        // write the modified XML back to the VFS file 
         if (m_file != null) {
             // make sure the file object is available
             m_file.setContents(marshal());
@@ -306,9 +306,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
-     * Returns the content converison used for the page content.<p>
-     * 
-     * @return the content converison used for the page content
+     * @see org.opencms.xml.I_CmsXmlDocument#getConversion()
      */
     public String getConversion() {
 
@@ -324,9 +322,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
-     * Returns the file with the xml page content or <code>null</code> if not set.<p>
-     * 
-     * @return the file with the xml page content
+     * @see org.opencms.xml.I_CmsXmlDocument#getFile()
      */
     public CmsFile getFile() {
 
@@ -336,9 +332,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getIndexCount(java.lang.String, java.util.Locale)
      */
-    public int getIndexCount(String name, Locale locale) {
+    public int getIndexCount(String path, Locale locale) {
 
-        List elements = getValues(name, locale);
+        List elements = getValues(path, locale);
         if (elements == null) {
             return 0;
         } else {
@@ -359,12 +355,12 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * 
      * If no locale for the given element name is available, an empty list is returned.<p>
      * 
-     * @param name the element to look up the locale List for
+     * @param path the element to look up the locale List for
      * @return a List of all Locales that have the named element set in this document
      */
-    public List getLocales(String name) {
+    public List getLocales(String path) {
 
-        Object result = m_elementLocales.get(CmsXmlUtils.createXpath(name, 1));
+        Object result = m_elementLocales.get(CmsXmlUtils.createXpath(path, 1));
         if (result == null) {
             return Collections.EMPTY_LIST;
         }
@@ -386,9 +382,9 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getStringValue(org.opencms.file.CmsObject, java.lang.String, java.util.Locale)
      */
-    public String getStringValue(CmsObject cms, String name, Locale locale) {
+    public String getStringValue(CmsObject cms, String path, Locale locale) {
 
-        I_CmsXmlContentValue value = getValueInternal(CmsXmlUtils.createXpath(name, 1), locale);
+        I_CmsXmlContentValue value = getValueInternal(CmsXmlUtils.createXpath(path, 1), locale);
         if (value != null) {
             return value.getStringValue(cms);
         }
@@ -398,11 +394,11 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getStringValue(CmsObject, java.lang.String, Locale, int)
      */
-    public String getStringValue(CmsObject cms, String name, Locale locale, int index) {
+    public String getStringValue(CmsObject cms, String path, Locale locale, int index) {
 
         // directly calling getValueInternal() is more efficient then calling getStringValue(CmsObject, String, Locale)
-        // since the most costs are generated in resolving the Xpath name
-        I_CmsXmlContentValue value = getValueInternal(CmsXmlUtils.createXpath(name, index + 1), locale);
+        // since the most costs are generated in resolving the xpath name
+        I_CmsXmlContentValue value = getValueInternal(CmsXmlUtils.createXpath(path, index + 1), locale);
         if (value != null) {
             return value.getStringValue(cms);
         }
@@ -412,17 +408,17 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getValue(java.lang.String, java.util.Locale)
      */
-    public I_CmsXmlContentValue getValue(String name, Locale locale) {
+    public I_CmsXmlContentValue getValue(String path, Locale locale) {
 
-        return getValueInternal(CmsXmlUtils.createXpath(name, 1), locale);
+        return getValueInternal(CmsXmlUtils.createXpath(path, 1), locale);
     }
 
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getValue(java.lang.String, java.util.Locale, int)
      */
-    public I_CmsXmlContentValue getValue(String name, Locale locale, int index) {
+    public I_CmsXmlContentValue getValue(String path, Locale locale, int index) {
 
-        return getValueInternal(CmsXmlUtils.createXpath(name, index + 1), locale);
+        return getValueInternal(CmsXmlUtils.createXpath(path, index + 1), locale);
     }
 
     /**
@@ -453,16 +449,16 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getValues(java.lang.String, java.util.Locale)
      */
-    public List getValues(String name, Locale locale) {
+    public List getValues(String path, Locale locale) {
 
         List result = new ArrayList();
         int count = 1;
         Object o;
-        String xpath = CmsXmlUtils.createXpath(name, 1);
+        String xpath = CmsXmlUtils.createXpath(path, 1);
         xpath = CmsXmlUtils.removeXpathIndex(xpath);
         do {
-            String path = CmsXmlUtils.createXpathElement(xpath, count);
-            o = getBookmark(path, locale);
+            String subpath = CmsXmlUtils.createXpathElement(xpath, count);
+            o = getBookmark(subpath, locale);
             if (o != null) {
                 result.add(o);
                 count++;
@@ -487,17 +483,17 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#hasValue(java.lang.String, java.util.Locale)
      */
-    public boolean hasValue(String name, Locale locale) {
+    public boolean hasValue(String path, Locale locale) {
 
-        return null != getBookmark(CmsXmlUtils.createXpath(name, 1), locale);
+        return null != getBookmark(CmsXmlUtils.createXpath(path, 1), locale);
     }
 
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#hasValue(java.lang.String, java.util.Locale, int)
      */
-    public boolean hasValue(String name, Locale locale, int index) {
+    public boolean hasValue(String path, Locale locale, int index) {
 
-        return null != getBookmark(CmsXmlUtils.createXpath(name, index + 1), locale);
+        return null != getBookmark(CmsXmlUtils.createXpath(path, index + 1), locale);
     }
 
     /**
@@ -511,17 +507,17 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#isEnabled(java.lang.String, java.util.Locale)
      */
-    public boolean isEnabled(String name, Locale locale) {
+    public boolean isEnabled(String path, Locale locale) {
 
-        return hasValue(name, locale);
+        return hasValue(path, locale);
     }
 
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#isEnabled(java.lang.String, java.util.Locale, int)
      */
-    public boolean isEnabled(String name, Locale locale, int index) {
+    public boolean isEnabled(String path, Locale locale, int index) {
 
-        return hasValue(name, locale, index);
+        return hasValue(path, locale, index);
     }
 
     /**
@@ -595,12 +591,12 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     }
 
     /**
-     * Validates the xml structure of the document with the DTD ot schema used by the document.<p>
+     * Validates the XML structure of the document with the DTD or XML schema used by the document.<p>
      * 
-     * This is required in case someone modifies the xml structure of a  
+     * This is required in case someone modifies the XML structure of a  
      * document using the "edit control code" option.<p>
      * 
-     * @param resolver the XML entitiy resolver to use
+     * @param resolver the XML entity resolver to use
      * @throws CmsXmlException if the validation fails
      */
     public void validateXmlStructure(EntityResolver resolver) throws CmsXmlException {
@@ -618,39 +614,39 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * Adds a bookmark for the given value.<p>
      * 
-     * @param name the name to use for the bookmark
+     * @param path the lookup path to use for the bookmark
      * @param locale the locale to use for the bookmark
      * @param enabled if true, the value is enabled, if false it is disabled
      * @param value the value to bookmark
      */
-    protected void addBookmark(String name, Locale locale, boolean enabled, Object value) {
+    protected void addBookmark(String path, Locale locale, boolean enabled, Object value) {
 
         // add the locale (since the locales are a set adding them more then once does not matter)
         addLocale(locale);
 
         // add a bookmark to the provided value 
-        m_bookmarks.put(getBookmarkName(name, locale), value);
+        m_bookmarks.put(getBookmarkName(path, locale), value);
 
         Object o;
         // update mapping of element name to locale
         if (enabled) {
             // only include enabled elements
-            o = m_elementLocales.get(name);
+            o = m_elementLocales.get(path);
             if (o != null) {
                 ((Set)o).add(locale);
             } else {
                 Set set = new HashSet();
                 set.add(locale);
-                m_elementLocales.put(name, set);
+                m_elementLocales.put(path, set);
             }
         }
         // update mapping of locales to element names
         o = m_elementNames.get(locale);
         if (o != null) {
-            ((Set)o).add(name);
+            ((Set)o).add(path);
         } else {
             Set set = new HashSet();
-            set.add(name);
+            set.add(path);
             m_elementNames.put(locale, set);
         }
     }
@@ -691,13 +687,13 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * Returns the bookmarked value for the given name.<p>
      * 
-     * @param name the name to get the bookmark for
+     * @param path the lookup path to use for the bookmark
      * @param locale the locale to get the bookmark for
      * @return the bookmarked value
      */
-    protected Object getBookmark(String name, Locale locale) {
+    protected Object getBookmark(String path, Locale locale) {
 
-        return m_bookmarks.get(getBookmarkName(name, locale));
+        return m_bookmarks.get(getBookmarkName(path, locale));
     }
 
     /**
@@ -736,7 +732,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * 
      * @param out the output stream to write to
      * @param encoding the encoding to use
-     * @return the output stream with the xml content
+     * @return the output stream with the XML content
      * @throws CmsXmlException if something goes wrong
      */
     protected OutputStream marshal(OutputStream out, String encoding) throws CmsXmlException {
@@ -747,25 +743,25 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * Removes the bookmark for an element with the given name and locale.<p>
      * 
-     * @param name the name of the element
+     * @param path the lookup path to use for the bookmark
      * @param locale the locale of the element
      * @return the element removed from the bookmarks or null
      */
-    protected I_CmsXmlContentValue removeBookmark(String name, Locale locale) {
+    protected I_CmsXmlContentValue removeBookmark(String path, Locale locale) {
 
         // remove mapping of element name to locale
         Object o;
-        o = m_elementLocales.get(name);
+        o = m_elementLocales.get(path);
         if (o != null) {
             ((Set)o).remove(locale);
         }
         // remove mapping of locale to element name
         o = m_elementNames.get(locale);
         if (o != null) {
-            ((Set)o).remove(name);
+            ((Set)o).remove(path);
         }
         // remove the bookmark and return the removed element
-        return (I_CmsXmlContentValue)m_bookmarks.remove(getBookmarkName(name, locale));
+        return (I_CmsXmlContentValue)m_bookmarks.remove(getBookmarkName(path, locale));
     }
 
     /**
@@ -775,14 +771,14 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * This is required to find names like "title/subtitle" which are stored
      * internally as "title[0]/subtitle[0)" in the bookmarks. 
      * 
-     * @param name the name to look up 
+     * @param path the path to look up 
      * @param locale the locale to look up
      *  
      * @return the value found in the bookmarks 
      */
-    private I_CmsXmlContentValue getValueInternal(String name, Locale locale) {
+    private I_CmsXmlContentValue getValueInternal(String path, Locale locale) {
 
-        Object value = getBookmark(name, locale);
+        Object value = getBookmark(path, locale);
         if (value != null) {
             return (I_CmsXmlContentValue)value;
         }

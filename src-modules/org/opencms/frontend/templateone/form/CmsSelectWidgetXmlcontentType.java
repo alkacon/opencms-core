@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2007/07/05 13:03:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -140,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.1.3
  * 
@@ -154,7 +154,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.5 $
+     * @version $Revision: 1.6 $
      * 
      * @since 6.1.6
      * 
@@ -253,7 +253,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.5 $
+     * @version $Revision: 1.6 $
      * 
      * @since 6.1.6
      * 
@@ -587,7 +587,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 }
             }
 
-            if (selectOptions == Collections.EMPTY_LIST || selectOptions == null) {
+            if ((selectOptions == Collections.EMPTY_LIST) || (selectOptions == null)) {
                 selectOptions = new ArrayList();
             }
 
@@ -838,7 +838,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
         if (startmacro != -1) {
 
             // for the option value we have to unmarshal...
-            CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(cms, CmsFile.upgrade(resource, cms));
+            CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
             // we read the locale node of the xmlcontent instance matching the resources
             // locale property (or top level locale).
             Locale locale = CmsLocaleManager.getLocale(cms.readPropertyObject(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlColorValue.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,6 +129,15 @@ public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
     public String getTypeName() {
 
         return TYPE_NAME;
+    }
+
+    /**
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
+     */
+    public boolean isSearchable() {
+
+        // there is no point in searching color values
+        return false;
     }
 
     /**

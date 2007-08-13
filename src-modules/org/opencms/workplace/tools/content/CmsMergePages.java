@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsMergePages.java,v $
- * Date   : $Date: 2007/07/04 16:56:39 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -626,7 +626,7 @@ public class CmsMergePages extends CmsReport {
                         Messages.get().container(Messages.RPT_READ_CONTENT_2, resFolder1Name, locale),
                         I_CmsReport.FORMAT_NOTE);
                     CmsResource resFolder1 = m_cms.readResource(resFolder1Name, CmsResourceFilter.IGNORE_EXPIRATION);
-                    CmsFile fileFolder1 = CmsFile.upgrade(resFolder1, m_cms);
+                    CmsFile fileFolder1 = m_cms.readFile(resFolder1);
                     CmsXmlPage pageFolder1 = CmsXmlPageFactory.unmarshal(m_cms, fileFolder1);
                     m_report.println(
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -638,7 +638,7 @@ public class CmsMergePages extends CmsReport {
                         Messages.get().container(Messages.RPT_READ_CONTENT_2, resFolder2Name, locale),
                         I_CmsReport.FORMAT_NOTE);
                     CmsResource resFolder2 = m_cms.readResource(resFolder2Name, CmsResourceFilter.IGNORE_EXPIRATION);
-                    CmsFile fileFolder2 = CmsFile.upgrade(resFolder2, m_cms);
+                    CmsFile fileFolder2 = m_cms.readFile(resFolder2);
                     CmsXmlPage pageFolder2 = CmsXmlPageFactory.unmarshal(m_cms, fileFolder2);
                     m_report.println(
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),

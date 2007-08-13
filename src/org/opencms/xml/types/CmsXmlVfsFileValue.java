@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2007/07/04 16:57:28 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 7.0.0 
  */
@@ -197,6 +197,15 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     public String getTypeName() {
 
         return TYPE_NAME;
+    }
+
+    /**
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
+     */
+    public boolean isSearchable() {
+
+        // there is no point in searching link values
+        return false;
     }
 
     /**

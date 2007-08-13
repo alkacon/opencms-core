@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecoratorConfiguration.java,v $
- * Date   : $Date: 2007/07/04 16:57:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Locale;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.3 
  */
@@ -297,7 +297,7 @@ public class CmsDecoratorConfiguration {
 
         // get the configuration file
         CmsResource res = m_cms.readResource(m_configFile);
-        CmsFile file = CmsFile.upgrade(res, m_cms);
+        CmsFile file = m_cms.readFile(res);
         CmsXmlContent configuration = CmsXmlContentFactory.unmarshal(m_cms, file);
 
         // get the uselocale flag

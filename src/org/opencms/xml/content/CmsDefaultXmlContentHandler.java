@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/07/10 13:13:59 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -45,7 +45,6 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
@@ -83,7 +82,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,6 +111,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "regex" appinfo attribute name. */
     public static final String APPINFO_ATTR_REGEX = "regex";
+
+    /** Constant for the "searchcontent" appinfo attribute name. */
+    public static final String APPINFO_ATTR_SEARCHCONTENT = "searchcontent";
 
     /** Constant for the "type" appinfo attribute name. */
     public static final String APPINFO_ATTR_TYPE = "type";
@@ -164,18 +166,31 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "relations" appinfo element name. */
     public static final String APPINFO_RELATIONS = "relations";
 
-    /** Constant for the "resourcebundle" appinfo element name. */
+    /** Constant for the "searchexclusions" appinfo element name. */
     public static final String APPINFO_RESOURCEBUNDLE = "resourcebundle";
 
     /** Constant for the "rule" appinfo element name. */
     public static final String APPINFO_RULE = "rule";
 
-    /** The file where the appinfo schema is located. */
+    /** The file where the default appinfo schema is located. */
     public static final String APPINFO_SCHEMA_FILE = "org/opencms/xml/content/DefaultAppinfo.xsd";
 
-    /** The XML system is for the appinfo schema. */
+    /** The file where the default appinfo schema types are located. */
+    public static final String APPINFO_SCHEMA_FILE_TYPES = "org/opencms/xml/content/DefaultAppinfoTypes.xsd";
+
+    /** The XML system id for the default appinfo schema types. */
     public static final String APPINFO_SCHEMA_SYSTEM_ID = CmsConfigurationManager.DEFAULT_DTD_PREFIX
         + APPINFO_SCHEMA_FILE;
+
+    /** The XML system id for the default appinfo schema types. */
+    public static final String APPINFO_SCHEMA_TYPES_SYSTEM_ID = CmsConfigurationManager.DEFAULT_DTD_PREFIX
+        + APPINFO_SCHEMA_FILE_TYPES;
+
+    /** Constant for the "searchsetting" appinfo element name. */
+    public static final String APPINFO_SEARCHSETTING = "searchsetting";
+
+    /** Constant for the "searchsettings" appinfo element name. */
+    public static final String APPINFO_SEARCHSETTINGS = "searchsettings";
 
     /** Constant for the "validationrule" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULE = "validationrule";
@@ -225,8 +240,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** The preview location (as defined in the annotations). */
     protected String m_previewLocation;
 
-    /** The check rules. */
+    /** The relation check rules. */
     protected Map m_relations;
+
+    /** The search settings. */
+    protected Map m_searchSettings;
 
     /** The messages for the error validation rules. */
     protected Map m_validationErrorMessages;
@@ -253,9 +271,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     static {
 
-        // the schema definition is located in a separate file for easier editing
+        // the schema definition is located in 2 separates file for easier editing
+        // 2 files are required in case an extended schema want to use the default definitions,
+        // but with an extended "appinfo" node 
+        byte[] appinfoSchemaTypes;
+        try {
+            // first read the default types
+            appinfoSchemaTypes = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE_TYPES);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(Messages.get().container(
+                org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                APPINFO_SCHEMA_FILE_TYPES), e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_TYPES_SYSTEM_ID, appinfoSchemaTypes);
         byte[] appinfoSchema;
         try {
+            // now read the default base schema
             appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
         } catch (Exception e) {
             throw new CmsRuntimeException(Messages.get().container(
@@ -531,11 +562,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#isSearchable(org.opencms.xml.types.I_CmsXmlContentValue)
+     */
+    public boolean isSearchable(I_CmsXmlContentValue value) {
+
+        // check for name configured in the annotations
+        Boolean anno = (Boolean)m_searchSettings.get(value.getName());
+        // if no annotation has been found, use default for value
+        return (anno == null) ? value.isSearchable() : anno.booleanValue();
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#prepareForUse(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent)
      */
     public CmsXmlContent prepareForUse(CmsObject cms, CmsXmlContent content) {
 
-        // noop, just return the unmodified content
+        // NOOP, just return the unmodified content
         return content;
     }
 
@@ -551,7 +593,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             boolean autoCorrectionEnabled = (attribute != null) && ((Boolean)attribute).booleanValue();
             content.setAutoCorrectionEnabled(autoCorrectionEnabled);
         }
-        // validate the xml structure before writing the file if required                 
+        // validate the XML structure before writing the file if required                 
         if (!content.isAutoCorrectionEnabled()) {
             // an exception will be thrown if the structure is invalid
             content.validateXmlStructure(new CmsXmlEntityResolver(cms));
@@ -581,7 +623,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         if (!value.isSimpleType()) {
             // no mappings for a nested schema are possible
-            // note that the sub-elemenets of the nested schema ARE mapped by the node visitor,
+            // note that the sub-elements of the nested schema ARE mapped by the node visitor,
             // it's just the nested schema value itself that does not support mapping
             return;
         }
@@ -709,7 +751,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         // this is an attribute mapping                        
                         String attribute = mapping.substring(MAPTO_ATTRIBUTE.length());
                         switch (ATTRIBUTES.indexOf(attribute)) {
-                            case 0: // datereleased
+                            case 0: // date released
                                 long date = 0;
                                 try {
                                     date = Long.valueOf(stringValue).longValue();
@@ -721,7 +763,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                                 }
                                 file.setDateReleased(date);
                                 break;
-                            case 1: // dateexpired
+                            case 1: // date expired
                                 date = 0;
                                 try {
                                     date = Long.valueOf(stringValue).longValue();
@@ -885,10 +927,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
             throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
-                org.opencms.xml.types.Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1,
+                Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1,
                 elementName));
         }
-        // store mappings as Xpath to allow better control about what is mapped
+        // store mappings as xpath to allow better control about what is mapped
         String xpath = CmsXmlUtils.createXpath(elementName, 1);
         m_defaultValues.put(xpath, defaultValue);
     }
@@ -925,7 +967,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             Iterator itElems = nestedContentDefinition.getSchemaTypes().iterator();
             while (itElems.hasNext()) {
                 String element = (String)itElems.next();
-                String path = (schemaType != null ? CmsXmlUtils.concatXpath(elementPath, element) : element);
+                String path = (schemaType != null) ? CmsXmlUtils.concatXpath(elementPath, element) : element;
                 addDefaultCheckRules(rootContentDefinition, nestedContentDefinition.getSchemaType(element), path);
             }
         }
@@ -949,9 +991,30 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 elementName));
         }
 
-        // store mappings as Xpath to allow better control about what is mapped
+        // store mappings as xpath to allow better control about what is mapped
         String xpath = CmsXmlUtils.createXpath(elementName, 1);
         m_elementMappings.put(xpath, mapping);
+    }
+
+    /**
+     * Adds a search setting for an element.<p>
+     * 
+     * @param contentDefinition the XML content definition this XML content handler belongs to
+     * @param elementName the element name to map
+     * @param value the search setting value to store
+     * 
+     * @throws CmsXmlException in case an unknown element name is used
+     */
+    protected void addSearchSetting(CmsXmlContentDefinition contentDefinition, String elementName, Boolean value)
+    throws CmsXmlException {
+
+        if (contentDefinition.getSchemaType(elementName) == null) {
+            throw new CmsXmlException(org.opencms.xml.types.Messages.get().container(
+                Messages.ERR_XMLCONTENT_INVALID_ELEM_SEARCHSETTINGS_1,
+                elementName));
+        }
+        // store the search exclusion as defined
+        m_searchSettings.put(elementName, value);
     }
 
     /**
@@ -1044,7 +1107,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * 
      * @param cms the current users OpenCms context
      * @param value the value to validate
-     * @param regex the rule that was vialoted
+     * @param regex the rule that was violated
      * @param valueStr the string value of the given value
      * @param matchResult if false, the rule was negated
      * @param isWarning if true, this validation indicate a warning, otherwise an error
@@ -1099,6 +1162,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_validationWarningMessages = new HashMap();
         m_defaultValues = new HashMap();
         m_configurationValues = new HashMap();
+        m_searchSettings = new HashMap();
         m_relations = new HashMap();
         m_previewLocation = null;
         m_modelFolder = null;
@@ -1142,7 +1206,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * but nevertheless be a String.<p>
      *
      * The widget to use can further be controlled using the <code>widget</code> attribute.
-     * You can specifiy either a valid widget alias such as <code>StringWidget</code>, 
+     * You can specify either a valid widget alias such as <code>StringWidget</code>, 
      * or the name of a Java class that implements <code>{@link I_CmsWidget}</code>.<p>
      * 
      * Configuration options to the widget can be passed using the <code>configuration</code>
@@ -1178,7 +1242,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * Initializes the element mappings for this content handler.<p>
      * 
      * Element mappings allow storing values from the XML content in other locations.
-     * For example, if you have an elemenet called "Title", it's likley a good idea to 
+     * For example, if you have an element called "Title", it's likely a good idea to 
      * store the value of this element also in the "Title" property of a XML content resource.<p>
      * 
      * @param root the "mappings" element from the appinfo node of the XML content definition
@@ -1244,7 +1308,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * 
      * OpenCms performs link checks for all OPTIONAL links defined in XML content values of type 
      * OpenCmsVfsFile. However, for most projects in the real world a more fine-grained control 
-     * over the link check process is required. For these cases, individual relation behaviour can 
+     * over the link check process is required. For these cases, individual relation behavior can 
      * be defined for the appinfo node.<p>
      * 
      * Additional here can be defined an optional type for the relations, for instance.<p>
@@ -1294,6 +1358,36 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 contentDefinition.getSchemaLocation()));
         }
         m_messageBundleName = name;
+    }
+
+    /**
+     * Initializes the search exclusions values for this content handler.<p>
+     * 
+     * For the full text search, the value of all elements in one locale of the XML content are combined
+     * to one big text, which is referred to as the "content" in the context of the full text search.
+     * With this option, it is possible to hide certain elements from this "content" that does not make sense 
+     * to include in the full text search.<p>   
+     * 
+     * @param root the "searchsettings" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the default values belong to
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    protected void initSearchSettings(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
+
+        Iterator i = root.elementIterator(APPINFO_SEARCHSETTING);
+        while (i.hasNext()) {
+            // iterate all "searchsetting" elements in the "searchsettings" node
+            Element element = (Element)i.next();
+            String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
+            String searchContent = element.attributeValue(APPINFO_ATTR_SEARCHCONTENT);
+            boolean include = CmsStringUtil.isEmpty(searchContent) || Boolean.valueOf(searchContent).booleanValue();
+            if (elementName != null) {
+                // add search exclusion for the element
+                // this may also be "false" in case a default of "true" is to be overwritten
+                addSearchSetting(contentDefinition, elementName, Boolean.valueOf(include));
+            }
+        }
     }
 
     /**
@@ -1366,7 +1460,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * Returns the localized resource string for a given message key according to the configured resource bundle
      * of this content handler.<p>
      * 
-     * If the key was not found in the configuredd bundle, or no bundle is configured for this 
+     * If the key was not found in the configured bundle, or no bundle is configured for this 
      * content handler, the return value is
      * <code>"??? " + keyName + " ???"</code>.<p>
      * 
@@ -1504,15 +1598,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         if ((link == null) || !link.isInternal()) {
             return false;
         }
-        String siteRoot = CmsSiteManager.getSiteRoot(link.getTarget());
-        String oldSite = cms.getRequestContext().getSiteRoot();
         try {
-            if (siteRoot != null) {
-                cms.getRequestContext().setSiteRoot(siteRoot);
-            }
-            String resName = cms.getRequestContext().removeSiteRoot(link.getTarget());
             // validate the link for error
-            CmsResource res = cms.readResource(resName, CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsResource res = cms.readResource(link.getStructureId(), CmsResourceFilter.IGNORE_EXPIRATION);
 
             // check the time range 
             if (res != null) {
@@ -1540,8 +1628,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     Messages.GUI_XMLCONTENT_CHECK_ERROR_0));
             }
             return true;
-        } finally {
-            cms.getRequestContext().setSiteRoot(oldSite);
         }
         return false;
     }
@@ -1623,7 +1709,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * Checks the default XML schema vaildation rules.<p>
+     * Checks the default XML schema validation rules.<p>
      * 
      * These rules should only be tested if this is not a test for warnings.<p>
      * 

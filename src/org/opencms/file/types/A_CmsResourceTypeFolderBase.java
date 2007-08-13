@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2007/07/04 16:57:35 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.file.types;
 
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsDataNotImplementedException;
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -57,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -201,7 +200,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                 }
                 try {
                     // touch, collecting the errors
-                    getResourceType(childResource).writeFile(cms, securityManager, CmsFile.upgrade(childResource, cms));
+                    getResourceType(childResource).writeFile(cms, securityManager, cms.readFile(childResource));
                 } catch (CmsException e) {
                     me.addException(e);
                 } catch (CmsRuntimeException e) {

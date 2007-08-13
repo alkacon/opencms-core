@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2007/07/13 13:35:38 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -183,6 +183,15 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
     }
 
     /**
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
+     */
+    public boolean isSearchable() {
+
+        // there is no point in searching boolean values
+        return false;
+    }
+
+    /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#newInstance(java.lang.String, java.lang.String, java.lang.String)
      */
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
@@ -195,7 +204,7 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
      */
     public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
-        m_boolean = getBooleanValue(value);        
+        m_boolean = getBooleanValue(value);
         super.setStringValue(cms, String.valueOf(m_boolean));
     }
 

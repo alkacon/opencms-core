@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2007/07/04 16:57:27 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/08/13 16:13:45 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,7 +154,7 @@ public class CmsLinkGallery extends A_CmsGallery {
                 // get real link target in widget mode from file content
                 try {
                     CmsResource res = getCms().readResource(getParamResourcePath());
-                    uri = new String(CmsFile.upgrade(res, getCms()).getContents());
+                    uri = new String(getCms().readFile(res).getContents());
                 } catch (CmsException e) {
                     // this should never happen
                     LOG.error(e.getLocalizedMessage(), e);
@@ -252,7 +252,7 @@ public class CmsLinkGallery extends A_CmsGallery {
                     // build the html
 
                     // file target
-                    String pointer = new String(CmsFile.upgrade(res, getCms()).getContents());
+                    String pointer = new String(getCms().readFile(res).getContents());
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(pointer)) {
                         pointer = getJsp().link(getCms().getSitePath(res));
                     }
@@ -500,7 +500,7 @@ public class CmsLinkGallery extends A_CmsGallery {
         result.append("\">");
         String linkTarget;
         try {
-            CmsFile file = CmsFile.upgrade(res, getCms());
+            CmsFile file = getCms().readFile(res);
             linkTarget = new String(file.getContents());
         } catch (CmsException e) {
             linkTarget = "";
@@ -555,7 +555,7 @@ public class CmsLinkGallery extends A_CmsGallery {
                         getCms().getSitePath(res),
                         resname).toLowerCase();
                     // get the link    
-                    CmsFile file = CmsFile.upgrade(res, getCms());
+                    CmsFile file = getCms().readFile(res);
                     String link = new String(file.getContents()).toLowerCase();
 
                     if ((restitle.indexOf(searchword) != -1)
@@ -733,7 +733,7 @@ public class CmsLinkGallery extends A_CmsGallery {
             getCms().lockResource(resPath);
             locked = false;
         }
-        CmsFile file = CmsFile.upgrade(res, getCms());
+        CmsFile file = getCms().readFile(res);
         file.setContents(m_paramEditPropertyValue.getBytes());
         checkLock(getCms().getSitePath(res));
         getCms().writeFile(file);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsPrivacyField.java,v $
- * Date   : $Date: 2007/07/30 10:55:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -113,8 +113,9 @@ public class CmsPrivacyField extends CmsCheckboxField {
             }
             //checks if intern link
             String link = curOption.getLabel();
-            if (link.startsWith("/"))
+            if (link.startsWith("/")) {
                 link = formHandler.link(link);
+            }
 
             buf.append("<input type=\"checkbox\" name=\"").append(getName()).append("\" value=\"").append(
                 curOption.getValue()).append("\"").append(checked).append("/>");

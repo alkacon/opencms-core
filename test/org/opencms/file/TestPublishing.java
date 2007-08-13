@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/08/06 08:40:35 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -625,7 +625,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // create the siblings
         CmsResource src = cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
-        CmsFile file = CmsFile.upgrade(src, cms);
+        CmsFile file = cms.readFile(src);
         file.setContents("test text".getBytes());
         cms.writeFile(file);
 
@@ -677,7 +677,7 @@ public class TestPublishing extends OpenCmsTestCase {
         CmsHistoryFile histFile = (CmsHistoryFile)list.get(0);
         assertEquals(cms.getRequestContext().addSiteRoot(sibling), histFile.getRootPath());
         assertEquals(2, histFile.getVersion());
-        file = CmsFile.upgrade(histFile, cms);
+        file = cms.readFile(histFile);
         assertEquals(new String("test text".getBytes()), new String(file.getContents()));
 
         // now delete the 2nd sibling
@@ -699,12 +699,12 @@ public class TestPublishing extends OpenCmsTestCase {
         histFile = (CmsHistoryFile)list.get(0);
         assertEquals(cms.getRequestContext().addSiteRoot(source), histFile.getRootPath());
         assertEquals(2, histFile.getVersion());
-        file = CmsFile.upgrade(histFile, cms);
+        file = cms.readFile(histFile);
         assertEquals(new String("test text".getBytes()), new String(file.getContents()));
         CmsHistoryFile histFile2 = (CmsHistoryFile)list.get(1);
         assertEquals(cms.getRequestContext().addSiteRoot(sibling), histFile2.getRootPath());
         assertEquals(2, histFile2.getVersion());
-        file = CmsFile.upgrade(histFile2, cms);
+        file = cms.readFile(histFile2);
         assertEquals(new String("test text".getBytes()), new String(file.getContents()));
     }
 
@@ -732,7 +732,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         // create the siblings
         CmsResource src = cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
-        CmsFile file = CmsFile.upgrade(src, cms);
+        CmsFile file = cms.readFile(src);
         file.setContents("test text".getBytes());
         cms.writeFile(file);
 
@@ -780,12 +780,12 @@ public class TestPublishing extends OpenCmsTestCase {
         CmsHistoryFile histFile = (CmsHistoryFile)list.get(0);
         assertEquals(cms.getRequestContext().addSiteRoot(source), histFile.getRootPath());
         assertEquals(2, histFile.getVersion());
-        file = CmsFile.upgrade(histFile, cms);
+        file = cms.readFile(histFile);
         assertEquals(new String("test text".getBytes()), new String(file.getContents()));
         CmsHistoryFile histFile2 = (CmsHistoryFile)list.get(1);
         assertEquals(cms.getRequestContext().addSiteRoot(sibling), histFile2.getRootPath());
         assertEquals(2, histFile2.getVersion());
-        file = CmsFile.upgrade(histFile2, cms);
+        file = cms.readFile(histFile2);
         assertEquals(new String("test text".getBytes()), new String(file.getContents()));
     }
 

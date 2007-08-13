@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlDateTimeValue.java,v $
- * Date   : $Date: 2007/07/04 16:57:28 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,6 +103,16 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
     }
 
     /**
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
+     */
+    public boolean isSearchable() {
+
+        // there is no point in searching date/time values
+        // they are stored as long int anyway
+        return false;
+    }
+
+    /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
@@ -151,8 +161,8 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
         result.append("<xsd:simpleType name=\"");
         result.append(TYPE_NAME);
         result.append("\"><xsd:union memberTypes=\"ocmsdatedec ocmsdatemacro\"/></xsd:simpleType>");
-        
-        return  result.toString();
+
+        return result.toString();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename2.java,v $
- * Date   : $Date: 2007/07/04 16:57:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestMoveRename2 extends OpenCmsTestCase {
 
@@ -139,7 +139,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         // check lock
         assertFalse(cms.getLockedResources("/", CmsLockFilter.FILTER_ALL).contains(folder));
-        
+
         cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         assertTrue(cms.existsResource(folder_moved + file));
@@ -177,7 +177,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         // check lock
         assertFalse(cms.getLockedResources("/", CmsLockFilter.FILTER_ALL).contains(folder));
-        
+
         CmsResource res = cms.readResource(movedFolder + file);
         CmsResource newRes = cms.readResource(movedFolder + newFile);
 
@@ -212,7 +212,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         cms.moveResource(folder, folder_moved);
         cms.unlockResource(folder_moved);
-        
+
         // check lock
         assertFalse(cms.getLockedResources("/", CmsLockFilter.FILTER_ALL).contains(folder));
     }
@@ -231,7 +231,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         String link = "link.html";
         CmsResource res = cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId());
         CmsResource res1 = cms.createResource(link, CmsResourceTypeXmlPage.getStaticTypeId());
-        CmsFile file = CmsFile.upgrade(res1, cms);
+        CmsFile file = cms.readFile(res1);
         CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
         if (!page.hasValue("test", Locale.ENGLISH)) {
             page.addValue("test", Locale.ENGLISH);
@@ -262,7 +262,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId());
 
-        file = CmsFile.upgrade(res1, cms);
+        file = cms.readFile(res1);
         page = CmsXmlPageFactory.unmarshal(cms, file, true);
         CmsLinkTable links = page.getLinkTable("test", Locale.ENGLISH);
         assertEquals(links.size(), 1);
@@ -321,14 +321,14 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         // check lock
         assertFalse(cms.getLockedResources(folder, CmsLockFilter.FILTER_ALL).contains(folder + source));
-        
+
         // move the folder
         cms.lockResource(folder);
         cms.moveResource(folder, folderDest);
 
         // check lock
         assertFalse(cms.getLockedResources("/folder1", CmsLockFilter.FILTER_ALL).contains(folder));
-        
+
         try {
             // undoing the changes to a deleted folder must cause an exception
             cms.undoChanges(destination, CmsResource.UNDO_MOVE_CONTENT);
@@ -373,7 +373,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
 
         // check lock
         assertFalse(cms.getLockedResources("/folder2", CmsLockFilter.FILTER_ALL).contains(source));
-        
+
         try {
             // source resource must be gone
             cms.readResource(source, CmsResourceFilter.ALL);

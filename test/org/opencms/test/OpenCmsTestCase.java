@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/08/06 08:40:36 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.95 $
+ * @version $Revision: 1.96 $
  * 
  * @since 6.0.0
  */
@@ -1993,7 +1993,7 @@ public class OpenCmsTestCase extends TestCase {
             // walk through the list and read all version files
             CmsResource hRes = (CmsResource)i.next();
             if (hRes instanceof CmsHistoryFile) {
-                CmsFile hFile = CmsFile.upgrade(hRes, cms);
+                CmsFile hFile = cms.readFile(hRes);
                 assertEquals(count, hFile.getVersion());
             } else {
                 assertEquals(count, hRes.getVersion());
@@ -2040,7 +2040,7 @@ public class OpenCmsTestCase extends TestCase {
         while (i.hasNext()) {
             // walk through the list and read all version files
             CmsResource hRes = (CmsResource)i.next();
-            CmsFile hFile = CmsFile.upgrade(hRes, cms);
+            CmsFile hFile = cms.readFile(hRes);
             assertEquals(count, hFile.getVersion());
             count--;
         }

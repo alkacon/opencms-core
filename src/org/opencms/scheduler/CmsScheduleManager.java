@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2007/07/04 16:57:08 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  * 
@@ -162,10 +162,12 @@ public class CmsScheduleManager implements Job {
             try {
 
                 CmsObject cms = null;
+                // update the request time in the job info to the current time
+                jobInfo.updateContextRequestTime();
                 // some simple test cases might run below this runlevel
                 if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
                     // generate a CmsObject for the job context                    
-                    // must access the scheduler manager instrance from the OpenCms singleton 
+                    // must access the scheduler manager instance from the OpenCms singleton 
                     // to get the initialized CmsObject
                     cms = OpenCms.initCmsObject(OpenCms.getScheduleManager().getAdminCms(), jobInfo.getContextInfo());
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsReplace.java,v $
- * Date   : $Date: 2007/07/04 16:57:19 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,7 +131,7 @@ public class CmsReplace extends CmsDialog {
 
                 // determine the resource type id from the resource to replace
                 CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-                CmsFile file = CmsFile.upgrade(res, getCms());
+                CmsFile file = getCms().readFile(res);
                 byte[] contents = file.getContents();
                 int resTypeId = res.getTypeId();
                 // check the lock state and replace resource

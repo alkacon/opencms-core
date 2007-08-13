@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2007/07/09 12:34:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -274,7 +274,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         int sources = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).size();
 
         String createdName = "/index_created.html";
-        cms.createResource(createdName, source.getTypeId(), CmsFile.upgrade(source, cms).getContents(), null);
+        cms.createResource(createdName, source.getTypeId(), cms.readFile(source).getContents(), null);
         CmsResource created = cms.readResource(createdName);
 
         assertRelationOperation(cms, source, target, sources + 1, 1);
@@ -481,7 +481,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
             // replace by link parseable
             cms.lockResource(targetName);
-            cms.replaceResource(targetName, source.getTypeId(), CmsFile.upgrade(source, cms).getContents(), null);
+            cms.replaceResource(targetName, source.getTypeId(), cms.readFile(source).getContents(), null);
 
             relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
             assertEquals(relations.size(), 1);
@@ -680,7 +680,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         String replacedName = "/index_created.html";
         cms.lockResource(replacedName);
-        cms.replaceResource(replacedName, source.getTypeId(), CmsFile.upgrade(source, cms).getContents(), null);
+        cms.replaceResource(replacedName, source.getTypeId(), cms.readFile(source).getContents(), null);
         CmsResource replaced = cms.readResource(replacedName);
 
         relations = cms.getRelationsForResource(replacedName, CmsRelationFilter.TARGETS);
@@ -730,7 +730,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
         String replacedName = "/index_created.html";
         cms.lockResource(replacedName);
-        cms.replaceResource(replacedName, source.getTypeId(), CmsFile.upgrade(source, cms).getContents(), null);
+        cms.replaceResource(replacedName, source.getTypeId(), cms.readFile(source).getContents(), null);
         CmsResource replaced = cms.readResource(replacedName);
 
         assertRelationOperation(cms, replaced, target, sources + 1, 1);
@@ -774,7 +774,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         assertRelationOperation(cms, source, target, sources, 1);
 
         // duplicate the english body into a new german body element
-        CmsFile file = CmsFile.upgrade(source, cms);
+        CmsFile file = cms.readFile(source);
         CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
         page.addLocale(cms, Locale.GERMAN);
         page.addValue("body", Locale.GERMAN);
@@ -810,7 +810,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         String newLinkName = "/index_created.html";
 
         // now add an additional link
-        file = CmsFile.upgrade(source, cms);
+        file = cms.readFile(source);
         page = CmsXmlPageFactory.unmarshal(cms, file);
         page.addLocale(cms, Locale.FRENCH);
         page.addValue("body", Locale.FRENCH);
@@ -861,7 +861,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(project);
 
         // now go back
-        file = CmsFile.upgrade(source, cms);
+        file = cms.readFile(source);
         page = CmsXmlPageFactory.unmarshal(cms, file);
         page.removeLocale(Locale.GERMAN);
         page.removeLocale(Locale.FRENCH);

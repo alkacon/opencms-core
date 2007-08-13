@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2007/07/04 16:57:17 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -270,7 +270,7 @@ public final class CmsXmlContentFactory {
 
         if (content == null) {
             // unmarshal XML structure from the file content
-            content = unmarshal(cms, CmsFile.upgrade(resource, cms));
+            content = unmarshal(cms, cms.readFile(resource));
             // store the content as request attribute for future read requests
             req.setAttribute(rootPath, content);
         }

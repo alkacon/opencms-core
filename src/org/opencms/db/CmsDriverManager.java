@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/08/10 15:32:03 $
- * Version: $Revision: 1.589 $
+ * Date   : $Date: 2007/08/13 16:13:42 $
+ * Version: $Revision: 1.590 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -5573,7 +5573,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param resource the base file resource (without content)
      * @return the file read from the VFS
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public CmsFile readFile(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
@@ -5592,7 +5592,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 resource.getResourceId(),
                 ((I_CmsHistoryResource)resource).getPublishTag()));
         } else {
-            file = new CmsFile(readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL));
+            file = new CmsFile(resource);
             file.setContents(m_vfsDriver.readContent(dbc, projectId, resource.getResourceId()));
         }
         return file;
@@ -6282,7 +6282,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @throws CmsException if the resource could not be read for any reason
      * 
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
      * @see CmsObject#restoreResourceVersion(CmsUUID, int)
      * @see CmsObject#readResource(CmsUUID, int)
      */
@@ -6313,7 +6312,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see CmsObject#readResource(CmsUUID, CmsResourceFilter)
      * @see CmsObject#readResource(CmsUUID)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
      */
     public CmsResource readResource(CmsDbContext dbc, CmsUUID structureID, CmsResourceFilter filter)
     throws CmsDataAccessException {
@@ -6345,7 +6343,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see CmsObject#readResource(String, CmsResourceFilter)
      * @see CmsObject#readResource(String)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
+     * @see CmsObject#readFile(CmsResource)
      */
     public CmsResource readResource(CmsDbContext dbc, String resourcePath, CmsResourceFilter filter)
     throws CmsDataAccessException {
@@ -8504,7 +8502,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (!lock.isLockableBy(dbc.currentUser())) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the {@link org.opencms.file.TestPublishIssues#testPublishScenarioE} problem.
-                    if (lock.isShared() && publishList != null) {
+                    if (lock.isShared() && (publishList != null)) {
                         if (!res.getState().isDeleted()
                             || !checkDeletedParentFolder(dbc, publishList.getDeletedFolderList(), res)) {
                             continue;
@@ -8570,7 +8568,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 if (!lock.isLockableBy(dbc.currentUser())) {
                     // checks if there is a shared lock and if the resource is deleted
                     // this solves the {@link org.opencms.file.TestPublishIssues#testPublishScenarioE} problem.
-                    if (lock.isShared() && publishList != null) {
+                    if (lock.isShared() && (publishList != null)) {
                         if (!res.getState().isDeleted()
                             || !checkDeletedParentFolder(dbc, publishList.getDeletedFolderList(), res)) {
                             continue;

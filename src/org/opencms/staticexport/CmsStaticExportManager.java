@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2007/08/09 13:48:54 $
- * Version: $Revision: 1.124 $
+ * Date   : $Date: 2007/08/13 16:13:42 $
+ * Version: $Revision: 1.125 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.124 $ 
+ * @version $Revision: 1.125 $ 
  * 
  * @since 6.0.0 
  */
@@ -331,7 +331,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         String exportBackups,
         String useRelativeLinks) throws CmsStaticExportException {
 
-        if (m_staticExportPathConfigured != null && exportPath.equals(m_staticExportPathConfigured)) {
+        if ((m_staticExportPathConfigured != null) && exportPath.equals(m_staticExportPathConfigured)) {
             throw new CmsStaticExportException(Messages.get().container(Messages.ERR_VALIDATE_EXPORTPATH_0));
         }
 
@@ -531,7 +531,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (resource.isFile()) {
             file = cms.readFile(vfsName);
         } else {
-            file = CmsFile.upgrade(OpenCms.initResource(cms, vfsName, req, wrapRes), cms);
+            file = cms.readFile(OpenCms.initResource(cms, vfsName, req, wrapRes));
             if (cms.existsResource(vfsName + file.getName())) {
                 vfsName = vfsName + file.getName();
             }

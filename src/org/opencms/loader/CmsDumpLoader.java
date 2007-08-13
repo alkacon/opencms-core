@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2007/07/04 16:57:46 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.68 $ 
+ * @version $Revision: 1.69 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,7 +114,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         HttpServletRequest req,
         HttpServletResponse res) throws CmsException {
 
-        return CmsFile.upgrade(resource, cms).getContents();
+        return cms.readFile(resource).getContents();
     }
 
     /**
@@ -123,7 +123,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     public byte[] export(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
 
-        CmsFile file = CmsFile.upgrade(resource, cms);
+        CmsFile file = cms.readFile(resource);
 
         // if no request and response are given, the resource only must be exported and no
         // output must be generated
@@ -146,7 +146,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
 
     /**
      * Will always return <code>null</code> since this loader does not 
-     * need to be cnofigured.<p>
+     * need to be configured.<p>
      * 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
@@ -245,7 +245,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         }
 
         // make sure we have the file contents available
-        CmsFile file = CmsFile.upgrade(resource, cms);
+        CmsFile file = cms.readFile(resource);
 
         // set response status to "200 - OK" (required for static export "on-demand")
         res.setStatus(HttpServletResponse.SC_OK);
@@ -281,7 +281,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     public void service(CmsObject cms, CmsResource resource, ServletRequest req, ServletResponse res)
     throws CmsException, IOException {
 
-        res.getOutputStream().write(CmsFile.upgrade(resource, cms).getContents());
+        res.getOutputStream().write(cms.readFile(resource).getContents());
     }
 
     /**

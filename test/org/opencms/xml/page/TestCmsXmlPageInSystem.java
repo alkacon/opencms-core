@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2007/07/04 16:57:52 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 6.0.0
  */
@@ -327,7 +327,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
             CmsResourceTypeXmlPage.getStaticTypeId(),
             content.getBytes(UTF8),
             properties);
-        CmsFile file = CmsFile.upgrade(res, cms);
+        CmsFile file = cms.readFile(res);
         CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
         assertTrue(page.hasLocale(Locale.ENGLISH));
 
@@ -423,7 +423,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
         String filename = "xmlpage.html";
         CmsResource res = cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId());
-        CmsFile file = CmsFile.upgrade(res, cms);
+        CmsFile file = cms.readFile(res);
         CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
         assertTrue(page.hasLocale(Locale.ENGLISH));
         try {

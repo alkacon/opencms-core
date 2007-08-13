@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/A_CmsField.java,v $
- * Date   : $Date: 2007/07/30 10:55:09 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Thomas Weckert
  * @author Jan Baudisch
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * @since 6.0.0 
  */
 public abstract class A_CmsField implements I_CmsField {
@@ -256,8 +256,9 @@ public abstract class A_CmsField implements I_CmsField {
     protected void incrementPlaceholder(String message) {
 
         int parse = 0;
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(message) && !message.startsWith("?"))
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(message) && !message.startsWith("?")) {
             parse = Integer.parseInt(message.trim());
+        }
         m_placeholder += parse;
     }
 
@@ -355,11 +356,13 @@ public abstract class A_CmsField implements I_CmsField {
         if (m_position != 0) {
             result = true;
         }
-        if (m_position == 0)
+        if (m_position == 0) {
             m_position = 1;
-        else m_position = 0;
+        } else {
+            m_position = 0;
+        }
         //if its need a placeholder
-        if (m_position == 1 && m_placeholder >= 1) {
+        if ((m_position == 1) && (m_placeholder >= 1)) {
             result = true;
             m_position = 0;
             m_placeholder--;

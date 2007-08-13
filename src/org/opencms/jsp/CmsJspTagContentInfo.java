@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -44,22 +44,21 @@ import java.util.List;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.Tag;
-import javax.servlet.jsp.tagext.TagSupport;
 
 import org.apache.commons.logging.Log;
 
 /**
  * Used to access and display XML content item information from the VFS.<p>
  * 
+ * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolver {
+public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implements I_CmsMacroResolver {
 
     /** The keys of the supported content info values. */
     private static final String[] KEYS = {
@@ -78,23 +77,11 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagContentInfo.class);
 
-    /** The scopes supported by the page context. */
-    private static final String[] SCOPES = {"application", "session", "request", "page"};
-
-    /** The scopes supported by the page context as a list. */
-    private static final List SCOPES_LIST = Collections.unmodifiableList(Arrays.asList(SCOPES));
-
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1955531050687258685L;
 
-    /** The scope under which the content info is saved in the page context. */
-    private String m_scope;
-
     /** The name of the content info's value that should be printed out. */
     private String m_value;
-
-    /** The name of the variable under which the content info bean should be saved in the page context. */
-    private String m_variable;
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
@@ -124,9 +111,8 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
 
         String tagContent = "";
 
-        if (CmsStringUtil.isNotEmpty(m_variable)) {
-            int scope = getScopeAsInt(m_scope);
-            storeContentInfoBean((CmsJspTagContentLoad)contentContainer, m_variable, scope);
+        if (isScopeVarSet()) {
+            storeContentInfoBean((CmsJspTagContentLoad)contentContainer);
         }
 
         if (CmsStringUtil.isNotEmpty(m_value)) {
@@ -211,16 +197,6 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
     }
 
     /**
-     * Returns the scope under which the content info is saved in the page context.<p>
-     * 
-     * @return the scope under which the content info is saved in the page context
-     */
-    public String getScope() {
-
-        return m_scope;
-    }
-
-    /**
      * Returns the name of the content info's value that should be printed out.<p>
      * 
      * @return the name of the content info's value that should be printed out
@@ -228,16 +204,6 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
     public String getValue() {
 
         return m_value;
-    }
-
-    /**
-     * Returns the name of the variable under which the content info bean should be saved in the page context.<p>
-     * 
-     * @return the name of the variable under which the content info bean should be saved in the page context
-     */
-    public String getVar() {
-
-        return m_variable;
     }
 
     /**
@@ -253,9 +219,7 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
      */
     public void release() {
 
-        m_scope = null;
         m_value = null;
-        m_variable = null;
         super.release();
     }
 
@@ -265,16 +229,6 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
     public String resolveMacros(String input) {
 
         return CmsMacroResolver.resolveMacros(input, this);
-    }
-
-    /**
-     * Sets the scope under which the content info is saved in the page context.<p>
-     * 
-     * @param scope the scope under which the content info is saved in the page context
-     */
-    public void setScope(String scope) {
-
-        m_scope = scope;
     }
 
     /**
@@ -288,57 +242,11 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
     }
 
     /**
-     * Sets the name of the variable under which the content info bean should be saved in the page context.<p>
-     * 
-     * @param var the name of the variable under which the content info bean should be saved in the page context
-     */
-    public void setVar(String var) {
-
-        m_variable = var;
-    }
-
-    /**
-     * Returns the int value of the specified scope string.<p>
-     * 
-     * The default value is {@link PageContext#PAGE_SCOPE}.<p>
-     * 
-     * @param scope the string name of the desired scope, e.g. "application", "request"
-     * @return the int value of the specified scope string
-     */
-    protected int getScopeAsInt(String scope) {
-
-        int scopeValue;
-        switch (SCOPES_LIST.indexOf(scope)) {
-            case 0:
-                // application
-                scopeValue = PageContext.APPLICATION_SCOPE;
-                break;
-            case 1:
-                // session
-                scopeValue = PageContext.SESSION_SCOPE;
-                break;
-            case 2:
-                // request
-                scopeValue = PageContext.REQUEST_SCOPE;
-                break;
-            default:
-                // page
-                scopeValue = PageContext.PAGE_SCOPE;
-                break;
-        }
-
-        return scopeValue;
-
-    }
-
-    /**
-     * Stores the container's content info bean under the specified scope in the page context.<p>
+     * Stores the container's content info bean in the page context.<p>
      * 
      * @param container the parent container
-     * @param variable the variable under which the content info bean is saved
-     * @param scope the scope under which the content info bean is saved
      */
-    protected void storeContentInfoBean(CmsJspTagContentLoad container, String variable, int scope) {
+    protected void storeContentInfoBean(CmsJspTagContentLoad container) {
 
         CmsContentInfoBean contentInfoBean = container.getContentInfoBean();
 
@@ -346,6 +254,6 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
         contentInfoBean.setPageIndex(container.getContentInfoBean().getPageIndex());
         contentInfoBean.setResultSize(container.getContentInfoBean().getResultSize());
 
-        pageContext.setAttribute(variable, contentInfoBean, scope);
+        storeAttribute(contentInfoBean);
     }
 }

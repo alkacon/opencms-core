@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/08/06 08:40:35 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.9.1
  */
@@ -686,14 +686,14 @@ public class TestHistory extends OpenCmsTestCase {
         I_CmsHistoryResource histRes = cms.readResource(s1.getStructureId(), 1);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(1, histRes.getResourceVersion());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
 
         // check the history for s2
         assertHistory(cms, s2name, 1);
         histRes = cms.readResource(s1.getStructureId(), 1);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(1, histRes.getResourceVersion());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
 
         // remember pub tag to be able to check the next operations
         int basePubTag = histRes.getPublishTag();
@@ -727,13 +727,13 @@ public class TestHistory extends OpenCmsTestCase {
         assertEquals(1, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s1.getStructureId(), 2);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(2, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 1, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
 
         // check the history for s2
         assertHistory(cms, s2name, 2);
@@ -742,13 +742,13 @@ public class TestHistory extends OpenCmsTestCase {
         assertEquals(1, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s2.getStructureId(), 2);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(2, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 1, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
 
         // check the history for s3
         assertHistory(cms, s3name, 2);
@@ -757,13 +757,13 @@ public class TestHistory extends OpenCmsTestCase {
         assertEquals(1, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s3.getStructureId(), 2);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(2, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 1, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
 
         // 7. delete s3
         cms.lockResource(s3name);
@@ -785,13 +785,13 @@ public class TestHistory extends OpenCmsTestCase {
         assertEquals(1, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s1.getStructureId(), 2);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(2, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 1, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
 
         // check the history for s2
         assertHistory(cms, s2name, 2);
@@ -800,13 +800,13 @@ public class TestHistory extends OpenCmsTestCase {
         assertEquals(1, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s2.getStructureId(), 2);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(2, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 1, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
 
         // 9. delete s2
         cms.lockResource(s2name);
@@ -844,13 +844,13 @@ public class TestHistory extends OpenCmsTestCase {
         assertEquals(1, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s1.getStructureId(), 2);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(2, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 1, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
 
         // 12. delete s1
         cms.lockResource(s1name);
@@ -880,25 +880,25 @@ public class TestHistory extends OpenCmsTestCase {
         assertEquals(1, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s1.getStructureId(), 2);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(2, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 1, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s1.getStructureId(), 3);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(3, histRes.getResourceVersion());
         assertTrue(histRes.getState().isDeleted());
         assertEquals(basePubTag + 4, histRes.getPublishTag());
-        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt2, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s1.getStructureId(), 4);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(4, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 5, histRes.getPublishTag());
-        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt2, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
 
         // 16. restore s2
         cms.restoreDeletedResource(s2.getStructureId());
@@ -918,32 +918,32 @@ public class TestHistory extends OpenCmsTestCase {
         assertEquals(1, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s1.getStructureId(), 2);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(2, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 1, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s1.getStructureId(), 3);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(3, histRes.getResourceVersion());
         assertTrue(histRes.getState().isDeleted());
         assertEquals(basePubTag + 4, histRes.getPublishTag());
-        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt2, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s1.getStructureId(), 4);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(4, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 5, histRes.getPublishTag());
-        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt2, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s1.getStructureId(), 5);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(5, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 6, histRes.getPublishTag());
         // we deleted s2 before publishing the contents, so the restored version has the old content
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
 
         // check the history for s2
         assertHistory(cms, s2name, 6);
@@ -951,36 +951,36 @@ public class TestHistory extends OpenCmsTestCase {
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(1, histRes.getResourceVersion());
         assertEquals(basePubTag, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s2.getStructureId(), 2);
         assertEquals(0, histRes.getStructureVersion());
         assertEquals(2, histRes.getResourceVersion());
         assertEquals(basePubTag + 1, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s2.getStructureId(), 3);
         assertEquals(1, histRes.getStructureVersion());
         assertEquals(2, histRes.getResourceVersion());
         assertEquals(basePubTag + 3, histRes.getPublishTag());
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s2.getStructureId(), 4);
         assertEquals(1, histRes.getStructureVersion());
         assertEquals(3, histRes.getResourceVersion());
         assertTrue(histRes.getState().isDeleted());
         assertEquals(basePubTag + 4, histRes.getPublishTag());
-        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt2, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s2.getStructureId(), 5);
         assertEquals(1, histRes.getStructureVersion());
         assertEquals(4, histRes.getResourceVersion());
         assertTrue(histRes.getState().isDeleted());
         assertEquals(basePubTag + 5, histRes.getPublishTag());
-        assertEquals(txt2, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt2, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
         histRes = cms.readResource(s2.getStructureId(), 6);
         assertEquals(1, histRes.getStructureVersion());
         assertEquals(5, histRes.getResourceVersion());
         assertFalse(histRes.getState().isDeleted());
         assertEquals(basePubTag + 6, histRes.getPublishTag());
         // we deleted s2 before publishing the contents, so the restored version has the old content
-        assertEquals(txt1, new String(CmsFile.upgrade((CmsHistoryFile)histRes, cms).getContents()));
+        assertEquals(txt1, new String(cms.readFile((CmsHistoryFile)histRes).getContents()));
     }
 
     /**

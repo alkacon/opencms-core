@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlContent.java,v $
- * Date   : $Date: 2007/07/10 10:50:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -54,7 +54,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Lucene document factory class to extract index data from a cms resource 
+ * Lucene document factory class to extract index data from an OpenCms VFS resource 
  * of type <code>CmsResourceTypeXmlContent</code>.<p>
  * 
  * All XML nodes from the content for all locales will be stored separately in the item map 
@@ -65,7 +65,7 @@ import java.util.Locale;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,7 +74,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
     /**
      * Creates a new instance of this lucene document factory.<p>
      * 
-     * @param name name of the documenttype
+     * @param name name of the document type
      */
     public CmsDocumentXmlContent(String name) {
 
@@ -82,7 +82,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
     }
 
     /**
-     * Returns the raw text content of a given vfs resource of type <code>CmsResourceTypeXmlContent</code>.<p>
+     * Returns the raw text content of a given VFS resource of type <code>CmsResourceTypeXmlContent</code>.<p>
      * 
      * All XML nodes from the content for all locales will be stored separately in the item map 
      * which you can access using {@link CmsExtractionResult#getContentItems()}. The XML elements will be 
@@ -115,11 +115,14 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
                 String xpath = (String)i.next();
                 // xpath will have the form "Text[1]" or "Nested[1]/Text[1]"
                 I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
-                String extracted = value.getPlainText(cms);
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
-                    items.put(xpath, extracted);
-                    content.append(extracted);
-                    content.append('\n');
+                if (value.getContentDefinition().getContentHandler().isSearchable(value)) {
+                    // the content value is searchable
+                    String extracted = value.getPlainText(cms);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {
+                        items.put(xpath, extracted);
+                        content.append(extracted);
+                        content.append('\n');
+                    }
                 }
             }
 

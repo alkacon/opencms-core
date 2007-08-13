@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,7 +73,7 @@ public class CmsJspTagContentShow extends TagSupport {
     /** Name of the content node element to show. */
     private String m_element;
 
-    /** Locale of the content node elemen to show. */
+    /** Locale of the content node element to show. */
     private Locale m_locale;
 
     /**

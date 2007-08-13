@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2007/07/04 16:57:08 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -242,7 +242,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             CmsResource res1 = cms.createResource(filename1, CmsResourceTypeXmlPage.getStaticTypeId());
 
             CmsResource res2 = cms.createResource(filename2, CmsResourceTypeXmlPage.getStaticTypeId());
-            CmsFile file2 = CmsFile.upgrade(res2, cms);
+            CmsFile file2 = cms.readFile(res2);
             CmsXmlPage page2 = CmsXmlPageFactory.unmarshal(cms, file2, true);
             page2.addValue("test", Locale.ENGLISH);
             page2.setStringValue(cms, "test", Locale.ENGLISH, "<a href='" + filename1 + "'>test</a>");
@@ -250,7 +250,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             cms.writeFile(file2);
 
             // if done before file2 exists, no structure id is stored
-            CmsFile file1 = CmsFile.upgrade(res1, cms);
+            CmsFile file1 = cms.readFile(res1);
             CmsXmlPage page1 = CmsXmlPageFactory.unmarshal(cms, file1, true);
             page1.addValue("test", Locale.ENGLISH);
             page1.setStringValue(cms, "test", Locale.ENGLISH, "<a href='" + filename2 + "'>test</a>");
@@ -350,7 +350,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         CmsResource res1 = cms.createResource(filename1, OpenCmsTestCase.ARTICLE_TYPEID);
 
         CmsResource res2 = cms.createResource(filename2, OpenCmsTestCase.ARTICLE_TYPEID);
-        CmsFile file2 = CmsFile.upgrade(res2, cms);
+        CmsFile file2 = cms.readFile(res2);
         String content2 = new String(file2.getContents(), CmsEncoder.ENCODING_UTF_8);
         CmsXmlContent xmlcontent2 = CmsXmlContentFactory.unmarshal(content2, CmsEncoder.ENCODING_UTF_8, resolver);
         xmlcontent2.getValue("Text", Locale.ENGLISH, 0).setStringValue(cms, "<a href='" + filename1 + "'>test</a>");
@@ -362,7 +362,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         cms.writeFile(file2);
 
         // if done before file2 exists, no structure id is stored
-        CmsFile file1 = CmsFile.upgrade(res1, cms);
+        CmsFile file1 = cms.readFile(res1);
         String content1 = new String(file1.getContents(), CmsEncoder.ENCODING_UTF_8);
         CmsXmlContent xmlcontent1 = CmsXmlContentFactory.unmarshal(content1, CmsEncoder.ENCODING_UTF_8, resolver);
         xmlcontent1.getValue("Text", Locale.ENGLISH, 0).setStringValue(cms, "<a href='" + filename2 + "'>test</a>");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/07/04 16:57:46 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -651,9 +651,11 @@ public class CmsResourceManager {
     }
 
     /**
-     * Returns an (unmodifiable) list of class names of all currently registered content collectors.<p>
+     * Returns an (unmodifiable) list of class names of all currently registered content collectors 
+     * ({@link I_CmsResourceCollector} objects).<p>
      *   
      * @return an (unmodifiable) list of class names of all currently registered content collectors
+     *      ({@link I_CmsResourceCollector} objects)
      */
     public List getRegisteredContentCollectors() {
 

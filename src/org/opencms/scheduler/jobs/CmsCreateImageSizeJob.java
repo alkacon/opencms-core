@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsCreateImageSizeJob.java,v $
- * Date   : $Date: 2007/07/04 16:57:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.Map;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.2 
  */
@@ -130,7 +130,7 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
                 if (lock.isNullLock() || lock.isOwnedBy(cms.getRequestContext().currentUser())) {
 
                     // read the file content
-                    CmsFile file = CmsFile.upgrade(res, cms);
+                    CmsFile file = cms.readFile(res);
                     // get the image size information
                     CmsImageScaler scaler = new CmsImageScaler(file.getContents(), file.getRootPath());
 

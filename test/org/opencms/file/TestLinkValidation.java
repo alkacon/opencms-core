@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2007/07/04 16:57:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -96,7 +96,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
     public static void setContent(CmsObject cms, String filename, String content) throws CmsException {
 
         CmsResource res = cms.readResource(filename);
-        CmsFile file = CmsFile.upgrade(res, cms);
+        CmsFile file = cms.readFile(res);
         CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
         if (!page.hasValue("test", Locale.ENGLISH)) {
             page.addValue("test", Locale.ENGLISH);
@@ -120,7 +120,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
     public static void setXmlContent(CmsObject cms, String filename, String html, String link) throws CmsException {
 
         CmsResource res = cms.readResource(filename);
-        CmsFile file = CmsFile.upgrade(res, cms);
+        CmsFile file = cms.readFile(res);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
         if (!content.hasValue("Text", Locale.ENGLISH, 0)) {
             content.addValue(cms, "Text", Locale.ENGLISH, 0);
@@ -396,7 +396,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
     private void setXmlContentFileRef(CmsObject cms, String filename, String link1, String link2) throws CmsException {
 
         CmsResource res = cms.readResource(filename);
-        CmsFile file = CmsFile.upgrade(res, cms);
+        CmsFile file = cms.readFile(res);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
         if (!content.hasValue("Homepage", Locale.ENGLISH, 0) && (link1 != null)) {
             content.addValue(cms, "Homepage", Locale.ENGLISH, 0);
@@ -435,7 +435,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
     private void setXmlContentHtml(CmsObject cms, String filename, String html) throws CmsException {
 
         CmsResource res = cms.readResource(filename);
-        CmsFile file = CmsFile.upgrade(res, cms);
+        CmsFile file = cms.readFile(res);
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
         if (!content.hasValue("Text", Locale.ENGLISH, 0)) {
             content.addValue(cms, "Text", Locale.ENGLISH, 0);

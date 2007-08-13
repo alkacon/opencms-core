@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2007/07/10 08:04:31 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -114,7 +114,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.103 $ 
+ * @version $Revision: 1.104 $ 
  * 
  * @since 6.0.0 
  * 
@@ -1030,7 +1030,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         if (historyResource == null) {
             historyResource = file;
         }
-        CmsFile historyFile = CmsFile.upgrade(historyResource, cms);
+        CmsFile historyFile = cms.readFile(historyResource);
         String content = new String(historyFile.getContents());
         // change the content-type header so that browsers show plain text
         res.setContentLength(content.length());
@@ -1142,7 +1142,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             String encoding;
             try {
                 CmsObject cms = controller.getCmsObject();
-                contents = CmsFile.upgrade(resource, cms).getContents();
+                contents = cms.readFile(resource).getContents();
                 // check the "content-encoding" property for the JSP, use system default if not found on path
                 encoding = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
                 if (encoding == null) {

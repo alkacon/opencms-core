@@ -194,6 +194,16 @@
             <name>locale</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>
+        <attribute>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>            
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>        
     </tag>    
         
     <tag>
@@ -233,6 +243,30 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>        
     </tag>      
+    
+    <tag>
+        <description>
+            This tag provides access the the content for the JSP EL.
+        </description>              
+        <name>contentaccess</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentAccess</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>scope</name>
+            <required>false</required>            
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>locale</name>
+            <required>false</required>            
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>        
+    </tag>    
     
     <tag>
         <description>

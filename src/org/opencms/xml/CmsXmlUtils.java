@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2007/07/04 16:57:43 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -476,7 +476,7 @@ public final class CmsXmlUtils {
      * <code>title</code> is left untouched<br>
      * <code>title[1]</code> becomes <code>title</code><br>
      * <code>title/subtitle</code> is left untouched<br>
-     * <code>title/subtitle[1]</code> becomes <code>title/subtitle</code><p>
+     * <code>title[1]/subtitle[1]</code> becomes <code>title/subtitle</code><p>
      * 
      * @param path the path to remove the Xpath index information from
      * 
@@ -488,11 +488,11 @@ public final class CmsXmlUtils {
             // this is a complex path over more then 1 node
             StringBuffer result = new StringBuffer(path.length() + 32);
 
-            // split the path into subelements
+            // split the path into sub-elements
             List elements = CmsStringUtil.splitAsList(path, '/');
             int end = elements.size() - 1;
             for (int i = 0; i <= end; i++) {
-                // append [i] to path element if required 
+                // remove [i] from path element if required 
                 result.append(removeXpathIndex((String)elements.get(i)));
                 if (i < end) {
                     // append path delimiter if not final path element
@@ -627,10 +627,10 @@ public final class CmsXmlUtils {
      * @throws CmsXmlException if the validation fails
      */
     public static void validateXmlStructure(byte[] xmlData, EntityResolver resolver) throws CmsXmlException {
-       
+
         validateXmlStructure(new ByteArrayInputStream(xmlData), resolver);
     }
-        
+
     /**
      * Validates the structure of a XML document contained in a byte array 
      * with the DTD or XML schema used by the document.<p>

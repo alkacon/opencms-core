@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2007/07/04 16:57:37 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/08/13 16:13:42 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0
  */
@@ -279,39 +279,33 @@ public abstract class TestCmsMessageBundles extends TestCase {
                         continue;
                     }
                     String enKeyValue = enResBundle.getString(bundleKey);
-                    int argCount = 0;
-                    for (int j = 0; j < 9; j++) {
+                    boolean[] args = new boolean[10];
+                    for (int j = 0; j < args.length; j++) {
                         String arg = "{" + j;
                         int pos = enKeyValue.indexOf(arg);
-                        if (pos < 0) {
-                            argCount = j;
-                            break;
-                        }
+                        args[j] = pos >= 0;
                     }
-                    for (int j = 0; j < argCount; j++) {
+                    for (int j = 0; j < args.length; j++) {
                         String arg = "{" + j;
                         int pos = keyValue.indexOf(arg);
-                        if (pos < 0) {
-                            errorMessages.add("Message '"
+                        if ((pos < 0) && (args[j])) {
+                            // not in locale bundle but in master bundle
+                            errorMessages.add("Additional message '"
                                 + keyValue
                                 + "' for key '"
                                 + bundleKey
                                 + "' misses argument {"
                                 + j
-                                + "}.");
-                        }
-                    }
-                    for (int j = argCount; j < 10; j++) {
-                        String arg = "{" + j;
-                        int pos = keyValue.indexOf(arg);
-                        if (pos >= 0) {
-                            errorMessages.add("Message '"
+                                + "} from master bundle.");
+                        } else if ((pos >= 0) && (!args[j])) {
+                            // in locale bundle but not in master bundle
+                            errorMessages.add("Additional message '"
                                 + keyValue
                                 + "' for key '"
                                 + bundleKey
-                                + "' contains unused argument {"
+                                + "' contains argument {"
                                 + j
-                                + "}.");
+                                + "} not used in master bundle.");
                         }
                     }
                 }

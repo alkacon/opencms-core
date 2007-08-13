@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2007/07/04 16:57:23 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -34,11 +34,11 @@ package org.opencms.jsp;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.jsp.util.CmsJspContentLoadBean;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
@@ -56,20 +56,26 @@ import java.util.Locale;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import javax.servlet.jsp.tagext.Tag;
 
 /**
- *  Implementation of the <code>&lt;cms:contentload/&gt;</code> tag, 
- *  used to access and display XML content item information from the VFS.<p>
+ * Implementation of the <code>&lt;cms:contentload/&gt;</code> tag, 
+ * used to access and display XML content item information from the VFS.<p>
+ * 
+ * Since version 7.0.2 it is also possible to store the results of the content load in the JSP context
+ * using a {@link CmsJspContentLoadBean}. Using this bean the loaded XML content objects can be accessed
+ * directly using the JSP EL and the JSTL. To use this feature, you need to add the <code>var</code> (and optionally
+ * the <code>scope</code>) parameter to the content load tag. For example, if a parameter like 
+ * <code>var="myVarName"</code> is provided, then the result of the content load is stored in the JSP 
+ * context variable <code>myVarName</code> with an instance of a {@link CmsJspContentLoadBean}.<p>
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlContentContainer {
+public class CmsJspTagContentLoad extends CmsJspScopedVarBodyTagSuport implements I_CmsXmlContentContainer {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 981176995635225294L;
@@ -122,7 +128,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
     /** Indicates if this is the first content iteration loop. */
     private boolean m_isFirstLoop;
 
-    /** Refenence to the currently selected locale. */
+    /** Reference to the currently selected locale. */
     private Locale m_locale;
 
     /** The index of the current page that gets displayed. */
@@ -134,7 +140,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
     /** The size of a page to be displayed. */
     private String m_pageSize;
 
-    /** Paramter used for the collector. */
+    /** Parameter used for the collector. */
     private String m_param;
 
     /** Indicates if the collector results should be preloaded. */
@@ -360,7 +366,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
 
         hasMoreContent();
 
-        return EVAL_BODY_INCLUDE;
+        return isScopeVarSet() ? SKIP_BODY : EVAL_BODY_INCLUDE;
     }
 
     /**
@@ -464,7 +470,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
      */
     public String getPreload() {
 
-        return String.valueOf(m_preload);
+        return String.valueOf(isPreloader());
     }
 
     /**
@@ -525,7 +531,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             }
         }
 
-        if (m_preload) {
+        if (isPreloader()) {
             // if in preload mode, no result is required            
             return false;
         }
@@ -584,7 +590,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
      */
     public boolean isPreloader() {
 
-        return m_preload;
+        return isScopeVarSet() ? true : m_preload;
     }
 
     /**
@@ -735,20 +741,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
         m_resourceName = m_cms.getSitePath(resource);
 
         // upgrade the resource to a file
-        // the static method CmsFile.upgrade(...) is not used for performance reasons
-        CmsFile file = null;
-        if (resource instanceof CmsFile) {
-            // check the resource contents
-            file = (CmsFile)resource;
-            if ((file.getContents() == null) || (file.getContents().length <= 0)) {
-                // file has no contents available, force re-read
-                file = CmsFile.upgrade(resource, m_cms);
-            }
-        }
-        if (file == null) {
-            // use ALL filter since the list itself should have filtered out all unwanted resources already 
-            file = m_cms.readFile(m_resourceName, CmsResourceFilter.ALL);
-        }
+        CmsFile file = m_cms.readFile(resource);
 
         // unmarshal the XML content from the resource, don't use unmarshal(CmsObject, CmsResource) 
         // as no support for getting the historic version that has been cached by a CmsHistoryResourceHandler 
@@ -817,8 +810,8 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             usedContainer = container;
         }
 
-        if (m_preload) {
-            // always deactivate direct edit for prelaod
+        if (isPreloader()) {
+            // always disable direct edit for preload
             m_directEditMode = CmsDirectEditMode.FALSE;
         } else if (m_directEditMode == null) {
             // direct edit mode must not be null
@@ -878,9 +871,8 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             m_contentInfoBean.setLocale(m_locale.toString());
             m_contentInfoBean.initResultIndex();
 
-            if (!m_preload) {
+            if (!isPreloader()) {
                 // not required when only preloading 
-
                 m_collectorResult = CmsJspTagContentLoad.limitCollectorResult(m_contentInfoBean, m_collectorResult);
                 m_contentInfoBean.initPageNavIndexes();
 
@@ -889,6 +881,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
                     // use "create link" only if collector supports it
                     m_directEditLinkForNew = CmsEncoder.encode(m_collectorName + "|" + createParam);
                 }
+            } else if (isScopeVarSet()) {
+                // scope variable is set, store content load bean in JSP context
+                CmsJspContentLoadBean bean = new CmsJspContentLoadBean(m_cms, m_locale, m_collectorResult);
+                storeAttribute(bean);
             }
 
         } catch (CmsException e) {
@@ -896,7 +892,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             throw new JspException(e);
         }
 
-        // reset the direct edit options (required becaue of re-used tags)
+        // reset the direct edit options (required because of re-used tags)
         m_directEditOpen = false;
         m_directEditFollowButtons = null;
 

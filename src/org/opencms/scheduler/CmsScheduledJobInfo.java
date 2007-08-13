@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2006/03/27 14:52:20 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -343,7 +343,7 @@ import org.quartz.Trigger;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -522,6 +522,8 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
     /**
      * Returns the context information for the user executing the job.<p>
+     *
+     * Please note: The context time will be the time set
      *
      * @return the context information for the user executing the job
      */
@@ -913,5 +915,19 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
         checkFrozen();
         m_trigger = trigger;
+    }
+
+    /**
+     * Updates the request time in the internal context information of the user with the current system time.<p>
+     * 
+     * This is required before executing the job, otherwise the context information request time would be the time
+     * the context object was initially created.<p>
+     */
+    protected void updateContextRequestTime() {
+
+        CmsContextInfo context = (CmsContextInfo)m_context.clone();
+        context.setRequestTime(System.currentTimeMillis());
+        context.freeze();
+        m_context = context;
     }
 }

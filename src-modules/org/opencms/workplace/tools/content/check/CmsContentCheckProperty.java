@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckProperty.java,v $
- * Date   : $Date: 2007/07/04 16:56:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/13 16:13:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.2
  */
@@ -268,7 +268,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
      */
     private void getConfiguration() throws CmsException {
 
-        if (m_configuredErrorChecks == null || m_configuredWarningChecks == null) {
+        if ((m_configuredErrorChecks == null) || (m_configuredWarningChecks == null)) {
             // get the configuration file
             CmsResource res = m_cms.readResource(CONFIGURATION);
             if (LOG.isDebugEnabled()) {
@@ -276,7 +276,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
                     Messages.LOG_DEBUG_PROPERTY_CONFIG_FILENAME_1,
                     res.getRootPath()));
             }
-            CmsFile file = CmsFile.upgrade(res, m_cms);
+            CmsFile file = m_cms.readFile(res);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_DEBUG_PROPERTY_CONFIG_FILE_1,

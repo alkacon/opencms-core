@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2007/07/04 16:57:23 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides convenient wrappers usefull to create user login pages.<p>
+ * Provides convenient wrappers useful to create user login pages.<p>
  * 
  * Initialize this bean at the beginning of your JSP like this:
  * <pre>
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,7 +107,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
 
     /**
      * Returns the exception that was thrown after login, 
-     * or null if no Exception was thrown (i.e. login was successul
+     * or null if no Exception was thrown (i.e. login was successful
      * or not attempted).<p>
      *  
      * @return the exception thrown after login
@@ -128,9 +128,9 @@ public class CmsJspLoginBean extends CmsJspActionElement {
     }
 
     /**
-     * Returns the username of the currently logged in user.<p>
+     * Returns the user name of the currently logged in user.<p>
      * 
-     * @return the username of the currently logged in user
+     * @return the user name of the currently logged in user
      */
     public String getUserName() {
 
@@ -186,10 +186,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         try {
 
             // login the user and create a new session
-            getCmsObject().loginUser(
-                userName,
-                password,
-                getRequestContext().getRemoteAddress());
+            getCmsObject().loginUser(userName, password, getRequestContext().getRemoteAddress());
 
             // make sure we have a new session after login for security reasons
             session = getRequest().getSession(false);
@@ -222,8 +219,8 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             }
 
             if (m_loginException instanceof CmsAuthentificationException) {
-                // the authentification of the user failed
 
+                // the authentication of the user failed
                 if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_2 == m_loginException.getMessageContainer().getKey()) {
 
                     // the user has been disabled

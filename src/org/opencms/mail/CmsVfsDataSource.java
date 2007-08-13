@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsVfsDataSource.java,v $
- * Date   : $Date: 2007/07/04 16:57:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.activation.DataSource;
  * @author Alexander Kandzior
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -73,7 +73,7 @@ public class CmsVfsDataSource implements DataSource {
     public CmsVfsDataSource(CmsObject cms, CmsResource resource)
     throws CmsException {
 
-        m_file = CmsFile.upgrade(resource, cms);
+        m_file = cms.readFile(resource);
         // identify the mime-type for the data source
         m_contentType = OpenCms.getResourceManager().getMimeType(
             m_file.getName(),

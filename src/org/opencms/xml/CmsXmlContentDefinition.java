@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2007/07/04 16:57:43 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -477,7 +477,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      * @param element the element to validate
      * @param includes the XML schema includes
      * 
-     * @return a data structure containing the validated complex type seqnence data 
+     * @return a data structure containing the validated complex type sequence data 
      * 
      * @throws CmsXmlException if the validation fails
      */
@@ -812,7 +812,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * @param type the content type to add
      * 
-     * @throws CmsXmlException in case an unregisterd type is added
+     * @throws CmsXmlException in case an unregistered type is added
      */
     public void addType(I_CmsXmlSchemaType type) throws CmsXmlException {
 
@@ -981,9 +981,9 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Returns the inner element name of this content definiton.<p>
+     * Returns the inner element name of this content definition.<p>
      *
-     * @return the inner element name of this content definiton
+     * @return the inner element name of this content definition
      */
     public String getInnerName() {
 
@@ -991,9 +991,9 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Returns the outer element name of this content definiton.<p>
+     * Returns the outer element name of this content definition.<p>
      *
-     * @return the outer element name of this content definiton
+     * @return the outer element name of this content definition
      */
     public String getOuterName() {
 
@@ -1091,11 +1091,11 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         // check if recursion is required to get value from a nested schema
         if (type.isSimpleType() || !CmsXmlUtils.isDeepXpath(elementPath)) {
-            // no recusion required
+            // no recursion required
             return type;
         }
 
-        // recusion required since the path is an Xpath
+        // recursion required since the path is an xpath and the type must be a nested content definition
         CmsXmlNestedContentDefinition nestedDefinition = (CmsXmlNestedContentDefinition)type;
         path = CmsXmlUtils.removeFirstXpathElement(elementPath);
         return nestedDefinition.getNestedContentDefinition().getSchemaType(path);
@@ -1122,9 +1122,9 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Returns the type sequence.<p>
+     * Returns the type sequence, contains instances of {@link I_CmsXmlSchemaType}.<p>
      *
-     * @return the type sequence
+     * @return the type sequence, contains instances of {@link I_CmsXmlSchemaType}
      */
     public List getTypeSequence() {
 
@@ -1140,7 +1140,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Sets the inner element name to use for the content definiton.<p>
+     * Sets the inner element name to use for the content definition.<p>
      *
      * @param innerName the inner element name to set
      */
@@ -1153,7 +1153,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Sets the outer element name to use for the content definiton.<p>
+     * Sets the outer element name to use for the content definition.<p>
      *
      * @param outerName the outer element name to set
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/08/06 08:40:36 $
- * Version: $Revision: 1.265 $
+ * Date   : $Date: 2007/08/13 16:13:42 $
+ * Version: $Revision: 1.266 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.265 $
+ * @version $Revision: 1.266 $
  * 
  * @since 6.0.0 
  */
@@ -3174,7 +3174,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * Updates the offline version numbers, following these rules:<p>
+     * Updates the offline version numbers.<p>
      *  
      * @param dbc the current database context
      * @param resource the resource to update the version number for

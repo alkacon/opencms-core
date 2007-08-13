@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion5.java,v $
- * Date   : $Date: 2007/07/04 16:57:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/13 16:13:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.3.0 
  * 
@@ -321,7 +321,7 @@ public class CmsImportVersion5 extends A_CmsImport {
 
             try {
                 // make sure the date last modified is kept...
-                CmsFile file = CmsFile.upgrade(res, m_cms);
+                CmsFile file = m_cms.readFile(res);
                 file.setDateLastModified(res.getDateLastModified());
                 m_cms.writeFile(file);
 

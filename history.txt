@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/10 15:33:07 $
- * Version: $Revision: 1.846 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.847 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,19 +20,24 @@ Legend:
 - General comment
 
 OpenCms 7.0.2 - xxxxx, 2007
+* Fixed issue #1503: CmsScheduleManager now uses the current time as the request time
 * Fixed issue with validation errors using the display widget on boolean values
 * Fixed several spelling issues in the German locale
 * Fixed issue with "new" siblings causing content changes in "old" siblings not to be published
-* Improved handling of DB statements and result sets in update wizard
+* Fixed issue with handling of DB statements and result sets in update wizard
 * Fixed issue in A_CmlXmlDocument where the xpath for #getValues(...) was not correctly accessing the bookmarks
 * Fixed issue with workplace encoding being system default while workplace folder was set to UTF-8
 * Fixed issue with no Exception being thrown in case a <cms:include> of a non-existing file is done
-- Improved implementation of CmsUUID serialization, added Junit tests for de-serialization of old versions
 * Fixed issue while deleting groups
 * Fixed issue while moving a folder with deleted subresources
 * Fixed issue with the 'publish with related resources' feature
 * Fixed issue with the 'before publish' event
 * Fixed issue with siblings in the history
+- Improved implementation of CmsUUID serialization, added Junit tests for de-serialization of old versions
+- Updated jug.jar used by CmsUUID to version 2.0.0 (from doomdark.org to safehaus.org version)
+- Split XSD for default XML content appinfo elements in 2 files, one for elements, the other for the base "appinfo" node
+- Deprecated CmsFile#upgrade(CmsResource) method as this is now done automatically in CmsObject#readFile(CmsResource)
+! Added <cms:contentaccess> tag and bean for easy access to XML contents on JSP using the EL with JSTL 
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog

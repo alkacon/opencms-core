@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2007/07/09 13:19:10 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -273,8 +273,8 @@ public class FileUploadApplet extends JApplet implements Runnable {
     }
 
     /**
-     * Checks if the given client files exist on the server and stores duplications in the internal member 
-     * {@link #m_overwrites}. <p>
+     * Checks if the given client files exist on the server and internally stores duplications.<p>
+     * 
      * Comparison is made by cutting the current directory of the file chooser from the path of the given files. 
      * The server files (VFS files) to compare to are found by the current session of the user which finds the correct site and 
      * the knowledge about the current directory. File translation rules are taken into account on the server. <p>
@@ -865,7 +865,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
                 m_fileSelector.setFileView(new ImageFileView(m_opencms, m_fileExtensions));
                 // add the image preview pane.
                 m_fileSelector.setAccessory(new ImagePreview(m_fileSelector, m_messageNoPreview));
-                if (m_clientFolder != null && !m_clientFolder.trim().equals("")) {
+                if ((m_clientFolder != null) && !m_clientFolder.trim().equals("")) {
                     File clientFolder = new File(m_clientFolder);
                     if (clientFolder.exists() && clientFolder.isDirectory()) {
                         m_fileSelector.setCurrentDirectory(clientFolder);
@@ -875,7 +875,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
                 m_action = m_actionOutputSelect;
 
                 // pre - selection of the filter: 
-                if (m_fileFilterSelection != null && !m_fileFilterSelection.trim().equals("")) {
+                if ((m_fileFilterSelection != null) && !m_fileFilterSelection.trim().equals("")) {
                     if (WebFilter.FILTER_ID.equals(m_fileFilterSelection)) {
                         m_fileSelector.setFileFilter(webFilter);
                     } else if (OfficeFilter.FILTER_ID.equals(m_fileFilterSelection)) {
@@ -1185,7 +1185,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             charsRead = 0;
             size = new Long(file.length()).intValue();
             int readCount = 0;
-            while (charsRead < size && readCount != -1) {
+            while ((charsRead < size) && (readCount != -1)) {
                 readCount = fileStream.read(buffer);
                 charsRead += readCount;
                 out.write(buffer, 0, readCount);

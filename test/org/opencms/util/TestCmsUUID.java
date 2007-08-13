@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsUUID.java,v $
- * Date   : $Date: 2007/08/03 09:54:20 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,14 +44,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.doomdark.uuid.UUID;
+import org.safehaus.uuid.UUID;
 
 /** 
  * Test case for the UUID generator.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0
  */

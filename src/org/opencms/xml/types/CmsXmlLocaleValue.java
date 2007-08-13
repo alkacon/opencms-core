@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlLocaleValue.java,v $
- * Date   : $Date: 2006/03/27 14:53:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,6 +118,15 @@ public class CmsXmlLocaleValue extends A_CmsXmlValueTextBase {
     public String getTypeName() {
 
         return TYPE_NAME;
+    }
+
+    /**
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
+     */
+    public boolean isSearchable() {
+
+        // there is no point in searching locale values
+        return false;
     }
 
     /**

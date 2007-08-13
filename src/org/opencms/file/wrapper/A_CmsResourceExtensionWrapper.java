@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/A_CmsResourceExtensionWrapper.java,v $
- * Date   : $Date: 2007/07/04 16:57:05 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.5.6
  */
@@ -101,7 +101,9 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         CmsResource res = getResource(cms, resourcename);
         if (res != null) {
 
-            cms.deleteResource(CmsResourceWrapperUtils.removeFileExtension(cms, resourcename, getExtension()), siblingMode);
+            cms.deleteResource(
+                CmsResourceWrapperUtils.removeFileExtension(cms, resourcename, getExtension()),
+                siblingMode);
             return true;
         }
 
@@ -180,7 +182,7 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         CmsResource res = getResource(cms, resourcename, filter);
         if (res != null) {
 
-            CmsFile file = CmsFile.upgrade(res, cms);
+            CmsFile file = cms.readFile(res);
             CmsWrappedResource wrap = new CmsWrappedResource(file);
             wrap.setRootPath(CmsResourceWrapperUtils.addFileExtension(cms, res.getRootPath(), getExtension()));
 
@@ -322,7 +324,9 @@ public abstract class A_CmsResourceExtensionWrapper extends A_CmsResourceWrapper
         CmsResource res = null;
 
         try {
-            res = cms.readResource(CmsResourceWrapperUtils.removeFileExtension(cms, resourcename, getExtension()), filter);
+            res = cms.readResource(
+                CmsResourceWrapperUtils.removeFileExtension(cms, resourcename, getExtension()),
+                filter);
         } catch (CmsException ex) {
             return null;
         }

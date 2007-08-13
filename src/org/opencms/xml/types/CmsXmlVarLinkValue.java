@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVarLinkValue.java,v $
- * Date   : $Date: 2007/07/04 16:57:28 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.0 
  */
@@ -207,6 +207,15 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
     public String getTypeName() {
 
         return TYPE_NAME;
+    }
+
+    /**
+     * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
+     */
+    public boolean isSearchable() {
+
+        // there is no point in searching link values
+        return false;
     }
 
     /**

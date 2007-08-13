@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2007/07/04 16:57:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/08/13 16:13:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.lucene.document.Field;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -347,7 +347,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
      */
     protected CmsFile readFile(CmsObject cms, CmsResource resource) throws CmsException, CmsIndexException {
 
-        CmsFile file = CmsFile.upgrade(resource, cms);
+        CmsFile file = cms.readFile(resource);
         if (file.getLength() <= 0) {
             throw new CmsIndexException(Messages.get().container(Messages.ERR_NO_CONTENT_1, resource.getRootPath()));
         }

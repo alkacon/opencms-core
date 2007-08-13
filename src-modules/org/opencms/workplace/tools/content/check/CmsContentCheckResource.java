@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckResource.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/13 16:13:42 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.2 
  */
@@ -188,7 +188,7 @@ public class CmsContentCheckResource {
     public void upgradeContent(CmsObject cms) throws CmsException {
 
         if (m_content == null) {
-            m_content = CmsFile.upgrade(m_resource, cms).getContents();
+            m_content = cms.readFile(m_resource).getContents();
         }
     }
 
@@ -203,7 +203,7 @@ public class CmsContentCheckResource {
     public void upgradeXmlContent(CmsObject cms) throws CmsException {
 
         if (m_xmlcontent == null) {
-            CmsFile file = CmsFile.upgrade(m_resource, cms);
+            CmsFile file = cms.readFile(m_resource);
             m_xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
         }
     }

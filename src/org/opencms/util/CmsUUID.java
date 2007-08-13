@@ -1,7 +1,7 @@
 /* 
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2007/08/08 07:46:38 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,9 +43,9 @@ import java.io.Serializable;
 
 import org.apache.commons.logging.Log;
 
-import org.doomdark.uuid.EthernetAddress;
-import org.doomdark.uuid.UUID;
-import org.doomdark.uuid.UUIDGenerator;
+import org.safehaus.uuid.EthernetAddress;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 /**
  * Generates a UUID using spatial and temporal uniqueness.<p> 
@@ -65,7 +65,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */

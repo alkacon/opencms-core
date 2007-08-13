@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2007/07/09 12:25:52 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,6 +78,9 @@ public final class CmsStringUtil {
 
     /** Context macro. */
     public static final String MACRO_OPENCMS_CONTEXT = "${OpenCmsContext}";
+
+    /** Contains all chars that end a sentence in the {@link #trimToSize(String, int, int, String)} method. */
+    public static final char[] SENTENCE_ENDING_CHARS = {'.', '!', '?'};
 
     /** a convienient shorthand for tabulations.  */
     public static final String TABULATOR = "  ";
@@ -451,7 +454,7 @@ public final class CmsStringUtil {
         if (name.endsWith("/")) {
             names[names.length - 1] = names[names.length - 1] + "/";
         }
-        for (int i = 1; total > maxLength && i < names.length - 1; i++) {
+        for (int i = 1; (total > maxLength) && (i < names.length - 1); i++) {
             if (i > 1) {
                 names[i - 1] = "";
             }
@@ -675,6 +678,79 @@ public final class CmsStringUtil {
             }
         }
         return true;
+    }
+
+    /**
+     * Returns the last index of any of the given chars in the given source.<p> 
+     * 
+     * If no char is found, -1 is returned.<p>
+     * 
+     * @param source the source to check
+     * @param chars the chars to find
+     * 
+     * @return the last index of any of the given chars in the given source, or -1
+     */
+    public static int lastIndexOf(String source, char[] chars) {
+
+        // now try to find an "sentence ending" char in the text in the "findPointArea"
+        int result = -1;
+        for (int i = 0; i < chars.length; i++) {
+            int pos = source.lastIndexOf(chars[i]);
+            if (pos > result) {
+                // found new last char
+                result = pos;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the last index a whitespace char the given source.<p> 
+     * 
+     * If no whitespace char is found, -1 is returned.<p>
+     * 
+     * @param source the source to check
+     * 
+     * @return the last index a whitespace char the given source, or -1
+     */
+    public static int lastWhitespaceIn(String source) {
+
+        if (CmsStringUtil.isEmpty(source)) {
+            return -1;
+        }
+        int pos = -1;
+        for (int i = source.length() - 1; i >= 0; i--) {
+            if (Character.isWhitespace(source.charAt(i))) {
+                pos = i;
+                break;
+            }
+        }
+        return pos;
+    }
+
+    /**
+     * Returns a string representation for the given map using the given separators.<p>
+     * 
+     * @param map the map to write
+     * @param sepItem the item separator string
+     * @param sepKeyval the key-value pair separator string
+     * 
+     * @return the string representation for the given map
+     */
+    public static String mapAsString(Map map, String sepItem, String sepKeyval) {
+
+        StringBuffer string = new StringBuffer(128);
+        Iterator it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            string.append(entry.getKey());
+            string.append(sepKeyval);
+            string.append(entry.getValue());
+            if (it.hasNext()) {
+                string.append(sepItem);
+            }
+        }
+        return string.toString();
     }
 
     /**
@@ -1021,31 +1097,97 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Returns a substring of string source, which is at most length characters long.<p>
+     * Returns a substring of the source, which is at most length characters long.<p>
+     * 
+     * This is the same as calling {@link #trimToSize(String, int, int, String)} with the 
+     * parameters <code>trimToSize(source, length, length, "...")</code>.<p>
      * 
      * @param source the string to trim
      * @param length the maximum length of the string to be returned
      * 
-     * @return a substring of string source, which is at most length characters long
+     * @return a substring of the source, which is at most length characters long
      */
     public static String trimToSize(String source, int length) {
 
-        int end = 0;
-        int newend;
-        while (true) {
-            newend = source.indexOf(" ", end);
-            if ((newend > length) && (end > 0)) {
-                return source.substring(0, length - 3) + "...";
-            } else if (newend == -1) {
-                if (length < source.length()) {
-                    return source.substring(0, length - 3) + "...";
-                } else {
-                    return source;
-                }
+        return trimToSize(source, length, length, "...");
+    }
+
+    /**
+     * Returns a substring of the source, which is at most length characters long.<p>
+     * 
+     * If a char is cut, the given <code>suffix</code> is appended to the result.<p>
+     * 
+     * This is the same as calling {@link #trimToSize(String, int, int, String)} with the 
+     * parameters <code>trimToSize(source, length, length, suffix)</code>.<p>
+     * 
+     * @param source the string to trim
+     * @param length the maximum length of the string to be returned
+     * @param suffix the suffix to append in case the String was trimmed
+     * 
+     * @return a substring of the source, which is at most length characters long
+     */
+    public static String trimToSize(String source, int length, String suffix) {
+
+        return trimToSize(source, length, length, "...");
+    }
+
+    /**
+     * Returns a substring of the source, which is at most length characters long, cut 
+     * in the last <code>area</code> chars in the source at a sentence ending char or whitespace.<p>
+     * 
+     * If a char is cut, the given <code>suffix</code> is appended to the result.<p>
+     * 
+     * @param source the string to trim
+     * @param length the maximum length of the string to be returned
+     * @param area the area at the end of the string in which to find a sentence ender or whitespace
+     * @param suffix the suffix to append in case the String was trimmed
+     * 
+     * @return a substring of the source, which is at most length characters long
+     */
+    public static String trimToSize(String source, int length, int area, String suffix) {
+
+        if ((source == null) || (source.length() <= length)) {
+            // no operation is required
+            return source;
+        }
+        if (CmsStringUtil.isEmpty(suffix)) {
+            // we need an empty suffix
+            suffix = "";
+        }
+        // must remove the length from the after sequence chars since these are always added in the end
+        int modLength = length - suffix.length();
+        if (modLength <= 0) {
+            // we are to short, return beginning of the suffix
+            return suffix.substring(0, length);
+        }
+        int modArea = area + suffix.length();
+        if ((modArea > modLength) || (modArea < 0)) {
+            // area must not be longer then max length
+            modArea = modLength;
+        }
+
+        // first reduce the String to the maximum allowed length
+        String findPointSource = source.substring(modLength - modArea, modLength);
+
+        String result;
+        // try to find an "sentence ending" char in the text
+        int pos = lastIndexOf(findPointSource, SENTENCE_ENDING_CHARS);
+        if (pos >= 0) {
+            // found a sentence ender in the lookup area, keep the sentence ender
+            result = source.substring(0, modLength - modArea + pos + 1) + suffix;
+        } else {
+            // no sentence ender was found, try to find a whitespace
+            pos = lastWhitespaceIn(findPointSource);
+            if (pos >= 0) {
+                // found a whitespace, don't keep the whitespace
+                result = source.substring(0, modLength - modArea + pos) + suffix;
             } else {
-                end = newend + 1;
+                // not even a whitespace was found, just cut away what's to long
+                result = source.substring(0, modLength) + suffix;
             }
         }
+
+        return result;
     }
 
     /**
@@ -1123,30 +1265,5 @@ public final class CmsStringUtil {
         }
 
         return true;
-    }
-
-    /**
-     * Returns a string representation for the given map using the given separators.<p>
-     * 
-     * @param map the map to write
-     * @param sepItem the item separator string
-     * @param sepKeyval the key-value pair separator string
-     * 
-     * @return the string representation for the given map
-     */
-    public static String mapAsString(Map map, String sepItem, String sepKeyval) {
-
-        StringBuffer string = new StringBuffer(128);
-        Iterator it = map.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            string.append(entry.getKey());
-            string.append(sepKeyval);
-            string.append(entry.getValue());
-            if (it.hasNext()) {
-                string.append(sepItem);
-            }
-        }
-        return string.toString();
     }
 }

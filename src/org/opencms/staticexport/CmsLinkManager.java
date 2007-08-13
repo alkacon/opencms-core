@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/07/11 09:28:12 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.65 $ 
+ * @version $Revision: 1.66 $ 
  * 
  * @since 6.0.0 
  */
@@ -346,7 +346,7 @@ public class CmsLinkManager {
     }
 
     /**
-     * Returns the online link for the given resource.<p>
+     * Returns the online link for the given resource, with full server prefix.<p>
      * 
      * Like
      * <code>http://site.enterprise.com:8080/index.html</code>.<p>
@@ -476,21 +476,27 @@ public class CmsLinkManager {
     }
 
     /**
-     * Substitutes the contents of a link by adding the context path and 
-     * servlet name, and in the case of the "online" project also according
+     * Makes the given <code>link</code> absolute, adds the configured context path and 
+     * servlet name, and in the case of the "online" project also rewrites the link according to
      * to the configured static export settings.<p>
      * 
-     * A server prefix is prepended if
+     * In case <code>link</code> is a relative URI, the current URI contained in the provided 
+     * OpenCms user context <code>cms</code> is used to create an absolute URI from the relative <code>link</code>.<p>
+     * 
+     * The provided <code>siteRoot</code> is assumed to be the "home" of the link.
+     * In case the current site of the given OpenCms user context <code>cms</code> is different from the 
+     * provided <code>siteRoot</code>, the full server prefix is appended to the result link.<p> 
+     * 
+     * A server prefix is also prepended if
      * <ul>
-     *   <li>the link points to another site</li>
      *   <li>the link is contained in a normal document and the link references a secure document</li>
      *   <li>the link is contained in a secure document and the link references a normal document</li>
      * </ul>
      * 
-     * @param cms the cms context
+     * @param cms the current users OpenCms context
      * @param link the link to process (must be a valid link to a VFS resource with optional parameters)
      * @param siteRoot the site root of the link
-     * @param forceSecure if <code>true</code> generates always an absolute url (with protocoll and server name) for secure links
+     * @param forceSecure if <code>true</code> generates always an absolute url (with protocol and server name) for secure links
      * 
      * @return the substituted link
      */
@@ -532,28 +538,30 @@ public class CmsLinkManager {
             serverPrefix = targetSite.getUrl();
         }
 
+        // in the online project, check static export and secure settings
+
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
+
+            // first check if this link needs static export
 
             CmsStaticExportManager exportManager = OpenCms.getStaticExportManager();
             // check if we need relative links in the exported pages
             if (exportManager.relativeLinksInExport(cms.getRequestContext().getSiteRoot()
                 + cms.getRequestContext().getUri())) {
-                // try to get base uri from cache  
+                // try to get base URI from cache  
                 uriBaseName = exportManager.getCachedOnlineLink(exportManager.getCacheKey(
                     cms.getRequestContext().getSiteRoot(),
                     cms.getRequestContext().getUri()));
                 if (uriBaseName == null) {
                     // base not cached, check if we must export it
                     if (exportManager.isExportLink(cms, cms.getRequestContext().getUri())) {
-                        // base uri must also be exported
-                        uriBaseName = exportManager.getRfsName(cms,
-                        //cms.getRequestContext().getSiteRoot(),
-                            cms.getRequestContext().getUri());
+                        // base URI must also be exported
+                        uriBaseName = exportManager.getRfsName(cms, cms.getRequestContext().getUri());
                     } else {
-                        // base uri dosn't need to be exported
+                        // base URI dosn't need to be exported
                         uriBaseName = exportManager.getVfsPrefix() + cms.getRequestContext().getUri();
                     }
-                    // cache export base uri
+                    // cache export base URI
                     exportManager.cacheOnlineLink(exportManager.getCacheKey(
                         cms.getRequestContext().getSiteRoot(),
                         cms.getRequestContext().getUri()), uriBaseName);
@@ -563,7 +571,7 @@ public class CmsLinkManager {
                     cms.getRequestContext().getSiteRoot() + cms.getRequestContext().getUri()));
             }
 
-            // check if we have the absolute vfs name for the link target cached
+            // check if we have the absolute VFS name for the link target cached
             resultLink = exportManager.getCachedOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink);
             if (resultLink == null) {
                 String storedSiteRoot = cms.getRequestContext().getSiteRoot();
@@ -590,10 +598,13 @@ public class CmsLinkManager {
                 exportManager.cacheOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink, resultLink);
             }
 
-            // read only properties, if the current site and the target site both do have a secure server
-            if (targetSite.hasSecureServer() || CmsSiteManager.getCurrentSite(cms).hasSecureServer()) {
-                if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+            // now check for the secure settings 
 
+            // check if either the current site or the target site does have a secure server configured
+            if (targetSite.hasSecureServer() || CmsSiteManager.getCurrentSite(cms).hasSecureServer()) {
+
+                if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                    // don't make a secure connection to the "/system" folder (why ?)
                     int linkType = -1;
                     try {
                         // read the linked resource 
@@ -637,7 +648,7 @@ public class CmsLinkManager {
 
         } else {
 
-            // offline project, no export required
+            // offline project, no export or secure handling required
             if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
                 // in unit test this code would fail otherwise
                 resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);

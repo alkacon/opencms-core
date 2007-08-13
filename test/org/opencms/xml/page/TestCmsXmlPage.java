@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2007/07/04 16:57:52 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.xml.page;
 
-import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
@@ -55,14 +54,13 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0
  */
 public class TestCmsXmlPage extends TestCase {
 
-    private static final String XMLPAGE_SCHEMA_SYSTEM_ID = CmsConfigurationManager.DEFAULT_DTD_PREFIX
-        + "xmlpage.xsd";
+    private static final String XMLPAGE_SCHEMA_SYSTEM_ID = CmsXmlPage.XMLPAGE_XSD_SYSTEM_ID;
 
     private static final String UTF8 = CmsEncoder.ENCODING_UTF_8;
 

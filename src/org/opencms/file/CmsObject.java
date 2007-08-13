@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/07/11 09:28:12 $
- * Version: $Revision: 1.149 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.150 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.149 $
+ * @version $Revision: 1.150 $
  * 
  * @since 6.0.0 
  */
@@ -2634,7 +2634,7 @@ public final class CmsObject {
     }
 
     /**
-     * Returns the default file for the given folder.<p>
+     * Returns the default resource for the given folder.<p>
      * 
      * If the given resource name or id identifies a file, then this file is returned.<p>
      * 
@@ -2697,9 +2697,17 @@ public final class CmsObject {
      * Reads a file resource (including it's binary content) from the VFS,
      * for the given resource (this may also be an historical version of the resource).<p>
      * 
+     * In case the input {@link CmsResource} object already is a {@link CmsFile} with contents
+     * available, it is casted to a file and returned unchanged. Otherwise the file is read 
+     * from the VFS.<p>
+     * 
      * In case you do not need the file content, 
-     * use <code>{@link #readResource(String, CmsResourceFilter)}</code> or
-     * <code>{@link #readFile(String, CmsResourceFilter)}</code> instead.<p>
+     * use <code>{@link #readResource(String)}</code> or
+     * <code>{@link #readResource(String, CmsResourceFilter)}</code> instead.<p>
+     * 
+     * No resource filter is applied when reading the resource, since we already have
+     * a full resource instance and assume we just want the content for that instance. 
+     * In case you need to apply a filter, use {@link #readFile(String, CmsResourceFilter)} instead.<p>
      * 
      * @param resource the resource to read
      *
@@ -2707,11 +2715,21 @@ public final class CmsObject {
      *
      * @throws CmsException if the file resource could not be read for any reason
      * 
-     * @see #readResource(String, CmsResourceFilter)
+     * @see #readFile(String)
      * @see #readFile(String, CmsResourceFilter)
      */
     public CmsFile readFile(CmsResource resource) throws CmsException {
 
+        // test if we already have a file
+        if (resource instanceof CmsFile) {
+            // resource is already a file
+            CmsFile file = (CmsFile)resource;
+            if ((file.getContents() != null) && (file.getContents().length > 0)) {
+                // file has the contents already available
+                return file;
+            }
+        }
+        
         return m_securityManager.readFile(m_context, resource);
     }
 
@@ -2729,6 +2747,7 @@ public final class CmsObject {
      * @throws CmsException if the file resource could not be read for any reason
      * 
      * @see #readFile(String, CmsResourceFilter)
+     * @see #readFile(CmsResource)
      * @see #readResource(String)
      */
     public CmsFile readFile(String resourcename) throws CmsException {
@@ -2755,7 +2774,9 @@ public final class CmsObject {
      * @return the file resource that was read
      *
      * @throws CmsException if the file resource could not be read for any reason
-     * 
+     *
+     * @see #readFile(String)
+     * @see #readFile(CmsResource)
      * @see #readResource(String, CmsResourceFilter)
      */
     public CmsFile readFile(String resourcename, CmsResourceFilter filter) throws CmsException {
@@ -3318,7 +3339,7 @@ public final class CmsObject {
      * the binary content is a cost-expensive database operation, it's recommended 
      * to work with resources if possible, and only read the file content when absolutely
      * required. To "upgrade" a resource to a file, 
-     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     * use <code>{@link #readFile(CmsResource)}</code>.<p> 
      *
      * @param structureID the structure ID of the resource to read
      *
@@ -3328,7 +3349,6 @@ public final class CmsObject {
      *
      * @see #readFile(String) 
      * @see #readResource(CmsUUID, CmsResourceFilter)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
      */
     public CmsResource readResource(CmsUUID structureID) throws CmsException {
 
@@ -3345,7 +3365,7 @@ public final class CmsObject {
      * the binary content is a cost-expensive database operation, it's recommended 
      * to work with resources if possible, and only read the file content when absolutely
      * required. To "upgrade" a resource to a file, 
-     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     * use <code>{@link #readFile(CmsResource)}</code>.<p> 
      *
      * The specified filter controls what kind of resources should be "found" 
      * during the read operation. This will depend on the application. For example, 
@@ -3362,7 +3382,6 @@ public final class CmsObject {
      * 
      * @see #readFile(String, CmsResourceFilter)
      * @see #readFolder(String, CmsResourceFilter)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
      */
     public CmsResource readResource(CmsUUID structureID, CmsResourceFilter filter) throws CmsException {
 
@@ -3379,7 +3398,7 @@ public final class CmsObject {
      * cost-expensive database operation, it's recommended to work with resources 
      * if possible, and only read the file content when absolutely required. To 
      * "upgrade" a resource to a file, use 
-     * <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     * <code>{@link #readFile(CmsResource)}</code>.<p> 
      *
      * Please note that historical versions are just generated during publishing, 
      * so the first version with version number 1 is generated during publishing 
@@ -3395,7 +3414,6 @@ public final class CmsObject {
      * @throws CmsException if the resource could not be read for any reason
      * @throws CmsVfsResourceNotFoundException if the version does not exists
      * 
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
      * @see #restoreResourceVersion(CmsUUID, int)
      */
     public I_CmsHistoryResource readResource(CmsUUID structureID, int version)
@@ -3415,7 +3433,7 @@ public final class CmsObject {
      * the binary content is a cost-expensive database operation, it's recommended 
      * to work with resources if possible, and only read the file content when absolutely
      * required. To "upgrade" a resource to a file, 
-     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     * use <code>{@link #readFile(CmsResource)}</code>.<p> 
      *
      * @param resourcename the name of the resource to read (full current site relative path)
      *
@@ -3425,7 +3443,6 @@ public final class CmsObject {
      *
      * @see #readFile(String) 
      * @see #readResource(String, CmsResourceFilter)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
      */
     public CmsResource readResource(String resourcename) throws CmsException {
 
@@ -3442,7 +3459,7 @@ public final class CmsObject {
      * the binary content is a cost-expensive database operation, it's recommended 
      * to work with resources if possible, and only read the file content when absolutely
      * required. To "upgrade" a resource to a file, 
-     * use <code>{@link CmsFile#upgrade(CmsResource, CmsObject)}</code>.<p> 
+     * use <code>{@link #readFile(CmsResource)}</code>.<p> 
      *
      * The specified filter controls what kind of resources should be "found" 
      * during the read operation. This will depend on the application. For example, 
@@ -3459,7 +3476,6 @@ public final class CmsObject {
      * 
      * @see #readFile(String, CmsResourceFilter)
      * @see #readFolder(String, CmsResourceFilter)
-     * @see CmsFile#upgrade(CmsResource, CmsObject)
      */
     public CmsResource readResource(String resourcename, CmsResourceFilter filter) throws CmsException {
 

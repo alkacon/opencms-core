@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/07/04 16:57:36 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -646,8 +646,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         // create the relations for the new resource, this could be improved by an sql query for moving relations
         createRelations(cms, securityManager, dest);
         // touch
-        CmsResource file = securityManager.readResource(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
-        writeFile(cms, securityManager, CmsFile.upgrade(file, cms));
+        CmsResource res = securityManager.readResource(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
+        writeFile(cms, securityManager, cms.readFile(res));
     }
 
     /**
@@ -846,7 +846,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * Creates the relation information for the resource with the given resource name.<p>
      * 
      * @param cms the cms context
-     * @param securityManager the secutiry manager
+     * @param securityManager the security manager
      * @param resourceName the resource name of the resource to update the relations for
      * 
      * @return the fresh read resource 
@@ -864,7 +864,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         List links = null;
         if (resourceType instanceof I_CmsLinkParseable) {
             I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
-            links = linkParseable.parseLinks(cms, CmsFile.upgrade(resource, cms));
+            links = linkParseable.parseLinks(cms, cms.readFile(resource));
         }
         securityManager.updateRelationsForResource(cms.getRequestContext(), resource, links);
         return resource;
@@ -1038,7 +1038,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
                 I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
                 if ((undoneResource1 == null) || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {
                     try {
-                        links = linkParseable.parseLinks(cms, CmsFile.upgrade(undoneResource2, cms));
+                        links = linkParseable.parseLinks(cms, cms.readFile(undoneResource2));
                     } catch (CmsException e) {
                         if (LOG.isWarnEnabled()) {
                             LOG.warn(e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsChangeElementLocaleThread.java,v $
- * Date   : $Date: 2007/07/04 16:56:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Locale;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.1 
  */
@@ -91,7 +91,9 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
 
         getReport().println(
             Messages.get().container(
-                Messages.RPT_CHANGEELEMENTLOCALE_BEGIN_2, m_settings.getOldLocale(), m_settings.getNewLocale()),
+                Messages.RPT_CHANGEELEMENTLOCALE_BEGIN_2,
+                m_settings.getOldLocale(),
+                m_settings.getNewLocale()),
             I_CmsReport.FORMAT_HEADLINE);
         try {
             // change the element locales
@@ -110,7 +112,7 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
             Messages.get().container(Messages.RPT_CHANGEELEMENTLOCALE_END_0),
             I_CmsReport.FORMAT_HEADLINE);
     }
-    
+
     /**
      * Performs the changing of the element Locales.<p>
      * 
@@ -170,7 +172,7 @@ public class CmsChangeElementLocaleThread extends A_CmsReportThread {
                 }
 
                 // get the file contents
-                CmsFile file = CmsFile.upgrade(res, getCms());
+                CmsFile file = getCms().readFile(res);
                 // get the page object
                 CmsXmlPage page = CmsXmlPageFactory.unmarshal(getCms(), file);
                 // write the report output

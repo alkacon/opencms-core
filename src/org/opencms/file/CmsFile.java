@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2007/07/04 16:57:12 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 6.0.0 
  */
@@ -173,20 +173,12 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @return the upgraded (or read) file
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @deprecated use {@link CmsObject#readFile(CmsResource)} instead
      */
     public static CmsFile upgrade(CmsResource resource, CmsObject cms) throws CmsException {
-
-        // test if we already have a file
-        if (resource instanceof CmsFile) {
-            // resource is already a file
-            CmsFile file = (CmsFile)resource;
-            if ((file.getContents() != null) && (file.getContents().length > 0)) {
-                // file has the contents already available
-                return file;
-            }
-        }
-
-        // read and return the file
+        
+        // the logic here has been moved to the readFile(CmsResource) method in the CmsObject
         return cms.readFile(resource);
     }
 

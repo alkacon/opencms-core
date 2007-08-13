@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2007/07/10 12:25:38 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,7 +138,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
         // a model file was used, call the content handler for post-processing
         if (hasModelUri) {
-            CmsFile file = CmsFile.upgrade(resource, cms);
+            CmsFile file = cms.readFile(resource);
             newContent = CmsXmlContentFactory.unmarshal(cms, file);
             resource = newContent.getContentDefinition().getContentHandler().prepareForWrite(cms, newContent, file);
         }

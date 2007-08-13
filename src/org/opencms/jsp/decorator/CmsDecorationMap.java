@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationMap.java,v $
- * Date   : $Date: 2007/07/04 16:57:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/13 16:13:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.3 
  */
@@ -217,7 +217,7 @@ public class CmsDecorationMap implements Comparable {
 
         Map decMap = new HashMap();
         // upgrade the resource to get the file content
-        CmsFile file = CmsFile.upgrade(res, cms);
+        CmsFile file = cms.readFile(res);
         // get all the entries
         String unparsedContent = new String(file.getContents());
 

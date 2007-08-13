@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2005/06/27 10:27:15 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  * 
@@ -116,11 +116,10 @@ public interface I_CmsXmlSchemaType extends Comparable {
     /**
      * Returns the content definition this schema type belongs to.<p> 
      * 
-     * Note that for nested schemas, the content definition of a nested 
-     * value is not neccessarily equal to the content defintion of the document
-     * returned by {@link I_CmsXmlContentValue#getDocument()}. If the value belongs to a nested
-     * content, then the content definiton of the value also is the nested 
-     * content defintion.<p>
+     * If the value belongs to a nested content, then the nested content definition is returned.
+     * This means that for documents with nested schemas, the content definition of a  
+     * value is not necessarily equal to the content definition of the document itself,
+     * which can be obtained using {@link I_CmsXmlContentValue#getDocument()}.<p>
      * 
      * @return the content definition this schema type belongs to
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPageFactory.java,v $
- * Date   : $Date: 2006/03/27 14:53:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/08/13 16:13:45 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -259,7 +259,7 @@ public final class CmsXmlPageFactory {
 
         if (page == null) {
             // unmarshal XML structure from the file content
-            page = unmarshal(cms, CmsFile.upgrade(resource, cms));
+            page = unmarshal(cms, cms.readFile(resource));
             // store the page that was read as request attribute for future read requests
             req.setAttribute(rootPath, page);
         }

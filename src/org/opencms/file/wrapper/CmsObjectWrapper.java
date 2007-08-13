@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsObjectWrapper.java,v $
- * Date   : $Date: 2007/07/25 12:36:51 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/08/13 16:13:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.2.4
  */
@@ -345,7 +345,6 @@ public class CmsObjectWrapper {
      * possibility to change the existing resources. The matching resource wrapper for a resource is found by a call to
      * {@link I_CmsResourceWrapper#isWrappedResource(CmsObject, CmsResource)}.<p>
      * 
-     * @see #getResourceTypeWrapper(CmsResource)
      * @see I_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)
      * @see CmsObject#getResourcesInFolder(String, CmsResourceFilter)
      * 
@@ -393,7 +392,7 @@ public class CmsObjectWrapper {
 
                 res = wrap.getResource();
             }
-            
+
             // get resource type wrapper for the resource
             I_CmsResourceWrapper resWrapper = getResourceTypeWrapper(res);
 
@@ -681,7 +680,7 @@ public class CmsObjectWrapper {
         if ((path != null) && (path.startsWith("#"))) {
             return path;
         }
-        
+
         String ret = null;
 
         // iterate through all wrappers and call "restoreLink" till one does not return null
@@ -802,7 +801,7 @@ public class CmsObjectWrapper {
         if (needUtf8Marker(resource)) {
             resource.setContents(CmsResourceWrapperUtils.removeUtf8Marker(resource.getContents()));
         }
-        
+
         String resourcename = resource.getRootPath();
         if (!m_cms.existsResource(resourcename)) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/07/11 14:51:42 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -255,7 +255,7 @@ public abstract class CmsEditor extends CmsEditorBase {
             if (getCms().existsResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION)) {
                 res = getCms().readResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION);
             }
-            CmsFile file = CmsFile.upgrade(res, getCms());
+            CmsFile file = getCms().readFile(res);
             CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
             contentLocales = xmlContent.getLocales();
         } catch (CmsException e) {
@@ -389,7 +389,7 @@ public abstract class CmsEditor extends CmsEditorBase {
     public void checkLock(String resource, CmsLockType type) throws CmsException {
 
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
-        CmsLock lock = getCms().getLock(res); 
+        CmsLock lock = getCms().getLock(res);
         if (!lock.isNullLock()) {
             setParamModified(Boolean.TRUE.toString());
         }
@@ -425,7 +425,7 @@ public abstract class CmsEditor extends CmsEditorBase {
             if (getCms().existsResource(temporaryFilename)) {
                 res = getCms().readResource(temporaryFilename);
             }
-            CmsFile file = CmsFile.upgrade(res, getCms());
+            CmsFile file = getCms().readFile(res);
             CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
             int locales = xmlContent.getLocales().size();
             // there are less than 2 locales, so disable the delete locale button

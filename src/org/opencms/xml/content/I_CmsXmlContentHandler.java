@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2007/07/04 16:57:17 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -194,6 +194,34 @@ public interface I_CmsXmlContentHandler {
     void invalidateBrokenLinks(CmsObject cms, CmsXmlContent document);
 
     /**
+     * Returns <code>true</code> in case the given value should be searchable with 
+     * the integrated full text search.<p> 
+     * 
+     * For the full text search, the value of all elements in one locale of the XML content are combined
+     * to one big text, which is referred to as the "content" in the context of the full text search.
+     * With this option, it is possible to hide certain elements from this "content" that does not make sense 
+     * to include in the full text search.<p>   
+     * 
+     * @param value the XML content value to check 
+     * 
+     * @return <code>true</code> in case the given value should be searchable
+     */
+    boolean isSearchable(I_CmsXmlContentValue value);
+
+    /**
+     * Prepares the given XML content to be used after it was read from the OpenCms VFS.<p>
+     * 
+     * This method is alway called after any content is unmarshalled.
+     * It can be used to perform customized actions on the given XML content.<p>  
+     * 
+     * @param cms the current OpenCms user context
+     * @param content the XML content to be used as read from the VFS
+     * 
+     * @return the prepared content to be used
+     */
+    CmsXmlContent prepareForUse(CmsObject cms, CmsXmlContent content);
+
+    /**
      * Prepares the given XML content to be written to the OpenCms VFS.<p>
      * 
      * This method is alway called before any content gets written.
@@ -210,19 +238,6 @@ public interface I_CmsXmlContentHandler {
      */
     CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException;
 
-    /**
-     * Prepares the given XML content to be used after it was read from the OpenCms VFS.<p>
-     * 
-     * This method is alway called after any content is unmarshalled.
-     * It can be used to perform customized actions on the given XML content.<p>  
-     * 
-     * @param cms the current OpenCms user context
-     * @param content the XML content to be used as read from the VFS
-     * 
-     * @return the prepared content to be used
-     */
-    CmsXmlContent prepareForUse(CmsObject cms, CmsXmlContent content);
-    
     /**
      * Resolves the value mappings of the given XML content value, according 
      * to the rules of this XML content handler.<p>

@@ -1,10 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDBWrapper.java,v $
- * Date   : $Date: 2007/08/03 07:38:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/13 16:13:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
  * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
@@ -42,7 +42,7 @@ import java.sql.Statement;
 import java.util.List;
 
 /**
- * Wrapper to encapsulate, connection, statment and result set for the setup
+ * Wrapper to encapsulate, connection, statement and result set for the setup
  * and update wizard.<p>
  */
 public class CmsSetupDBWrapper {
@@ -55,9 +55,10 @@ public class CmsSetupDBWrapper {
 
     /** the result set returned by the db wrapper. */
     private ResultSet m_resultset;
-    
+
     /** the prepared statement. */
     private PreparedStatement m_preparedStatement;
+
     /**
      * Constructor, creates a new CmsSetupDBWrapper.<p>
      * @param con the connection to use in this db wrapper. 
@@ -99,28 +100,30 @@ public class CmsSetupDBWrapper {
 
             }
         }
-        
-        
+
     }
 
     /** 
-     * Creates a new SQL Statement on the connetcion of this db wrapper.<p>
+     * Creates a new SQL Statement on the connection of this DB wrapper.<p>
      * @throws SQLException if statement cannot be created
      */
     public void createStatement() throws SQLException {
 
         m_statement = m_connection.createStatement();
     }
-    
+
     /** 
-     * Creates a new SQL Statement on the connetcion of this db wrapper.<p>
+     * Creates a new SQL Statement on the connection of this DB wrapper.<p>
+     * 
+     * @param query the DB query to use
      * @param params List of additional parameters
+     * 
      * @throws SQLException if statement cannot be created
      */
     public void createPreparedStatement(String query, List params) throws SQLException {
 
         m_preparedStatement = m_connection.prepareStatement(query);
-        
+
         // Check the params
         if (params != null) {
             for (int i = 0; i < params.size(); i++) {
@@ -153,8 +156,10 @@ public class CmsSetupDBWrapper {
     }
 
     /** 
-     * Excecutes a query on the connetcion and statement of this db wrapper.<p>
-     * @param query the query to excecute
+     * Executes a query on the connection and statement of this db wrapper.<p>
+     * 
+     * @param query the query to execute
+     * 
      * @throws SQLException if statement cannot be created
      */
     public void excecuteQuery(String query) throws SQLException {
@@ -163,14 +168,13 @@ public class CmsSetupDBWrapper {
     }
 
     /** 
-     * Excecutes a query on the connetcion and prepared statement of this db wrapper.<p>
+     * Executes a query on the connection and prepared statement of this db wrapper.<p>
      * @throws SQLException if statement cannot be created
      */
     public void excecutePreparedQuery() throws SQLException {
 
         m_resultset = m_preparedStatement.executeQuery();
     }
-    
 
     /**
      * Returns the res.<p>
@@ -181,5 +185,4 @@ public class CmsSetupDBWrapper {
 
         return m_resultset;
     }
-
 }
