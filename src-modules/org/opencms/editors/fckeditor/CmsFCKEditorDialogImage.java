@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/Attic/CmsFCKEditorDialogImage.java,v $
- * Date   : $Date: 2007/08/13 16:29:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/14 09:17:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -269,7 +269,12 @@ public class CmsFCKEditorDialogImage extends CmsDialog {
         result.append("', ");
         // 3: image link including scale parameters
         result.append("'");
-        result.append(getJsp().link(sitePath + getImageGallery().getDefaultScaleParams().toRequestParam()));
+        String scaleParams = "";
+        // if scaling is disabled, the scale parameters might be null!
+        if (getImageGallery().getDefaultScaleParams() != null) {
+            scaleParams = getImageGallery().getDefaultScaleParams().toRequestParam();
+        }
+        result.append(getJsp().link(sitePath + scaleParams));
         result.append("', ");
         // 4: image title
         result.append("'");
