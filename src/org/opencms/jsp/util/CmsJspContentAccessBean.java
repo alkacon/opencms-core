@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessBean.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/14 12:35:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,13 +36,12 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsConstantMap;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -61,37 +60,13 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  * 
  * @see org.opencms.jsp.CmsJspTagContentAccess
  */
 public class CmsJspContentAccessBean {
-
-    /**
-     * Provides a Map which contains long values mapped to Dates, 
-     * the input is assumed to be a String that represents long time stamp.<p>
-     * 
-     * This is a helper method as it is often required to create a date object from a long 
-     * value stored in a {@link CmsResource}.<p>
-     */
-    public class CmsConvertDateTransformer implements Transformer {
-
-        /**
-         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
-         */
-        public Object transform(Object input) {
-
-            try {
-                // treat the input as a String
-                long date = Long.parseLong(String.valueOf(input));
-                return new Date(date);
-            } catch (NumberFormatException e) {
-                return new Date(0);
-            }
-        }
-    }
 
     /**
      * Provides Booleans that indicate if a specified locale is available in the XML content, 
@@ -104,7 +79,7 @@ public class CmsJspContentAccessBean {
          */
         public Object transform(Object input) {
 
-            return Boolean.valueOf(getRawContent().hasLocale(convertLocale(input)));
+            return Boolean.valueOf(getRawContent().hasLocale(CmsJspContentUtilBean.convertLocale(input)));
         }
     }
 
@@ -119,12 +94,12 @@ public class CmsJspContentAccessBean {
          */
         public Object transform(Object input) {
 
-            Locale locale = convertLocale(input);
+            Locale locale = CmsJspContentUtilBean.convertLocale(input);
             Map result;
             if (getRawContent().hasLocale(locale)) {
                 result = LazyMap.decorate(new HashMap(), new CmsHasValueTransformer(locale));
             } else {
-                result = Collections.EMPTY_MAP;
+                result = CmsConstantMap.CONSTANT_BOOLEAN_FALSE_MAP;
             }
             return result;
         }
@@ -169,12 +144,12 @@ public class CmsJspContentAccessBean {
          */
         public Object transform(Object input) {
 
-            Locale locale = convertLocale(input);
+            Locale locale = CmsJspContentUtilBean.convertLocale(input);
             Map result;
             if (getRawContent().hasLocale(locale)) {
                 result = LazyMap.decorate(new HashMap(), new CmsValueListTransformer(locale));
             } else {
-                result = Collections.EMPTY_MAP;
+                result = CmsConstantMap.CONSTANT_EMPTY_LIST_MAP;
             }
             return result;
         }
@@ -196,7 +171,7 @@ public class CmsJspContentAccessBean {
             if (getRawContent().hasLocale(locale)) {
                 result = LazyMap.decorate(new HashMap(), new CmsValueTransformer(locale));
             } else {
-                result = Collections.EMPTY_MAP;
+                result = CONSTANT_NULL_VALUE_WRAPPER_MAP;
             }
             return result;
         }
@@ -267,6 +242,10 @@ public class CmsJspContentAccessBean {
         }
     }
 
+    /** Constant Map that always returns the {@link CmsJspContentAccessValueWrapper#NULL_VALUE_WRAPPER}.*/
+    protected static final Map CONSTANT_NULL_VALUE_WRAPPER_MAP = new CmsConstantMap(
+        CmsJspContentAccessValueWrapper.NULL_VALUE_WRAPPER);
+
     /** The OpenCms context of the current user. */
     protected CmsObject m_cms;
 
@@ -276,23 +255,23 @@ public class CmsJspContentAccessBean {
     /** The selected locale for accessing entries from the XML content. */
     protected Locale m_locale;
 
-    /** Resource the XML content is created from. */
-    private CmsResource m_resource;
-
     /** The lazy initialized map for the "has locale" check. */
     private Map m_hasLocale;
 
     /** The lazy initialized map for the "has locale value" check. */
     private Map m_hasLocaleValue;
 
-    /** The lazy initialized with the locale value lists. */
-    private Map m_localeValueList;
-
     /** The lazy initialized with the locale value. */
     private Map m_localeValue;
 
-    /** The lazy initialized for the date converter. */
-    private Map m_convertDate;
+    /** The lazy initialized with the locale value lists. */
+    private Map m_localeValueList;
+
+    /** Resource the XML content is created from. */
+    private CmsResource m_resource;
+
+    /** The optional util Bean instance. */
+    private CmsJspContentUtilBean m_utilBean;
 
     /**
      * No argument constructor, required for a JavaBean.<p>
@@ -332,37 +311,15 @@ public class CmsJspContentAccessBean {
     }
 
     /**
-     * Returns a lazy initialized Map that provides a {@link Date} for each long value used as a key in the Map.<p> 
-     *  
-     * This is a utility method which allows easy conversion of the date values found as long in the 
-     * {@link #getFile()} raw file object.<p>
-     * 
-     * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
-     *     &lt;cms:contentaccess var="content" /&gt; 
-     *     Date the resource was created: &lt;fmt:formatDate value="${content.convertDate[content.file.dateCreated]}" /&gt;
-     * &lt;/cms:contentloop&gt;</pre>
-     *  
-     * @return a lazy initialized Map that provides a {@link Date} for each long value used as a key in the Map
-     */
-    public Map getConvertDate() {
-
-        if (m_convertDate == null) {
-            m_convertDate = LazyMap.decorate(new HashMap(), new CmsConvertDateTransformer());
-        }
-        return m_convertDate;
-    }
-
-    /**
      * Returns the raw VFS file object the content accessed by this bean was created from.<p>
      * 
      * This can be used to access information from the raw file on a JSP.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
      *     Root path of the resource: &lt;c:out value="${content.file.rootPath}" /&gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     * &lt;/cms:contentload&gt;</pre>
      * 
      * @return the raw VFS file object the content accessed by this bean was created from
      */
@@ -377,10 +334,10 @@ public class CmsJspContentAccessBean {
      * obtained by {@link #getFile()}.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
      *     Site path of the resource: &lt;c:out value="${content.filename}" /&gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     * &lt;/cms:contentload&gt;</pre>
      * 
      * @return the site path of the current resource
      * 
@@ -398,12 +355,12 @@ public class CmsJspContentAccessBean {
      * The provided Map key is assumed to be a String that represents a Locale.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
      *     &lt;c:if test="${content.hasLocale['de']}" &gt;
      *         The content has a "de" Locale! 
      *     &lt;/c:if&gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     * &lt;/cms:contentload&gt;</pre>
      *  
      * @return a lazy initialized Map that provides Booleans that indicate if a specified Locale is available 
      *      in the XML content
@@ -424,12 +381,15 @@ public class CmsJspContentAccessBean {
      * the second provided Map key is assumed to be a String that represents the xpath to the value.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
      *     &lt;c:if test="${content.hasLocaleValue['de']['Title']}" &gt;
      *         The content has a "Title" value in the "de" Locale! 
      *     &lt;/c:if&gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     * &lt;/cms:contentload&gt;</pre>
+     *  
+     * Please note that you can also test if a locale value exists like this:<pre>
+     * &lt;c:if test="${content.value['de']['Title'].exists}" &gt; ... &lt;/c:if&gt;</pre>
      *  
      * @return a lazy initialized Map that provides a Map that provides Booleans that 
      *      indicate if a value (xpath) is available in the XML content in the selected locale
@@ -451,12 +411,15 @@ public class CmsJspContentAccessBean {
      * The provided Map key is assumed to be a String that represents the xpath to the value.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
      *     &lt;c:if test="${content.hasValue['Title']}" &gt;
      *         The content has a "Title" value in the current locale! 
      *     &lt;/c:if&gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * Please note that you can also test if a value exists like this:<pre>
+     * &lt;c:if test="${content.value['Title'].exists}" &gt; ... &lt;/c:if&gt;</pre>
      *  
      * @return a lazy initialized Map that provides Booleans that 
      *      indicate if a value (xpath) is available in the XML content in the current locale
@@ -476,10 +439,10 @@ public class CmsJspContentAccessBean {
      * the second provided Map key is assumed to be a String that represents the xpath to the value.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
      *     The Title in Locale "de": &lt;c:out value="${content.localeValue['de']['Title']}" &gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     * &lt;/cms:contentload&gt;</pre>
      *  
      * @return a lazy initialized Map that provides a Map that provides 
      *      values from the XML content in the selected locale
@@ -502,12 +465,12 @@ public class CmsJspContentAccessBean {
      * the second provided Map key is assumed to be a String that represents the xpath to the value.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
      *     &lt;c:forEach var="teaser" items="${content.localeValueList['de']['Teaser']}"&gt;
      *         &lt;c:out value="${teaser}" /&gt;
      *     &lt;/c:forEach&gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     * &lt;/cms:contentload&gt;</pre>
      *  
      * @return a lazy initialized Map that provides a Map that provides Lists of values 
      *      from the XML content in the selected locale
@@ -545,15 +508,30 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Returns an instance of a content utility bean,
+     * initialized with the OpenCms user context this bean was created with.<p>
+     * 
+     * @return an instance of a content utility bean, 
+     *      initialized with the OpenCms user context this bean was created with
+     */
+    public CmsJspContentUtilBean getUtil() {
+
+        if (m_utilBean == null) {
+            m_utilBean = new CmsJspContentUtilBean(m_cms);
+        }
+        return m_utilBean;
+    }
+
+    /**
      * Returns a lazy initialized Map that provides values from the XML content in the current locale.<p>
      * 
      * The provided Map key is assumed to be a String that represents the xpath to the value.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
      *     The Title: &lt;c:out value="${content.value['Title']}" &gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     * &lt;/cms:contentload&gt;</pre>
      *  
      * @return a lazy initialized Map that provides values from the XML content in the current locale
      * 
@@ -571,12 +549,12 @@ public class CmsJspContentAccessBean {
      * Use this method in case you want to iterate over a List of values form the XML content.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
      *     &lt;c:forEach var="teaser" items="${content.valueList['Teaser']}"&gt;
      *         &lt;c:out value="${teaser}" /&gt;
      *     &lt;/c:forEach&gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     * &lt;/cms:contentload&gt;</pre>
      *  
      * @return a lazy initialized Map that provides Lists of values from the XML content in the current locale
      * 
@@ -601,23 +579,6 @@ public class CmsJspContentAccessBean {
         m_locale = locale;
         m_content = content;
         m_resource = resource;
-    }
-
-    /**
-     * Returns a Locale created from an Object.<p>
-     * 
-     * @param input the Object to create a Locale from 
-     * 
-     * @return a Locale created from an Object
-     */
-    protected Locale convertLocale(Object input) {
-
-        Locale locale;
-        if (input instanceof Locale) {
-            locale = (Locale)input;
-        } else {
-            locale = CmsLocaleManager.getLocale(String.valueOf(input));
-        }
-        return locale;
+        m_utilBean = null;
     }
 }

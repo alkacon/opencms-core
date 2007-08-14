@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/14 12:35:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,14 +32,17 @@
 package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.util.CmsConstantMap;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
@@ -53,17 +56,18 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  * 
+ * @see CmsJspContentAccessBean
  * @see org.opencms.jsp.CmsJspTagContentAccess
  */
 public final class CmsJspContentAccessValueWrapper {
 
     /**
-     * Provides a Map with Booleans that indicate if a specified path exists in the XML content in the selected Locale,  
-     * the input is assumed to be a String that represents an xpath in the XML content.<p>
+     * Provides a Map with Booleans that 
+     * indicate if a nested sub value (xpath) for the current value is available in the XML content.<p>
      */
     public class CmsHasValueTransformer implements Transformer {
 
@@ -72,12 +76,12 @@ public final class CmsJspContentAccessValueWrapper {
          */
         public Object transform(Object input) {
 
-            return Boolean.valueOf(m_contentValue.getDocument().hasValue(getPath(input), m_contentValue.getLocale()));
+            return Boolean.valueOf(m_contentValue.getDocument().hasValue(createPath(input), m_contentValue.getLocale()));
         }
     }
 
     /**
-     * Provides a Map which lets the user access value Lists in an XML content, 
+     * Provides a Map which lets the user access nested sub value Lists from the current value, 
      * the input is assumed to be a String that represents an xpath in the XML content.<p>
      */
     public class CmsValueListTransformer implements Transformer {
@@ -87,11 +91,11 @@ public final class CmsJspContentAccessValueWrapper {
          */
         public Object transform(Object input) {
 
-            List values = m_contentValue.getDocument().getValues(getPath(input), m_contentValue.getLocale());
+            List values = m_contentValue.getDocument().getValues(createPath(input), m_contentValue.getLocale());
             List result = new ArrayList();
             Iterator i = values.iterator();
             while (i.hasNext()) {
-                // XML content API offers List of values only as Objects, must iterate them and create Strings 
+                // must iterate values from XML content and create wrapper for each 
                 I_CmsXmlContentValue value = (I_CmsXmlContentValue)i.next();
                 result.add(createWrapper(m_cms, value));
             }
@@ -100,7 +104,7 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
-     * Provides a Map which lets the user a value in an XML content, 
+     * Provides a Map which lets the user a nested sub value from the current value, 
      * the input is assumed to be a String that represents an xpath in the XML content.<p>
      */
     public class CmsValueTransformer implements Transformer {
@@ -111,11 +115,14 @@ public final class CmsJspContentAccessValueWrapper {
         public Object transform(Object input) {
 
             I_CmsXmlContentValue value = m_contentValue.getDocument().getValue(
-                getPath(input),
+                createPath(input),
                 m_contentValue.getLocale());
             return createWrapper(m_cms, value);
         }
     }
+
+    /** Constant for the null (non existing) value. */
+    protected static final CmsJspContentAccessValueWrapper NULL_VALUE_WRAPPER = new CmsJspContentAccessValueWrapper();
 
     /** The wrapped OpenCms user context. */
     protected CmsObject m_cms;
@@ -133,6 +140,16 @@ public final class CmsJspContentAccessValueWrapper {
     private Map m_valueList;
 
     /**
+     * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
+     * 
+     * @see #createWrapper(CmsObject, I_CmsXmlContentValue)
+     */
+    private CmsJspContentAccessValueWrapper() {
+
+        this(null, null);
+    }
+
+    /**
      * Private constructor, use factory method to create instances.<p>
      * 
      * @param cms the current users OpenCms context
@@ -142,21 +159,22 @@ public final class CmsJspContentAccessValueWrapper {
      */
     private CmsJspContentAccessValueWrapper(CmsObject cms, I_CmsXmlContentValue value) {
 
+        // a null value is used for constant generation
         m_cms = cms;
         m_contentValue = value;
 
-        if (m_contentValue.isSimpleType()) {
-            // simple types don't have any sub-elements
-            m_hasValue = Collections.EMPTY_MAP;
-            m_value = Collections.EMPTY_MAP;
-            m_valueList = Collections.EMPTY_MAP;
+        if ((m_contentValue == null) || m_contentValue.isSimpleType()) {
+            // maps must all be static
+            m_hasValue = CmsConstantMap.CONSTANT_BOOLEAN_FALSE_MAP;
+            m_value = CmsJspContentAccessBean.CONSTANT_NULL_VALUE_WRAPPER_MAP;
+            m_valueList = CmsConstantMap.CONSTANT_EMPTY_LIST_MAP;
         }
     }
 
     /**
      * Factory method to create a new XML content value wrapper.<p>
      * 
-     * In case either parameter is <code>null</code>, <code>null</code> is returned.<p>
+     * In case either parameter is <code>null</code>, the {@link #NULL_VALUE_WRAPPER} is returned.<p>
      * 
      * @param cms the current users OpenCms context
      * @param value the value to warp
@@ -168,26 +186,68 @@ public final class CmsJspContentAccessValueWrapper {
         if ((value != null) && (cms != null)) {
             return new CmsJspContentAccessValueWrapper(cms, value);
         }
-        // invalid, arguments
-        return null;
+        // if no value is available, 
+        return NULL_VALUE_WRAPPER;
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsJspContentAccessValueWrapper) {
+            if (m_contentValue == null) {
+                return ((CmsJspContentAccessValueWrapper)obj).m_contentValue == null;
+            } else {
+                return m_contentValue.equals(((CmsJspContentAccessValueWrapper)obj).m_contentValue);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns <code>true</code> in case this value actually exists in the XML content it was requested from.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     &lt;c:if test="${content.value['Link'].exists}" &gt;
+     *         The content has a "Link" value! 
+     *     &lt;/c:if&gt;
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return <code>true</code> in case this value actually exists in the XML content it was requested from
+     */
+    public boolean getExists() {
+
+        return m_contentValue != null;
     }
 
     /**
      * Returns a lazy initialized Map that provides Booleans that 
-     * indicate if a value (xpath) is available in the XML content in the current locale.<p>
+     * indicate if a nested sub value (xpath) for the current value is available in the XML content.<p>
      * 
-     * The provided Map key is assumed to be a String that represents the xpath to the value.<p>
+     * The provided Map key is assumed to be a String that represents the relative xpath to the value.<p>
+     * 
+     * In case the current value is not a nested XML content value, or the XML content value does not exist,
+     * the {@link CmsConstantMap#CONSTANT_BOOLEAN_FALSE_MAP} is returned.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     &lt;c:if test="${content.hasValue['Title']}" &gt;
-     *         The content has a "Title" value in the current locale! 
+     *     &lt;c:if test="${content.value['Link'].hasValue['Description']}" &gt;
+     *         The content has a "Description" value as sub element to the "Link" value! 
      *     &lt;/c:if&gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * Please note that you can also test if a sub-value exists like this:<pre>
+     * &lt;c:if test="${content.value['Link'].value['Description'].exists}" &gt; ... &lt;/c:if&gt;</pre>
      *  
      * @return a lazy initialized Map that provides Booleans that 
-     *      indicate if a value (xpath) is available in the XML content in the current locale
+     *      indicate if a sub value (xpath) for the current value is available in the XML content
      */
     public Map getHasValue() {
 
@@ -198,29 +258,146 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
-     * Returns the path to the XML content based on the current element path.<p>
+     * Returns the node index of the XML content value in the source XML document, 
+     * starting with 0.<p>
      * 
-     * @param input the additional path that is appended to the current path
+     * In case the XML content value does not exist, <code>-1</code> is returned.<p> 
      * 
-     * @return the path to the XML content based on the current element path
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     The locale of the Link node: &lt;c:out value="${content.value['Link'].locale}" &gt;
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return the locale of the current XML content value
      */
-    public String getPath(Object input) {
+    public int getIndex() {
 
-        return CmsXmlUtils.concatXpath(m_contentValue.getPath(), String.valueOf(input));
+        if (m_contentValue == null) {
+            return -1;
+        }
+        return m_contentValue.getIndex();
     }
 
     /**
-     * Returns a lazy initialized Map that provides values from the XML content in the current locale.<p>
+     * Returns <code>true</code> in case the value is empty, that is either <code>null</code> or an empty String.<p> 
      * 
-     * The provided Map key is assumed to be a String that represents the xpath to the value.<p>
+     * In case the XML content value does not exist, <code>true</code> is returned.<p>
      * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     The Title: &lt;c:out value="${content.value['Title']}" &gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     *     &lt;c:if test="${content.value['Link'].isEmpty}" &gt;
+     *         The content of the "Link" value is empty. 
+     *     &lt;/c:if&gt;
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return <code>true</code> in case the value is empty
+     */
+    public boolean getIsEmpty() {
+
+        if (m_contentValue == null) {
+            // this is the case for non existing values
+            return true;
+        }
+        if (m_contentValue.isSimpleType()) {
+            // return values for simple type
+            return CmsStringUtil.isEmpty(m_contentValue.getStringValue(m_cms));
+        } else {
+            // nested types are not empty if they have any children in the XML
+            return m_contentValue.getElement().elements().size() > 0;
+        }
+    }
+
+    /**
+     * Returns <code>true</code> in case the value is empty or whitespace only, 
+     * that is either <code>null</code> or String that contains only whitespace chars.<p> 
+     * 
+     * In case the XML content value does not exist, <code>true</code> is returned.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     &lt;c:if test="${content.value['Link'].isEmptyOrWhitespaceOnly}" &gt;
+     *         The content of the "Link" value is empty or contains only whitespace chars. 
+     *     &lt;/c:if&gt;
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return <code>true</code> in case the value is empty or whitespace only
+     */
+    public boolean getIsEmptyOrWhitespaceOnly() {
+
+        if (m_contentValue == null) {
+            // this is the case for non existing values
+            return true;
+        }
+        if (m_contentValue.isSimpleType()) {
+            // return values for simple type
+            return CmsStringUtil.isEmptyOrWhitespaceOnly(m_contentValue.getStringValue(m_cms));
+        } else {
+            // nested types are not empty if they have any children in the XML
+            return m_contentValue.getElement().elements().size() > 0;
+        }
+    }
+
+    /**
+     * Returns the Locale of the current XML content value.<p>
+     * 
+     * In case the XML content value does not exist, the OpenCms system default Locale is returned.<p> 
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     The locale of the Link node: &lt;c:out value="${content.value['Link'].locale}" &gt;
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return the locale of the current XML content value
+     */
+    public Locale getLocale() {
+
+        if (m_contentValue == null) {
+            return CmsLocaleManager.getDefaultLocale();
+        }
+        return m_contentValue.getLocale();
+    }
+
+    /**
+     * Returns the path to the current XML content value.<p>
+     * 
+     * In case the XML content value does not exist, an empty String <code>""</code> is returned.<p> 
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     The path to the Link node in the XML: &lt;c:out value="${content.value['Link'].path}" &gt;
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return the path to the current XML content value
+     */
+    public String getPath() {
+
+        if (m_contentValue == null) {
+            return "";
+        }
+        return m_contentValue.getPath();
+    }
+
+    /**
+     * Returns a lazy initialized Map that provides the nested sub values 
+     * for the current value from the XML content.<p>
+     * 
+     * The provided Map key is assumed to be a String that represents the relative xpath to the value.<p>
+     * 
+     * In case the current value is not a nested XML content value, or the XML content value does not exist,
+     * the {@link CmsJspContentAccessBean#CONSTANT_NULL_VALUE_WRAPPER_MAP} is returned.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     The Link Description: &lt;c:out value="${content.value['Link'].value['Description']}" &gt;
+     * &lt;/cms:contentload&gt;</pre>
      *  
-     * @return a lazy initialized Map that provides values from the XML content in the current locale
+     * @return a lazy initialized Map that provides a sub value for the current value from the XML content
      */
     public Map getValue() {
 
@@ -231,20 +408,24 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
-     * Returns a lazy initialized Map that provides Lists of values from the XML content in the current locale.<p>
+     * Returns a lazy initialized Map that provides the Lists of nested sub values 
+     * for the current value from the XML content.<p>
      * 
-     * The provided Map key is assumed to be a String that represents the xpath to the value.
+     * The provided Map key is assumed to be a String that represents the relative xpath to the value.
      * Use this method in case you want to iterate over a List of values form the XML content.<p>
      * 
+     * In case the current value is not a nested XML content value, or the XML content value does not exist,
+     * the {@link CmsConstantMap#CONSTANT_EMPTY_LIST_MAP} is returned.<p>
+     * 
      * Usage example on a JSP with the JSTL:<pre>
-     * &lt;cms:contentloop ... &gt;
+     * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     &lt;c:forEach var="teaser" items="${content.valueList['Teaser']}"&gt;
-     *         &lt;c:out value="${teaser}" /&gt;
+     *     &lt;c:forEach var="desc" items="${content.value['Link'].valueList['Description']}"&gt;
+     *         &lt;c:out value="${desc}" /&gt;
      *     &lt;/c:forEach&gt;
-     * &lt;/cms:contentloop&gt;</pre>
+     * &lt;/cms:contentload&gt;</pre>
      *  
-     * @return a lazy initialized Map that provides Lists of values from the XML content in the current locale
+     * @return a lazy initialized Map that provides a Lists of sub values for the current value from the XML content
      */
     public Map getValueList() {
 
@@ -255,16 +436,45 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        if (m_contentValue == null) {
+            return 0;
+        }
+        return m_contentValue.hashCode();
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
 
+        if (m_contentValue == null) {
+            // this is the case for non existing values
+            return "";
+        }
         if (m_contentValue.isSimpleType()) {
             // return values for simple type
             return m_contentValue.getStringValue(m_cms);
         } else {
-            // do something else
-            return null;
+            // nested types should not be called this way by the user
+            return "";
         }
+    }
+
+    /**
+     * Returns the path to the XML content based on the current element path.<p>
+     * 
+     * This is used to create xpath information for sub-elements in the transformers.<p>
+     * 
+     * @param input the additional path that is appended to the current path
+     * 
+     * @return the path to the XML content based on the current element path
+     */
+    protected String createPath(Object input) {
+
+        return CmsXmlUtils.concatXpath(m_contentValue.getPath(), String.valueOf(input));
     }
 }

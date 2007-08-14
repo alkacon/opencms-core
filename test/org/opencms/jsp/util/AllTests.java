@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/Attic/AllTests.java,v $
- * Date   : $Date: 2007/08/13 16:30:19 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/util/AllTests.java,v $
+ * Date   : $Date: 2007/08/14 12:35:23 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.jsp;
+package org.opencms.jsp.util;
 
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -37,11 +37,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Main test suite for the package <code>{@link org.opencms.jsp}</code>.<p>
+ * Main test suite for the package <code>{@link org.opencms.jsp.util}</code>.<p>
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 7.0.2
  */
@@ -66,7 +66,7 @@ public final class AllTests {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
         suite.addTest(TestCmsJspContentAccessBean.suite());
-        suite.addTest(TestCmsJspContextBean.suite());
+        suite.addTest(TestCmsJspContentUtilBean.suite());
         //$JUnit-END$
         return suite;
     }

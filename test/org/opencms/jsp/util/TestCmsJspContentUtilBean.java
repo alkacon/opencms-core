@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/Attic/TestCmsJspContextBean.java,v $
- * Date   : $Date: 2007/08/13 16:30:19 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/util/Attic/TestCmsJspContentUtilBean.java,v $
+ * Date   : $Date: 2007/08/14 12:35:23 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,11 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.jsp;
+package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.jsp.util.CmsJspContextBean;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -44,22 +43,22 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Unit tests for the <code>{@link CmsJspContextBean}</code>.<p>
+ * Unit tests for the <code>{@link CmsJspContentUtilBean}</code>.<p>
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 7.0.2
  */
-public class TestCmsJspContextBean extends OpenCmsTestCase {
+public class TestCmsJspContentUtilBean extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
-    public TestCmsJspContextBean(String arg0) {
+    public TestCmsJspContentUtilBean(String arg0) {
 
         super(arg0);
     }
@@ -74,9 +73,9 @@ public class TestCmsJspContextBean extends OpenCmsTestCase {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
-        suite.setName(TestCmsJspContextBean.class.getName());
+        suite.setName(TestCmsJspContentUtilBean.class.getName());
 
-        suite.addTest(new TestCmsJspContextBean("testReadResourceMap"));
+        suite.addTest(new TestCmsJspContentUtilBean("testReadResourceMap"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -95,14 +94,14 @@ public class TestCmsJspContextBean extends OpenCmsTestCase {
     }
 
     /**
-     * Tests for the {@link CmsJspContextBean#getReadResource()} method.<p>
+     * Tests for the {@link CmsJspContentUtilBean#getReadResource()} method.<p>
      * 
      * @throws Exception if the test fails
      */
     public void testReadResourceMap() throws Exception {
 
         CmsObject cms = getCmsObject();
-        CmsJspContextBean bean = new CmsJspContextBean(cms);
+        CmsJspContentUtilBean bean = new CmsJspContentUtilBean(cms);
 
         Map readResource = bean.getReadResource();
 

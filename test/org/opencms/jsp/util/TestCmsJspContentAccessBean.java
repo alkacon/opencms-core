@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/Attic/TestCmsJspContentAccessBean.java,v $
- * Date   : $Date: 2007/08/13 16:30:19 $
- * Version: $Revision: 1.2 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/util/TestCmsJspContentAccessBean.java,v $
+ * Date   : $Date: 2007/08/14 12:35:23 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,11 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.jsp;
+package org.opencms.jsp.util;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.jsp.util.CmsJspContentAccessBean;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.xml.content.CmsXmlContent;
@@ -52,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  * 
  * @since 7.0.2
  */
@@ -139,7 +138,7 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
         enValue = (Map)localeValue.get("en");
         assertEquals("This is the article 2 sample", String.valueOf(enValue.get("Title")));
         Map frValue = (Map)localeValue.get("fr");
-        assertNull(frValue.get("Title"));
+        assertFalse(((CmsJspContentAccessValueWrapper)frValue.get("Title")).getExists());
 
         // check list access to default locale
         Map enValues = bean.getValueList();
@@ -157,6 +156,17 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
         assertEquals(2, ((List)enValues.get("Teaser")).size());
         assertEquals("This is teaser 2 in sample article 2.", String.valueOf(((List)enValues.get("Teaser")).get(1)));
         Map frValues = (Map)localeValues.get("fr");
-        assertNull(frValues.get("Title"));
+        assertEquals(0, ((List)frValues.get("Title")).size());
+
+        // check random access to any object
+        CmsJspContentAccessValueWrapper val = (CmsJspContentAccessValueWrapper)enValue.get("i/do/no/exists");
+        assertFalse(val.getExists());
+        assertTrue(val.getIsEmpty());
+        assertTrue(val.getIsEmptyOrWhitespaceOnly());
+        assertEquals("", val.toString());
+        assertEquals("", val.getPath());
+        assertEquals(0, val.getValueList().size());
+        assertEquals(0, val.getHasValue().size());
+        assertEquals(0, val.getValue().size());
     }
 }

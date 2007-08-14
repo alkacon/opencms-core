@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2007/08/13 16:29:58 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2007/08/14 12:35:23 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 6.0.0 
  */
@@ -196,7 +196,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * Creates a new CmsProperty object using the provided values.<p>
      *
      * If the property definition does not exist for the resource type it
-     * is automatically created when this propery is written.
+     * is automatically created when this property is written.
      * 
      * @param name the name of the property definition
      * @param structureValue the value to write as structure property
@@ -237,13 +237,13 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
-     * Searches in a list for the first occurence of a Cms property object with the given name.<p> 
+     * Searches in a list for the first occurrence of a {@link CmsProperty} object with the given name.<p> 
      *
      * To check if the "null property" has been returned if a property was 
      * not found, use {@link #isNullProperty()} on the result.<p> 
      *
      * @param name a property name
-     * @param list a list of Cms property objects
+     * @param list a list of {@link CmsProperty} objects
      * @return the index of the first occurrence of the name in they specified list, 
      *      or {@link CmsProperty#getNullProperty()} if the name is not found
      */
@@ -288,10 +288,10 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * This method will modify the objects in the input list directly.<p>
      * 
-     * @param list a list of property objects
+     * @param list a list of {@link CmsProperty} objects to modify
      * @param value boolean value
      * 
-     * @return the modified list of properties
+     * @return the modified list of {@link CmsProperty} objects
      * 
      * @see #setAutoCreatePropertyDefinition(boolean)
      */
@@ -318,11 +318,11 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
 
     /**
      * Calls <code>{@link #setFrozen(boolean)}</code> for each
-     * property object in the given List if it is not already frozen.<p>
+     * {@link CmsProperty} object in the given List if it is not already frozen.<p>
      * 
      * This method will modify the objects in the input list directly.<p>
      * 
-     * @param list a list of property objects
+     * @param list a list of {@link CmsProperty} objects
      * 
      * @return the modified list of properties
      * 
@@ -354,66 +354,53 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
-     * Transforms a map with compound (String) values keyed by property names into a list of 
-     * CmsProperty objects with structure values.<p>
+     * Transforms a Map of String values into a list of 
+     * {@link CmsProperty} objects with the property name set from the
+     * Map key, and the structure value set from the Map value.<p>
      * 
-     * This method is to prevent issues with backward incompatibilities in older code.
-     * Use this method with caution, it might be removed without with being deprecated
-     * before.<p>
+     * @param map a Map with String keys and String values
      * 
-     * @param map a map with compound (String) values keyed by property names
-     * @return a list of CmsProperty objects
+     * @return a list of {@link CmsProperty} objects
      */
     public static List toList(Map map) {
-
-        String name = null;
-        String value = null;
-        CmsProperty property = null;
-        List properties = null;
-        Object[] names = null;
 
         if ((map == null) || (map.size() == 0)) {
             return Collections.EMPTY_LIST;
         }
 
-        properties = new ArrayList(map.size());
-        names = map.keySet().toArray();
-        for (int i = 0; i < names.length; i++) {
-            name = (String)names[i];
-            value = (String)map.get(name);
+        List result = new ArrayList(map.size());
+        Iterator i = map.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry e = (Map.Entry)i.next();
+            String name = String.valueOf(e.getKey());
+            String value = String.valueOf(e.getValue());
 
-            property = new CmsProperty();
-            property.m_name = name;
-            property.m_structureValue = value;
-            properties.add(property);
+            CmsProperty property = new CmsProperty(name, value, null);
+            result.add(property);
         }
 
-        return properties;
+        return result;
     }
 
     /**
-     * Transforms a list of CmsProperty objects with structure and resource values into a map with
-     * compound (String) values keyed by property names.<p>
-     *
-     * This method is to prevent issues with backward incompatibilities in older code.
-     * Use this method with caution, it might be removed without with being deprecated
-     * before.<p>
+     * Transforms a list of {@link CmsProperty} objects into a Map which uses the property name as
+     * Map key (String), and the property value as Map value (String).<p>
      * 
-     * @param list a list of CmsProperty objects
-     * @return a map with compound (String) values keyed by property names
+     * @param list a list of {@link CmsProperty} objects
+     * 
+     * @return a Map which uses the property names as
+     *      Map keys (String), and the property values as Map values (String)
      */
     public static Map toMap(List list) {
-
-        Map result = null;
-        String name = null;
-        String value = null;
-        CmsProperty property = null;
 
         if ((list == null) || (list.size() == 0)) {
             return Collections.EMPTY_MAP;
         }
 
-        result = new HashMap();
+        String name = null;
+        String value = null;
+        CmsProperty property = null;
+        Map result = new HashMap(list.size());
 
         // choose the fastest method to traverse the list
         if (list instanceof RandomAccess) {
@@ -534,7 +521,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     /**
      * Tests if a specified object is equal to this CmsProperty object.<p>
      * 
-     * Two property objecs are equal if their names are equal.<p>
+     * Two property objects are equal if their names are equal.<p>
      * 
      * In case you want to compare the values as well as the name, 
      * use {@link #isIdentical(CmsProperty)} instead.<p>
@@ -910,7 +897,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * Sets the frozen state of the property, if set to <code>true</code> then this property is read only.<p>
      *
      * If the property is already frozen, then setting the frozen state to <code>true</code> again is allowed, 
-     * but seeting the value to <code>false</code> causes a <code>{@link CmsRuntimeException}</code>.<p>
+     * but setting the value to <code>false</code> causes a <code>{@link CmsRuntimeException}</code>.<p>
      *
      * @param frozen the frozen state to set
      */

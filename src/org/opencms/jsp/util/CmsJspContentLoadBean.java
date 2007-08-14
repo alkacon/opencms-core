@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentLoadBean.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/14 12:35:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,11 +43,12 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2 
  * 
  * @see org.opencms.jsp.CmsJspTagContentLoad
+ * @see CmsJspContentAccessBean
  */
 public class CmsJspContentLoadBean {
 
