@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/14 08:04:01 $
- * Version: $Revision: 1.849 $
+ * Date   : $Date: 2007/08/14 09:54:34 $
+ * Version: $Revision: 1.850 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 * Fixed issue with the 'publish with related resources' feature
 * Fixed issue with the 'before publish' event
 * Fixed issue with siblings in the history
+* Fixed issue with anchor links in XML Pages
 - Improved implementation of CmsUUID serialization, added Junit tests for de-serialization of old versions
 - Updated jug.jar used by CmsUUID to version 2.0.0 (from doomdark.org to safehaus.org version)
 - Split XSD for default XML content appinfo elements in 2 files, one for elements, the other for the base "appinfo" node
