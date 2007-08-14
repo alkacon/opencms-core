@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/08/13 16:29:53 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2007/08/14 12:32:15 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -806,16 +806,14 @@ public class CmsResourceManager {
     public CmsTemplateLoaderFacade getTemplateLoaderFacade(CmsObject cms, CmsResource resource, String templateProperty)
     throws CmsException {
 
-        String absolutePath = cms.getSitePath(resource);
-
-        String templateProp = cms.readPropertyObject(absolutePath, templateProperty, true).getValue();
+        String templateProp = cms.readPropertyObject(resource, templateProperty, true).getValue();
 
         if (templateProp == null) {
             // no template property defined, this is a must for facade loaders
             throw new CmsLoaderException(Messages.get().container(
                 Messages.ERR_NONDEF_PROP_2,
                 templateProperty,
-                absolutePath));
+                cms.getSitePath(resource)));
         }
 
         CmsResource template = cms.readFile(templateProp, CmsResourceFilter.IGNORE_EXPIRATION);
