@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/14 09:46:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.5
  */
@@ -122,7 +122,7 @@ public class CmsPublishQueue {
     /**
      * Pushes a new publish job with the given information in publish queue.<p>
      * 
-     * If possible, the publish job starts inmediatly.<p>
+     * If possible, the publish job starts immediately.<p>
      * 
      * @param publishJob the publish job to enqueue
      * 

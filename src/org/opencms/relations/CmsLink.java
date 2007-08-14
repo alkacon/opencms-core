@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/14 09:47:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,11 +207,11 @@ public class CmsLink {
     }
 
     /**
-     *  Empty contructor for NULL contant.<p>
+     *  Empty constructor for NULL constant.<p>
      */
     private CmsLink() {
 
-        // empty contructor for NULL contant
+        // empty constructor for NULL constant
     }
 
     /**

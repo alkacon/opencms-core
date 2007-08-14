@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2007/08/13 16:30:07 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/08/14 09:46:35 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -233,7 +233,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
             resource = xmlPage.correctXmlStructure(cms);
         }
 
-        // xml is valid if no exception occured
+        // xml is valid if no exception occurred
         return super.writeFile(cms, securityManager, resource);
     }
 }

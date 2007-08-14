@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.247 $
+ * Date   : $Date: 2007/08/14 09:46:25 $
+ * Version: $Revision: 1.248 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.247 $
+ * @version $Revision: 1.248 $
  * 
  * @since 6.0.0 
  */
@@ -2013,7 +2013,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             res = stmt.executeQuery();
 
             if (res.next()) {
-                //query to read Array of bytes for the atribute FILE_CONTENT
+                // query to read Array of bytes for the given attribute
                 bytes = m_sqlManager.getBytes(res, "PUBLISH_REPORT");
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
