@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2007/08/13 16:30:17 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/08/14 09:48:05 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -60,7 +61,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 6.0.0
  */
@@ -99,6 +100,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlPageInSystem("testXmlPageRenameElement"));
         suite.addTest(new TestCmsXmlPageInSystem("testMalformedPage"));
         suite.addTest(new TestCmsXmlPageInSystem("testXmlPageCreate"));
+        suite.addTest(new TestCmsXmlPageInSystem("testAnchorLink"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -435,6 +437,44 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         page.addValue("test", Locale.ENGLISH);
         file.setContents(page.marshal());
         cms.writeFile(file);
+    }
+
+    /**
+     * Tests the usage of an anchor link.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testAnchorLink() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing usage of an anchor link");
+
+        String filename = "xmlpageAnchor.html";
+        CmsResource res = cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId());
+
+        // check the relations
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.ALL).isEmpty());
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.SOURCES).isEmpty());
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS).isEmpty());
+
+        CmsFile file = cms.readFile(res);
+        CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file, true);
+        assertTrue(page.hasLocale(Locale.ENGLISH));
+        try {
+            page.addLocale(cms, Locale.ENGLISH);
+            fail("where is the default locale!?");
+        } catch (Exception e) {
+            // should fail
+        }
+        page.addValue("test", Locale.ENGLISH);
+        page.getValue("test", Locale.ENGLISH).setStringValue(cms, "<a href='#test'>test</a>");
+        file.setContents(page.marshal());
+        cms.writeFile(file);
+
+        // check the relations, anchors should not be considered as a relation
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.ALL).isEmpty());
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.SOURCES).isEmpty());
+        assertTrue(cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS).isEmpty());
     }
 
     /**

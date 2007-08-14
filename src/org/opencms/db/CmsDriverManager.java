@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/08/13 16:30:03 $
- * Version: $Revision: 1.591 $
+ * Date   : $Date: 2007/08/14 09:48:05 $
+ * Version: $Revision: 1.592 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -5273,7 +5273,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List readAllAvailableVersions(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
         // read the historical resources
-        return m_historyDriver.readAllAvailableVersions(dbc, resource.getStructureId());
+        List versions = m_historyDriver.readAllAvailableVersions(dbc, resource.getStructureId());
+        if (versions.size() > OpenCms.getSystemInfo().getHistoryVersions()) {
+            return versions.subList(0, OpenCms.getSystemInfo().getHistoryVersions());
+        }
+        return versions;
     }
 
     /**
@@ -7600,6 +7604,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         while (itLinks.hasNext()) {
             CmsLink link = (CmsLink)itLinks.next();
             if (link.isInternal()) { // only update internal links
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(link.getTarget())) {
+                    // only an anchor
+                    continue;
+                }
                 CmsRelation originalRelation;
                 try {
                     // get the target resource
