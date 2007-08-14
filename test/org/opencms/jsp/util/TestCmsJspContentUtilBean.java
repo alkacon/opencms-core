@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/util/Attic/TestCmsJspContentUtilBean.java,v $
- * Date   : $Date: 2007/08/14 12:35:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/08/14 13:12:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -47,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.0.2
  */
@@ -75,7 +77,8 @@ public class TestCmsJspContentUtilBean extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsJspContentUtilBean.class.getName());
 
-        suite.addTest(new TestCmsJspContentUtilBean("testReadResourceMap"));
+        suite.addTest(new TestCmsJspContentUtilBean("testReadResource"));
+        suite.addTest(new TestCmsJspContentUtilBean("testReadProperties"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -98,7 +101,7 @@ public class TestCmsJspContentUtilBean extends OpenCmsTestCase {
      * 
      * @throws Exception if the test fails
      */
-    public void testReadResourceMap() throws Exception {
+    public void testReadResource() throws Exception {
 
         CmsObject cms = getCmsObject();
         CmsJspContentUtilBean bean = new CmsJspContentUtilBean(cms);
@@ -113,5 +116,23 @@ public class TestCmsJspContentUtilBean extends OpenCmsTestCase {
 
         res = (CmsResource)readResource.get("/idontexist.html");
         assertNull(res);
+    }
+
+    /**
+     * Tests for the {@link CmsJspContentUtilBean#getReadProperties()} method.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testReadProperties() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsJspContentUtilBean bean = new CmsJspContentUtilBean(cms);
+
+        Map readProperties = bean.getReadProperties();
+        Map props = (Map)readProperties.get("/index.html");
+        assertNotNull(props);
+        assertEquals("Index page", props.get(CmsPropertyDefinition.PROPERTY_TITLE));
+        Map dprops = CmsProperty.toMap(cms.readPropertyObjects("/index.html", false));
+        assertEquals(dprops, props);
     }
 }

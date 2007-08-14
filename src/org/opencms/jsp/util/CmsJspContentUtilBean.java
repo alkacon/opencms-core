@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/Attic/CmsJspContentUtilBean.java,v $
- * Date   : $Date: 2007/08/14 12:35:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/08/14 13:12:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.2
  * 
@@ -106,7 +106,7 @@ public class CmsJspContentUtilBean {
 
             Map result = null;
             // first read the resource using the lazy map 
-            CmsResource resource = (CmsResource)getReadResource();
+            CmsResource resource = (CmsResource)getReadResource().get(input);
             if (resource != null) {
                 try {
                     // read the properties of the requested resource
