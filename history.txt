@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/13 16:30:18 $
- * Version: $Revision: 1.848 $
+ * Date   : $Date: 2007/08/14 08:04:01 $
+ * Version: $Revision: 1.849 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 - Deprecated CmsFile#upgrade(CmsResource) method as this is now done automatically in CmsObject#readFile(CmsResource)
 - Updated year information in file comment headers to 2007
 ! Added <cms:contentaccess> tag and bean for easy access to XML contents on JSP using the EL with JSTL 
+! Added new option "searchsettings" to XML content handler, used to reduce visibility of fields in search "content" 
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog
