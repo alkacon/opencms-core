@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2007/08/15 09:11:17 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,7 +105,7 @@ public class CmsSystemInfo {
     /** The settings for the internal OpenCms email service. */
     private CmsMailSettings m_mailSettings;
 
-    /** The project in which timestamps for the content notification are read. */
+    /** The project in which time stamps for the content notification are read. */
     private String m_notificationProject;
 
     /** The duration after which responsibles will be notified about out-dated content (in days). */
@@ -114,7 +114,7 @@ public class CmsSystemInfo {
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code>. */
     private String m_openCmsContext;
 
-    /** The abolute path to the "packages" folder (in the "real" file system). */
+    /** The absolute path to the "packages" folder (in the "real" file system). */
     private String m_packagesRfsPath;
 
     /** The name of the OpenCms server. */
@@ -148,7 +148,7 @@ public class CmsSystemInfo {
 
         // set startup time
         m_startupTime = System.currentTimeMillis();
-        // init version onformation
+        // init version information
         initVersion();
         // set default encoding (will be changed again later when properties have been read)
         m_defaultEncoding = DEFAULT_ENCODING.intern();
@@ -224,11 +224,11 @@ public class CmsSystemInfo {
      * is the default web application (usually "ROOT"), or "/opencms" if the web application 
      * is called "opencms".<p>
      * 
-     * <i>From the Java Servlet Sepcecification v2.4:</i><br>
+     * <i>From the Java Servlet Specification v2.4:</i><br>
      * <b>Context Path:</b> The path prefix associated with the ServletContext that this
      * servlet is a part of. If this context is the "default" context rooted at the base of
-     * the web server's URL namespace, this path will be an empty string. Otherwise,
-     * if the context is not rooted at the root of the server's namespace, the path starts
+     * the web server's URL name space, this path will be an empty string. Otherwise,
+     * if the context is not rooted at the root of the server's name space, the path starts
      * with a "/" character but does not end with a "/" character.<p>
      *  
      * @return the web application context path
@@ -300,12 +300,12 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the filename of the logfile (in the "real" file system).<p>
+     * Returns the filename of the log file (in the "real" file system).<p>
      * 
      * If the method returns <code>null</code>, this means that the log
      * file is not managed by OpenCms.<p>
      * 
-     * @return the filename of the logfile (in the "real" file system)
+     * @return the filename of the log file (in the "real" file system)
      */
     public String getLogFileRfsPath() {
 
@@ -323,9 +323,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the project in which timestamps for the content notification are read.<p>
+     * Returns the project in which time stamps for the content notification are read.<p>
      * 
-     * @return the project in which timestamps for the content notification are read
+     * @return the project in which time stamps for the content notification are read
      */
     public String getNotificationProject() {
 
@@ -358,9 +358,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the abolute path to the "packages" folder (in the "real" file system).<p>
+     * Returns the absolute path to the "packages" folder (in the "real" file system).<p>
      * 
-     * @return the abolute path to the "packages" folder
+     * @return the absolute path to the "packages" folder
      */
     public String getPackagesRfsPath() {
 
@@ -371,9 +371,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the time this OpenCms instance is running in miliseconds.<p>
+     * Returns the time this OpenCms instance is running in milliseconds.<p>
      * 
-     * @return the time this OpenCms instance is running in miliseconds
+     * @return the time this OpenCms instance is running in milliseconds
      */
     public long getRuntime() {
 
@@ -385,8 +385,8 @@ public class CmsSystemInfo {
      * 
      * The server name is set in <code>opencms.properties</code>.
      * It is not related to any DNS name the server might also have.
-     * The server name is usefull e.g. in a cluster to distinguish different servers,
-     * or if you compare logfiles from multiple servers.<p>
+     * The server name is useful e.g. in a cluster to distinguish different servers,
+     * or if you compare log files from multiple servers.<p>
      * 
      * @return the OpenCms server name
      */
@@ -398,7 +398,7 @@ public class CmsSystemInfo {
     /**
      * Returns the OpenCms servlet path, e.g. "/opencms".<p> 
      * 
-     * <i>From the Java Servlet Sepcecification v2.4:</i><br>
+     * <i>From the Java Servlet Specification v2.4:</i><br>
      * <b>Servlet Path:</b> The path section that directly corresponds to the mapping
      * which activated this request. This path starts with a?/? character except in the
      * case where the request is matched with the ?/*? pattern, in which case it is the
@@ -447,7 +447,7 @@ public class CmsSystemInfo {
 
         return getVersionNumber();
     }
-    
+
     /**
      * Returns the version number of this OpenCms system, for example <code>7.0.0</code>.<p>
      *
@@ -459,7 +459,7 @@ public class CmsSystemInfo {
     }
 
     /** 
-     * Returns the OpenCms web application name, e.g. "opencms" or "ROOT" (no leading or trainling "/").<p> 
+     * Returns the OpenCms web application name, e.g. "opencms" or "ROOT" (no leading or trailing "/").<p> 
      * 
      * The web application name is stored for informational purposes only.
      * If you want to construct an URI, use either {@link #getContextPath()} and 
@@ -506,9 +506,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Sets the project in which timestamps for the content notification are read.<p>
+     * Sets the project in which time stamps for the content notification are read.<p>
      * 
-     * @param notificationProject the project in which timestamps for the content notification are read
+     * @param notificationProject the project in which time stamps for the content notification are read
      */
     public void setNotificationProject(String notificationProject) {
 
@@ -657,8 +657,8 @@ public class CmsSystemInfo {
      * 
      * The server name is set in <code>opencms.properties</code>.
      * It is not related to any DNS name the server might also have.
-     * The server name is usefull e.g. in a cluster to distinguish different servers,
-     * or if you compare logfiles from multiple servers.<p>
+     * The server name is useful e.g. in a cluster to distinguish different servers,
+     * or if you compare log files from multiple servers.<p>
      *  
      * @param serverName the server name to set
      */
@@ -689,7 +689,7 @@ public class CmsSystemInfo {
             return;
         }
         m_versionNumber = props.getProperty("version.number", DEFAULT_VERSION_NUMBER);
-        // set OpenCms version identifier with propery values
+        // set OpenCms version identifier with property values
         m_version = "OpenCms/" + m_versionNumber;
     }
 }
