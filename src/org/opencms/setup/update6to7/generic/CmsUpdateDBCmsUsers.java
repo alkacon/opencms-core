@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/generic/Attic/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2007/08/13 16:30:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/15 08:32:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * 
  * @author Roland Metzler
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.0.0
  */
@@ -213,53 +213,13 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
     }
 
     /**
-     * Creates the CMS_USERDATA table if it does not exist yet.<p>
-     *  
-     * @param dbCon the db connection interface
-     * 
-     * @throws SQLException if soemthing goes wrong
-     */
-    protected void createUserDataTable(CmsSetupDb dbCon) throws SQLException {
-
-        System.out.println(new Exception().getStackTrace()[0].toString());
-        String createStatement = readQuery(QUERY_CREATE_TABLE_USERDATA);
-        dbCon.updateSqlStatement(createStatement, null, null);
-    }
-
-    /**
-     * Writes one set of additional user info (key and its value) to the CMS_USERDATA table.<p>
-     * 
-     * @param dbCon the db connection interface
-     * @param id the user id 
-     * @param key the data key
-     * @param value the data value
-     */
-    protected void writeUserInfo(CmsSetupDb dbCon, String id, String key, Object value) {
-
-        String query = readQuery(QUERY_INSERT_CMS_USERDATA);
-
-        try {
-            // Generate the list of parameters to add into the user info table
-            List params = new ArrayList();
-            params.add(id);
-            params.add(key);
-            params.add(value);
-            params.add(value.getClass().getName());
-
-            dbCon.updateSqlStatement(query, null, params);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * Adds the new column USER_DATECREATED to the CMS_USERS table.<p> 
      * 
      * @param dbCon the db connection interface
      * 
      * @throws SQLException if something goes wrong 
      */
-    private void addUserDateCreated(CmsSetupDb dbCon) throws SQLException {
+    protected void addUserDateCreated(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         // Add the column to the table if necessary
@@ -286,7 +246,7 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
      * 
      * @throws SQLException if something goes wrong 
      */
-    private void addWebusersToGroup(CmsSetupDb dbCon, CmsUUID id) throws SQLException {
+    protected void addWebusersToGroup(CmsSetupDb dbCon, CmsUUID id) throws SQLException {
 
         String sql = readQuery(QUERY_ADD_WEBUSERS_TO_GROUP);
         Map replacements = new HashMap();
@@ -301,10 +261,24 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
      * 
      * @return true if it exists, false if not.
      */
-    private boolean checkUserDataTable(CmsSetupDb dbCon) {
+    protected boolean checkUserDataTable(CmsSetupDb dbCon) {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         return dbCon.hasTableOrColumn(CHECK_CMS_USERDATA, null);
+    }
+
+    /**
+     * Creates the CMS_USERDATA table if it does not exist yet.<p>
+     *  
+     * @param dbCon the db connection interface
+     * 
+     * @throws SQLException if soemthing goes wrong
+     */
+    protected void createUserDataTable(CmsSetupDb dbCon) throws SQLException {
+
+        System.out.println(new Exception().getStackTrace()[0].toString());
+        String createStatement = readQuery(QUERY_CREATE_TABLE_USERDATA);
+        dbCon.updateSqlStatement(createStatement, null, null);
     }
 
     /**
@@ -316,7 +290,7 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
      * 
      * @throws SQLException if something goes wrong 
      */
-    private CmsUUID createWebusersGroup(CmsSetupDb dbCon) throws SQLException {
+    protected CmsUUID createWebusersGroup(CmsSetupDb dbCon) throws SQLException {
 
         String sql = readQuery(QUERY_CREATE_WEBUSERS_GROUP);
         List params = new ArrayList();
@@ -338,7 +312,7 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
      * 
      * @throws SQLException if something goes wrong 
      */
-    private void removeUnnecessaryColumns(CmsSetupDb dbCon) throws SQLException {
+    protected void removeUnnecessaryColumns(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());
         // Get the sql queries to drop the columns
@@ -377,7 +351,7 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
      * @param id the user id
      * @param additionalInfo the additional info of the user
      */
-    private void writeAdditionalUserInfo(CmsSetupDb dbCon, String id, Map additionalInfo) {
+    protected void writeAdditionalUserInfo(CmsSetupDb dbCon, String id, Map additionalInfo) {
 
         Iterator entries = additionalInfo.entrySet().iterator();
         while (entries.hasNext()) {
@@ -386,6 +360,32 @@ public class CmsUpdateDBCmsUsers extends A_CmsUpdateDBPart {
                 // Write the additional user information to the database
                 writeUserInfo(dbCon, id, (String)entry.getKey(), entry.getValue());
             }
+        }
+    }
+
+    /**
+     * Writes one set of additional user info (key and its value) to the CMS_USERDATA table.<p>
+     * 
+     * @param dbCon the db connection interface
+     * @param id the user id 
+     * @param key the data key
+     * @param value the data value
+     */
+    protected void writeUserInfo(CmsSetupDb dbCon, String id, String key, Object value) {
+
+        String query = readQuery(QUERY_INSERT_CMS_USERDATA);
+
+        try {
+            // Generate the list of parameters to add into the user info table
+            List params = new ArrayList();
+            params.add(id);
+            params.add(key);
+            params.add(value);
+            params.add(value.getClass().getName());
+
+            dbCon.updateSqlStatement(query, null, params);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

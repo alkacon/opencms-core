@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2007/08/13 16:29:50 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2007/08/15 08:32:10 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -367,7 +367,7 @@ public class CmsSetupDb extends Object {
     }
 
     /**
-     * Checks if the given table, column or combination of both is available in the database.<P>
+     * Checks if the given table, column or combination of both is available in the database in case insensitive way.<P>
      * 
      * @param table the sought table
      * @param column the sought column
@@ -376,43 +376,54 @@ public class CmsSetupDb extends Object {
      */
     public boolean hasTableOrColumn(String table, String column) {
 
+        String tableName, columnName;
+        boolean result;
+
+        tableName = table == null ? null : table.toUpperCase();
+        columnName = column == null ? null : column.toUpperCase();
+        result = hasTableOrColumnCaseSensitive(tableName, columnName);
+
+        if (!result) {
+            tableName = table == null ? null : table.toLowerCase();
+            columnName = column == null ? null : column.toLowerCase();
+            result = result || hasTableOrColumnCaseSensitive(tableName, columnName);
+        }
+
+        return result;
+    }
+
+    /**
+     * Checks if the given table, column or combination of both is available in the database in a case sensitive way.<P>
+     * 
+     * @param table the sought table
+     * @param column the sought column
+     * 
+     * @return true if the requested table/column is available, false if not
+     */
+    public boolean hasTableOrColumnCaseSensitive(String table, String column) {
+
         boolean result = false;
         ResultSet set = null;
 
         try {
-
-            // Check the table 
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(table)) {
-                set = m_con.getMetaData().getTables(null, null, table, null);
-
-                while (set.next()) {
-                    String tablename = set.getString("TABLE_NAME");
-                    if (tablename.equalsIgnoreCase(table)) {
-                        result = true;
-                    } else {
-                        result = false;
-                    }
-                }
-
-                set.close();
-                set = null;
-            }
-
-            // Check if the column is given
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(column)) {
-                result = false; // reset the boolean value to false
+                // Check if the column is given
                 set = m_con.getMetaData().getColumns(null, null, table, column);
-
-                while (set.next()) {
+                if (set.next()) {
                     String colname = set.getString("COLUMN_NAME");
                     if (colname.equalsIgnoreCase(column)) {
                         result = true; // The column is available
-                    } else {
-                        result = false;
                     }
                 }
-                set.close();
-                set = null;
+            } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(table)) {
+                // Check the table 
+                set = m_con.getMetaData().getTables(null, null, table, null);
+                if (set.next()) {
+                    String tablename = set.getString("TABLE_NAME");
+                    if (tablename.equalsIgnoreCase(table)) {
+                        result = true;
+                    }
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -426,14 +437,13 @@ public class CmsSetupDb extends Object {
                 e.printStackTrace();
             }
         }
-
         return result;
     }
 
     /**
-     * Checks if internal errors occured.<p>
+     * Checks if internal errors occurred.<p>
      * 
-     * @return true if internal errors occured
+     * @return true if internal errors occurred
      */
     public boolean noErrors() {
 
@@ -441,7 +451,7 @@ public class CmsSetupDb extends Object {
     }
 
     /**
-     * Sets a new internal connection to teh database.<p>
+     * Sets a new internal connection to the database.<p>
      * 
      * @param conn the connection to use
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/Attic/A_CmsUpdateDBPart.java,v $
- * Date   : $Date: 2007/08/13 16:30:14 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/15 08:32:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Properties;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.9.2 
  */
@@ -178,6 +178,56 @@ public abstract class A_CmsUpdateDBPart implements I_CmsUpdateDBPart {
             System.out.println("Data Tablespace:            " + dataTablespace);
 
             return getInstanceForDb("oracle");
+        } else if (dbName.indexOf("postgresql") > -1) {
+
+            String dataTablespace = "pg_default";
+            String indexTablespace = "pg_default";
+            CmsSetupDb setupDb = new CmsSetupDb(null);
+
+            try {
+                setupDb.setConnection(
+                    (String)m_poolData.get("driver"),
+                    (String)m_poolData.get("url"),
+                    (String)m_poolData.get("params"),
+                    (String)m_poolData.get("user"),
+                    (String)m_poolData.get("pwd"));
+                
+                // read tablespace for data
+                CmsSetupDBWrapper db = null;
+                try {
+                    db = setupDb.executeSqlStatement("SELECT DISTINCT pg_tablespace.spcname FROM pg_class, pg_tablespace WHERE pg_class.relname='cms_user' AND pg_class.reltablespace = pg_tablespace.oid", null);
+                    if (db.getResultSet().next()) {
+                        dataTablespace = db.getResultSet().getString(1).toLowerCase();
+                    }
+                } finally {
+                    if (db != null) {
+                        db.close();
+                    }
+                }
+                // read tablespace for indexes
+                try {
+                    db = setupDb.executeSqlStatement("SELECT DISTINCT pg_tablespace.spcname FROM pg_class, pg_tablespace WHERE pg_class.relname='cms_users_pkey' AND pg_class.reltablespace = pg_tablespace.oid", null);
+                    if (db.getResultSet().next()) {
+                        indexTablespace = db.getResultSet().getString(1).toLowerCase();
+                    }
+                } finally {
+                    if (db != null) {
+                        db.close();
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                setupDb.closeConnection();
+            }
+
+            m_poolData.put("indexTablespace", indexTablespace);
+            System.out.println("Index Tablespace:           " + indexTablespace);
+
+            m_poolData.put("dataTablespace", dataTablespace);
+            System.out.println("Data Tablespace:            " + dataTablespace);
+
+            return getInstanceForDb("postgresql");
         } else {
             System.out.println("db " + dbName + " not supported");
             return null;
