@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2007/08/15 14:25:48 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  */
@@ -691,7 +691,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         CmsMessageContainer container = null;
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
-            // iterate all configured seach indexes
+            // iterate all configured search indexes
             CmsSearchIndex searchIndex = (CmsSearchIndex)m_indexes.get(i);
             try {
                 // update the index 
@@ -1510,7 +1510,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 // create a new index writer
                 writer = index.getIndexWriter(true);
 
-                // ouput start information on the report
+                // output start information on the report
                 report.println(
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_REBUILD_BEGIN_1, index.getName()),
                     I_CmsReport.FORMAT_HEADLINE);
@@ -1546,7 +1546,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     }
                 }
 
-                // ouput finish information on the report
+                // output finish information on the report
                 report.println(
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_REBUILD_END_1, index.getName()),
                     I_CmsReport.FORMAT_HEADLINE);
@@ -1571,7 +1571,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         } else {
             // update the existing index
-
             List updateCollections = new ArrayList();
 
             boolean hasResourcesToDelete = false;
@@ -1595,7 +1594,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
 
             if (hasResourcesToDelete || hasResourcesToUpdate) {
-                // ouput start information on the report
+                // output start information on the report
                 report.println(
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_UPDATE_BEGIN_1, index.getName()),
                     I_CmsReport.FORMAT_HEADLINE);
@@ -1640,13 +1639,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
 
             if (hasResourcesToUpdate) {
-
                 // create a new thread manager
                 CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(m_timeout);
 
                 IndexWriter writer = null;
                 try {
-
                     // create an index writer that updates the current index
                     writer = index.getIndexWriter(false);
 
@@ -1685,7 +1682,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
 
             if (hasResourcesToDelete || hasResourcesToUpdate) {
-                // ouput finish information on the report
+                // output finish information on the report
                 report.println(
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_UPDATE_END_1, index.getName()),
                     I_CmsReport.FORMAT_HEADLINE);

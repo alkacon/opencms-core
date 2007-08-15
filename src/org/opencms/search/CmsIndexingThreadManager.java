@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/08/15 14:25:48 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,7 +99,7 @@ public class CmsIndexingThreadManager {
      * @param writer the write to write the index
      * @param res the resource
      * @param index the index
-     * @param report the report to write the indexing progess to
+     * @param report the report to write the indexing progress to
      */
     public void createIndexingThread(
         CmsObject cms,
@@ -149,7 +149,7 @@ public class CmsIndexingThreadManager {
         try {
             thread.join(m_timeout);
         } catch (InterruptedException e) {
-            // noop
+            // ignore
         }
         if (thread.isAlive()) {
             if (LOG.isWarnEnabled()) {
@@ -275,7 +275,7 @@ public class CmsIndexingThreadManager {
                 }
             }
         } catch (Exception exc) {
-            // noop
+            // ignore
         }
 
         if (max > 0) {
