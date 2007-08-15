@@ -498,5 +498,74 @@
             <name>usemap</name>
             <rtexprvalue>true</rtexprvalue>            
         </attribute>                         
-    </tag>          
+    </tag>    
+
+    <function>
+        <description>
+            Provides simple access to a OpenCms JSP / EL content utility bean.
+        </description>
+        <name>util</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            org.opencms.jsp.util.CmsJspContentUtilBean getContentUtilBean(java.lang.Object)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+            Allows conversion of Long values to Dates.
+            Can also handle Strings that represent a Long or a Date.
+        </description>
+        <name>convertDate</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.util.Date convertDate(java.lang.Object)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+            Returns the current OpenCms user context form the page context.
+        </description>
+        <name>getCmsObject</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            org.opencms.file.CmsObject getCmsObject(java.lang.Object)
+        </function-signature>
+    </function>
+        
+  	<function>
+        <description>
+            Allows conversion of Objects to Locales.
+            Can also handle Strings that are locales, or Locales itself.
+            If no valid locale is provided, the OpenCms default locale is returned.
+        </description>    
+        <name>convertLocale</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.util.Locale convertLocale(java.lang.Object)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+             Strips all HTML markup from the given input.
+        </description>    
+        <name>stripHtml</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String stripHtml(java.lang.Object)
+        </function-signature>
+    </function>    
+    
+    <function>
+        <description>
+            Returns a substring of the input, which is not longer then the given int value.
+        </description>    
+        <name>trimToSize</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String trimToSize(java.lang.String, int)
+        </function-signature>
+    </function>     
 </taglib>

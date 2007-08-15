@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2007/08/14 12:35:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/15 14:26:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,14 +49,14 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 
 /**
- * Allows access to XML content values, with possible iteration of sub-nodes.<p>
+ * Allows direct access to XML content values, with possible iteration of sub-nodes.<p>
  * 
  * The implementation is optimized for performance and uses lazy initializing of the 
  * requested values as much as possible.<p>
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  * 
@@ -76,7 +76,9 @@ public final class CmsJspContentAccessValueWrapper {
          */
         public Object transform(Object input) {
 
-            return Boolean.valueOf(m_contentValue.getDocument().hasValue(createPath(input), m_contentValue.getLocale()));
+            return Boolean.valueOf(getContentValue().getDocument().hasValue(
+                createPath(input),
+                getContentValue().getLocale()));
         }
     }
 
@@ -91,13 +93,13 @@ public final class CmsJspContentAccessValueWrapper {
          */
         public Object transform(Object input) {
 
-            List values = m_contentValue.getDocument().getValues(createPath(input), m_contentValue.getLocale());
+            List values = getContentValue().getDocument().getValues(createPath(input), getContentValue().getLocale());
             List result = new ArrayList();
             Iterator i = values.iterator();
             while (i.hasNext()) {
                 // must iterate values from XML content and create wrapper for each 
                 I_CmsXmlContentValue value = (I_CmsXmlContentValue)i.next();
-                result.add(createWrapper(m_cms, value));
+                result.add(createWrapper(getCmsObject(), value));
             }
             return result;
         }
@@ -114,10 +116,10 @@ public final class CmsJspContentAccessValueWrapper {
          */
         public Object transform(Object input) {
 
-            I_CmsXmlContentValue value = m_contentValue.getDocument().getValue(
+            I_CmsXmlContentValue value = getContentValue().getDocument().getValue(
                 createPath(input),
-                m_contentValue.getLocale());
-            return createWrapper(m_cms, value);
+                getContentValue().getLocale());
+            return createWrapper(getCmsObject(), value);
         }
     }
 
@@ -125,10 +127,10 @@ public final class CmsJspContentAccessValueWrapper {
     protected static final CmsJspContentAccessValueWrapper NULL_VALUE_WRAPPER = new CmsJspContentAccessValueWrapper();
 
     /** The wrapped OpenCms user context. */
-    protected CmsObject m_cms;
+    private CmsObject m_cms;
 
     /** The wrapped XML content value. */
-    protected I_CmsXmlContentValue m_contentValue;
+    private I_CmsXmlContentValue m_contentValue;
 
     /** The lazy initialized Map that checks if a value is available. */
     private Map m_hasValue;
@@ -266,7 +268,7 @@ public final class CmsJspContentAccessValueWrapper {
      * Usage example on a JSP with the JSTL:<pre>
      * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     The locale of the Link node: &lt;c:out value="${content.value['Link'].locale}" &gt;
+     *     The locale of the Link node: ${content.value['Link'].locale}
      * &lt;/cms:contentload&gt;</pre>
      * 
      * @return the locale of the current XML content value
@@ -348,7 +350,7 @@ public final class CmsJspContentAccessValueWrapper {
      * Usage example on a JSP with the JSTL:<pre>
      * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     The locale of the Link node: &lt;c:out value="${content.value['Link'].locale}" &gt;
+     *     The locale of the Link node: ${content.value['Link'].locale}
      * &lt;/cms:contentload&gt;</pre>
      * 
      * @return the locale of the current XML content value
@@ -369,7 +371,7 @@ public final class CmsJspContentAccessValueWrapper {
      * Usage example on a JSP with the JSTL:<pre>
      * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     The path to the Link node in the XML: &lt;c:out value="${content.value['Link'].path}" &gt;
+     *     The path to the Link node in the XML: ${content.value['Link'].path}
      * &lt;/cms:contentload&gt;</pre>
      * 
      * @return the path to the current XML content value
@@ -394,7 +396,7 @@ public final class CmsJspContentAccessValueWrapper {
      * Usage example on a JSP with the JSTL:<pre>
      * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     The Link Description: &lt;c:out value="${content.value['Link'].value['Description']}" &gt;
+     *     The Link Description: ${content.value['Link'].value['Description']}
      * &lt;/cms:contentload&gt;</pre>
      *  
      * @return a lazy initialized Map that provides a sub value for the current value from the XML content
@@ -421,7 +423,7 @@ public final class CmsJspContentAccessValueWrapper {
      * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
      *     &lt;c:forEach var="desc" items="${content.value['Link'].valueList['Description']}"&gt;
-     *         &lt;c:out value="${desc}" /&gt;
+     *         ${desc}
      *     &lt;/c:forEach&gt;
      * &lt;/cms:contentload&gt;</pre>
      *  
@@ -476,5 +478,29 @@ public final class CmsJspContentAccessValueWrapper {
     protected String createPath(Object input) {
 
         return CmsXmlUtils.concatXpath(m_contentValue.getPath(), String.valueOf(input));
+    }
+
+    /**
+     * Returns the wrapped OpenCms user context.<p>
+     * 
+     * Note that this will return <code>null</code> when {@link #getExists()} returns <code>false</code>. 
+     * 
+     * @return the wrapped OpenCms user context
+     */
+    protected CmsObject getCmsObject() {
+
+        return m_cms;
+    }
+
+    /**
+     * Returns the wrapped content value.<p>
+     * 
+     * Note that this will return <code>null</code> when {@link #getExists()} returns <code>false</code>. 
+     * 
+     * @return the wrapped content value
+     */
+    protected I_CmsXmlContentValue getContentValue() {
+
+        return m_contentValue;
     }
 }

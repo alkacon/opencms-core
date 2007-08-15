@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2007/08/13 16:29:55 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2007/08/15 14:26:19 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -1099,8 +1099,8 @@ public final class CmsStringUtil {
     /**
      * Returns a substring of the source, which is at most length characters long.<p>
      * 
-     * This is the same as calling {@link #trimToSize(String, int, int, String)} with the 
-     * parameters <code>trimToSize(source, length, length, "...")</code>.<p>
+     * This is the same as calling {@link #trimToSize(String, int, String)} with the 
+     * parameters <code>(source, length, " ...")</code>.<p>
      * 
      * @param source the string to trim
      * @param length the maximum length of the string to be returned
@@ -1109,7 +1109,7 @@ public final class CmsStringUtil {
      */
     public static String trimToSize(String source, int length) {
 
-        return trimToSize(source, length, length, "...");
+        return trimToSize(source, length, length, " ...");
     }
 
     /**
@@ -1117,8 +1117,10 @@ public final class CmsStringUtil {
      * 
      * If a char is cut, the given <code>suffix</code> is appended to the result.<p>
      * 
-     * This is the same as calling {@link #trimToSize(String, int, int, String)} with the 
-     * parameters <code>trimToSize(source, length, length, suffix)</code>.<p>
+     * This is almost the same as calling {@link #trimToSize(String, int, int, String)} with the 
+     * parameters <code>(source, length, length*, suffix)</code>. If <code>length</code>
+     * if larger then 100, then <code>length* = length / 2</code>,
+     * otherwise <code>length* = length</code>.<p>
      * 
      * @param source the string to trim
      * @param length the maximum length of the string to be returned
@@ -1128,7 +1130,8 @@ public final class CmsStringUtil {
      */
     public static String trimToSize(String source, int length, String suffix) {
 
-        return trimToSize(source, length, length, "...");
+        int area = (length > 100) ? length / 2 : length;
+        return trimToSize(source, length, area, suffix);
     }
 
     /**

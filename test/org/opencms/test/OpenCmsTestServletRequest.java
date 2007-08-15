@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestServletRequest.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/15 14:26:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.test;
 
 import java.io.BufferedReader;
@@ -46,16 +47,17 @@ import javax.servlet.http.HttpSession;
  * Very incomplete implementation of <code>HttpServletRequest</code> for testing.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class OpenCmsTestServletRequest implements HttpServletRequest {
-    
+
     /**
      * Constructor for test implementation.<p>
      */
     public OpenCmsTestServletRequest() {
+
         // noop
-    }    
+    }
 
     /**
      * @see javax.servlet.ServletRequest#getAttribute(java.lang.String)
@@ -170,6 +172,14 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
     }
 
     /**
+     * @see javax.servlet.ServletRequest#getLocalAddr()
+     */
+    public String getLocalAddr() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
      * @see javax.servlet.ServletRequest#getLocale()
      */
     public Locale getLocale() {
@@ -181,6 +191,22 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
      * @see javax.servlet.ServletRequest#getLocales()
      */
     public Enumeration getLocales() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
+     * @see javax.servlet.ServletRequest#getLocalName()
+     */
+    public String getLocalName() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
+     * @see javax.servlet.ServletRequest#getLocalPort()
+     */
+    public int getLocalPort() {
 
         throw new RuntimeException("Not implemented");
     }
@@ -288,6 +314,14 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
      * @see javax.servlet.ServletRequest#getRemoteHost()
      */
     public String getRemoteHost() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
+     * @see javax.servlet.ServletRequest#getRemotePort()
+     */
+    public int getRemotePort() {
 
         throw new RuntimeException("Not implemented");
     }
@@ -459,5 +493,5 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
     public void setCharacterEncoding(String arg0) {
 
         throw new RuntimeException("Not implemented");
-    }     
+    }
 }

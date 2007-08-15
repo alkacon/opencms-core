@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestServletResponse.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/15 14:26:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.test;
 
 import java.io.PrintWriter;
@@ -38,10 +39,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Very incomple implementation of <code>HttpServletResponse</code> for testing.<p>
+ * Very incomplete implementation of <code>HttpServletResponse</code> for testing.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class OpenCmsTestServletResponse implements HttpServletResponse {
 
@@ -144,6 +145,14 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
     }
 
     /**
+     * @see javax.servlet.ServletResponse#getContentType()
+     */
+    public String getContentType() {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
      * @see javax.servlet.ServletResponse#getLocale()
      */
     public Locale getLocale() {
@@ -192,17 +201,17 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
     }
 
     /**
-     * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
+     * @see javax.servlet.http.HttpServletResponse#sendError(int)
      */
-    public void sendError(int arg0, String arg1) {
+    public void sendError(int arg0) {
 
         throw new RuntimeException("Not implemented");
     }
 
     /**
-     * @see javax.servlet.http.HttpServletResponse#sendError(int)
+     * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
      */
-    public void sendError(int arg0) {
+    public void sendError(int arg0, String arg1) {
 
         throw new RuntimeException("Not implemented");
     }
@@ -219,6 +228,14 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
      * @see javax.servlet.ServletResponse#setBufferSize(int)
      */
     public void setBufferSize(int arg0) {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
+     * @see javax.servlet.ServletResponse#setCharacterEncoding(java.lang.String)
+     */
+    public void setCharacterEncoding(String arg0) {
 
         throw new RuntimeException("Not implemented");
     }
@@ -272,6 +289,14 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
     }
 
     /**
+     * @see javax.servlet.http.HttpServletResponse#setStatus(int)
+     */
+    public void setStatus(int arg0) {
+
+        throw new RuntimeException("Not implemented");
+    }
+
+    /**
      * @see javax.servlet.http.HttpServletResponse#setStatus(int, java.lang.String)
      * @deprecated
      */
@@ -279,12 +304,4 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
 
         throw new RuntimeException("Not implemented");
     }
-
-    /**
-     * @see javax.servlet.http.HttpServletResponse#setStatus(int)
-     */
-    public void setStatus(int arg0) {
-
-        throw new RuntimeException("Not implemented");
-    }  
 }

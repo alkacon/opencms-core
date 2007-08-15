@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2007/08/15 08:32:10 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2007/08/15 14:26:19 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -479,8 +479,8 @@ public class CmsSetupDb extends Object {
             Class.forName(DbDriver).newInstance();
             m_con = DriverManager.getConnection(jdbcUrl, DbUser, DbPwd);
 
-            System.out.println("Connection established: " + m_con);
-            System.out.println("Connection autocommit: " + m_con.getAutoCommit());
+            System.out.print("OpenCms setup connection established: " + m_con);
+            System.out.println(" [autocommit: " + m_con.getAutoCommit() + "]");
 
         } catch (ClassNotFoundException e) {
             System.out.println("Class not found exception: " + e);

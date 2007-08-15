@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/util/Attic/TestCmsJspContentUtilBean.java,v $
- * Date   : $Date: 2007/08/14 13:12:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/15 14:26:19 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,11 +45,11 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Unit tests for the <code>{@link CmsJspContentUtilBean}</code>.<p>
+ * Unit tests for the <code>{@link CmsJspVfsAccessBean}</code>.<p>
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.2
  */
@@ -97,14 +97,14 @@ public class TestCmsJspContentUtilBean extends OpenCmsTestCase {
     }
 
     /**
-     * Tests for the {@link CmsJspContentUtilBean#getReadResource()} method.<p>
+     * Tests for the {@link CmsJspVfsAccessBean#getReadResource()} method.<p>
      * 
      * @throws Exception if the test fails
      */
     public void testReadResource() throws Exception {
 
         CmsObject cms = getCmsObject();
-        CmsJspContentUtilBean bean = new CmsJspContentUtilBean(cms);
+        CmsJspVfsAccessBean bean = CmsJspVfsAccessBean.create(cms);
 
         Map readResource = bean.getReadResource();
 
@@ -119,14 +119,14 @@ public class TestCmsJspContentUtilBean extends OpenCmsTestCase {
     }
 
     /**
-     * Tests for the {@link CmsJspContentUtilBean#getReadProperties()} method.<p>
+     * Tests for the {@link CmsJspVfsAccessBean#getReadProperties()} method.<p>
      * 
      * @throws Exception if the test fails
      */
     public void testReadProperties() throws Exception {
 
         CmsObject cms = getCmsObject();
-        CmsJspContentUtilBean bean = new CmsJspContentUtilBean(cms);
+        CmsJspVfsAccessBean bean = CmsJspVfsAccessBean.create(cms);
 
         Map readProperties = bean.getReadProperties();
         Map props = (Map)readProperties.get("/index.html");
