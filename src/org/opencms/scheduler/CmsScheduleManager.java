@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2007/08/13 16:29:54 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2007/08/16 14:18:17 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  * 
@@ -136,7 +136,7 @@ public class CmsScheduleManager implements Job {
      * The architecture is that this scheduler manager generates
      * a new (empty) instance of itself for every OpenCms job scheduled with Quartz. 
      * When the Quartz job is executed, the configured 
-     * implementaion of {@link I_CmsScheduledJob} will be called from this method.<p>
+     * implementation of {@link I_CmsScheduledJob} will be called from this method.<p>
      * 
      * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
      */
