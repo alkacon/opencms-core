@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2007/08/15 14:26:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/17 15:05:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.2
  * 
@@ -76,9 +76,9 @@ public final class CmsJspContentAccessValueWrapper {
          */
         public Object transform(Object input) {
 
-            return Boolean.valueOf(getContentValue().getDocument().hasValue(
+            return Boolean.valueOf(obtainContentValue().getDocument().hasValue(
                 createPath(input),
-                getContentValue().getLocale()));
+                obtainContentValue().getLocale()));
         }
     }
 
@@ -93,13 +93,13 @@ public final class CmsJspContentAccessValueWrapper {
          */
         public Object transform(Object input) {
 
-            List values = getContentValue().getDocument().getValues(createPath(input), getContentValue().getLocale());
+            List values = obtainContentValue().getDocument().getValues(createPath(input), obtainContentValue().getLocale());
             List result = new ArrayList();
             Iterator i = values.iterator();
             while (i.hasNext()) {
                 // must iterate values from XML content and create wrapper for each 
                 I_CmsXmlContentValue value = (I_CmsXmlContentValue)i.next();
-                result.add(createWrapper(getCmsObject(), value));
+                result.add(createWrapper(obtainCmsObject(), value));
             }
             return result;
         }
@@ -116,10 +116,10 @@ public final class CmsJspContentAccessValueWrapper {
          */
         public Object transform(Object input) {
 
-            I_CmsXmlContentValue value = getContentValue().getDocument().getValue(
+            I_CmsXmlContentValue value = obtainContentValue().getDocument().getValue(
                 createPath(input),
-                getContentValue().getLocale());
-            return createWrapper(getCmsObject(), value);
+                obtainContentValue().getLocale());
+            return createWrapper(obtainCmsObject(), value);
         }
     }
 
@@ -449,6 +449,32 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
+     * Returns the wrapped OpenCms user context.<p>
+     * 
+     * Note that this will return <code>null</code> when {@link #getExists()} returns <code>false</code>. 
+     * 
+     * @return the wrapped OpenCms user context
+     */
+    public CmsObject obtainCmsObject() {
+
+        return m_cms;
+    }
+
+    /**
+     * Returns the wrapped content value.<p>
+     * 
+     * Note that this will return <code>null</code> when {@link #getExists()} returns <code>false</code><p>.
+     * 
+     * Method name does not start with "get" to prevend using it in the expression language.<p>
+     * 
+     * @return the wrapped content value
+     */
+    public I_CmsXmlContentValue obtainContentValue() {
+
+        return m_contentValue;
+    }
+
+    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -478,29 +504,5 @@ public final class CmsJspContentAccessValueWrapper {
     protected String createPath(Object input) {
 
         return CmsXmlUtils.concatXpath(m_contentValue.getPath(), String.valueOf(input));
-    }
-
-    /**
-     * Returns the wrapped OpenCms user context.<p>
-     * 
-     * Note that this will return <code>null</code> when {@link #getExists()} returns <code>false</code>. 
-     * 
-     * @return the wrapped OpenCms user context
-     */
-    protected CmsObject getCmsObject() {
-
-        return m_cms;
-    }
-
-    /**
-     * Returns the wrapped content value.<p>
-     * 
-     * Note that this will return <code>null</code> when {@link #getExists()} returns <code>false</code>. 
-     * 
-     * @return the wrapped content value
-     */
-    protected I_CmsXmlContentValue getContentValue() {
-
-        return m_contentValue;
     }
 }

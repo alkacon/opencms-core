@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2007/08/15 14:26:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/08/17 15:05:22 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.2
  * 
@@ -111,7 +111,6 @@ public final class CmsJspElFunctions {
                 result = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             } catch (CmsException e1) {
                 // this should never fail since we can always create a "Guest" user 
-                result = null;
             }
         }
         return result;
@@ -267,7 +266,7 @@ public final class CmsJspElFunctions {
         if (input instanceof CmsJspContentAccessValueWrapper) {
             CmsJspContentAccessValueWrapper wrapper = (CmsJspContentAccessValueWrapper)input;
             if (wrapper.getExists()) {
-                return wrapper.getContentValue().getPlainText(wrapper.getCmsObject());
+                return wrapper.obtainContentValue().getPlainText(wrapper.obtainCmsObject());
             } else {
                 return "";
             }
