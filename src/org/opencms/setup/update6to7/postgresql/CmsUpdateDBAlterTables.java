@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/update6to7/postgresql/Attic/CmsUpdateDBAlterTables.java,v $
- * Date   : $Date: 2007/08/15 08:32:10 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/08/19 05:55:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.setup.CmsSetupDb;
  * @author Ivan Codarin
  * @author Georgi Naplatanov
  *
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.2
  */
@@ -84,14 +84,16 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.update6to7.generic
     private static final String DV_DROP = "-- droping the default value --";
 
     /**
-     * Array contains differences after upgrade and clean install of OpenCms 7.0.1 
+     * Array contains differences after upgrade and clean install of OpenCms 7.0.1.<p>
+     * <pre>
      *  [0] - table name
      *  [1] - field name
      *  [3] - database type of the field
      *  [4] - SET/DROP NULL
      *  [5] - DEFAULT VALUE information
+     * </pre>
      */
-    private static final String[][] m_dbArray = {
+    private static final String[][] DB_ARRAY = {
         {"cms_groups", "group_name", "varchar(128)", NO_CHANGE, DV_NO_CHANGE},
         {"cms_groups", "group_ou", "", SET_NOT_NULL, DV_NO_CHANGE},
 
@@ -181,21 +183,21 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.update6to7.generic
         String nullAcceptInfo;
         String defaultValue;
         String query;
-        for (int i = 0; i < m_dbArray.length; i++) {
-            tableName = m_dbArray[i][0];
-            fieldName = m_dbArray[i][1];
-            fieldType = m_dbArray[i][2];
-            nullAcceptInfo = m_dbArray[i][3];
-            defaultValue = m_dbArray[i][4];
+        for (int i = 0; i < DB_ARRAY.length; i++) {
+            tableName = DB_ARRAY[i][0];
+            fieldName = DB_ARRAY[i][1];
+            fieldType = DB_ARRAY[i][2];
+            nullAcceptInfo = DB_ARRAY[i][3];
+            defaultValue = DB_ARRAY[i][4];
 
-            if (fieldType != null && fieldType.length() > 0) {
+            if ((fieldType != null) && (fieldType.length() > 0)) {
                 initReplaceser(replacer, tableName, fieldName);
                 replacer.put(REPLACEMENT_FIELD_TYPE, fieldType);
                 query = readQuery(QUERY_ALTER_FIELD);
                 dbCon.updateSqlStatement(query, replacer, null);
             }
 
-            if (nullAcceptInfo != null && (!nullAcceptInfo.equals(NO_CHANGE))) {
+            if ((nullAcceptInfo != null) && (!nullAcceptInfo.equals(NO_CHANGE))) {
                 String q;
                 if (nullAcceptInfo.equals(DROP_NOT_NULL)) {
                     q = QUERY_DROP_NOT_NULL;
@@ -207,7 +209,7 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.update6to7.generic
                 dbCon.updateSqlStatement(query, replacer, null);
             }
 
-            if (defaultValue != null && defaultValue.length() > 0) {
+            if ((defaultValue != null) && (defaultValue.length() > 0)) {
                 initReplaceser(replacer, tableName, fieldName);
                 if (defaultValue.equals(DV_DROP)) {
                     query = readQuery(QUERY_DROP_DEFAULT_VALUE);
