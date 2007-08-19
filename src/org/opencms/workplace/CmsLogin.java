@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/08/13 16:30:07 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/08/19 05:56:19 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -783,7 +783,7 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("\">\n");
 
             if ((getOus().size() > 1)
-                && (getRequest().getAttribute(PARAM_PREDEF_OUFQN) == null || getRequest().getAttribute(
+                && ((getRequest().getAttribute(PARAM_PREDEF_OUFQN) == null) || getRequest().getAttribute(
                     PARAM_PREDEF_OUFQN).equals(CmsOrganizationalUnit.SEPARATOR))) {
                 // options
                 html.append("&nbsp;<input id='ouBtnId' class='loginbutton' type='button' value='");
@@ -825,7 +825,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TRADEMARKS_0));
         html.append("</div>\n");
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
-        html.append("&copy; 2006 Alkacon Software GmbH. ");
+        html.append("&copy; 2002 - 2007 Alkacon Software GmbH. ");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_RIGHTS_RESERVED_0));
         html.append("</div>\n");
 
@@ -867,7 +867,7 @@ public class CmsLogin extends CmsJspLoginBean {
     private Cookie getCookie(String name) {
 
         Cookie[] cookies = getRequest().getCookies();
-        for (int i = 0; cookies != null && i < cookies.length; i++) {
+        for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
             if (name.equalsIgnoreCase(cookies[i].getName())) {
                 return cookies[i];
             }
