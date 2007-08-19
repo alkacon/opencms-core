@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/08/13 16:30:09 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2007/08/19 05:59:01 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.67 $ 
+ * @version $Revision: 1.68 $ 
  * 
  * @since 6.0.0 
  */
@@ -348,13 +348,20 @@ public class CmsLinkManager {
     /**
      * Returns the online link for the given resource, with full server prefix.<p>
      * 
-     * Like
-     * <code>http://site.enterprise.com:8080/index.html</code>.<p>
+     * Like <code>http://site.enterprise.com:8080/index.html</code>.<p>
      * 
-     * @param cms the cms context
+     * The resource is assumed to be in the current site set in the OpenCms user context.<p>
+     * 
+     * Please note that this method will always return the link as it will appear in the "Online"
+     * project, that is after the resource has been published. In case you need a method that 
+     * just returns the link with the full server prefix, use {@link #getServerLink(CmsObject, String)}.<p>
+     * 
+     * @param cms the current OpenCms user context
      * @param resourceName the resource to generate the online link for
      * 
-     * @return the online link
+     * @return the online link for the given resource, with full server prefix
+     * 
+     * @see #getServerLink(CmsObject, String)
      */
     public String getOnlineLink(CmsObject cms, String resourceName) {
 
@@ -364,7 +371,7 @@ public class CmsLinkManager {
             CmsProject currentProject = cms.getRequestContext().currentProject();
             try {
                 cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
-                onlineLink = OpenCms.getLinkManager().substituteLink(cms, resourceName, currentSite.getSiteRoot());
+                onlineLink = substituteLink(cms, resourceName, currentSite.getSiteRoot());
             } finally {
                 cms.getRequestContext().setCurrentProject(currentProject);
             }
@@ -426,6 +433,31 @@ public class CmsLinkManager {
     public CmsExternalLinksValidationResult getPointerLinkValidationResult() {
 
         return m_pointerLinkValidationResult;
+    }
+
+    /**
+     * Returns the link for the given resource in the current project, with full server prefix.<p>
+     * 
+     * Like <code>http://site.enterprise.com:8080/index.html</code>.<p>
+     * 
+     * The resource is assumed to be in the current site set in the OpenCms user context.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param resourceName the resource to generate the online link for
+     * 
+     * @return the link for the given resource in the current project, with full server prefix
+     * 
+     * @see #getOnlineLink(CmsObject, String)
+     */
+    public String getServerLink(CmsObject cms, String resourceName) {
+
+        CmsSite currentSite = CmsSiteManager.getCurrentSite(cms);
+        String onlineLink = substituteLink(cms, resourceName, currentSite.getSiteRoot());
+        String serverPrefix = currentSite.getServerPrefix(cms, resourceName);
+        if (!onlineLink.startsWith(serverPrefix)) {
+            onlineLink = serverPrefix + onlineLink;
+        }
+        return onlineLink;
     }
 
     /**
