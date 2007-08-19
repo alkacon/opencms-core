@@ -35,6 +35,7 @@
 						<mapping suffix=".ppt" />
 						<mapping suffix=".doc" />
 						<mapping suffix=".xls" />
+						<mapping suffix=".jar" />
 					</mappings>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeImage" name="image" id="3">
