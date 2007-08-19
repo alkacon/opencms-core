@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2007/08/13 16:30:04 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/08/19 05:53:08 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -347,9 +347,9 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         result.add(new CmsSelectWidgetOption("0 30 8 ? * 4", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE3_0)));
         // 0 15 18 15 * ? (on the 20th day of the month at 6:15 pm)
         result.add(new CmsSelectWidgetOption("0 15 18 20 * ?", false, null, key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE4_0)));
-        // 0 45 15 ? * 1 2005-2006 (every Sunday from the year 2005 to 2006 at 3:45 pm)
+        // 0 45 15 ? * 1 2007-2009 (every Sunday from the year 2007 to 2009 at 3:45 pm)
         result.add(new CmsSelectWidgetOption(
-            "0 45 15 ? * 1 2005-2006",
+            "0 45 15 ? * 1 2007-2009",
             false,
             null,
             key(Messages.GUI_EDITOR_CRONJOB_EXAMPLE5_0)));
