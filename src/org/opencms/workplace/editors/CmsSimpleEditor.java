@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2007/08/13 16:29:43 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/08/19 05:54:30 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,10 +35,13 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -60,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,6 +142,11 @@ public class CmsSimpleEditor extends CmsEditor {
                 throw new CmsException(
                     Messages.get().container(Messages.ERR_INVALID_CONTENT_ENC_1, getParamResource()),
                     e);
+            }
+            if (OpenCms.getWorkplaceManager().isXmlContentAutoCorrect()
+                && (OpenCms.getResourceManager().getLoader(editFile) instanceof CmsXmlContentLoader)) {
+                // enable auto correction in case of XML content (if sent)
+                getCms().getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
             }
             // the file content might have been modified during the write operation
             CmsFile writtenFile = getCms().writeFile(editFile);
