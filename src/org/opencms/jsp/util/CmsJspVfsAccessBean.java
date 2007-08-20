@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspVfsAccessBean.java,v $
- * Date   : $Date: 2007/08/15 14:26:19 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/08/20 12:26:00 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,13 +49,28 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.2
  * 
  * @see CmsJspContentAccessBean
  */
 public final class CmsJspVfsAccessBean {
+
+    /**
+     * Provides Booleans that indicate if a specified resource exists in the OpenCms VFS,  
+     * the input is used as String for the resource name to read.<p>
+     */
+    public class CmsExistsResourceTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            return Boolean.valueOf(getReadResource().get(input) != null);
+        }
+    }
 
     /**
      * Transformer that loads all properties of a resource from the OpenCms VFS, 
@@ -98,8 +113,8 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
-     * Transformer that loads a resource from the OpenCms VFS, the input 
-     * is used as String for the resource name to read.<p>
+     * Transformer that loads a resource from the OpenCms VFS, 
+     * the input is used as String for the resource name to read.<p>
      */
     public class CmsResourceLoaderTransformer implements Transformer {
 
@@ -125,6 +140,9 @@ public final class CmsJspVfsAccessBean {
 
     /** The OpenCms context of the current user. */
     private CmsObject m_cms;
+
+    /** Contains booleans that indicate if a resource exists in the VFS. */
+    private Map m_existsResource;
 
     /** Properties loaded from the OpenCms VFS. */
     private Map m_properties;
@@ -179,6 +197,34 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
+     * Returns a map the lazily checks if a resources exists in the OpenCms VFS.<p>
+     * 
+     * Usage example on a JSP with the EL / JSTL:<pre>
+     * &lt;c:if test="${cms:util(pageContext).existsResource['/checkme.html']}" &gt;
+     *     The resource "/checkme.html" exists.
+     * &lt;/c:if&gt;
+     * </pre>
+     * 
+     * Usage example on a JSP with the <code>&lt;cms:contentaccess&gt;</code> tag:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     &lt;c:if test="${content.util.existsResource['/checkme.html']}" &gt;
+     *         The resource "/checkme.html" exists.
+     *     &lt;/c:if&gt;
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return a map the lazily reads resources from the OpenCms VFS
+     */
+    public Map getExistsResource() {
+
+        if (m_existsResource == null) {
+            // create lazy map only on demand
+            m_existsResource = LazyMap.decorate(new HashMap(), new CmsExistsResourceTransformer());
+        }
+        return m_existsResource;
+    }
+
+    /**
      * Flushes the internal caches of this VFS access bean.<p>
      * 
      * The VFS access bean uses lazy initialized Maps for all access, but once a value has been 
@@ -222,7 +268,7 @@ public final class CmsJspVfsAccessBean {
     public Map getReadProperties() {
 
         if (m_properties == null) {
-            // create a new lazy loading map that read the requested resource properties
+            // create lazy map only on demand
             m_properties = LazyMap.decorate(new HashMap(), new CmsPropertyLoaderTransformer(false));
         }
         return m_properties;
@@ -246,7 +292,7 @@ public final class CmsJspVfsAccessBean {
     public Map getReadPropertiesSearch() {
 
         if (m_propertiesSearch == null) {
-            // create a new lazy loading map that read the requested resource properties
+            // create lazy map only on demand
             m_propertiesSearch = LazyMap.decorate(new HashMap(), new CmsPropertyLoaderTransformer(true));
         }
         return m_propertiesSearch;
@@ -270,7 +316,7 @@ public final class CmsJspVfsAccessBean {
     public Map getReadResource() {
 
         if (m_resources == null) {
-            // create a new lazy loading map that read the requested resources
+            // create lazy map only on demand
             m_resources = LazyMap.decorate(new HashMap(), new CmsResourceLoaderTransformer());
         }
         return m_resources;
