@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/15 15:07:50 $
- * Version: $Revision: 1.852 $
+ * Date   : $Date: 2007/08/20 12:10:45 $
+ * Version: $Revision: 1.853 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,8 @@ OpenCms 7.0.2 - xxxxx, 2007
 - Updated year information in file comment headers to 2007
 ! Added <cms:contentaccess> tag and bean for easy access to XML contents on JSP using the EL with JSTL 
 ! Added JSP EL ${cms:...} function implementations that allow convenient access to OpenCms utility functions 
-! Added new option "searchsettings" to XML content handler, used to reduce visibility of fields in search "content" 
+! Added new option "searchsettings" to XML content handler, used to reduce visibility of fields in search "content"
+! Added support for multiple mappings of the same value to the default XML content handler
 ! Added update wizard for postgresql
 
 OpenCms 7.0.1 - July 11, 2007

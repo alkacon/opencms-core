@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2007/08/13 16:30:14 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2007/08/20 12:10:45 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -1266,6 +1266,12 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(titleStr, titleProperty.getValue());
         assertEquals(titleStr, titleProperty.getStructureValue());
         assertNull(titleProperty.getResourceValue());
+
+        // check multiple mappings
+        CmsProperty myTitleProperty = cms.readPropertyObject(resourcename, "MyTitle", false);
+        assertEquals(titleStr, myTitleProperty.getValue());
+        assertEquals(titleStr, myTitleProperty.getStructureValue());
+        assertNull(myTitleProperty.getResourceValue());
 
         navImageProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVIMAGE, false);
         assertEquals(navImageStr, navImageProperty.getValue());

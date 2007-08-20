@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2007/08/20 12:10:45 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  */
@@ -337,14 +337,35 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
-     * Returns the mapping defined for the given element xpath.<p>
+     * Returns the first mapping defined for the given element xpath.<p>
+     * 
+     * Since OpenCms version 7.0.2, multiple mappings for an element are possible, so 
+     * use {@link #getMapping(String)} instead.<p>
      * 
      * @param elementName the element xpath to look up the mapping for
+     * 
      * @return the mapping defined for the given element xpath
+     * 
+     * @deprecated use {@link #getMappings(String)} instead to recieve all mappings
      */
     public String getMapping(String elementName) {
 
-        return (String)m_elementMappings.get(elementName);
+        String[] mappings = getMappings(elementName);
+        return (mappings == null) ? null : mappings[0];
+    }
+
+    /**
+     * Returns the all mappings defined for the given element xpath.<p>
+     * 
+     * @since 7.0.2
+     * 
+     * @param elementName the element xpath to look up the mapping for
+     * 
+     * @return the mapping defined for the given element xpath
+     */
+    public String[] getMappings(String elementName) {
+
+        return (String[])m_elementMappings.get(elementName);
     }
 
     /**
@@ -634,30 +655,30 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             throw new CmsXmlException(Messages.get().container(Messages.ERR_XMLCONTENT_RESOLVE_FILE_NOT_FOUND_0));
         }
 
-        // get the mapping for the element name        
-        String mapping = getMapping(value.getPath());
+        // get the mappings for the element name        
+        String[] mappings = getMappings(value.getPath());
+        if (mappings == null) {
+            // nothing to do if we have no mappings at all
+            return;
+        }
+        // create OpenCms user context initialized with "/" as site root to read all siblings
+        CmsObject rootCms = OpenCms.initCmsObject(cms);
+        rootCms.getRequestContext().setSiteRoot("/");
+        // read all siblings of the file
+        List siblings = rootCms.readSiblings(content.getFile().getRootPath(), CmsResourceFilter.IGNORE_EXPIRATION);
 
-        if (CmsStringUtil.isNotEmpty(mapping)) {
+        // since 7.0.2 multiple mappings are possible
+        for (int m = mappings.length - 1; m >= 0; m--) {
 
-            // get root path of the file 
-            String rootPath = content.getFile().getRootPath();
-            String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-
-            try {
-                // try / catch to ensure site root is always restored
-                cms.getRequestContext().setSiteRoot("/");
-
-                // read all siblings of the file
-                List siblings = cms.readSiblings(rootPath, CmsResourceFilter.IGNORE_EXPIRATION);
-
-                // for multilanguage mappings, we need to ensure 
-                // a) all siblings are handled
-                // b) only the "right" locale is mapped to a sibling
-
+            // for multiple language mappings, we need to ensure 
+            // a) all siblings are handled
+            // b) only the "right" locale is mapped to a sibling
+            String mapping = mappings[m];
+            if (CmsStringUtil.isNotEmpty(mapping)) {
                 for (int i = (siblings.size() - 1); i >= 0; i--) {
                     // get filename
                     String filename = ((CmsResource)siblings.get(i)).getRootPath();
-                    Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, filename);
+                    Locale locale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, filename);
 
                     if (!locale.equals(value.getLocale())) {
                         // only map property if the locale fits
@@ -665,7 +686,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     }
 
                     // get the string value of the current node
-                    String stringValue = value.getStringValue(cms);
+                    String stringValue = value.getStringValue(rootCms);
                     if (mapping.startsWith(MAPTO_PROPERTY_LIST) && (value.getIndex() == 0)) {
 
                         boolean mapToShared;
@@ -691,7 +712,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         StringBuffer result = new StringBuffer(values.size() * 64);
                         while (j.hasNext()) {
                             I_CmsXmlContentValue val = (I_CmsXmlContentValue)j.next();
-                            result.append(val.getStringValue(cms));
+                            result.append(val.getStringValue(rootCms));
                             if (j.hasNext()) {
                                 result.append(CmsProperty.VALUE_LIST_DELIMITER);
                             }
@@ -706,7 +727,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                             p = new CmsProperty(property, result.toString(), null);
                         }
                         // write the created list string value in the selected property
-                        cms.writePropertyObject(filename, p);
+                        rootCms.writePropertyObject(filename, p);
                         if (mapToShared) {
                             // special case: shared mappings must be written only to one sibling, end loop
                             i = 0;
@@ -740,7 +761,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                             p = new CmsProperty(property, stringValue, null);
                         }
                         // just store the string value in the selected property
-                        cms.writePropertyObject(filename, p);
+                        rootCms.writePropertyObject(filename, p);
                         if (mapToShared) {
                             // special case: shared mappings must be written only to one sibling, end loop
                             i = 0;
@@ -780,10 +801,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         }
                     }
                 }
-
-            } finally {
-                // restore the saved site root
-                cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
     }
@@ -993,7 +1010,17 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
         // store mappings as xpath to allow better control about what is mapped
         String xpath = CmsXmlUtils.createXpath(elementName, 1);
-        m_elementMappings.put(xpath, mapping);
+        // since 7.0.2 multiple mappings are possible, so the mappings are stored in an array
+        String[] values = (String[])m_elementMappings.get(xpath);
+        if (values == null) {
+            values = new String[] {mapping};
+        } else {
+            String[] newValues = new String[values.length + 1];
+            System.arraycopy(values, 0, newValues, 0, values.length);
+            newValues[values.length] = mapping;
+            values = newValues;
+        }
+        m_elementMappings.put(xpath, values);
     }
 
     /**
@@ -1491,36 +1518,33 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     protected void removeEmptyMappings(CmsObject cms, CmsXmlContent content) throws CmsException {
 
-        String rootPath = null;
         List siblings = null;
+        CmsObject rootCms = null;
 
         Iterator mappings = m_elementMappings.entrySet().iterator();
         while (mappings.hasNext()) {
             Map.Entry e = (Map.Entry)mappings.next();
-            String path = e.getKey().toString();
-            String mapping = e.getValue().toString();
-            if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
-
-                // get root path of the file
-                if (rootPath == null) {
-                    rootPath = content.getFile().getRootPath();
-                }
-
-                String storedSiteRoot = cms.getRequestContext().getSiteRoot();
-                try {
-                    // try / catch to ensure site root is always restored
-                    cms.getRequestContext().setSiteRoot("/");
-
-                    // read all siblings of the file
-                    if (siblings == null) {
-                        siblings = cms.readSiblings(rootPath, CmsResourceFilter.IGNORE_EXPIRATION);
-                    }
+            String path = String.valueOf(e.getKey());
+            String[] values = (String[])e.getValue();
+            if (values == null) {
+                // nothing to do if we have no mappings at all
+                continue;
+            }
+            if ((siblings == null) || (rootCms == null)) {
+                // create OpenCms user context initialized with "/" as site root to read all siblings
+                rootCms = OpenCms.initCmsObject(cms);
+                rootCms.getRequestContext().setSiteRoot("/");
+                siblings = rootCms.readSiblings(content.getFile().getRootPath(), CmsResourceFilter.IGNORE_EXPIRATION);
+            }
+            for (int v = values.length - 1; v >= 0; v--) {
+                String mapping = values[v];
+                if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
 
                     for (int i = 0; i < siblings.size(); i++) {
 
-                        // get sibline filename and locale
+                        // get siblings filename and locale
                         String filename = ((CmsResource)siblings.get(i)).getRootPath();
-                        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, filename);
+                        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(rootCms, filename);
 
                         if (!content.hasLocale(locale)) {
                             // only remove property if the locale fits
@@ -1540,12 +1564,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                             property = mapping.substring(MAPTO_PROPERTY.length());
                         }
                         // delete the property value for the not existing node
-                        cms.writePropertyObject(filename, new CmsProperty(property, CmsProperty.DELETE_VALUE, null));
+                        rootCms.writePropertyObject(filename, new CmsProperty(property, CmsProperty.DELETE_VALUE, null));
                     }
-
-                } finally {
-                    // restore the saved site root
-                    cms.getRequestContext().setSiteRoot(storedSiteRoot);
                 }
             }
         }
