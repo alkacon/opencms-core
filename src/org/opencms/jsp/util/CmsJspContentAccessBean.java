@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessBean.java,v $
- * Date   : $Date: 2007/08/15 14:26:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/20 12:02:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.2
  * 
@@ -281,6 +281,17 @@ public class CmsJspContentAccessBean {
     public CmsJspContentAccessBean() {
 
         // must call init() manually later
+    }
+
+    /**
+     * Creates a content access bean based on a Resource, using the current request context locale.<p>
+     * 
+     * @param cms the OpenCms context of the current user
+     * @param resource the resource to create the content from
+     */
+    public CmsJspContentAccessBean(CmsObject cms, CmsResource resource) {
+
+        this(cms, cms.getRequestContext().getLocale(), resource);
     }
 
     /**
