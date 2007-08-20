@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsRebuildReport.java,v $
- * Date   : $Date: 2007/08/13 16:30:01 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/20 10:17:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -158,7 +158,7 @@ public class CmsRebuildReport extends A_CmsListReport {
     }
 
     /**
-     * Extracts all modules to deelte form the module parameter.<p>
+     * Extracts all modules to delete form the module parameter.<p>
      * @return list of module names
      */
     private List extractIndexNames() {
