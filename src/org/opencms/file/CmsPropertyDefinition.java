@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2007/08/13 16:29:58 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/08/20 15:12:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 6.0.0 
  */
@@ -144,9 +144,6 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property for the current locale. */
     public static final String PROPERTY_LOCALE = "locale";
-
-    /** Property for the default locales. */
-    public static final String PROPERTY_LOCALES_DEFAULT = "locales.default";
 
     /** Property for the login form. */
     public static final String PROPERTY_LOGIN_FORM = "login-form";

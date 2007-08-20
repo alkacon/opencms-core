@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2007/08/13 16:29:42 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2007/08/20 15:12:41 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -86,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.74 $ 
+ * @version $Revision: 1.75 $ 
  * 
  * @since 6.0.0 
  */
@@ -205,17 +204,32 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         // save eventually changed content of the editor
         Locale oldLocale = CmsLocaleManager.getLocale(getParamOldelementlanguage());
+        Locale newLocale = getElementLocale();
         try {
             setEditorValues(oldLocale);
             if (!m_content.validate(getCms()).hasErrors(oldLocale)) {
                 // no errors found in content
-                if (!m_content.hasLocale(getElementLocale())) {
-                    // create new element if selected language element is not present
-                    try {
-                        m_content.addLocale(getCms(), getElementLocale());
-                    } catch (CmsXmlException e) {
-                        if (LOG.isErrorEnabled()) {
-                            LOG.error(e.getLocalizedMessage(), e);
+                if (!m_content.hasLocale(newLocale)) {
+                    // check if we should copy the content from a default locale
+                    boolean addNew = true;
+                    List locales = OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource());
+                    if (locales.size() > 1) {
+                        // default locales have been set, try to find a match
+                        try {
+                            m_content.copyLocale(locales, newLocale);
+                            addNew = false;
+                        } catch (CmsXmlException e) {
+                            // no matching default locale was available, we will create a new one later
+                        }
+                    }
+                    if (addNew) {
+                        // create new element if selected language element is not present
+                        try {
+                            m_content.addLocale(getCms(), newLocale);
+                        } catch (CmsXmlException e) {
+                            if (LOG.isErrorEnabled()) {
+                                LOG.error(e.getLocalizedMessage(), e);
+                            }
                         }
                     }
                 }
@@ -974,27 +988,28 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     protected void initElementLanguage() {
 
         // get the default locale for the resource
-        Locale requiredLocale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(
-            0);
+        List locales = OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource());
+        Locale locale = (Locale)locales.get(0);
 
-        if ((m_content != null) && (m_content.getLocales().size() > 0) && !m_content.hasLocale(requiredLocale)) {
-            // required locale not available, check if an existing default locale should be copied as "template"
-            try {
-                String defaultLocales = getCms().readPropertyObject(
-                    getParamResource(),
-                    CmsPropertyDefinition.PROPERTY_LOCALES_DEFAULT,
-                    true).getValue("");
-                // a list of possible default locales has been set as propertry, try to find a match
-                m_content.copyLocale(CmsLocaleManager.getLocales(defaultLocales), requiredLocale);
-                writeContent();
-                // no exception means a match was found
-            } catch (CmsException e) {
-                // either property could not be read, or no match was found for the required locale
-                // use the first Locale that can be found
-                requiredLocale = (Locale)m_content.getLocales().get(0);
+        if (m_content != null) {
+            // to copy anything we need at least one locale
+            if ((locales.size() > 1) && (m_content.getLocales().size() > 0) && !m_content.hasLocale(locale)) {
+                // required locale not available, check if an existing default locale should be copied as "template"
+                try {
+                    // a list of possible default locales has been set as property, try to find a match                    
+                    m_content.copyLocale(locales, locale);
+                    writeContent();
+                } catch (CmsException e) {
+                    // no match was found for the required locale
+                }
+
+            }
+            if (!m_content.hasLocale(locale)) {
+                // value may have changed because of the copy operation
+                locale = (Locale)m_content.getLocales().get(0);
             }
         }
-        setParamElementlanguage(requiredLocale.toString());
+        setParamElementlanguage(locale.toString());
     }
 
     /**
@@ -1448,7 +1463,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                             new Object[] {locale.getLanguage()}));
                         result.append("</td><td>&nbsp;");
                         result.append("</td></tr>\n");
-                        
+
                         result.append("<tr><td colspan=\"2\">&nbsp;</td>");
                         result.append("<td class=\"xmlTdError\">");
                         result.append("<ul>");
@@ -1469,7 +1484,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                             result.append(errorMsg);
                             result.append("</li>\n");
                         }
-                        
+
                         result.append("</ul>");
                         result.append("</td><td>&nbsp;");
                         result.append("</td></tr>\n");

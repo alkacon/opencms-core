@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2007/08/20 13:06:59 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2007/08/20 15:12:40 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 6.0.0 
  */
@@ -689,7 +689,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         if (updateList == null) {
             // all indexes need to be updated
-            OpenCms.getSearchManager().rebuildAllIndexes(report);
+            manager.rebuildAllIndexes(report);
         } else {
             // rebuild only the selected indexes
             manager.rebuildIndexes(updateList, report);

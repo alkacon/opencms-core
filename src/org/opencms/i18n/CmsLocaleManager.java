@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2007/08/13 16:30:09 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2007/08/20 15:12:41 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,12 +56,13 @@ import org.apache.commons.logging.Log;
 /**
  * Manages the locales configured for this OpenCms installation.<p>
  * 
- * Locale configuration is done in <code>opencms.xml</code>.<p> 
+ * Locale configuration is done in the configuration file <code>opencms-system.xml</code>
+ * in the <code>opencms/system/internationalization</code> node and it's sub-nodes.<p>
  * 
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,11 +138,11 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the default locale configured in <code>opencms-system.xml</code>.<p>
+     * Returns the default locale configured in <code>opencms-system.xml</code>, 
+     * that is the first locale from the list provided
+     * in the <code>opencms/system/internationalization/localesdefault</code> node.<p>
      *
-     * The default locale is the first locale int the list of configured default locales.
-     *
-     * @return the default locale
+     * @return the default locale configured in <code>opencms-system.xml</code>
      */
     public static Locale getDefaultLocale() {
 
@@ -527,7 +528,21 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the "best" default locale for the given resource.<p>
+     * Returns the "the" default locale for the given resource.<p>
+     * 
+     * It's possible to override the system default (see {@link #getDefaultLocale()}) by setting the property 
+     * <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> to a comma separated list of locale names.
+     * This property is inherited from the parent folders.
+     * This method will return the first locale from that list.<p>
+     * 
+     * The default locale must be contained in the set of configured available locales, 
+     * see {@link #getAvailableLocales()}.
+     * In case an invalid locale has been set with the property, this locale is ignored and the 
+     * same result as {@link #getDefaultLocale()} is returned.<p>
+     * 
+     * In case the property <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> has not been set
+     * on the resource or a parent folder,
+     * this method returns the same result as {@link #getDefaultLocale()}.<p>
      * 
      * @param cms the current cms permission object
      * @param resourceName the name of the resource
@@ -552,10 +567,14 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * Returns the list of default {@link Locale}s configured in <code>opencms-system.xml</code>,
      * in the <code>opencms/system/internationalization/localesdefault</code> node.<p>
      * 
-     * The default locales must be a subset of the available locales, see {@link #getAvailableLocales()}.<p>
+     * Since the default locale is always available, the result list will always contain at least one Locale.<p>
      * 
-     * It's possible to override the system default by setting the propery 
-     * <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> to a comma separated list of locale names.<p>
+     * It's possible to override the system default by setting the property 
+     * <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> to a comma separated list of locale names.
+     * This property is inherited from the parent folders.<p>
+     * 
+     * The default locales must be a subset of the configured available locales, see {@link #getAvailableLocales()}.
+     * In case an invalid locale has been set with the property, this locale is ignored.<p>
      * 
      * The default locale names are used as a fallback mechanism in case a locale is requested 
      * that can not be found, for example when delivering content form an XML content.<p>
@@ -579,8 +598,21 @@ public class CmsLocaleManager implements I_CmsEventListener {
     /**
      * Returns an array of default locales for the given resource.<p>
      * 
-     * Use this method in case you need to get all available default options for a resource,
-     * if you just need the "best" default locale for a resource, 
+     * Since the default locale is always available, the result list will always contain at least one Locale.<p>
+     * 
+     * It's possible to override the system default (see {@link #getDefaultLocales()}) by setting the property 
+     * <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> to a comma separated list of locale names.
+     * This property is inherited from the parent folders.<p>
+     * 
+     * The default locales must be a subset of the configured available locales, see {@link #getAvailableLocales()}.
+     * In case an invalid locale has been set with the property, this locale is ignored.<p>
+     * 
+     * In case the property <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> has not been set
+     * on the resource or a parent folder,
+     * this method returns the same result as {@link #getDefaultLocales()}.<p>
+     * 
+     * Use this method in case you need to get all configured default options for a resource,
+     * if you just need the "the" default locale for a resource, 
      * use <code>{@link #getDefaultLocale(CmsObject, String)}</code>.<p>
      * 
      * @param cms the current cms permission object
@@ -604,7 +636,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
             result = getAvailableLocales(defaultNames);
         }
         if ((result == null) || (result.size() == 0)) {
-            return m_defaultLocales;
+            return getDefaultLocales();
         } else {
             return result;
         }
