@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2007/08/20 10:54:22 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2007/08/20 13:06:59 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 6.0.0 
  */
@@ -332,15 +332,30 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public void cmsEvent(CmsEvent event) {
 
         switch (event.getType()) {
-            case I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX:
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_REBUILD_SEARCHINDEX_0));
+            case I_CmsEventListener.EVENT_REBUILD_SEARCHINDEXES:
+                List indexNames = null;
+                if ((event.getData() != null)
+                    && CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)event.getData().get(
+                        I_CmsEventListener.KEY_INDEX_NAMES))) {
+                    indexNames = CmsStringUtil.splitAsList((String)event.getData().get(
+                        I_CmsEventListener.KEY_INDEX_NAMES), ",", true);
                 }
                 try {
-                    rebuildAllIndexes(getEventReport(event));
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_EVENT_REBUILD_SEARCHINDEX_1,
+                            indexNames == null ? "" : CmsStringUtil.collectionAsString(indexNames, ",")));
+                    }
+                    if (indexNames == null) {
+                        rebuildAllIndexes(getEventReport(event));
+                    } else {
+                        rebuildIndexes(indexNames, getEventReport(event));
+                    }
                 } catch (CmsException e) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().getBundle().key(Messages.ERR_EVENT_REBUILD_SEARCHINDEX_0), e);
+                        LOG.error(Messages.get().getBundle().key(
+                            Messages.ERR_EVENT_REBUILD_SEARCHINDEX_1,
+                            indexNames == null ? "" : CmsStringUtil.collectionAsString(indexNames, ",")), e);
                     }
                 }
                 break;
@@ -615,7 +630,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         OpenCms.addCmsEventListener(this, new int[] {
             I_CmsEventListener.EVENT_CLEAR_CACHES,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-            I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX});
+            I_CmsEventListener.EVENT_REBUILD_SEARCHINDEXES});
     }
 
     /**
@@ -674,9 +689,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         if (updateList == null) {
             // all indexes need to be updated
-            OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX, Collections.singletonMap(
-                I_CmsEventListener.KEY_REPORT,
-                report));
+            OpenCms.getSearchManager().rebuildAllIndexes(report);
         } else {
             // rebuild only the selected indexes
             manager.rebuildIndexes(updateList, report);
@@ -1489,7 +1502,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     private I_CmsReport getEventReport(CmsEvent event) {
 
-        I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
+        I_CmsReport report = null;
+        if (event.getData() != null) {
+            report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
+        }
         if (report == null) {
             report = new CmsLogReport(Locale.ENGLISH, getClass());
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/20 12:10:45 $
- * Version: $Revision: 1.853 $
+ * Date   : $Date: 2007/08/20 13:09:46 $
+ * Version: $Revision: 1.854 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 ! Added new option "searchsettings" to XML content handler, used to reduce visibility of fields in search "content"
 ! Added support for multiple mappings of the same value to the default XML content handler
 ! Added update wizard for postgresql
+! Added rebuild search index event
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog

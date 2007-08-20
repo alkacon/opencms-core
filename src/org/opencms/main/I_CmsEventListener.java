@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2007/08/20 10:54:22 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2007/08/20 13:06:59 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ package org.opencms.main;
  * Implement this interface in case your class has to react 
  * to CmsEvents that are thrown by system.<p>
  * 
- * In order to recieve system events, your class must register with 
+ * In order to receive system events, your class must register with 
  * the OpenCms event mechanism. This can be done in the constructor of a class
  * like this:
  * <pre>
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  * 
@@ -216,14 +216,15 @@ public interface I_CmsEventListener {
     int EVENT_PUBLISH_PROJECT = 2;
 
     /**
-     * Event "rebuild all search indexes".<p>
+     * Event "rebuild search indexes".<p>
      * 
      * Event data:
      * <ul>
      * <li><code>{@link #KEY_REPORT}</code>: a <code>{@link org.opencms.report.I_CmsReport}</code> to print output messages to</li>
+     * <li><code>{@link #KEY_INDEX_NAMES}</code>: a comma separated list of names of the search indexes to rebuild, empty for all indexes</li>
      * </ul>
      */
-    int EVENT_REBUILD_SEARCHINDEX = 32;
+    int EVENT_REBUILD_SEARCHINDEXES = 32;
 
     /** 
      * Event "all properties (and so the resource itself, too) have been modified".<p>
@@ -310,6 +311,9 @@ public interface I_CmsEventListener {
 
     /** Key name for passing a database context in the data map. */
     String KEY_DBCONTEXT = "dbContext";
+
+    /** Key name for passing a comma separated list of search index names in the data map. */
+    String KEY_INDEX_NAMES = "indexNames";
 
     /** Key name for passing a project id in the data map. */
     String KEY_PROJECTID = "projectId";

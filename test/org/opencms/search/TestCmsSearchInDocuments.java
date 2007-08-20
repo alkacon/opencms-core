@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchInDocuments.java,v $
- * Date   : $Date: 2007/08/20 10:54:22 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/08/20 13:06:59 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
@@ -61,7 +60,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
@@ -179,9 +178,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         // update the search indexes
         I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
-        OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX, Collections.singletonMap(
-            I_CmsEventListener.KEY_REPORT,
-            report));
+        // this call does not throws the rebuild index event
+        OpenCms.getSearchManager().rebuildAllIndexes(report);
 
         // perform the same search again in the online index - must be same result as before
         searchBean.setIndex(INDEX_ONLINE);
@@ -268,9 +266,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         // update the search indexes
         I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
-        OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX, Collections.singletonMap(
-            I_CmsEventListener.KEY_REPORT,
-            report));
+        // this call does not throws the rebuild index event
+        OpenCms.getSearchManager().rebuildAllIndexes(report);
 
         // perform the same search again in the online index - must be same result as before
         searchBean.setIndex(INDEX_ONLINE);
@@ -322,9 +319,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         cms.unlockResource(path3);
 
         // update the search indexes
-        OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX, Collections.singletonMap(
-            I_CmsEventListener.KEY_REPORT,
-            report));
+        // this call does not throws the rebuild index event
+        OpenCms.getSearchManager().rebuildAllIndexes(report);
 
         // perform the same search again in the online index - must be same result as before
         searchBean.setIndex(INDEX_ONLINE);
@@ -428,9 +424,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         // update the search indexes
         I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
-        OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX, Collections.singletonMap(
-            I_CmsEventListener.KEY_REPORT,
-            report));
+        // this call does not throws the rebuild index event
+        OpenCms.getSearchManager().rebuildAllIndexes(report);
 
         // check the online project
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));

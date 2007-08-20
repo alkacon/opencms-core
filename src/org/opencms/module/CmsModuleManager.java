@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2007/08/13 16:30:05 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2007/08/20 13:06:59 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,8 @@ import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -70,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -557,7 +559,7 @@ public class CmsModuleManager {
             for (int i = 0; i < projectFiles.size(); i++) {
                 try {
                     String resourceName = (String)projectFiles.get(i);
-                    if (cms.existsResource(resourceName)) {
+                    if (cms.existsResource(resourceName, CmsResourceFilter.ALL)) {
                         cms.copyResourceToProject(resourceName);
                     }
                 } catch (CmsException e) {
@@ -582,23 +584,31 @@ public class CmsModuleManager {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));
                     }
-                    if (cms.existsResource(currentResource)) {
+                    CmsResource resource = null;
+                    try {
+                        cms.readResource(currentResource, CmsResourceFilter.ALL);
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        // ignore
+                    }
+                    if (resource != null) {
                         CmsLock lock = cms.getLock(currentResource);
                         if (lock.isUnlocked()) {
                             // lock the resource
                             cms.lockResource(currentResource);
-                        } if (lock.isLockableBy(cms.getRequestContext().currentUser())) {
+                        } else if (lock.isLockableBy(cms.getRequestContext().currentUser())) {
                             // steal the resource
                             cms.changeLock(currentResource);
                         }
-                        // delete the resource
-                        cms.deleteResource(currentResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                        if (!resource.getState().isDeleted()) {
+                            // delete the resource
+                            cms.deleteResource(currentResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                        }
                         // update the report
                         report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.FORMAT_NOTE);
                         report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             currentResource));
-                        if (cms.existsResource(currentResource)) {
+                        if (!resource.getState().isNew()) {
                             // unlock the resource (so it gets deleted with next publish)
                             cms.unlockResource(currentResource);
                         }
