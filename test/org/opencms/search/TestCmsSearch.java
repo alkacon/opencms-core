@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/08/20 10:54:22 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
@@ -63,7 +64,7 @@ import junit.framework.TestSuite;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -152,7 +153,9 @@ public class TestCmsSearch extends OpenCmsTestCase {
     public void testCmsSearchIndexer() throws Throwable {
 
         I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
-        OpenCms.getSearchManager().rebuildAllIndexes(report);
+        OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX, Collections.singletonMap(
+            I_CmsEventListener.KEY_REPORT,
+            report));
     }
 
     /**
@@ -401,7 +404,9 @@ public class TestCmsSearch extends OpenCmsTestCase {
         OpenCms.getSearchManager().addSearchIndex(searchIndex);
 
         I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
-        OpenCms.getSearchManager().rebuildAllIndexes(report);
+        OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX, Collections.singletonMap(
+            I_CmsEventListener.KEY_REPORT,
+            report));
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();

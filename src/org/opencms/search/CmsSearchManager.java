@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2007/08/15 14:25:48 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2007/08/20 10:54:22 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 6.0.0 
  */
@@ -203,7 +203,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     private long m_timeout;
 
     /**
-     * Default constructer when called as cron job.<p>
+     * Default constructor when called as cron job.<p>
      */
     public CmsSearchManager() {
 
@@ -332,6 +332,18 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public void cmsEvent(CmsEvent event) {
 
         switch (event.getType()) {
+            case I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX:
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_REBUILD_SEARCHINDEX_0));
+                }
+                try {
+                    rebuildAllIndexes(getEventReport(event));
+                } catch (CmsException e) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(Messages.get().getBundle().key(Messages.ERR_EVENT_REBUILD_SEARCHINDEX_0), e);
+                    }
+                }
+                break;
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_CLEAR_CACHES_0));
@@ -343,8 +355,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
                 }
-                I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
-                updateAllIndexes(m_adminCms, publishHistoryId, report);
+                updateAllIndexes(m_adminCms, publishHistoryId, getEventReport(event));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_EVENT_PUBLISH_PROJECT_FINISHED_1,
@@ -590,7 +601,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         // make sure the site root is the root site
         m_adminCms.getRequestContext().setSiteRoot("/");
 
-        // create the extration result cache
+        // create the extraction result cache
         m_extractionResultCache = new CmsExtractionResultCache(
             OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(getDirectory()),
             "/extractCache");
@@ -603,7 +614,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         // register this object as event listener
         OpenCms.addCmsEventListener(this, new int[] {
             I_CmsEventListener.EVENT_CLEAR_CACHES,
-            I_CmsEventListener.EVENT_PUBLISH_PROJECT});
+            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
+            I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX});
     }
 
     /**
@@ -662,7 +674,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         if (updateList == null) {
             // all indexes need to be updated
-            manager.rebuildAllIndexes(report);
+            OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX, Collections.singletonMap(
+                I_CmsEventListener.KEY_REPORT,
+                report));
         } else {
             // rebuild only the selected indexes
             manager.rebuildIndexes(updateList, report);
@@ -1463,6 +1477,23 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
         // clean up the extraction result cache
         m_extractionResultCache.cleanCache(m_extractionCacheMaxAge);
+    }
+
+    /**
+     * Returns the report in the given event data, if <code>null</code>
+     * a new log report is used.<p>
+     * 
+     * @param event the event to get the report for
+     * 
+     * @return the report
+     */
+    private I_CmsReport getEventReport(CmsEvent event) {
+
+        I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
+        if (report == null) {
+            report = new CmsLogReport(Locale.ENGLISH, getClass());
+        }
+        return report;
     }
 
     /**

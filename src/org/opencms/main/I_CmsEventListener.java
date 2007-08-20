@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2007/08/20 10:54:22 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  * 
@@ -69,25 +69,81 @@ package org.opencms.main;
  */
 public interface I_CmsEventListener {
 
-    /** Key name for passing a report in the data map. */
-    String KEY_REPORT = "report";
+    /**
+     * Event "a project is to published" (but has not yet been published).<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li><code>{@link #KEY_REPORT}</code>: a <code>{@link org.opencms.report.I_CmsReport}</code> to print output messages to</li>
+     * <li><code>{@link #KEY_PUBLISHLIST}</code>: a <code>{@link org.opencms.db.CmsPublishList}</code> that contains the resources that are to be published</li>
+     * <li><code>{@link #KEY_PROJECTID}</code>: the ID of the project that is to be published</li>
+     * <li><code>{@link #KEY_DBCONTEXT}</code>: the current users database context</li>
+     * </ul>
+     * 
+     * @see org.opencms.publish.CmsPublishManager#publishProject(org.opencms.file.CmsObject)
+     * @see #EVENT_PUBLISH_PROJECT
+     */
+    int EVENT_BEFORE_PUBLISH_PROJECT = 3;
 
-    /** Key name for passing a publish history id in the data map. */
-    String KEY_PUBLISHID = "publishHistoryId";
+    /** 
+     * Event "all caches must be cleared".<p>
+     *
+     * Not thrown by the core classes, but might be used in modules.
+     */
+    int EVENT_CLEAR_CACHES = 5;
 
-    /** Key name for passing a publish list in the data map. */
-    String KEY_PUBLISHLIST = "publishList";
+    /** 
+     * Event "clear all offline caches".<p>
+     * 
+     * Event data: none
+     */
+    int EVENT_CLEAR_OFFLINE_CACHES = 16;
 
-    /** Key name for passing a project id in the data map. */
-    String KEY_PROJECTID = "projectId";
+    /** 
+     * Event "clear all online caches".<p>
+     * 
+     * Event data: none
+     */
+    int EVENT_CLEAR_ONLINE_CACHES = 17;
 
-    /** Key name for passing a database context in the data map. */
-    String KEY_DBCONTEXT = "dbContext";
+    /** 
+     * Event "all caches related to user and groups must be cleared".<p>
+     *
+     * Not thrown by the core classes, but might be used in modules.
+     */
+    int EVENT_CLEAR_PRINCIPAL_CACHES = 6;
+
+    /** 
+     * Event "the FlexCache must be cleared".<p>
+     * 
+     * This is thrown on the "FlexCache Administration" page if you press
+     * one ot the "Clear cache" buttons, or if you use the <code>_flex=clearcache</code>
+     * request parameter.
+     */
+    int EVENT_FLEX_CACHE_CLEAR = 9;
+
+    /** 
+     * Event "delete all JSP pages in the "real" file system 
+     * (so they will be rebuild next time the JSP is requested)".<p>
+     * 
+     * This is thrown on the "FlexCache Administration" page if you press
+     * the button "Purge JSP repository", or if you use the <code>_flex=purge</code>
+     * request parameter.
+     */
+    int EVENT_FLEX_PURGE_JSP_REPOSITORY = 8;
 
     /**
-     * Marker for "all events".<p>
+     * Event "full static export".<p>
+     * 
+     * This is thrown in {@link org.opencms.staticexport.CmsStaticExportManager}.
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "purge": the boolean value to purge the export folders first</li>
+     * <li><code>{@link #KEY_REPORT}</code>:  a <code>{@link org.opencms.report.I_CmsReport}</code> to print output messages to</li>
+     * </ul>
      */
-    Integer LISTENERS_FOR_ALL_EVENTS = new Integer(-1);
+    int EVENT_FULLSTATIC_EXPORT = 4;
 
     /** 
      * Event "user has logged in".<p>
@@ -100,6 +156,48 @@ public interface I_CmsEventListener {
      * @see org.opencms.file.CmsObject#loginUser(String, String) 
      */
     int EVENT_LOGIN_USER = 1;
+
+    /**
+     * Event "a project was modified" (e.g. a project has been deleted, 
+     * or the project resources have been changed).<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "project" (mandatory): the deleted CmsProject</li>
+     * </ul>
+     */
+    int EVENT_PROJECT_MODIFIED = 18;
+
+    /**
+     * Event "a property definition has been created".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "propertyDefinition" (mandatory): the modified property definition</li>
+     * </ul>
+     */
+    int EVENT_PROPERTY_DEFINITION_CREATED = 28;
+
+    /**
+     * Event "a property definition has been modified".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "propertyDefinition" (mandatory): the modified property definition</li>
+     * </ul>
+     */
+    int EVENT_PROPERTY_DEFINITION_MODIFIED = 26;
+
+    /** 
+     * Event "a single property (and so the resource itself, too) have been modified".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "resource" (mandatory): the CmsResource that has the modified property attached</li>
+     * <li>key "property" (mandatory): the modified property</li>
+     * </ul>
+     */
+    int EVENT_PROPERTY_MODIFIED = 14;
 
     /**
      * Event "a project was published".<p>
@@ -118,86 +216,39 @@ public interface I_CmsEventListener {
     int EVENT_PUBLISH_PROJECT = 2;
 
     /**
-     * Event "a project is to published" (but has not yet been published).<p>
+     * Event "rebuild all search indexes".<p>
      * 
      * Event data:
      * <ul>
      * <li><code>{@link #KEY_REPORT}</code>: a <code>{@link org.opencms.report.I_CmsReport}</code> to print output messages to</li>
-     * <li><code>{@link #KEY_PUBLISHLIST}</code>: a <code>{@link org.opencms.db.CmsPublishList}</code> that contains the resources that are to be published</li>
-     * <li><code>{@link #KEY_PROJECTID}</code>: the ID of the project that is to be published</li>
-     * <li><code>{@link #KEY_DBCONTEXT}</code>: the current users database context</li>
      * </ul>
-     * 
-     * @see org.opencms.publish.CmsPublishManager#publishProject(org.opencms.file.CmsObject)
-     * @see #EVENT_PUBLISH_PROJECT
      */
-    int EVENT_BEFORE_PUBLISH_PROJECT = 3;
+    int EVENT_REBUILD_SEARCHINDEX = 32;
+
+    /** 
+     * Event "all properties (and so the resource itself, too) have been modified".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "resource" (mandatory): the CmsResource that has the modified properties attached</li>
+     * </ul>
+     */
+    int EVENT_RESOURCE_AND_PROPERTIES_MODIFIED = 15;
 
     /**
-     * Event "full static export".<p>
-     * 
-     * This is thrown in {@link org.opencms.staticexport.CmsStaticExportManager}.
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "purge": the boolean value to purge the export folders first</li>
-     * <li><code>{@link #KEY_REPORT}</code>:  a <code>{@link org.opencms.report.I_CmsReport}</code> to print output messages to</li>
-     * </ul>
+     * @see #EVENT_RESOURCES_MODIFIED
      */
-    int EVENT_FULLSTATIC_EXPORT = 4;
+    int EVENT_RESOURCE_COPIED = 24;
 
-    /** 
-     * Event "all caches must be cleared".<p>
-     *
-     * Not thrown by the core classes, but might be used in modules.
+    /**
+     * @see #EVENT_RESOURCE_AND_PROPERTIES_MODIFIED
      */
-    int EVENT_CLEAR_CACHES = 5;
+    int EVENT_RESOURCE_CREATED = 23;
 
-    /** 
-     * Event "all caches related to user and groups must be cleared".<p>
-     *
-     * Not thrown by the core classes, but might be used in modules.
+    /**
+     * @see #EVENT_RESOURCES_MODIFIED
      */
-    int EVENT_CLEAR_PRINCIPAL_CACHES = 6;
-
-    /** 
-     * Event "delete all JSP pages in the "real" file system 
-     * (so they will be rebuild next time the JSP is requested)".<p>
-     * 
-     * This is thrown on the "FlexCache Administration" page if you press
-     * the button "Purge JSP repository", or if you use the <code>_flex=purge</code>
-     * request parameter.
-     */
-    int EVENT_FLEX_PURGE_JSP_REPOSITORY = 8;
-
-    /** 
-     * Event "the FlexCache must be cleared".<p>
-     * 
-     * This is thrown on the "FlexCache Administration" page if you press
-     * one ot the "Clear cache" buttons, or if you use the <code>_flex=clearcache</code>
-     * request parameter.
-     */
-    int EVENT_FLEX_CACHE_CLEAR = 9;
-
-    /** 
-     * Event "a single resource has been modified".<p>
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "resource" (mandatory): the modified CmsResource</li>
-     * </ul>
-     */
-    int EVENT_RESOURCE_MODIFIED = 11;
-
-    /** 
-     * Event "a bunch of resources has been modified".<p>
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "resources" (mandatory): a List of modified CmsResources</li>
-     * </ul>
-     */
-    int EVENT_RESOURCES_MODIFIED = 12;
+    int EVENT_RESOURCE_DELETED = 25;
 
     /** 
      * Event "the list of sub-resources of a folder has been modified", (e.g. a new resource has been created).<p>
@@ -210,50 +261,41 @@ public interface I_CmsEventListener {
     int EVENT_RESOURCE_LIST_MODIFIED = 13;
 
     /** 
-     * Event "a single property (and so the resource itself, too) have been modified".<p>
+     * Event "a single resource has been modified".<p>
      * 
      * Event data:
      * <ul>
-     * <li>key "resource" (mandatory): the CmsResource that has the modified property attached</li>
-     * <li>key "property" (mandatory): the modified property</li>
+     * <li>key "resource" (mandatory): the modified CmsResource</li>
      * </ul>
      */
-    int EVENT_PROPERTY_MODIFIED = 14;
-
-    /** 
-     * Event "all properties (and so the resource itself, too) have been modified".<p>
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "resource" (mandatory): the CmsResource that has the modified properties attached</li>
-     * </ul>
-     */
-    int EVENT_RESOURCE_AND_PROPERTIES_MODIFIED = 15;
-
-    /** 
-     * Event "clear all offline caches".<p>
-     * 
-     * Event data: none
-     */
-    int EVENT_CLEAR_OFFLINE_CACHES = 16;
-
-    /** 
-     * Event "clear all online caches".<p>
-     * 
-     * Event data: none
-     */
-    int EVENT_CLEAR_ONLINE_CACHES = 17;
+    int EVENT_RESOURCE_MODIFIED = 11;
 
     /**
-     * Event "a project was modified" (e.g. a project has been deleted, 
-     * or the project resources have been changed).<p>
+     * @see #EVENT_RESOURCE_CREATED
+     * @see #EVENT_RESOURCE_COPIED
+     * @see #EVENT_RESOURCE_DELETED
+     */
+    int EVENT_RESOURCE_MOVED = 22;
+
+    /** 
+     * Event "a list of resources and their properties have been modified".<p>
      * 
      * Event data:
      * <ul>
-     * <li>key "project" (mandatory): the deleted CmsProject</li>
+     * <li>key "resources" (mandatory): a List of modified CmsResources</li>
      * </ul>
      */
-    int EVENT_PROJECT_MODIFIED = 18;
+    int EVENT_RESOURCES_AND_PROPERTIES_MODIFIED = 27;
+
+    /** 
+     * Event "a bunch of resources has been modified".<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "resources" (mandatory): a List of modified CmsResources</li>
+     * </ul>
+     */
+    int EVENT_RESOURCES_MODIFIED = 12;
 
     /**
      * Event "update exported resources".<p>
@@ -266,57 +308,25 @@ public interface I_CmsEventListener {
      */
     int EVENT_UPDATE_EXPORTS = 19;
 
-    /**
-     * @see #EVENT_RESOURCE_CREATED
-     * @see #EVENT_RESOURCE_COPIED
-     * @see #EVENT_RESOURCE_DELETED
-     */
-    int EVENT_RESOURCE_MOVED = 22;
+    /** Key name for passing a database context in the data map. */
+    String KEY_DBCONTEXT = "dbContext";
+
+    /** Key name for passing a project id in the data map. */
+    String KEY_PROJECTID = "projectId";
+
+    /** Key name for passing a publish history id in the data map. */
+    String KEY_PUBLISHID = "publishHistoryId";
+
+    /** Key name for passing a publish list in the data map. */
+    String KEY_PUBLISHLIST = "publishList";
+
+    /** Key name for passing a report in the data map. */
+    String KEY_REPORT = "report";
 
     /**
-     * @see #EVENT_RESOURCE_AND_PROPERTIES_MODIFIED
+     * Marker for "all events".<p>
      */
-    int EVENT_RESOURCE_CREATED = 23;
-
-    /**
-     * @see #EVENT_RESOURCES_MODIFIED
-     */
-    int EVENT_RESOURCE_COPIED = 24;
-
-    /**
-     * @see #EVENT_RESOURCES_MODIFIED
-     */
-    int EVENT_RESOURCE_DELETED = 25;
-
-    /**
-     * Event "a property definition has been modified".<p>
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "propertyDefinition" (mandatory): the modified property definition</li>
-     * </ul>
-     */
-    int EVENT_PROPERTY_DEFINITION_MODIFIED = 26;
-
-    /** 
-     * Event "a list of resources and their properties have been modified".<p>
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "resources" (mandatory): a List of modified CmsResources</li>
-     * </ul>
-     */
-    int EVENT_RESOURCES_AND_PROPERTIES_MODIFIED = 27;
-
-    /**
-     * Event "a property definition has been created".<p>
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "propertyDefinition" (mandatory): the modified property definition</li>
-     * </ul>
-     */
-    int EVENT_PROPERTY_DEFINITION_CREATED = 28;
+    Integer LISTENERS_FOR_ALL_EVENTS = new Integer(-1);
 
     /** 
      * Acknowledge the occurrence of the specified event, implement this 

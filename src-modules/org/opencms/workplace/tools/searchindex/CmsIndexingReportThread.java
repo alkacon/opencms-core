@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2007/08/13 16:30:00 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/08/20 10:54:22 $
+ * Version: $Revision: 1.13 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -49,10 +49,12 @@ package org.opencms.workplace.tools.searchindex;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -60,7 +62,7 @@ import java.util.List;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,7 +121,9 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
         try {
 
             if (m_indexNames == null) {
-                OpenCms.getSearchManager().rebuildAllIndexes(getReport());
+                OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX, Collections.singletonMap(
+                    I_CmsEventListener.KEY_REPORT,
+                    getReport()));
             } else {
                 OpenCms.getSearchManager().rebuildIndexes(m_indexNames, getReport());
             }

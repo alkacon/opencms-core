@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2007/08/20 10:54:22 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.88 $ 
+ * @version $Revision: 1.89 $ 
  * 
  * @since 6.0.0 
  */
@@ -959,11 +959,9 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void rebuildAllIndexes() throws Exception {
 
         I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
-        try {
-            OpenCms.getSearchManager().rebuildAllIndexes(report);
-        } catch (CmsException e) {
-            report.println(e);
-        }
+        OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_REBUILD_SEARCHINDEX, Collections.singletonMap(
+            I_CmsEventListener.KEY_REPORT,
+            report));
     }
 
     /**
