@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2007/08/17 15:05:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/08/21 14:02:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.2
  * 
@@ -93,7 +93,9 @@ public final class CmsJspContentAccessValueWrapper {
          */
         public Object transform(Object input) {
 
-            List values = obtainContentValue().getDocument().getValues(createPath(input), obtainContentValue().getLocale());
+            List values = obtainContentValue().getDocument().getValues(
+                createPath(input),
+                obtainContentValue().getLocale());
             List result = new ArrayList();
             Iterator i = values.iterator();
             while (i.hasNext()) {
@@ -131,6 +133,9 @@ public final class CmsJspContentAccessValueWrapper {
 
     /** The wrapped XML content value. */
     private I_CmsXmlContentValue m_contentValue;
+
+    /** Calculated hash code. */
+    private int m_hashCode;
 
     /** The lazy initialized Map that checks if a value is available. */
     private Map m_hasValue;
@@ -201,11 +206,8 @@ public final class CmsJspContentAccessValueWrapper {
             return true;
         }
         if (obj instanceof CmsJspContentAccessValueWrapper) {
-            if (m_contentValue == null) {
-                return ((CmsJspContentAccessValueWrapper)obj).m_contentValue == null;
-            } else {
-                return m_contentValue.equals(((CmsJspContentAccessValueWrapper)obj).m_contentValue);
-            }
+            // rely on hash code implementation for equals method
+            return hashCode() == ((CmsJspContentAccessValueWrapper)obj).hashCode();
         }
         return false;
     }
@@ -445,7 +447,16 @@ public final class CmsJspContentAccessValueWrapper {
         if (m_contentValue == null) {
             return 0;
         }
-        return m_contentValue.hashCode();
+        if (m_hashCode == 0) {
+            StringBuffer result = new StringBuffer(64);
+            result.append(m_contentValue.getDocument().getFile().getStructureId().toString());
+            result.append('/');
+            result.append(m_contentValue.getLocale());
+            result.append('/');
+            result.append(m_contentValue.getPath());
+            m_hashCode = result.toString().hashCode();
+        }
+        return m_hashCode;
     }
 
     /**
