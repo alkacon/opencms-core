@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.fckeditor/resources/system/workplace/resources/components/widgets/fckeditor.js,v $
- * Date   : $Date: 2007/08/13 16:30:19 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/08/21 12:07:00 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,10 @@ function submitHtml(form) {
 	for (var i=0; i<contentFields.length; i++) {
 		var cf = contentFields[i];
 		var editInst = FCKeditorAPI.GetInstance("ta_" + cf.getAttribute("id", 0));
-		cf.value = encodeURIComponent(editInst.GetXHTML(false));
+		var editedContent = editInst.GetXHTML(false);
+		if (editedContent != null && editedContent != "null") {
+			cf.value = encodeURIComponent(editedContent);
+		}
 	}
 }
 
