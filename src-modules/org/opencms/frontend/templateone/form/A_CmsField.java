@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/A_CmsField.java,v $
- * Date   : $Date: 2007/08/13 16:29:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/08/21 14:54:39 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Thomas Weckert
  * @author Jan Baudisch
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * @since 6.0.0 
  */
 public abstract class A_CmsField implements I_CmsField {
@@ -250,8 +250,9 @@ public abstract class A_CmsField implements I_CmsField {
 
     /**
      * This function sets the cells of placeholder. Its only work with 
-     * a col size of 2 
-     * @param message
+     * a col size of 2.<p> 
+     * 
+     * @param message integer value of adding to the placeholder value
      */
     protected void incrementPlaceholder(String message) {
 
