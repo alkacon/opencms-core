@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/A_CmsResourceCategoriesList.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/21 10:12:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListItem;
@@ -56,7 +57,7 @@ import java.util.Locale;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.9.2
  */
@@ -179,8 +180,8 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
             String htmlName = "";
             int pathLevel = CmsStringUtil.splitAsList(categoryPath, '/').size();
             for (int i = 1; i < pathLevel; i++) {
-                htmlName = "<img src=\""
-                    + getJsp().link("/system/workplace/resources/tree/empty.gif")
+                htmlName += "<img src=\""
+                    + CmsWorkplace.getResourceUri("tree/empty.gif")
                     + "\" width=\"30px\" height=\"11px\"/>";
             }
             String name = category.getTitle();
