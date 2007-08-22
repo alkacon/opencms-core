@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/A_CmsResourceCategoriesList.java,v $
- * Date   : $Date: 2007/08/21 10:12:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/22 08:28:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import java.util.Locale;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.9.2
  */
@@ -177,19 +177,22 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
             CmsCategory category = (CmsCategory)itCategories.next();
             String categoryPath = category.getPath();
             CmsListItem item = getList().newItem(categoryPath);
-            String htmlName = "";
+            StringBuffer itemHtml = new StringBuffer(192);
             int pathLevel = CmsStringUtil.splitAsList(categoryPath, '/').size();
-            for (int i = 1; i < pathLevel; i++) {
-                htmlName += "<img src=\""
-                    + CmsWorkplace.getResourceUri("tree/empty.gif")
-                    + "\" width=\"30px\" height=\"11px\"/>";
+            if (pathLevel > 1) {
+                // append image for indentation
+                itemHtml.append("<img src=\"");
+                itemHtml.append(CmsWorkplace.getResourceUri("tree/empty.gif"));
+                itemHtml.append("\" width=\"");
+                itemHtml.append((pathLevel - 1) * 20);
+                itemHtml.append("px\" height=\"11px\"/>");
             }
             String name = category.getTitle();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
                 name = category.getName();
             }
-            name = htmlName + name;
-            item.set(LIST_COLUMN_NAME, name);
+            itemHtml.append(name);
+            item.set(LIST_COLUMN_NAME, itemHtml.toString());
             item.set(LIST_COLUMN_PATH, categoryPath);
             ret.add(item);
         }
