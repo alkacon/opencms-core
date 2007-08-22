@@ -48,6 +48,8 @@ String site = OpenCms.getSiteManager().getWorkplaceServer();
 FCKConfig.AutoDetectLanguage = false;
 FCKConfig.DefaultLanguage = "<%= wp.getLocale().getLanguage() %>";
 
+FCKConfig.ProcessHTMLEntities = false;
+
 FCKConfig.BaseHref = "<%= site %>";
 FCKConfig.ToolbarCanCollapse = false;
 

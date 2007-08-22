@@ -22,6 +22,8 @@ if (CmsStringUtil.isEmpty(configuration)) {
 FCKConfig.AutoDetectLanguage = false;
 FCKConfig.DefaultLanguage = "<%= wp.getLocale().getLanguage() %>";
 
+FCKConfig.ProcessHTMLEntities = false;
+
 FCKConfig.BaseHref = "<%= site %>";
 
 FCKConfig.ToolbarCanCollapse = true;
