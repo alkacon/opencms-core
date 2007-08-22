@@ -100,7 +100,7 @@
         <delete dir="${opencms.output.distfiles}" />
     </target>
     		
-    <target name="compile" description="Compile the OpenCms classes">
+    <target name="compile" depends="init" description="Compile the OpenCms classes">
     	
         <mkdir dir="${opencms.output.classes}" />    	
     	
