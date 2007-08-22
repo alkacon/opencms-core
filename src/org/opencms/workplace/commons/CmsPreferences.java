@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2007/08/22 12:52:52 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 6.0.0
  */
@@ -224,6 +224,9 @@ public class CmsPreferences extends CmsTabDialog {
 
     /** Request parameter name for the workplace explorer view restriction. */
     public static final String PARAM_WORKPLACE_RESTRICTEXPLORERVIEW = "tabwprestrictexplorerview";
+
+    /** Request parameter name for the workplace show publish notification. */
+    public static final String PARAM_WORKPLACE_SHOWPUBLISHNOTIFICATION = "tabwpshowpublishnotification";
 
     /** Request parameter name for the workplace start site. */
     public static final String PARAM_WORKPLACE_SITE = "tabwpsite";
@@ -722,7 +725,7 @@ public class CmsPreferences extends CmsTabDialog {
         int selectedIndex = 0;
 
         List sites = CmsSiteManager.getAvailableSites(getCms(), true);
-        String wpSite =  getParamTabWpSite();
+        String wpSite = getParamTabWpSite();
         if (!wpSite.endsWith("/")) {
             wpSite += "/";
         }
@@ -1293,6 +1296,16 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * Returns the "show publish notification" setting.<p>
+     * 
+     * @return <code>"true"</code> if the "show publish notification" input is checked, otherwise ""
+     */
+    public String getParamTabWpShowPublishNotification() {
+
+        return isParamEnabled(m_userSettings.getShowPublishNotification());
+    }
+
+    /**
      * Returns the "start site" setting.<p>
      * 
      * @return the "start site" setting
@@ -1762,6 +1775,17 @@ public class CmsPreferences extends CmsTabDialog {
     public void setParamTabWpRestrictExplorerView(String value) {
 
         m_userSettings.setRestrictExplorerView(Boolean.valueOf(value).booleanValue());
+    }
+
+    /**
+     * Sets the "show publish notification" setting.<p>
+     * 
+     * @param value <code>"true"</code> to enable the "show publish notification" setting, all others to
+     *        disable
+     */
+    public void setParamTabWpShowPublishNotification(String value) {
+
+        m_userSettings.setShowPublishNotification(Boolean.valueOf(value).booleanValue());
     }
 
     /**

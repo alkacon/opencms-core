@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:29:44 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/08/22 12:52:52 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -1100,6 +1100,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_SHOW_LOCK_DIALOG_0 = "GUI_PREF_SHOW_LOCK_DIALOG_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_SHOW_PUBLISHNOTIFICATION_0 = "GUI_PREF_SHOW_PUBLISHNOTIFICATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_STARTUP_FILTER_0 = "GUI_PREF_STARTUP_FILTER_0";

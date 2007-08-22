@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/08/13 16:30:03 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2007/08/22 12:52:51 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 6.0.0
  */
@@ -295,6 +295,9 @@ public class CmsUserSettings {
 
     private boolean m_showLock;
 
+    /** Flag to determine if the publish notifications should be shown. */
+    private boolean m_showPublishNotification;
+
     /** Controls if the resource type dialog for uploaded resources (not the applet) is shown or not. */
     private Boolean m_showUploadTypeDialog;
 
@@ -338,6 +341,7 @@ public class CmsUserSettings {
         m_explorerSettings = CmsUserSettings.FILELIST_NAME;
         m_editorSettings = new TreeMap();
         m_showFileUploadButton = true;
+        m_showPublishNotification = true;
         m_uploadApplet = true;
         m_publishButtonAppearance = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_ALWAYS;
         m_newFolderCreateIndexPage = Boolean.TRUE;
@@ -601,6 +605,16 @@ public class CmsUserSettings {
     }
 
     /**
+     * Returns if the publish notifications should be shown or not.<p>
+     * 
+     * @return true if the publish notifications should be shown, otherwise false
+     */
+    public boolean getShowPublishNotification() {
+
+        return m_showPublishNotification;
+    }
+
+    /**
      * Returns <code>{@link Boolean#TRUE}</code> if the resource type selection dialog should 
      * be shown in the file upload process (non - applet version). <p>
      * 
@@ -776,6 +790,14 @@ public class CmsUserSettings {
             m_workplaceReportType = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceReportType();
         }
         // workplace upload applet mode
+        try {
+            m_showPublishNotification = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                + CmsWorkplaceConfiguration.N_PUBLISHNOTIFICATION)).booleanValue();
+        } catch (Throwable t) {
+            m_showPublishNotification = OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowPublishNotification();
+        }
+        // workplace show publish notification
         try {
             m_uploadApplet = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
@@ -1049,6 +1071,16 @@ public class CmsUserSettings {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
                 + CmsWorkplaceConfiguration.N_UPLOADAPPLET);
+        }
+        // publish notification
+        if (getShowPublishNotification() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowPublishNotification()) {
+            m_user.setAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                + CmsWorkplaceConfiguration.N_PUBLISHNOTIFICATION, Boolean.valueOf(getShowPublishNotification()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                + CmsWorkplaceConfiguration.N_PUBLISHNOTIFICATION);
         }
         // locale
         if (!getLocale().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getLocale())) {
@@ -1679,6 +1711,16 @@ public class CmsUserSettings {
     public void setShowFileUploadButton(boolean flag) {
 
         m_showFileUploadButton = flag;
+    }
+
+    /**
+     * Sets if the publish notifications should be shown or not.<p>
+     * 
+     * @param showPublishNotification true if the publish notifications should be shown, otherwise false
+     */
+    public void setShowPublishNotification(boolean showPublishNotification) {
+
+        m_showPublishNotification = showPublishNotification;
     }
 
     /**

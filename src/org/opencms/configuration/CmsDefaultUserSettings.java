@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2007/08/13 16:30:10 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/08/22 12:52:51 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0 
  */
@@ -114,15 +114,6 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         }
     }
 
-    /** 
-     * Array of the possible "button styles".
-     * Must be private because of Findbugs rule "MS".
-     */
-    private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
-
-    /** Array list for fast lookup of "button styles". */
-    public static final List BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
-
     /** Constant for the publish related resources mode, checkbox disabled by default. */
     public static final CmsPublishRelatedResourcesMode PUBLISH_RELATED_RESOURCES_MODE_FALSE = CmsPublishRelatedResourcesMode.MODE_FALSE;
 
@@ -143,6 +134,15 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
 
     /** Publish button appearance: show never. */
     public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
+
+    /** 
+     * Array of the possible "button styles".
+     * Must be private because of Findbugs rule "MS".
+     */
+    private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
+
+    /** Array list for fast lookup of "button styles". */
+    public static final List BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
 
     /** Parameter for buttonstyle text & image. */
     private static final int BUTTONSTYLE_TEXTIMAGE = 1;
@@ -476,6 +476,18 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getShowFileUploadButtonString() {
 
         return String.valueOf(getShowFileUploadButton());
+    }
+
+    /**
+     * Returns a string representation of the publish notification flag.<p>
+     * 
+     * @return string representation of the publish notification flag
+     * 
+     * @see #getShowPublishNotification()
+     */
+    public String getShowPublishNotificationString() {
+
+        return String.valueOf(getShowPublishNotification());
     }
 
     /**
@@ -907,6 +919,17 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public void setShowLockDialog(String mode) {
 
         setDialogShowLock(Boolean.valueOf(mode).booleanValue());
+    }
+
+    /**
+     * Sets if the publish notification should be shown for the user.<p>
+     * 
+     * @param notification <code>"true"</code> or <code>"false"</code> to flag the notification
+     */
+    public void setShowPublishNotification(String notification) {
+
+        // set if the publish notification should be shown
+        setShowPublishNotification(Boolean.valueOf(notification).booleanValue());
     }
 
     /**

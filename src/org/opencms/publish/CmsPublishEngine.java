@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/22 12:52:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.publish;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsUserSettings;
 import org.opencms.db.I_CmsDbContextFactory;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.5
  */
@@ -691,7 +692,11 @@ public final class CmsPublishEngine implements Runnable {
         CmsDbContext dbc = m_dbContextFactory.getDbContext();
         try {
             CmsUser toUser = m_driverManager.readUser(dbc, toUserId);
-            OpenCms.getSessionManager().sendBroadcast(null, message, toUser);
+            CmsUserSettings settings = new CmsUserSettings(toUser);
+            if (settings.getShowPublishNotification()) {
+                // only show message if public notification is enabled
+                OpenCms.getSessionManager().sendBroadcast(null, message, toUser);
+            }
         } catch (CmsException e) {
             LOG.error(e.getLocalizedMessage(), e);
         } finally {

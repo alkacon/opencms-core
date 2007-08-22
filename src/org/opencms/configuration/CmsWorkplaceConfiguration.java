@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/08/13 16:30:10 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2007/08/22 12:52:51 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 6.0.0
  */
@@ -355,6 +355,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the publish button appearance node. */
     public static final String N_PUBLISHBUTTONAPPEARANCE = "publishbuttonappearance";
+
+    /** The node name of the publish notifiaction node. */
+    public static final String N_PUBLISHNOTIFICATION = "publishnotification";
 
     /** The name of the "publish related resources" node. */
     public static final String N_PUBLISHRELATEDRESOURCES = "publishrelatedresources";
@@ -1096,6 +1099,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             workplaceGeneraloptions.addElement(N_PUBLISHBUTTONAPPEARANCE).setText(
                 m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance());
         }
+        // add the <publishnotification> node
+        workplaceGeneraloptions.addElement(N_PUBLISHNOTIFICATION).setText(
+            m_workplaceManager.getDefaultUserSettings().getShowPublishNotificationString());
         // add the <show-fileuploadbutton> node
         workplaceGeneraloptions.addElement(N_SHOWFILEUPLOADBUTTON).setText(
             m_workplaceManager.getDefaultUserSettings().getShowFileUploadButtonString());
@@ -1451,6 +1457,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod(xPathPrefix + "/" + N_BUTTONSTYLE, "setWorkplaceButtonStyle", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_REPORTTYPE, "setWorkplaceReportType", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_UPLOADAPPLET, "setUploadApplet", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHNOTIFICATION, "setShowPublishNotification", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHBUTTONAPPEARANCE, "setPublishButtonAppearance", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_SHOWFILEUPLOADBUTTON, "setShowFileUploadButton", 0);
 

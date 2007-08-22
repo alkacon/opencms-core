@@ -746,6 +746,7 @@
           <reporttype>extended</reporttype>
           <uploadapplet>true</uploadapplet>
           <publishbuttonappearance>always</publishbuttonappearance>
+          <publishnotification>true</publishnotification>
           <show-fileuploadbutton>true</show-fileuploadbutton>
           <allowbrokenrelations>false</allowbrokenrelations>
           <publishrelatedresources>true</publishrelatedresources>
