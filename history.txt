@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/20 15:12:41 $
- * Version: $Revision: 1.855 $
+ * Date   : $Date: 2007/08/22 11:11:53 $
+ * Version: $Revision: 1.856 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,8 @@ OpenCms 7.0.2 - xxxxx, 2007
 - Split XSD for default XML content appinfo elements in 2 files, one for elements, the other for the base "appinfo" node
 - Deprecated CmsFile#upgrade(CmsResource) method as this is now done automatically in CmsObject#readFile(CmsResource)
 - Updated year information in file comment headers to 2007
+- Refactored libs for better handling of runtime and compile-time dependencies
+- Refactored setup/update wizard to a separate opencms-setup.jar 
 ! Added <cms:contentaccess> tag and bean for easy access to XML contents on JSP using the EL with JSTL 
 ! Added JSP EL ${cms:...} function implementations that allow convenient access to OpenCms utility functions 
 ! Added new option "searchsettings" to XML content handler, used to reduce visibility of fields in search "content"

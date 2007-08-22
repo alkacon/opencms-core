@@ -6,7 +6,8 @@
 	<property name="opencms.output" 					location="${opencms.input}/../BuildCms" />
  	<property name="opencms.setup.input" 				location="${opencms.input}/webapp/setup" />
  	<property name="opencms.config.input" 				location="${opencms.input}/webapp/WEB-INF/config" />
-    <property name="opencms.input.libs" 				location="${opencms.input}/webapp/WEB-INF/lib" />
+    <property name="opencms.input.libs.runtime"			location="${opencms.input}/lib/runtime" />
+    <property name="opencms.input.libs.compile"			location="${opencms.input}/lib/compile" />
     <property name="opencms.output.distfiles"           location="${opencms.output}/zip" />    
     <property name="excludes"                  			value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
     <property name="java.target.version"                value="1.5" />    
@@ -20,17 +21,17 @@
 	
  	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 	  <classpath>
-	    <pathelement location="${opencms.input.libs}/ant-contrib-1.0b1.jar"/>
+	    <pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar"/>
 	  </classpath>
 	</taskdef>
 	
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
 		<classpath>
-			<pathelement location="${opencms.input.libs}/ant-opencms-1.1.jar" />
-			<pathelement location="${opencms.input.libs}/commons-digester-1.7.jar" />
-			<pathelement location="${opencms.input.libs}/commons-collections-3.1.jar" />
-			<pathelement location="${opencms.input.libs}/commons-logging-1.1.jar" />
-			<pathelement location="${opencms.input.libs}/commons-beanutils-1.7.0.jar" />
+			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.1.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.7.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.1.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.7.0.jar" />
 		</classpath>
 	</taskdef>
 	

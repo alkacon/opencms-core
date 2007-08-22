@@ -2,47 +2,48 @@
 
 <project name="OpenCms Common Module" default="dist" basedir=".">
 
-	<property name="opencms.input" location="${basedir}/.." />
-	<property name="opencms.output" location="${opencms.input}/../BuildCms" />
-	<property name="opencms.input.warfiles" location="${opencms.input}/webapp" />
-	<property name="opencms.input.libs" location="${opencms.input.warfiles}/WEB-INF/lib" />
-	<property name="opencms.build" location="${opencms.output}/build" />
-	<property name="opencms.core.lib" location="${opencms.build}/jars-core" />
+	<property name="opencms.input" 						location="${basedir}/.." />
+	<property name="opencms.output" 					location="${opencms.input}/../BuildCms" />
+	<property name="opencms.input.warfiles" 			location="${opencms.input}/webapp" />
+    <property name="opencms.input.libs.runtime"			location="${opencms.input}/lib/runtime" />
+    <property name="opencms.input.libs.compile"			location="${opencms.input}/lib/compile" />
+	<property name="opencms.build" 						location="${opencms.output}/build" />
+	<property name="opencms.core.lib" 					location="${opencms.build}/jars-core" />
 
 	<property environment="env" />
 	<property file="${basedir}/opencms.properties" />
 
 	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 		<classpath>
-			<pathelement location="${opencms.input.libs}/ant-contrib-1.0b1.jar" />
+			<pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar" />
 		</classpath>
 	</taskdef>
 
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms">
 		<classpath>
-			<pathelement location="${opencms.input.libs}/ant-opencms-1.1.jar" />
-			<pathelement location="${opencms.input.libs}/commons-digester-1.8.jar" />
-			<pathelement location="${opencms.input.libs}/commons-collections-3.2.jar" />
-			<pathelement location="${opencms.input.libs}/commons-logging-1.1.jar" />
-			<pathelement location="${opencms.input.libs}/commons-beanutils-1.7.0.jar" />
+			<pathelement location="${opencms.input.libs.compile}/ant-opencms-1.1.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-digester-1.8.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-collections-3.2.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-logging-1.1.jar" />
+			<pathelement location="${opencms.input.libs.runtime}/commons-beanutils-1.7.0.jar" />
 		</classpath>
 	</taskdef>
 
-	<property name="module.input" location="${basedir}/${module.name}" />
-	<property name="module.input.res" location="${module.input}/resources" />
-	<property name="module.input.lib" location="${module.input.res}/system/modules/${module.name}/lib" />
-	<property name="module.input.src.single" location="${module.input}/src" />
-	<property name="module.input.src.shared" location="${opencms.input}/src-modules" />
-	<property name="module.output.classes" location="${opencms.build}/classes-${module.name}" />
-	<property name="module.output.jar" location="${opencms.build}/jars-${module.name}" />
-	<property name="module.output.zip" location="${opencms.output}/zip" />
+	<property name="module.input" 				location="${basedir}/${module.name}" />
+	<property name="module.input.res" 			location="${module.input}/resources" />
+	<property name="module.input.lib" 			location="${module.input.res}/system/modules/${module.name}/lib" />
+	<property name="module.input.src.single" 	location="${module.input}/src" />
+	<property name="module.input.src.shared" 	location="${opencms.input}/src-modules" />
+	<property name="module.output.classes" 		location="${opencms.build}/classes-${module.name}" />
+	<property name="module.output.jar" 			location="${opencms.build}/jars-${module.name}" />
+	<property name="module.output.zip" 			location="${opencms.output}/zip" />
 
-	<property name="app.name" location="opencms" />
+	<property name="app.name" 					location="opencms" />
 
-	<property name="jar.excludes" value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
-	<property name="zip.excludes" value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
-	<property name="jar.includes.single" value="**/*.properties,**/*.txt,**/*.dtd,**/*.xml,**/*.sql" />
-	<property name="jar.includes.shared" value="*.properties,*.txt,*.dtd,*.xml,*.sql" />
+	<property name="jar.excludes" 				value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
+	<property name="zip.excludes" 				value="**/CVS/*,**/.cvsignore,**/.nbattrs,**/.project,**/.classpath" />
+	<property name="jar.includes.single" 		value="**/*.properties,**/*.txt,**/*.dtd,**/*.xml,**/*.sql" />
+	<property name="jar.includes.shared" 		value="*.properties,*.txt,*.dtd,*.xml,*.sql" />
 
 	<target name="clean" description="Deletes outputs">
 		<delete dir="${module.output.classes}" />
@@ -191,7 +192,8 @@
 		<echo message="Building OpenCms Common Module ${module.name} ${module.version} for OpenCms ${version.number}" />
 		<echo message=" " />
 		<echo message="OpenCms core lib directory is: ${opencms.core.lib}" />
-		<echo message="OpenCms lib directory is: ${opencms.input.libs}" />
+		<echo message="OpenCms runtime lib directory is: ${opencms.input.libs.runtime}" />
+		<echo message="OpenCms compile lib directory is: ${opencms.input.libs.compile}" />
 		<echo message="OpenCms output directory is: ${opencms.output}" />
 		<echo message="Module input directory is: ${module.input}" />
 		<echo message="Module source directory is: ${module.input.src}" />
@@ -290,7 +292,10 @@
 							target="${java.target.version}">
 						
 							<classpath>
-								<fileset dir="${opencms.input.libs}">
+								<fileset dir="${opencms.input.libs.runtime}">
+									<include name="**/*.jar" />
+								</fileset>
+								<fileset dir="${opencms.input.libs.compile}">
 									<include name="**/*.jar" />
 								</fileset>
 								<fileset dir="${opencms.core.lib}">
@@ -328,7 +333,10 @@
 											target="${java.target.version}">
 											
 											<classpath>
-												<fileset dir="${opencms.input.libs}">
+												<fileset dir="${opencms.input.libs.runtime}">
+													<include name="**/*.jar" />
+												</fileset>
+												<fileset dir="${opencms.input.libs.compile}">
 													<include name="**/*.jar" />
 												</fileset>
 												<fileset dir="${opencms.core.lib}">
@@ -356,7 +364,10 @@
 									
 									<exclude name="**/test/**/*.java" />
 									<classpath>
-										<fileset dir="${opencms.input.libs}">
+										<fileset dir="${opencms.input.libs.runtime}">
+											<include name="**/*.jar" />
+										</fileset>
+										<fileset dir="${opencms.input.libs.compile}">
 											<include name="**/*.jar" />
 										</fileset>
 										<fileset dir="${opencms.core.lib}">
