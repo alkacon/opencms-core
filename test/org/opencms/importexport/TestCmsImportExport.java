@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2007/08/13 16:30:18 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/08/23 10:12:14 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.importexport;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -204,7 +205,14 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             OpenCms.getPublishManager().publishResource(cms, filename1);
             OpenCms.getPublishManager().waitWhileRunning();
 
+            storeResources(cms, filename1);
+
             assertFilter(cms, cms.readResource(filename1), OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
+
+            // check it online
+            cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+
+            assertFilter(cms, filename1, OpenCmsTestResourceFilter.FILTER_EQUAL);
         } finally {
             try {
                 if (zipExportFilename != null) {
