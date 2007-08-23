@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2007/08/23 10:25:02 $
+ * Version: $Revision: 1.116 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.115 $
+ * @version $Revision: 1.116 $
  * 
  * @since 6.0.0 
  */
@@ -1843,7 +1843,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         // check if the old password is valid
         if (oldPassword != null) {
-            readUser(dbc, userFqn, oldPassword, dbc.getRequestContext().getRemoteAddress());
+            readUser(dbc, userFqn, oldPassword, "");
         }
 
         try {
