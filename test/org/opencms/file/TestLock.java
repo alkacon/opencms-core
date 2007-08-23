@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/08/23 11:10:21 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,10 @@
 
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockException;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
@@ -56,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class TestLock extends OpenCmsTestCase {
 
@@ -82,6 +84,7 @@ public class TestLock extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestLock.class.getName());
 
+        suite.addTest(new TestLock("testLockFilter"));
         suite.addTest(new TestLock("testLockWithDeletedNewFiles"));
         suite.addTest(new TestLock("testLockOtherUser"));
         suite.addTest(new TestLock("testLockForFile"));
@@ -134,7 +137,7 @@ public class TestLock extends OpenCmsTestCase {
         cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
-        // TODO: define the expected behaviour
+        // TODO: define the expected behavior
         cms.copyResource(source, folder + destination);
         assertLock(cms, folder + destination, CmsLockType.INHERITED, cms.readUser("test1"));
     }
@@ -156,9 +159,36 @@ public class TestLock extends OpenCmsTestCase {
         cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
-        // TODO: define the expected behaviour
+        // TODO: define the expected behavior
         cms.createResource(fileName, CmsResourceTypePlain.getStaticTypeId());
         assertLock(cms, fileName, CmsLockType.INHERITED, cms.readUser("test1"));
+    }
+
+    /**
+     * Test the lock filter. see bug #1460.<p>
+     * 
+     * @throws Throwable is something goes wrong
+     */
+    public void testLockFilter() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing lock filter");
+
+        String fileName = "testLockFilter";
+        String folderName = "testLockFilterFolder";
+
+        // create a file and a folder where the file name is a prefix of the folder name 
+        cms.createResource(fileName, CmsResourceTypePlain.getStaticTypeId());
+        cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+
+        // publish only the folder, so the file remains locked
+        OpenCms.getPublishManager().publishResource(cms, folderName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check for lock in or on the folder
+        List lockedRes = cms.getLockedResources(folderName, CmsLockFilter.FILTER_ALL);
+        // should be empty
+        assertTrue(lockedRes.isEmpty());
     }
 
     /**
@@ -277,7 +307,7 @@ public class TestLock extends OpenCmsTestCase {
         // the source folder must be unlocked
         assertLock(cms, folder, CmsLockType.UNLOCKED);
 
-        // all resources in the folder must be ulocked      
+        // all resources in the folder must be unlocked      
         resources = cms.getResourcesInFolder(folder, CmsResourceFilter.DEFAULT);
         i = resources.iterator();
         while (i.hasNext()) {
@@ -294,7 +324,7 @@ public class TestLock extends OpenCmsTestCase {
     /**
      * Tests lock status of a folder and its siblings.<p>
      * 
-     * In this test, the folder has some prelocked siblings with exclusive locks in it
+     * In this test, the folder has some pre-locked siblings with exclusive locks in it
      *  
      * @throws Throwable if something goes wrong
      */
@@ -347,7 +377,7 @@ public class TestLock extends OpenCmsTestCase {
             assertLock(cms, cms.getSitePath(res), CmsLockType.UNLOCKED);
         }
 
-        // The siblings outside the folder keppt their previous lockstate
+        // The siblings outside the folder kept their previous lock state
         assertLock(cms, sibling1, CmsLockType.UNLOCKED);
         assertLock(cms, sibling2, CmsLockType.UNLOCKED);
 
@@ -397,7 +427,7 @@ public class TestLock extends OpenCmsTestCase {
             }
         }
 
-        // The siblings outside the folder keppt their previous lockstate
+        // The siblings outside the folder kept their previous lock state
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
         assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
 
@@ -420,7 +450,7 @@ public class TestLock extends OpenCmsTestCase {
             }
         }
 
-        // The siblings outside the folder keppt their previous lockstate
+        // The siblings outside the folder kept their previous lock state
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
         assertLock(cms, sibling2, CmsLockType.SHARED_EXCLUSIVE);
 
@@ -508,6 +538,31 @@ public class TestLock extends OpenCmsTestCase {
     }
 
     /**
+     * Tests an inherited lock in a resource delete scenario.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testLockInherit() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing inherited lock delete scenario");
+
+        String source = "/folder1/index.html";
+        String folder = "/folder1/";
+        storeResources(cms, source);
+
+        // first delete the resource
+        cms.lockResource(source);
+        cms.deleteResource(source, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // now lock the folder
+        cms.lockResource(folder);
+
+        // make sure the deleted file has an inherited lock
+        assertLock(cms, source, CmsLockType.INHERITED);
+    }
+
+    /**
      * Tests a lock set by other user.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -540,31 +595,6 @@ public class TestLock extends OpenCmsTestCase {
 
         // make sure the file has still an exclusive lock on the test user
         assertLock(cms, source, CmsLockType.EXCLUSIVE, test1);
-    }
-
-    /**
-     * Tests an inherited lock in a resource delete scenario.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testLockInherit() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing inherited lock delete scenario");
-
-        String source = "/folder1/index.html";
-        String folder = "/folder1/";
-        storeResources(cms, source);
-
-        // first delete the resource
-        cms.lockResource(source);
-        cms.deleteResource(source, CmsResource.DELETE_PRESERVE_SIBLINGS);
-
-        // now lock the folder
-        cms.lockResource(folder);
-
-        // make sure the deleted file has an inherited lock
-        assertLock(cms, source, CmsLockType.INHERITED);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/08/14 09:48:05 $
- * Version: $Revision: 1.592 $
+ * Date   : $Date: 2007/08/23 11:10:21 $
+ * Version: $Revision: 1.593 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -4773,8 +4773,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             OpenCms.getMemoryMonitor().flushRoleLists();
         }
         m_vfsDriver.moveResource(dbc, dbc.getRequestContext().currentProject().getUuid(), source, destination);
-        // move lock 
-        m_lockManager.moveResource(source.getRootPath(), destination);
 
         if (!internal) {
             CmsResourceState newState = CmsResource.STATE_CHANGED;
@@ -4793,6 +4791,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 false);
         }
 
+        CmsResource destRes = readResource(dbc, destination, CmsResourceFilter.ALL);
+        // move lock 
+        m_lockManager.moveResource(source.getRootPath(), destRes.getRootPath());
+
         // flush all relevant caches
         clearAccessControlListCache();
         OpenCms.getMemoryMonitor().flushProperties();
@@ -4810,7 +4812,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         // destination
-        CmsResource destRes = readResource(dbc, destination, CmsResourceFilter.ALL);
         resources.add(destRes);
         resources.add(destinationFolder);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockFilter.java,v $
- * Date   : $Date: 2007/08/13 16:30:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/23 11:10:21 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.4 
  */
@@ -335,10 +335,14 @@ public final class CmsLockFilter implements Cloneable {
 
         boolean match = false;
         if (m_includeChildren) {
+            // safe since rootPath always ends with slash if a folder
             match = lock.getResourceName().startsWith(rootPath);
         }
         if (!match && m_includeParents) {
-            match = rootPath.startsWith(lock.getResourceName());
+            // since parents can only be folders, check it only for folders
+            if (lock.getResourceName().endsWith("/")) {
+                match = rootPath.startsWith(lock.getResourceName());
+            }
         }
         if (match && (m_projectId != null) && !m_projectId.isNullUUID() && (lock.getProjectId() != null)) {
             match = lock.getProjectId().equals(m_projectId);
