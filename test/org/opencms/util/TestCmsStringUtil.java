@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
- * Date   : $Date: 2007/08/13 16:29:50 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/08/23 12:11:53 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import junit.framework.TestCase;
  * @author Andreas Zahner 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class TestCmsStringUtil extends TestCase {
 
@@ -614,52 +614,52 @@ public class TestCmsStringUtil extends TestCase {
 
         text = "I am a short sentence.";
         expected = "I am a...";
-        result = CmsStringUtil.trimToSize(text, 10);
+        result = CmsStringUtil.trimToSize(text, 10, "...");
         assertEquals(expected, result);
 
         text = "I_am_a_short_sentence.";
         expected = "I_am_a_sh...";
-        result = CmsStringUtil.trimToSize(text, 12);
+        result = CmsStringUtil.trimToSize(text, 12, "...");
         assertEquals(expected, result);
 
         text = "I am a short sentence.";
         expected = "I am...";
-        result = CmsStringUtil.trimToSize(text, 8);
+        result = CmsStringUtil.trimToSize(text, 8, "...");
         assertEquals(expected, result);
 
         text = "I am a short sentence.";
         expected = "I...";
-        result = CmsStringUtil.trimToSize(text, 7);
+        result = CmsStringUtil.trimToSize(text, 7, "...");
         assertEquals(expected, result);
 
         text = "I am a short sentence.";
         expected = "I...";
-        result = CmsStringUtil.trimToSize(text, 6);
+        result = CmsStringUtil.trimToSize(text, 6, "...");
         assertEquals(expected, result);
 
         text = "I am a short sentence.";
         expected = "I...";
-        result = CmsStringUtil.trimToSize(text, 5);
+        result = CmsStringUtil.trimToSize(text, 5, "...");
         assertEquals(expected, result);
 
         text = "I am a short sentence.";
         expected = "I...";
-        result = CmsStringUtil.trimToSize(text, 4);
+        result = CmsStringUtil.trimToSize(text, 4, "...");
         assertEquals(expected, result);
 
         text = "I am a short sentence.";
         expected = "...";
-        result = CmsStringUtil.trimToSize(text, 3);
+        result = CmsStringUtil.trimToSize(text, 3, "...");
         assertEquals(expected, result);
 
         text = "I am a short sentence.";
         expected = "..";
-        result = CmsStringUtil.trimToSize(text, 2);
+        result = CmsStringUtil.trimToSize(text, 2, "...");
         assertEquals(expected, result);
 
         text = "I am a short sentence.";
         expected = ".";
-        result = CmsStringUtil.trimToSize(text, 1);
+        result = CmsStringUtil.trimToSize(text, 1, "...");
         assertEquals(expected, result);
 
         text = null;
