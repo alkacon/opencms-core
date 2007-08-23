@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/23 12:42:17 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -36,7 +36,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -101,6 +101,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SEARCH_QUERY_TITLE_0 = "GUI_SEARCH_QUERY_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_SEARCH_TIME_RANGES_0 = "GUI_SEARCH_TIME_RANGES_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.search.messages";

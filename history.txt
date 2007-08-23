@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/23 11:10:21 $
- * Version: $Revision: 1.859 $
+ * Date   : $Date: 2007/08/23 12:42:18 $
+ * Version: $Revision: 1.860 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,10 @@ OpenCms 7.0.2 - xxxxx, 2007
 ! Added update wizard for postgresql
 ! Added rebuild search index event
 ! XML content editor will now copy a locale from a configured list of defaults in case a selected locale does not exist
+! Added possibility to limit searches to time ranges of the creation and last modification date of resources  
+! XML content editor will now copy a locale from a configured list of defaults in case a selected locale does not exist
 ! Publish notification popup messages can now be switched on or off in the user preferences dialog
+! Added possibility to limit searches to time ranges of the creation and last modification date of resources
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog

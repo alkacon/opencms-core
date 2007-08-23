@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2007/08/23 12:42:17 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,9 @@ import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -60,6 +62,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
@@ -80,7 +83,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 6.0.0 
  */
@@ -831,7 +834,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
                         doc = hits.doc(i);
-                        if (hasReadPermission(cms, doc)) {
+                        if ((isInTimeRange(doc, params)) && (hasReadPermission(cms, doc))) {
                             // user has read permission
                             if (cnt >= start) {
                                 // do not use the resource to obtain the raw content, read it from the lucene document!
@@ -863,7 +866,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             timeResultProcessing += System.currentTimeMillis();
-        } catch (RuntimeException e) {    
+        } catch (RuntimeException e) {
             throw new CmsSearchException(Messages.get().container(Messages.ERR_SEARCH_PARAMS_1, params), e);
         } catch (Exception e) {
             throw new CmsSearchException(Messages.get().container(Messages.ERR_SEARCH_PARAMS_1, params), e);
@@ -1052,7 +1055,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // permission check needs only to be performed for VFS documents that contain both fields
             return true;
         }
-        
+
         String type = typeField.stringValue();
         if (!A_CmsVfsDocument.VFS_DOCUMENT_KEY_PREFIX.equals(type)
             && !OpenCms.getResourceManager().hasResourceType(type)) {
@@ -1064,5 +1067,46 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         // this will implicitly check read permission and if the resource was deleted
         String contextPath = cms.getRequestContext().removeSiteRoot(pathField.stringValue());
         return cms.existsResource(contextPath);
+    }
+
+    /**
+     * Checks wether the document is in the time range specified in the
+     * search parameters.<p>
+     * 
+     * The creation date and/or the last modification date are checked.<p>
+     * 
+     * @param doc the document to check the dates against the given time range
+     * @param params the search parameters where the time ranges are specified
+     * 
+     * @return true if document is in time range or not time range set otherwise false
+     */
+    protected boolean isInTimeRange(Document doc, CmsSearchParameters params) {
+
+        try {
+            // check the creation date of the document against the given time range
+            Date dateCreated = DateTools.stringToDate(doc.getField(CmsSearchField.FIELD_DATE_CREATED).stringValue());
+            if ((params.getMinDateCreated() > Long.MIN_VALUE) && (dateCreated.getTime() < params.getMinDateCreated())) {
+                return false;
+            }
+            if ((params.getMaxDateCreated() < Long.MAX_VALUE) && (dateCreated.getTime() > params.getMaxDateCreated())) {
+                return false;
+            }
+
+            // check the last modification date of the document against the given time range
+            Date dateLastModified = DateTools.stringToDate(doc.getField(CmsSearchField.FIELD_DATE_LASTMODIFIED).stringValue());
+            if ((params.getMinDateLastModified() > Long.MIN_VALUE)
+                && (dateLastModified.getTime() < params.getMinDateLastModified())) {
+                return false;
+            }
+            if ((params.getMaxDateLastModified() < Long.MAX_VALUE)
+                && (dateLastModified.getTime() > params.getMaxDateLastModified())) {
+                return false;
+            }
+
+        } catch (ParseException ex) {
+            // date could not be parsed -> doc is in time range
+        }
+
+        return true;
     }
 }

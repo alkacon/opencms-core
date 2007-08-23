@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/08/23 12:42:17 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.lucene.search.SortField;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,6 +111,18 @@ public class CmsSearchParameters {
 
     /** The index to search. */
     private CmsSearchIndex m_index;
+
+    /** The creation date the resources have to have as maximum. */
+    private long m_maxDateCreated;
+
+    /** The last modification date the resources have to have as maximum. */
+    private long m_maxDateLastModified;
+
+    /** The creation date the resources have to have as minimum. */
+    private long m_minDateCreated;
+
+    /** The last modification date the resources have to have as minimum. */
+    private long m_minDateLastModified;
 
     /** The current result page. */
     private int m_page;
@@ -197,6 +209,11 @@ public class CmsSearchParameters {
         m_queryLength = -1;
         m_matchesPerPage = 10;
         m_displayPages = 10;
+
+        m_minDateCreated = Long.MIN_VALUE;
+        m_maxDateCreated = Long.MAX_VALUE;
+        m_minDateLastModified = Long.MIN_VALUE;
+        m_maxDateLastModified = Long.MAX_VALUE;
     }
 
     /**
@@ -257,6 +274,46 @@ public class CmsSearchParameters {
     public int getMatchesPerPage() {
 
         return m_matchesPerPage;
+    }
+
+    /**
+     * Returns the creation date the resources have to have as maximum.<p>
+     *
+     * @return the creation date the resources have to have as maximum
+     */
+    public long getMaxDateCreated() {
+
+        return m_maxDateCreated;
+    }
+
+    /**
+     * Returns the last modification date the resources have to have as maximum.<p>
+     *
+     * @return the last modification date the resources have to have as maximum
+     */
+    public long getMaxDateLastModified() {
+
+        return m_maxDateLastModified;
+    }
+
+    /**
+     * Returns the creation date the resources have to have as minimum.<p>
+     *
+     * @return the creation date the resources have to have as minimum
+     */
+    public long getMinDateCreated() {
+
+        return m_minDateCreated;
+    }
+
+    /**
+     * Returns the last modification date the resources have to have as minimum.<p>
+     *
+     * @return the last modification date the resources have to have as minimum
+     */
+    public long getMinDateLastModified() {
+
+        return m_minDateLastModified;
     }
 
     /**
@@ -579,6 +636,46 @@ public class CmsSearchParameters {
     public void setMatchesPerPage(int matches) {
 
         m_matchesPerPage = matches;
+    }
+
+    /**
+     * Sets the creation date the resources have to have as maximum.<p>
+     *
+     * @param dateCreatedTo the creation date the resources have to have as maximum to set
+     */
+    public void setMaxDateCreated(long dateCreatedTo) {
+
+        m_maxDateCreated = dateCreatedTo;
+    }
+
+    /**
+     * Sets the last modification date the resources have to have as maximum.<p>
+     *
+     * @param dateLastModifiedTo the last modification date the resources have to have as maximum to set
+     */
+    public void setMaxDateLastModified(long dateLastModifiedTo) {
+
+        m_maxDateLastModified = dateLastModifiedTo;
+    }
+
+    /**
+     * Sets the creation date the resources have to have as minimum.<p>
+     *
+     * @param dateCreatedFrom the creation date the resources have to have as minimum to set
+     */
+    public void setMinDateCreated(long dateCreatedFrom) {
+
+        m_minDateCreated = dateCreatedFrom;
+    }
+
+    /**
+     * Sets the last modification date the resources have to have as minimum.<p>
+     *
+     * @param dateLastModifiedFrom the the last modification date the resources have to have as minimum to set
+     */
+    public void setMinDateLastModified(long dateLastModifiedFrom) {
+
+        m_minDateLastModified = dateLastModifiedFrom;
     }
 
     /**

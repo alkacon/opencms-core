@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/08/23 12:42:18 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -228,6 +228,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_SEARCHINDEX_BLOCK_SEARCH_QUERY_0 = "GUI_LABEL_SEARCHINDEX_BLOCK_SEARCH_QUERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_SEARCHINDEX_BLOCK_SEARCH_TIME_RANGES_0 = "GUI_LABEL_SEARCHINDEX_BLOCK_SEARCH_TIME_RANGES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_SEARCHINDEX_BLOCK_SETTINGS_0 = "GUI_LABEL_SEARCHINDEX_BLOCK_SETTINGS_0";

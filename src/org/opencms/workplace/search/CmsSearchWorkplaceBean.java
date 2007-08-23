@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchWorkplaceBean.java,v $
- * Date   : $Date: 2007/08/13 16:30:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/23 12:42:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.3.0 
  */
@@ -52,6 +52,18 @@ public class CmsSearchWorkplaceBean {
 
     /** The comma separated list of fields to search parameter value. */
     private String m_fields;
+
+    /** The creation date the resources have to have as maximum. */
+    private String m_maxDateCreated;
+
+    /** The last modification date the resources have to have as maximum. */
+    private String m_maxDateLastModified;
+
+    /** The creation date the resources have to have as minimum. */
+    private String m_minDateCreated;
+
+    /** The last modification date the resources have to have as minimum. */
+    private String m_minDateLastModified;
 
     /** The query. */
     private String m_query;
@@ -82,6 +94,46 @@ public class CmsSearchWorkplaceBean {
     public String getFields() {
 
         return m_fields;
+    }
+
+    /**
+     * Returns the creation date the resources have to have as maximum.<p>
+     *
+     * @return the creation date the resources have to have as maximum
+     */
+    public String getMaxDateCreated() {
+
+        return m_maxDateCreated;
+    }
+
+    /**
+     * Returns the last modification date the resources have to have as maximum.<p>
+     *
+     * @return the last modification date the resources have to have as maximum
+     */
+    public String getMaxDateLastModified() {
+
+        return m_maxDateLastModified;
+    }
+
+    /**
+     * Returns the creation date the resources have to have as minimum.<p>
+     *
+     * @return the creation date the resources have to have as minimum
+     */
+    public String getMinDateCreated() {
+
+        return m_minDateCreated;
+    }
+
+    /**
+     * Returns the last modification date the resources have to have as minimum.<p>
+     *
+     * @return the last modification date the resources have to have as minimum
+     */
+    public String getMinDateLastModified() {
+
+        return m_minDateLastModified;
     }
 
     /**
@@ -139,6 +191,46 @@ public class CmsSearchWorkplaceBean {
             throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_VALIDATE_SEARCH_PARAMS_0));
         }
         m_fields = fields;
+    }
+
+    /**
+     * Sets the creation date the resources have to have as maximum.<p>
+     *
+     * @param maxDateCreated the creation date the resources have to have as maximum to set
+     */
+    public void setMaxDateCreated(String maxDateCreated) {
+
+        m_maxDateCreated = maxDateCreated;
+    }
+
+    /**
+     * Sets the last modification date the resources have to have as maximum.<p>
+     *
+     * @param maxDateLastModified the last modification date the resources have to have as maximum to set
+     */
+    public void setMaxDateLastModified(String maxDateLastModified) {
+
+        m_maxDateLastModified = maxDateLastModified;
+    }
+
+    /**
+     * Sets the creation date the resources have to have as minimum.<p>
+     *
+     * @param dateCreatedFrom the creation date the resources have to have as minimum to set
+     */
+    public void setMinDateCreated(String dateCreatedFrom) {
+
+        m_minDateCreated = dateCreatedFrom;
+    }
+
+    /**
+     * Sets the last modification date the resources have to have as minimum.<p>
+     *
+     * @param minDateLastModified the last modification date the resources have to have as minimum to set
+     */
+    public void setMinDateLastModified(String minDateLastModified) {
+
+        m_minDateLastModified = minDateLastModified;
     }
 
     /**

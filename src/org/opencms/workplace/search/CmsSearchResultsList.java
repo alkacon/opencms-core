@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResultsList.java,v $
- * Date   : $Date: 2007/08/13 16:30:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/23 12:42:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,7 +156,11 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
                 getSearchParams().getQuery(),
                 getSearchParams().getSortOrder(),
                 getSearchParams().getFields(),
-                Collections.singletonList(getSearchParams().getSearchPath()));
+                Collections.singletonList(getSearchParams().getSearchPath()),
+                getSearchParams().getMinDateCreated(),
+                getSearchParams().getMaxDateCreated(),
+                getSearchParams().getMinDateLastModified(),
+                getSearchParams().getMaxDateLastModified());
 
             // set the right resource util parameters
             CmsResourceUtil resUtil = getResourceUtil();
@@ -164,19 +168,6 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
             resUtil.setSiteMode(CmsResourceUtil.SITE_MODE_MATCHING);
         }
         return m_collector;
-    }
-
-    /**
-     * Returns the search parameter bean.<p>
-     * 
-     * @return the search parameter bean
-     */
-    private CmsSearchWorkplaceBean getSearchParams() {
-
-        if (m_searchParams == null) {
-            m_searchParams = (CmsSearchWorkplaceBean)((Map)getSettings().getDialogObject()).get(CmsSearchDialog.class.getName());
-        }
-        return m_searchParams;
     }
 
     /**
@@ -308,5 +299,18 @@ public class CmsSearchResultsList extends A_CmsListExplorerDialog {
         if (getSearchParams() == null) {
             throw new Exception();
         }
+    }
+
+    /**
+     * Returns the search parameter bean.<p>
+     * 
+     * @return the search parameter bean
+     */
+    private CmsSearchWorkplaceBean getSearchParams() {
+
+        if (m_searchParams == null) {
+            m_searchParams = (CmsSearchWorkplaceBean)((Map)getSettings().getDialogObject()).get(CmsSearchDialog.class.getName());
+        }
+        return m_searchParams;
     }
 }

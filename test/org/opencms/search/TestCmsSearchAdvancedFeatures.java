@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/08/23 12:42:18 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,16 +31,20 @@
 
 package org.opencms.search;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -89,6 +93,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchCategories"));
         suite.addTest(new TestCmsSearchAdvancedFeatures("testMultipleSearchRoots"));
         suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchRestriction"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testLimitTimeRanges"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -104,6 +109,92 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Tests searching with limiting the time ranges.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testLimitTimeRanges() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing searching with limiting to time ranges");
+
+        CmsSearch searchBean = new CmsSearch();
+        List searchResult;
+        String query = "OpenCms";
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_OFFLINE);
+        searchBean.setMatchesPerPage(1000);
+        searchBean.setQuery(query);
+
+        searchResult = searchBean.getSearchResult();
+        int orgCount = searchResult.size();
+
+        // check min date created
+        Date stamp = new Date();
+        searchBean.getParameters().setMinDateCreated(stamp.getTime());
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(0, searchResult.size());
+
+        String resName = "search_new.txt";
+        cms.createResource(resName, CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
+        I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
+        OpenCms.getSearchManager().rebuildIndex(INDEX_OFFLINE, report);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(1, searchResult.size());
+
+        // check max date created
+        searchBean.getParameters().setMaxDateCreated(stamp.getTime()-1000);
+        searchBean.getParameters().setMinDateCreated(Long.MIN_VALUE);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(orgCount, searchResult.size());
+
+        searchBean.getParameters().setMaxDateCreated(Long.MAX_VALUE);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(orgCount + 1, searchResult.size());
+
+        // check min date last modified
+        stamp = new Date();
+        searchBean.getParameters().setMinDateLastModified(stamp.getTime());
+        
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(0, searchResult.size());
+        
+        CmsFile file = cms.readFile(resName);
+        file.setContents("OpenCms ist toll".getBytes());
+        cms.writeFile(file);
+        report = new CmsShellReport(cms.getRequestContext().getLocale());
+        OpenCms.getSearchManager().rebuildIndex(INDEX_OFFLINE, report);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(1, searchResult.size());
+
+        // check max date last modified
+        searchBean.getParameters().setMaxDateLastModified(stamp.getTime()-1000);
+        searchBean.getParameters().setMinDateLastModified(Long.MIN_VALUE);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(orgCount, searchResult.size());
+
+        searchBean.getParameters().setMaxDateLastModified(Long.MAX_VALUE);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(orgCount + 1, searchResult.size());
     }
 
     /**
@@ -196,7 +287,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         // first run is default sort order
         searchResult = searchBean.getSearchResult();
         System.out.println("Result sorted by relevance:");
-        TestCmsSearch.printResults(searchResult, cms);               
+        TestCmsSearch.printResults(searchResult, cms);
 
         Map categories = searchBean.getSearchResultCategories();
         // make sure categories where found
@@ -400,15 +491,15 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         searchResult = searchBean.getSearchResult();
         System.out.println("Result sorted by relevance:");
         TestCmsSearch.printResults(searchResult, cms);
-        
+
         // second run use Title sort order
         String lastTitle = null;
         searchBean.setSortOrder(CmsSearchParameters.SORT_TITLE);
         searchResult = searchBean.getSearchResult();
         System.out.println("Result sorted by title:");
         TestCmsSearch.printResults(searchResult, cms);
-        
-        Iterator i = searchResult.iterator();        
+
+        Iterator i = searchResult.iterator();
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();
             if (lastTitle != null) {
@@ -424,7 +515,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         searchResult = searchBean.getSearchResult();
         System.out.println("Result sorted by date last modified:");
         TestCmsSearch.printResults(searchResult, cms);
-        
+
         i = searchResult.iterator();
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();

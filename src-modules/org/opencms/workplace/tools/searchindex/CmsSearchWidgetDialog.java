@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2007/08/13 16:30:00 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/08/23 12:42:18 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
@@ -72,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
@@ -182,6 +183,58 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     }
 
     /**
+     * Returns the creation date the resources have to have as maximum.<p>
+     *
+     * @return the creation date the resources have to have as maximum
+     */
+    public String getMaxDateCreated() {
+
+        if (m_searchParams.getMaxDateCreated() == Long.MAX_VALUE) {
+            return "";
+        }
+        return Long.toString(m_searchParams.getMaxDateCreated());
+    }
+
+    /**
+     * Returns the last modification date the resources have to have as maximum.<p>
+     *
+     * @return the last modification date the resources have to have as maximum
+     */
+    public String getMaxDateLastModified() {
+
+        if (m_searchParams.getMaxDateLastModified() == Long.MAX_VALUE) {
+            return "";
+        }
+        return Long.toString(m_searchParams.getMaxDateLastModified());
+    }
+
+    /**
+     * Returns the creation date the resources have to have as minimum.<p>
+     *
+     * @return the creation date the resources have to have as minimum
+     */
+    public String getMinDateCreated() {
+
+        if (m_searchParams.getMinDateCreated() == Long.MIN_VALUE) {
+            return "";
+        }
+        return Long.toString(m_searchParams.getMinDateCreated());
+    }
+
+    /**
+     * Returns the last modification date the resources have to have as minimum.<p>
+     *
+     * @return the last modification date the resources have to have as minimum
+     */
+    public String getMinDateLastModified() {
+
+        if (m_searchParams.getMinDateLastModified() == Long.MIN_VALUE) {
+            return "";
+        }
+        return Long.toString(m_searchParams.getMinDateLastModified());
+    }
+
+    /**
      * Returns the list of searchable fields used in the workplace search index.<p> 
      * 
      * @return the list of searchable fields used in the workplace search index
@@ -213,6 +266,46 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
                 org.opencms.workplace.search.Messages.ERR_VALIDATE_SEARCH_PARAMS_0));
         }
         m_searchParams.setFields(CmsStringUtil.splitAsList(fields, ","));
+    }
+
+    /**
+     * Sets the creation date the resources have to have as maximum.<p>
+     *
+     * @param maxCreationDate the creation date the resources have to have as maximum to set
+     */
+    public void setMaxDateCreated(String maxCreationDate) {
+
+        m_searchParams.setMaxDateCreated(Long.parseLong(maxCreationDate));
+    }
+
+    /**
+     * Sets the last modification date the resources have to have as maximum.<p>
+     *
+     * @param maxDateLastModified the last modification date the resources have to have as maximum to set
+     */
+    public void setMaxDateLastModified(String maxDateLastModified) {
+
+        m_searchParams.setMaxDateLastModified(Long.parseLong(maxDateLastModified));
+    }
+
+    /**
+     * Sets the creation date the resources have to have as minimum.<p>
+     *
+     * @param minCreationDate the creation date the resources have to have as minimum to set
+     */
+    public void setMinDateCreated(String minCreationDate) {
+
+        m_searchParams.setMinDateCreated(Long.parseLong(minCreationDate));
+    }
+
+    /**
+     * Sets the last modification date the resources have to have as minimum.<p>
+     *
+     * @param minDateLastModified the last modification date the resources have to have as minimum to set
+     */
+    public void setMinDateLastModified(String minDateLastModified) {
+
+        m_searchParams.setMinDateLastModified(Long.parseLong(minDateLastModified));
     }
 
     /**
@@ -248,10 +341,17 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
 
-            // 2nd block "Fields to search in"
+            // 2nd block with limiting to time ranges
+            result.append(dialogBlockStart(key(Messages.GUI_LABEL_SEARCHINDEX_BLOCK_SEARCH_TIME_RANGES_0)));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(6, 9));
+            result.append(createWidgetTableEnd());
+            result.append(dialogBlockEnd());
+
+            // 3rd block "Fields to search in"
             result.append(dialogBlockStart(key(Messages.GUI_LABEL_SEARCHINDEX_BLOCK_SEARCH_FIELDS_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(6, 6));
+            result.append(createDialogRowsHtml(10, 10));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -337,7 +437,13 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
         addWidget(new CmsWidgetDialogParameter(m_searchParams, "calculateCategories", new CmsCheckboxWidget()));
 
-        // 2nd block "fields to search in"
+        // 2nd block with limiting to time ranges
+        addWidget(new CmsWidgetDialogParameter(this, "minDateCreated", PAGES[0], new CmsCalendarWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, "maxDateCreated", PAGES[0], new CmsCalendarWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, "minDateLastModified", PAGES[0], new CmsCalendarWidget()));
+        addWidget(new CmsWidgetDialogParameter(this, "maxDateLastModified", PAGES[0], new CmsCalendarWidget()));
+
+        // 3rd block "fields to search in"
         addWidget(new CmsWidgetDialogParameter(this, "fields", PAGES[0], new CmsMultiSelectWidget(getFieldList(), true)));
     }
 
@@ -439,7 +545,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
         String query = m_searchParams.getQuery();
         StringBuffer result = new StringBuffer();
-        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(query) && query.length() > 3) {
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(query) && (query.length() > 3)) {
             CmsSearchResultView resultView = new CmsSearchResultView(getJsp());
             // proprietary workplace admin link for pagelinks of search: 
             resultView.setSearchRessourceUrl(getJsp().link(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchDialog.java,v $
- * Date   : $Date: 2007/08/13 16:30:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/23 12:42:17 $
+ * Version: $Revision: 1.4 $
  *
  * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -37,6 +37,7 @@ import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
+import org.opencms.widgets.CmsCalendarWidget;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
@@ -67,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -197,8 +198,11 @@ public class CmsSearchDialog extends CmsWidgetDialog {
             result.append(createWidgetBlockStart(key(Messages.GUI_SEARCH_QUERY_TITLE_0)));
             result.append(createDialogRowsHtml(0, 3));
             result.append(createWidgetBlockEnd());
+            result.append(createWidgetBlockStart(key(Messages.GUI_SEARCH_TIME_RANGES_0)));
+            result.append(createDialogRowsHtml(4, 7));
+            result.append(createWidgetBlockEnd());
             result.append(createWidgetBlockStart(key(Messages.GUI_SEARCH_FIELDS_TITLE_0)));
-            result.append(createDialogRowsHtml(4, 4));
+            result.append(createDialogRowsHtml(8, 8));
             result.append(createWidgetBlockEnd());
         }
         // close widget table
@@ -221,6 +225,10 @@ public class CmsSearchDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_search, "query", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_search, "sortOrder", PAGES[0], new CmsSelectWidget(getSortNamesConf())));
         addWidget(new CmsWidgetDialogParameter(m_search, "restrictSearch", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_search, "minDateCreated", PAGES[0], new CmsCalendarWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_search, "maxDateCreated", PAGES[0], new CmsCalendarWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_search, "minDateLastModified", PAGES[0], new CmsCalendarWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_search, "maxDateLastModified", PAGES[0], new CmsCalendarWidget()));
         addWidget(new CmsWidgetDialogParameter(m_search, "fields", PAGES[0], new CmsMultiSelectWidget(
             getFieldList(),
             true)));

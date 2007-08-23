@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResourcesCollector.java,v $
- * Date   : $Date: 2007/08/13 16:30:16 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/23 12:42:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.0 
  */
@@ -69,6 +69,18 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
 
     /** Meta Parameter name constant. */
     public static final String PARAM_FIELDS = "fields";
+
+    /** Maximum creation date parameter name constant. */
+    public static final String PARAM_MAXCREATIONDATE = "maxCreationDate";
+
+    /** Maximum last modification date parameter name constant. */
+    public static final String PARAM_MAXLASTMODIFICATIONDATE = "maxLastModificationDate";
+
+    /** Minimum creation date parameter name constant. */
+    public static final String PARAM_MINCREATIONDATE = "minCreationDate";
+
+    /** Minimum last modification date parameter name constant. */
+    public static final String PARAM_MINLASTMODIFICATIONDATE = "minLastModificationDate";
 
     /** Query Parameter name constant. */
     public static final String PARAM_QUERY = "query";
@@ -93,13 +105,21 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
      * @param sort the sort by parameter
      * @param fields the comma separated list of fields to search
      * @param searchRoots a list of search roots
+     * @param minCreationDate the minimum creation date of the resources to be searched
+     * @param maxCreationDate the maximum creation date of the resources to be searched
+     * @param minLastModificationDate the minimum creation date of the resources to be searched
+     * @param maxLastModificationDate the maximum creation date of the resources to be searched
      */
     public CmsSearchResourcesCollector(
         A_CmsListExplorerDialog wp,
         String query,
         String sort,
         String fields,
-        List searchRoots) {
+        List searchRoots,
+        String minCreationDate,
+        String maxCreationDate,
+        String minLastModificationDate,
+        String maxLastModificationDate) {
 
         super(wp);
         m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
@@ -116,6 +136,31 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
             + PARAM_FIELDS
             + I_CmsListResourceCollector.SEP_KEYVAL
             + fields;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(minCreationDate)) {
+            m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
+                + PARAM_MINCREATIONDATE
+                + I_CmsListResourceCollector.SEP_KEYVAL
+                + minCreationDate;
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(maxCreationDate)) {
+            m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
+                + PARAM_MAXCREATIONDATE
+                + I_CmsListResourceCollector.SEP_KEYVAL
+                + maxCreationDate;
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(minLastModificationDate)) {
+            m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
+                + PARAM_MINLASTMODIFICATIONDATE
+                + I_CmsListResourceCollector.SEP_KEYVAL
+                + minLastModificationDate;
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(maxLastModificationDate)) {
+            m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
+                + PARAM_MAXLASTMODIFICATIONDATE
+                + I_CmsListResourceCollector.SEP_KEYVAL
+                + maxLastModificationDate;
+        }
+
         setResourcesParam(searchRoots);
     }
 
@@ -241,6 +286,18 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
         searchParams.setQuery((String)params.get(PARAM_QUERY));
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)params.get(PARAM_SORT))) {
             searchParams.setSortName((String)params.get(PARAM_SORT));
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)params.get(PARAM_MINCREATIONDATE))) {
+            searchParams.setMinDateCreated(Long.parseLong((String)params.get(PARAM_MINCREATIONDATE)));
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)params.get(PARAM_MAXCREATIONDATE))) {
+            searchParams.setMaxDateCreated(Long.parseLong((String)params.get(PARAM_MAXCREATIONDATE)));
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)params.get(PARAM_MINLASTMODIFICATIONDATE))) {
+            searchParams.setMinDateLastModified(Long.parseLong((String)params.get(PARAM_MINLASTMODIFICATIONDATE)));
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)params.get(PARAM_MAXLASTMODIFICATIONDATE))) {
+            searchParams.setMaxDateLastModified(Long.parseLong((String)params.get(PARAM_MAXLASTMODIFICATIONDATE)));
         }
         List fields = CmsStringUtil.splitAsList((String)params.get(PARAM_FIELDS), ',');
         searchParams.setFields(fields);
