@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2007/08/23 12:42:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/08/23 15:45:38 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -275,7 +275,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      */
     public void setMaxDateCreated(String maxCreationDate) {
 
-        m_searchParams.setMaxDateCreated(Long.parseLong(maxCreationDate));
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(maxCreationDate)) && (!maxCreationDate.equals("0"))) {
+            m_searchParams.setMaxDateCreated(Long.parseLong(maxCreationDate));
+        } else {
+            m_searchParams.setMaxDateCreated(Long.MAX_VALUE);
+        }
     }
 
     /**
@@ -285,7 +289,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      */
     public void setMaxDateLastModified(String maxDateLastModified) {
 
-        m_searchParams.setMaxDateLastModified(Long.parseLong(maxDateLastModified));
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(maxDateLastModified)) && (!maxDateLastModified.equals("0"))) {
+            m_searchParams.setMaxDateLastModified(Long.parseLong(maxDateLastModified));
+        } else {
+            m_searchParams.setMaxDateLastModified(Long.MAX_VALUE);
+        }
     }
 
     /**
@@ -295,7 +303,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      */
     public void setMinDateCreated(String minCreationDate) {
 
-        m_searchParams.setMinDateCreated(Long.parseLong(minCreationDate));
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(minCreationDate)) && (!minCreationDate.equals("0"))) {
+            m_searchParams.setMinDateCreated(Long.parseLong(minCreationDate));
+        } else {
+            m_searchParams.setMinDateCreated(Long.MIN_VALUE);
+        }
     }
 
     /**
@@ -305,7 +317,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
      */
     public void setMinDateLastModified(String minDateLastModified) {
 
-        m_searchParams.setMinDateLastModified(Long.parseLong(minDateLastModified));
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(minDateLastModified)) && (!minDateLastModified.equals("0"))) {
+            m_searchParams.setMinDateLastModified(Long.parseLong(minDateLastModified));
+        } else {
+            m_searchParams.setMinDateLastModified(Long.MIN_VALUE);
+        }
     }
 
     /**

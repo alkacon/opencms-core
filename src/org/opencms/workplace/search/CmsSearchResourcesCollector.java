@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResourcesCollector.java,v $
- * Date   : $Date: 2007/08/23 12:42:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/23 15:45:38 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.0 
  */
@@ -136,25 +136,27 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
             + PARAM_FIELDS
             + I_CmsListResourceCollector.SEP_KEYVAL
             + fields;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(minCreationDate)) {
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(minCreationDate)) && (!minCreationDate.equals("0"))) {
             m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
                 + PARAM_MINCREATIONDATE
                 + I_CmsListResourceCollector.SEP_KEYVAL
                 + minCreationDate;
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(maxCreationDate)) {
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(maxCreationDate)) && (!maxCreationDate.equals("0"))) {
             m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
                 + PARAM_MAXCREATIONDATE
                 + I_CmsListResourceCollector.SEP_KEYVAL
                 + maxCreationDate;
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(minLastModificationDate)) {
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(minLastModificationDate))
+            && (!minLastModificationDate.equals("0"))) {
             m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
                 + PARAM_MINLASTMODIFICATIONDATE
                 + I_CmsListResourceCollector.SEP_KEYVAL
                 + minLastModificationDate;
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(maxLastModificationDate)) {
+        if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(maxLastModificationDate))
+            && (!maxLastModificationDate.equals("0"))) {
             m_collectorParameter += I_CmsListResourceCollector.SEP_PARAM
                 + PARAM_MAXLASTMODIFICATIONDATE
                 + I_CmsListResourceCollector.SEP_KEYVAL
