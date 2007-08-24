@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2007/08/13 16:29:55 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2007/08/24 13:20:51 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,11 +60,11 @@ import javax.servlet.jsp.PageContext;
 
 /**
  * Bean to be used in JSP scriptlet code that provides direct 
- * access to the functionality offered by the opencms taglib.<p>
+ * access to the functionality offered by the OpenCms taglib.<p>
  * 
- * By instanciating a bean of this type and accessing the methods provided by 
+ * By instantiating a bean of this type and accessing the methods provided by 
  * the instance, all functionality of the OpenCms JSP taglib can be easily 
- * used from within JSP scriplet code.<p>
+ * used from within JSP scriptlet code.<p>
  * 
  * Initialize this bean at the beginning of your JSP like this:
  * <pre>
@@ -76,13 +76,13 @@ import javax.servlet.jsp.PageContext;
  * You can also access the current users <code>{@link org.opencms.file.CmsObject}</code>
  * by using <code>{@link org.opencms.jsp.CmsJspBean#getCmsObject()}</code>.<p>
  * 
- * All exceptions that occur when calling any method of this class are catched 
+ * All exceptions that occur when calling any method of this class are caught 
  * and written to the log output only, so that a template still has a chance of
  * working at least in some elements.<p>
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,12 +119,12 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Includes direct edit scriptlets, same as 
+     * Includes the direct edit scriptlet, same as 
      * using the <code>&lt;cms:editable /&gt;</code> tag.<p>
      * 
      * The configured default direct edit provider is used.<p>
      * 
-     * @param isEditable include scriptlets only if true
+     * @param isEditable include scriptlet only if true
      * 
      * @throws JspException if something goes wrong
      */
@@ -136,13 +136,13 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Includes direct edit scriptlets, same as
+     * Includes the direct edit scriptlet, same as
      * using the <code>&lt;cms:editable file="..." /&gt;</code>tag.<p>
      * 
-     * For backward compatibilty, this always uses the JSP include based direct edit provider<p>.
+     * For backward compatibility, this always uses the JSP include based direct edit provider<p>.
      * 
-     * @param isEditable include scriptlets only if true
-     * @param filename file with scriptlets
+     * @param isEditable include scriptlet only if true
+     * @param filename file with scriptlet code
      * 
      * @throws JspException if something goes wrong
      */
@@ -158,12 +158,12 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Includes direct edit scriptlets, same as
+     * Includes the direct edit scriptlet, same as
      * using the <code>&lt;cms:editable provider="..." mode="..." file="..." /&gt;</code>tag.<p>
      * 
      * @param provider the direct edit provider class name
      * @param mode the direct edit mode to use
-     * @param filename file with scriptlets (may be <code>null</code>)
+     * @param filename file with scriptlet code (may be <code>null</code>)
      * 
      * @throws JspException if something goes wrong
      */
@@ -287,7 +287,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * convenient access to localized resource bundles.<p>
      * 
      * @param bundleName the name of the ResourceBundle to use
-     * @param language language indentificator for the locale of the bundle
+     * @param language language identifier for the locale of the bundle
      * @return CmsMessages a message bundle initialized with the provided values
      */
     public CmsMessages getMessages(String bundleName, String language) {
@@ -300,7 +300,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * convenient access to localized resource bundles.<p>
      * 
      * @param bundleName the name of the ResourceBundle to use
-     * @param language language indentificator for the locale of the bundle
+     * @param language language identifier for the locale of the bundle
      * @param defaultLanguage default for the language, will be used 
      *         if language is null or empty String "", and defaultLanguage is not null
      * @return CmsMessages a message bundle initialized with the provided values
@@ -315,7 +315,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * convenient access to localized resource bundles.<p>
      * 
      * @param bundleName the name of the ResourceBundle to use
-     * @param language language indentificator for the locale of the bundle
+     * @param language language identifier for the locale of the bundle
      * @param country 2 letter country code for the locale of the bundle 
      * @param variant a vendor or browser-specific variant code
      * @param defaultLanguage default for the language, will be used 
@@ -365,7 +365,7 @@ public class CmsJspActionElement extends CmsJspBean {
             return null;
         }
         if (m_navigation == null) {
-            m_navigation = new CmsJspNavBuilder(getController().getCmsObject());
+            m_navigation = new CmsJspNavBuilder(getCmsObject());
         }
         return m_navigation;
     }
@@ -373,7 +373,7 @@ public class CmsJspActionElement extends CmsJspBean {
     /**
      * Returns the HTML for an <code>&lt;img src="..." /&gt;</code> tag that includes the given image scaling parameters.<p>
      * 
-     * @param target the target uri of the file in the OpenCms VFS
+     * @param target the target URI of the file in the OpenCms VFS
      * @param scaler the image scaler to use for scaling the image
      * @param attributes a map of additional HTML attributes that are added to the output
      * 
@@ -387,7 +387,7 @@ public class CmsJspActionElement extends CmsJspBean {
     /**
      * Returns the HTML for an <code>&lt;img src="..." /&gt;</code> tag that includes the given image scaling parameters.<p>
      * 
-     * @param target the target uri of the file in the OpenCms VFS
+     * @param target the target URI of the file in the OpenCms VFS
      * @param scaler the image scaler to use for scaling the image
      * @param attributes a map of additional HTML attributes that are added to the output
      * @param partialTag if <code>true</code>, the opening <code>&lt;img</code> and closing <code> /&gt;</code> is omitted
@@ -409,10 +409,10 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Include a sub-element without paramters from the OpenCms VFS, same as
+     * Include a sub-element without parameters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="***" /&gt;</code> tag.<p>
      * 
-     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
      * @throws JspException in case there were problems including the target
      *
      * @see org.opencms.jsp.CmsJspTagInclude
@@ -423,10 +423,10 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Include a named sub-element without paramters from the OpenCms VFS, same as
+     * Include a named sub-element without parameters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="***" element="***" /&gt;</code> tag.<p>
      * 
-     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
      * @throws JspException in case there were problems including the target
      *
@@ -438,12 +438,12 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Include a named sub-element without paramters from the OpenCms VFS, same as
+     * Include a named sub-element without parameters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="***" element="***" /&gt;</code> tag.<p>
      * 
-     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
-     * @param editable flag to indicate if element is editable
+     * @param editable flag to indicate if direct edit should be enabled for the element 
      * @throws JspException in case there were problems including the target
      *
      * @see org.opencms.jsp.CmsJspTagInclude
@@ -454,7 +454,7 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Include a named sub-element with paramters from the OpenCms VFS, same as
+     * Include a named sub-element with parameters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="***" element="***" /&gt;</code> tag
      * with parameters in the tag body.<p>
      * 
@@ -470,9 +470,9 @@ public class CmsJspActionElement extends CmsJspBean {
      * <b>Important:</b> Exceptions that occur in the include process are NOT
      * handled even if {@link #setSupressingExceptions(boolean)} was set to <code>true</code>.
      * 
-     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
-     * @param editable flag to indicate if element is editable
+     * @param editable flag to indicate if direct edit should be enabled for the element 
      * @param parameterMap a map of the request parameters
      * @throws JspException in case there were problems including the target
      * 
@@ -518,11 +518,11 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Include a named sub-element with paramters from the OpenCms VFS, same as
+     * Include a named sub-element with parameters from the OpenCms VFS, same as
      * using the <code>&lt;cms:include file="***" element="***" /&gt;</code> tag
      * with parameters in the tag body.<p>
      * 
-     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
      * @param parameterMap a map of the request parameters
      * @throws JspException in case there were problems including the target
@@ -535,14 +535,14 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Includes a named sub-element supressing all Exceptions that occur during the include,
+     * Includes a named sub-element suppressing all Exceptions that occur during the include,
      * otherwise the same as using {@link #include(String, String, Map)}.<p>
      * 
      * This is a convenience method that allows to include elements on a page without checking 
      * if they exist or not. If the target element does not exist, nothing is printed to 
      * the JSP output.<p>
      * 
-     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
      */
     public void includeSilent(String target, String element) {
@@ -555,16 +555,16 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Includes a named sub-element supressing all Exceptions that occur during the include,
+     * Includes a named sub-element suppressing all Exceptions that occur during the include,
      * otherwise the same as using {@link #include(String, String, Map)}.<p>
      * 
      * This is a convenience method that allows to include elements on a page without checking 
      * if they exist or not. If the target element does not exist, nothing is printed to 
      * the JSP output.<p>
      * 
-     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
-     * @param editable flag to indicate if element is editable
+     * @param editable flag to indicate if direct edit should be enabled for the element 
      */
     public void includeSilent(String target, String element, boolean editable) {
 
@@ -576,16 +576,16 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Includes a named sub-element supressing all Exceptions that occur during the include,
+     * Includes a named sub-element suppressing all Exceptions that occur during the include,
      * otherwise the same as using {@link #include(String, String, Map)}.<p>
      * 
      * This is a convenience method that allows to include elements on a page without checking 
      * if they exist or not. If the target element does not exist, nothing is printed to 
      * the JSP output.<p>
      * 
-     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
-     * @param editable flag to indicate if element is editable
+     * @param editable flag to indicate if direct edit should be enabled for the element 
      * @param parameterMap a map of the request parameters
      */
     public void includeSilent(String target, String element, boolean editable, Map parameterMap) {
@@ -598,14 +598,14 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Includes a named sub-element supressing all Exceptions that occur during the include,
+     * Includes a named sub-element suppressing all Exceptions that occur during the include,
      * otherwise the same as using {@link #include(String, String, Map)}.<p>
      * 
      * This is a convenience method that allows to include elements on a page without checking 
      * if they exist or not. If the target element does not exist, nothing is printed to 
      * the JSP output.<p>
      * 
-     * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
+     * @param target the target URI of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
      * @param parameterMap a map of the request parameters
      */
@@ -645,7 +645,7 @@ public class CmsJspActionElement extends CmsJspBean {
      * 
      * You should consider using a standard 
      * {@link java.util.ResourceBundle java.util.ResourceBundle} instead of the 
-     * OpenCms workplace language files.
+     * OpenCms workplace language files.<p>
      * 
      * @param label the label to look up
      * @return label the value of the label
@@ -667,33 +667,38 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Calculate a link with the OpenCms link management,
-     * same as using the <code>&lt;cms:link&gt;***&lt;/cms:link&gt;</code> tag.<p>
+     * Returns a link to a file in the OpenCms VFS 
+     * that has been adjusted according to the web application path and the 
+     * OpenCms static export rules.<p>
      * 
-     * This is important to get the right link for exported resources, 
-     * e.g. for images in the online project.
+     * Please note that the target is always assumed to be in the OpenCms VFS, so you can't use 
+     * this method for links external to OpenCms.<p>
      * 
-     * @param link the uri in the OpenCms to link to
+     * Relative links are converted to absolute links, using the current element URI as base.<p>
+     * 
+     * This is the same as using the <code>&lt;cms:link&gt;***&lt;/cms:link&gt;</code> tag.<p>
+     * 
+     * @param target the URI in the OpenCms VFS to link to
      * @return the translated link
      * 
      * @see org.opencms.jsp.CmsJspTagLink
      */
-    public String link(String link) {
+    public String link(String target) {
 
         if (isNotInitialized()) {
             return getMessage(NOT_INITIALIZED);
         }
         try {
-            return CmsJspTagLink.linkTagAction(link, getRequest());
+            return CmsJspTagLink.linkTagAction(target, getRequest());
         } catch (Throwable t) {
             handleException(t);
         }
-        CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_GEN_LINK_1, link);
+        CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_GEN_LINK_1, target);
         return getMessage(msgContainer);
     }
 
     /**
-     * Returns all properites of the current file.<p>
+     * Returns all properties of the current file.<p>
      * 
      * @return Map all properties of the current file
      */
@@ -703,7 +708,7 @@ public class CmsJspActionElement extends CmsJspBean {
     }
 
     /**
-     * Returns all properites of the selected file.<p>
+     * Returns all properties of the selected file.<p>
      * 
      * Please see the description of the class {@link org.opencms.jsp.CmsJspTagProperty} for
      * valid options of the <code>file</code> parameter.<p>

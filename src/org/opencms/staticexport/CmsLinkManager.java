@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/08/19 05:59:01 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2007/08/24 13:20:51 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.68 $ 
+ * @version $Revision: 1.69 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,19 +97,20 @@ public class CmsLinkManager {
     }
 
     /**
-     * Calculates the absolute uri for the "relativeUri" with the given absolute "baseUri" as start. <p> 
+     * Calculates the absolute URI for the "relativeUri" with the given absolute "baseUri" as start. <p> 
      * 
      * If "relativeUri" is already absolute, it is returned unchanged.
      * This method also returns "relativeUri" unchanged if it is not well-formed.<p>
      *    
-     * @param relativeUri the relative uri to calculate an absolute uri for
-     * @param baseUri the base uri, this must be an absolute uri
-     * @return an absolute uri calculated from "relativeUri" and "baseUri"
+     * @param relativeUri the relative URI to calculate an absolute URI for
+     * @param baseUri the base URI, this must be an absolute URI
+     * @return an absolute URI calculated from "relativeUri" and "baseUri"
      */
     public static String getAbsoluteUri(String relativeUri, String baseUri) {
 
-        if ((relativeUri == null) || ((relativeUri.length() >= 1) && (relativeUri.charAt(0) == '/'))) {
-            // uri is null or already absolute
+        if ((relativeUri == null)
+            || ((relativeUri.length() >= 1) && ((relativeUri.charAt(0) == '/') || (relativeUri.indexOf(':') > 0)))) {
+            // URI is null or already absolute
             return relativeUri;
         }
         try {

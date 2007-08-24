@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.267 $
+ * Date   : $Date: 2007/08/24 13:20:51 $
+ * Version: $Revision: 1.268 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.267 $
+ * @version $Revision: 1.268 $
  * 
  * @since 6.0.0 
  */
@@ -703,7 +703,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             // in case of folder type ensure, that the root path has a trailing slash
             resourcePath = CmsFileUtil.addTrailingSeparator(resourcePath);
         }
-        long dateContent = res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CONTENT"));
+        long dateContent = isFolder ? -1 : res.getLong(m_sqlManager.readQuery("C_RESOURCES_DATE_CONTENT"));
         CmsUUID userCreated = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_CREATED")));
         CmsUUID userLastModified = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_USER_LASTMODIFIED")));
         int siblingCount = res.getInt(m_sqlManager.readQuery("C_RESOURCES_SIBLING_COUNT"));

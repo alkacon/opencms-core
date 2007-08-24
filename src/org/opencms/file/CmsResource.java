@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2007/08/13 16:29:58 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2007/08/24 13:20:51 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,11 +43,28 @@ import java.util.Comparator;
 /**
  * Base class for all OpenCms VFS resources like <code>{@link CmsFile}</code> or <code>{@link CmsFolder}</code>.<p>
  *
+ * The OpenCms VFS resource is an important object for using the OpenCms API. 
+ * Basically, all entries in the OpenCms VFS are considered to be "resources". 
+ * Currently, only two types of resources exists:<ul>
+ * <li>Files, which are represented by the subclass {@link CmsFile}.
+ * <li>Folders (also called Directories), which are represented by the subclass {@link CmsFolder}.
+ * </ul>
+ * 
+ * If you have a resource, you can use {@link #isFile()} or {@link #isFolder()} to learn what kind of 
+ * subclass you have. Please note that this is usually not required, as the only real difference between a
+ * {@link CmsFile} and a {@link CmsResource} is that the {@link CmsFile} also has the contents of the file,
+ * which you can obtain using {@link CmsFile#getContents()}. As long as you don't need the content, you can
+ * use the {@link CmsResource} for everything else. This is even more true for a {@link CmsFolder}, here you 
+ * will need the subclass only in special cases, since the signature is identical to {@link CmsResource}.<p>
+ * 
+ * A OpenCms VFS resource can have any number of properties attached, which are represented by a {@link CmsProperty}.
+ * To read the properties for a resource, use {@link CmsObject#readPropertyObject(CmsResource, String, boolean)}
+ * or use {@link CmsObject#readPropertyObjects(CmsResource, boolean)} to read all properties of the resource.<p>
+ *
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
- * @author Thomas Weckert  
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 6.0.0 
  */
@@ -67,7 +84,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         /** Copy mode to preserve siblings during copy. */
         protected static final CmsResourceCopyMode MODE_COPY_PRESERVE_SIBLING = new CmsResourceCopyMode(3);
 
-        /** Serializable version id. */
+        /** Version id required for safe serialization. */
         private static final long serialVersionUID = 9081630878178799137L;
 
         /**
@@ -112,7 +129,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         /** Signals that siblings of this resource should be deleted. */
         protected static final CmsResourceDeleteMode MODE_DELETE_REMOVE_SIBLINGS = new CmsResourceDeleteMode(2);
 
-        /** Serializable version id. */
+        /** Version id required for safe serialization. */
         private static final long serialVersionUID = 2010402524576925865L;
 
         /**
@@ -161,7 +178,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         /** Indicates that the undo method will undo move operations and recursive content changes. */
         public static final CmsResourceUndoMode MODE_UNDO_MOVE_CONTENT_RECURSIVE = new CmsResourceUndoMode(4);
 
-        /** Serializable version id. */
+        /** Version id required for safe serialization. */
         private static final long serialVersionUID = 3521620626485212068L;
 
         /**
@@ -240,7 +257,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * A comparator for the release date of 2 resources.<p>
+     * A comparator for the release date of two resources.<p>
      * 
      * If the release date of a resource is not set, the
      * creation date is used instead.<p>
@@ -276,7 +293,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     };
 
     /**
-     * A comparator for the root path of 2 resources.<p>
+     * A comparator for the root path of two resources.<p>
      */
     public static final Comparator COMPARE_ROOT_PATH = new Comparator() {
 
@@ -297,7 +314,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     };
 
     /**
-     * A comparator for the root path of 2 resources ignoring case differences.<p>
+     * A comparator for the root path of two resources ignoring case differences.<p>
      */
     public static final Comparator COMPARE_ROOT_PATH_IGNORE_CASE = new Comparator() {
 
@@ -318,7 +335,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     };
 
     /**
-     * A comparator for the root path of 2 resources ignoring case differences, putting folders before files.<p>
+     * A comparator for the root path of two resources ignoring case differences, putting folders before files.<p>
      */
     public static final Comparator COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST = new Comparator() {
 
@@ -353,10 +370,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /** Copy mode to preserve siblings during copy. */
     public static final CmsResourceCopyMode COPY_PRESERVE_SIBLING = CmsResourceCopyMode.MODE_COPY_PRESERVE_SIBLING;
 
-    /** The default expiration date of a resource (which is: never expires). */
+    /** The default expiration date of a resource, which is: never expires. */
     public static final long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;
 
-    /** The default release date of a resource (which is: always released). */
+    /** The default release date of a resource, which is: always released. */
     public static final long DATE_RELEASED_DEFAULT = 0;
 
     /** A special date that indicates release and expiration information are to be ignored. */
@@ -480,13 +497,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     private int m_version;
 
     /**
-     * Constructor, creates a new CmsRecource object.<p>
+     * Creates a new CmsRecource object.<p>
      * 
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
      * @param rootPath the root path to the resource
      * @param type the type of this resource
-     * @param isFolder must be true if thr resource is a folder, or false if it is a file
+     * @param isFolder must be true if the resource is a folder, or false if it is a file
      * @param flags the flags of this resource
      * @param projectId the project id this resource was last modified in
      * @param state the state of this resource
@@ -581,11 +598,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the folder path of the resource with the given name,
-     * if the resource is a folder (i.e. ends with a "/"), the complete path of the folder 
+     * Returns the folder path of the resource with the given name.<p>
+     * 
+     * If the resource name denotes a folder (that is ends with a "/"), the complete path of the folder 
      * is returned (not the parent folder path).<p>
      * 
-     * This is achived by just cutting of everthing behind the last occurence of a "/" character
+     * This is achieved by just cutting of everything behind the last occurrence of a "/" character
      * in the String, no check if performed if the resource exists or not in the VFS, 
      * only resources that end with a "/" are considered to be folders.
      * 
@@ -654,7 +672,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * a folder "/foo/" would have level 1,
      * a folfer "/foo/bar/" level 2 etc.<p> 
      * 
-     * @param resource the resource to determin the directory level for
+     * @param resource the resource to determine the directory level for
      * @return the directory level of a resource
      */
     public static int getPathLevel(String resource) {
@@ -708,10 +726,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns true if the resource name is a folder name, i.e. ends with a "/".<p>
+     * Returns true if the resource name certainly denotes a folder, that is ends with a "/".<p>
      * 
      * @param resource the resource to check
-     * @return true if the resource name is a folder name, i.e. ends with a "/"
+     * @return true if the resource name certainly denotes a folder, that is ends with a "/"
      */
     public static boolean isFolder(String resource) {
 
@@ -753,7 +771,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
+     * Uses the resource root path to compare two resources.<p> 
+     * 
+     * Please note a number of additional comparators for resources exists as members of this class.<p>
+     * 
      * @see java.lang.Comparable#compareTo(java.lang.Object)
+     * 
+     * @see #COMPARE_DATE_RELEASED
+     * @see #COMPARE_ROOT_PATH
+     * @see #COMPARE_ROOT_PATH_IGNORE_CASE
+     * @see #COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST
      */
     public int compareTo(Object obj) {
 
@@ -767,6 +794,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
+     * Two resources are considered equal in case their structure id is equal.<p>
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
@@ -783,7 +812,17 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Returns the date of the last modification of the content of this resource.<p>
      *
+     * This applies only to resources of type {@link CmsFile}, since a {@link CmsFolder} has no content.
+     * In case of a folder, <code>-1</code> is always returned as content date.<p>
+     *
+     * Any modification of a resource, including changes to the resource properties, 
+     * will increase the "date of last modification" which is returned by {@link #getDateLastModified()}.
+     * The "date of the content" as returned by this method only changes when the
+     * file content as returned by {@link CmsFile#getContents()} is changed.<p>
+     *
      * @return the date of the last modification of the content of this resource
+     * 
+     * @since 7.0.0
      */
     public long getDateContent() {
 
@@ -802,6 +841,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /**
      * Returns the expiration date this resource.<p>
+     *
+     * If the expiration date has not been set, {@link #DATE_EXPIRED_DEFAULT} is returned. 
+     * This means: The resource does never expire.<p>
      *
      * @return the expiration date of this resource
      */
@@ -823,6 +865,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Returns the release date this resource.<p>
      *
+     * If the release date has not been set, {@link #DATE_RELEASED_DEFAULT} is returned. 
+     * This means: The resource has always been released.<p>
+     *
      * @return the release date of this resource
      */
     public long getDateReleased() {
@@ -834,6 +879,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * Returns the flags of this resource.<p>
      *
      * @return the flags of this resource
+     * 
+     * @see #setFlags(int) for an explanation of the resource flags
      */
     public int getFlags() {
 
@@ -855,9 +902,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the name of this resource, e.g. <code>index.html</code>.<p>
+     * Returns the name of this resource without parent folders, for example <code>index.html</code>.<p>
      *
-     * @return the name of this resource
+     * @return the name of this resource without parent folders
      */
     public String getName() {
 
@@ -911,12 +958,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the number of siblings of the resource, also counting this resource.<p>
+     * Returns the number of siblings of this resource, also counting this resource.<p>
      * 
      * If a resource has no sibling, the total sibling count for this resource is <code>1</code>, 
      * if a resource has <code>n</code> siblings, the sibling count is <code>n + 1</code>.<p> 
      * 
-     * @return the number of siblings
+     * @return the number of siblings of this resource, also counting this resource
      */
     public int getSiblingCount() {
 
@@ -924,7 +971,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the state of this resource.<p>
+     * Returns the change state of this resource.<p>
      *
      * This may be {@link CmsResource#STATE_UNCHANGED}, 
      * {@link CmsResource#STATE_CHANGED}, {@link CmsResource#STATE_NEW} 
@@ -958,9 +1005,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the user id of the user who created this resource.<p>
+     * Returns the user id of the {@link CmsUser} who created this resource.<p>
      * 
-     * @return the user id
+     * @return the user id of the {@link CmsUser} who created this resource
      */
     public CmsUUID getUserCreated() {
 
@@ -968,9 +1015,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the user id of the user who made the last change on this resource.<p>
+     * Returns the user id of the {@link CmsUser} who made the last change on this resource.<p>
      *
-     * @return the user id of the user who made the last change<p>
+     * @return the user id of the {@link CmsUser} who made the last change<p>
      */
     public CmsUUID getUserLastModified() {
 
@@ -1019,7 +1066,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns <code>true</code> if the resource is a file, i.e. can have no sub-resources.<p>
+     * Returns <code>true</code> if the resource is a {@link CmsFile}, that is not a {@link CmsFolder}.<p>
      *
      * @return true if this resource is a file, false otherwise
      */
@@ -1029,7 +1076,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns <code>true</code> if the resource is a folder, i.e. can have sub-resources.<p>
+     * Returns <code>true</code> if the resource is a {@link CmsFolder}, that is not a {@link CmsFile}.<p>
      *
      * @return true if this resource is a folder, false otherwise
      */
@@ -1039,11 +1086,19 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Checks if the resource is internal.<p>
+     * Returns <code>true</code> if the resource is marked as internal.<p>
+     * 
+     * An internal resource can be read by the OpenCms API, but it can not be delivered
+     * by a direct request from an outside user.<p>
+     * 
+     * For example if the resource <code>/internal.xml</code>
+     * has been set as marked as internal, this resource can not be requested by an HTTP request,
+     * so when a user enters <code>http:/www.myserver.com/opencms/opencms/internal.xml</code> in the browser
+     * this will generate a {@link CmsVfsResourceNotFoundException}.<p>
      * 
      * This state is stored as bit 1 in the resource flags.<p>
      * 
-     * @return true if the resource is internal, otherwise false
+     * @return <code>true</code> if the resource is internal
      */
     public boolean isInternal() {
 
@@ -1051,11 +1106,11 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Checks if the link has to be labeled with a special icon in the explorer view.<p>
+     * Returns <code>true</code> if the resource has to be labeled with a special icon in the explorer view.<p>
      *
      * This state is stored as bit 2 in the resource flags.<p>
      * 
-     * @return true if a link to the resource has to be labeled, otherwise false
+     * @return <code>true</code> if the resource has to be labeled in the explorer view
      */
     public boolean isLabeled() {
 
@@ -1103,9 +1158,9 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns true if this resource was touched.<p>
+     * Returns <code>true</code> if this resource was touched.<p>
      * 
-     * @return boolean true if this resource was touched
+     * @return <code>true</code> if this resource was touched
      */
     public boolean isTouched() {
 
@@ -1115,7 +1170,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Sets the expiration date this resource.<p>
      * 
-     * @param time the date to set
+     * @param time the expiration date to set
      */
     public void setDateExpired(long time) {
 
@@ -1125,7 +1180,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Sets the date of the last modification of this resource.<p>
      * 
-     * @param time the date to set
+     * @param time the last modification date to set
      */
     public void setDateLastModified(long time) {
 
@@ -1136,7 +1191,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Sets the release date this resource.<p>
      * 
-     * @param time the date to set
+     * @param time the release date to set
      */
     public void setDateReleased(long time) {
 
@@ -1146,7 +1201,13 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Sets the flags of this resource.<p>
      *
-     * @param flags int value with flag values to set
+     * The resource flags integer is used as bit set that contains special information about the resource.
+     * The following methods internally use the resource flags:<ul>
+     * <li>{@link #isInternal()}
+     * <li>{@link #isLabeled()}
+     * </ul>
+     *
+     * @param flags the flags value to set
      */
     public void setFlags(int flags) {
 

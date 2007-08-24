@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2007/08/13 16:29:58 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/08/24 13:20:51 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 6.0.0 
  */
@@ -144,6 +144,8 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
     /**
      * Returns <code>true</code> if the given resource size describes a folder type.<p>
      * 
+     * This is <code>true</code> in case <code>size &lt; 0</code>.<p>
+     * 
      * @param size the resource size to check 
      * 
      * @return true if the given resource size describes a folder type or false if it is no folder
@@ -221,6 +223,8 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
     }
 
     /**
+     * A folder does always have length <code>-1</code>.<p>
+     * 
      * @see org.opencms.file.CmsResource#getLength()
      */
     public int getLength() {
@@ -229,6 +233,18 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
     }
 
     /**
+     * A folder does always have the content date <code>-1</code>.<p>
+     * 
+     * @see org.opencms.file.CmsResource#getDateContent()
+     */
+    public long getDateContent() {
+
+        return -1;
+    }
+
+    /**
+     * Since this is a folder, not a file, <code>false</code> is always returned.<p>
+     * 
      * @see org.opencms.file.CmsResource#isFile()
      */
     public boolean isFile() {
@@ -237,6 +253,8 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
     }
 
     /**
+     * Since this is a folder, <code>true</code> is always returned.<p>
+     * 
      * @see org.opencms.file.CmsResource#isFolder()
      */
     public boolean isFolder() {
