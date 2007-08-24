@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCollectorData.java,v $
- * Date   : $Date: 2007/08/13 16:30:08 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/08/24 15:53:08 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,15 +41,19 @@ import org.opencms.main.OpenCms;
 import org.apache.commons.logging.Log;
 
 /**
- * Data structure for the collector, parsed from the collector parameters.
- * <p>
+ * Data structure for the collector, parsed from the collector parameters.<p>
+ * 
+ * The input data String must have the following format:<br>
+ * <code>"{VFS URI}|{Resource type}|{Count}"</code>, for example:<br>
+ * <code>"/my/folder/|xmlcontent|5"</code>.<p>
  * 
  * @author Alexander Kandzior
- * @author Thomas Weckert
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
+ * 
+ * @see CmsExtendedCollectorData
  */
 public class CmsCollectorData {
 
@@ -66,8 +70,11 @@ public class CmsCollectorData {
     private int m_type;
 
     /**
-     * Creates a new collector data set.
-     * <p>
+     * Creates a new extended collector data set.<p>
+     * 
+     * The input data String must have the following format:<br>
+     * <code>"{VFS URI}|{Resource type}|{Count}"</code>, for example:<br>
+     * <code>"/my/folder/|xmlcontent|5"</code>.<p>
      * 
      * @param data the data to parse
      */
@@ -107,7 +114,7 @@ public class CmsCollectorData {
                     LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_RESTYPE_INTID_2,
                         resourceType.getTypeName(),
-                        new Integer(m_type)));
+                        new Integer(resourceType.getTypeId())));
                 }
             } catch (CmsLoaderException e1) {
                 // this resource type does not exist
@@ -117,8 +124,15 @@ public class CmsCollectorData {
     }
 
     /**
-     * Returns the count.
-     * <p>
+     * Required constructor for subclasses.<p>
+     */
+    protected CmsCollectorData() {
+
+        // NOOP       
+    }
+
+    /**
+     * Returns the count.<p>
      * 
      * @return the count
      */
@@ -128,8 +142,7 @@ public class CmsCollectorData {
     }
 
     /**
-     * Returns the file name.
-     * <p>
+     * Returns the file name.<p>
      * 
      * @return the file name
      */
@@ -139,8 +152,7 @@ public class CmsCollectorData {
     }
 
     /**
-     * Returns the type.
-     * <p>
+     * Returns the type.<p>
      * 
      * @return the type
      */
@@ -148,7 +160,27 @@ public class CmsCollectorData {
 
         return m_type;
     }
-    
+
+    /**
+     * Sets the fileName.<p>
+     *
+     * @param fileName the file name to set
+     */
+    public void setFileName(String fileName) {
+
+        m_fileName = fileName;
+    }
+
+    /**
+     * Sets the type.<p>
+     *
+     * @param type the type to set
+     */
+    public void setType(int type) {
+
+        m_type = type;
+    }
+
     /**
      * Sets the count.<p>
      * 

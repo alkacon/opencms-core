@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCategoryResourceCollector.java,v $
- * Date   : $Date: 2007/08/13 16:30:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/24 15:53:08 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,40 +57,34 @@ import org.apache.commons.logging.Log;
 
 /**
  * A collector to fetch XML contents in a folder or the current site filtered by one or more given category types.<p>
- * The return list will also be filtered by given key value pairs which are given as a collector param.
  * 
- * <pre>
+ * The return list will also be filtered by given key value pairs which are given as a collector parameter.<p>
+ * 
+ * Usage:
+ * <code>
  * &lt;cms:contentload collector=&quot;allKeyValuePairFiltered&quot; param=&quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date]|sortAsc=[boolean]&quot;&gt;
- * </pre>
+ * </code>
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
- * @since 6.9.2
+ * @since 7.0.0
  */
 public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
 
     /**
      * Data structure for the collector, parsed from the collector parameters.<p>
      *
-     * In addition to the superclass this implementation accepts parameters that build key value pairs seperated by
+     * In addition to the superclass this implementation accepts parameters that build key value pairs separated by
      * pipes '|', which allows arbitrary order of parameters and free numbers of parameters.<p>
-     *
-     * <h3>Configuration params</h3>
-     *
-     * <pre>
+     * 
+     * Usage:
+     * <code>
      * &quot;resource=[filename]|resourceType=[resource type]|categoryTypes=[category1,category2,...]|subTree=[boolean]|sortBy=[category|date]|sortAsc=[boolean]&quot;
-     * </pre>
-     *
-     *
-     * @author Raphael Schnuck
-     *
-     * @version $Revision: 1.3 $
-     *
-     * @since 6.9.2
+     * </code>
      */
-    private static final class CmsExtendedCollectorData extends CmsCollectorData {
+    private static final class CmsCategoryCollectorData extends CmsCollectorData {
 
         /** The collector parameter key for the resource type. */
         public static final String PARAM_KEY_CATEGORY_TYPES = "categoryTypes";
@@ -113,14 +107,8 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         /** The collector parameter key for the sub tree. */
         public static final String PARAM_KEY_SUB_TREE = "subTree";
 
-        /** The log object for this class. */
-        private static final Log LOG = CmsLog.getLog(CmsExtendedCollectorData.class);
-
         /** The list of category types. */
         private List m_categoryTypes;
-
-        /** The resource path (folder / file). */
-        private String m_fileName;
 
         /** Indicates if the returned list will be sorted ascending or not (descending). */
         private boolean m_sortAsc;
@@ -131,9 +119,6 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         /** Indicates if the sub tree of the given resource will be searched for appropriate resources too. */
         private boolean m_subTree;
 
-        /** The resource type to accept. */
-        private I_CmsResourceType m_type;
-
         /**
          * Creates a new collector data set.<p>
          *
@@ -141,10 +126,9 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
          *
          * @throws CmsLoaderException if the given configuration is not valid.
          */
-        public CmsExtendedCollectorData(String data)
+        public CmsCategoryCollectorData(String data)
         throws CmsLoaderException {
 
-            super("fool|plain");
             parseExtendedData(data);
         }
 
@@ -159,16 +143,6 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         }
 
         /**
-         * Returns the file name.<p>
-         *
-         * @return the file name
-         */
-        public String getFileName() {
-
-            return m_fileName;
-        }
-
-        /**
          * Returns the sort by string (only 'date' or 'category' excepted).<p>
          *
          * @return the sort by string
@@ -176,19 +150,6 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         public String getSortBy() {
 
             return m_sortBy;
-        }
-
-        /**
-         * Returns the resource type.<p>
-         *
-         * @return the resource type
-         */
-        public int getType() {
-
-            if (m_type == null) {
-                return -1;
-            }
-            return m_type.getTypeId();
         }
 
         /**
@@ -216,7 +177,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
          *
          * @param data the configuration data.
          *
-         * @throws CmsLoaderException if sth. goes wrong
+         * @throws CmsLoaderException if something goes wrong
          */
         private void parseExtendedData(String data) throws CmsLoaderException {
 
@@ -232,9 +193,12 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                 if (PARAM_KEY_CATEGORY_TYPES.equals(key)) {
                     m_categoryTypes = CmsStringUtil.splitAsList(value, ',');
                 } else if (PARAM_KEY_RESOURCE.equals(key)) {
-                    m_fileName = value;
+                    setFileName(value);
                 } else if (PARAM_KEY_RESOURCE_TYPE.equals(key)) {
-                    m_type = OpenCms.getResourceManager().getResourceType(value);
+                    I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(value);
+                    if (type != null) {
+                        setType(type.getTypeId());
+                    }
                 } else if (PARAM_KEY_SORT_ASC.equals(key)) {
                     m_sortAsc = Boolean.valueOf(value).booleanValue();
                 } else if (PARAM_KEY_SORT_BY.equals(key)) {
@@ -286,6 +250,9 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
             return (date1 > date2) ? 1 : (date1 < date2) ? -1 : 0;
         }
     };
+
+    /** The log object for this class. */
+    protected static final Log LOG = CmsLog.getLog(CmsCategoryResourceCollector.class);
 
     /** Static array of the collectors implemented by this class. */
     private static final String[] COLLECTORS = {"allKeyValuePairFiltered"};
@@ -368,18 +335,18 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
     }
 
     /**
-     * Collectes all resources for the given categories filtered and sorted by the given collector param.<p>
+     * Collects all resources for the given categories filtered and sorted by the given collector parameter.<p>
      * 
-     * @param cms the cms object
-     * @param param the param value to filtered the resources
+     * @param cms the current OpenCms user context
+     * @param param value parameter to filter the resources
      * 
-     * @return a list of resources filtered and sorted by the given collector param
+     * @return a list of resources filtered and sorted by the given collector parameter
      * 
      * @throws CmsException if something goes wrong
      */
     protected List allKeyValuePairFiltered(CmsObject cms, String param) throws CmsException {
 
-        CmsExtendedCollectorData data = new CmsExtendedCollectorData(param);
+        CmsCategoryCollectorData data = new CmsCategoryCollectorData(param);
         if ((data.getCategoryTypes() != null) && (data.getCategoryTypes().size() > 0)) {
             List result = new ArrayList();
             Map sortCategories = new HashMap();

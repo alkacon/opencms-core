@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2007/08/13 16:30:07 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/08/24 15:53:08 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0 
  */
@@ -215,15 +215,15 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
      * Returns the link to create a new XML content item in the folder pointed to by the parameter.<p>
      * 
      * @param cms the current CmsObject
-     * @param param the folder name to use
+     * @param data the collector data to use
      * 
      * @return the link to create a new XML content item in the folder
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @since 7.0.2
      */
-    protected String getCreateInFolder(CmsObject cms, String param) throws CmsException {
-
-        CmsCollectorData data = new CmsCollectorData(param);
+    protected String getCreateInFolder(CmsObject cms, CmsCollectorData data) throws CmsException {
 
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
@@ -252,6 +252,21 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
         } while (result.contains(checkFileName) || result.contains(checkTempFileName));
 
         return cms.getRequestContext().removeSiteRoot(checkFileName);
+    }
+
+    /**
+     * Returns the link to create a new XML content item in the folder pointed to by the parameter.<p>
+     * 
+     * @param cms the current CmsObject
+     * @param param the folder name to use
+     * 
+     * @return the link to create a new XML content item in the folder
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected String getCreateInFolder(CmsObject cms, String param) throws CmsException {
+
+        return getCreateInFolder(cms, new CmsCollectorData(param));
     }
 
     /**

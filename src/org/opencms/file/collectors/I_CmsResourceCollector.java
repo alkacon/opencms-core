@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/I_CmsResourceCollector.java,v $
- * Date   : $Date: 2007/08/13 16:30:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/08/24 15:53:08 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0 
  */
@@ -68,7 +68,7 @@ public interface I_CmsResourceCollector extends Comparable {
      * @return the link to execute after a "new" button was clicked
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsDataAccessException if the param attrib of the corresponding collector tag is invalid
+     * @throws CmsDataAccessException if the parameter attribute of the corresponding collector tag is invalid
      * @see #getCreateParam(CmsObject, String, String)
      * 
      */
@@ -89,7 +89,7 @@ public interface I_CmsResourceCollector extends Comparable {
      * @return the link to execute after a "new" button was clicked
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsDataAccessException if the param attrib of the corresponding collector tag is invalid
+     * @throws CmsDataAccessException if the parameter attribute of the corresponding collector tag is invalid
      * @see #getCreateParam(CmsObject, String, String)
      * 
      */
@@ -127,7 +127,7 @@ public interface I_CmsResourceCollector extends Comparable {
      * 
      * @return the parameter that will be passed to the {@link #getCreateLink(CmsObject, String, String)} method, or null
      * 
-     * @throws CmsDataAccessException if the param attrib of the corresponding collector tag is invalid
+     * @throws CmsDataAccessException if the parameter attribute of the corresponding collector tag is invalid
      * 
      * @see #getCreateLink(CmsObject, String, String)
      */
@@ -152,7 +152,7 @@ public interface I_CmsResourceCollector extends Comparable {
      * 
      * The "order weight" is important because two collector classes may provide a collector with 
      * the same name. If this is the case, the collector implementation with the higher 
-     * order number "overrules" the lower order number classs.<p>
+     * order number "overrules" the lower order number class.<p>
      * 
      * @return the "order weight" of this collector
      */
@@ -167,7 +167,7 @@ public interface I_CmsResourceCollector extends Comparable {
      * @return a list of CmsXmlContent objects
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsDataAccessException if the param attrib of the corresponding collector tag is invalid
+     * @throws CmsDataAccessException if the parameter attribute of the corresponding collector tag is invalid
      */
     List getResults(CmsObject cms) throws CmsDataAccessException, CmsException;
 
@@ -182,7 +182,7 @@ public interface I_CmsResourceCollector extends Comparable {
      * @return a list of CmsXmlContent objects
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsDataAccessException if the param attrib of the corresponding collector tag is invalid
+     * @throws CmsDataAccessException if the parameter attribute of the corresponding collector tag is invalid
      */
     List getResults(CmsObject cms, String collectorName, String param) throws CmsDataAccessException, CmsException;
 
