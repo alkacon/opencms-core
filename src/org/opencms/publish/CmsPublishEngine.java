@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/08/22 12:52:52 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/08/24 08:39:07 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.5.5
  */
@@ -682,19 +682,20 @@ public final class CmsPublishEngine implements Runnable {
     }
 
     /**
-     * Sends a message to the given user.<p>
+     * Sends a message to the given user, if publish notification is enabled or an error is shown in the message.<p>
      * 
      * @param toUserId the id of the user to send the message to
      * @param message the message to send
+     * @param hasErrors flag to determine if the message to send shows an error
      */
-    protected void sendMessage(CmsUUID toUserId, String message) {
+    protected void sendMessage(CmsUUID toUserId, String message, boolean hasErrors) {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext();
         try {
             CmsUser toUser = m_driverManager.readUser(dbc, toUserId);
             CmsUserSettings settings = new CmsUserSettings(toUser);
-            if (settings.getShowPublishNotification()) {
-                // only show message if public notification is enabled
+            if (settings.getShowPublishNotification() || hasErrors) {
+                // only show message if publish notification is enabled or the message shows an error
                 OpenCms.getSessionManager().sendBroadcast(null, message, toUser);
             }
         } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishListenerCollection.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/24 08:39:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.5
  */
@@ -107,7 +107,7 @@ public final class CmsPublishListenerCollection extends Vector {
             Messages.GUI_PUBLISH_JOB_ABORTED_2,
             new Long(publishJob.getEnqueueTime()),
             m_publishEngine.getUser(userId).getName());
-        m_publishEngine.sendMessage(publishJob.getUserId(), msgText);
+        m_publishEngine.sendMessage(publishJob.getUserId(), msgText, true);
     }
 
     /**
@@ -166,11 +166,13 @@ public final class CmsPublishListenerCollection extends Vector {
         }
         // popup the finish message
         String msgText;
+        boolean hasError = false;
         if (!publishJob.getReport().hasError() && !publishJob.getReport().hasWarning()) {
             msgText = Messages.get().getBundle(publishJob.getLocale()).key(
                 Messages.GUI_PUBLISH_JOB_FINISHED_1,
                 new Long(publishJob.getEnqueueTime()));
         } else {
+            hasError = true;
             Object[] params = new Object[] {
                 new Long(publishJob.getEnqueueTime()),
                 new Integer(publishJob.getReport().getErrors().size()),
@@ -179,7 +181,7 @@ public final class CmsPublishListenerCollection extends Vector {
                 Messages.GUI_PUBLISH_JOB_FINISHED_WITH_WARNS_3,
                 params);
         }
-        m_publishEngine.sendMessage(publishJob.getUserId(), msgText);
+        m_publishEngine.sendMessage(publishJob.getUserId(), msgText, hasError);
     }
 
     /**
@@ -243,7 +245,7 @@ public final class CmsPublishListenerCollection extends Vector {
             String msgText = Messages.get().getBundle(publishJob.getLocale()).key(
                 Messages.GUI_PUBLISH_JOB_STARTED_1,
                 new Long(publishJob.getEnqueueTime()));
-            m_publishEngine.sendMessage(publishJob.getUserId(), msgText);
+            m_publishEngine.sendMessage(publishJob.getUserId(), msgText, false);
         }
     }
 }
