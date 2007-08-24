@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspVfsAccessBean.java,v $
- * Date   : $Date: 2007/08/20 12:26:00 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/08/24 15:55:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,8 +33,11 @@ package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,7 +52,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  * 
@@ -135,6 +138,26 @@ public final class CmsJspVfsAccessBean {
         }
     }
 
+    /**
+     * Transformer that calculates links to resources in the OpenCms VFS, 
+     * the input is used as String for the resource name to use as link target.<p>
+     * 
+     * This is using the same logic as 
+     * {@link org.opencms.jsp.CmsJspTagLink#linkTagAction(String, javax.servlet.ServletRequest)}.<p>
+     */
+    public class CmsVfsLinkTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            return OpenCms.getLinkManager().substituteLink(
+                getCmsObject(),
+                CmsLinkManager.getAbsoluteUri(String.valueOf(input), getCmsObject().getRequestContext().getUri()));
+        }
+    }
+
     /** Request context attribute for indicating the model file for a create resource operation. */
     public static final String ATTRIBUTE_JSP_UTIL_BEAN = CmsJspVfsAccessBean.class.getName() + ".JSP_UTIL_BEAN";
 
@@ -143,6 +166,9 @@ public final class CmsJspVfsAccessBean {
 
     /** Contains booleans that indicate if a resource exists in the VFS. */
     private Map m_existsResource;
+
+    /** Links calculated for the OpenCms VFS. */
+    private Map m_links;
 
     /** Properties loaded from the OpenCms VFS. */
     private Map m_properties;
@@ -251,6 +277,42 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
+     * Returns a map the lazily calculates links to files in the OpenCms VFS, 
+     * which has been adjusted according to the web application path and the 
+     * OpenCms static export rules.<p>
+     * 
+     * Please note that the target is always assumed to be in the OpenCms VFS, so you can't use 
+     * this method for links external to OpenCms.<p>
+     * 
+     * Relative links are converted to absolute links, using the current element URI as base.<p>
+     * 
+     * Relative links are converted to absolute links, using the current OpenCms request context URI as base.<p>
+     * 
+     * Usage example on a JSP with the EL:<pre>
+     * Link to the "/index.html" file: ${cms:util(pageContext).link['/index.html']}
+     * </pre>
+     * 
+     * Usage example on a JSP with the <code>&lt;cms:contentaccess&gt;</code> tag:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     Link to the "/index.html" file: ${content.util.link['/index.html']}
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return a map the lazily calculates links to resources in the OpenCms VFS
+     * 
+     * @see org.opencms.jsp.CmsJspActionElement#link(String)
+     * @see org.opencms.jsp.CmsJspTagLink#linkTagAction(String, javax.servlet.ServletRequest)
+     */
+    public Map getLink() {
+
+        if (m_links == null) {
+            // create lazy map only on demand
+            m_links = LazyMap.decorate(new HashMap(), new CmsVfsLinkTransformer());
+        }
+        return m_links;
+    }
+
+    /**
      * Returns a map the lazily reads all resource properties from the OpenCms VFS, without search.<p>
      * 
      * Usage example on a JSP with the EL:<pre>
@@ -320,5 +382,15 @@ public final class CmsJspVfsAccessBean {
             m_resources = LazyMap.decorate(new HashMap(), new CmsResourceLoaderTransformer());
         }
         return m_resources;
+    }
+
+    /**
+     * Returns the OpenCms request context the current user this bean was initialized with.<p>
+     * 
+     * @return the OpenCms request context the current user this bean was initialized with
+     */
+    public CmsRequestContext getRequestContext() {
+
+        return m_cms.getRequestContext();
     }
 }

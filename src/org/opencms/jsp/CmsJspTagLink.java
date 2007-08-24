@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2007/08/13 16:29:55 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/08/24 15:55:24 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,45 +50,47 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagLink extends BodyTagSupport {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -2361021288258405388L;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagLink.class);
 
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -2361021288258405388L;
+
     /**
-     * Internal action method.<p>
+     * Returns a link to a file in the OpenCms VFS 
+     * that has been adjusted according to the web application path and the 
+     * OpenCms static export rules.<p>
      * 
-     * Calulates a link using the OpenCms link export rules.<p>
+     * Please note that the target is always assumed to be in the OpenCms VFS, so you can't use 
+     * this method for links external to OpenCms.<p>
      * 
-     * @param link the link that should be calculated, can be relative or absolute
+     * Relative links are converted to absolute links, using the current element URI as base.<p>
+     * 
+     * @param target the link that should be calculated, can be relative or absolute
      * @param req the current request
-     * @return the calculated link
+     * 
+     * @return the target link adjusted according to the web application path and the OpenCms static export rules
      * 
      * @see org.opencms.staticexport.CmsLinkManager#substituteLink(org.opencms.file.CmsObject, String)
      */
-    public static String linkTagAction(String link, ServletRequest req) {
+    public static String linkTagAction(String target, ServletRequest req) {
 
         CmsFlexController controller = CmsFlexController.getController(req);
-        if (link.indexOf(':') >= 0) {
-            return OpenCms.getLinkManager().substituteLink(controller.getCmsObject(), link);
-        } else {
-            return OpenCms.getLinkManager().substituteLink(
-                controller.getCmsObject(),
-                CmsLinkManager.getAbsoluteUri(link, controller.getCurrentRequest().getElementUri()));
-        }
+        return OpenCms.getLinkManager().substituteLink(
+            controller.getCmsObject(),
+            CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri()));
     }
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      * @return EVAL_PAGE
-     * @throws JspException in case soemthing goes wrong
+     * @throws JspException in case something goes wrong
      */
     public int doEndTag() throws JspException {
 
