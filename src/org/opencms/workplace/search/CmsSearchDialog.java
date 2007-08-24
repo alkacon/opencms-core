@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchDialog.java,v $
- * Date   : $Date: 2007/08/23 12:42:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/24 10:17:32 $
+ * Version: $Revision: 1.5 $
  *
  * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.2.0 
  */
@@ -198,9 +198,10 @@ public class CmsSearchDialog extends CmsWidgetDialog {
             result.append(createWidgetBlockStart(key(Messages.GUI_SEARCH_QUERY_TITLE_0)));
             result.append(createDialogRowsHtml(0, 3));
             result.append(createWidgetBlockEnd());
-            result.append(createWidgetBlockStart(key(Messages.GUI_SEARCH_TIME_RANGES_0)));
-            result.append(createDialogRowsHtml(4, 7));
-            result.append(createWidgetBlockEnd());
+            // fields for limiting time ranges
+            // result.append(createWidgetBlockStart(key(Messages.GUI_SEARCH_TIME_RANGES_0)));
+            // result.append(createDialogRowsHtml(4, 7));
+            // result.append(createWidgetBlockEnd());
             result.append(createWidgetBlockStart(key(Messages.GUI_SEARCH_FIELDS_TITLE_0)));
             result.append(createDialogRowsHtml(8, 8));
             result.append(createWidgetBlockEnd());
