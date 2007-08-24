@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/08/14 12:32:15 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2007/08/24 15:54:33 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,86 +78,114 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceManager {
 
     /**
-     * Contains the resource manager data that can be initialized during runtime by a module.<p>
+     * Contains the part of the resource manager configuration that can be changed 
+     * during runtime by the import / deletion of a module.<p>
+     * 
+     * A module can add resource types and extension mappings to resource types.<p>
      */
     static final class CmsResourceManagerConfiguration {
 
-        /** Array with all configured resource types. */
-        protected I_CmsResourceType[] m_resourceTypes;
-
         /** The mappings of file extensions to resource types. */
-        private Map m_mappings;
+        protected Map m_extensionMappings;
 
         /** A list that contains all initialized resource types. */
-        private List m_resourceTypeList;
+        protected List m_resourceTypeList;
+
+        /** A list that contains all initialized resource types, plus configured types for "unknown" resources. */
+        protected List m_resourceTypeListWithUnknown;
+
+        /** A map that contains all initialized resource types mapped to their type id. */
+        private Map m_resourceTypeIdMap;
 
         /** A map that contains all initialized resource types mapped to their type name. */
-        private Map m_resourceTypeMap;
+        private Map m_resourceTypeNameMap;
 
         /**
          * Creates a new resource manager data storage.<p>
          */
         protected CmsResourceManagerConfiguration() {
 
-            m_resourceTypes = new I_CmsResourceType[100];
-            m_resourceTypeMap = new HashMap();
-            m_mappings = new HashMap();
-            m_resourceTypeList = new ArrayList();
+            m_resourceTypeIdMap = new HashMap(128);
+            m_resourceTypeNameMap = new HashMap(128);
+            m_extensionMappings = new HashMap(128);
+            m_resourceTypeList = new ArrayList(32);
         }
 
         /**
-         * Freezes the current configuration by making all configured data sructures unmodifiable.<p>         *
+         * Adds a resource type to the list of configured resource types.<p>
+         * 
+         * @param type the resource type to add
          */
-        protected void freeze() {
+        protected void addResourceType(I_CmsResourceType type) {
+
+            m_resourceTypeIdMap.put(Integer.valueOf(type.getTypeId()), type);
+            m_resourceTypeNameMap.put(type.getTypeName(), type);
+            m_resourceTypeList.add(type);
+        }
+
+        /**
+         * Freezes the current configuration by making all data structures unmodifiable
+         * that can be accessed form outside this class.<p> 
+         * 
+         * @param restypeUnknownFolder the configured default resource type for unknown folders
+         * @param restypeUnknownFile the configured default resource type for unknown files
+         */
+        protected void freeze(I_CmsResourceType restypeUnknownFolder, I_CmsResourceType restypeUnknownFile) {
+
+            // generate the resource type list with unknown resource types
+            m_resourceTypeListWithUnknown = new ArrayList(m_resourceTypeList.size() + 2);
+            if (restypeUnknownFolder != null) {
+                m_resourceTypeListWithUnknown.add(restypeUnknownFolder);
+            }
+            if (restypeUnknownFile != null) {
+                m_resourceTypeListWithUnknown.add(restypeUnknownFile);
+            }
+            m_resourceTypeListWithUnknown.addAll(m_resourceTypeList);
 
             // freeze the current configuration
+            m_resourceTypeListWithUnknown = Collections.unmodifiableList(m_resourceTypeListWithUnknown);
             m_resourceTypeList = Collections.unmodifiableList(m_resourceTypeList);
-            m_resourceTypeMap = Collections.unmodifiableMap(m_resourceTypeMap);
-            m_mappings = Collections.unmodifiableMap(m_mappings);
+            m_extensionMappings = Collections.unmodifiableMap(m_extensionMappings);
         }
 
         /**
-         * Returns the mappings of file extensions to resource types.<p>
-         *
-         * @return the mappings of file extensions to resource types
+         * Returns the configured resource type with the matching type id, or <code>null</code>
+         * if a resource type with that id is not configured.<p> 
+         * 
+         * @param typeId the type id to get the resource type for
+         * 
+         * @return the configured resource type with the matching type id, or <code>null</code>
          */
-        protected Map getMappings() {
+        protected I_CmsResourceType getResourceTypeById(int typeId) {
 
-            return m_mappings;
+            return (I_CmsResourceType)m_resourceTypeIdMap.get(Integer.valueOf(typeId));
         }
 
         /**
-         * Returns the list that contains all initialized resource types.<p>
-         *
-         * @return the list that contains all initialized resource types
+         * Returns the configured resource type with the matching type name, or <code>null</code>
+         * if a resource type with that name is not configured.<p> 
+         * 
+         * @param typeName the type name to get the resource type for
+         * 
+         * @return the configured resource type with the matching type name, or <code>null</code>
          */
-        protected List getResourceTypeList() {
+        protected I_CmsResourceType getResourceTypeByName(String typeName) {
 
-            return m_resourceTypeList;
-        }
-
-        /**
-         * Returns the map that contains all initialized resource types mapped to their type name.<p>
-         *
-         * @return the map that contains all initialized resource types mapped to their type name
-         */
-        protected Map getResourceTypeMap() {
-
-            return m_resourceTypeMap;
+            return (I_CmsResourceType)m_resourceTypeNameMap.get(typeName);
         }
     }
 
-    /** The mimetype <code>"text/html"</code>. */
+    /** The MIME type <code>"text/html"</code>. */
     public static final String MIMETYPE_HTML = "text/html";
 
-    /** The mimetype <code>"text/plain"</code>. */
+    /** The MIME type <code>"text/plain"</code>. */
     public static final String MIMETYPE_TEXT = "text/plain";
 
     /** The log object for this class. */
@@ -196,7 +224,7 @@ public class CmsResourceManager {
     /** All initialized resource loaders, mapped to their id. */
     private I_CmsResourceLoader[] m_loaders;
 
-    /** The OpenCms map of configured mime types. */
+    /** The OpenCms map of configured MIME types. */
     private Map m_mimeTypes;
 
     /** A list that contains all resource types added from the XML configuration. */
@@ -210,7 +238,7 @@ public class CmsResourceManager {
 
     /**
      * Creates a new instance for the resource manager, 
-     * will be called by the vfs configuration manager.<p>
+     * will be called by the VFS configuration manager.<p>
      */
     public CmsResourceManager() {
 
@@ -368,7 +396,7 @@ public class CmsResourceManager {
      * @param extension the MIME type extension
      * @param type the MIME type description
      * 
-     * @return the created mime type instance
+     * @return the created MIME type instance
      * 
      * @throws CmsConfigurationException in case the resource manager configuration is already initialized
      */
@@ -502,7 +530,7 @@ public class CmsResourceManager {
                 suffix = resourcename.substring(pos);
                 if (CmsStringUtil.isNotEmpty(suffix)) {
                     suffix = suffix.toLowerCase();
-                    typeName = (String)m_configuration.getMappings().get(suffix);
+                    typeName = (String)m_configuration.m_extensionMappings.get(suffix);
 
                 }
             }
@@ -527,7 +555,7 @@ public class CmsResourceManager {
      */
     public Map getExtensionMapping() {
 
-        return m_configuration.getMappings();
+        return m_configuration.m_extensionMappings;
     }
 
     /**
@@ -584,18 +612,18 @@ public class CmsResourceManager {
     }
 
     /**
-     * Returns the mime type for a specified file name.<p>
+     * Returns the MIME type for a specified file name.<p>
      * 
      * If an encoding parameter that is not <code>null</code> is provided,
-     * the returned mime type is extended with a <code>; charset={encoding}</code> setting.<p> 
+     * the returned MIME type is extended with a <code>; charset={encoding}</code> setting.<p> 
      * 
-     * If no mime type for the given filename can be determined, the
+     * If no MIME type for the given filename can be determined, the
      * default <code>{@link #MIMETYPE_HTML}</code> is used.<p>
      * 
-     * @param filename the file name to check the mime type for
-     * @param encoding the default encoding (charset) in case of mime types is of type "text"
+     * @param filename the file name to check the MIME type for
+     * @param encoding the default encoding (charset) in case of MIME types is of type "text"
      * 
-     * @return the mime type for a specified file
+     * @return the MIME type for a specified file
      */
     public String getMimeType(String filename, String encoding) {
 
@@ -603,32 +631,32 @@ public class CmsResourceManager {
     }
 
     /**
-     * Returns the mime type for a specified file name.<p>
+     * Returns the MIME type for a specified file name.<p>
      * 
      * If an encoding parameter that is not <code>null</code> is provided,
-     * the returned mime type is extended with a <code>; charset={encoding}</code> setting.<p> 
+     * the returned MIME type is extended with a <code>; charset={encoding}</code> setting.<p> 
      * 
-     * If no mime type for the given filename can be determined, the
+     * If no MIME type for the given filename can be determined, the
      * provided default is used.<p>
      * 
-     * @param filename the file name to check the mime type for
-     * @param encoding the default encoding (charset) in case of mime types is of type "text"
-     * @param defaultMimeType the default mime type to use if no matching type for the filename is found
+     * @param filename the file name to check the MIME type for
+     * @param encoding the default encoding (charset) in case of MIME types is of type "text"
+     * @param defaultMimeType the default MIME type to use if no matching type for the filename is found
      * 
-     * @return the mime type for a specified file
+     * @return the MIME type for a specified file
      */
     public String getMimeType(String filename, String encoding, String defaultMimeType) {
 
         String mimeType = null;
         int lastDot = filename.lastIndexOf('.');
-        // check the mime type for the file extension 
+        // check the MIME type for the file extension 
         if ((lastDot > 0) && (lastDot < (filename.length() - 1))) {
             mimeType = (String)m_mimeTypes.get(filename.substring(lastDot).toLowerCase(Locale.ENGLISH));
         }
         if (mimeType == null) {
             mimeType = defaultMimeType;
             if (mimeType == null) {
-                // no default mime type was provided
+                // no default MIME type was provided
                 return null;
             }
         }
@@ -716,10 +744,7 @@ public class CmsResourceManager {
      */
     public I_CmsResourceType getResourceType(int typeId) throws CmsLoaderException {
 
-        I_CmsResourceType result = null;
-        if ((typeId >= 0) && (typeId < m_configuration.m_resourceTypes.length)) {
-            result = m_configuration.m_resourceTypes[typeId];
-        }
+        I_CmsResourceType result = m_configuration.getResourceTypeById(typeId);
         if (result == null) {
             throw new CmsLoaderException(Messages.get().container(
                 Messages.ERR_UNKNOWN_RESTYPE_ID_REQ_1,
@@ -732,12 +757,14 @@ public class CmsResourceManager {
      * Returns the initialized resource type instance for the given resource type name.<p>
      * 
      * @param typeName the name of the resource type to get
+     * 
      * @return the initialized resource type instance for the given name
+     * 
      * @throws CmsLoaderException if no resource type is available for the given name
      */
     public I_CmsResourceType getResourceType(String typeName) throws CmsLoaderException {
 
-        I_CmsResourceType result = (I_CmsResourceType)m_configuration.getResourceTypeMap().get(typeName);
+        I_CmsResourceType result = m_configuration.getResourceTypeByName(typeName);
         if (result != null) {
             return result;
         }
@@ -745,33 +772,23 @@ public class CmsResourceManager {
     }
 
     /**
-     * Returns the (unmodifyable array) list with all initialized resource types.<p>
+     * Returns the (unmodifiable) list with all initialized resource types.<p>
      * 
-     * @return the (unmodifyable array) list with all initialized resource types
+     * @return the (unmodifiable) list with all initialized resource types
      */
     public List getResourceTypes() {
 
-        // return the list of resource types
-        return m_configuration.getResourceTypeList();
+        return m_configuration.m_resourceTypeList;
     }
 
     /**
-     * Returns the list with all initialized resource types including unknown types.<p>
+     * Returns the (unmodifiable) list with all initialized resource types including unknown types.<p>
      * 
-     * @return the list with all initialized resource types including unknown types
+     * @return the (unmodifiable) list with all initialized resource types including unknown types
      */
     public List getResourceTypesWithUnknown() {
 
-        // return the list of resource types
-        List result = new ArrayList(m_configuration.getResourceTypeList().size() + 2);
-        if (m_restypeUnknownFolder != null) {
-            result.add(m_restypeUnknownFolder);
-        }
-        if (m_restypeUnknownFile != null) {
-            result.add(m_restypeUnknownFile);
-        }
-        result.addAll(m_configuration.getResourceTypeList());
-        return result;
+        return m_configuration.m_resourceTypeListWithUnknown;
     }
 
     /**
@@ -796,7 +813,7 @@ public class CmsResourceManager {
 
     /**
      * Returns a template loader facade for the given file.<p>
-     * @param cms the current cms context
+     * @param cms the current OpenCms user context
      * @param resource the requested file
      * @param templateProperty the property to read for the template
      * 
@@ -831,8 +848,7 @@ public class CmsResourceManager {
      */
     public boolean hasResourceType(I_CmsResourceType type) {
 
-        int result = m_configuration.getResourceTypeList().indexOf(type);
-        return result >= 0;
+        return hasResourceType(type.getTypeId());
     }
 
     /**
@@ -845,11 +861,7 @@ public class CmsResourceManager {
      */
     public boolean hasResourceType(int typeId) {
 
-        I_CmsResourceType result = null;
-        if ((typeId >= 0) && (typeId < m_configuration.m_resourceTypes.length)) {
-            result = m_configuration.m_resourceTypes[typeId];
-        }
-        return result != null;
+        return m_configuration.getResourceTypeById(typeId) != null;
     }
 
     /**
@@ -862,8 +874,7 @@ public class CmsResourceManager {
      */
     public boolean hasResourceType(String typeName) {
 
-        I_CmsResourceType result = (I_CmsResourceType)m_configuration.getResourceTypeMap().get(typeName);
-        return result != null;
+        return m_configuration.getResourceTypeByName(typeName) != null;
     }
 
     /**
@@ -904,11 +915,11 @@ public class CmsResourceManager {
             OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
         }
 
-        // initalize the resource types
+        // initialize the resource types
         initResourceTypes();
 
         // call initialize method on all resource types
-        Iterator i = m_configuration.getResourceTypeList().iterator();
+        Iterator i = m_configuration.m_resourceTypeList.iterator();
         while (i.hasNext()) {
             I_CmsResourceType type = (I_CmsResourceType)i.next();
             type.initialize(cms);
@@ -922,9 +933,9 @@ public class CmsResourceManager {
     /**    
      * Loads the requested resource and writes the contents to the response stream.<p>
      * 
-     * @param req the current http request
-     * @param res the current http response
-     * @param cms the curren cms context
+     * @param req the current HTTP request
+     * @param res the current HTTP response
+     * @param cms the current OpenCms user context
      * @param resource the requested resource
      * @throws ServletException if something goes wrong
      * @throws IOException if something goes wrong
@@ -946,7 +957,7 @@ public class CmsResourceManager {
      * 
      * @param target the target for the include, might be <code>null</code>
      * @param element the element to select form the target might be <code>null</code>
-     * @param editable the flag to indicate if the target is editable
+     * @param editable the flag to indicate if the target is is enabled for direct edit
      * @param paramMap a map of parameters for the include, can be modified, might be <code>null</code>
      * @param req the current request
      * @param res the current response
@@ -1042,7 +1053,7 @@ public class CmsResourceManager {
             }
         }
 
-        // initalize the Map with all available MIME types
+        // initialize the Map with all available MIME types
         List combinedMimeTypes = new ArrayList(mimeTypes.size() + m_configuredMimeTypes.size());
         // first add all MIME types from the configuration
         combinedMimeTypes.addAll(m_configuredMimeTypes);
@@ -1084,15 +1095,7 @@ public class CmsResourceManager {
         CmsResourceManagerConfiguration configuration) {
 
         // add the loader to the internal list of loaders
-        int pos = resourceType.getTypeId();
-        if (pos > configuration.m_resourceTypes.length) {
-            I_CmsResourceType[] types = new I_CmsResourceType[pos * 2];
-            System.arraycopy(configuration.m_resourceTypes, 0, types, 0, configuration.m_resourceTypes.length);
-            configuration.m_resourceTypes = types;
-        }
-        configuration.m_resourceTypes[pos] = resourceType;
-        configuration.getResourceTypeList().add(resourceType);
-        configuration.getResourceTypeMap().put(resourceType.getTypeName(), resourceType);
+        configuration.addResourceType(resourceType);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_ADD_RESTYPE_3,
@@ -1108,8 +1111,8 @@ public class CmsResourceManager {
             String mapping = (String)i.next();
             // only add this mapping if a mapping with this file extension does not
             // exist already
-            if (!configuration.getMappings().containsKey(mapping)) {
-                configuration.getMappings().put(mapping, resourceType.getTypeName());
+            if (!configuration.m_extensionMappings.containsKey(mapping)) {
+                configuration.m_extensionMappings.put(mapping, resourceType.getTypeName());
                 if (CmsLog.INIT.isInfoEnabled()) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_MAP_RESTYPE_2,
@@ -1182,16 +1185,12 @@ public class CmsResourceManager {
                                 // error: already set
                                 conflictingType = m_restypeUnknownFolder;
                             } else {
-                                m_restypeUnknownFolder = resourceType;
+                                m_restypeUnknownFile = resourceType;
                                 continue;
                             }
                         } else {
                             // normal resource types
-                            int conflictIndex = newConfiguration.getResourceTypeList().indexOf(resourceType);
-                            if (conflictIndex >= 0) {
-                                conflictingType = (I_CmsResourceType)newConfiguration.getResourceTypeList().get(
-                                    conflictIndex);
-                            }
+                            conflictingType = newConfiguration.getResourceTypeById(resourceType.getTypeId());
                         }
                         if (conflictingType != null) {
                             throw new CmsConfigurationException(Messages.get().container(
@@ -1210,7 +1209,7 @@ public class CmsResourceManager {
         }
 
         // freeze the current configuration
-        newConfiguration.freeze();
+        newConfiguration.freeze(m_restypeUnknownFile, m_restypeUnknownFile);
         m_configuration = newConfiguration;
         m_frozen = true;
 
