@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2007/08/20 15:12:40 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2007/08/27 11:28:14 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,6 +75,8 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.Similarity;
@@ -87,7 +89,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.61 $ 
+ * @version $Revision: 1.62 $ 
  * 
  * @since 6.0.0 
  */
@@ -1227,7 +1229,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             throw new CmsIndexException(Messages.get().container(Messages.ERR_LOAD_ANALYZER_1, className), e);
         }
 
-        return analyzer;
+        // change analyzer for root path field to Whitespace analyzer
+        PerFieldAnalyzerWrapper wrapper = new PerFieldAnalyzerWrapper(analyzer);
+        wrapper.addAnalyzer(CmsSearchField.FIELD_ROOT, new WhitespaceAnalyzer());
+
+        return wrapper;
     }
 
     /**

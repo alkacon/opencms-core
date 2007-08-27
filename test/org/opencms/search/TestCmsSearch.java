@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2007/08/20 13:06:59 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/08/27 11:28:14 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -295,43 +295,72 @@ public class TestCmsSearch extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the CmsSearch with folder names with uppercase letters.<p>
+     * Tests the CmsSearch with folder names with upper case letters.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @throws Exception in case the test fails
      */
-    public void testCmsSearchUppercaseFolderName() throws Throwable {
+    public void testCmsSearchUppercaseFolderName() throws Exception {
 
         CmsObject cms = getCmsObject();
-        echo("Testing search with uppercase folder names");
+        echo("Testing search for case sensitive folder names");
 
-        // create test folder
-        cms.createResource("/testUPPERCASE/", CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, null);
-        cms.unlockResource("/testUPPERCASE/");
+        echo("Testing search for case sensitive folder name: /testUPPERCASE/");
+        testCmsSearchUppercaseFolderNameUtil(cms, "/testUPPERCASE/", 1);
 
-        // create master resource
-        importTestResource(
-            cms,
-            "org/opencms/search/pdf-test-112.pdf",
-            "/testUPPERCASE/master.pdf",
-            CmsResourceTypeBinary.getStaticTypeId(),
-            Collections.EMPTY_LIST);
+        // extension of this test for 7.0.2:
+        // now it is possible to search in restricted folders in a case sensitive way
+        echo("Testing search for case sensitive folder name: /TESTuppercase/");
+        testCmsSearchUppercaseFolderNameUtil(cms, "/TESTuppercase/", 1);
 
-        // publish the project and update the search index
-        I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
-        OpenCms.getSearchManager().rebuildIndex(INDEX_OFFLINE, report);
+        // let's see if we find 2 results when we don't use a search root
+        echo("Testing search for case sensitive folder names without a site root");
+        testCmsSearchUppercaseFolderNameUtil(cms, null, 2);
+    }
+
+    /**
+     * Internal helper for test with same name.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param folderName the folder name to perform the test in
+     * @param expected the expected result size of the search
+     * 
+     * @throws Exception in case the test fails
+     */
+    private void testCmsSearchUppercaseFolderNameUtil(CmsObject cms, String folderName, int expected) throws Exception {
+
+        if (folderName != null) {
+            // create test folder
+            cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, null);
+            cms.unlockResource(folderName);
+
+            // create master resource
+            importTestResource(
+                cms,
+                "org/opencms/search/pdf-test-112.pdf",
+                folderName + "master.pdf",
+                CmsResourceTypeBinary.getStaticTypeId(),
+                Collections.EMPTY_LIST);
+
+            // publish the project and update the search index
+            I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
+            OpenCms.getSearchManager().rebuildIndex(INDEX_OFFLINE, report);
+        }
 
         // search for "pdf"
         CmsSearch cmsSearchBean = new CmsSearch();
         cmsSearchBean.init(cms);
         cmsSearchBean.setIndex(INDEX_OFFLINE);
-        cmsSearchBean.setQuery("pdf");
+        cmsSearchBean.setQuery("+Testfile +Struktur");
 
-        CmsSearchParameters parameters = cmsSearchBean.getParameters();
-        parameters.setSearchRoots("/testUPPERCASE/");
-        cmsSearchBean.setParameters(parameters);
+        if (folderName != null) {
+            CmsSearchParameters parameters = cmsSearchBean.getParameters();
+            parameters.setSearchRoots(folderName);
+            cmsSearchBean.setParameters(parameters);
+        }
 
         List results = cmsSearchBean.getSearchResult();
-        assertEquals(1, results.size());
+        printResults(results, cms);
+        assertEquals(expected, results.size());
     }
 
     /**
@@ -501,18 +530,33 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         Iterator i = searchResult.iterator();
         int count = 0;
+        int colPath = 0;
+        int colTitle = 0;
         while (i.hasNext()) {
             CmsSearchResult res = (CmsSearchResult)i.next();
-            count++;
-            System.out.print(CmsStringUtil.padRight("" + count, 4));
-            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), 50));
+            String path = cms.getRequestContext().removeSiteRoot(res.getPath());
+            colPath = Math.max(colPath, path.length() + 3);
             String title = res.getField(CmsSearchField.FIELD_TITLE);
             if (title == null) {
                 title = "";
             } else {
                 title = title.trim();
             }
-            System.out.print(CmsStringUtil.padRight(title, 40));
+            colTitle = Math.max(colTitle, title.length() + 3);
+        }
+        i = searchResult.iterator();
+        while (i.hasNext()) {
+            CmsSearchResult res = (CmsSearchResult)i.next();
+            count++;
+            System.out.print(CmsStringUtil.padRight("" + count, 4));
+            System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), colPath));
+            String title = res.getField(CmsSearchField.FIELD_TITLE);
+            if (title == null) {
+                title = "";
+            } else {
+                title = title.trim();
+            }
+            System.out.print(CmsStringUtil.padRight(title, colTitle));
             String type = res.getDocumentType();
             if (type == null) {
                 type = "";

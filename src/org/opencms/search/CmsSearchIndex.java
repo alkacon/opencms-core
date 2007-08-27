@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2007/08/23 12:42:17 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2007/08/27 11:28:14 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.64 $ 
+ * @version $Revision: 1.65 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,11 +104,19 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** Manual ("manual") index rebuild mode. */
     public static final String REBUILD_MODE_MANUAL = "manual";
 
-    /** Special root path append token for optimized path queries. */
-    public static final String ROOT_PATH_SUFFIX = "@o.c";
+    /** 
+     * Special root path append token for optimized path queries.<p>
+     * 
+     * @deprecated This is not longer requires since OpenCms version 7.0.2, since the implementation 
+     * of {@link CmsSearchManager#getAnalyzer(Locale)} was modified to use always 
+     * use for the {@link CmsSearchField#FIELD_ROOT} filed.
+     * 
+     * @see #rootPathRewrite(String)
+     */
+    public static final String ROOT_PATH_SUFFIX = "";
 
     /** Special root path start token for optimized path queries. */
-    public static final String ROOT_PATH_TOKEN = "root" + ROOT_PATH_SUFFIX;
+    public static final String ROOT_PATH_TOKEN = "root";
 
     /** Constant for a field list that contains the "meta" field as well as the "content" field. */
     static final String[] DOC_META_FIELDS = new String[] {CmsSearchField.FIELD_META, CmsSearchField.FIELD_CONTENT};
@@ -194,7 +202,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Rewrites the a resource path for use in the {@link CmsSearchField#FIELD_ROOT} field.<p>
      * 
-     * All "/" chars in the path are replaced with the {@link #ROOT_PATH_SUFFIX} token.
      * This is required in order to use a Lucene "phrase query" on the resource path.
      * Using a phrase query is much, much better for the search performance then using a straightforward 
      * "prefix query". With a "prefix query", Lucene would interally generate a huge list of boolean sub-queries,
@@ -203,12 +210,24 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * Using the "phrase query", only one (or very few) queries are internally generated, and the result 
      * is just the same.<p>  
      * 
-     * This implementation basically replaces the "/" of a path with "@o.c ". 
-     * This is a trick so that the Lucene analyzer leaves the
-     * directory names untouched, since it treats them like literal email addresses. 
-     * Otherwise the language analyzer might modify the directory names, leading to potential
+     * Since OpenCms version 7.0.2, the {@link CmsSearchField#FIELD_ROOT} field always uses a whitespace analyzer.
+     * This is ensured by the {@link CmsSearchManager#getAnalyzer(Locale)} implementation. 
+     * The Lucene whitespace analyzer uses all words as tokens, no lower case transformation or word stemming is done. 
+     * So the root path is now just split along the '/' chars, which are replaced by simple space chars.<p>
+     * 
+     * <i>Historical implementation sidenote:</i>
+     * Before 7.0.2, the {@link CmsSearchField#FIELD_ROOT} used the analyzer configured by the language. 
+     * This introduced a number of issues as the language analyzer might modify the directory names, leading to potential
      * duplicates (e.g. <code>members/</code> and <code>member/</code> may both be trimmed to <code>member</code>),
-     * so that the prefix search returns more results then expected.<p>
+     * so that the prefix search returns more or different results then expected. 
+     * This was avoided by a workaround where this method basically replaced the "/" of a path with "@o.c ". 
+     * Using this trick most Lucene analyzers left the directory names untouched, 
+     * and treated them like literal email addresses. However, this trick did not work with all analyzers,
+     * for example the Russian analyzer does not work as expected.
+     * An additional workaround was required to avoid problems with folders that that are different
+     * only by the upper / lower chars. Since 7.0.2, these workarounds are not longer required, since the 
+     * {@link CmsSearchField#FIELD_ROOT} field always uses a whitespace analyzer, which is a much better solution.<p>
+     * 
      * @param path the path to rewrite
      * 
      * @return the re-written path
@@ -232,7 +251,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * @param path the path to split
      * 
-     * @return the splitted path
+     * @return the split path
      * 
      * @see #rootPathRewrite(String)
      */
@@ -244,15 +263,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         // split the path
         String[] elements = CmsStringUtil.splitAsArray(path, '/');
-        int length = elements.length + 1;
-        String[] result = new String[length];
+        String[] result = new String[elements.length + 1];
         result[0] = ROOT_PATH_TOKEN;
-        for (int i = 1; i < length; i++) {
-            // append suffix to all path elements
-            result[i] = elements[i - 1] + ROOT_PATH_SUFFIX;
-            // underscore '_' is a word separator for the Lucene analyzer, must replace this
-            result[i] = result[i].replace('_', '0');
-        }
+        System.arraycopy(elements, 0, result, 1, elements.length);
         return result;
     }
 
@@ -735,13 +748,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // initially this was a simple PrefixQuery based on the DOC_PATH
             // however, internally Lucene rewrote that to literally hundreds of BooleanQuery parts
             // the following implementation will lead to just one Lucene PhraseQuery per directory and is thus much better 
-            // cw/261006 - paths elements should not contain uppercase letters, otherwise searcher does not find the appropriate results
             BooleanQuery pathQuery = new BooleanQuery();
             for (int i = 0; i < roots.length; i++) {
                 String[] paths = rootPathSplit(roots[i]);
                 PhraseQuery phrase = new PhraseQuery();
                 for (int j = 0; j < paths.length; j++) {
-                    Term term = new Term(CmsSearchField.FIELD_ROOT, paths[j].toLowerCase());
+                    Term term = new Term(CmsSearchField.FIELD_ROOT, paths[j]);
                     phrase.add(term);
                 }
                 pathQuery.add(phrase, BooleanClause.Occur.SHOULD);

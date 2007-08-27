@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchUtils.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/08/27 11:28:14 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import junit.framework.TestCase;
  * Tests some search utils that don't require an OpenCms context.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestCmsSearchUtils extends TestCase {
 
@@ -55,6 +55,8 @@ public class TestCmsSearchUtils extends TestCase {
      * Test root path term splitting.<p>
      *
      * @throws Exception if the test fails
+     * 
+     * @deprecated Since version 7.0.2, split is basically just using a space char.
      */
     public void testRootPathTokenizer() throws Exception {
 
@@ -74,7 +76,6 @@ public class TestCmsSearchUtils extends TestCase {
         assertStringArray(new String[] {t, "sites" + s}, CmsSearchIndex.rootPathSplit("/sites"));
         assertStringArray(new String[] {t, "sites" + s, "default" + s}, CmsSearchIndex.rootPathSplit("/sites/default/"));
         assertStringArray(new String[] {t, "sites" + s, "default" + s}, CmsSearchIndex.rootPathSplit("/sites/default"));
-
     }
 
     /**

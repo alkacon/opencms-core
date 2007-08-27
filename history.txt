@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/24 15:53:49 $
- * Version: $Revision: 1.863 $
+ * Date   : $Date: 2007/08/27 11:28:14 $
+ * Version: $Revision: 1.864 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -21,7 +21,8 @@ Legend:
 
 OpenCms 7.0.2 - xxxxx, 2007
 * Fixed issue #1503: CmsScheduleManager now uses the current time as the request time
-* Fixed issue #1460: parent locks are now right filtered by the CmsLockFilter
+* Fixed issue #1460: Parent locks are now right filtered by the CmsLockFilter
+* Fixed issue #1519: Roots field in search index now always uses Whitespace analyzer (search index rebuild is required)
 * Fixed issue with validation errors using the display widget on boolean values
 * Fixed several spelling issues in the German locale
 * Fixed issue with "new" siblings causing content changes in "old" siblings not to be published
