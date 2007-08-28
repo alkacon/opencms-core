@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsStaticExportHandler.java,v $
- * Date   : $Date: 2007/08/13 16:30:08 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/08/28 13:53:41 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.1.7 
  * 
@@ -171,8 +171,8 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
         Iterator itPubRes = publishedResources.iterator();
         while (itPubRes.hasNext()) {
             CmsPublishedResource res = (CmsPublishedResource)itPubRes.next();
-            if (res.getState().isUnchanged() || !res.isVfsResource()) {
-                // unchanged resources and non vfs resources don't need to be deleted
+            if (res.getState().isUnchanged()) {
+                // unchanged resources don't need to be deleted
                 continue;
             }
 
@@ -264,7 +264,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
      * @return the list of published resources included the link sources of moved resources 
      */
     protected List addMovedLinkSources(CmsObject cms, List publishedResources) {
-        
+
         publishedResources = new ArrayList(publishedResources);
         Set pubResources = new HashSet(publishedResources.size());
         // this is needed since the CmsPublishedResource#equals(Object) method just compares ids and not paths
@@ -281,7 +281,7 @@ public abstract class A_CmsStaticExportHandler implements I_CmsStaticExportHandl
             Iterator itPrePubRes = new ArrayList(publishedResources).iterator();
             while (itPrePubRes.hasNext()) {
                 CmsPublishedResource res = (CmsPublishedResource)itPrePubRes.next();
-                if (!res.isVfsResource() || res.getMovedState() != CmsPublishedResource.STATE_MOVED_DESTINATION) {
+                if (res.getMovedState() != CmsPublishedResource.STATE_MOVED_DESTINATION) {
                     // handle only resources that are destination of move operations
                     continue;
                 }

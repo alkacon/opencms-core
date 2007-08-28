@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2007/08/13 16:30:03 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2007/08/28 13:53:41 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 6.0.0
  * 
@@ -389,6 +389,8 @@ public class CmsPublishedResource implements Serializable, Comparable {
      * no VFS resource.<p>
      * 
      * @return true if this published resource is a VFS resource
+     * 
+     * @deprecated no longer needed
      */
     public boolean isVfsResource() {
 

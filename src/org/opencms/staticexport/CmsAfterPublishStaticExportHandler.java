@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2007/08/13 16:30:08 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/08/28 13:53:41 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  * 
@@ -319,55 +319,52 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             vfsName = pupRes.getRootPath();
             // only process this resource, if it is within the tree of allowed folders for static export
             if (manager.getExportFolderMatcher().match(vfsName)) {
-                // only export VFS files, other data is handled elsewhere 
-                if (pupRes.isVfsResource()) {
-                    // get the export data object, if null is returned, this resource cannot be exported
-                    CmsStaticExportData exportData = manager.getExportData(vfsName, cms);
-                    if (exportData != null) {
-                        CmsResource resource = null;
-                        if (pupRes.isFile()) {
-                            resource = exportData.getResource();
-                        } else {
-                            // the resource is a folder, check if PROPERTY_DEFAULT_FILE is set on folder
-                            try {
-                                String defaultFileName = cms.readPropertyObject(
-                                    vfsName,
-                                    CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
-                                    false).getValue();
-                                if (defaultFileName != null) {
-                                    resource = cms.readResource(vfsName + defaultFileName);
-                                }
-                            } catch (CmsException e) {
-                                // resource is (still) a folder, check default files specified in configuration
-                                for (int j = 0; j < OpenCms.getDefaultFiles().size(); j++) {
-                                    String tmpResourceName = vfsName + OpenCms.getDefaultFiles().get(j);
-                                    try {
-                                        resource = cms.readResource(tmpResourceName);
-                                        break;
-                                    } catch (CmsException e1) {
-                                        // ignore all other exceptions and continue the lookup process
-                                    }
+                // get the export data object, if null is returned, this resource cannot be exported
+                CmsStaticExportData exportData = manager.getExportData(vfsName, cms);
+                if (exportData != null) {
+                    CmsResource resource = null;
+                    if (pupRes.isFile()) {
+                        resource = exportData.getResource();
+                    } else {
+                        // the resource is a folder, check if PROPERTY_DEFAULT_FILE is set on folder
+                        try {
+                            String defaultFileName = cms.readPropertyObject(
+                                vfsName,
+                                CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
+                                false).getValue();
+                            if (defaultFileName != null) {
+                                resource = cms.readResource(vfsName + defaultFileName);
+                            }
+                        } catch (CmsException e) {
+                            // resource is (still) a folder, check default files specified in configuration
+                            for (int j = 0; j < OpenCms.getDefaultFiles().size(); j++) {
+                                String tmpResourceName = vfsName + OpenCms.getDefaultFiles().get(j);
+                                try {
+                                    resource = cms.readResource(tmpResourceName);
+                                    break;
+                                } catch (CmsException e1) {
+                                    // ignore all other exceptions and continue the lookup process
                                 }
                             }
                         }
-                        if (resource != null && resource.isFile()) {
-                            // check loader for current resource if it must be processed before exported
-                            I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
-                            if (!loader.isStaticExportProcessable()) {
-                                // this resource must not be processed, so export it (if it's not marked as deleted)
-                                if (!pupRes.getState().isDeleted()) {
-                                    // mark the resource for export to the real file system                  
-                                    resourcesToExport.add(exportData);
-                                }
-                            } else {
-                                // the resource is a template resource or a folder, so store the name of it in the DB for further use                  
-                                templatesFound = true;
-                                cms.writeStaticExportPublishedResource(
-                                    exportData.getRfsName(),
-                                    CmsStaticExportManager.EXPORT_LINK_WITHOUT_PARAMETER,
-                                    "",
-                                    System.currentTimeMillis());
+                    }
+                    if (resource != null && resource.isFile()) {
+                        // check loader for current resource if it must be processed before exported
+                        I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
+                        if (!loader.isStaticExportProcessable()) {
+                            // this resource must not be processed, so export it (if it's not marked as deleted)
+                            if (!pupRes.getState().isDeleted()) {
+                                // mark the resource for export to the real file system                  
+                                resourcesToExport.add(exportData);
                             }
+                        } else {
+                            // the resource is a template resource or a folder, so store the name of it in the DB for further use                  
+                            templatesFound = true;
+                            cms.writeStaticExportPublishedResource(
+                                exportData.getRfsName(),
+                                CmsStaticExportManager.EXPORT_LINK_WITHOUT_PARAMETER,
+                                "",
+                                System.currentTimeMillis());
                         }
                     }
                 }
