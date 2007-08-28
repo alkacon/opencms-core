@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2007/08/13 16:30:10 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2007/08/28 13:52:50 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 6.0.0
  */
@@ -816,17 +816,20 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         }
 
-        // <usercsvexport>
-        Element userExportElement = parent.addElement(N_USERCSVEXPORT);
+        if (m_importExportManager.getUserExportSettings() != null) {
+            // <usercsvexport>
+            Element userExportElement = parent.addElement(N_USERCSVEXPORT);
 
-        userExportElement.addElement(N_SEPARATOR).setText(m_importExportManager.getUserExportSettings().getSeparator());
-        Element exportColumns = userExportElement.addElement(N_COLUMNS);
-        List exportColumnList = m_importExportManager.getUserExportSettings().getColumns();
-        Iterator itExportColumnList = exportColumnList.iterator();
-        while (itExportColumnList.hasNext()) {
-            exportColumns.addElement(N_COLUMN).setText((String)itExportColumnList.next());
+            userExportElement.addElement(N_SEPARATOR).setText(
+                m_importExportManager.getUserExportSettings().getSeparator());
+            Element exportColumns = userExportElement.addElement(N_COLUMNS);
+            List exportColumnList = m_importExportManager.getUserExportSettings().getColumns();
+            Iterator itExportColumnList = exportColumnList.iterator();
+            while (itExportColumnList.hasNext()) {
+                exportColumns.addElement(N_COLUMN).setText((String)itExportColumnList.next());
+            }
+            // </usercsvexport>
         }
-        // </usercsvexport>
 
         if (m_repositoryManager.isConfigured()) {
             List repositories = m_repositoryManager.getRepositories();
