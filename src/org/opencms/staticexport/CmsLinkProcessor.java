@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2007/08/13 16:30:09 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2007/08/28 08:11:16 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.htmlparser.util.SimpleNodeIterator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,7 +95,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     /** List of attributes that may contain links for the embed tag. */
     private static final String[] EMBED_TAG_LINKED_ATTRIBS = new String[] {ATTRIBUTE_SRC, "pluginurl", "pluginspage"};
 
-    /** List of attributes that may contain links for the object tag (codebase has to be first). */
+    /** List of attributes that may contain links for the object tag ("codebase" has to be first). */
     private static final String[] OBJECT_TAG_LINKED_ATTRIBS = new String[] {"codebase", "data", "datasrc"};
 
     /** Processing mode "process links". */
@@ -104,7 +104,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     /** Processing mode "replace links". */
     private static final int REPLACE_LINKS = 0;
 
-    /** The current users cms instance, containing the users permission and site root context. */
+    /** The current users OpenCms context, containing the users permission and site root context. */
     private CmsObject m_cms;
 
     /** The selected encoding to use for parsing the HTML. */
@@ -122,13 +122,13 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     /** The relative path for relative links, if not set, relative links are treated as external links. */
     private String m_relativePath;
 
-    /** Another cms instance based on the current users cms instance, but with the site root set to '/'. */
+    /** Another OpenCms context based on the current users OpenCms context, but with the site root set to '/'. */
     private CmsObject m_rootCms;
 
     /**
      * Creates a new link processor.<p>
      * 
-     * @param cms the cms object
+     * @param cms the current users OpenCms context
      * @param linkTable the link table to use
      * @param encoding the encoding to use for parsing the HTML content
      * @param relativePath additional path for links with relative path (only used in "replace" mode)
@@ -193,7 +193,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     }
 
     /**
-     * Unescapes all <code>&amp;</code>, that is replaces them with a <code>&</code>.<p>
+     * Unescapes all <code>&amp;amp;</code>, that is replaces them with a <code>&</code>.<p>
      * 
      * @param source the String to unescape
      * @return the unescaped String
@@ -402,7 +402,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
         for (int i = 0; i < OBJECT_TAG_LINKED_ATTRIBS.length; i++) {
             String attr = OBJECT_TAG_LINKED_ATTRIBS[i];
             processLink(tag, attr, type);
-            if (i == 0 && tag.getAttribute(attr) != null) {
+            if ((i == 0) && (tag.getAttribute(attr) != null)) {
                 // if code base is available, the other attributes are relative to it, so do not process them
                 break;
             }
@@ -425,7 +425,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
      * if not set, it will be set from the title of the given resource.<p>
      * 
      * @param tag the tag to set the alt attribute for
-     * @param internalUri the internal uri to get the title from
+     * @param internalUri the internal URI to get the title from
      */
     protected void setAltAttributeFromTitle(Tag tag, String internalUri) {
 
@@ -451,9 +451,9 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     /**
      * Use the {@link org.opencms.file.wrapper.CmsObjectWrapper} to restore the link in the VFS.<p>
      * 
-     * @param internalUri the internal uri to restore
+     * @param internalUri the internal URI to restore
      * 
-     * @return the restored uri
+     * @return the restored URI
      */
     private String rewriteUri(String internalUri) {
 

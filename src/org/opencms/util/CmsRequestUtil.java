@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2007/08/13 16:29:55 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/08/28 08:11:16 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -192,7 +192,7 @@ public final class CmsRequestUtil {
     /**
      * Appends a map of request parameters to the given URL.<p>
      * 
-     * The map can cointains values of <code>String[]</code> or 
+     * The map can contains values of <code>String[]</code> or 
      * simple <code>String</code> values.<p>
      * 
      * This method takes care about the adding the parameter as an additional 
@@ -200,7 +200,7 @@ public final class CmsRequestUtil {
      * (appending <code>?param=value</code>).<p>
      * 
      * @param url the URL where to append the parameter to
-     * @param params the paramters to append
+     * @param params the parameters to append
      * @param encode if <code>true</code>, the parameter values are encoded before they are appended
      * 
      * @return the URL with the given parameter appended
@@ -281,7 +281,7 @@ public final class CmsRequestUtil {
     }
 
     /**
-     * Parses the parameters of the given request query part and creaes a parameter map out of them.<p>
+     * Parses the parameters of the given request query part and creates a parameter map out of them.<p>
      * 
      * Please note: This does not parse a full request URI/URL, only the query part that 
      * starts after the "?". For example, in the URI <code>/system/index.html?a=b&amp;c=d</code>,
@@ -302,9 +302,9 @@ public final class CmsRequestUtil {
             // remove leading '?' if required
             query = query.substring(1);
         }
-        HashMap parameters = new HashMap();
         // cut along the different parameters
         String[] params = CmsStringUtil.splitAsArray(query, PARAMETER_DELIMITER);
+        HashMap parameters = new HashMap(params.length);
         for (int i = 0; i < params.length; i++) {
             String key = null;
             String value = null;
@@ -317,10 +317,10 @@ public final class CmsRequestUtil {
                 key = params[i];
                 value = "";
             }
-            // adjust the key is it starts with "amp;"
+            // adjust the key if it starts with "amp;"
             // this happens when "&amp;" is used instead of a simple "&"
             if ((key != null) && (key.startsWith(AMP))) {
-                key = key.substring(AMP.length(), key.length());
+                key = key.substring(AMP.length());
             }
             // now make sure the values are of type String[]
             if (key != null) {
@@ -376,13 +376,13 @@ public final class CmsRequestUtil {
     }
 
     /**
-     * Encodes the given uri, with all parameters from the given request appended.<p>
+     * Encodes the given URI, with all parameters from the given request appended.<p>
      * 
      * The result will be encoded using the <code>{@link CmsEncoder#encode(String)}</code> function.<p>
      * 
      * @param req the request where to read the parameters from
-     * @param uri the uri to encode
-     * @return the encoded uri, with all parameters from the given request appended
+     * @param uri the URI to encode
+     * @return the encoded URI, with all parameters from the given request appended
      */
     public static String encodeParamsWithUri(String uri, HttpServletRequest req) {
 
@@ -403,9 +403,9 @@ public final class CmsRequestUtil {
      * where the parameters are passed as a map, since the parsing of the parameters may introduce issues with encoding
      * and is in general much less effective.<p>
      * 
-     * The parsing of parameters will likley fail for "large values" (e.g. full blown web forms with &lt;textarea&gt;
+     * The parsing of parameters will likely fail for "large values" (e.g. full blown web forms with &lt;textarea&gt;
      * elements etc. Use this method only if you know that the target will just contain up to 3 parameters which 
-     * are relativly short and have no encoding or linebreak issues.<p>
+     * are relatively short and have no encoding or line break issues.<p>
      * 
      * @param target the target to forward to (may contain parameters like <code>?a=b&amp;c=d</code>)
      * @param req the request to forward
@@ -426,7 +426,7 @@ public final class CmsRequestUtil {
     /**
      * Forwards the response to the given target, with the provided parameter map.<p>
      * 
-     * The target uri must NOT have parameters appended like for example <code>?a=b&amp;c=d</code>.
+     * The target URI must NOT have parameters appended like for example <code>?a=b&amp;c=d</code>.
      * The values in the provided map must be of type <code>String[]</code>. If required, use
      * <code>{@link #createParameterMap(Map)}</code> before calling this method to make sure
      * all values are actually of the required array type.<p>
@@ -517,9 +517,9 @@ public final class CmsRequestUtil {
     }
 
     /**
-     * Reads an object from the session of the given http request.<p>
+     * Reads an object from the session of the given HTTP request.<p>
      * 
-     * A session will be initilaized if the request does not currently have a session.
+     * A session will be initialized if the request does not currently have a session.
      * As a result, the request will always have a session after this method has been called.<p> 
      * 
      * Will return <code>null</code> if no corresponding object is found in the session.<p>
@@ -616,7 +616,7 @@ public final class CmsRequestUtil {
      * 
      * This implementation will work only on JSP pages in OpenCms that use the default JSP loader implementation.<p>
      * 
-     * @param jsp the jsp context
+     * @param jsp the OpenCms JSP context
      * @param target the target link
      */
     public static void redirectPermanently(CmsJspActionElement jsp, String target) {
@@ -635,7 +635,7 @@ public final class CmsRequestUtil {
      * Use this method instead of {@link javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)}
      * to avoid relative links with secure sites (and issues with apache).<p>
      * 
-     * @param jsp the jsp context
+     * @param jsp the OpenCms JSP context
      * @param target the target link
      * 
      * @throws IOException if something goes wrong during redirection
@@ -648,7 +648,7 @@ public final class CmsRequestUtil {
     /** 
      * Removes an object from the session of the given http request.<p>
      * 
-     * A session will be initilaized if the request does not currently have a session.
+     * A session will be initialized if the request does not currently have a session.
      * As a result, the request will always have a session after this method has been called.<p> 
      * 
      * @param request the request to get the session from
@@ -701,9 +701,9 @@ public final class CmsRequestUtil {
     }
 
     /**
-     * Adds an object to the session of the given http request.<p>
+     * Adds an object to the session of the given HTTP request.<p>
      * 
-     * A session will be initilaized if the request does not currently have a session.
+     * A session will be initialized if the request does not currently have a session.
      * As a result, the request will always have a session after this method has been called.<p> 
      * 
      * @param request the request to get the session from
