@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2007/08/15 14:25:48 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/08/29 16:22:22 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,9 +37,14 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.index.IndexWriter;
@@ -50,7 +55,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,6 +123,15 @@ public class CmsIndexingThreadManager {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNABLE_TO_READ_PROPERTY_1, res.getRootPath()));
             }
+        }
+
+        if (!excludeFromIndex) {
+            // check if any resource default locale has a match with the index locale, if not skip resource
+            List locales = OpenCms.getLocaleManager().getDefaultLocales(cms, res);
+            Locale match = OpenCms.getLocaleManager().getFirstMatchingLocale(
+                Collections.singletonList(index.getLocale()),
+                locales);
+            excludeFromIndex = (match == null);
         }
 
         I_CmsDocumentFactory documentType = null;

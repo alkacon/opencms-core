@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2007/08/20 15:12:41 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2007/08/29 16:22:22 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 6.0.0 
  */
@@ -616,11 +616,53 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * use <code>{@link #getDefaultLocale(CmsObject, String)}</code>.<p>
      * 
      * @param cms the current cms permission object
+     * @param resource the resource to read the default locale properties for
+     * @return an array of default locale names
+     * 
+     * @see #getDefaultLocales()
+     * @see #getDefaultLocale(CmsObject, String)
+     * @see #getDefaultLocales(CmsObject, String)
+     * 
+     * @since 7.0.2
+     */
+    public List getDefaultLocales(CmsObject cms, CmsResource resource) {
+
+        String defaultNames = null;
+        try {
+            defaultNames = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
+        } catch (CmsException e) {
+            LOG.warn(Messages.get().getBundle().key(Messages.ERR_READ_ENCODING_PROP_1, cms.getSitePath(resource)), e);
+        }
+        return getDefaultLocales(defaultNames);
+    }
+
+    /**
+     * Returns an array of default locales for the given resource.<p>
+     * 
+     * Since the default locale is always available, the result list will always contain at least one Locale.<p>
+     * 
+     * It's possible to override the system default (see {@link #getDefaultLocales()}) by setting the property 
+     * <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> to a comma separated list of locale names.
+     * This property is inherited from the parent folders.<p>
+     * 
+     * The default locales must be a subset of the configured available locales, see {@link #getAvailableLocales()}.
+     * In case an invalid locale has been set with the property, this locale is ignored.<p>
+     * 
+     * In case the property <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> has not been set
+     * on the resource or a parent folder,
+     * this method returns the same result as {@link #getDefaultLocales()}.<p>
+     * 
+     * Use this method in case you need to get all configured default options for a resource,
+     * if you just need the "the" default locale for a resource, 
+     * use <code>{@link #getDefaultLocale(CmsObject, String)}</code>.<p>
+     * 
+     * @param cms the current cms permission object
      * @param resourceName the name of the resource
      * @return an array of default locale names
      * 
      * @see #getDefaultLocales()
      * @see #getDefaultLocale(CmsObject, String)
+     * @see #getDefaultLocales(CmsObject, CmsResource) 
      */
     public List getDefaultLocales(CmsObject cms, String resourceName) {
 
@@ -630,25 +672,18 @@ public class CmsLocaleManager implements I_CmsEventListener {
         } catch (CmsException e) {
             LOG.warn(Messages.get().getBundle().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
         }
-
-        List result = null;
-        if (defaultNames != null) {
-            result = getAvailableLocales(defaultNames);
-        }
-        if ((result == null) || (result.size() == 0)) {
-            return getDefaultLocales();
-        } else {
-            return result;
-        }
+        return getDefaultLocales(defaultNames);
     }
 
     /**
      * Returns the first matching locale (eventually simplified) from the available locales.<p>
      * 
+     * In case no match is found, code <code>null</code> is returned.<p>
+     * 
      * @param locales must be an ascending sorted list of locales in order of preference
      * @param available the available locales to find a match in
      * 
-     * @return the first precise or simplified match
+     * @return the first precise or simplified match, or <code>null</code> in case no match is found
      */
     public Locale getFirstMatchingLocale(List locales, Collection available) {
 
@@ -869,6 +904,29 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_LOCALE_MANAGER_FLUSH_CACHE_1, "EVENT_CLEAR_CACHES"));
+        }
+    }
+
+    /**
+     * Internal helper, returns an array of default locales for the given default names.<p>
+     *  
+     * If required returns the system configured default locales.<p>
+     * 
+     * @param defaultNames the default locales to use, can be <code>null</code> or a comma separated list 
+     *      of locales, for example <code>"en, de"</code>
+     * 
+     * @return an array of default locales for the given default names
+     */
+    private List getDefaultLocales(String defaultNames) {
+
+        List result = null;
+        if (defaultNames != null) {
+            result = getAvailableLocales(defaultNames);
+        }
+        if ((result == null) || (result.size() == 0)) {
+            return getDefaultLocales();
+        } else {
+            return result;
         }
     }
 }
