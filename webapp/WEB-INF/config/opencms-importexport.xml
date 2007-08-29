@@ -46,6 +46,7 @@
 	</importexport>
 	<staticexport enabled="true">
 		<staticexporthandler>org.opencms.staticexport.CmsOnDemandStaticExportHandler</staticexporthandler>
+		<linksubstitutionhandler>org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler</linksubstitutionhandler>		
 		<exportpath>export</exportpath>
 		<exportworkpath>temp</exportworkpath>
 		<exportbackups>2</exportbackups>
