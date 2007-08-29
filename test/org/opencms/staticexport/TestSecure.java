@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestSecure.java,v $
- * Date   : $Date: 2007/08/13 16:30:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.xml.page.CmsXmlPage;
@@ -54,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -186,10 +185,10 @@ public class TestSecure extends OpenCmsTestCase {
         echo("Testing the configuration");
 
         // test, if a secure server exists for the current site
-        assertTrue(CmsSiteManager.getCurrentSite(cms).hasSecureServer());
+        assertTrue(OpenCms.getSiteManager().getCurrentSite(cms).hasSecureServer());
 
         // test, if the secure server is 'https:www.mysite.com'
-        assertEquals(SERVER_SECURE, CmsSiteManager.getCurrentSite(cms).getSecureUrl());
+        assertEquals(SERVER_SECURE, OpenCms.getSiteManager().getCurrentSite(cms).getSecureUrl());
 
     }
 

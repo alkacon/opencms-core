@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/08/13 16:30:00 $
- * Version: $Revision: 1.227 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.228 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
+import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsFileUtil;
@@ -138,7 +138,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.227 $ 
+ * @version $Revision: 1.228 $ 
  * 
  * @since 6.0.0 
  */
@@ -244,7 +244,7 @@ public final class OpenCmsCore {
     private CmsSessionManager m_sessionManager;
 
     /** The site manager contains information about all configured sites. */
-    private CmsSiteManager m_siteManager;
+    private CmsSiteManagerImpl m_siteManager;
 
     /** The static export manager. */
     private CmsStaticExportManager m_staticExportManager;
@@ -672,7 +672,7 @@ public final class OpenCmsCore {
      * 
      * @return the initialized site manager
      */
-    protected CmsSiteManager getSiteManager() {
+    protected CmsSiteManagerImpl getSiteManager() {
 
         return m_siteManager;
     }
@@ -1127,7 +1127,7 @@ public final class OpenCmsCore {
         m_threadStore = new CmsThreadStore(m_securityManager);
 
         // initialize the link manager
-        m_linkManager = new CmsLinkManager();
+        m_linkManager = new CmsLinkManager(m_staticExportManager.getLinkSubstitutionHandler());
 
         // store the runtime properties
         m_runtimeProperties.putAll(systemConfiguration.getRuntimeProperties());
@@ -1166,7 +1166,7 @@ public final class OpenCmsCore {
             m_publishManager.setSecurityManager(m_securityManager);
             m_publishManager.initialize(initCmsObject(adminCms));
 
-            // intialize the module manager
+            // initialize the module manager
             m_moduleManager.initialize(initCmsObject(adminCms), m_configurationManager);
 
             // initialize the resource manager
@@ -1375,7 +1375,7 @@ public final class OpenCmsCore {
                     cms.readPropertyObject(cms.getSitePath(resource), CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
                 if (secure) {
                     // resource is secure, check site config
-                    CmsSite site = CmsSiteManager.getCurrentSite(cms);
+                    CmsSite site = OpenCms.getSiteManager().getCurrentSite(cms);
                     // check the secure url
                     boolean usingSec = req.getRequestURL().toString().toUpperCase().startsWith(
                         site.getSecureUrl().toUpperCase());

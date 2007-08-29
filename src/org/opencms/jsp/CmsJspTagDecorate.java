@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagDecorate.java,v $
- * Date   : $Date: 2007/08/13 16:29:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.3 
  */
@@ -83,9 +83,8 @@ public class CmsJspTagDecorate extends BodyTagSupport {
      * @param configFile the config file
      * @param locale the locale to use for decoration or NOLOCALE if not locale should be used
      * @param req the current request
-     * @return the decorated content
      * 
-     * @see org.opencms.staticexport.CmsLinkManager#substituteLink(org.opencms.file.CmsObject, String)
+     * @return the decorated content
      */
     public String decorateTagAction(String content, String configFile, String locale, ServletRequest req) {
 

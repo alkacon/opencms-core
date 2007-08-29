@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,6 +110,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_INVALID_HEADER_1 = "INIT_INVALID_HEADER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_LINKSUBSTITUTION_HANDLER_1 = "INIT_LINKSUBSTITUTION_HANDLER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SE_MANAGER_CREATED_0 = "INIT_SE_MANAGER_CREATED_0";

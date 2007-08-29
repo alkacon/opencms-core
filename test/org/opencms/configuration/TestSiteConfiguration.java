@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestSiteConfiguration.java,v $
- * Date   : $Date: 2007/08/13 16:30:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,7 @@ import org.opencms.loader.CmsResourceManager;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
+import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestSiteConfiguration extends OpenCmsTestCase {
 
@@ -102,12 +102,12 @@ public class TestSiteConfiguration extends OpenCmsTestCase {
     public void testConfiguredSites() throws Throwable {
 
         echo("Testing Site Configuration");
-        CmsSiteManager siteManager = OpenCms.getSiteManager();
+        CmsSiteManagerImpl siteManager = OpenCms.getSiteManager();
         echo("Testing default Uri");
         assertEquals("/sites/default/", siteManager.getDefaultUri());
         echo("Testing workplace server");
         assertEquals("http://localhost:8080", siteManager.getWorkplaceServer());
-        CmsSite site = CmsSiteManager.getSite("/sites/default/folder1");
+        CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot("/sites/default/folder1");
         if (site != null) {
             echo("Testing Site: '" + site.toString() + "'");
             CmsSiteMatcher matcher = site.getSiteMatcher();

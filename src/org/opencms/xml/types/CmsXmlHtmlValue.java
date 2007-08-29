@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2007/08/13 16:29:50 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -262,7 +262,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                 // replace links in HTML by macros and fill link table      
                 finalValue = linkProcessor.replaceLinks(finalValue);
             } catch (Exception exc) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_HTML_DATA_PROCESSING_0));
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_HTML_DATA_PROCESSING_0), exc);
             }
         }
 

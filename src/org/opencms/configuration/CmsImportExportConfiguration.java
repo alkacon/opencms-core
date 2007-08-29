@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2007/08/28 13:52:50 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 6.0.0
  */
@@ -105,6 +105,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
     /** Master node for import version class names. */
     public static final String N_IMPORTVERSIONS = "importversions";
+
+    /**  The node name of the static export handler node. */
+    public static final String N_LINKSUBSTITUTION_HANDLER = "linksubstitutionhandler";
 
     /** Node the contains an optional URL of old web application. */
     public static final String N_OLDWEBAPPURL = "oldwebappurl";
@@ -363,8 +366,13 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         // export enabled role
         digester.addCallMethod("*/" + N_STATICEXPORT, "setExportEnabled", 1);
         digester.addCallParam("*/" + N_STATICEXPORT, 0, A_ENABLED);
-        // mode rule
+        // export handler rule
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_HANDLER, "setHandler", 0);
+        // link substitution handler rule
+        digester.addCallMethod(
+            "*/" + N_STATICEXPORT + "/" + N_LINKSUBSTITUTION_HANDLER,
+            "setLinkSubstitutionHandler",
+            0);
         // exportpath rule
         digester.addCallMethod("*/" + N_STATICEXPORT + "/" + N_STATICEXPORT_EXPORTPATH, "setExportPath", 0);
         // exportworkpath rule
@@ -654,6 +662,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         // <staticexporthandler> node
         staticexportElement.addElement(N_STATICEXPORT_HANDLER).addText(
             m_staticExportManager.getHandler().getClass().getName());
+
+        // <linksubstitutionhandler> node
+        staticexportElement.addElement(N_LINKSUBSTITUTION_HANDLER).addText(
+            m_staticExportManager.getLinkSubstitutionHandler().getClass().getName());
 
         // <exportpath> node
         String exportPathUnmodified = m_staticExportManager.getExportPathForConfiguration();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2007/08/13 16:30:09 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.127 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
@@ -85,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.126 $ 
+ * @version $Revision: 1.127 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,6 +197,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Handler class for static export. */
     private I_CmsStaticExportHandler m_handler;
+
+    /** The configured link substitution handler. */
+    private I_CmsLinkSubstitutionHandler m_linkSubstitutionHandler;
 
     /** Lock object for write access to the {@link #cmsEvent(CmsEvent)} method. */
     private Object m_lockCmsEvent;
@@ -476,7 +478,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         CmsResource resource = data.getResource();
 
         // cut the site root from the vfsName and switch to the correct site
-        String siteRoot = CmsSiteManager.getSiteRoot(vfsName);
+        String siteRoot = OpenCms.getSiteManager().getSiteRoot(vfsName);
 
         CmsI18nInfo i18nInfo = OpenCms.getLocaleManager().getI18nInfo(
             req,
@@ -1046,11 +1048,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the static export handler class.<p>
+     * Returns the configured static export handler class.<p>
      * 
      * If not set, a new <code>{@link CmsAfterPublishStaticExportHandler}</code> is created and returned.<p>
      * 
-     * @return the static export handler class.
+     * @return the configured static export handler class
      */
     public I_CmsStaticExportHandler getHandler() {
 
@@ -1058,6 +1060,21 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             setHandler(CmsOnDemandStaticExportHandler.class.getName());
         }
         return m_handler;
+    }
+
+    /**
+     * Returns the configured link substitution handler class.<p>
+     * 
+     * If not set, a new <code>{@link CmsDefaultLinkSubstitutionHandler}</code> is created and returned.<p>
+     * 
+     * @return the configured link substitution handler class
+     */
+    public I_CmsLinkSubstitutionHandler getLinkSubstitutionHandler() {
+
+        if (m_linkSubstitutionHandler == null) {
+            setLinkSubstitutionHandler(CmsDefaultLinkSubstitutionHandler.class.getName());
+        }
+        return m_linkSubstitutionHandler;
     }
 
     /**
@@ -1506,6 +1523,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     Messages.INIT_EXPORT_OPTIMIZATION_1,
                     getPlainExportOptimization()));
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_LINKSUBSTITUTION_HANDLER_1,
+                    getLinkSubstitutionHandler().getClass().getName()));
             } else {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
             }
@@ -1827,14 +1847,29 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Sets the static export handler class.<p>
+     * Sets the link substitution handler class.<p>
      * 
-     * @param handlerClassName the static export handler class name.
+     * @param handlerClassName the link substitution handler class name
      */
     public void setHandler(String handlerClassName) {
 
         try {
             m_handler = (I_CmsStaticExportHandler)Class.forName(handlerClassName).newInstance();
+        } catch (Exception e) {
+            // should never happen
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+    }
+
+    /**
+     * Sets the static export handler class.<p>
+     * 
+     * @param handlerClassName the static export handler class name.
+     */
+    public void setLinkSubstitutionHandler(String handlerClassName) {
+
+        try {
+            m_linkSubstitutionHandler = (I_CmsLinkSubstitutionHandler)Class.forName(handlerClassName).newInstance();
         } catch (Exception e) {
             // should never happen
             LOG.error(e.getLocalizedMessage(), e);

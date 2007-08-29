@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2007/08/13 16:30:13 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,6 +198,10 @@ public final class CmsSite implements Cloneable {
         }
         boolean secure = false;
         if (hasSecureServer()) {
+            if (resourceName.startsWith(cms.getRequestContext().getSiteRoot())) {
+                // make sure this can also be used with a resource root path
+                resourceName = resourceName.substring(cms.getRequestContext().getSiteRoot().length());
+            }
             try {
                 secure = Boolean.valueOf(
                     cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.security.CmsRole;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -72,7 +71,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,7 +192,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         }
 
         if (errors.isEmpty() && isNewUser()) {
-            if (getParamCloseLink() != null && getParamCloseLink().indexOf("path=" + getListRootPath()) > -1) {
+            if ((getParamCloseLink() != null) && (getParamCloseLink().indexOf("path=" + getListRootPath()) > -1)) {
                 // set closelink
                 Map argMap = new HashMap();
                 argMap.put(PARAM_USERID, m_user.getId());
@@ -697,7 +696,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     private List getSites() {
 
         List sites = new ArrayList();
-        List sitesList = CmsSiteManager.getAvailableSites(getCms(), true, getParamOufqn());
+        List sitesList = OpenCms.getSiteManager().getAvailableSites(getCms(), true, getParamOufqn());
 
         String defSite = null;
         if ((m_user != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_user.getName())) {

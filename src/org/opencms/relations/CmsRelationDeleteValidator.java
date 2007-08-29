@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationDeleteValidator.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.site.CmsSiteManager;
+import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.3
  */
@@ -99,7 +99,7 @@ public class CmsRelationDeleteValidator {
         if (resName.startsWith(m_cms.getRequestContext().getSiteRoot())) {
             resName = m_cms.getRequestContext().removeSiteRoot(resName);
         } else {
-            siteRoot = CmsSiteManager.getSiteRoot(resName);
+            siteRoot = OpenCms.getSiteManager().getSiteRoot(resName);
             siteName = siteRoot;
             if (siteRoot != null) {
                 String oldSite = m_cms.getRequestContext().getSiteRoot();
@@ -213,7 +213,7 @@ public class CmsRelationDeleteValidator {
                 while (itResources.hasNext()) {
                     CmsResource resource = (CmsResource)itResources.next();
                     try {
-                        if (!resource.isFolder() && resource.getSiblingCount() > 1) {
+                        if (!resource.isFolder() && (resource.getSiblingCount() > 1)) {
                             Iterator itSiblings = m_cms.readSiblings(
                                 resource.getRootPath(),
                                 CmsResourceFilter.IGNORE_EXPIRATION).iterator();

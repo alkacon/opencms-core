@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationPublishValidator.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSiteManager;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -53,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.5
  */
@@ -107,7 +106,7 @@ public class CmsRelationPublishValidator {
         if (resName.startsWith(m_cms.getRequestContext().getSiteRoot())) {
             resName = m_cms.getRequestContext().removeSiteRoot(resName);
         } else {
-            siteRoot = CmsSiteManager.getSiteRoot(resName);
+            siteRoot = OpenCms.getSiteManager().getSiteRoot(resName);
             siteName = siteRoot;
             if (siteRoot != null) {
                 String oldSite = m_cms.getRequestContext().getSiteRoot();

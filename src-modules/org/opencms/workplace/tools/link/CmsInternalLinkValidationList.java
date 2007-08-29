@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsInternalLinkValidationList.java,v $
- * Date   : $Date: 2007/08/13 16:30:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,9 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsInternalLinksValidator;
 import org.opencms.relations.CmsRelation;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListItemDetails;
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.3 
  */
@@ -167,7 +167,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
                     while (j.hasNext()) {
                         CmsRelation brokenLink = (CmsRelation)j.next();
                         String link = brokenLink.getTargetPath();
-                        String siteRoot = CmsSiteManager.getSiteRoot(link);
+                        String siteRoot = OpenCms.getSiteManager().getSiteRoot(link);
                         String siteName = siteRoot;
                         if (siteRoot != null) {
                             String storedSiteRoot = getCms().getRequestContext().getSiteRoot();

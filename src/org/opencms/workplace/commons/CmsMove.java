@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2007/08/13 16:29:44 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,8 +39,8 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,7 +128,7 @@ public class CmsMove extends CmsMultiDialog {
                 CmsResource resource;
                 try {
                     // check if a site root was added to the target name
-                    if (CmsSiteManager.getSiteRoot(target) != null) {
+                    if (OpenCms.getSiteManager().getSiteRoot(target) != null) {
                         siteRootFolder = getCms().getRequestContext().getSiteRoot();
                         if (siteRootFolder.endsWith("/")) {
                             siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);
@@ -282,7 +282,7 @@ public class CmsMove extends CmsMultiDialog {
         try {
             // check if a site root was added to the target name
             String sitePrefix = "";
-            if (CmsSiteManager.getSiteRoot(target) != null) {
+            if (OpenCms.getSiteManager().getSiteRoot(target) != null) {
                 siteRootFolder = getCms().getRequestContext().getSiteRoot();
                 if (siteRootFolder.endsWith("/")) {
                     siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -79,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.5 
  */
@@ -270,7 +269,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                     List relatedResources = new ArrayList();
                     CmsResource resource = getResourceUtil(item).getResource();
 
-                    String rightSite = CmsSiteManager.getSiteRoot(resource.getRootPath());
+                    String rightSite = OpenCms.getSiteManager().getSiteRoot(resource.getRootPath());
                     if (rightSite == null) {
                         rightSite = "";
                     }
@@ -300,11 +299,11 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                     relationName = CmsStringUtil.formatResourceName(relationName, 50);
                                 } else {
                                     // other site
-                                    String site = CmsSiteManager.getSiteRoot(relationName);
+                                    String site = OpenCms.getSiteManager().getSiteRoot(relationName);
                                     String siteName = site;
                                     if (site != null) {
                                         relationName = relationName.substring(site.length());
-                                        siteName = CmsSiteManager.getSite(site).getTitle();
+                                        siteName = OpenCms.getSiteManager().getSiteForSiteRoot(site).getTitle();
                                     } else {
                                         siteName = "/";
                                     }
@@ -347,11 +346,11 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                                         relationName = CmsStringUtil.formatResourceName(relationName, 50);
                                     } else {
                                         // other site
-                                        String site = CmsSiteManager.getSiteRoot(relationName);
+                                        String site = OpenCms.getSiteManager().getSiteRoot(relationName);
                                         String siteName = site;
                                         if (site != null) {
                                             relationName = relationName.substring(site.length());
-                                            siteName = CmsSiteManager.getSite(site).getTitle();
+                                            siteName = OpenCms.getSiteManager().getSiteForSiteRoot(site).getTitle();
                                         } else {
                                             siteName = "/";
                                         }

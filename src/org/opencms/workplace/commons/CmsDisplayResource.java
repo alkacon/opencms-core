@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2007/08/13 16:29:43 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,6 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -75,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -232,13 +231,13 @@ public class CmsDisplayResource extends CmsDialog {
                         site = OpenCms.getSiteManager().getDefaultUri();
                         if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
                             url = OpenCms.getSiteManager().getWorkplaceServer() + url;
-                        } else if (CmsSiteManager.getSite(site) == null) {
+                        } else if (OpenCms.getSiteManager().getSiteForSiteRoot(site) == null) {
                             url = OpenCms.getSiteManager().getWorkplaceServer() + url;
                         } else {
-                            url = CmsSiteManager.getSite(site).getUrl() + url;
+                            url = OpenCms.getSiteManager().getSiteForSiteRoot(site).getUrl() + url;
                         }
                     } else {
-                        url = CmsSiteManager.getSite(site).getUrl() + url;
+                        url = OpenCms.getSiteManager().getSiteForSiteRoot(site).getUrl() + url;
                     }
                     try {
                         CmsStaticExportManager manager = OpenCms.getStaticExportManager();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2007/08/13 16:30:06 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -71,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.89 $ 
+ * @version $Revision: 1.90 $ 
  * 
  * @since 6.0.0 
  */
@@ -348,7 +347,7 @@ public class CmsFrameset extends CmsWorkplace {
         List values = new ArrayList();
         int selectedIndex = 0;
 
-        List sites = CmsSiteManager.getAvailableSites(getCms(), true);
+        List sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
 
         Iterator i = sites.iterator();
         int pos = 0;
@@ -477,7 +476,7 @@ public class CmsFrameset extends CmsWorkplace {
             return false;
         }
         // count available sites
-        int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
+        int siteCount = OpenCms.getSiteManager().getAvailableSites(getCms(), true).size();
         return (siteCount > 1);
     }
 

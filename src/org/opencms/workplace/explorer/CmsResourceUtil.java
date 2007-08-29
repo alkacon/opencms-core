@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/08/13 16:29:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,6 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsPrincipal;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.util.A_CmsModeIntEnumeration;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -70,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -828,7 +827,7 @@ public final class CmsResourceUtil {
 
         String site = null;
         if ((m_siteMode == SITE_MODE_MATCHING) || (m_cms == null)) {
-            site = CmsSiteManager.getSiteRoot(m_resource.getRootPath());
+            site = OpenCms.getSiteManager().getSiteRoot(m_resource.getRootPath());
         } else if (m_siteMode == SITE_MODE_CURRENT) {
             site = m_cms.getRequestContext().getSiteRoot();
         } else if (m_siteMode == SITE_MODE_ROOT) {
@@ -1101,7 +1100,7 @@ public final class CmsResourceUtil {
         }
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(getResourceTypeName());
         if (settings != null) {
-            String rightSite = CmsSiteManager.getSiteRoot(getResource().getRootPath());
+            String rightSite = OpenCms.getSiteManager().getSiteRoot(getResource().getRootPath());
             if (rightSite == null) {
                 rightSite = "";
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/29 12:50:29 $
- * Version: $Revision: 1.865 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.866 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 * Fixed issue with anchor links in XML Pages
 * Fixed issue with imported overwriting files not being correctly published
 * Fixed issue with workplace AJAX requests not working in IE if ActiveX is disabled
-* Fixed issue with context menu appearing on top of page from time to time
+* Fixed issue with context menu sometimes appearing at the wrong position in the workplace explorer 
 - Improved implementation of CmsUUID serialization, added Junit tests for de-serialization of old versions
 - Updated Lucene jars to version 2.2.0
 - Updated jug.jar used by CmsUUID to version 2.0.0 (from doomdark.org to safehaus.org version)
@@ -57,6 +57,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 ! Added possibility to limit searches to time ranges of the creation and last modification date of resources  
 ! Publish notification popup messages can now be switched on or off in the user preferences dialog (errors are always shown)
 ! Added new CmsDateResourceCollector that uses a configurable list dates to collect the resources
+! Added I_CmsLinkSubstitutionHandler that allows complete customization of generated links on web pages
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2007/08/13 16:29:41 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -74,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -261,7 +260,7 @@ public class CmsTree extends CmsWorkplace {
                 preSelection = "";
             } else {
                 // get the site root of the current site
-                preSelection = CmsSiteManager.getCurrentSite(getCms()).getSiteRoot();
+                preSelection = OpenCms.getSiteManager().getCurrentSite(getCms()).getSiteRoot();
             }
             // set the tree site to avoid discrepancies between selector and tree
             getSettings().setTreeSite(getTreeType(), preSelection);
@@ -274,7 +273,7 @@ public class CmsTree extends CmsWorkplace {
             includeRootSite = false;
             showSiteUrls = true;
         }
-        List sites = CmsSiteManager.getAvailableSites(getCms(), includeRootSite);
+        List sites = OpenCms.getSiteManager().getAvailableSites(getCms(), includeRootSite);
 
         Iterator i = sites.iterator();
         int pos = 0;
@@ -641,7 +640,7 @@ public class CmsTree extends CmsWorkplace {
         boolean showFromRequest = Boolean.valueOf(request.getParameter(PARAM_SHOWSITESELECTOR)).booleanValue();
         if (selectorForType || showFromRequest) {
             // get all available sites
-            int siteCount = CmsSiteManager.getAvailableSites(getCms(), true).size();
+            int siteCount = OpenCms.getSiteManager().getAvailableSites(getCms(), true).size();
             setShowSiteSelector(siteCount > 1);
             return;
         }
@@ -744,7 +743,7 @@ public class CmsTree extends CmsWorkplace {
             // in editor link dialog, create a special prefix for internal links
             if (!storedSiteRoot.equals(prefix)) {
                 // stored site is not selected site, create complete URL as prefix
-                CmsSite site = CmsSiteManager.getSite(prefix);
+                CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(prefix);
                 prefix = getCms().getRequestContext().removeSiteRoot(prefix);
                 prefix = site.getUrl() + OpenCms.getSystemInfo().getOpenCmsContext() + prefix;
             } else {

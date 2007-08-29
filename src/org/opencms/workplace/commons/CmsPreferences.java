@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2007/08/22 12:52:52 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCalendarWidget;
@@ -93,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 6.0.0
  */
@@ -724,7 +723,7 @@ public class CmsPreferences extends CmsTabDialog {
         List values = new ArrayList();
         int selectedIndex = 0;
 
-        List sites = CmsSiteManager.getAvailableSites(getCms(), true);
+        List sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
         String wpSite = getParamTabWpSite();
         if (!wpSite.endsWith("/")) {
             wpSite += "/";

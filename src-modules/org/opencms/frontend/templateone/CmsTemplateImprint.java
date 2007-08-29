@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateImprint.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.frontend.templateone;
 
+import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
 
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -212,7 +212,7 @@ public class CmsTemplateImprint extends CmsTemplateBean {
     public String getUrl() {
 
         StringBuffer result = new StringBuffer(64);
-        CmsSite site = CmsSiteManager.getCurrentSite(getCmsObject());
+        CmsSite site = OpenCms.getSiteManager().getCurrentSite(getCmsObject());
         result.append(site.getUrl());
         result.append(link(getRequestContext().getUri()));
         return result.toString();

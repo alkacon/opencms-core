@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.opencms.security.CmsRoleManager;
 import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
-import org.opencms.site.CmsSiteManager;
+import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * Then use <code>{@link CmsObject#loginUser(String, String)}</code> to log in the user you want.
  * Obviously you need the password for the new user.<p>
  * 
- * Using <code>{@link #getSiteManager()}</code> you can obtain the initialized <code>{@link org.opencms.site.CmsSiteManager}</code>
+ * Using <code>{@link #getSiteManager()}</code> you can obtain the initialized <code>{@link org.opencms.site.CmsSiteManagerImpl}</code>
  * which provides information about the sites configured in the running OpenCms instance.<p>
  * 
  * The <code>{@link org.opencms.db.CmsDefaultUsers}</code> instance returned by <code>{@link #getDefaultUsers()}</code>
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 6.0.0 
  */
@@ -438,7 +438,7 @@ public final class OpenCms {
      * 
      * @return the initialized site manager
      */
-    public static CmsSiteManager getSiteManager() {
+    public static CmsSiteManagerImpl getSiteManager() {
 
         return OpenCmsCore.getInstance().getSiteManager();
     }

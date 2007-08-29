@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2007/08/24 15:55:24 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,8 +67,10 @@ public class CmsJspTagLink extends BodyTagSupport {
      * that has been adjusted according to the web application path and the 
      * OpenCms static export rules.<p>
      * 
-     * Please note that the target is always assumed to be in the OpenCms VFS, so you can't use 
-     * this method for links external to OpenCms.<p>
+     * Since OpenCms version 7.0.2, you can also use this method in case you are not sure
+     * if the link is internal or external, as  
+     * {@link CmsLinkManager#substituteLinkForUnknownTarget(org.opencms.file.CmsObject, String)}
+     * is used to calculate the link target.<p>
      * 
      * Relative links are converted to absolute links, using the current element URI as base.<p>
      * 
@@ -77,12 +79,13 @@ public class CmsJspTagLink extends BodyTagSupport {
      * 
      * @return the target link adjusted according to the web application path and the OpenCms static export rules
      * 
-     * @see org.opencms.staticexport.CmsLinkManager#substituteLink(org.opencms.file.CmsObject, String)
+     * @see org.opencms.staticexport.CmsLinkManager#substituteLinkForUnknownTarget(org.opencms.file.CmsObject, String)
      */
     public static String linkTagAction(String target, ServletRequest req) {
 
         CmsFlexController controller = CmsFlexController.getController(req);
-        return OpenCms.getLinkManager().substituteLink(
+
+        return OpenCms.getLinkManager().substituteLinkForUnknownTarget(
             controller.getCmsObject(),
             CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri()));
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2007/08/13 16:30:10 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.opencms.security.I_CmsAuthorizationHandler;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
+import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 6.0.0
  */
@@ -499,7 +499,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     private String m_sessionStorageProvider;
 
     /** The configured site manager. */
-    private CmsSiteManager m_siteManager;
+    private CmsSiteManagerImpl m_siteManager;
 
     /** The temporary file project id. */
     private int m_tempFileProjectId;
@@ -828,7 +828,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addSetNext("*/" + N_LOGINMESSAGE, "setLoginMessage");
 
         // add site configuration rule        
-        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SITES, CmsSiteManager.class);
+        digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_SITES, CmsSiteManagerImpl.class);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_WORKPLACE_SERVER, "setWorkplaceServer", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_DEFAULT_URI, "setDefaultUri", 0);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SITES, "setSiteManager");
@@ -1662,7 +1662,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      *
      * @return the site manager
      */
-    public CmsSiteManager getSiteManager() {
+    public CmsSiteManagerImpl getSiteManager() {
 
         return m_siteManager;
     }
@@ -2042,7 +2042,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      *
      * @param siteManager the site manager to set
      */
-    public void setSiteManager(CmsSiteManager siteManager) {
+    public void setSiteManager(CmsSiteManagerImpl siteManager) {
 
         m_siteManager = siteManager;
         if (CmsLog.INIT.isInfoEnabled()) {

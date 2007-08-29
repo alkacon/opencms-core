@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/08/13 16:30:06 $
- * Version: $Revision: 1.164 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.165 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -89,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.164 $ 
+ * @version $Revision: 1.165 $ 
  * 
  * @since 6.0.0 
  */
@@ -518,7 +517,7 @@ public abstract class CmsWorkplace {
             // remove trailing slash
             siteRoot = siteRoot.substring(0, siteRoot.length() - 1);
         }
-        if (CmsStringUtil.isNotEmpty(siteRoot) && (CmsSiteManager.getSite(siteRoot) == null)) {
+        if (CmsStringUtil.isNotEmpty(siteRoot) && (OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot) == null)) {
             // this is not the root site and the site is not in the list
             siteRoot = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
             if (siteRoot.endsWith("/")) {
@@ -540,7 +539,7 @@ public abstract class CmsWorkplace {
 
         }
         if ((res == null) || !access) {
-            List sites = CmsSiteManager.getAvailableSites(cms, true);
+            List sites = OpenCms.getSiteManager().getAvailableSites(cms, true);
             if (sites.size() > 0) {
                 siteRoot = ((CmsSite)sites.get(0)).getSiteRoot();
                 cms.getRequestContext().setSiteRoot(siteRoot);

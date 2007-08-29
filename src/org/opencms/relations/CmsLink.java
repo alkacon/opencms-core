@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2007/08/14 09:47:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkProcessor;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -59,7 +58,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -461,7 +460,7 @@ public class CmsLink {
             return m_siteRoot;
         }
         if (m_internal) {
-            m_siteRoot = CmsSiteManager.getSiteRoot(m_target);
+            m_siteRoot = OpenCms.getSiteManager().getSiteRoot(m_target);
             if (m_siteRoot == null) {
                 m_siteRoot = "";
             }

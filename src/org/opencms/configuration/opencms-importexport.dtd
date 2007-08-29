@@ -113,6 +113,7 @@
 -->
 <!ELEMENT staticexport (
 	staticexporthandler, 
+	linksubstitutionhandler?,
 	exportpath,
 	exportworkpath?,
 	exportbackups?,
@@ -132,13 +133,21 @@
 # Another handler is the "CmsAfterPublishStaticExportHandler",
 # which exports all changes immediately after something is published.
 #
-# The default 2 possible values for this node are:
+# The following implementations are shipped with the default OpenCms 
+# core distribution:
 #    org.opencms.staticexport.CmsOnDemandStaticExportHandler             
 #         selects export "on demand" mode
 #    org.opencms.staticexport.CmsAfterPublishStaticExportHandler
 #         selects export "after publish" mode
 -->
 <!ELEMENT staticexporthandler (#PCDATA)>
+
+<!--
+# The fully qualified class name of a concrete implementation of the 
+# org.opencms.staticexport.I_CmsLinkSubstitutionHandler interface.
+# The default handler is "CmsDefaultLinkSubstitutionHandler".
+-->
+<!ELEMENT linksubstitutionhandler (#PCDATA)>
 
 <!--
 # The path in the "real" FS to write the static exported pages to.

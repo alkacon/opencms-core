@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVarLinkValue.java,v $
- * Date   : $Date: 2007/08/13 16:29:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,10 +34,10 @@ package org.opencms.xml.types;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsLinkUpdateUtil;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.0 
  */
@@ -243,7 +243,7 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
         }
         String path = value;
         if (cms != null) {
-            String siteRoot = CmsSiteManager.getSiteRoot(value);
+            String siteRoot = OpenCms.getSiteManager().getSiteRoot(value);
             String oldSite = cms.getRequestContext().getSiteRoot();
             try {
                 if (siteRoot != null) {

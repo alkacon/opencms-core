@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
@@ -58,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -656,9 +655,9 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         assertTrue(file.getLength() > 0);
         assertTrue(content.length > 0);
 
-        System.err.println(CmsSiteManager.getCurrentSite(cms).getSiteRoot());
+        System.err.println(OpenCms.getSiteManager().getCurrentSite(cms).getSiteRoot());
         storeResources(cms, siblingname);
-        System.err.println(CmsSiteManager.getCurrentSite(cms).getSiteRoot());
+        System.err.println(OpenCms.getSiteManager().getCurrentSite(cms).getSiteRoot());
 
         // create a new resource
         CmsResource resource;
@@ -687,7 +686,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         properties.add(prop2);
         // using null as content must create sibling of existing content
         cms.importResource(resourcename2, resource, null, properties);
-        System.err.println(CmsSiteManager.getCurrentSite(cms).getSiteRoot());
+        System.err.println(OpenCms.getSiteManager().getCurrentSite(cms).getSiteRoot());
 
         // project must be current project
         assertProject(cms, resourcename2, cms.getRequestContext().currentProject());
@@ -846,7 +845,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, target, OpenCmsTestResourceFilter.FILTER_EQUAL);
     }
-    
+
     /**
      * Test the create resource method.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/08/29 13:30:25 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,17 +32,17 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsMultiDialog;
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,7 +139,7 @@ public class CmsCopy extends CmsMultiDialog {
                 String siteRootFolder = null;
                 try {
                     // check if a site root was added to the target name
-                    if (CmsSiteManager.getSiteRoot(target) != null) {
+                    if (OpenCms.getSiteManager().getSiteRoot(target) != null) {
                         siteRootFolder = getCms().getRequestContext().getSiteRoot();
                         if (siteRootFolder.endsWith("/")) {
                             siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);
@@ -183,7 +183,7 @@ public class CmsCopy extends CmsMultiDialog {
                 int targetType = -1;
                 String storedSiteRoot = null;
                 try {
-                    if (CmsSiteManager.getSiteRoot(getParamTarget()) != null) {
+                    if (OpenCms.getSiteManager().getSiteRoot(getParamTarget()) != null) {
                         storedSiteRoot = getCms().getRequestContext().getSiteRoot();
                         getCms().getRequestContext().setSiteRoot("/");
                     }
@@ -459,7 +459,7 @@ public class CmsCopy extends CmsMultiDialog {
         try {
             // check if a site root was added to the target name
             String sitePrefix = "";
-            if (CmsSiteManager.getSiteRoot(target) != null) {
+            if (OpenCms.getSiteManager().getSiteRoot(target) != null) {
                 String siteRootFolder = getCms().getRequestContext().getSiteRoot();
                 if (siteRootFolder.endsWith("/")) {
                     siteRootFolder = siteRootFolder.substring(0, siteRootFolder.length() - 1);

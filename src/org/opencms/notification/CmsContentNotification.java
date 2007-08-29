@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsContentNotification.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
@@ -221,7 +220,7 @@ public class CmsContentNotification extends A_CmsNotification {
         html.append("<td>");
         try {
             String resourcePath = notificationCause.getResource().getRootPath();
-            String siteRoot = CmsSiteManager.getSiteRoot(resourcePath);
+            String siteRoot = OpenCms.getSiteManager().getSiteRoot(resourcePath);
             resourcePath = resourcePath.substring(siteRoot.length());
             html.append("[<a href=\"");
             StringBuffer wpStartUri = new StringBuffer(m_uriWorkplace);
@@ -260,7 +259,7 @@ public class CmsContentNotification extends A_CmsNotification {
         if (existsEditor(notificationCause.getResource())) {
             try {
                 String resourcePath = notificationCause.getResource().getRootPath();
-                String siteRoot = CmsSiteManager.getSiteRoot(resourcePath);
+                String siteRoot = OpenCms.getSiteManager().getSiteRoot(resourcePath);
                 resourcePath = resourcePath.substring(siteRoot.length());
                 Map params = new HashMap();
                 CmsUUID projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getUuid();
@@ -295,7 +294,7 @@ public class CmsContentNotification extends A_CmsNotification {
         try {
             html.append("[<a href=\"");
             String resourcePath = notificationCause.getResource().getRootPath();
-            String siteRoot = CmsSiteManager.getSiteRoot(resourcePath);
+            String siteRoot = OpenCms.getSiteManager().getSiteRoot(resourcePath);
             resourcePath = resourcePath.substring(siteRoot.length());
             StringBuffer wpStartUri = new StringBuffer(m_uriWorkplace);
             wpStartUri.append("commons/availability.jsp?resource=");
@@ -358,7 +357,7 @@ public class CmsContentNotification extends A_CmsNotification {
         result.append(row);
         result.append("\"><td width=\"100%\">");
         String resourcePath = notificationCause.getResource().getRootPath();
-        String siteRoot = CmsSiteManager.getSiteRoot(resourcePath);
+        String siteRoot = OpenCms.getSiteManager().getSiteRoot(resourcePath);
         resourcePath = resourcePath.substring(siteRoot.length());
         // append link, if page is available
         if ((notificationCause.getResource().getDateReleased() < System.currentTimeMillis())

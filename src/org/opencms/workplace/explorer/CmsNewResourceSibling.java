@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2007/08/13 16:29:40 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/08/29 13:30:26 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.site.CmsSiteManager;
+import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,7 +120,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
             // create the sibling                        
             String storedSiteRoot = null;
             try {
-                if (CmsSiteManager.getSiteRoot(targetName) != null) {
+                if (OpenCms.getSiteManager().getSiteRoot(targetName) != null) {
                     // add site root to new resource path
                     String siteRootFolder = getCms().getRequestContext().getSiteRoot();
                     if (siteRootFolder.endsWith("/")) {
@@ -196,7 +196,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
         try {
             CmsLock lock = getCms().getLock(newRes);
             // if the new resource has no exclusive lock, set the editProps flag to false
-            if (! lock.isExclusive()) {
+            if (!lock.isExclusive()) {
                 editProps = false;
             }
         } catch (CmsException e) {
