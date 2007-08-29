@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/08/13 16:30:19 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/08/29 12:50:29 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ var link_showresource="/system/workplace/commons/displayresource.jsp";
 var link_searchresource="/system/workplace/views/admin/admin-main.jsp?root=explorer&path=%2Fsearch";
 var last_id=-1;
 var active_mouse_id=-1;
+var lockId=false;
 var active_from_text=false;
 var cancelNextOpen=false;
 var selectedResources=new Array();
@@ -281,15 +282,19 @@ function showCols(cols) {
 
 // set the last selected menu id (from icon)
 function setId(id) {
-	active_mouse_id = id;
-	active_from_text = false;
+	if (!lockId) {
+		active_mouse_id = id;
+		active_from_text = false;
+	}
 }
 
 
 // set the last selected menu id (from link text)
 function setId2(id) {
-	active_mouse_id = id;
-	active_from_text = true;
+	if (!lockId) {
+		active_mouse_id = id;
+		active_from_text = true;
+	}
 }
 
 
@@ -298,10 +303,12 @@ function handleContext(e) {
 
 	if (selectedResources.length > 1) {
 		// multi context menu
+		lockId = true;
 		getContextMenu();
 	} else {
 		// single context menu
 		if (active_mouse_id >= 0) {
+			lockId = true;
 			getContextMenu();
 		}
 	}
@@ -358,9 +365,11 @@ function showContextMenu(msg, state) {
 		} // end if (access)
     	last_id = active_mouse_id;
 	    contextOpen = true;
+	    lockId = false;
 	} else if (state != 'wait') {
 		// an error occurred
 		alert('state:' + state + '\nmessage:' + msg);
+		lockId = false;
 	}
 }
 
@@ -371,6 +380,7 @@ function closeContext() {
 	cmouter.style.visibility = "hidden";
 	cmouter.style.display = "none";
 	contextOpen = false;
+	lockId = false;
 }
 
 // submits a selected multi action
@@ -563,8 +573,10 @@ function linkOver(obj, id) {
 		cls = cls + 'i';
 	}
 	obj.className = cls;
-	active_mouse_id = id;
-	active_from_text = true;
+	if (!lockId) {
+		active_mouse_id = id;
+		active_from_text = true;
+	}
 }
 
 function linkOut(obj) {
@@ -574,8 +586,10 @@ function linkOut(obj) {
 		cls = cls.substring(0, cls.length-1);
 	}
 	obj.className = cls;
-	active_mouse_id = -1;
-	active_from_text = false;
+	if (!lockId) {
+		active_mouse_id = -1;
+		active_from_text = false;
+	}
 }
 
 

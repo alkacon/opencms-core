@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/ajax.js,v $
- * Date   : $Date: 2007/08/13 16:30:19 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/29 12:50:29 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@
  * <code>'ok'</code>   : Everything went fine and the result of the request is given in the <code>result</code> parameter.<br>
  * <code>'fatal'</code>: The AJAX XmlHttpRequest object could not be created, the <code>result</code> parameter is empty.<br>
  * <code>'wait'</code> : The AJAX request was successfully send, so please wait, the <code>result</code> parameter is empty.<br>
- * <code>'error'</code>: The AJAX request was successfully send, but the response status was not ok (different to 200), 
+ * <code>'error'</code>: The AJAX request was successfully send, but the response status was not ok (different to 200),
  *                       The <code>result</code> parameter is the received status code.<br>
  */
 function makeRequest(url, params, method) {
@@ -66,6 +66,12 @@ function makeRequest(url, params, method) {
          } catch (e) {}
       }
    }
+   if (!http_request && navigator.userAgent.toLowerCase().indexOf("msie") != -1) {
+   	  // for IE browsers without ActiveX enabled, use the <iframe> workaround
+      try {
+         http_request = new XMLHttpRequestIE();
+      } catch (e) {}
+   }
    if (!http_request) {
       updateContents('fatal', eval(method));
       return false;
@@ -73,8 +79,10 @@ function makeRequest(url, params, method) {
    updateContents('wait', eval(method));
    http_request.onreadystatechange = function() { updateContents(http_request, eval(method)); };
    http_request.open('POST', url, true);
-   http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-   http_request.setRequestHeader("Content-length", params.length);
+   try {
+   	  http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+   	  http_request.setRequestHeader("Content-length", params.length);
+   } catch (e) {}
    http_request.send(params);
 }
 
@@ -100,4 +108,68 @@ function updateContents(http_request, method) {
    } else {
       method(http_request.responseText, 'ok');
    }
+}
+
+/*
+The following code is a modified version of a request without using ActiveX objects with IE
+Changes to the original code are:
+- document => XMLHttpRequestIE_getDoc() (for OpenCms frameset, uses "foot" frame)
+- added request parameters to iframe src (document.getElementById('kXHR_iframe_'+this.i).src=this.url +params;)
+- changed responseText using innerText to innerHTML, because we are always submitting html code
+- renamed functions, added "IE" suffix to keep original code working in Mozilla and other browsers
+
+coded by Kae - http://verens.com/
+use this code as you wish, but retain this notice
+*/
+
+var kXHR_instances=0;
+var kXHR_objs=[];
+
+XMLHttpRequestIE=function(){
+	var i=0;
+	var url='';
+	var responseText='';
+	var iframe='';
+	this.onreadystatechange=function(){
+		return false;
+	}
+	this.open=function(method,url){
+		//TODO: POST methods
+		this.i=++kXHR_instances; // id number of this request
+		this.url=url;
+		XMLHttpRequestIE_getDoc().body.appendChild(XMLHttpRequestIE_getDoc().createElement('<iframe id="kXHR_iframe_'+this.i+'" style="display:none" src="/"></iframe>'));
+	}
+	this.send=function(postdata){
+		//TODO: use the postdata, request parameters are working...
+		var params = "";
+		if (postdata.length > 0) {
+			params = "?" + postdata;
+		}
+		XMLHttpRequestIE_getDoc().getElementById('kXHR_iframe_'+this.i).src=this.url + params;
+		kXHR_objs[this.i]=this;
+		setTimeout('XMLHttpRequestIE_checkState('+this.i+',2)',2);
+	}
+	return true;
+}
+
+XMLHttpRequestIE_checkState=function(inst,delay){
+	var el=XMLHttpRequestIE_getDoc().getElementById('kXHR_iframe_'+inst);
+	if(el.readyState=='complete'){
+		var responseText=XMLHttpRequestIE_getDoc().frames['kXHR_iframe_'+inst].document.body.innerHTML;
+		kXHR_objs[inst].responseText=responseText;
+		kXHR_objs[inst].readyState=4;
+		kXHR_objs[inst].status=200;
+		kXHR_objs[inst].onreadystatechange();
+		el.parentNode.removeChild(el);
+	}else{
+		delay*=1.5;
+		setTimeout('XMLHttpRequestIE_checkState('+inst+','+delay+')',delay);
+	}
+}
+
+function XMLHttpRequestIE_getDoc() {
+	if (top.frames['foot'] != null) {
+		return top.frames['foot'].document;
+	}
+	return document;
 }

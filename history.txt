@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/27 11:28:14 $
- * Version: $Revision: 1.864 $
+ * Date   : $Date: 2007/08/29 12:50:29 $
+ * Version: $Revision: 1.865 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,8 @@ OpenCms 7.0.2 - xxxxx, 2007
 * Fixed issue with siblings in the history
 * Fixed issue with anchor links in XML Pages
 * Fixed issue with imported overwriting files not being correctly published
+* Fixed issue with workplace AJAX requests not working in IE if ActiveX is disabled
+* Fixed issue with context menu appearing on top of page from time to time
 - Improved implementation of CmsUUID serialization, added Junit tests for de-serialization of old versions
 - Updated Lucene jars to version 2.2.0
 - Updated jug.jar used by CmsUUID to version 2.0.0 (from doomdark.org to safehaus.org version)
