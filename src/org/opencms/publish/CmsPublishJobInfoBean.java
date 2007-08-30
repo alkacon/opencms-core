@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobInfoBean.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/30 12:46:24 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.5
  */
@@ -134,7 +134,7 @@ public final class CmsPublishJobInfoBean {
         m_projectName = projectName;
         m_userId = userId;
         m_size = resourceCount;
-        m_directPublish = (flags & C_PUBLISH_FLAG) == C_PUBLISH_FLAG;
+        m_directPublish = ((flags & C_PUBLISH_FLAG) == C_PUBLISH_FLAG);
 
         m_enqueueTime = enqueueTime;
         m_startTime = startTime;
@@ -264,7 +264,7 @@ public final class CmsPublishJobInfoBean {
      */
     public I_CmsReport getPublishReport() {
 
-        if (m_publishReport == null && m_finishTime == 0 && m_startTime > 0) {
+        if ((m_publishReport == null) && (m_finishTime == 0) && (m_startTime > 0)) {
             m_publishReport = getReport();
             if (m_publishReport == null) {
                 m_publishReport = new CmsPublishReport(getCmsObject().getRequestContext().getLocale());
