@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2007/08/15 14:26:19 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2007/08/30 12:05:47 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -615,7 +615,7 @@ public final class CmsStringUtil {
     public static boolean isEqual(Object value1, Object value2) {
 
         if (value1 == null) {
-            return value2 == null;
+            return (value2 == null);
         }
         return value1.equals(value2);
     }
