@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/08/29 16:22:22 $
- * Version: $Revision: 1.867 $
+ * Date   : $Date: 2007/08/30 15:17:42 $
+ * Version: $Revision: 1.868 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -59,6 +59,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 ! Publish notification popup messages can now be switched on or off in the user preferences dialog (errors are always shown)
 ! Added new CmsDateResourceCollector that uses a configurable list dates to collect the resources
 ! Added I_CmsLinkSubstitutionHandler that allows complete customization of generated links on web pages
+* Fixed issue with aging request time in combination with date released in CmsObject instances stored by core classes 
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog

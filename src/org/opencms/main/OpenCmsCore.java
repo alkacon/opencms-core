@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/08/29 13:30:26 $
- * Version: $Revision: 1.228 $
+ * Date   : $Date: 2007/08/30 15:17:41 $
+ * Version: $Revision: 1.229 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -138,7 +138,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.228 $ 
+ * @version $Revision: 1.229 $ 
  * 
  * @since 6.0.0 
  */
@@ -762,6 +762,9 @@ public final class OpenCmsCore {
      * Changing the request context values (for example project, siteroot) in the new CmsObject 
      * will have no side effects to the CmsObject it was copied form.<p>  
      * 
+     * The request time (<code>{@link CmsRequestContext#getRequestTime()}</code>) 
+     * is set to the current time.<p>
+     * 
      * @param cms the CmsObject to create a copy of
      * 
      * @return an independent copy of the provided CmsObject
@@ -775,6 +778,7 @@ public final class OpenCmsCore {
     protected CmsObject initCmsObject(CmsObject cms) throws CmsException {
 
         CmsContextInfo contextInfo = new CmsContextInfo(cms.getRequestContext());
+        contextInfo.setRequestTime(CmsContextInfo.CURRENT_TIME);
         return initCmsObject(contextInfo);
     }
 

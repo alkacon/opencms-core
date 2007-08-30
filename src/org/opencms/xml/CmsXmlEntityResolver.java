@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2007/08/13 16:30:14 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/08/30 15:17:42 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -62,7 +63,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -304,7 +305,12 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                     t);
             }
         } else if ((m_cms != null) && systemId.startsWith(OPENCMS_SCHEME)) {
-
+            // refresh the internal request time: 
+            try {
+                m_cms = OpenCms.initCmsObject(m_cms);
+            } catch (CmsException cme) {
+                m_cms.getRequestContext().setRequestTime(System.currentTimeMillis());
+            }
             // opencms:// VFS reference
             String cacheSystemId = systemId.substring(OPENCMS_SCHEME.length() - 1);
             String cacheKey = getCacheKey(cacheSystemId, m_cms.getRequestContext().currentProject().isOnlineProject());
