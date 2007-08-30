@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2007/08/30 10:38:19 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,7 +100,7 @@ public class CmsHtmlReport extends A_CmsReport {
      * @param writeHtml if <code>true</code>, this report should generate HTML instead of JavaScript output
      * @param isTransient If set to <code>true</code> nothing is kept in memory
      */
-    protected CmsHtmlReport(Locale locale, String siteRoot, boolean writeHtml, boolean isTransient) {
+    public CmsHtmlReport(Locale locale, String siteRoot, boolean writeHtml, boolean isTransient) {
 
         init(locale, siteRoot);
         m_content = new ArrayList(256);
@@ -130,6 +130,16 @@ public class CmsHtmlReport extends A_CmsReport {
         }
         m_indexNext = m_transient ? 0 : indexEnd;
         return result.toString();
+    }
+
+    /**
+     * Returns if the report writes html or javascript code.<p> 
+     * 
+     * @return <code>true</code> if the report writes html, and <code>false</code> if the report writes javascript code
+     */
+    public boolean isWriteHtml() {
+        
+        return m_writeHtml;
     }
 
     /**
@@ -249,7 +259,7 @@ public class CmsHtmlReport extends A_CmsReport {
         addError(t.getMessage());
         m_content.add(t);
     }
-
+    
     /**
      * Returns the correct line break notation depending on the output style of this report.
      * 

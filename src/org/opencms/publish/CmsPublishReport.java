@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishReport.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/08/30 10:38:19 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,15 @@
 package org.opencms.publish;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.CmsPrintStreamReport;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -46,21 +50,32 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.5 
  */
 public class CmsPublishReport extends CmsPrintStreamReport {
+
+    /** The output stream. */
+    protected ByteArrayOutputStream m_outputStream;
 
     /** The busy flag to prevent duplicated output. */
     private boolean m_busy;
 
     /** The original report. */
     private I_CmsReport m_report;
-    
-    /** The output stream. */
-    protected ByteArrayOutputStream m_outputStream;
-    
+
+    /**
+     * Constructs a new publish report using the provided locale for the output language.<p>
+     *  
+     * @param locale the locale to use for the output language
+     * 
+     */
+    protected CmsPublishReport(Locale locale) {
+
+        this(new ByteArrayOutputStream(), locale);
+    }
+
     /**
      * Constructs a new publish report using the provided locale for the output language.<p>
      *  
@@ -70,23 +85,12 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     private CmsPublishReport(ByteArrayOutputStream outputStream, Locale locale) {
 
-        super (new PrintStream(outputStream), locale, true);
-        init(locale, null); 
-        
+        super(new PrintStream(outputStream), locale, true);
+        init(locale, null);
+
         m_outputStream = outputStream;
     }
 
-    /**
-     * Constructs a new publish report using the provided locale for the output language.<p>
-     *  
-     * @param locale the locale to use for the output language
-     * 
-     */
-    protected CmsPublishReport(Locale locale) {
-        
-        this(new ByteArrayOutputStream(), locale);
-    }
-    
     /**
      * Constructs a new publish report decorating the provided report.<p>
      *  
@@ -96,6 +100,15 @@ public class CmsPublishReport extends CmsPrintStreamReport {
 
         this(new ByteArrayOutputStream(), report.getLocale());
         m_report = report;
+        if (report instanceof CmsHtmlReport) {
+            if (((CmsHtmlReport)report).isWriteHtml()) {
+                try {
+                    m_outputStream.write(CmsStringUtil.substitute(getReportUpdate(), "\\n", "").getBytes());
+                } catch (IOException e) {
+                    // ignore
+                }
+            }
+        }
     }
 
     /**
@@ -143,10 +156,21 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      * @return the contents of the publish report
      */
     public byte[] getContents() {
-     
+
         return m_outputStream.toByteArray();
     }
-    
+
+    /**
+     * @see org.opencms.report.A_CmsReport#getErrors()
+     */
+    public List getErrors() {
+
+        if (m_report != null) {
+            return m_report.getErrors();
+        }
+        return getErrors();
+    }
+
     /**
      * @see org.opencms.report.CmsPrintStreamReport#getReportUpdate()
      */
@@ -157,7 +181,18 @@ public class CmsPublishReport extends CmsPrintStreamReport {
         }
         return super.getReportUpdate();
     }
-    
+
+    /**
+     * @see org.opencms.report.A_CmsReport#getWarnings()
+     */
+    public List getWarnings() {
+
+        if (m_report != null) {
+            return m_report.getWarnings();
+        }
+        return getWarnings();
+    }
+
     /**
      * @see org.opencms.report.A_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
      */
