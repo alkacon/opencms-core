@@ -25,6 +25,7 @@
 		<resourceinit>
 			<resourceinithandler class="org.opencms.file.history.CmsHistoryResourceHandler"/>
 			<resourceinithandler class="org.opencms.main.CmsPermalinkResourceHandler"/>
+			<resourceinithandler class="org.opencms.workplace.CmsWorkplaceLoginHandler"/>
         </resourceinit>
 		<requesthandlers />
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
@@ -44,7 +45,7 @@
 		<runtimeproperties>
 			<param name="compatibility.support.oldlocales">false</param>
 			<param name="compatibility.support.webAppNames">/opencms/opencms/</param>
-		</runtimeproperties>			
+		</runtimeproperties>
 		<runtimeclasses>
 			<runtimeinfo class="org.opencms.db.CmsDbContextFactory" />
 		</runtimeclasses>		
@@ -89,16 +90,16 @@
 			<size-propertylists>128</size-propertylists>
 			<size-accesscontrollists>1024</size-accesscontrollists>	
 			<size-permissions>1024</size-permissions>
-		</resultcache>			
+		</resultcache>
 		<content-notification>
             <notification-time>365</notification-time>
             <notification-project>Offline</notification-project>
-        </content-notification>	
+        </content-notification>
 		<authorizationhandler class="org.opencms.security.CmsDefaultAuthorizationHandler" />
 		<publishmanager>
 			<history-size>10</history-size>
 			<queue-persistance>true</queue-persistance>
-		    <queue-shutdowntime>0</queue-shutdowntime>			
+		    <queue-shutdowntime>0</queue-shutdowntime>
 		</publishmanager>
 		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 	</system>
