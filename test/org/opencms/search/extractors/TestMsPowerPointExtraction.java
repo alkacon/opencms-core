@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestMsPowerPointExtraction.java,v $
- * Date   : $Date: 2007/08/13 16:30:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/08/31 14:50:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ public class TestMsPowerPointExtraction extends TestCase {
      *
      * @throws Exception if the test fails
      */
-    public void testBasicPPtExtration() throws Exception {
+    public void testBasicPPtExtraction() throws Exception {
 
         // open an input stream for the test file        
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.ppt");
@@ -87,7 +87,7 @@ public class TestMsPowerPointExtraction extends TestCase {
         assertTrue(result.indexOf("Some content there.") > -1);
         assertTrue(result.indexOf("Some content on a second sheet.") > -1);
         assertTrue(result.indexOf("Some content on the third sheet.") > -1);
-        // NOTE: Euro symbol conversion fails - possible reason is that extration method class handles only ISO
+        // NOTE: Euro symbol conversion fails - possible reason is that Extraction method class handles only ISO
         // this is "äöüÄÖÜß"
         assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df") > -1);
         

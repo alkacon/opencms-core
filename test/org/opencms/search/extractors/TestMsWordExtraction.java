@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestMsWordExtraction.java,v $
- * Date   : $Date: 2007/08/13 16:30:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/08/31 14:50:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ public class TestMsWordExtraction extends TestCase {
      *
      * @throws Exception if the test fails
      */
-    public void testBasicWordExtration() throws Exception {
+    public void testBasicWordExtraction() throws Exception {
         
         // open an input stream for the test file        
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.doc");
