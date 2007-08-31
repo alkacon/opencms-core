@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2007/08/30 15:17:42 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/08/31 13:03:50 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,8 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsEvent;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -63,7 +63,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -305,12 +305,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                     t);
             }
         } else if ((m_cms != null) && systemId.startsWith(OPENCMS_SCHEME)) {
-            // refresh the internal request time: 
-            try {
-                m_cms = OpenCms.initCmsObject(m_cms);
-            } catch (CmsException cme) {
-                m_cms.getRequestContext().setRequestTime(System.currentTimeMillis());
-            }
+
             // opencms:// VFS reference
             String cacheSystemId = systemId.substring(OPENCMS_SCHEME.length() - 1);
             String cacheKey = getCacheKey(cacheSystemId, m_cms.getRequestContext().currentProject().isOnlineProject());
@@ -323,7 +318,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             try {
                 // content not cached, read from VFS
                 m_cms.getRequestContext().setSiteRoot("/");
-                CmsFile file = m_cms.readFile(cacheSystemId);
+                CmsFile file = m_cms.readFile(cacheSystemId, CmsResourceFilter.IGNORE_EXPIRATION);
                 content = file.getContents();
                 // store content in cache
                 m_cacheTemporary.put(cacheKey, content);

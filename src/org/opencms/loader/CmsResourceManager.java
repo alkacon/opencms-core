@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/08/30 13:13:58 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2007/08/31 13:03:50 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,7 +125,6 @@ public class CmsResourceManager {
          */
         protected void addResourceType(I_CmsResourceType type) {
 
-            // TODO: If we switch to Java 1.5 compatiblity change this to Integer.valueOf(int) for sligthly better performance 
             m_resourceTypeIdMap.put(new Integer(type.getTypeId()), type);
             m_resourceTypeNameMap.put(type.getTypeName(), type);
             m_resourceTypeList.add(type);
@@ -166,7 +165,6 @@ public class CmsResourceManager {
          */
         protected I_CmsResourceType getResourceTypeById(int typeId) {
 
-            // TODO: If we switch to Java 1.5 compatiblity change this to Integer.valueOf(int) for sligthly better performance 
             return (I_CmsResourceType)m_resourceTypeIdMap.get(new Integer(typeId));
         }
 
