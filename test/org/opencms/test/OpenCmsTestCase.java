@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2007/08/31 14:39:47 $
+ * Version: $Revision: 1.98 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.97 $
+ * @version $Revision: 1.98 $
  * 
  * @since 6.0.0
  */
@@ -745,7 +745,10 @@ public class OpenCmsTestCase extends TestCase {
         if (!testDataFolder.exists()) {
             fail("DB setup data not available at " + testDataFolder.getAbsolutePath());
         }
-        m_testDataPath.add(CmsFileUtil.normalizePath(testDataFolder.getAbsolutePath() + File.separator));
+        String path = CmsFileUtil.normalizePath(testDataFolder.getAbsolutePath() + File.separator);
+        if (!m_testDataPath.contains(path)) {
+            m_testDataPath.add(path);
+        }
     }
 
     /**
