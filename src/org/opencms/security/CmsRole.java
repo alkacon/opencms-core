@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2007/08/30 12:05:47 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/08/31 13:23:02 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -541,7 +541,7 @@ public final class CmsRole {
      */
     public String getGroupName() {
 
-        if ((m_ouFqn) == null || isOrganizationalUnitIndependent()) {
+        if ((m_ouFqn == null) || isOrganizationalUnitIndependent()) {
             return m_groupName;
         }
         return m_ouFqn + m_groupName;
