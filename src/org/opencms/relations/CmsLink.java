@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsLink.java,v $
- * Date   : $Date: 2007/08/29 13:30:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/08/31 16:08:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.relations;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.wrapper.CmsObjectWrapper;
@@ -58,7 +59,7 @@ import org.dom4j.Element;
  * @author Carsten Weinholz
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,7 +89,7 @@ public class CmsLink {
     /** Name of the target node. */
     public static final String NODE_TARGET = "target";
 
-    /** Name of the uuid node. */
+    /** Name of the UUID node. */
     public static final String NODE_UUID = "uuid";
 
     /** Constant for the NULL link. */
@@ -97,10 +98,10 @@ public class CmsLink {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLink.class);
 
-    /** The anchor of the uri, if any. */
+    /** The anchor of the URI, if any. */
     private String m_anchor;
 
-    /** The xml element reference. */
+    /** The XML element reference. */
     private Element m_element;
 
     /** Indicates if the link is an internal link within the OpenCms VFS. */
@@ -131,9 +132,9 @@ public class CmsLink {
     private String m_uri;
 
     /**
-     * Reconstructs a link object from the given xml node.<p>
+     * Reconstructs a link object from the given XML node.<p>
      * 
-     * @param element the xml node containing the link information
+     * @param element the XML node containing the link information
      */
     public CmsLink(Element element) {
 
@@ -296,7 +297,7 @@ public class CmsLink {
         }
         if (obj instanceof CmsLink) {
             CmsLink other = (CmsLink)obj;
-            return (m_type == other.m_type) && CmsStringUtil.isEqual(this.m_target, other.m_target);
+            return (m_type == other.m_type) && CmsStringUtil.isEqual(m_target, other.m_target);
         }
         return false;
     }
@@ -324,53 +325,54 @@ public class CmsLink {
     /**
      * Returns the processed link.<p>
      * 
-     * @param cms the cms context, could be <code>null</code>
-     * @param processEditorLinks set it to <code>true</code> in case the processed link is needed as editor parameter
+     * @param cms the current OpenCms user context, can be <code>null</code>
      * 
-     * @return processed link
+     * @return the processed link
      */
-    public String getLink(CmsObject cms, boolean processEditorLinks) {
+    public String getLink(CmsObject cms) {
 
-        if (isInternal()) {
+        if (m_internal) {
 
             // if we have a local link, leave it unchanged
             // cms may be null for unit tests
-            if ((cms == null) || (getUri().length() == 0) || (getUri().charAt(0) == '#')) {
-                return getUri();
+            if ((cms == null) || (m_uri.length() == 0) || (m_uri.charAt(0) == '#')) {
+                return m_uri;
             }
 
             checkConsistency(cms);
 
-            // Explanation why the "processEditorLinks" param is required:
-            // If the VFS is browsed in the root site, this indicates that a user has switched
-            // the context to the / in the Workplace. In this case the workplace site must be 
-            // the active site. If normal link processing would be used, the site root in the link
-            // would be replaced with server name / port for the other sites. But if a user clicks
-            // on such a link he would leave the workplace site and loose his session. 
-            // A result is that the "direct edit" mode does not work since he in not longer logged in.      
-            // Therefore if the user is NOT in the editor, but in the root site, the links are generated
-            // without server name / port. However, if the editor is opened, the links are generated 
-            // _with_ server name / port so that the source code looks identical to code
-            // that would normally created when running in a regular site.
-
-            // if an object wrapper is used, rewrite the uri
-            Object obj = cms.getRequestContext().getAttribute(CmsObjectWrapper.ATTRIBUTE_NAME);
-            if (obj != null) {
-                CmsObjectWrapper wrapper = (CmsObjectWrapper)obj;
-                m_uri = wrapper.rewriteLink(getUri());
+            CmsObjectWrapper wrapper = (CmsObjectWrapper)cms.getRequestContext().getAttribute(
+                CmsObjectWrapper.ATTRIBUTE_NAME);
+            if (wrapper != null) {
+                // if an object wrapper is used, rewrite the URI
+                m_uri = wrapper.rewriteLink(m_uri);
             }
 
-            // we are in the opencms root site but not in edit mode - use link as stored
-            if (!processEditorLinks && (cms.getRequestContext().getSiteRoot().length() == 0)) {
-                return OpenCms.getLinkManager().substituteLink(cms, getUri());
+            if ((cms.getRequestContext().getSiteRoot().length() == 0)
+                && (cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_EDITOR) == null)) {
+                // Explanation why this check is required:
+                // If the site root name length is 0, this means that a user has switched
+                // the site root to the root site "/" in the Workplace. 
+                // In this case the workplace site must also be the active site. 
+                // If the editor is opened in the root site, because of this code the links are 
+                // always generated _with_ server name / port so that the source code looks identical to code
+                // that would normally be created when running in a regular site.                
+                // If normal link processing would be used, the site information in the link
+                // would be lost.
+                return OpenCms.getLinkManager().substituteLink(cms, m_uri);
             }
 
-            // otherwise get the desired site root from the stored link
-            // if there is no site root, we have a /system link (or the site was deleted),
-            // return the link prefixed with the opencms context
+            // get the site root for this URI / link
+            // if there is no site root, we either have a /system link, or the site was deleted,
+            // return the full URI prefixed with the opencms context
             String siteRoot = getSiteRoot();
             if (siteRoot == null) {
-                return OpenCms.getLinkManager().substituteLink(cms, getUri());
+                return OpenCms.getLinkManager().substituteLink(cms, m_uri);
+            }
+
+            if (cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_FULLLINKS) != null) {
+                // full links should be generated even if we are in the same site
+                return OpenCms.getLinkManager().getServerLink(cms, m_uri);
             }
 
             // return the link with the server prefix, if necessary 
@@ -378,8 +380,24 @@ public class CmsLink {
         } else {
 
             // don't touch external links
-            return getUri();
+            return m_uri;
         }
+    }
+
+    /**
+     * Returns the processed link.<p>
+     * 
+     * @param cms the current OpenCms user context, can be <code>null</code>
+     * @param processEditorLinks this parameter is not longer used
+     * 
+     * @return the processed link
+     * 
+     * @deprecated use {@link #getLink(CmsObject)} instead, 
+     *      the process editor option is set using the OpenCms request context attributes
+     */
+    public String getLink(CmsObject cms, boolean processEditorLinks) {
+
+        return getLink(cms);
     }
 
     /**
@@ -400,7 +418,7 @@ public class CmsLink {
      */
     public String getParameter(String name) {
 
-        String[] p = (String[])m_parameters.get(name);
+        String[] p = (String[])getParameterMap().get(name);
         if (p != null) {
             return p[0];
         }
@@ -415,6 +433,9 @@ public class CmsLink {
      */
     public Map getParameterMap() {
 
+        if (m_parameters == null) {
+            m_parameters = CmsRequestUtil.createParameterMap(m_query);
+        }
         return m_parameters;
     }
 
@@ -425,7 +446,7 @@ public class CmsLink {
      */
     public Set getParameterNames() {
 
-        return m_parameters.keySet();
+        return getParameterMap().keySet();
     }
 
     /**
@@ -436,7 +457,7 @@ public class CmsLink {
      */
     public String[] getParameterValues(String name) {
 
-        return (String[])m_parameters.get(name);
+        return (String[])getParameterMap().get(name);
     }
 
     /**
@@ -450,23 +471,19 @@ public class CmsLink {
     }
 
     /**
-     * Return the site root of the target if it is internal.<p>
+     * Return the site root if the target of this link is internal, or <code>null</code> otherwise.<p>
      * 
-     * @return the site root or <code>null</code>
+     * @return the site root if the target of this link is internal, or <code>null</code> otherwise
      */
     public String getSiteRoot() {
 
-        if (m_siteRoot != null) {
-            return m_siteRoot;
-        }
-        if (m_internal) {
+        if (m_internal && (m_siteRoot == null)) {
             m_siteRoot = OpenCms.getSiteManager().getSiteRoot(m_target);
             if (m_siteRoot == null) {
                 m_siteRoot = "";
             }
-            return m_siteRoot;
         }
-        return null;
+        return m_siteRoot;
     }
 
     /**
@@ -618,9 +635,6 @@ public class CmsLink {
         m_target = splitter.getPrefix();
         m_anchor = splitter.getAnchor();
         setQuery(splitter.getQuery());
-
-        // initialize the parameter map
-        m_parameters = CmsRequestUtil.createParameterMap(m_query);
     }
 
     /**
@@ -631,6 +645,7 @@ public class CmsLink {
     private void setQuery(String query) {
 
         m_query = CmsLinkProcessor.unescapeLink(query);
+        m_parameters = null;
     }
 
     /**
@@ -649,9 +664,6 @@ public class CmsLink {
             uri.append('#');
             uri.append(m_anchor);
         }
-
-        // initialize the parameter map
-        m_parameters = CmsRequestUtil.createParameterMap(m_query);
         m_uri = uri.toString();
     }
 }

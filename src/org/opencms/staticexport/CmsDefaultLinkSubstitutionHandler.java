@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/08/31 16:08:14 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.2
  * 
@@ -88,17 +88,20 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
         boolean useRelativeLinks = false;
 
         // determine the target site of the link        
-        CmsSite targetSite;
+        CmsSite currentSite = OpenCms.getSiteManager().getCurrentSite(cms);
+        CmsSite targetSite = null;
         if (CmsStringUtil.isNotEmpty(siteRoot)) {
             targetSite = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
-        } else {
-            targetSite = OpenCms.getSiteManager().getCurrentSite(cms);
         }
-        String serverPrefix = "";
-        CmsSite currentSite = OpenCms.getSiteManager().getCurrentSite(cms);
+        if (targetSite == null) {
+            targetSite = currentSite;
+        }
+        String serverPrefix;
         // if the link points to another site, there needs to be a server prefix
         if (targetSite != currentSite) {
             serverPrefix = targetSite.getUrl();
+        } else {
+            serverPrefix = "";
         }
 
         // in the online project, check static export and secure settings

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2007/08/13 16:29:58 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2007/08/31 16:08:14 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,17 +48,20 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 6.0.0 
  */
 public final class CmsRequestContext {
 
     /** Request context attribute for indicating that an editor is currently open. */
-    public static final String ATTRIBUTE_EDITOR = "org.opencms.file.CmsRequestContext.ATTRIBUTE_EDITOR";
+    public static final String ATTRIBUTE_EDITOR = CmsRequestContext.class.getName() + ".ATTRIBUTE_EDITOR";
+
+    /** Request context attribute for indicating we want full links generated for HTML fields. */
+    public static final String ATTRIBUTE_FULLLINKS = CmsRequestContext.class.getName() + ".ATTRIBUTE_FULLLINKS";
 
     /** Request context attribute for indicating the model file for a create resource operation. */
-    public static final String ATTRIBUTE_MODEL = "org.opencms.file.CmsRequestContext.ATTRIBUTE_MODEL";
+    public static final String ATTRIBUTE_MODEL = CmsRequestContext.class.getName() + ".ATTRIBUTE_MODEL";
 
     /** A map for storing (optional) request context attributes. */
     private Map m_attributeMap;
@@ -394,6 +397,21 @@ public final class CmsRequestContext {
     }
 
     /**
+     * Removes an attribute from the request context.<p>
+     * 
+     * @param key the name of the attribute to remove
+     * 
+     * @return the removed attribute, or <code>null</code> if no attribute was set with this name
+     */
+    public Object removeAttribute(String key) {
+
+        if (m_attributeMap != null) {
+            return m_attributeMap.remove(key);
+        }
+        return null;
+    }
+
+    /**
      * Removes the current site root prefix from the absolute path in the resource name,
      * that is adjusts the resource name for the current site root.<p> 
      * 
@@ -411,7 +429,7 @@ public final class CmsRequestContext {
         String siteRoot = getAdjustedSiteRoot(m_siteRoot, resourcename);
         if ((siteRoot == m_siteRoot)
             && resourcename.startsWith(siteRoot)
-            && ((resourcename.length() == siteRoot.length()) || resourcename.charAt(siteRoot.length()) == '/')) {
+            && ((resourcename.length() == siteRoot.length()) || (resourcename.charAt(siteRoot.length()) == '/'))) {
             resourcename = resourcename.substring(siteRoot.length());
         }
         return resourcename;
@@ -477,7 +495,7 @@ public final class CmsRequestContext {
     public void setAttribute(String key, Object value) {
 
         if (m_attributeMap == null) {
-            // Hash table is still the most efficient form of a synchronized Map
+            // hash table is still the most efficient form of a synchronized Map
             m_attributeMap = new Hashtable();
         }
         m_attributeMap.put(key, value);

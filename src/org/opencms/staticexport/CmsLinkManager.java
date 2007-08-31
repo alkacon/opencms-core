@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2007/08/31 16:08:14 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.70 $ 
+ * @version $Revision: 1.71 $ 
  * 
  * @since 6.0.0 
  */
@@ -411,14 +411,7 @@ public class CmsLinkManager {
             } finally {
                 cms.getRequestContext().setCurrentProject(currentProject);
             }
-            if (isAbsoluteUri(result) && !hasScheme(resourceName)) {
-                // URI is absolute and contains no schema
-                CmsSite currentSite = OpenCms.getSiteManager().getSite(
-                    resourceName,
-                    cms.getRequestContext().getSiteRoot());
-                String serverPrefix = currentSite.getServerPrefix(cms, resourceName);
-                result = serverPrefix + result;
-            }
+            result = appendServerPrefix(cms, result);
         } catch (CmsException e) {
             // should never happen
             result = e.getLocalizedMessage();
@@ -493,19 +486,13 @@ public class CmsLinkManager {
     public String getServerLink(CmsObject cms, String resourceName) {
 
         String result = substituteLinkForUnknownTarget(cms, resourceName);
-        if (isAbsoluteUri(result) && !hasScheme(resourceName)) {
-            // URI is absolute and contains no schema
-            CmsSite currentSite = OpenCms.getSiteManager().getSite(resourceName, cms.getRequestContext().getSiteRoot());
-            String serverPrefix = currentSite.getServerPrefix(cms, resourceName);
-            result = serverPrefix + result;
-        }
-        return result;
+        return appendServerPrefix(cms, result);
     }
 
     /**
-     * Sets the result of a extern link validation.<p>
+     * Sets the result of an external link validation.<p>
      * 
-     * @param externLinkValidationResult the result a extern link validation
+     * @param externLinkValidationResult the result an external link validation
      */
     public void setPointerLinkValidationResult(CmsExternalLinksValidationResult externLinkValidationResult) {
 
@@ -535,7 +522,7 @@ public class CmsLinkManager {
      */
     public String substituteLink(CmsObject cms, CmsResource resource) {
 
-        return substituteLinkFromRootPath(cms, resource.getRootPath());
+        return substituteLinkForRootPath(cms, resource.getRootPath());
     }
 
     /**
@@ -602,7 +589,7 @@ public class CmsLinkManager {
     /**
      * Returns a link <i>from</i> the URI stored in the provided OpenCms user context
      * <i>to</i> the VFS resource indicated by the given <code>link</code> and <code>siteRoot</code>, 
-     * for use on web pages, using the configured link substutution handler.<p>
+     * for use on web pages, using the configured link substitution handler.<p>
      * 
      * The result will be an absolute link that contains the configured context path and 
      * servlet name, and in the case of the "online" project it will also be rewritten according to
@@ -639,6 +626,35 @@ public class CmsLinkManager {
     public String substituteLink(CmsObject cms, String link, String siteRoot, boolean forceSecure) {
 
         return m_linkSubstitutionHandler.substituteLink(cms, link, siteRoot, forceSecure);
+    }
+
+    /**
+     * Returns a link <i>from</i> the URI stored in the provided OpenCms user context
+     * <i>to</i> the VFS resource indicated by the given root path, for use on web pages.<p>
+     * 
+     * The result will contain the configured context path and 
+     * servlet name, and in the case of the "online" project it will also be rewritten according to
+     * to the configured static export settings.<p>
+     * 
+     * Should the current site of the given OpenCms user context <code>cms</code> be different from the 
+     * site root of the given resource root path, the result will contain the full server URL to the target resource.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param rootPath the VFS resource root path the link should point to
+     * 
+     * @return a link <i>from</i> the URI stored in the provided OpenCms user context
+     *      <i>to</i> the VFS resource indicated by the given root path
+     */
+    public String substituteLinkForRootPath(CmsObject cms, String rootPath) {
+
+        String siteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
+        if (siteRoot == null) {
+            // use current site root in case no valid site root is available
+            // this will also be the case if a "/system" link is used
+            siteRoot = cms.getRequestContext().getSiteRoot();
+        }
+        String sitePath = rootPath.substring(siteRoot.length());
+        return substituteLink(cms, sitePath, siteRoot, false);
     }
 
     /**
@@ -691,31 +707,33 @@ public class CmsLinkManager {
     }
 
     /**
-     * Returns a link <i>from</i> the URI stored in the provided OpenCms user context
-     * <i>to</i> the VFS resource indicated by the given root path, for use on web pages.<p>
+     * Returns the link for the given resource in the current project, with full server prefix.<p>
      * 
-     * The result will contain the configured context path and 
-     * servlet name, and in the case of the "online" project it will also be rewritten according to
-     * to the configured static export settings.<p>
-     * 
-     * Should the current site of the given OpenCms user context <code>cms</code> be different from the 
-     * site root of the given resource root path, the result will contain the full server URL to the target resource.<p>
+     * The input link must already have been processed according to the link substitution rules.
+     * This method does just append the server prefix in case this is requires.<p>
      * 
      * @param cms the current OpenCms user context
-     * @param rootPath the VFS resource root path the link should point to
+     * @param resourceName the resource to generate the online link for
      * 
-     * @return a link <i>from</i> the URI stored in the provided OpenCms user context
-     *      <i>to</i> the VFS resource indicated by the given root path
+     * @return the link for the given resource in the current project, with full server prefix
      */
-    public String substituteLinkFromRootPath(CmsObject cms, String rootPath) {
+    private String appendServerPrefix(CmsObject cms, String link) {
 
-        String siteRoot = OpenCms.getSiteManager().getSiteRoot(rootPath);
-        if (siteRoot == null) {
-            // use current site root in case no valid site root is available
-            // this will also be the case if a "/system" link is used
-            siteRoot = cms.getRequestContext().getSiteRoot();
+        if (isAbsoluteUri(link) && !hasScheme(link)) {
+            // URI is absolute and contains no schema
+            // this indicates source and target link are in the same site
+            String serverPrefix;
+            if (cms.getRequestContext().currentProject().isOnlineProject()) {
+                // on online project, get the real site name from the site manager
+                CmsSite currentSite = OpenCms.getSiteManager().getSite(link, cms.getRequestContext().getSiteRoot());
+                serverPrefix = currentSite.getServerPrefix(cms, link);
+            } else {
+                // in offline mode, source must be the workplace 
+                // so append the workplace server so links can still be clicked
+                serverPrefix = OpenCms.getSiteManager().getWorkplaceServer();
+            }
+            link = serverPrefix + link;
         }
-        String sitePath = rootPath.substring(siteRoot.length());
-        return substituteLink(cms, sitePath, siteRoot, false);
+        return link;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2007/08/28 08:11:16 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2007/08/31 16:08:14 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.file.CmsRequestContext;
 import org.opencms.file.wrapper.CmsObjectWrapper;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
@@ -62,7 +61,7 @@ import org.htmlparser.util.SimpleNodeIterator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,9 +115,6 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     /** Current processing mode. */
     private int m_mode;
 
-    /** Indicates if links should be generated for editing purposes. */
-    private boolean m_processEditorLinks;
-
     /** The relative path for relative links, if not set, relative links are treated as external links. */
     private String m_relativePath;
 
@@ -150,8 +146,6 @@ public class CmsLinkProcessor extends CmsHtmlParser {
         }
         m_linkTable = linkTable;
         m_encoding = encoding;
-        m_processEditorLinks = ((null != m_cms) && (null != m_cms.getRequestContext().getAttribute(
-            CmsRequestContext.ATTRIBUTE_EDITOR)));
         m_relativePath = relativePath;
     }
 
@@ -326,7 +320,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
                 link = m_linkTable.getLink(CmsMacroResolver.stripMacro(tag.getAttribute(attr)));
                 if (link != null) {
                     // link management check
-                    String l = link.getLink(m_cms, m_processEditorLinks);
+                    String l = link.getLink(m_cms);
                     if (TAG_PARAM.equals(tag.getTagName())) {
                         // HACK: to distinguish link parameters the link itself has to end with '&' or '?'
                         // another solution should be a kind of macro...
