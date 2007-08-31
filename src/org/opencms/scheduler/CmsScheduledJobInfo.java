@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2007/08/13 16:29:54 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/08/31 07:31:28 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -343,7 +343,7 @@ import org.quartz.Trigger;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -523,7 +523,10 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     /**
      * Returns the context information for the user executing the job.<p>
      *
-     * Please note: The context time will be the time set
+     * Please note: The context time will be the time set when the job was 
+     * created and not now so invoke <code>{@link #updateContextRequestTime()}</code> 
+     * if you want to perform vfs operations or you could get problems with 
+     * date released settings in the (near) past.<p>
      *
      * @return the context information for the user executing the job
      */
