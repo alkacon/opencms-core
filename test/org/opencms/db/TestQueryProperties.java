@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/db/TestQueryProperties.java,v $
- * Date   : $Date: 2007/08/13 16:30:04 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/08/31 14:39:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.test.OpenCmsTestCase;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.nio.charset.Charset;
@@ -72,7 +71,7 @@ import junit.framework.TestSuite;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestQueryProperties extends OpenCmsTestCase {
 
@@ -99,9 +98,9 @@ public class TestQueryProperties extends OpenCmsTestCase {
         suite.setName(TestQueryProperties.class.getName());
 
         suite.addTest(new TestQueryProperties("testQueryPropertiesGeneric"));
-        suite.addTest(new TestQueryProperties("testQueryPropertiesMaxdb"));
         suite.addTest(new TestQueryProperties("testQueryPropertiesMssql"));
         suite.addTest(new TestQueryProperties("testQueryPropertiesMysql"));
+        suite.addTest(new TestQueryProperties("testQueryPropertiesOracle"));
         suite.addTest(new TestQueryProperties("testQueryPropertiesOracle8"));
         suite.addTest(new TestQueryProperties("testQueryPropertiesPostgresql"));
 
@@ -109,107 +108,75 @@ public class TestQueryProperties extends OpenCmsTestCase {
     }
 
     /**
-     * Test the generic query.properties file within the workspace for format errors.
-     * <p>
+     * Test the generic query.properties file within the workspace for format errors.<p>
      * 
-     * @throws ParseException if the format of a tested query.properties file is invalid.
-     * 
-     * @throws IOException if sth. goes wrong.
-     * 
-     * 
+     * @throws Exception if something goes wrong
      */
-    public void testQueryPropertiesGeneric() throws IOException, ParseException {
+    public void testQueryPropertiesGeneric() throws Exception {
 
         // generic
-        File queries = new File("src/org/opencms/db/generic/query.properties");
+        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/generic/query.properties").getPath());
         parseQueryProperties(queries);
 
     }
 
     /**
-     * Test the maxdb query.properties file within the workspace for format errors.
-     * <p>
+     * Test the mssql query.properties file within the workspace for format errors.<p>
      * 
-     * @throws ParseException if the format of a tested query.properties file is invalid.
-     * 
-     * @throws IOException if sth. goes wrong.
-     * 
-     * 
+     * @throws Exception if something goes wrong
      */
-    public void testQueryPropertiesMaxdb() throws IOException, ParseException {
-
-        // maxdb
-        File queries = new File("src/org/opencms/db/maxdb/query.properties");
-        parseQueryProperties(queries);
-    }
-
-    /**
-     * Test the mssql query.properties file within the workspace for format errors.
-     * <p>
-     * 
-     * @throws ParseException if the format of a tested query.properties file is invalid.
-     * 
-     * @throws IOException if sth. goes wrong.
-     * 
-     * 
-     */
-    public void testQueryPropertiesMssql() throws IOException, ParseException {
+    public void testQueryPropertiesMssql() throws Exception {
 
         // mssql
-        File queries = new File("src/org/opencms/db/mssql/query.properties");
+        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/mssql/query.properties").getPath());
         parseQueryProperties(queries);
-
     }
 
     /**
-     * Test the mysql query.properties file within the workspace for format errors.
-     * <p>
+     * Test the mysql query.properties file within the workspace for format errors.<p>
      * 
-     * @throws ParseException if the format of a tested query.properties file is invalid.
-     * 
-     * @throws IOException if sth. goes wrong.
-     * 
-     * 
+     * @throws Exception if something goes wrong
      */
-    public void testQueryPropertiesMysql() throws IOException, ParseException {
+    public void testQueryPropertiesMysql() throws Exception {
 
         // mysql
-        File queries = new File("src/org/opencms/db/mysql/query.properties");
+        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/mysql/query.properties").getPath());
         parseQueryProperties(queries);
     }
 
     /**
-     * Test the oracle8 query.properties file within the workspace for format errors.
-     * <p>
+     * Test the oracle query.properties file within the workspace for format errors.<p>
      * 
-     * @throws ParseException if the format of a tested query.properties file is invalid.
-     * 
-     * @throws IOException if sth. goes wrong.
-     * 
-     * 
+     * @throws Exception if something goes wrong
      */
-    public void testQueryPropertiesOracle8() throws IOException, ParseException {
+    public void testQueryPropertiesOracle() throws Exception {
 
         // oracle8
-        File queries = new File("src/org/opencms/db/oracle8/query.properties");
+        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/oracle/query.properties").getPath());
         parseQueryProperties(queries);
-
     }
 
     /**
-     * Test the postgresql query.properties file within the workspace for format errors.
-     * <p>
+     * Test the oracle8 query.properties file within the workspace for format errors.<p>
      * 
-     * @throws ParseException if the format of a tested query.properties file is invalid.
-     * 
-     * @throws IOException if sth. goes wrong.
-     * 
-     * 
+     * @throws Exception if something goes wrong
      */
-    public void testQueryPropertiesPostgresql() throws IOException, ParseException {
+    public void testQueryPropertiesOracle8() throws Exception {
+
+        // oracle8
+        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/oracle8/query.properties").getPath());
+        parseQueryProperties(queries);
+    }
+
+    /**
+     * Test the postgresql query.properties file within the workspace for format errors.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testQueryPropertiesPostgresql() throws Exception {
 
         // postgresql
-        File queries = new File("src/org/opencms/db/postgresql/query.properties");
+        File queries = new File(ClassLoader.getSystemResource("./org/opencms/db/postgresql/query.properties").getPath());
         parseQueryProperties(queries);
     }
 
@@ -217,23 +184,18 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
         StringTokenizer tokenizer = new StringTokenizer(keyValue, "=:     ", false);
         if (tokenizer.countTokens() != 2) {
-
             throw new ParseException("Illegal key value pair " + keyValue, 0);
-
         }
-
     }
 
     /**
-     * Implementation of the checks to perform.
+     * Implementation of the checks to perform.<p>
      * 
-     * @param f the query.properties file to parse.
+     * @param f the query.properties file to parse
      * 
-     * @throws IOException if sth. goes wrong.
-     * 
-     * @throws ParseException if the format of the file was invalid.
+     * @throws Exception if something goes wrong
      */
-    private void parseQueryProperties(File f) throws IOException, ParseException {
+    private void parseQueryProperties(File f) throws Exception {
 
         LineNumberReader reader = new LineNumberReader(new InputStreamReader(
             new FileInputStream(f),
@@ -248,18 +210,15 @@ public class TestQueryProperties extends OpenCmsTestCase {
             lastEscape = read.lastIndexOf('\\');
 
             if (read.trim().length() > 0) {
-
                 // filter comments
                 int firstSharp = read.indexOf('#');
                 if (firstSharp > -1) {
                     String prefix = read.substring(0, firstSharp).trim();
                     if (prefix.length() > 0) {
-
                         // check 1: invalid key value pair before comment char
                         try {
                             parseKeyValue(prefix);
                         } catch (ParseException pe) {
-
                             throw new ParseException("Bad format in file "
                                 + f.getAbsolutePath()
                                 + ", line "
@@ -278,7 +237,6 @@ public class TestQueryProperties extends OpenCmsTestCase {
 
             // check 2: invalid attempt to escape a line break, something follows
             if (lastEscape != -1) {
-
                 if (lastEscape != len - 1) {
                     throw new ParseException("Bad format in file "
                         + f.getAbsolutePath()
@@ -287,7 +245,6 @@ public class TestQueryProperties extends OpenCmsTestCase {
                         + ": Line termination escape '\\' is followed by further characters.", count);
                 }
             }
-
             // further checks if desired
         }
         reader.close();
