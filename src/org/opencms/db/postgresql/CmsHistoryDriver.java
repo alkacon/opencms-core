@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/08/13 16:30:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/03 11:47:54 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Antonio Core 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.9.1
  */
@@ -75,7 +75,7 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
         try {
             // create the statement
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_READLAST_HISTORY");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_POSTGRE_PROJECTS_READLAST_HISTORY");
             stmt.setInt(1, 300);
             res = stmt.executeQuery();
             while (res.next()) {
