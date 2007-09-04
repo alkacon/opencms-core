@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/03/27 14:52:54 $
- * Version: $Revision: 1.241 $
+ * Date   : $Date: 2007/09/04 08:35:39 $
+ * Version: $Revision: 1.241.6.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.241 $
+ * @version $Revision: 1.241.6.1 $
  * 
  * @since 6.0.0 
  */
@@ -2352,6 +2352,10 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         String linkParameter,
         long timestamp) throws CmsDataAccessException {
 
+        if (LOG.isDebugEnabled()) {
+           LOG.debug("exception", new Exception());
+        }
+        
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;

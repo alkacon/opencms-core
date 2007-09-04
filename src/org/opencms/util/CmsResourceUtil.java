@@ -222,11 +222,11 @@ public final class CmsResourceUtil {
         if (getProjectState() == null) {
             iconPath = "none";
         } else if (getProjectState().booleanValue()) {
-            iconPath = "this";
+            iconPath = "this.png";
         } else {
-            iconPath = "other";
+            iconPath = "other.png";
         }
-        return "explorer/project_" + iconPath + ".gif";
+        return "explorer/project_" + iconPath;
     }
 
     /**
