@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.0</opencms_version>
+		<opencms_version>7.0.2</opencms_version>
 		<createdate>Mon, 25 Jun 2007 14:20:05 GMT</createdate>
 		<project>Offline</project>
 		<export_version>6</export_version>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the tools for view the OpenCms publish queue.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.0</version>
+		<version>7.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -741,6 +741,66 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/publishqueue/buttons/state_error.png</source>
+			<destination>system/workplace/resources/tools/publishqueue/buttons/state_error.png</destination>
+			<type>image</type>
+			<uuidstructure>84f6fd55-5ba6-11dc-a63d-00096be67772</uuidstructure>
+			<uuidresource>84f6fd56-5ba6-11dc-a63d-00096be67772</uuidresource>
+			<datelastmodified>Wed, 05 Sep 2007 11:53:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Sep 2007 11:52:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/publishqueue/buttons/state_ok.png</source>
+			<destination>system/workplace/resources/tools/publishqueue/buttons/state_ok.png</destination>
+			<type>image</type>
+			<uuidstructure>846a4db1-5ba6-11dc-a63d-00096be67772</uuidstructure>
+			<uuidresource>846a4db2-5ba6-11dc-a63d-00096be67772</uuidresource>
+			<datelastmodified>Wed, 05 Sep 2007 11:53:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Sep 2007 11:52:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/publishqueue/buttons/state_warning.png</source>
+			<destination>system/workplace/resources/tools/publishqueue/buttons/state_warning.png</destination>
+			<type>image</type>
+			<uuidstructure>be8a1079-5ba6-11dc-a63d-00096be67772</uuidstructure>
+			<uuidresource>be8a107a-5ba6-11dc-a63d-00096be67772</uuidresource>
+			<datelastmodified>Wed, 05 Sep 2007 11:55:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Sep 2007 11:54:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
 			<relations/>

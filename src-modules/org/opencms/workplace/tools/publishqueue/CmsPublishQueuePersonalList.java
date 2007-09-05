@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueuePersonalList.java,v $
- * Date   : $Date: 2007/08/13 16:29:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/05 12:04:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,14 @@
 package org.opencms.workplace.tools.publishqueue;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishJobFinished;
 import org.opencms.security.CmsRole;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -46,6 +49,7 @@ import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.I_CmsListFormatter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +57,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -60,12 +65,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides a list for finished publish reports of the current user.<p> 
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.5
  */
@@ -82,6 +89,9 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_START = "as";
+
+    /** list action id constant. */
+    public static final String LIST_ACTION_STATE = "at";
 
     /** list action id constant. */
     public static final String LIST_ACTION_VIEW = "av";
@@ -105,7 +115,10 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     private static final String LIST_COLUMN_RESCOUNT = "cr";
 
     /** list column id constant. */
-    private static final String LIST_COLUMN_STARTTIME = "ct";
+    private static final String LIST_COLUMN_STARTTIME = "cs";
+
+    /** list column id constant. */
+    private static final String LIST_COLUMN_STATE = "ct";
 
     /** list column id constant. */
     private static final String LIST_COLUMN_USER = "cu";
@@ -113,8 +126,29 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /** list column id constant. */
     private static final String LIST_COLUMN_VIEW = "cv";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPublishQueuePersonalList.class);
+
+    /** The path to the publish report state error icon. */
+    private static final String PUBLISHQUEUE_ERROR_ICON = "tools/publishqueue/buttons/state_error.png";
+
+    /** The path to the publish report state ok icon. */
+    private static final String PUBLISHQUEUE_OK_ICON = "tools/publishqueue/buttons/state_ok.png";
+
     /** The path to the publish report view icon. */
     private static final String PUBLISHQUEUE_VIEW_BUTTON = "tools/publishqueue/buttons/publish_view.png";
+
+    /** The path to the publish report state warning icon. */
+    private static final String PUBLISHQUEUE_WARN_ICON = "tools/publishqueue/buttons/state_warning.png";
+
+    /** Publish job state constant. */
+    private static final String STATE_ERROR = "error";
+
+    /** Publish job state constant. */
+    private static final String STATE_OK = "ok";
+
+    /** Publish job state constant. */
+    private static final String STATE_WARNING = "warning";
 
     /**
      * Public constructor.<p>
@@ -228,6 +262,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             item.set(LIST_COLUMN_PROJECT, publishJob.getProjectName());
             item.set(LIST_COLUMN_STARTTIME, new Date(publishJob.getStartTime()));
             item.set(LIST_COLUMN_ENDTIME, new Date(publishJob.getFinishTime()));
+            item.set(LIST_COLUMN_STATE, getState(publishJob));
             item.set(LIST_COLUMN_RESCOUNT, new Integer(publishJob.getSize()));
             item.set(LIST_COLUMN_ID, publishJob.getPublishHistoryId());
             item.set(LIST_COLUMN_USER, publishJob.getUserName(getCms()));
@@ -258,6 +293,39 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         viewCol.addDirectAction(viewAction);
         // add it to the list definition
         metadata.addColumn(viewCol);
+
+        // create state column
+        CmsListColumnDefinition stateCol = new CmsListColumnDefinition(LIST_COLUMN_STATE);
+        stateCol.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_COLS_STATE_0));
+        stateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        stateCol.setFormatter(new I_CmsListFormatter() {
+
+            /**
+             * @see org.opencms.workplace.list.I_CmsListFormatter#format(java.lang.Object, java.util.Locale)
+             */
+            public String format(Object data, Locale locale) {
+
+                StringBuffer result = new StringBuffer();
+                result.append("<img src='");
+                String imgName = PUBLISHQUEUE_OK_ICON;
+                if (STATE_ERROR.equals(data)) {
+                    imgName = PUBLISHQUEUE_ERROR_ICON;
+                } else if (STATE_WARNING.equals(data)) {
+                    imgName = PUBLISHQUEUE_WARN_ICON;
+                }
+                result.append(CmsWorkplace.getResourceUri(imgName));
+                result.append("'>");
+                return result.toString();
+            }
+
+        });
+        stateCol.setWidth("20");
+        // add default action
+        CmsListDefaultAction stateAction = new CmsListDefaultAction(LIST_ACTION_STATE);
+        stateAction.setName(Messages.get().container(Messages.GUI_PERSONALQUEUE_ACTION_VIEW_NAME_0));
+        stateAction.setHelpText(Messages.get().container(Messages.GUI_PERSONALQUEUE_ACTION_VIEW_HELP_0));
+        stateCol.addDefaultAction(stateAction);
+        metadata.addColumn(stateCol);
 
         // create project column
         CmsListColumnDefinition projectCol = new CmsListColumnDefinition(LIST_COLUMN_PROJECT);
@@ -347,5 +415,34 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         //noop
+    }
+
+    /**
+     * Returns the state of the given publish job.<p>
+     * 
+     * @param publishJob the publish job to get the state for
+     * 
+     * @return the state of the given publish job
+     */
+    private String getState(CmsPublishJobFinished publishJob) {
+
+        byte[] reportBytes;
+        try {
+            reportBytes = OpenCms.getPublishManager().getReportContents(publishJob);
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage());
+            }
+            return STATE_OK;
+        }
+        String report = new String(reportBytes);
+        // see org.opencms.report.CmsHtmlReport#print(String, int)
+        if (report.indexOf("<span class='warn'>") > -1) {
+            return STATE_WARNING;
+        }
+        if (report.indexOf("<span class='err'>") > -1) {
+            return STATE_ERROR;
+        }
+        return STATE_OK;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/05 10:04:56 $
- * Version: $Revision: 1.872 $
+ * Date   : $Date: 2007/09/05 12:04:44 $
+ * Version: $Revision: 1.873 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -63,6 +63,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 ! Added new CmsDateResourceCollector that uses a configurable list dates to collect the resources
 ! Added I_CmsLinkSubstitutionHandler that allows complete customization of generated links on web pages
 ! Added #removeAttribute(String) method to CmsRequestContext
+! Added a state column to the list of publish reports
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog
