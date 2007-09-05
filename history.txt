@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/05 12:04:44 $
- * Version: $Revision: 1.873 $
+ * Date   : $Date: 2007/09/05 12:41:54 $
+ * Version: $Revision: 1.874 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 7.0.2 - xxxxx, 2007
+* Fixed issue #1291: Using right line break format for UNIX in cmsshell.sh
 * Fixed issue #1503: CmsScheduleManager now uses the current time as the request time
 * Fixed issue #1460: Parent locks are now right filtered by the CmsLockFilter
 * Fixed issue #1486: missing CmsPrincipal comparator
