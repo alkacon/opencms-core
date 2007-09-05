@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRoleEditList.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/05 13:42:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -205,6 +205,13 @@ public class CmsRoleEditList extends A_CmsRolesList {
                 }
             } else if (getParamListAction().equals(LIST_ACTION_DEACTIVATE)) {
                 // execute the activate action
+                if (!OpenCms.getRoleManager().getRolesOfUser(getCms(), user.getName(), "", true, true, true).contains(
+                    role)) {
+                    throw new CmsRuntimeException(Messages.get().container(
+                        Messages.ERR_DEACTIVATE_INDIRECT_ROLE_2,
+                        roleName,
+                        user.getName()));
+                }
                 try {
                     OpenCms.getRoleManager().removeUserFromRole(getCms(), role, user.getName());
                     getCms().writeUser(user);
@@ -274,7 +281,7 @@ public class CmsRoleEditList extends A_CmsRolesList {
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#getRoles()
      */
     protected List getRoles() throws CmsException {
-        
+
         return OpenCms.getRoleManager().getRolesOfUser(
             getCms(),
             getCms().getRequestContext().currentUser().getName(),
