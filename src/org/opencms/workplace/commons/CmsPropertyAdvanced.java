@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2007/08/13 16:29:43 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -723,7 +723,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
         try {
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
-            if (res.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
+            if (CmsResourceTypeXmlPage.isXmlPage(res)) {
                 // display special property dialog for xmlpage types
                 return PATH_WORKPLACE + "editors/dialogs/property.jsp";
             }
@@ -1092,7 +1092,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                         }
                     }
                 } else if (OpenCms.getWorkplaceManager().autoLockResources()) {
-                    if (file == null || file.isFolder()) {
+                    if ((file == null) || file.isFolder()) {
                         // check locked resources in folder
                         try {
                             List lockedResources = getCms().getLockedResources(

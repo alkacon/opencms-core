@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspVfsAccessBean.java,v $
- * Date   : $Date: 2007/08/24 15:55:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,10 @@
 package org.opencms.jsp.util;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
@@ -52,7 +53,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  * 
@@ -76,7 +77,67 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
-     * Transformer that loads all properties of a resource from the OpenCms VFS, 
+     * Provides Booleans that indicate if a specified resource exists in the OpenCms VFS
+     * and is of type XML content or XML page,
+     * the input is used as String for the resource name to read.<p>
+     */
+    public class CmsExistsXmlTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            // first read the resource using the lazy map 
+            CmsResource resource = (CmsResource)getReadResource().get(input);
+            return Boolean.valueOf((resource != null)
+                && (CmsResourceTypeXmlPage.isXmlPage(resource) || CmsResourceTypeXmlContent.isXmlContent(resource)));
+        }
+    }
+
+    /**
+     * Transformer that a properties of a resource from the OpenCms VFS, 
+     * the input is used as String for the property name to read.<p>
+     */
+    public class CmsPropertyLoaderSingleTransformer implements Transformer {
+
+        /** The resource where the properties are read from. */
+        private CmsResource m_resource;
+
+        /** Indicates if properties should be searched when loaded. */
+        private boolean m_search;
+
+        /**
+         * Creates a new property loading Transformer.<p>
+         * 
+         * @param resource the resource where the properties are read from
+         * @param search indicates if properties should be searched when loaded
+         */
+        public CmsPropertyLoaderSingleTransformer(CmsResource resource, boolean search) {
+
+            m_resource = resource;
+            m_search = search;
+        }
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            String result;
+            try {
+                // read the properties of the requested resource
+                result = getCmsObject().readPropertyObject(m_resource, String.valueOf(input), m_search).getValue();
+            } catch (CmsException e) {
+                // in case of any error we assume the property does not exist
+                result = null;
+            }
+            return result;
+        }
+    }
+
+    /**
+     * Transformer that loads properties of a resource from the OpenCms VFS with another lazy map, 
      * the input is used as String for the resource name to read.<p>
      */
     public class CmsPropertyLoaderTransformer implements Transformer {
@@ -103,12 +164,7 @@ public final class CmsJspVfsAccessBean {
             // first read the resource using the lazy map 
             CmsResource resource = (CmsResource)getReadResource().get(input);
             if (resource != null) {
-                try {
-                    // read the properties of the requested resource
-                    result = CmsProperty.toMap(getCmsObject().readPropertyObjects(resource, m_search));
-                } catch (CmsException e) {
-                    // unable to read resource, return empty map
-                }
+                result = LazyMap.decorate(new HashMap(), new CmsPropertyLoaderSingleTransformer(resource, m_search));
             }
             // result may still be null
             return (result == null) ? Collections.EMPTY_MAP : result;
@@ -158,14 +214,39 @@ public final class CmsJspVfsAccessBean {
         }
     }
 
+    /**
+     * Provides XML content access beans for VFS resources.<p>
+     */
+    public class CmsXmlContentAccessTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            CmsJspContentAccessBean result = null;
+            // first read the resource using the lazy map 
+            CmsResource resource = (CmsResource)getReadResource().get(input);
+            if ((resource != null)
+                && (CmsResourceTypeXmlPage.isXmlPage(resource) || CmsResourceTypeXmlContent.isXmlContent(resource))) {
+                // make sure we have a resource that really is an XML content
+                result = new CmsJspContentAccessBean(getCmsObject(), resource);
+            }
+            return result;
+        }
+    }
+
     /** Request context attribute for indicating the model file for a create resource operation. */
-    public static final String ATTRIBUTE_JSP_UTIL_BEAN = CmsJspVfsAccessBean.class.getName() + ".JSP_UTIL_BEAN";
+    public static final String ATTRIBUTE_VFS_ACCESS_BEAN = CmsJspVfsAccessBean.class.getName() + ".VFS_ACCESS_BEAN";
 
     /** The OpenCms context of the current user. */
     private CmsObject m_cms;
 
     /** Contains booleans that indicate if a resource exists in the VFS. */
     private Map m_existsResource;
+
+    /** Contains booleans that indicate if a resource exists and is an XML content. */
+    private Map m_existsXml;
 
     /** Links calculated for the OpenCms VFS. */
     private Map m_links;
@@ -178,6 +259,9 @@ public final class CmsJspVfsAccessBean {
 
     /** Resources loaded from the OpenCms VFS. */
     private Map m_resources;
+
+    /** XML contents read from the VFS. */
+    private Map m_xmlContent;
 
     /**
      * Creates a new context bean using the OpenCms context of the current user.<p>
@@ -202,12 +286,12 @@ public final class CmsJspVfsAccessBean {
     public static CmsJspVfsAccessBean create(CmsObject cms) {
 
         CmsJspVfsAccessBean result;
-        Object attribute = cms.getRequestContext().getAttribute(ATTRIBUTE_JSP_UTIL_BEAN);
+        Object attribute = cms.getRequestContext().getAttribute(ATTRIBUTE_VFS_ACCESS_BEAN);
         if (attribute != null) {
             result = (CmsJspVfsAccessBean)attribute;
         } else {
             result = new CmsJspVfsAccessBean(cms);
-            cms.getRequestContext().setAttribute(ATTRIBUTE_JSP_UTIL_BEAN, result);
+            cms.getRequestContext().setAttribute(ATTRIBUTE_VFS_ACCESS_BEAN, result);
         }
         return result;
     }
@@ -223,10 +307,44 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
-     * Returns a map the lazily checks if a resources exists in the OpenCms VFS.<p>
+     * Short form for {@link #getRequestContext()}.<p>
+     * 
+     * Usage example on a JSP with the EL:<pre>
+     * The current URI is: ${cms:vfs(pageContext).context.uri}
+     * </pre>
+     * 
+     * @return the OpenCms request context the current user this bean was initialized with
+     * 
+     * @see #getRequestContext()
+     */
+    public CmsRequestContext getContext() {
+
+        return getRequestContext();
+    }
+
+    /**
+     * Short form for {@link #getExistsResource()}.<p>
      * 
      * Usage example on a JSP with the EL / JSTL:<pre>
-     * &lt;c:if test="${cms:util(pageContext).existsResource['/checkme.html']}" &gt;
+     * &lt;c:if test="${cms:vfs(pageContext).exists['/checkme.html']}" &gt;
+     *     The resource "/checkme.html" exists.
+     * &lt;/c:if&gt;
+     * </pre>
+     * 
+     * @return a map that lazily reads resources from the OpenCms VFS
+     * 
+     * @see #getExistsResource()
+     */
+    public Map getExists() {
+
+        return getExistsResource();
+    }
+
+    /**
+     * Returns a map that lazily checks if a resources exists in the OpenCms VFS.<p>
+     * 
+     * Usage example on a JSP with the EL / JSTL:<pre>
+     * &lt;c:if test="${cms:vfs(pageContext).existsResource['/checkme.html']}" &gt;
      *     The resource "/checkme.html" exists.
      * &lt;/c:if&gt;
      * </pre>
@@ -234,12 +352,14 @@ public final class CmsJspVfsAccessBean {
      * Usage example on a JSP with the <code>&lt;cms:contentaccess&gt;</code> tag:<pre>
      * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     &lt;c:if test="${content.util.existsResource['/checkme.html']}" &gt;
+     *     &lt;c:if test="${content.vfs.existsResource['/checkme.html']}" &gt;
      *         The resource "/checkme.html" exists.
      *     &lt;/c:if&gt;
      * &lt;/cms:contentload&gt;</pre>
      * 
-     * @return a map the lazily reads resources from the OpenCms VFS
+     * @return a map that lazily checks if a resources exists in the OpenCms VFS
+     * 
+     * @see #getExists() for a short form of this method
      */
     public Map getExistsResource() {
 
@@ -248,6 +368,26 @@ public final class CmsJspVfsAccessBean {
             m_existsResource = LazyMap.decorate(new HashMap(), new CmsExistsResourceTransformer());
         }
         return m_existsResource;
+    }
+
+    /**
+     * Returns a map that lazily checks if a resources exists in the VFS and is of type XML content or XML page.<p>
+     * 
+     * Usage example on a JSP with the EL / JSTL:<pre>
+     * &lt;c:if test="${cms:vfs(pageContext).existsXml['/text.xml']}" &gt;
+     *     The resource "/text.xml" exists and is an XML document.
+     * &lt;/c:if&gt;
+     * </pre>
+     * 
+     * @return a map that lazily checks if a resources exists in the VFS and is of type XML content or XML page
+     */
+    public Map getExistsXml() {
+
+        if (m_existsXml == null) {
+            // create lazy map only on demand
+            m_existsXml = LazyMap.decorate(new HashMap(), new CmsExistsXmlTransformer());
+        }
+        return m_existsXml;
     }
 
     /**
@@ -277,7 +417,7 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
-     * Returns a map the lazily calculates links to files in the OpenCms VFS, 
+     * Returns a map that lazily calculates links to files in the OpenCms VFS, 
      * which has been adjusted according to the web application path and the 
      * OpenCms static export rules.<p>
      * 
@@ -289,16 +429,16 @@ public final class CmsJspVfsAccessBean {
      * Relative links are converted to absolute links, using the current OpenCms request context URI as base.<p>
      * 
      * Usage example on a JSP with the EL:<pre>
-     * Link to the "/index.html" file: ${cms:util(pageContext).link['/index.html']}
+     * Link to the "/index.html" file: ${cms:vfs(pageContext).link['/index.html']}
      * </pre>
      * 
      * Usage example on a JSP with the <code>&lt;cms:contentaccess&gt;</code> tag:<pre>
      * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     Link to the "/index.html" file: ${content.util.link['/index.html']}
+     *     Link to the "/index.html" file: ${content.vfs.link['/index.html']}
      * &lt;/cms:contentload&gt;</pre>
      * 
-     * @return a map the lazily calculates links to resources in the OpenCms VFS
+     * @return a map that lazily calculates links to resources in the OpenCms VFS
      * 
      * @see org.opencms.jsp.CmsJspActionElement#link(String)
      * @see org.opencms.jsp.CmsJspTagLink#linkTagAction(String, javax.servlet.ServletRequest)
@@ -313,19 +453,53 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
-     * Returns a map the lazily reads all resource properties from the OpenCms VFS, without search.<p>
+     * Short form for {@link #getReadProperties()}.<p>
      * 
      * Usage example on a JSP with the EL:<pre>
-     * Title property of the "/index.html" resource: ${cms:util(pageContext).readProperties['/index.html']['Title']}
+     * Title property of the "/index.html" resource: ${cms:vfs(pageContext).property['/index.html']['Title']}
+     * </pre>
+     * 
+     * @return a map that lazily reads all resource properties from the OpenCms VFS, without search
+     * 
+     * @see #getReadProperties()
+     */
+    public Map getProperty() {
+
+        return getReadProperties();
+    }
+
+    /**
+     * Short form for {@link #getReadPropertiesSearch()}.<p>
+     * 
+     * Usage example on a JSP with the EL:<pre>
+     * Title property of the "/index.html" resource (searched): ${cms:vfs(pageContext).propertySearch['/index.html']['Title']}
+     * </pre>
+     * 
+     * @return a map that lazily reads all resource properties from the OpenCms VFS, with search
+     * 
+     * @see #getReadPropertiesSearch()
+     */
+    public Map getPropertySearch() {
+
+        return getReadPropertiesSearch();
+    }
+
+    /**
+     * Returns a map that lazily reads all resource properties from the OpenCms VFS, without search.<p>
+     * 
+     * Usage example on a JSP with the EL:<pre>
+     * Title property of the "/index.html" resource: ${cms:vfs(pageContext).readProperties['/index.html']['Title']}
      * </pre>
      * 
      * Usage example on a JSP with the <code>&lt;cms:contentaccess&gt;</code> tag:<pre>
      * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     Title property of the "/index.html" resource: ${content.util.readProperties['/index.html']['Title']}
+     *     Title property of the "/index.html" resource: ${content.vfs.readProperties['/index.html']['Title']}
      * &lt;/cms:contentload&gt;</pre>
      * 
-     * @return a map the lazily reads all resource properties from the OpenCms VFS, without search
+     * @return a map that lazily reads all resource properties from the OpenCms VFS, without search
+     * 
+     * @see #getProperty() for a short form of this method
      */
     public Map getReadProperties() {
 
@@ -337,19 +511,21 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
-     * Returns a map the lazily reads all resource properties from the OpenCms VFS, with search.<p>
+     * Returns a map that lazily reads all resource properties from the OpenCms VFS, with search.<p>
      * 
      * Usage example on a JSP with the EL:<pre>
-     * Title property of the "/index.html" resource (searched): ${cms:util(pageContext).readPropertiesSearch['/index.html']['Title']}
+     * Title property of the "/index.html" resource (searched): ${cms:vfs(pageContext).readPropertiesSearch['/index.html']['Title']}
      * </pre>
      * 
      * Usage example on a JSP with the <code>&lt;cms:contentaccess&gt;</code> tag:<pre>
      * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     Title property of the "/index.html" resource (searched): ${content.util.readPropertiesSearch['/index.html']['Title']}
+     *     Title property of the "/index.html" resource (searched): ${content.vfs.readPropertiesSearch['/index.html']['Title']}
      * &lt;/cms:contentload&gt;</pre>
      * 
-     * @return a map the lazily reads all resource properties from the OpenCms VFS, with search
+     * @return a map that lazily reads all resource properties from the OpenCms VFS, with search
+     * 
+     * @see #getPropertySearch() for a short form of this method
      */
     public Map getReadPropertiesSearch() {
 
@@ -361,19 +537,21 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
-     * Returns a map the lazily reads resources from the OpenCms VFS.<p>
+     * Returns a map that lazily reads resources from the OpenCms VFS.<p>
      * 
      * Usage example on a JSP with the EL:<pre>
-     * Root path of the "/index.html" resource: ${cms:util(pageContext).readResource['/index.html'].rootPath}
+     * Root path of the "/index.html" resource: ${cms:vfs(pageContext).readResource['/index.html'].rootPath}
      * </pre>
      * 
      * Usage example on a JSP with the <code>&lt;cms:contentaccess&gt;</code> tag:<pre>
      * &lt;cms:contentload ... &gt;
      *     &lt;cms:contentaccess var="content" /&gt;
-     *     Root path of the "/index.html" resource: ${content.util.readResource['/index.html'].rootPath}
+     *     Root path of the "/index.html" resource: ${content.vfs.readResource['/index.html'].rootPath}
      * &lt;/cms:contentload&gt;</pre>
      * 
-     * @return a map the lazily reads resources from the OpenCms VFS
+     * @return a map that lazily reads resources from the OpenCms VFS
+     * 
+     * @see #getResource() for a short form of this method
      */
     public Map getReadResource() {
 
@@ -385,12 +563,71 @@ public final class CmsJspVfsAccessBean {
     }
 
     /**
+     * Returns a map that lazily reads XML documents from the OpenCms VFS that are wrapped using a
+     * {@link CmsJspContentAccessBean}.<p>
+     * 
+     * Usage example on a JSP with the EL:<pre>
+     * Title of "/text.xml": ${cms:vfs(pageContext).readXml['/text.xml'].value['Title']}
+     * </pre>
+     * 
+     * @return a map that lazily reads wrapped XML documents from the OpenCms VFS
+     * 
+     * @see #getXml() for a short form of this method
+     */
+    public Map getReadXml() {
+
+        if (m_xmlContent == null) {
+            // create lazy map only on demand
+            m_xmlContent = LazyMap.decorate(new HashMap(), new CmsXmlContentAccessTransformer());
+        }
+        return m_xmlContent;
+    }
+
+    /**
      * Returns the OpenCms request context the current user this bean was initialized with.<p>
      * 
+     * Usage example on a JSP with the EL:<pre>
+     * The current URI is: ${cms:vfs(pageContext).requestContext.uri}
+     * </pre>
+     * 
      * @return the OpenCms request context the current user this bean was initialized with
+     * 
+     * @see #getContext() for a short form of this method
      */
     public CmsRequestContext getRequestContext() {
 
         return m_cms.getRequestContext();
+    }
+
+    /**
+     * Short form for {@link #getReadResource()}.<p>
+     * 
+     * Usage example on a JSP with the EL:<pre>
+     * Root path of the "/index.html" resource: ${cms:vfs(pageContext).resource['/index.html'].rootPath}
+     * </pre>
+     * 
+     * @return a map that lazily reads resources from the OpenCms VFS
+     * 
+     * @see #getReadResource()
+     */
+    public Map getResource() {
+
+        return getReadResource();
+    }
+
+    /**
+     * Short form for {@link #getReadXml()}.<p>
+     * 
+     * Usage example on a JSP with the EL:<pre>
+     * Title of "/text.xml": ${cms:vfs(pageContext).xml['/text.xml'].value['Title']}
+     * </pre>
+     * 
+     * @return a map that lazily reads wrapped XML documents from the OpenCms VFS
+     * 
+     * @see #getReadXml()
+     */
+    public Map getXml() {
+
+        return getReadXml();
     }
 }

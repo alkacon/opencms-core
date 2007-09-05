@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/08/13 16:29:58 $
- * Version: $Revision: 1.151 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.152 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,6 @@ import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.lock.CmsLockType;
@@ -96,7 +95,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.151 $
+ * @version $Revision: 1.152 $
  * 
  * @since 6.0.0 
  */
@@ -2729,7 +2728,7 @@ public final class CmsObject {
                 return file;
             }
         }
-        
+
         return m_securityManager.readFile(m_context, resource);
     }
 
@@ -4494,18 +4493,16 @@ public final class CmsObject {
     }
 
     /**
-     * Convenience method to get the initialized resource type 
-     * instance for the resource, including unknown resource types.<p>
+     * Convenience method to get the initialized resource type instance for the given resource, 
+     * with a fall back to special "unknown" resource types in case the resource type is not configured.<p>
      * 
      * @param resource the resource to get the type for
      * 
-     * @return the initialized resource type instance for the resource
-     * 
-     * @throws CmsLoaderException if no resource type is available for the given resource
+     * @return the initialized resource type instance for the given resource
      * 
      * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
      */
-    private I_CmsResourceType getResourceType(CmsResource resource) throws CmsLoaderException {
+    private I_CmsResourceType getResourceType(CmsResource resource) {
 
         return OpenCms.getResourceManager().getResourceType(resource);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -418,19 +418,19 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             String template = jsp.getCmsObject().readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
                 "");
             if (!res.isFolder()
-                && res.getTypeId() != CmsResourceTypeBinary.getStaticTypeId()
-                && res.getTypeId() != CmsResourceTypePlain.getStaticTypeId()
-                && res.getTypeId() != CmsResourceTypeImage.getStaticTypeId()) {
+                && (res.getTypeId() != CmsResourceTypeBinary.getStaticTypeId())
+                && (res.getTypeId() != CmsResourceTypePlain.getStaticTypeId())
+                && (res.getTypeId() != CmsResourceTypeImage.getStaticTypeId())) {
                 // file is no plain text, binary or image type, check "template" property
                 if (dialogPresent && TEMPLATE_ONE.equals(template)) {
                     // display special property dialog for files with "template one" as template
                     return templateOneDialog;
-                } else if (res.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
+                } else if (CmsResourceTypeXmlPage.isXmlPage(res)) {
                     // show xmlpage property dialog for xmlpages not using "template one" as template
                     return PATH_WORKPLACE + "editors/dialogs/property.jsp";
                 }
             }
-            if (dialogPresent 
+            if (dialogPresent
                 && res.isFolder()
                 && TEMPLATE_ONE.equals(template)
                 && !res.getRootPath().startsWith(CmsResource.VFS_FOLDER_SYSTEM)) {

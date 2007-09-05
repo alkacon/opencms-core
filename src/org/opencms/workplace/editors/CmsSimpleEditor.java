@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2007/08/19 05:54:30 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,9 +33,9 @@ package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,8 +144,8 @@ public class CmsSimpleEditor extends CmsEditor {
                     e);
             }
             if (OpenCms.getWorkplaceManager().isXmlContentAutoCorrect()
-                && (OpenCms.getResourceManager().getLoader(editFile) instanceof CmsXmlContentLoader)) {
-                // enable auto correction in case of XML content (if sent)
+                && CmsResourceTypeXmlContent.isXmlContent(editFile)) {
+                // enable auto correction in case of XML content (if configured)
                 getCms().getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
             }
             // the file content might have been modified during the write operation

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2007/08/13 16:30:07 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.loader.CmsXmlContentLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +84,31 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
 
     /** The (optional) schema of this resource. */
     private String m_schema;
+
+    /**
+     * Returns <code>true</code> in case the given resource is an XML content.<p>
+     * 
+     * Internally this checks if the content loader for the given resource is 
+     * identical to the XML content loader.<p>
+     * 
+     * @param resource the resource to check
+     * 
+     * @return <code>true</code> in case the given resource is an XML content
+     * 
+     * @since 7.0.2
+     */
+    public static boolean isXmlContent(CmsResource resource) {
+
+        boolean result = false;
+        if (resource != null) {
+            try {
+                result = OpenCms.getResourceManager().getLoader(resource) instanceof CmsXmlContentLoader;
+            } catch (CmsLoaderException e) {
+                // result will be false
+            }
+        }
+        return result;
+    }
 
     /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -262,7 +288,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             CmsPermissionSet.ACCESS_WRITE,
             true,
             CmsResourceFilter.ALL);
-        // read the xml content, use the encoding set in the property       
+        // read the XML content, use the encoding set in the property       
         CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(cms, resource, false);
         // call the content handler for post-processing
         resource = xmlContent.getContentDefinition().getContentHandler().prepareForWrite(cms, xmlContent, resource);

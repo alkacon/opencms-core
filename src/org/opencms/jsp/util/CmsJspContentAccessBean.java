@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessBean.java,v $
- * Date   : $Date: 2007/08/20 12:02:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,11 +34,14 @@ package org.opencms.jsp.util;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsConstantMap;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.page.CmsXmlPageFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -60,7 +63,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.2
  * 
@@ -525,26 +528,22 @@ public class CmsJspContentAccessBean {
             CmsFile file;
             try {
                 file = m_cms.readFile(m_resource);
-                m_content = CmsXmlContentFactory.unmarshal(m_cms, file);
+                if (CmsResourceTypeXmlPage.isXmlPage(file)) {
+                    // this is an XML page
+                    m_content = CmsXmlPageFactory.unmarshal(m_cms, file);
+                } else {
+                    // this is an XML content
+                    m_content = CmsXmlContentFactory.unmarshal(m_cms, file);
+                }
             } catch (CmsException e) {
                 // this usually should not happen, as the resource already has been read by the current user 
                 // and we just upgrade it to a File
-                throw new RuntimeException(e);
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_XML_CONTENT_UNMARSHAL_1,
+                    m_resource.getRootPath()), e);
             }
         }
         return m_content;
-    }
-
-    /**
-     * Returns an instance of a content utility bean,
-     * initialized with the OpenCms user context this bean was created with.<p>
-     * 
-     * @return an instance of a content utility bean, 
-     *      initialized with the OpenCms user context this bean was created with
-     */
-    public CmsJspVfsAccessBean getUtil() {
-
-        return CmsJspVfsAccessBean.create(m_cms);
     }
 
     /**
@@ -588,6 +587,18 @@ public class CmsJspContentAccessBean {
     public Map getValueList() {
 
         return (Map)getLocaleValueList().get(m_locale);
+    }
+
+    /**
+     * Returns an instance of a VFS access bean,
+     * initialized with the OpenCms user context this bean was created with.<p>
+     * 
+     * @return an instance of a VFS access bean, 
+     *      initialized with the OpenCms user context this bean was created with
+     */
+    public CmsJspVfsAccessBean getVfs() {
+
+        return CmsJspVfsAccessBean.create(m_cms);
     }
 
     /**

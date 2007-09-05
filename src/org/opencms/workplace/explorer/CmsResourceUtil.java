@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/08/29 13:30:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -69,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -787,12 +786,7 @@ public final class CmsResourceUtil {
     public I_CmsResourceType getResourceType() {
 
         if (m_resourceType == null) {
-            try {
-                m_resourceType = OpenCms.getResourceManager().getResourceType(m_resource);
-            } catch (CmsLoaderException e) {
-                // should never happen
-                m_resourceType = null;
-            }
+            m_resourceType = OpenCms.getResourceManager().getResourceType(m_resource);
         }
         return m_resourceType;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsXmlDocumentComparison.java,v $
- * Date   : $Date: 2007/08/13 16:30:18 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -118,8 +118,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         List elements1 = null;
         List elements2 = null;
 
-        if ((res1.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId())
-            && (res2.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId())) {
+        if (CmsResourceTypeXmlPage.isXmlPage(res1) && CmsResourceTypeXmlPage.isXmlPage(res2)) {
             resource1 = CmsXmlPageFactory.unmarshal(cms, res1);
             resource2 = CmsXmlPageFactory.unmarshal(cms, res2);
             elements1 = getElements(resource1);

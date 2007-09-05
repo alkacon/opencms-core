@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2007/08/14 09:46:35 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.loader.CmsXmlPageLoader;
 import org.opencms.main.CmsException;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,6 +114,27 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     public static String getStaticTypeName() {
 
         return RESOURCE_TYPE_NAME;
+    }
+
+    /**
+     * Returns <code>true</code> in case the given resource is an XML page.<p>
+     * 
+     * Internally this checks if the type id for the given resource is 
+     * identical type id of the XML page.<p>
+     * 
+     * @param resource the resource to check
+     * 
+     * @return <code>true</code> in case the given resource is an XML page
+     * 
+     * @since 7.0.2
+     */
+    public static boolean isXmlPage(CmsResource resource) {
+
+        boolean result = false;
+        if (resource != null) {
+            result = resource.getTypeId() == m_staticTypeId;
+        }
+        return result;
     }
 
     /**

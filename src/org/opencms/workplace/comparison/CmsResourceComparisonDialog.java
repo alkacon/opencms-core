@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2007/08/13 16:30:19 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -736,12 +736,12 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         if (CmsStringUtil.isNotEmpty(getParamElement())) {
             I_CmsXmlDocument resource1;
             I_CmsXmlDocument resource2;
-            if (file1.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
+            if (CmsResourceTypeXmlPage.isXmlPage(file1)) {
                 resource1 = CmsXmlPageFactory.unmarshal(cms, file1);
             } else {
                 resource1 = CmsXmlContentFactory.unmarshal(cms, file1);
             }
-            if (file2.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
+            if (CmsResourceTypeXmlPage.isXmlPage(file2)) {
                 resource2 = CmsXmlPageFactory.unmarshal(cms, file2);
             } else {
                 resource2 = CmsXmlContentFactory.unmarshal(cms, file2);
@@ -761,12 +761,12 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         } else if (CmsResourceComparisonDialog.COMPARE_ALL_ELEMENTS.equals(getParamCompare())) {
             I_CmsXmlDocument resource1;
             I_CmsXmlDocument resource2;
-            if (file1.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
+            if (CmsResourceTypeXmlPage.isXmlPage(file1)) {
                 resource1 = CmsXmlPageFactory.unmarshal(cms, file1);
             } else {
                 resource1 = CmsXmlContentFactory.unmarshal(cms, file1);
             }
-            if (file2.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
+            if (CmsResourceTypeXmlPage.isXmlPage(file2)) {
                 resource2 = CmsXmlPageFactory.unmarshal(cms, file2);
             } else {
                 resource2 = CmsXmlContentFactory.unmarshal(cms, file2);

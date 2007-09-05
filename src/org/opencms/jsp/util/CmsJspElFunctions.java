@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2007/08/17 15:05:22 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  * 
@@ -243,7 +243,7 @@ public final class CmsJspElFunctions {
      * 
      * @return a JSP / EL VFS access bean
      */
-    public static CmsJspVfsAccessBean getContentUtilBean(Object input) {
+    public static CmsJspVfsAccessBean getVfsAccessBean(Object input) {
 
         return CmsJspVfsAccessBean.create(CmsJspElFunctions.convertCmsObject(input));
     }

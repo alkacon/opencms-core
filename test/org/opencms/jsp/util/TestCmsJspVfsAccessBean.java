@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/util/Attic/TestCmsJspContentUtilBean.java,v $
- * Date   : $Date: 2007/08/15 14:26:19 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/util/TestCmsJspVfsAccessBean.java,v $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,18 +49,18 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.1 $
  * 
  * @since 7.0.2
  */
-public class TestCmsJspContentUtilBean extends OpenCmsTestCase {
+public class TestCmsJspVfsAccessBean extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
-    public TestCmsJspContentUtilBean(String arg0) {
+    public TestCmsJspVfsAccessBean(String arg0) {
 
         super(arg0);
     }
@@ -75,10 +75,12 @@ public class TestCmsJspContentUtilBean extends OpenCmsTestCase {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
-        suite.setName(TestCmsJspContentUtilBean.class.getName());
+        suite.setName(TestCmsJspVfsAccessBean.class.getName());
 
-        suite.addTest(new TestCmsJspContentUtilBean("testReadResource"));
-        suite.addTest(new TestCmsJspContentUtilBean("testReadProperties"));
+        suite.addTest(new TestCmsJspVfsAccessBean("testReadResource"));
+        suite.addTest(new TestCmsJspVfsAccessBean("testReadProperties"));
+        suite.addTest(new TestCmsJspVfsAccessBean("testExistsXml"));
+        suite.addTest(new TestCmsJspVfsAccessBean("testReadXml"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -131,8 +133,47 @@ public class TestCmsJspContentUtilBean extends OpenCmsTestCase {
         Map readProperties = bean.getReadProperties();
         Map props = (Map)readProperties.get("/index.html");
         assertNotNull(props);
-        assertEquals("Index page", props.get(CmsPropertyDefinition.PROPERTY_TITLE));
-        Map dprops = CmsProperty.toMap(cms.readPropertyObjects("/index.html", false));
-        assertEquals(dprops, props);
+        String title = (String)props.get(CmsPropertyDefinition.PROPERTY_TITLE);
+        assertEquals("Index page", title);
+        CmsProperty titleProp = cms.readPropertyObject("/index.html", CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertEquals(titleProp.getValue(), title);
+    }
+
+    /**
+     * Tests for the {@link CmsJspVfsAccessBean#getExistsXml()} method.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testExistsXml() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsJspVfsAccessBean bean = CmsJspVfsAccessBean.create(cms);
+
+        Map readXml = bean.getExistsXml();
+        assertEquals(Boolean.TRUE, readXml.get("/xmlcontent/article_0001.html"));
+        assertEquals(Boolean.FALSE, readXml.get("/xmlcontent/article_0001_idontexist.html"));
+        assertEquals(Boolean.FALSE, readXml.get("/folder1/image1.gif"));
+    }
+
+    /**
+     * Tests for the {@link CmsJspVfsAccessBean#getReadXml()} method.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testReadXml() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        CmsJspVfsAccessBean bean = CmsJspVfsAccessBean.create(cms);
+        Map readXml = bean.getReadXml();
+
+        // access XML content
+        CmsJspContentAccessBean content = (CmsJspContentAccessBean)readXml.get("/xmlcontent/article_0001.html");
+        assertEquals("Alkacon Software", content.getValue().get("Author").toString());
+
+        // access XML page
+        content = (CmsJspContentAccessBean)readXml.get("/index.html");
+        assertEquals(Boolean.TRUE, content.getHasValue().get("body"));
+        assertEquals(Boolean.FALSE, content.getHasValue().get("element"));
+        System.out.println(content.getValue().get("body"));
     }
 }

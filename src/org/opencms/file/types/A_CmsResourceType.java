@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/08/13 16:30:07 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
-import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -67,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
@@ -896,18 +895,16 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
-     * Convenience method to get the initialized resource type 
-     * instance for the given resource, including unknown resource types.<p>
+     * Convenience method to get the initialized resource type instance for the given resource, 
+     * with a fall back to special "unknown" resource types in case the resource type is not configured.<p>
      * 
      * @param resource the resource to get the type for
      * 
      * @return the initialized resource type instance for the given resource
      * 
-     * @throws CmsLoaderException if no resource type is available for the given resource
-     * 
      * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
      */
-    protected I_CmsResourceType getResourceType(CmsResource resource) throws CmsLoaderException {
+    protected I_CmsResourceType getResourceType(CmsResource resource) {
 
         return OpenCms.getResourceManager().getResourceType(resource);
     }

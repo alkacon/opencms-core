@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2007/08/13 16:29:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import java.util.Locale;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.5.6
  */
@@ -604,10 +604,9 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
 
         try {
 
-            // try to read the resource for the resourcename
+            // try to read the resource for the resource name
             CmsResource res = cms.readResource(resourcename, filter);
-            if (res.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
-
+            if (CmsResourceTypeXmlPage.isXmlPage(res)) {
                 // return the xml page resource as a folder
                 return wrapResource(cms, res);
             }

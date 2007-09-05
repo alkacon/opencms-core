@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,17 +39,20 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DETAILS_0 = "GUI_DETAILS_0";
+    public static final String ERR_XML_CONTENT_UNMARSHAL_1 = "ERR_XML_CONTENT_UNMARSHAL_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLOSE_0 = "GUI_CLOSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DETAILS_0 = "GUI_DETAILS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERROR_0 = "GUI_ERROR_0";
@@ -93,5 +96,4 @@ public final class Messages extends A_CmsMessageBundle {
 
         return BUNDLE_NAME;
     }
-
 }

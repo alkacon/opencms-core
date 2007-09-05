@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/08/31 13:03:50 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2007/09/05 11:19:35 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -371,7 +371,7 @@ public class CmsResourceManager {
 
         // add the loader to the internal list of loaders
         int pos = loader.getLoaderId();
-        if (pos > m_loaders.length) {
+        if (pos >= m_loaders.length) {
             I_CmsResourceLoader[] buffer = new I_CmsResourceLoader[pos * 2];
             System.arraycopy(m_loaders, 0, buffer, 0, m_loaders.length);
             m_loaders = buffer;
@@ -701,36 +701,35 @@ public class CmsResourceManager {
     }
 
     /**
-     * Convenience method to get the initialized resource type 
-     * instance for the given resource, including unknown resource types.<p>
+     * Convenience method to get the initialized resource type instance for the given resource, 
+     * with a fall back to special "unknown" resource types in case the resource type is not configured.<p>
      * 
      * @param resource the resource to get the type for
      * 
      * @return the initialized resource type instance for the given resource
-     * @throws CmsLoaderException 
-     * 
-     * @see org.opencms.loader.CmsResourceManager#getResourceType(int)
-     * 
-     * @throws CmsLoaderException if no resource type is available for the given resource
      */
-    public I_CmsResourceType getResourceType(CmsResource resource) throws CmsLoaderException {
+    public I_CmsResourceType getResourceType(CmsResource resource) {
 
-        try {
-            return getResourceType(resource.getTypeId());
-        } catch (CmsLoaderException e) {
+        I_CmsResourceType result = m_configuration.getResourceTypeById(resource.getTypeId());
+        if (result == null) {
+            // this resource type is unknown, return the default files instead
             if (resource.isFolder()) {
+                // resource is a folder
                 if (m_restypeUnknownFolder != null) {
-                    return m_restypeUnknownFolder;
+                    result = m_restypeUnknownFolder;
+                } else {
+                    result = m_configuration.getResourceTypeById(CmsResourceTypeFolder.getStaticTypeId());
                 }
-                // if no unknown folder configured, take the default folder type
-                return getResourceType(CmsResourceTypeFolder.getStaticTypeId());
+            } else {
+                // resource is a file
+                if (m_restypeUnknownFile != null) {
+                    result = m_restypeUnknownFile;
+                } else {
+                    result = m_configuration.getResourceTypeById(CmsResourceTypeBinary.getStaticTypeId());
+                }
             }
-            if (m_restypeUnknownFile != null) {
-                return m_restypeUnknownFile;
-            }
-            // if no unknown folder configured, take the default folder type
-            return getResourceType(CmsResourceTypeBinary.getStaticTypeId());
         }
+        return result;
     }
 
     /**

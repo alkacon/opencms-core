@@ -502,12 +502,12 @@
 
     <function>
         <description>
-            Provides simple access to a OpenCms JSP / EL content utility bean.
+            Provides simple access to a OpenCms JSP / EL content vfs access bean.
         </description>
-        <name>util</name>
+        <name>vfs</name>
         <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
         <function-signature>
-            org.opencms.jsp.util.CmsJspContentUtilBean getContentUtilBean(java.lang.Object)
+            org.opencms.jsp.util.CmsJspVfsAccessBean getVfsAccessBean(java.lang.Object)
         </function-signature>
     </function>
     
