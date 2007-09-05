@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2007/08/13 16:29:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/05 10:04:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,11 +50,11 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.2.0 
  */
-public abstract class CmsPrincipal implements I_CmsPrincipal {
+public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable {
 
     /** The description of this principal. */
     protected String m_description;
@@ -300,6 +300,18 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
         }
         // invalid principal name was given
         throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, id));
+    }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object obj) {
+
+        if ((this == obj) || this.equals(obj)) {
+            return 0;
+        }
+        I_CmsPrincipal that = (I_CmsPrincipal)obj;
+        return this.getName().compareTo(that.getName());
     }
 
     /**

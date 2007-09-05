@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/04 13:49:12 $
- * Version: $Revision: 1.871 $
+ * Date   : $Date: 2007/09/05 10:04:56 $
+ * Version: $Revision: 1.872 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -22,6 +22,7 @@ Legend:
 OpenCms 7.0.2 - xxxxx, 2007
 * Fixed issue #1503: CmsScheduleManager now uses the current time as the request time
 * Fixed issue #1460: Parent locks are now right filtered by the CmsLockFilter
+* Fixed issue #1486: missing CmsPrincipal comparator
 * Fixed issue #1508: Publish notification popup can now be switched off in the user preferences dialog (errors are always shown)
 * Fixed issue #1516: Resource type array has been replaced by a self-expanding HashMap 
 * Fixed issue #1519: Roots field in search index now always uses Whitespace analyzer (search index rebuild is required)

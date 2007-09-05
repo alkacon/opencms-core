@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestGroupOperations.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/09/05 10:04:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestGroupOperations extends OpenCmsTestCase {
 
@@ -75,6 +75,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
 
         suite.addTest(new TestGroupOperations("testGetUsersOfGroup"));
         suite.addTest(new TestGroupOperations("testParentGroups"));
+        suite.addTest(new TestGroupOperations("testChildGroups"));
         suite.addTest(new TestGroupOperations("testDeleteGroup"));
 
         TestSetup wrapper = new TestSetup(suite) {
@@ -91,6 +92,54 @@ public class TestGroupOperations extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Tests the "getChildren" method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testChildGroups() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing the child group mechanism");
+
+        CmsGroup g1 = cms.readGroup("g1");
+        CmsGroup g2 = cms.readGroup("g2");
+        CmsGroup g3 = cms.readGroup("g3");
+        CmsGroup g4 = cms.readGroup("g4");
+        CmsGroup g5 = cms.readGroup("g5");
+
+        List children = cms.getChildren(g1.getName(), false);
+        assertEquals(2, children.size());
+        assertTrue(children.contains(g2));
+        assertTrue(children.contains(g3));
+        children = cms.getChildren(g1.getName(), true);
+        assertEquals(4, children.size());
+        assertTrue(children.contains(g2));
+        assertTrue(children.contains(g3));
+        assertTrue(children.contains(g4));
+        assertTrue(children.contains(g5));
+        children = cms.getChildren(g2.getName(), false);
+        assertEquals(2, children.size());
+        assertTrue(children.contains(g4));
+        assertTrue(children.contains(g5));
+        children = cms.getChildren(g2.getName(), true);
+        assertEquals(2, children.size());
+        assertTrue(children.contains(g4));
+        assertTrue(children.contains(g5));
+        children = cms.getChildren(g3.getName(), false);
+        assertTrue(children.isEmpty());
+        children = cms.getChildren(g3.getName(), true);
+        assertTrue(children.isEmpty());
+        children = cms.getChildren(g4.getName(), false);
+        assertTrue(children.isEmpty());
+        children = cms.getChildren(g4.getName(), true);
+        assertTrue(children.isEmpty());
+        children = cms.getChildren(g5.getName(), false);
+        assertTrue(children.isEmpty());
+        children = cms.getChildren(g5.getName(), true);
+        assertTrue(children.isEmpty());
     }
 
     /**
