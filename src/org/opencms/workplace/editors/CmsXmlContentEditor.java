@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2007/08/20 15:12:41 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2007/09/06 09:38:55 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.75 $ 
+ * @version $Revision: 1.76 $ 
  * 
  * @since 6.0.0 
  */
@@ -716,6 +716,21 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public String getUserAgent() {
 
         return getJsp().getRequest().getHeader(CmsRequestUtil.HEADER_USER_AGENT);
+    }
+
+    /**
+     * Returns the different xml editor widgets used in the form to display.<p>
+     * 
+     * @return the different xml editor widgets used in the form to display
+     */
+    public CmsXmlContentWidgetVisitor getWidgetCollector() {
+
+        if (m_widgetCollector == null) {
+            // create an instance of the widget collector
+            m_widgetCollector = new CmsXmlContentWidgetVisitor(getElementLocale());
+            m_content.visitAllValuesWith(m_widgetCollector);
+        }
+        return m_widgetCollector;
     }
 
     /**
@@ -1381,21 +1396,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             m_validationHandler = m_content.validate(getCms());
         }
         return m_validationHandler;
-    }
-
-    /**
-     * Returns the different xml editor widgets used in the form to display.<p>
-     * 
-     * @return the different xml editor widgets used in the form to display
-     */
-    private CmsXmlContentWidgetVisitor getWidgetCollector() {
-
-        if (m_widgetCollector == null) {
-            // create an instance of the widget collector
-            m_widgetCollector = new CmsXmlContentWidgetVisitor(getElementLocale());
-            m_content.visitAllValuesWith(m_widgetCollector);
-        }
-        return m_widgetCollector;
     }
 
     /**
