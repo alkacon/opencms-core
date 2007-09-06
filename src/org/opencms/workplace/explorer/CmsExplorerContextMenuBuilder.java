@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/09/06 08:19:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/06 09:40:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -417,9 +417,19 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                                 link.append(itemTarget);
                                 link.append("\"");
                             }
+                            // mouse up event is necessary for Firefox browser
+                            link.append(" onmouseup=\"top.submitSingleAction('");
+                            link.append(itemLink);
+                            link.append("', '");
+                            link.append(itemTarget);
+                            link.append("');\"");
                         } else {
                             // create link for multi resource context menu
                             link.append("href=\"javascript:top.submitMultiAction('");
+                            link.append(itemLink);
+                            link.append("');\"");
+                            // mouse up event is necessary for Firefox browser
+                            link.append(" onmouseup=\"top.submitMultiAction('");
                             link.append(itemLink);
                             link.append("');\"");
                         }

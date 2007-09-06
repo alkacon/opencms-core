@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2007/08/29 12:50:29 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/09/06 09:40:20 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -328,6 +328,8 @@ function getContextMenu() {
 	var resourceList = "";
 	if (selectedResources.length == 1) {
 		resourceList = getResourceAbsolutePath(active_mouse_id);
+		// set resource in hidden form field value
+		win.files.forms["formmulti"].elements["resource"].value = resourceList;
 	} else if (selectedResources.length > 1) {
 		// concatenate all selected resources
 		var isFirst = true;
@@ -339,7 +341,7 @@ function getContextMenu() {
 			isFirst = false;
 		}
 		// set resource list in hidden form field value
-   		win.files.forms["formmulti"].elements["resourcelist"].value = resourceList;
+		win.files.forms["formmulti"].elements["resourcelist"].value = resourceList;
 	}
 	// ajax call
     makeRequest(vr.servpath + '/system/workplace/views/explorer/contextmenu.jsp', 'resourcelist=' + resourceList + "&acttarget=" + top.active_target, 'showContextMenu');
@@ -388,6 +390,17 @@ function submitMultiAction(dialog) {
 
 	var doc = win.files;
 	doc.forms["formmulti"].action = dialog;
+	win.files.forms["formmulti"].elements["resource"].value = "";
+	doc.forms["formmulti"].submit();
+}
+
+// submits a selected single action
+function submitSingleAction(dialog, targetFrame) {
+
+	var doc = win.files;
+	doc.forms["formmulti"].action = dialog;
+	doc.forms["formmulti"].target = targetFrame;
+	win.files.forms["formmulti"].elements["resourcelist"].value = "";
 	doc.forms["formmulti"].submit();
 }
 
@@ -836,6 +849,7 @@ function printList(wo) {
 	// create multi context menu form
 	wo.writeln("<form name=\"formmulti\" action=\"\" method=\"post\">");
 	wo.writeln("<input type=\"hidden\" name=\"resourcelist\" value=\"\">");
+	wo.writeln("<input type=\"hidden\" name=\"resource\" value=\"\">");
 	wo.writeln("</form>");
 
 	// create div for context menus
