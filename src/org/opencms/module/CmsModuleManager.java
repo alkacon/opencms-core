@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2007/08/20 13:06:59 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2007/09/06 13:53:28 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -586,7 +586,7 @@ public class CmsModuleManager {
                     }
                     CmsResource resource = null;
                     try {
-                        cms.readResource(currentResource, CmsResourceFilter.ALL);
+                        resource = cms.readResource(currentResource, CmsResourceFilter.ALL);
                     } catch (CmsVfsResourceNotFoundException e) {
                         // ignore
                     }
