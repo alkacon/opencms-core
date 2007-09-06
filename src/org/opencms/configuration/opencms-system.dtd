@@ -32,7 +32,8 @@
 	content-notification?,
 	authorizationhandler?,
 	publishmanager?,
-	session-storageprovider?)>
+	session-storageprovider?,
+	permissionhandler?)>
 
 <!--
 # Version history settings.
@@ -524,3 +525,11 @@ Each job can have an optional list of parameters.
 -->
 <!ELEMENT session-storageprovider EMPTY>
 <!ATTLIST session-storageprovider class CDATA #REQUIRED>
+
+<!--
+# Permission handler:
+# provides the implememtation of the permission check.
+# See the JavaDoc of interface org.opencms.db.I_CmsPermissionHandler for more details.
+-->
+<!ELEMENT permissionhandler EMPTY>
+<!ATTLIST permissionhandler class CDATA #REQUIRED>

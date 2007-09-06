@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2007/09/06 15:09:27 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,6 +64,7 @@ import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -99,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 6.0.0 
  */
@@ -420,9 +421,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param key the cache key
      * @param permission the permission check result to cache
      */
-    public void cachePermission(String key, int permission) {
+    public void cachePermission(String key, I_CmsPermissionHandler.CmsPermissionCheckResult permission) {
 
-        m_permissionCache.put(key, new Integer(permission));
+        m_permissionCache.put(key, permission);
     }
 
     /**
@@ -934,9 +935,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the permission check result cached with the given cache key
      */
-    public Integer getCachedPermission(String key) {
+    public I_CmsPermissionHandler.CmsPermissionCheckResult getCachedPermission(String key) {
 
-        return (Integer)m_permissionCache.get(key);
+        return (I_CmsPermissionHandler.CmsPermissionCheckResult)m_permissionCache.get(key);
     }
 
     /**

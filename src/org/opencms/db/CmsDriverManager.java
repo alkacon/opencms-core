@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/08/23 11:10:21 $
- * Version: $Revision: 1.593 $
+ * Date   : $Date: 2007/09/06 15:09:26 $
+ * Version: $Revision: 1.594 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,6 +94,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -717,7 +718,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc.getRequestContext(),
                 resource,
                 CmsPermissionSet.ACCESS_WRITE,
-                CmsSecurityManager.PERM_DENIED);
+                I_CmsPermissionHandler.PERM_DENIED);
         }
         // if we got here write permission is granted on the target
 
@@ -2717,7 +2718,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // check permissions only for the sibling, the resource it self was already checked or 
             // is to be removed without write permissions, ie. while deleting a folder
             if (!currentResource.equals(resource)
-                && (CmsSecurityManager.PERM_ALLOWED != m_securityManager.hasPermissions(
+                && (I_CmsPermissionHandler.PERM_ALLOWED != m_securityManager.hasPermissions(
                     dbc,
                     currentResource,
                     CmsPermissionSet.ACCESS_WRITE,
@@ -8467,13 +8468,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         for (int i = 0; i < resourceList.size(); i++) {
             // check the permission of all resources
             CmsResource currentResource = (CmsResource)resourceList.get(i);
-            int perms = m_securityManager.hasPermissions(
-                dbc,
-                currentResource,
-                CmsPermissionSet.ACCESS_READ,
-                true,
-                filter);
-            if (perms == CmsSecurityManager.PERM_ALLOWED) {
+            if (m_securityManager.hasPermissions(dbc, currentResource, CmsPermissionSet.ACCESS_READ, true, filter).isAllowed()) {
                 // only return resources where permission was granted
                 result.add(currentResource);
             }

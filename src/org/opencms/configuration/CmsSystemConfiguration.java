@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2007/09/06 15:09:27 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 6.0.0
  */
@@ -277,6 +277,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The node name for the password handler. */
     public static final String N_PASSWORDHANDLER = "passwordhandler";
+
+    /** The node name for the permission handler. */
+    public static final String N_PERMISSIONHANDLER = "permissionhandler";
 
     /** The node name for the context project name. */
     public static final String N_PROJECT = "project";
@@ -476,6 +479,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The password handler. */
     private I_CmsPasswordHandler m_passwordHandler;
+
+    /** The permission handler. */
+    private String m_permissionHandler;
 
     /** The configured publish manager. */
     private CmsPublishManager m_publishManager;
@@ -987,6 +993,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // add rule for session storage provider
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SESSION_STORAGEPROVIDER, "setSessionStorageProvider", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SESSION_STORAGEPROVIDER, 0, A_CLASS);
+
+        // add rule for permission handler
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PERMISSIONHANDLER, "setPermissionHandler", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_PERMISSIONHANDLER, 0, A_CLASS);
     }
 
     /**
@@ -1348,6 +1358,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             sessionStorageProviderElem.addAttribute(A_CLASS, m_sessionStorageProvider);
         }
 
+        // permission handler
+        if (m_permissionHandler != null) {
+            Element permissionHandlerElem = systemElement.addElement(N_PERMISSIONHANDLER);
+            permissionHandlerElem.addAttribute(A_CLASS, m_permissionHandler);
+        }
+
         // return the system node
         return systemElement;
     }
@@ -1561,6 +1577,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public I_CmsPasswordHandler getPasswordHandler() {
 
         return m_passwordHandler;
+    }
+
+    /**
+     * Returns the permission Handler class name.<p>
+     *
+     * @return the permission Handler class name
+     */
+    public String getPermissionHandler() {
+
+        return m_permissionHandler;
     }
 
     /**
@@ -1984,6 +2010,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
                 Messages.INIT_PWD_HANDLER_SUCCESS_1,
                 passwordHandler.getClass().getName()));
         }
+    }
+
+    /**
+     * Sets the permission Handler class name.<p>
+     *
+     * @param permissionHandler the class name to set
+     */
+    public void setPermissionHandler(String permissionHandler) {
+
+        m_permissionHandler = permissionHandler;
     }
 
     /**

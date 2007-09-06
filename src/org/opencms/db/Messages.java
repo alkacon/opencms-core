@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:04 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2007/09/06 15:09:26 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 6.0.0 
  */
@@ -404,7 +404,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_FILE_1 = "ERR_READ_FILE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_FILE_HISTORY_2 = "ERR_READ_FILE_HISTORY_2";
 
@@ -764,9 +764,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NO_EXPORT_POINTS_CONFIGURED_0 = "LOG_NO_EXPORT_POINTS_CONFIGURED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_NO_PERMISSION_RESOURCE_USER_4 = "LOG_NO_PERMISSION_RESOURCE_USER_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_UPDATE_EXORT_POINTS_ERROR_0 = "LOG_UPDATE_EXORT_POINTS_ERROR_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/09/05 11:19:35 $
- * Version: $Revision: 1.152 $
+ * Date   : $Date: 2007/09/06 15:09:27 $
+ * Version: $Revision: 1.153 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,6 +59,7 @@ import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
@@ -95,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.152 $
+ * @version $Revision: 1.153 $
  * 
  * @since 6.0.0 
  */
@@ -1876,12 +1877,7 @@ public final class CmsObject {
      */
     public boolean hasPermissions(CmsResource resource, CmsPermissionSet requiredPermissions) throws CmsException {
 
-        return CmsSecurityManager.PERM_ALLOWED == m_securityManager.hasPermissions(
-            m_context,
-            resource,
-            requiredPermissions,
-            true,
-            CmsResourceFilter.ALL);
+        return m_securityManager.hasPermissions(m_context, resource, requiredPermissions, true, CmsResourceFilter.ALL).isAllowed();
     }
 
     /**
@@ -1904,7 +1900,7 @@ public final class CmsObject {
         boolean checkLock,
         CmsResourceFilter filter) throws CmsException {
 
-        return CmsSecurityManager.PERM_ALLOWED == m_securityManager.hasPermissions(
+        return I_CmsPermissionHandler.PERM_ALLOWED == m_securityManager.hasPermissions(
             m_context,
             resource,
             requiredPermissions,
