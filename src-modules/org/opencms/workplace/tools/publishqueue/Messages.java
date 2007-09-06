@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/Messages.java,v $
- * Date   : $Date: 2007/09/05 12:04:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/06 12:23:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.5 
  */
@@ -83,6 +83,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_LIST_NAME_0 = "GUI_PERSONALQUEUE_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_JOB_FINISHED_0 = "GUI_PUBLISH_JOB_FINISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_JOB_FINISHED_WITH_WARNS_2 = "GUI_PUBLISH_JOB_FINISHED_WITH_WARNS_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PUBLISH_QUEUE_0 = "GUI_PUBLISH_QUEUE_0";

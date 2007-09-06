@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueuePersonalList.java,v $
- * Date   : $Date: 2007/09/06 09:37:00 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/09/06 12:23:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.5
  */
@@ -319,17 +319,6 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
         CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_STATE_OK) {
 
             /**
-             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
-             */
-            public CmsMessageContainer getName() {
-
-                Date date = (Date)getItem().get(LIST_COLUMN_STARTTIME);
-                return org.opencms.publish.Messages.get().container(
-                    org.opencms.publish.Messages.GUI_PUBLISH_JOB_FINISHED_1,
-                    date);
-            }
-
-            /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
             public boolean isVisible() {
@@ -338,6 +327,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
                 return STATE_OK.equals(state);
             }
         };
+        stateAction.setName(Messages.get().container(Messages.GUI_PUBLISH_JOB_FINISHED_0));
         stateAction.setHelpText(Messages.get().container(Messages.GUI_PERSONALQUEUE_ACTION_VIEW_HELP_0));
         stateAction.setIconPath(PUBLISHQUEUE_OK_ICON);
         stateIconCol.addDirectAction(stateAction);
@@ -361,14 +351,9 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
              */
             public CmsMessageContainer getName() {
 
-                Date date = (Date)getItem().get(LIST_COLUMN_STARTTIME);
                 Integer warns = (Integer)getItem().get(LIST_COLUMN_WARNINGS);
                 Integer errors = (Integer)getItem().get(LIST_COLUMN_ERRORS);
-                return org.opencms.publish.Messages.get().container(
-                    org.opencms.publish.Messages.GUI_PUBLISH_JOB_FINISHED_WITH_WARNS_3,
-                    date,
-                    warns,
-                    errors);
+                return Messages.get().container(Messages.GUI_PUBLISH_JOB_FINISHED_WITH_WARNS_2, warns, errors);
             }
 
             /**
