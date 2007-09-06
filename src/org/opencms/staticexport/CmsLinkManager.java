@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/08/31 16:08:14 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2007/09/06 11:50:23 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.71 $ 
+ * @version $Revision: 1.72 $ 
  * 
  * @since 6.0.0 
  */
@@ -713,7 +713,7 @@ public class CmsLinkManager {
      * This method does just append the server prefix in case this is requires.<p>
      * 
      * @param cms the current OpenCms user context
-     * @param resourceName the resource to generate the online link for
+     * @param link the resource to generate the online link for
      * 
      * @return the link for the given resource in the current project, with full server prefix
      */
