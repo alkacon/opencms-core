@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2007/08/13 16:29:56 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2007/09/06 14:05:25 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -651,7 +651,7 @@ public final class CmsFileUtil {
      * 
      * @param resourcenames a list of VFS pathnames to check for redundencies (Strings)
      *  
-     * @return a the given list with all redundancies removed
+     * @return a new list with all redundancies removed
      * 
      * @see #removeRedundantResources(List)
      */
