@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:04 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/09/06 10:27:07 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,6 +122,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0 = "GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_SERVERTIME_BLOCK_0 = "GUI_EDITOR_LABEL_SERVERTIME_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_ADMIN_TOOL_GROUP_0 = "GUI_JOBS_ADMIN_TOOL_GROUP_0";

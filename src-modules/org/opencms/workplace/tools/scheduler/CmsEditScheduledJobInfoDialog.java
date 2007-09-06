@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2007/08/19 05:53:08 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2007/09/06 10:27:06 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,9 +46,11 @@ import org.opencms.scheduler.jobs.CmsImageCacheCleanupJob;
 import org.opencms.scheduler.jobs.CmsPublishJob;
 import org.opencms.scheduler.jobs.CmsStaticExportJob;
 import org.opencms.search.CmsSearchManager;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsComboWidget;
+import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.CmsUserWidget;
@@ -58,7 +60,9 @@ import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +76,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,6 +96,9 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /** Stores the value of the request parameter for the job id. */
     private String m_paramJobid;
+
+    /** formatted current server time. */
+    private String m_serverTime;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -150,6 +157,19 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the server Time.<p>
+     *
+     * @return the server Time
+     */
+    public String getServerTime() {
+
+        if (m_serverTime == null) {
+            m_serverTime = CmsDateUtil.getDateTime(new Date(), DateFormat.LONG, getLocale());
+        }
+        return m_serverTime;
+    }
+
+    /**
      * Sets the job id parameter value.<p>
      * 
      * @param jobid the job id parameter value
@@ -157,6 +177,16 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
     public void setParamJobid(String jobid) {
 
         m_paramJobid = jobid;
+    }
+
+    /**
+     * Sets the server Time.<p>
+     *
+     * @param serverTime the server Time to set
+     */
+    public void setServerTime(String serverTime) {
+
+        m_serverTime = serverTime;
     }
 
     /**
@@ -179,16 +209,19 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
+            result.append(createWidgetBlockStart(key(Messages.GUI_EDITOR_LABEL_SERVERTIME_BLOCK_0)));
+            result.append(createDialogRowsHtml(0, 0));
+            result.append(createWidgetBlockEnd());
             result.append(createWidgetBlockStart(key(Messages.GUI_EDITOR_LABEL_JOBSETTINGS_BLOCK_0)));
-            result.append(createDialogRowsHtml(0, 4));
+            result.append(createDialogRowsHtml(1, 5));
             result.append(createWidgetBlockEnd());
             result.append(createWidgetBlockStart(key(Messages.GUI_EDITOR_LABEL_CONTEXTINFO_BLOCK_0)));
-            result.append(createDialogRowsHtml(5, 11));
+            result.append(createDialogRowsHtml(6, 12));
             result.append(createWidgetBlockEnd());
         } else if (dialog.equals(PAGES[1])) {
             // create the widget for the second dialog page
             result.append(createWidgetBlockStart(key(Messages.GUI_EDITOR_LABEL_PARAMETERS_BLOCK_0)));
-            result.append(createDialogRowsHtml(12, 12));
+            result.append(createDialogRowsHtml(13, 13));
             result.append(createWidgetBlockEnd());
         }
 
@@ -209,6 +242,8 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
         // required to read the default values for the optional context parameters for the widgets
         CmsContextInfo dC = new CmsContextInfo();
 
+        // add current server time
+        addWidget(new CmsWidgetDialogParameter(this, "serverTime", PAGES[0], new CmsDisplayWidget()));
         // widgets to display on the first dialog page
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "jobName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "className", PAGES[0], new CmsComboWidget(getComboClasses())));
