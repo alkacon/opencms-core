@@ -641,7 +641,7 @@
         <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="multistandard"/>
         <entry key="GUI_EXPLORER_CONTEXT_LOCKS_0" uri="commons/locks.jsp" rule="multistandard"/>
         <separator/>
-        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="multistandard"/>
+        <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="multipubstandard"/>
         <separator/>
         <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="multistandard"/>
         <entry key="GUI_EXPLORER_CONTEXT_MOVE_MULTI_0" uri="commons/move.jsp" rule="multistandard"/>
@@ -733,6 +733,9 @@
     	</menurule>
     	<menurule name="multistandard">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirMultiStandard" />
+    	</menurule>
+    	<menurule name="multipubstandard">
+    		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirMultiDirPublishStandard" />
     	</menurule>
     	<menurule name="substandard">
     		<menuitemrule class="org.opencms.workplace.explorer.menu.CmsMirSubStandard" />

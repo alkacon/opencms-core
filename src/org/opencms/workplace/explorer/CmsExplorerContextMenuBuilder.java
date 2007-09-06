@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/08/13 16:29:41 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/06 08:19:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -69,31 +69,11 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
     /** The HTML code for a separator context menu entry. */
     private static final String HTML_SEPARATOR = "<li class=\"cmsep\"><span></span></li>";
 
-    /** The resource list parameter value. */
-    private String m_paramResourcelist;
-
     /** The link target parameter value. */
     private String m_paramActtarget;
 
-    /**
-     * Returns the link target parameter value.<p>
-     *
-     * @return the link target parameter value
-     */
-    public String getParamActtarget() {
-
-        return m_paramActtarget;
-    }
-
-    /**
-     * Sets the link target parameter value.<p>
-     *
-     * @param paramActtarget the link target parameter value to set
-     */
-    public void setParamActtarget(String paramActtarget) {
-
-        m_paramActtarget = paramActtarget;
-    }
+    /** The resource list parameter value. */
+    private String m_paramResourcelist;
 
     /**
      * Public constructor.<p>
@@ -193,6 +173,16 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
     }
 
     /**
+     * Returns the link target parameter value.<p>
+     *
+     * @return the link target parameter value
+     */
+    public String getParamActtarget() {
+
+        return m_paramActtarget;
+    }
+
+    /**
      * Returns the resourcelist parameter value.<p>
      *
      * @return the resourcelist parameter value
@@ -200,6 +190,16 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
     public String getParamResourcelist() {
 
         return m_paramResourcelist;
+    }
+
+    /**
+     * Sets the link target parameter value.<p>
+     *
+     * @param paramActtarget the link target parameter value to set
+     */
+    public void setParamActtarget(String paramActtarget) {
+
+        m_paramActtarget = paramActtarget;
     }
 
     /**

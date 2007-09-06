@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirDirectPublish.java,v $
- * Date   : $Date: 2007/08/13 16:29:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/06 08:19:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,14 @@
 package org.opencms.workplace.explorer.menu;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Defines a menu item rule that sets the visibility to active
@@ -43,11 +47,14 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6
  */
 public class CmsMirDirectPublish extends A_CmsMenuItemRule {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsMirDirectPublish.class);
 
     /**
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, CmsResourceUtil[])
@@ -67,6 +74,10 @@ public class CmsMirDirectPublish extends A_CmsMenuItemRule {
                     if (resourceUtil[0].getResource().isFolder()
                         || !resourceUtil[0].getResource().getState().isUnchanged()) {
                         // resource is a folder or not unchanged
+                        CmsResource parent = cms.readFolder(CmsResource.getParentFolder(cms.getSitePath(resourceUtil[0].getResource())));
+                        if (parent.getState().isNew()) {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                        }
                         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
                     } else if (!resourceUtil[0].getResource().isFolder()
                         && resourceUtil[0].getResource().getState().isUnchanged()) {
@@ -74,7 +85,9 @@ public class CmsMirDirectPublish extends A_CmsMenuItemRule {
                     }
                 }
             } catch (CmsException e) {
-                // ignore, should not happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
         }
 
