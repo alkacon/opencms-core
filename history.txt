@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/06 08:19:56 $
- * Version: $Revision: 1.876 $
+ * Date   : $Date: 2007/09/06 15:08:23 $
+ * Version: $Revision: 1.877 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -67,6 +67,8 @@ OpenCms 7.0.2 - xxxxx, 2007
 ! Added I_CmsLinkSubstitutionHandler that allows complete customization of generated links on web pages
 ! Added #removeAttribute(String) method to CmsRequestContext
 ! Added a state column to the list of publish reports
+! Added server time information to the new/edit schedule job dialog
+! Added new database tool to remove publish locks
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog

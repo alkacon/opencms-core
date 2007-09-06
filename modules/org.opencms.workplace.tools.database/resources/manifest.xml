@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms database maintainance tools.</p>
 <p>Install this module if you want to import/export data, it also contains a static export tool.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.0</version>
+		<version>7.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -403,6 +403,70 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/database/publishlocks.jsp</source>
+			<destination>system/workplace/admin/database/publishlocks.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>6fc07bc9-5c65-11dc-9bc4-00096be67772</uuidstructure>
+			<uuidresource>6fc07bca-5c65-11dc-9bc4-00096be67772</uuidresource>
+			<datelastmodified>Thu, 06 Sep 2007 10:55:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Sep 2007 10:39:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_DB_PUBLOCKS_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/database/icons/big/publishlocks.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[120]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_DB_PUBLOCKS_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Publish locks removal tool]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/database/publishlocksreport.jsp</source>
+			<destination>system/workplace/admin/database/publishlocksreport.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>812ac941-5c86-11dc-8feb-00096be67772</uuidstructure>
+			<uuidresource>812ac942-5c86-11dc-8feb-00096be67772</uuidresource>
+			<datelastmodified>Thu, 06 Sep 2007 14:37:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Sep 2007 14:36:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Remove publish locks report]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/database/staticexport.jsp</source>
 			<destination>system/workplace/admin/database/staticexport.jsp</destination>
 			<type>jsp</type>
@@ -750,6 +814,26 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/database/icons/big/publishlocks.png</source>
+			<destination>system/workplace/resources/tools/database/icons/big/publishlocks.png</destination>
+			<type>image</type>
+			<uuidstructure>21c60d18-5c87-11dc-8feb-00096be67772</uuidstructure>
+			<uuidresource>21c60d19-5c87-11dc-8feb-00096be67772</uuidresource>
+			<datelastmodified>Thu, 06 Sep 2007 14:40:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Sep 2007 14:40:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

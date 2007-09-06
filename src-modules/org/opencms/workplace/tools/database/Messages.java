@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/09/06 15:08:23 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,6 +97,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DATABASE_IMPORT_FILE_0 = "GUI_DATABASE_IMPORT_FILE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DB_PUBLOCKS_ADMIN_TOOL_HELP_0 = "GUI_DB_PUBLOCKS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DB_PUBLOCKS_ADMIN_TOOL_NAME_0 = "GUI_DB_PUBLOCKS_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DB_PUBLOCKS_NOTICE_0 = "GUI_DB_PUBLOCKS_NOTICE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DB_PUBLOCKS_THREAD_NAME_0 = "GUI_DB_PUBLOCKS_THREAD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_HELP_EXPORTFILE_1 = "GUI_EDITOR_HELP_EXPORTFILE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -113,6 +125,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_ADMIN_TOOL_NAME_0 = "GUI_HTMLIMPORT_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLIMPORT_BLOCK_LABEL_FOLDER_0 = "GUI_HTMLIMPORT_BLOCK_LABEL_FOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLIMPORT_BLOCK_LABEL_GALLERY_0 = "GUI_HTMLIMPORT_BLOCK_LABEL_GALLERY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLIMPORT_BLOCK_LABEL_SETTINGS_0 = "GUI_HTMLIMPORT_BLOCK_LABEL_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_CONSTRAINT_OFFLINE_0 = "GUI_HTMLIMPORT_CONSTRAINT_OFFLINE_0";
@@ -166,15 +187,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_IMPORTSERVER_ADMIN_TOOL_NAME_0 = "GUI_IMPORTSERVER_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_BLOCK_LABEL_FOLDER_0 = "GUI_HTMLIMPORT_BLOCK_LABEL_FOLDER_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_BLOCK_LABEL_GALLERY_0 = "GUI_HTMLIMPORT_BLOCK_LABEL_GALLERY_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HTMLIMPORT_BLOCK_LABEL_SETTINGS_0 = "GUI_HTMLIMPORT_BLOCK_LABEL_SETTINGS_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_IMPORTSERVER_NO_DB_EXPORTS_0 = "GUI_IMPORTSERVER_NO_DB_EXPORTS_0";
 
     /** Message constant for key in the resource bundle. */
@@ -212,6 +224,24 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CREATE_INDEX_0 = "RPT_CREATE_INDEX_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DB_PUBLOCKS_BEGIN_0 = "RPT_DB_PUBLOCKS_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DB_PUBLOCKS_END_0 = "RPT_DB_PUBLOCKS_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DB_PUBLOCKS_FAILED_0 = "RPT_DB_PUBLOCKS_FAILED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DB_PUBLOCKS_READLOCKS_1 = "RPT_DB_PUBLOCKS_READLOCKS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DB_PUBLOCKS_READSIBLINGS_1 = "RPT_DB_PUBLOCKS_READSIBLINGS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DB_PUBLOCKS_UNLOCKING_1 = "RPT_DB_PUBLOCKS_UNLOCKING_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_HTML_IMPORT_BEGIN_0 = "RPT_HTML_IMPORT_BEGIN_0";
