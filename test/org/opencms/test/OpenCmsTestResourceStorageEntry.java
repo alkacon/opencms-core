@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/09/07 12:01:32 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class OpenCmsTestResourceStorageEntry {
 
@@ -62,10 +62,11 @@ public class OpenCmsTestResourceStorageEntry {
     /** The access control list. */
     private CmsAccessControlList m_accessControlList;
 
-    /** The ID of the content database record. */
-    // private CmsUUID m_contentId;
     /** The content of the resource. If the resource is a folder, the content is null. */
     private byte[] m_contents;
+
+    /** The content date of this resource. */
+    private long m_dateContent;
 
     /** The creation date of this resource. */
     private long m_dateCreated;
@@ -140,7 +141,7 @@ public class OpenCmsTestResourceStorageEntry {
     public OpenCmsTestResourceStorageEntry(CmsObject cms, String resourceName, CmsResource res)
     throws CmsException {
 
-        // m_contentId = res.getContentId();
+        m_dateContent = res.getDateContent();
         m_dateCreated = res.getDateCreated();
         m_dateLastModified = res.getDateLastModified();
         m_dateReleased = res.getDateReleased();
@@ -204,6 +205,16 @@ public class OpenCmsTestResourceStorageEntry {
     public byte[] getContents() {
 
         return m_contents;
+    }
+
+    /**
+     * Returns the date of the content of this resource.<p>
+     *
+     * @return the date of the content of this resource
+     */
+    public long getDateContent() {
+
+        return m_dateContent;
     }
 
     /**

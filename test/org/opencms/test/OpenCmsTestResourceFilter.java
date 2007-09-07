@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/09/07 12:01:32 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public abstract class OpenCmsTestResourceFilter {
 
@@ -122,11 +122,11 @@ public abstract class OpenCmsTestResourceFilter {
     /** Flag to enable/disable access (ACL) tests. */
     protected boolean m_acl;
 
-    /** Flag to enable/disable content id tests. */
-    protected boolean m_contentId;
-
     /** Flag to enable/disable content comparison tests. */
     protected boolean m_contents;
+
+    /** Flag to enable/disable date content tests. */
+    protected boolean m_dateContent;
 
     /** Flag to enable/disable date created tests. */
     protected boolean m_dateCreated;
@@ -298,13 +298,13 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableProjectLastModifiedTest();
         filter.disableStateTest();
         filter.disableStructureIdTest();
-        filter.disableContentIdTest();
         filter.disableResourceIdTest();
         filter.disableUserCreatedTest();
         filter.disableDateCreatedTest();
         filter.disableLockTest();
         filter.disableNameTest();
         filter.disableAceTest();
+        filter.disableDateContentTest();
         return filter;
     }
 
@@ -337,6 +337,7 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableStructureIdTest();
         filter.disableLockTest();
         filter.disableNameTest();
+        filter.disableDateContentTest();
         return filter;
     }
 
@@ -356,6 +357,7 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableContentsTest();
         filter.disableLengthTest();
         filter.disableLockTest();
+        filter.disableDateContentTest();
         return filter;
     }
 
@@ -404,6 +406,7 @@ public abstract class OpenCmsTestResourceFilter {
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
 
         filter.disableDateLastModifiedTest();
+        filter.disableDateContentTest();
         filter.disableDateCreatedTest();
         filter.enableDateLastModifiedSecTest();
         filter.enableDateCreatedSecTest();
@@ -423,6 +426,7 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableResourceIdTest();
         filter.disableDateLastModifiedSecTest();
         filter.disableDateCreatedSecTest();
+        filter.disableDateContentTest();
         return filter;
     }
 
@@ -439,6 +443,7 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableDateCreatedTest();
         filter.enableDateLastModifiedSecTest();
         filter.enableDateCreatedSecTest();
+        filter.disableDateContentTest();
 
         return filter;
     }
@@ -456,9 +461,7 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableStateTest();
         filter.disableLockTest();
         filter.disableNameTest();
-        filter.disableContentsTest();
         filter.disableDateLastModifiedTest();
-        filter.disableLengthTest();
         return filter;
     }
 
@@ -491,6 +494,7 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableDateLastModifiedTest();
         filter.disableUserLastModifiedTest();
         filter.disableContentsTest();
+        filter.disableDateContentTest();
         filter.disableLengthTest();
         filter.disableProjectLastModifiedTest();
         return filter;
@@ -538,6 +542,7 @@ public abstract class OpenCmsTestResourceFilter {
 
         filter.disableProjectLastModifiedTest();
         filter.disableLockTest();
+        filter.disableDateContentTest();
         return filter;
     }
 
@@ -554,6 +559,7 @@ public abstract class OpenCmsTestResourceFilter {
         filter.disableLockTest();
         filter.disableNameTest();
         filter.disableStateTest();
+        filter.disableDateContentTest();
         return filter;
     }
 
@@ -595,16 +601,6 @@ public abstract class OpenCmsTestResourceFilter {
     }
 
     /**
-     * Returns true if the Content Id test is enabled.<p>
-     *
-     * @return true or false
-     */
-    public boolean testContentId() {
-
-        return m_contentId;
-    }
-
-    /**
      * Returns true if the Contents test is enabled.<p>
      *
      * @return true or false
@@ -612,6 +608,16 @@ public abstract class OpenCmsTestResourceFilter {
     public boolean testContents() {
 
         return m_contents;
+    }
+
+    /**
+     * Returns true if the date content test is enabled.<p>
+     *
+     * @return true or false
+     */
+    public boolean testDateContent() {
+
+        return m_dateContent;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceConfigurableFilter.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/09/07 12:01:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.test;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFilter {
 
@@ -45,8 +45,8 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
      */
     public OpenCmsTestResourceConfigurableFilter() {
 
-        m_contentId = true;
         m_dateCreated = true;
+        m_dateContent = true;
         m_dateLastModified = true;
         m_dateReleased = true;
         m_dateExpired = true;
@@ -78,7 +78,7 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
      */
     public OpenCmsTestResourceConfigurableFilter(OpenCmsTestResourceFilter baseFilter) {
 
-        m_contentId = baseFilter.testContentId();
+        m_dateContent = baseFilter.testDateContent();
         m_dateCreated = baseFilter.testDateCreated();
         m_dateLastModified = baseFilter.testDateLastModified();
         m_dateReleased = baseFilter.testDateReleased();
@@ -121,19 +121,19 @@ public class OpenCmsTestResourceConfigurableFilter extends OpenCmsTestResourceFi
     }
 
     /**
-     * Disables the Content Id test.<p>
-     */
-    public void disableContentIdTest() {
-
-        m_contentId = false;
-    }
-
-    /**
      * Disables the Contenttest.<p>
      */
     public void disableContentsTest() {
 
         m_contents = false;
+    }
+
+    /**
+     * Disables the date content test.<p>
+     */
+    public void disableDateContentTest() {
+
+        m_dateContent = false;
     }
 
     /**

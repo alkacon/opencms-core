@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2007/08/13 16:29:56 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/09/07 12:01:33 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.9.1
  */
@@ -1423,6 +1423,7 @@ public class TestHistory extends OpenCmsTestCase {
         // assert the resources
         OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter();
         filter.enableDateCreatedSecTest();
+        filter.disableDateContentTest();
         assertFilter(cms, "testFolder/", filter);
         assertFilter(cms, cms.getSitePath(res), filter);
 

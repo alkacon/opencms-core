@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/09/07 12:01:33 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
 
@@ -369,11 +369,11 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFilter(
             cms,
             "/" + folder + "/" + subfolder + "/" + subsubfolder + "/",
-            OpenCmsTestResourceFilter.FILTER_EQUAL);
+            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         assertFilter(
             cms,
             "/" + folder + "/" + subfolder + "/" + subsubfolder + "/" + file,
-            OpenCmsTestResourceFilter.FILTER_EQUAL);
+            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
 
         // e. undo changes of move operation for /folder/subfolder
         cms.lockResource(folder + "/" + subfolder);
@@ -391,11 +391,11 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFilter(
             cms,
             "/" + folder + "/" + subfolder + "/" + subsubfolder + "/",
-            OpenCmsTestResourceFilter.FILTER_EQUAL);
+            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         assertFilter(
             cms,
             "/" + folder + "/" + subfolder + "/" + subsubfolder + "/" + file,
-            OpenCmsTestResourceFilter.FILTER_EQUAL);
+            OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/08/31 14:39:47 $
- * Version: $Revision: 1.98 $
+ * Date   : $Date: 2007/09/07 12:01:32 $
+ * Version: $Revision: 1.99 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.98 $
+ * @version $Revision: 1.99 $
  * 
  * @since 6.0.0
  */
@@ -1659,6 +1659,20 @@ public class OpenCmsTestCase extends TestCase {
                         noMatches += "[Content does not match]\n";
                     }
                     contents = null;
+                }
+            }
+            // compare the date content if necessary
+            if (filter.testDateContent()) {
+                if (storedResource.getDateContent() != res.getDateContent()) {
+                    noMatches += "[DateContent "
+                        + storedResource.getDateContent()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(storedResource.getDateContent())
+                        + " != "
+                        + res.getDateContent()
+                        + " i.e. "
+                        + CmsDateUtil.getHeaderDate(res.getDateContent())
+                        + "]\n";
                 }
             }
             // compare the date created if necessary
