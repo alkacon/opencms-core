@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/08/13 16:29:43 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2007/09/07 15:23:26 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,8 +43,6 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
@@ -69,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
@@ -731,42 +729,34 @@ public abstract class CmsEditor extends CmsEditorBase {
      */
     protected void commitTempFile() throws CmsException {
 
-        switchToTempProject();
+        CmsObject cms = getCms();
         CmsFile tempFile;
         List properties;
         try {
-            tempFile = getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL);
-            properties = getCms().readPropertyObjects(getParamTempfile(), false);
+            switchToTempProject();
+            tempFile = cms.readFile(getParamTempfile(), CmsResourceFilter.ALL);
+            properties = cms.readPropertyObjects(getParamTempfile(), false);
         } finally {
             // make sure the project is reset in case of any exception
             switchToCurrentProject();
         }
-        if (getCms().existsResource(getParamResource(), CmsResourceFilter.ALL)) {
+        if (cms.existsResource(getParamResource(), CmsResourceFilter.ALL)) {
             // update properties of original file first (required if change in encoding occured)
-            getCms().writePropertyObjects(getParamResource(), properties);
+            cms.writePropertyObjects(getParamResource(), properties);
             // now replace the content of the original file
-            CmsFile orgFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
+            CmsFile orgFile = cms.readFile(getParamResource(), CmsResourceFilter.ALL);
             orgFile.setContents(tempFile.getContents());
             getCloneCms().writeFile(orgFile);
         } else {
             // original file does not exist, remove visibility permission entries and copy temporary file
-            if (getCms().hasPermissions(tempFile, CmsPermissionSet.ACCESS_CONTROL)) {
-                getCms().rmacc(
-                    getParamTempfile(),
-                    I_CmsPrincipal.PRINCIPAL_GROUP,
-                    OpenCms.getDefaultUsers().getGroupUsers());
-                getCms().rmacc(
-                    getParamTempfile(),
-                    I_CmsPrincipal.PRINCIPAL_GROUP,
-                    OpenCms.getDefaultUsers().getGroupUsers());
-            }
-            getCms().copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
+            OpenCms.getWorkplaceManager().removeTempFilePermissions(cms, getParamTempfile(), getSettings().getProject());
+            cms.copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
         }
         // remove the temporary file flag
-        int flags = getCms().readResource(getParamResource(), CmsResourceFilter.ALL).getFlags();
+        int flags = cms.readResource(getParamResource(), CmsResourceFilter.ALL).getFlags();
         if ((flags & CmsResource.FLAG_TEMPFILE) == CmsResource.FLAG_TEMPFILE) {
             flags ^= CmsResource.FLAG_TEMPFILE;
-            getCms().chflags(getParamResource(), flags);
+            cms.chflags(getParamResource(), flags);
         }
     }
 
@@ -778,61 +768,7 @@ public abstract class CmsEditor extends CmsEditorBase {
      */
     protected String createTempFile() throws CmsException {
 
-        // create the filename of the temporary file
-        String temporaryFilename = CmsWorkplace.getTemporaryFileName(getParamResource());
-
-        // check if the temporary file is already present
-        if (getCms().existsResource(temporaryFilename, CmsResourceFilter.ALL)) {
-            // delete old temporary file
-            if (!getCms().getLock(temporaryFilename).isUnlocked()) {
-                // steal lock
-                getCms().changeLock(temporaryFilename);
-            } else {
-                // lock resource to current user
-                getCms().lockResource(temporaryFilename);
-            }
-            getCms().deleteResource(temporaryFilename, CmsResource.DELETE_PRESERVE_SIBLINGS);
-        }
-
-        // switch to the temporary file project
-        switchToTempProject();
-
-        // copy the file to edit to a temporary file
-        try {
-            getCms().copyResource(getParamResource(), temporaryFilename, CmsResource.COPY_AS_NEW);
-            getCms().setDateLastModified(temporaryFilename, System.currentTimeMillis(), false);
-            // set the temporary file flag
-            CmsResource tempFile = getCms().readResource(temporaryFilename, CmsResourceFilter.ALL);
-            int flags = tempFile.getFlags();
-            if ((flags & CmsResource.FLAG_TEMPFILE) == 0) {
-                flags += CmsResource.FLAG_TEMPFILE;
-            }
-            getCms().chflags(temporaryFilename, flags);
-            // remove eventual release & expiration date from temporary file to make preview in editor work
-            getCms().setDateReleased(temporaryFilename, CmsResource.DATE_RELEASED_DEFAULT, false);
-            getCms().setDateExpired(temporaryFilename, CmsResource.DATE_EXPIRED_DEFAULT, false);
-            // remove visibility permissions for users and projectmanagers on temporary file
-            if (getCms().hasPermissions(tempFile, CmsPermissionSet.ACCESS_CONTROL)) {
-                getCms().chacc(
-                    temporaryFilename,
-                    I_CmsPrincipal.PRINCIPAL_GROUP,
-                    OpenCms.getDefaultUsers().getGroupUsers(),
-                    "-v");
-                getCms().chacc(
-                    temporaryFilename,
-                    I_CmsPrincipal.PRINCIPAL_GROUP,
-                    OpenCms.getDefaultUsers().getGroupUsers(),
-                    "-v");
-            }
-        } catch (CmsException e) {
-            switchToCurrentProject();
-            throw e;
-        }
-
-        // switch back to current project
-        switchToCurrentProject();
-
-        return temporaryFilename;
+        return OpenCms.getWorkplaceManager().createTempFile(getCms(), getParamResource(), getSettings().getProject());
     }
 
     /**
@@ -891,12 +827,20 @@ public abstract class CmsEditor extends CmsEditorBase {
             switchToTempProject();
             // delete the temporary file
             getCms().deleteResource(getParamTempfile(), CmsResource.DELETE_PRESERVE_SIBLINGS);
-            // switch back to the current project
-            switchToCurrentProject();
         } catch (CmsException e) {
             // should usually never happen
             if (LOG.isInfoEnabled()) {
                 LOG.info(e);
+            }
+        } finally {
+            try {
+                // switch back to the current project
+                switchToCurrentProject();
+            } catch (CmsException e) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
+                }
             }
         }
     }

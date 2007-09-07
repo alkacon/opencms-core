@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/08/13 16:30:07 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2007/09/07 15:23:26 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
@@ -57,8 +58,11 @@ import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -102,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.81 $ 
+ * @version $Revision: 1.82 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,6 +123,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplaceManager.class);
+
+    /** The admin cms context. */
+    private CmsObject m_adminCms;
 
     /** Indicates if auto-locking of resources is enabled or disabled. */
     private boolean m_autoLockResources;
@@ -480,6 +487,93 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 break;
             default: // no operation
         }
+    }
+
+    /**
+     * Creates a temporary file which is needed while working in an editor with preview option.<p>
+     * 
+     * @param cms the cms context
+     * @param resourceName the name of the resource to copy
+     * @param currentProjectId the id of the project to work with
+     * 
+     * @return the file name of the temporary file
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #removeTempFilePermissions(CmsObject, String, CmsUUID)
+     */
+    public String createTempFile(CmsObject cms, String resourceName, CmsUUID currentProjectId) throws CmsException {
+
+        // check that the current user has write permissions
+        if (!cms.hasPermissions(cms.readResource(resourceName), CmsPermissionSet.ACCESS_WRITE)) {
+            throw new CmsPermissionViolationException(org.opencms.db.Messages.get().container(
+                org.opencms.db.Messages.ERR_PERM_DENIED_2,
+                resourceName,
+                "w"));
+        }
+
+        // initialize admin cms context
+        CmsObject adminCms = getAdminCms(cms);
+
+        // generate the filename of the temporary file
+        String temporaryFilename = CmsWorkplace.getTemporaryFileName(resourceName);
+
+        // check if the temporary file is already present
+        if (adminCms.existsResource(temporaryFilename, CmsResourceFilter.ALL)) {
+            // delete old temporary file
+            if (!adminCms.getLock(temporaryFilename).isUnlocked()) {
+                // steal lock
+                adminCms.changeLock(temporaryFilename);
+            } else {
+                // lock resource to current user
+                adminCms.lockResource(temporaryFilename);
+            }
+            adminCms.deleteResource(temporaryFilename, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        }
+
+        try {
+            // switch to the temporary file project
+            adminCms.getRequestContext().setCurrentProject(cms.readProject(getTempFileProjectId()));
+            // copy the file to edit to a temporary file
+            adminCms.copyResource(resourceName, temporaryFilename, CmsResource.COPY_AS_NEW);
+            adminCms.setDateLastModified(temporaryFilename, System.currentTimeMillis(), false);
+            // set the temporary file flag
+            CmsResource tempFile = cms.readResource(temporaryFilename, CmsResourceFilter.ALL);
+            int flags = tempFile.getFlags();
+            if ((flags & CmsResource.FLAG_TEMPFILE) == 0) {
+                flags += CmsResource.FLAG_TEMPFILE;
+            }
+            adminCms.chflags(temporaryFilename, flags);
+            // remove eventual release & expiration date from temporary file to make preview in editor work
+            adminCms.setDateReleased(temporaryFilename, CmsResource.DATE_RELEASED_DEFAULT, false);
+            adminCms.setDateExpired(temporaryFilename, CmsResource.DATE_EXPIRED_DEFAULT, false);
+            // remove visibility permissions for everybody on temporary file
+            adminCms.chacc(
+                temporaryFilename,
+                I_CmsPrincipal.PRINCIPAL_GROUP,
+                OpenCms.getDefaultUsers().getGroupUsers(),
+                "-v");
+            adminCms.chacc(
+                temporaryFilename,
+                I_CmsPrincipal.PRINCIPAL_GROUP,
+                OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                "-v");
+        } finally {
+            // switch back to current project
+            adminCms.getRequestContext().setCurrentProject(cms.readProject(currentProjectId));
+        }
+
+        // lock the temporary file
+        try {
+            // switch to the temporary file project
+            cms.getRequestContext().setCurrentProject(cms.readProject(getTempFileProjectId()));
+            cms.changeLock(temporaryFilename);
+        } finally {
+            // switch back to current project
+            cms.getRequestContext().setCurrentProject(cms.readProject(currentProjectId));
+        }
+
+        return temporaryFilename;
     }
 
     /**
@@ -1073,10 +1167,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
             // register this object as event listener
             OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_CLEAR_CACHES});
-
         } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
             throw new CmsException(Messages.get().container(Messages.ERR_INITIALIZE_WORKPLACE_0));
         }
+        m_adminCms = cms;
     }
 
     /**
@@ -1133,6 +1230,37 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
             // reset the list of all explorer type settings
             initExplorerTypeSettings();
         }
+    }
+
+    /**
+     * Removes the special view permissions set during the temporary file creation.<p>
+     * 
+     * @param cms the current cms object
+     * @param temporaryFilename the temporary file name
+     * @param currentProjectId the id of the project to work with
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see #createTempFile(CmsObject, String, CmsUUID)
+     */
+    public void removeTempFilePermissions(CmsObject cms, String temporaryFilename, CmsUUID currentProjectId)
+    throws CmsException {
+
+        CmsObject adminCms = getAdminCms(cms);
+
+        // switch to the temporary file project
+        adminCms.getRequestContext().setCurrentProject(cms.readProject(currentProjectId));
+        // lock the file
+        adminCms.changeLock(temporaryFilename);
+        // remove visibility permissions for everybody on temporary file
+        adminCms.rmacc(temporaryFilename, I_CmsPrincipal.PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers());
+        adminCms.rmacc(
+            temporaryFilename,
+            I_CmsPrincipal.PRINCIPAL_GROUP,
+            OpenCms.getDefaultUsers().getGroupProjectmanagers());
+
+        // lock the temporary file
+        cms.changeLock(temporaryFilename);
     }
 
     /**
@@ -1411,6 +1539,25 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public boolean showUserGroupIcon() {
 
         return m_showUserGroupIcon;
+    }
+
+    /**
+     * Creates a copy of the admin cms object which is initialize with the data of the current cms object.<p>
+     * 
+     * @param cms the current cms object
+     * @return the new admin cms object
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private CmsObject getAdminCms(CmsObject cms) throws CmsException {
+
+        CmsObject adminCms = OpenCms.initCmsObject(m_adminCms);
+        adminCms.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
+        adminCms.getRequestContext().setRequestTime(cms.getRequestContext().getRequestTime());
+        adminCms.getRequestContext().setCurrentProject(cms.getRequestContext().currentProject());
+        adminCms.getRequestContext().setEncoding(cms.getRequestContext().getEncoding());
+        adminCms.getRequestContext().setUri(cms.getRequestContext().getUri());
+        return adminCms;
     }
 
     /**
