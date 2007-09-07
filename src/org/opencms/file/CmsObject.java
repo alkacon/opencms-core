@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/09/06 15:09:27 $
- * Version: $Revision: 1.153 $
+ * Date   : $Date: 2007/09/07 09:02:57 $
+ * Version: $Revision: 1.154 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.153 $
+ * @version $Revision: 1.154 $
  * 
  * @since 6.0.0 
  */
@@ -2098,16 +2098,7 @@ public final class CmsObject {
         if (address != null) {
             info.put(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, address);
         }
-        return importUser(
-            id,
-            name,
-            password,
-            firstname,
-            lastname,
-            email,
-            flags,
-            System.currentTimeMillis(),
-            additionalInfos);
+        return importUser(id, name, password, firstname, lastname, email, flags, System.currentTimeMillis(), info);
     }
 
     /**

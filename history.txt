@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/06 15:08:23 $
- * Version: $Revision: 1.877 $
+ * Date   : $Date: 2007/09/07 09:02:57 $
+ * Version: $Revision: 1.878 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -29,6 +29,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 * Fixed issue #1513: Now trying deactivate an indirect assigned role displays an error message
 * Fixed issue #1516: Resource type array has been replaced by a self-expanding HashMap 
 * Fixed issue #1519: Roots field in search index now always uses Whitespace analyzer (search index rebuild is required)
+* Fixed issue #1523: Fixed implementation of the deprecated version of the CmsObject#importUser method
 * Fixed issue with validation errors using the display widget on boolean values
 * Fixed several spelling issues in the German locale
 * Fixed issue with "new" siblings causing content changes in "old" siblings not to be published
