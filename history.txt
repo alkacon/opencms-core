@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/07 09:02:57 $
- * Version: $Revision: 1.878 $
+ * Date   : $Date: 2007/09/07 11:52:02 $
+ * Version: $Revision: 1.879 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,13 +20,13 @@ Legend:
 - General comment
 
 OpenCms 7.0.2 - xxxxx, 2007
-* Fixed issue #1291: Using right line break format for UNIX in cmsshell.sh
-* Fixed issue #1460: Parent locks are now right filtered by the CmsLockFilter
-* Fixed issue #1486: Missing CmsPrincipal comparator
-* Fixed issue #1499: Extended context menu rules
+* Fixed issue #1291: Now using the correct line break format for UNIX in cmsshell.sh
+* Fixed issue #1460: Parent locks are now correctly filtered by the CmsLockFilter
+* Fixed issue #1486: Added missing CmsPrincipal comparator
+* Fixed issue #1499: Extended context menu rules to prevent direct publishing of files in unpublished folders
 * Fixed issue #1503: CmsScheduleManager now uses the current time as the request time
 * Fixed issue #1508: Publish notification popup can now be switched off in the user preferences dialog (errors are always shown)
-* Fixed issue #1513: Now trying deactivate an indirect assigned role displays an error message
+* Fixed issue #1513: Trying to disable an indirect assigned role now displays an error message
 * Fixed issue #1516: Resource type array has been replaced by a self-expanding HashMap 
 * Fixed issue #1519: Roots field in search index now always uses Whitespace analyzer (search index rebuild is required)
 * Fixed issue #1523: Fixed implementation of the deprecated version of the CmsObject#importUser method
