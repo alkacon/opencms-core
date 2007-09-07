@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorBase.java,v $
- * Date   : $Date: 2007/08/13 16:29:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/07 13:16:34 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,12 +39,11 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Base class for all editors that turns of time warp deletion inherited from 
- * {@link org.opencms.workplace.CmsWorkplace}.
- * <p> 
+ * {@link org.opencms.workplace.CmsWorkplace}.<p> 
  *
  * @author  Achim Westermann
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,5 +68,4 @@ public class CmsEditorBase extends CmsDialog {
         // this is triggered by editors and in auto time warping a direct edit 
         // must not delete a potential auto warped request time 
     }
-
 }
