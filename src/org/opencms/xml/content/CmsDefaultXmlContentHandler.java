@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/08/20 12:10:45 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2007/09/07 13:01:32 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
@@ -82,7 +83,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 6.0.0 
  */
@@ -327,8 +328,21 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             }
         }
         if (defaultValue != null) {
+            CmsObject newCms = cms;
+            try {
+                // switch the current URI to the XML document resource so that properties can be read
+                CmsResource file = value.getDocument().getFile();
+                CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(file.getRootPath());
+                if (site != null) { 
+                newCms = OpenCms.initCmsObject(cms);
+                newCms.getRequestContext().setSiteRoot(site.getSiteRoot());
+                newCms.getRequestContext().setUri(newCms.getSitePath(file));
+                }
+            } catch (Exception e) {
+                // on any error just use the default input OpenCms context
+            }
             // return the default value with processed macros
-            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setMessages(
+            CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(newCms).setMessages(
                 getMessages(locale));
             return resolver.resolveMacros(defaultValue);
         }
