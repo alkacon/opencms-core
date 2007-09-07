@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/08/13 16:30:08 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2007/09/07 12:02:16 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  * 
@@ -424,14 +424,14 @@ public final class CmsLockManager {
      * @param resource the resource
      * @param forceUnlock <code>true</code>, if a resource is forced to get unlocked (only edition locks), 
      *                    no matter by which user and in which project the resource is currently locked
-     * @param unlockSystemLock <code>true</code>, if you also want to remove system locks
+     * @param removeSystemLock <code>true</code>, if you also want to remove system locks
      * 
      * @return the previous {@link CmsLock} object of the resource, 
      *          or <code>{@link CmsLock#getNullLock()}</code> if the resource was unlocked
      *
      * @throws CmsException if something goes wrong
      */
-    public CmsLock removeResource(CmsDbContext dbc, CmsResource resource, boolean forceUnlock, boolean unlockSystemLock)
+    public CmsLock removeResource(CmsDbContext dbc, CmsResource resource, boolean forceUnlock, boolean removeSystemLock)
     throws CmsException {
 
         String resourcename = resource.getRootPath();
@@ -464,11 +464,18 @@ public final class CmsLockManager {
                     String lockedPath = ((CmsLock)itLocks.next()).getResourceName();
                     if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
                         // remove the exclusive locked sub-resource
+                        if (removeSystemLock) {
+                            unlockResource(lockedPath, true);
+                        }
                         unlockResource(lockedPath, false);
                     }
                 }
             }
-            return unlockResource(resourcename, false);
+            if (removeSystemLock) {
+                unlockResource(resourcename, true);
+            }
+            unlockResource(resourcename, false);
+            return lock;
         }
 
         if (lock.getType().isSharedExclusive()) {
@@ -480,15 +487,18 @@ public final class CmsLockManager {
                 CmsResource sibling = (CmsResource)siblings.get(i);
                 if (locks.contains(sibling.getRootPath())) {
                     // remove the exclusive locked sibling
+                    if (removeSystemLock) {
+                        unlockResource(sibling.getRootPath(), true);
+                    }
                     unlockResource(sibling.getRootPath(), false);
-                    break;
+                    break; // it can only be one!
                 }
             }
             return lock;
         }
 
         // remove system locks only if explicit required
-        if (unlockSystemLock && !getLock(dbc, resource).getSystemLock().isUnlocked()) {
+        if (removeSystemLock && !getLock(dbc, resource).getSystemLock().isUnlocked()) {
             return unlockResource(resourcename, true);
         }
         return lock;
@@ -498,23 +508,18 @@ public final class CmsLockManager {
      * Removes all resources locked in a project.<p>
      * 
      * @param projectId the ID of the project where the resources have been locked
-     * @param forceUnlock if <code>true</code>, exclusive locks in other projects are removed for resources locked with a system lock
+     * @param removeSystemLocks if <code>true</code>, also system locks are removed
      */
-    public void removeResourcesInProject(CmsUUID projectId, boolean forceUnlock) {
+    public void removeResourcesInProject(CmsUUID projectId, boolean removeSystemLocks) {
 
         Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
             CmsLock currentLock = (CmsLock)itLocks.next();
-            if (!currentLock.getSystemLock().isUnlocked()) {
-                if (!currentLock.getEditionLock().isUnlocked()) {
-                    if (forceUnlock || (currentLock.getEditionLock().getProjectId().equals(projectId))) {
-                        unlockResource(currentLock.getResourceName(), false);
-                    }
-                }
-            } else {
-                if (currentLock.getProjectId().equals(projectId)) {
-                    unlockResource(currentLock.getResourceName(), false);
-                }
+            if (removeSystemLocks && currentLock.getSystemLock().getProjectId().equals(projectId)) {
+                unlockResource(currentLock.getResourceName(), true);
+            }
+            if (currentLock.getEditionLock().getProjectId().equals(projectId)) {
+                unlockResource(currentLock.getResourceName(), false);
             }
         }
     }
@@ -618,7 +623,7 @@ public final class CmsLockManager {
             // check type, owner and project for system locks
             // this is required if publishing several siblings
             if (currentLock.getSystemLock().isUnlocked()
-                || currentLock.getType() != type
+                || (currentLock.getType() != type)
                 || !currentLock.isOwnedInProjectBy(user, project)) {
                 // display the right message
                 CmsMessageContainer message = null;
@@ -806,7 +811,7 @@ public final class CmsLockManager {
                 exclusiveLock.getProject(),
                 exclusiveLock.getSystemLock().getType());
         }
-        if (lock == null || !exclusiveLock.getEditionLock().isNullLock()) {
+        if ((lock == null) || !exclusiveLock.getEditionLock().isNullLock()) {
             CmsLockType type = CmsLockType.SHARED_EXCLUSIVE;
             if (!getParentLock(siblingName).isNullLock()) {
                 type = CmsLockType.SHARED_INHERITED;
@@ -886,7 +891,7 @@ public final class CmsLockManager {
                     }
                     return tmp;
                 } else {
-                    // if there is no edition lock, do nothing
+                    // if there is no edition lock, only a system lock, do nothing
                     return CmsLock.getNullLock();
                 }
             }

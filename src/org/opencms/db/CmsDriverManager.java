@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/09/06 15:09:26 $
- * Version: $Revision: 1.594 $
+ * Date   : $Date: 2007/09/07 12:02:16 $
+ * Version: $Revision: 1.595 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2492,7 +2492,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // unlock all resources in the project
-        m_lockManager.removeResourcesInProject(deleteProject.getUuid(), false);
+        m_lockManager.removeResourcesInProject(deleteProject.getUuid(), true);
         clearAccessControlListCache();
         clearResourceCache();
 
@@ -7463,21 +7463,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param resource the resource to unlock
      * @param force <code>true</code>, if a resource is forced to get unlocked, no matter by which user and in which project the resource is currently locked
-     * @param unlockSystemLock <code>true</code>, if you also want to remove system locks
+     * @param removeSystemLock <code>true</code>, if you also want to remove system locks
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#unlockResource(String)
      * @see I_CmsResourceType#unlockResource(CmsObject, CmsSecurityManager, CmsResource)
      */
-    public void unlockResource(CmsDbContext dbc, CmsResource resource, boolean force, boolean unlockSystemLock)
+    public void unlockResource(CmsDbContext dbc, CmsResource resource, boolean force, boolean removeSystemLock)
     throws CmsException {
 
         // update the resource cache
         clearResourceCache();
 
         // now update lock status
-        m_lockManager.removeResource(dbc, resource, force, unlockSystemLock);
+        m_lockManager.removeResource(dbc, resource, force, removeSystemLock);
 
         // we must also clear the permission cache
         OpenCms.getMemoryMonitor().flushPermissions();
