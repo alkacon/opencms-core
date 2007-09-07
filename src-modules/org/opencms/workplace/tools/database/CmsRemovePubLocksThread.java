@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsRemovePubLocksThread.java,v $
- * Date   : $Date: 2007/09/06 15:32:29 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/09/07 10:07:58 $
+ * Version: $Revision: 1.3 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -64,7 +64,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  */
@@ -131,6 +131,13 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
                 Iterator itResources = cms.getLockedResources(paramResName, filter).iterator();
                 while (itResources.hasNext()) {
                     String resName = (String)itResources.next();
+                    if (!cms.existsResource(resName, CmsResourceFilter.ALL)) {
+                        getReport().println(
+                            Messages.get().container(Messages.RPT_DB_PUBLOCKS_UNLOCKING_1, resName),
+                            I_CmsReport.FORMAT_DEFAULT);
+                        OpenCms.getMemoryMonitor().uncacheLock(cms.getRequestContext().addSiteRoot(resName));
+                        continue;
+                    }
                     Iterator itSiblings = cms.readSiblings(resName, CmsResourceFilter.ALL).iterator();
                     while (itSiblings.hasNext()) {
                         CmsResource res = (CmsResource)itSiblings.next();
