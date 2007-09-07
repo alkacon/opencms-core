@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2007/08/15 09:11:17 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2007/09/07 11:52:43 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 6.0.0 
  */
@@ -452,6 +452,8 @@ public class CmsSystemInfo {
      * Returns the version number of this OpenCms system, for example <code>7.0.0</code>.<p>
      *
      * @return the version number of this OpenCms system
+     * 
+     * @since 7.0.2
      */
     public String getVersionNumber() {
 
