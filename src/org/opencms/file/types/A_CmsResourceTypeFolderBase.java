@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2007/08/13 16:30:07 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/09/07 11:10:29 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.file.types;
 
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsDataNotImplementedException;
-import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -41,29 +40,21 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.CmsLog;
-import org.opencms.main.CmsMultiException;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.List;
-
-import org.apache.commons.logging.Log;
 
 /**
  * Resource type descriptor for the type "folder".<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(A_CmsResourceTypeFolderBase.class);
 
     /**
      * Default constructor, used to initialize member variables.<p>
@@ -186,33 +177,6 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         dest = validateFoldername(dest);
 
         securityManager.moveResource(cms.getRequestContext(), resource, dest);
-
-        // touch all resources, so each resource has the time to adapt it self to the new environment
-        CmsFolder folder = securityManager.readFolder(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
-        List resources = securityManager.readResources(cms.getRequestContext(), folder, CmsResourceFilter.ALL, true);
-        if (resources != null) {
-            CmsMultiException me = new CmsMultiException();
-            // now walk through all sub-resources in the folder
-            for (int i = 0; i < resources.size(); i++) {
-                CmsResource childResource = (CmsResource)resources.get(i);
-                if (childResource.isFolder()) {
-                    continue;
-                }
-                try {
-                    // touch, collecting the errors
-                    getResourceType(childResource).writeFile(cms, securityManager, cms.readFile(childResource));
-                } catch (CmsException e) {
-                    me.addException(e);
-                } catch (CmsRuntimeException e) {
-                    me.addException(new CmsException(e.getMessageContainer(), e));
-                }
-            }
-            if (!me.getExceptions().isEmpty()) {
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(me);
-                }
-            }
-        }
     }
 
     /**

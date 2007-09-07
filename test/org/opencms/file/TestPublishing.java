@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/09/07 11:10:29 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsMultiException;
 import org.opencms.main.OpenCms;
@@ -63,7 +64,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -413,20 +414,15 @@ public class TestPublishing extends OpenCmsTestCase {
 
         cms.getRequestContext().setCurrentProject(offlineProject);
         cms.lockResource(resName);
-        time = System.currentTimeMillis();
+        time = cms.readResource(resName).getDateContent();
         synchronized (this) {
             wait(50);
         }
-        // this will write the content for updating links
+        // this will NOT write the content
         cms.moveResource(resName, movedName);
         offlineFile = cms.readFile(movedName);
 
-        assertDateContentAfter(cms, movedName, time);
-        assertDateContentAfter(cms, sibName, time);
-        time = offlineFile.getDateContent();
-        synchronized (this) {
-            wait(50);
-        }
+        assertDateContent(cms, movedName, time);
         assertDateContent(cms, sibName, time);
 
         // check the online project before publishing
@@ -443,8 +439,8 @@ public class TestPublishing extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         cms.getRequestContext().setCurrentProject(onlineProject);
-        assertDateContentAfter(cms, movedName, time);
-        assertDateContentAfter(cms, sibName, time);
+        assertDateContent(cms, movedName, time);
+        assertDateContent(cms, sibName, time);
     }
 
     /**
@@ -522,8 +518,6 @@ public class TestPublishing extends OpenCmsTestCase {
             fail("Resource " + resource1 + " was not deleted online");
         } catch (CmsVfsResourceNotFoundException e) {
             // ok
-        } catch (CmsException e) {
-            fail("Resource " + resource1 + " error:" + e);
         }
 
         cms.getRequestContext().setCurrentProject(offlineProject);
@@ -544,6 +538,10 @@ public class TestPublishing extends OpenCmsTestCase {
             new CmsShellReport(cms.getRequestContext().getLocale()));
         OpenCms.getPublishManager().waitWhileRunning();
 
+        // the files must be unlocked
+        List lockedResources = cms.getLockedResources("/folder2", CmsLockFilter.FILTER_ALL);
+        assertTrue(lockedResources.isEmpty());
+
         // the online file must be deleted
         cms.getRequestContext().setCurrentProject(onlineProject);
         try {
@@ -551,8 +549,6 @@ public class TestPublishing extends OpenCmsTestCase {
             fail("Resource " + resource2 + " was not deleted online");
         } catch (CmsVfsResourceNotFoundException e) {
             // ok
-        } catch (CmsException e) {
-            fail("Resource " + resource2 + " error:" + e);
         }
         // the other siblings must still be there
         try {
@@ -587,16 +583,12 @@ public class TestPublishing extends OpenCmsTestCase {
             fail("Resource " + resource3 + " was not deleted online");
         } catch (CmsVfsResourceNotFoundException e) {
             // ok
-        } catch (CmsException e) {
-            fail("Resource " + resource3 + " error:" + e);
         }
         try {
             cms.readResource(resource4);
             fail("Resource " + resource4 + " was not deleted online");
         } catch (CmsVfsResourceNotFoundException e) {
             // ok
-        } catch (CmsException e) {
-            fail("Resource " + resource4 + " error:" + e);
         }
 
         cms.getRequestContext().setCurrentProject(offlineProject);

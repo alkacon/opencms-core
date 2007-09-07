@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/09/05 11:19:35 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2007/09/07 11:10:29 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  */
@@ -641,12 +641,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         // move
         securityManager.moveResource(cms.getRequestContext(), resource, dest);
-
-        // create the relations for the new resource, this could be improved by an sql query for moving relations
-        createRelations(cms, securityManager, dest);
-        // touch
-        CmsResource res = securityManager.readResource(cms.getRequestContext(), dest, CmsResourceFilter.ALL);
-        writeFile(cms, securityManager, cms.readFile(res));
     }
 
     /**
