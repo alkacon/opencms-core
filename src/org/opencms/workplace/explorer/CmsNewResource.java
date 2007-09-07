@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2007/08/13 16:29:40 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2007/09/07 15:14:37 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -963,7 +963,11 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         }
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(title)) {
-            title = CmsWorkplaceMessages.getNewResourceTitle(this, getParamNewResourceType());
+            if (CmsStringUtil.isNotEmpty(getParamNewResourceType())) {
+                title = CmsWorkplaceMessages.getNewResourceTitle(this, getParamNewResourceType());
+            } else {
+                title = getParamTitle();
+            }
         }
 
         return title;
@@ -987,8 +991,9 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
 
         if (CmsStringUtil.isNotEmpty(getParamPage())) {
             m_page = getParamPage();
+            setParamPage(null);
 
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamNewFormUri())) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamNewFormUri()) || getParamNewResourceUri().indexOf("?" + PARAM_PAGE) != -1) {
                 setParamNewFormUri(getParamNewResourceUri());
                 setParamNewResourceUri(null);
             }
