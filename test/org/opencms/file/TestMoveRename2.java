@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename2.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/07 12:02:46 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
@@ -58,7 +59,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestMoveRename2 extends OpenCmsTestCase {
 
@@ -84,6 +85,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestMoveRename2.class.getName());
 
+        suite.addTest(new TestMoveRename2("testMoveSibling"));
         suite.addTest(new TestMoveRename2("testRenameNewFolder"));
         suite.addTest(new TestMoveRename2("testRenameFileUpperLowerCase"));
         suite.addTest(new TestMoveRename2("testRenameFolderUpperLowerCase"));
@@ -298,6 +300,57 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         } catch (Exception e) {
             // ok
         }
+    }
+
+    /**
+     * Tests moving a sibling.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMoveSibling() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing moving a sibling");
+
+        String resName = "index.html";
+        String sibName = "folder1/sib.html";
+        String sib2Name = "folder1/sib2.html";
+
+        // create sibling
+        cms.copyResource(resName, sibName, CmsResource.COPY_AS_SIBLING);
+        OpenCms.getPublishManager().publishResource(cms, sibName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // store state for later
+        storeResources(cms, resName);
+        storeResources(cms, sibName);
+
+        // check the initial lock state
+        assertLock(cms, resName, CmsLockType.UNLOCKED);
+        assertLock(cms, sibName, CmsLockType.UNLOCKED);
+
+        // lock the sibling
+        cms.lockResource(sibName);
+
+        // check the lock state
+        assertLock(cms, resName, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, sibName, CmsLockType.EXCLUSIVE);
+
+        // move the sibling
+        cms.moveResource(sibName, sib2Name);
+
+        // check the lock state
+        assertLock(cms, resName, CmsLockType.SHARED_EXCLUSIVE);
+        assertLock(cms, sib2Name, CmsLockType.EXCLUSIVE);
+
+        // unlock the resource to enable the filter
+        cms.unlockResource(sib2Name);
+        assertFilter(cms, resName, OpenCmsTestResourceFilter.FILTER_EQUAL);
+
+        setMapping(sib2Name, sibName);
+        assertFilter(cms, sib2Name, OpenCmsTestResourceFilter.FILTER_MOVE_DESTINATION);
+        assertState(cms, sib2Name, CmsResourceState.STATE_CHANGED);
+        assertProject(cms, sib2Name, cms.getRequestContext().currentProject());
     }
 
     /**
