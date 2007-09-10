@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/10 08:35:58 $
- * Version: $Revision: 1.882 $
+ * Date   : $Date: 2007/09/10 08:51:27 $
+ * Version: $Revision: 1.883 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -73,6 +73,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 ! Added server time information to the new/edit schedule job dialog
 ! Added new database tool to remove publish locks
 ! Added support for using %(property.XXX) in XML default values to the CmsDefaultXmlContentHandler 
+! Added cause messages to inactive context menu entries to Explorer view
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog
