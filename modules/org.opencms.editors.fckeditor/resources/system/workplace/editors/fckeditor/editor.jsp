@@ -97,7 +97,7 @@ var cssPath = "<%= wp.getUriStyleSheet() %>";
 
 // saves the editors contents
 function saveContent() {
-    document.EDITOR.content.value = encodeURIComponent(FCKeditorAPI.GetInstance("fckeditor").GetXHTML(false));
+    document.EDITOR.content.value = encodeURIComponent(FCKeditorAPI.GetInstance("fckeditor").GetXHTML(true));
 }
 
 // Ask user whether he really wants to delete the locale

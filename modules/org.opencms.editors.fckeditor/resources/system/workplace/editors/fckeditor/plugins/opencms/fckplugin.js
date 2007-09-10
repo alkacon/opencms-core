@@ -62,7 +62,7 @@ var workplacePath="<%= cms.link("/system/workplace/") %>";
 var USE_LINKSTYLEINPUTS = <%= options.showElement("option.linkstyleinputs", displayOptions) %>;
 
 function execAction(form, action, target) {
-	form.content.value = encodeURIComponent(FCK.GetXHTML(false));
+	form.content.value = encodeURIComponent(FCK.GetXHTML(true));
 	form.action.value = action;
 	form.target = target;
 	form.submit(); 
