@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2007/08/13 16:29:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/09/10 14:04:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -140,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.1.3
  * 
@@ -154,7 +154,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.7 $
+     * @version $Revision: 1.8 $
      * 
      * @since 6.1.6
      * 
@@ -253,7 +253,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.7 $
+     * @version $Revision: 1.8 $
      * 
      * @since 6.1.6
      * 
@@ -500,7 +500,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 CmsSelectWidgetOption option;
                 List resources;
                 // collect all subresources of resource folder
-                CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireType(getResourceTypeID());
+                CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(getResourceTypeID());
                 CmsRequestContext context = cms.getRequestContext();
                 String oldSiteroot = context.getSiteRoot();
                 context.setSiteRoot("/");
