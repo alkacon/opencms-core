@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/10 11:48:20 $
- * Version: $Revision: 1.884 $
+ * Date   : $Date: 2007/09/10 13:26:01 $
+ * Version: $Revision: 1.885 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 * Fixed issue with aging request time in combination with date released in CmsObject instances stored by core classes 
 * Fixed issue with creating a new resource in a locked folder
 * Fixed issue with validating links during publishing while deleting several linked resources
+* Fixed issue with FCKeditor saving HTML contents in one long line
 - Improved implementation of CmsUUID serialization, added Junit tests for de-serialization of old versions
 - Updated Lucene jars to version 2.2.0
 - Updated jug.jar used by CmsUUID to version 2.0.0 (from doomdark.org to safehaus.org version)
