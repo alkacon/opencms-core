@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrSameLockedActiveChangedAl.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrSameLockedActiveNotDeletedAlPermW.java,v $
  * Date   : $Date: 2007/09/10 08:46:15 $
- * Version: $Revision: 1.4 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,35 +32,47 @@
 package org.opencms.workplace.explorer.menu;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
- * Defines a menu item rule that sets the visibility to active if the current resource is changed
- * and locked by the current user or the autolock feature is enabled.<p>
+ * Defines a menu item rule that sets the visibility to active if the current resource is not deleted or inactive
+ * if the current resource is deleted and locked by the current user.<p>
  * 
- * It sets the visibility to inactive for new resources and to invisible for deleted resources,
- * for folders it sets the visibility to active for unchanged resources.<p>
+ * Also checks if the current user has write permissions on the resource and sets the visibility to inactive if not.<p>
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 6.5.6
  */
-public class CmsMirPrSameLockedActiveChangedAl extends A_CmsMenuItemRule {
+public class CmsMirPrSameLockedActiveNotDeletedAlPermW extends A_CmsMenuItemRule {
 
     /**
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, CmsResourceUtil[])
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
-        if (resourceUtil[0].getResource().getState().isDeleted()) {
+        try {
+            if (!resourceUtil[0].isEditable()
+                || !cms.hasPermissions(
+                    resourceUtil[0].getResource(),
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.ALL)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
+            }
+        } catch (CmsException e) {
+            // error checking permissions, disable entry completely
             return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
-        } else if (resourceUtil[0].getResource().getState().isNew()
-            || (resourceUtil[0].getResource().isFile() && resourceUtil[0].getResource().getState().isUnchanged())) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0);
+        }
+        if (resourceUtil[0].getResource().getState().isDeleted()) {
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_DELETED_0);
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
     }

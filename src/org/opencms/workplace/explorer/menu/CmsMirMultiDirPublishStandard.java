@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirMultiDirPublishStandard.java,v $
- * Date   : $Date: 2007/09/06 08:19:56 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/09/10 08:46:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.2
  */
@@ -62,12 +62,12 @@ public class CmsMirMultiDirPublishStandard extends A_CmsMenuItemRule {
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_ONLINEPROJECT_0);
         }
         try {
             CmsResource parent = cms.readFolder(CmsResource.getParentFolder(cms.getSitePath(resourceUtil[0].getResource())));
             if (parent.getState().isNew()) {
-                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PUBLISH_PARENTFOLDER_0);
             }
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {

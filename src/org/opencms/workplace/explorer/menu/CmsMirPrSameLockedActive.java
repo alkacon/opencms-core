@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrSameLockedActive.java,v $
- * Date   : $Date: 2007/08/13 16:29:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/10 08:46:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6
  */
@@ -54,7 +54,7 @@ public class CmsMirPrSameLockedActive extends A_CmsMenuItemRule {
 
         // set inactive if lock is inherited
         if (resourceUtil[0].getLock().isInherited()) {
-            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_LOCK_INHERITED_0);
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMenuItemVisibilityMode.java,v $
- * Date   : $Date: 2007/08/13 16:29:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/10 08:46:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.A_CmsModeIntEnumeration;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -55,6 +55,9 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
 
     /** Serializable version id. */
     private static final long serialVersionUID = 2526260041565757791L;
+
+    /** The name of the message key for the visibility mode. */
+    private String m_messageKey;
 
     /**
      * Private constructor.<p>
@@ -90,6 +93,31 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
     }
 
     /**
+     * Adds the name of the message key for the visibility mode.<p>
+     * 
+     * @param messageKey the name of the message key for the visibility mode
+     * @return an extended visibility mode containing the message key
+     */
+    public CmsMenuItemVisibilityMode addMessageKey(String messageKey) {
+
+        CmsMenuItemVisibilityMode mode = (CmsMenuItemVisibilityMode)clone();
+        mode.m_messageKey = messageKey;
+        return mode;
+    }
+
+    /**
+     * Returns the name of the message key for the visibility mode.<p>
+     * 
+     * Is usually used as description for the inactive visibility modes.<p>
+     * 
+     * @return the name of the message key for the visibility mode
+     */
+    public String getMessageKey() {
+
+        return m_messageKey;
+    }
+
+    /**
      * Returns if the mode is set to {@link #VISIBILITY_ACTIVE}.<p>
      * 
      * @return true if the mode is set to {@link #VISIBILITY_ACTIVE}, otherwise false
@@ -117,6 +145,14 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
     public boolean isInVisible() {
 
         return getMode() == VISIBILITY_INVISIBLE.getMode();
+    }
+
+    /**
+     * @see java.lang.Object#clone()
+     */
+    protected Object clone() {
+
+        return new CmsMenuItemVisibilityMode(this.getMode());
     }
 
 }

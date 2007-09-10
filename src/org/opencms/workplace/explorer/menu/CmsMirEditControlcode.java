@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirEditControlcode.java,v $
- * Date   : $Date: 2007/08/13 16:29:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/10 08:46:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,11 @@
 package org.opencms.workplace.explorer.menu;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
@@ -43,7 +46,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.9.2
  */
@@ -54,37 +57,51 @@ public class CmsMirEditControlcode extends A_CmsMenuItemRule {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
-        if (resourceUtil[0].isInsideProject() && !cms.getRequestContext().currentProject().isOnlineProject()) {
-            // we are in the correct offline project and resource is not deleted
-            CmsLock lock = resourceUtil[0].getLock();
-            boolean lockedForPublish = resourceUtil[0].getProjectState().isLockedForPublishing();
-            if (lock.isNullLock()) {
-                // resource is not locked, check autolock
+        try {
+            if (resourceUtil[0].isInsideProject() && !cms.getRequestContext().currentProject().isOnlineProject()) {
+                // we are in the correct offline project and resource is not deleted
+                CmsLock lock = resourceUtil[0].getLock();
+                boolean lockedForPublish = resourceUtil[0].getProjectState().isLockedForPublishing();
+                if (lock.isNullLock()) {
+                    // resource is not locked, check autolock
+                    if (!lockedForPublish
+                        && OpenCms.getWorkplaceManager().autoLockResources()
+                        && !resourceUtil[0].getResource().getState().isDeleted()) {
+                        if (OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)
+                            && cms.hasPermissions(
+                                resourceUtil[0].getResource(),
+                                CmsPermissionSet.ACCESS_WRITE,
+                                false,
+                                CmsResourceFilter.ALL)) {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                        }
+                    } else if (OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
+                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
+                    }
+                }
                 if (!lockedForPublish
-                    && OpenCms.getWorkplaceManager().autoLockResources()
-                    && !resourceUtil[0].getResource().getState().isDeleted()) {
+                    && !lock.isShared()
+                    && lock.isOwnedInProjectBy(
+                        cms.getRequestContext().currentUser(),
+                        cms.getRequestContext().currentProject())) {
+                    // resource is exclusively locked by the current user
                     if (OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
-                        return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-                    }
-                } else if (OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
-                    return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
-                }
-            }
-            if (!lockedForPublish
-                && !lock.isShared()
-                && lock.isOwnedInProjectBy(
-                    cms.getRequestContext().currentUser(),
-                    cms.getRequestContext().currentProject())) {
-                // resource is exclusively locked by the current user
-                if (OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
-                    if (!resourceUtil[0].getResource().getState().isDeleted()) {
-                        return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
-                    } else {
-                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                        if (!resourceUtil[0].getResource().getState().isDeleted()
+                            && cms.hasPermissions(
+                                resourceUtil[0].getResource(),
+                                CmsPermissionSet.ACCESS_WRITE,
+                                false,
+                                CmsResourceFilter.ALL)) {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
+                        } else {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
+                        }
                     }
                 }
-            }
 
+            }
+        } catch (CmsException e) {
+            // should not happen, anyway invisible is returned
         }
         // current user cannot see the entry
         return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;

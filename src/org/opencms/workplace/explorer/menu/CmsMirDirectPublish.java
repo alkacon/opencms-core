@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirDirectPublish.java,v $
- * Date   : $Date: 2007/09/06 08:19:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/10 08:46:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6
  */
@@ -76,12 +76,12 @@ public class CmsMirDirectPublish extends A_CmsMenuItemRule {
                         // resource is a folder or not unchanged
                         CmsResource parent = cms.readFolder(CmsResource.getParentFolder(cms.getSitePath(resourceUtil[0].getResource())));
                         if (parent.getState().isNew()) {
-                            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PUBLISH_PARENTFOLDER_0);
                         }
                         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
                     } else if (!resourceUtil[0].getResource().isFolder()
                         && resourceUtil[0].getResource().getState().isUnchanged()) {
-                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE;
+                        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PUBLISH_UNCHANGED_0);
                     }
                 }
             } catch (CmsException e) {

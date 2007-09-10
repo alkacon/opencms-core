@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/09/06 09:40:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/09/10 08:46:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -458,7 +459,12 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         // append parent IDs to keep open
                         menu.append(parentIds);
                         menu.append(");return true;\"");
-
+                        // append inactive cause message if given
+                        if (CmsStringUtil.isNotEmpty(mode.getMessageKey())) {
+                            menu.append(" title=\"");
+                            menu.append(getMessages().key(CmsEncoder.escapeXml(mode.getMessageKey())));
+                            menu.append("\"");
+                        }
                         menu.append(" class=\"ina\" href=\"javascript:var ocm=1;\">").append(itemName).append("</a>");
                         menu.append("</li>");
                         firstEntryWritten = true;
