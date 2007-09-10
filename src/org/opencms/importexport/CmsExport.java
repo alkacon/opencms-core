@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2007/09/10 13:09:29 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.88 $ 
+ * @version $Revision: 1.89 $ 
  * 
  * @since 6.0.0 
  */
@@ -967,7 +967,7 @@ public class CmsExport {
      * @param resource the resource to get the data from
      * @param source flag to show if the source information in the xml file must be written
      * @throws CmsImportExportException if something goes wrong
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws SAXException if something goes wrong processing the manifest.xml
      */
     private void appendResourceToManifest(CmsResource resource, boolean source)
     throws CmsImportExportException, SAXException {
@@ -1418,7 +1418,7 @@ public class CmsExport {
         // the "only modified in current project flag" is checked
         if (m_inProject) {
             // resource state is new or changed
-            if (res.getState() == CmsResource.STATE_CHANGED || res.getState() == CmsResource.STATE_NEW) {
+            if ((res.getState() == CmsResource.STATE_CHANGED) || (res.getState() == CmsResource.STATE_NEW)) {
                 // the resource belongs not to the curent project, so it must not be exported    
                 if (!res.getProjectLastModified().equals(m_cms.getRequestContext().currentProject().getUuid())) {
                     retValue = false;
