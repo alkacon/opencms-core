@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsTouch.java,v $
- * Date   : $Date: 2007/08/13 16:29:43 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2007/09/10 12:59:45 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,11 +76,17 @@ public class CmsTouch extends CmsMultiDialog {
     /** The dialog type. */
     public static final String DIALOG_TYPE = "touch";
 
+    /** Request parameter name for the content flag. */
+    public static final String PARAM_CONTENT = "content";
+
     /** Request parameter name for timestamp. */
     public static final String PARAM_NEWTIMESTAMP = "newtimestamp";
 
     /** Request parameter name for the recursive flag. */
     public static final String PARAM_RECURSIVE = "recursive";
+
+    /** Content parameter. */
+    private String m_paramContent;
 
     /** Timestamp parameter. */
     private String m_paramNewtimestamp;
@@ -129,6 +136,24 @@ public class CmsTouch extends CmsMultiDialog {
         } catch (Throwable e) {
             includeErrorpage(this, e);
         }
+    }
+
+    /**
+     * Creates the "rewrite content" checkbox.<p>
+     *  
+     * @return the String with the checkbox input field
+     */
+    public String buildCheckContent() {
+
+        StringBuffer retValue = new StringBuffer(256);
+
+        retValue.append("<tr>\n\t<td colspan=\"3\" style=\"white-space: nowrap;\" unselectable=\"on\">");
+        retValue.append("<input type=\"checkbox\" name=\"");
+        retValue.append(PARAM_CONTENT);
+        retValue.append("\" value=\"true\">&nbsp;");
+        retValue.append(key(Messages.GUI_TOUCH_MODIFY_CONTENT_0));
+        retValue.append("</td>\n</tr>\n");
+        return retValue.toString();
     }
 
     /**
@@ -213,6 +238,19 @@ public class CmsTouch extends CmsMultiDialog {
     }
 
     /**
+     * Returns the value of the content parameter, 
+     * or null if this parameter was not provided.<p>
+     * 
+     * The content parameter on files decides if also the content is rewritten.<p>
+     * 
+     * @return the value of the content parameter
+     */
+    public String getParamContent() {
+
+        return m_paramContent;
+    }
+
+    /**
      * Returns the value of the new timestamp parameter, 
      * or null if this parameter was not provided.<p>
      * 
@@ -237,6 +275,16 @@ public class CmsTouch extends CmsMultiDialog {
     public String getParamRecursive() {
 
         return m_paramRecursive;
+    }
+
+    /**
+     * Sets the value of the content parameter.<p>
+     * 
+     * @param value the value to set
+     */
+    public void setParamContent(String value) {
+
+        m_paramContent = value;
     }
 
     /**
@@ -329,13 +377,15 @@ public class CmsTouch extends CmsMultiDialog {
 
         // get the flag if the touch is recursive from request parameter
         boolean touchRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
+        // get the flag to the touch the content from request parameter
+        boolean touchContent = Boolean.valueOf(getParamContent()).booleanValue();
 
         // now touch the resource(s)
         Iterator i = getResourceList().iterator();
         while (i.hasNext()) {
             String resName = (String)i.next();
             try {
-                touchSingleResource(resName, timeStamp, touchRecursive, correctDate);
+                touchSingleResource(resName, timeStamp, touchRecursive, correctDate, touchContent);
             } catch (CmsException e) {
                 // collect exceptions to create a detailed output
                 addMultiOperationException(e);
@@ -353,10 +403,16 @@ public class CmsTouch extends CmsMultiDialog {
      * @param timeStamp the new time stamp
      * @param recursive the flag if the touch operation is recursive
      * @param correctDate the flag if the new time stamp is a correct date
+     * @param touchContent if the content has to be rewritten
+     * 
      * @throws CmsException if touching the resource fails
      */
-    protected void touchSingleResource(String resourceName, long timeStamp, boolean recursive, boolean correctDate)
-    throws CmsException {
+    protected void touchSingleResource(
+        String resourceName,
+        long timeStamp,
+        boolean recursive,
+        boolean correctDate,
+        boolean touchContent) throws CmsException {
 
         // lock resource if autolock is enabled
         checkLock(resourceName);
@@ -366,5 +422,33 @@ public class CmsTouch extends CmsMultiDialog {
             timeStamp = sourceRes.getDateLastModified();
         }
         getCms().setDateLastModified(resourceName, timeStamp, recursive);
+
+        if (touchContent) {
+            if (sourceRes.isFile()) {
+                hardTouch(sourceRes);
+            } else if (recursive) {
+                Iterator it = getCms().readResources(resourceName, CmsResourceFilter.ALL, true).iterator();
+                while (it.hasNext()) {
+                    CmsResource subRes = (CmsResource)it.next();
+                    if (subRes.isFile()) {
+                        hardTouch(subRes);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Rewrites the content of the given file.<p>
+     * 
+     * @param resource the resource to rewrite the content for
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void hardTouch(CmsResource resource) throws CmsException {
+
+        CmsFile file = getCms().readFile(resource);
+        file.setContents(file.getContents());
+        getCms().writeFile(file);
     }
 }

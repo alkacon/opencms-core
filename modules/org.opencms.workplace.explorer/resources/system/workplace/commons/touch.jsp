@@ -58,6 +58,7 @@ if (wp.isMultiOperation()) { //%>
 	<td>&nbsp;<img src="<%= CmsWorkplace.getSkinUri() %>buttons/calendar.png" id="triggercalendar" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
 </tr>
 <%= wp.buildCheckRecursive() %>
+<%= wp.buildCheckContent() %>
 </table>
 
 <%= wp.dialogContentEnd() %>
