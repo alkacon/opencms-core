@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/CmsTestLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2007/09/10 14:10:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/09/10 16:19:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHandler {
 
@@ -123,14 +123,12 @@ public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHa
         if (result != null) {
             // there was a replacement, so the system assumes this is a root path
             String siteRoot = OpenCms.getSiteManager().getSiteRoot(result);
-            if (siteRoot != null) {
-                // a site root was added, check if this is a news link
-                String path = result.substring(siteRoot.length());
-                String replace = replaceSystemUri(path);
-                if (!path.equals(replace)) {
-                    // this is a link to a news folder
-                    result = replace;
-                }
+            // in case a site root was appended, it must be removed
+            String path = (siteRoot != null) ? result.substring(siteRoot.length()) : result;
+            String replace = replaceSystemUri(path);
+            if (!path.equals(replace)) {
+                // this is a link to a news folder
+                result = replace;
             }
         }
         return result;
