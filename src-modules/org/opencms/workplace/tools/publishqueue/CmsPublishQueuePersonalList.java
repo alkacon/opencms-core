@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueuePersonalList.java,v $
- * Date   : $Date: 2007/09/06 12:23:21 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/09/10 15:24:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.5
  */
@@ -493,7 +493,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             }
             result.put(LIST_COLUMN_STATE, STATE_OK);
         }
-        if (result.get(LIST_COLUMN_STATE) == null) {
+        if ((reportBytes != null) && (result.get(LIST_COLUMN_STATE) == null)) {
             String report = new String(reportBytes);
             // see org.opencms.report.CmsHtmlReport#print(String, int)
             if (report.indexOf("<span class='err'>") > -1) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsExtractionResultCache.java,v $
- * Date   : $Date: 2007/08/13 16:29:40 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/10 15:24:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.2.0
  */
@@ -105,18 +105,20 @@ public class CmsExtractionResultCache {
         int count = 0;
         if (basedir.canRead() && basedir.isDirectory()) {
             File[] files = basedir.listFiles();
-            for (int i = 0; i < files.length; i++) {
-                File f = files[i];
-                if (f.canWrite()) {
-                    if (f.lastModified() < expireDate) {
-                        try {
-                            f.delete();
-                            count++;
-                        } catch (Exception e) {
-                            if (LOG.isWarnEnabled()) {
-                                LOG.warn(Messages.get().getBundle().key(
-                                    Messages.LOG_EXCERPT_CACHE_DELETE_ERROR_1,
-                                    f.getAbsolutePath()), e);
+            if (files != null) {
+                for (int i = 0; i < files.length; i++) {
+                    File f = files[i];
+                    if (f.canWrite()) {
+                        if (f.lastModified() < expireDate) {
+                            try {
+                                f.delete();
+                                count++;
+                            } catch (Exception e) {
+                                if (LOG.isWarnEnabled()) {
+                                    LOG.warn(Messages.get().getBundle().key(
+                                        Messages.LOG_EXCERPT_CACHE_DELETE_ERROR_1,
+                                        f.getAbsolutePath()), e);
+                                }
                             }
                         }
                     }
