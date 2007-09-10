@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishReport.java,v $
- * Date   : $Date: 2007/08/30 10:38:19 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/10 07:27:31 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.5 
  */
@@ -168,7 +168,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
         if (m_report != null) {
             return m_report.getErrors();
         }
-        return getErrors();
+        return super.getErrors();
     }
 
     /**
