@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2007/08/22 12:52:51 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2007/09/10 12:12:15 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 6.0.0
  */
@@ -356,7 +356,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the publish button appearance node. */
     public static final String N_PUBLISHBUTTONAPPEARANCE = "publishbuttonappearance";
 
-    /** The node name of the publish notifiaction node. */
+    /** The node name of the publish notification node. */
     public static final String N_PUBLISHNOTIFICATION = "publishnotification";
 
     /** The name of the "publish related resources" node. */
