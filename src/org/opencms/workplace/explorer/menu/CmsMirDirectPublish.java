@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirDirectPublish.java,v $
- * Date   : $Date: 2007/09/10 11:00:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/09/10 12:49:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.6
  */
@@ -61,6 +61,9 @@ public class CmsMirDirectPublish extends A_CmsMenuItemRule {
      */
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
+        if (!resourceUtil[0].isInsideProject()) {
+            CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PUBLISH_OTHERPROJECT_0);
+        }
         CmsLock lock = resourceUtil[0].getLock();
         if (lock.isNullLock()
             || (lock.isExclusiveOwnedInProjectBy(
@@ -91,7 +94,7 @@ public class CmsMirDirectPublish extends A_CmsMenuItemRule {
             }
         }
 
-        return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
+        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PUBLISH_NOT_LOCKED_0);
     }
 
     /**
@@ -99,8 +102,7 @@ public class CmsMirDirectPublish extends A_CmsMenuItemRule {
      */
     public boolean matches(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
-        // rule does match if resource is part of the current project
-        return resourceUtil[0].isInsideProject();
+        return true;
     }
 
 }
