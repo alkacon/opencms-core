@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2007/08/13 16:29:49 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/09/10 13:11:03 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,16 +163,16 @@ public class CmsAccessControlEntry {
     };
 
     /** The used name for ace's that apply to all other principals. */
-    public static final String PRINCIPAL_ALL_OTHERS_NAME = "all_others";
+    public static final String PRINCIPAL_ALL_OTHERS_NAME = "ALL_OTHERS";
 
     /** The used id for ace's that apply to all other principals. */
-    public static final CmsUUID PRINCIPAL_ALL_OTHERS_ID = CmsUUID.getConstantUUID(PRINCIPAL_ALL_OTHERS_NAME);
+    public static final CmsUUID PRINCIPAL_ALL_OTHERS_ID = CmsUUID.getConstantUUID(PRINCIPAL_ALL_OTHERS_NAME.toLowerCase());
 
     /** The used name for ace's that overwrites all inherited permissions. */
-    public static final String PRINCIPAL_OVERWRITE_ALL_NAME = "overwrite_all";
+    public static final String PRINCIPAL_OVERWRITE_ALL_NAME = "OVERWRITE_ALL";
 
     /** The used id for ace's that overwrites all inherited permissions. */
-    public static final CmsUUID PRINCIPAL_OVERWRITE_ALL_ID = CmsUUID.getConstantUUID(PRINCIPAL_OVERWRITE_ALL_NAME);
+    public static final CmsUUID PRINCIPAL_OVERWRITE_ALL_ID = CmsUUID.getConstantUUID(PRINCIPAL_OVERWRITE_ALL_NAME.toLowerCase());
 
     /** Flags of this access control entry. */
     private int m_flags;

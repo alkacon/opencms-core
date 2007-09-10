@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPrincipalSelectionList.java,v $
- * Date   : $Date: 2007/08/13 16:29:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/10 13:11:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -307,9 +307,9 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             }
         } catch (CmsException e) {
             if (item.get(LIST_COLUMN_DISPLAY).equals(key(Messages.GUI_LABEL_OVERWRITEALL_0))) {
-                return "commons/" + CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME + ".png";
+                return "commons/" + CmsAccessControlEntry.PRINCIPAL_OVERWRITE_ALL_NAME.toLowerCase() + ".png";
             } else if (item.get(LIST_COLUMN_DISPLAY).equals(key(Messages.GUI_LABEL_ALLOTHERS_0))) {
-                return "commons/" + CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME + ".png";
+                return "commons/" + CmsAccessControlEntry.PRINCIPAL_ALL_OTHERS_NAME.toLowerCase() + ".png";
             } else if (showingUsers) {
                 return PATH_BUTTONS + "user.png";
             } else {
