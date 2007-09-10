@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsLinkManager.java,v $
- * Date   : $Date: 2007/09/10 13:16:55 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/09/10 14:10:45 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -44,7 +46,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -75,6 +77,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         suite.addTest(new TestCmsLinkManager("testToAbsolute"));
         suite.addTest(new TestCmsLinkManager("testLinkSubstitution"));
         suite.addTest(new TestCmsLinkManager("testSymmetricSubstitution"));
+        suite.addTest(new TestCmsLinkManager("testCustomLinkHandler"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -134,6 +137,38 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         // read the resource to make sure we certainly use an existing root path
         CmsResource res = cms.readResource("/xmlcontent/article_0001.html");
         CmsLinkManager lm = OpenCms.getLinkManager();
+
+        // first try: no server info
+        String link = lm.substituteLinkForRootPath(cms, res.getRootPath());
+        String rootPath = lm.getRootPath(cms, link);
+        assertEquals(res.getRootPath(), rootPath);
+
+        // second try: with server and protocol
+        link = lm.getServerLink(cms, res.getRootPath());
+        rootPath = lm.getRootPath(cms, link);
+        assertEquals(res.getRootPath(), rootPath);
+    }
+
+    /**
+     * Tests symmetric link / root path substitution with a custom link handler.<p>
+     * 
+     * @throws Exception if test fails
+     */
+    public void testCustomLinkHandler() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing symmetric link / root path substitution with a custom link handler");
+
+        CmsLinkManager lm = OpenCms.getLinkManager();
+        I_CmsLinkSubstitutionHandler lh = new CmsTestLinkSubstitutionHandler();
+        lm.setLinkSubstitutionHandler(cms, lh);
+
+        // create required special "/system/news/" folder with a resource
+        cms.createResource("/system/news", CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource("/system/news/text.txt", CmsResourceTypePlain.getStaticTypeId());
+        OpenCms.getPublishManager().publishResource(cms, "/system/news");
+
+        CmsResource res = cms.readResource("/system/news/text.txt");
 
         // first try: no server info
         String link = lm.substituteLinkForRootPath(cms, res.getRootPath());

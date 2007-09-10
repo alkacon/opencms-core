@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/09/10 13:16:55 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2007/09/10 14:10:45 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsExternalLinksValidationResult;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.site.CmsSite;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -57,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.73 $ 
+ * @version $Revision: 1.74 $ 
  * 
  * @since 6.0.0 
  */
@@ -399,6 +401,21 @@ public class CmsLinkManager {
     }
 
     /**
+     * Sets the internal link substitution handler.<p>
+     * 
+     * @param cms an OpenCms user context that must have the permissions for role {@link CmsRole#ROOT_ADMIN}.<p>
+     * @param linkSubstitutionHandler the handler to set
+     * 
+     * @throws CmsRoleViolationException in case the provided OpenCms user context does not have the required permissions
+     */
+    public void setLinkSubstitutionHandler(CmsObject cms, I_CmsLinkSubstitutionHandler linkSubstitutionHandler)
+    throws CmsRoleViolationException {
+
+        OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
+        m_linkSubstitutionHandler = linkSubstitutionHandler;
+    }
+
+    /**
      * Sets the result of an external link validation.<p>
      * 
      * @param externLinkValidationResult the result an external link validation
@@ -562,7 +579,13 @@ public class CmsLinkManager {
             // this will also be the case if a "/system" link is used
             siteRoot = cms.getRequestContext().getSiteRoot();
         }
-        String sitePath = rootPath.substring(siteRoot.length());
+        String sitePath;
+        if (rootPath.startsWith(siteRoot)) {
+            // only cut the site root if the root part really has this prefix
+            sitePath = rootPath.substring(siteRoot.length());
+        } else {
+            sitePath = rootPath;
+        }
         return substituteLink(cms, sitePath, siteRoot, false);
     }
 
