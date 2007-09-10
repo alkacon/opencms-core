@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2007/08/13 16:29:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/10 10:11:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -826,7 +826,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
 
         // Publishing just file7 after creating a new file8 and creating a link 
         // from file7 to file8 must generate one error
-        CmsResource res8 = cms.createResource(filename8, CmsResourceTypeXmlPage.getStaticTypeId());
+        CmsResource res8 = cms.createResource(filename8, type);
         switch (mode) {
             case 1:
                 setXmlContent(cms, filename7, "<a href='" + filename8 + "'>file8</a>", filename8);
@@ -866,6 +866,64 @@ public class TestLinkValidation extends OpenCmsTestCase {
             OpenCms.getPublishManager().getPublishList(cms, res78, false),
             report);
         assertTrue(validation.isEmpty());
+
+        // Linking file8 to file7
+        switch (mode) {
+            case 1:
+                setXmlContent(cms, filename8, "<a href='" + filename7 + "'>file7</a>", filename7);
+                break;
+            case 2:
+                setXmlContentHtml(cms, filename8, "<a href='" + filename7 + "'>file7</a>");
+                break;
+            case 3:
+                setXmlContentFileRef(cms, filename8, filename7, null);
+                break;
+            default:
+                setContent(cms, filename8, "<a href='" + filename7 + "'>file7</a>");
+                break;
+
+        }
+        // first publish
+        OpenCms.getPublishManager().publishResource(cms, filename7);
+        OpenCms.getPublishManager().publishResource(cms, filename8);
+        OpenCms.getPublishManager().waitWhileRunning();
+        // now check the link validation if you want to delete one of them
+        cms.lockResource(filename7);
+        cms.deleteResource(filename7, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(
+                cms,
+                Collections.singletonList(cms.readResource(filename7, CmsResourceFilter.ALL)),
+                false),
+            report);
+
+        assertEquals(validation.size(), 1);
+        assertTrue(validation.keySet().contains(cms.getRequestContext().addSiteRoot(filename7)));
+        brokenLinks = (List)validation.get(cms.getRequestContext().addSiteRoot(filename7));
+        assertEquals(brokenLinks.size(), (mode == MODE_XMLCONTENT_BOTH ? 2 : 1));
+        assertTrue(brokenLinks.contains(new CmsRelation(res8, res7, relType1)));
+        if (mode == MODE_XMLCONTENT_BOTH) {
+            assertTrue(brokenLinks.contains(new CmsRelation(res8, res7, CmsRelationType.XML_WEAK)));
+        }
+
+        // then check the link if you want to delete them together
+        cms.lockResource(filename8);
+        cms.deleteResource(filename8, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+
+        res78 = new ArrayList();
+        res78.add(cms.readResource(filename7, CmsResourceFilter.ALL));
+        res78.add(cms.readResource(filename8, CmsResourceFilter.ALL));
+        validation = OpenCms.getPublishManager().validateRelations(
+            cms,
+            OpenCms.getPublishManager().getPublishList(cms, res78, false),
+            report);
+
+        assertTrue(validation.isEmpty());
+
     }
 
     /**

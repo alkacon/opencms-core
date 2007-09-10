@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/10 10:11:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.3.0 
  */
@@ -357,8 +357,15 @@ public class CmsRelationSystemValidator {
                             true);
                     }
                 } else {
-                    // since we are going to delete the resource the link is always not valid
+                    // since we are going to delete the resource
+                    // check if the linked resource is also to be deleted
                     isValidLink = false;
+                    if (fileLookup.containsKey(link)) {
+                        CmsResource offlineResource = (CmsResource)fileLookup.get(link);
+                        if (offlineResource.getState().isDeleted()) {
+                            isValidLink = true;
+                        }
+                    }
                 }
             } catch (CmsException e) {
                 // ... or if the linked resource is a resource that gets actually published
@@ -378,7 +385,7 @@ public class CmsRelationSystemValidator {
                 }
             } finally {
                 // ... and if the linked resource to be published get deleted
-                if (fileLookup.containsKey(link)) {
+                if (!resource.getState().isDeleted() && fileLookup.containsKey(link)) {
                     CmsResource offlineResource = (CmsResource)fileLookup.get(link);
                     if (offlineResource.getState().isDeleted()) {
                         if (LOG.isDebugEnabled()) {
