@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2007/08/31 16:08:14 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/09/10 13:16:55 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,8 +37,11 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
+import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+
+import java.net.URI;
 
 import org.apache.commons.logging.Log;
 
@@ -47,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  * 
@@ -60,9 +63,9 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
     private static final Log LOG = CmsLog.getLog(CmsDefaultLinkSubstitutionHandler.class);
 
     /**
-     * @see org.opencms.staticexport.I_CmsLinkSubstitutionHandler#substituteLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
+     * @see org.opencms.staticexport.I_CmsLinkSubstitutionHandler#getLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
-    public String substituteLink(CmsObject cms, String link, String siteRoot, boolean forceSecure) {
+    public String getLink(CmsObject cms, String link, String siteRoot, boolean forceSecure) {
 
         if (CmsStringUtil.isEmpty(link)) {
             // not a valid link parameter, return an empty String
@@ -227,5 +230,144 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         }
         return serverPrefix.concat(resultLink);
+    }
+
+    /**
+     * @see org.opencms.staticexport.I_CmsLinkSubstitutionHandler#getRootPath(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
+     */
+    public String getRootPath(CmsObject cms, String targetUri, String basePath) {
+
+        if (cms == null) {
+            // required by unit test cases
+            return targetUri;
+        }
+
+        URI uri;
+        String path;
+        String fragment;
+        String query;
+        String suffix;
+
+        // malformed uri
+        try {
+            uri = new URI(targetUri);
+            path = uri.getPath();
+
+            fragment = uri.getFragment();
+            if (fragment != null) {
+                fragment = "#" + fragment;
+            } else {
+                fragment = "";
+            }
+
+            query = uri.getQuery();
+            if (query != null) {
+                query = "?" + query;
+            } else {
+                query = "";
+            }
+        } catch (Exception e) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_MALFORMED_URI_1, targetUri), e);
+            }
+            return null;
+        }
+
+        // concatenate fragment and query 
+        suffix = fragment.concat(query);
+
+        // opaque URI
+        if (uri.isOpaque()) {
+            return null;
+        }
+
+        // absolute URI (i.e. URI has a scheme component like http:// ...)
+        if (uri.isAbsolute()) {
+            CmsSiteMatcher matcher = new CmsSiteMatcher(targetUri);
+            if (OpenCms.getSiteManager().isMatching(matcher)) {
+                if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                    path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                }
+                if (OpenCms.getSiteManager().isWorkplaceRequest(matcher)) {
+                    // workplace URL, use current site root
+                    // this is required since the workplace site does not have a site root to set 
+                    return cms.getRequestContext().addSiteRoot(path + suffix);
+                } else {
+                    // add the site root of the matching site
+                    return cms.getRequestContext().addSiteRoot(
+                        OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(),
+                        path + suffix);
+                }
+            } else {
+                return null;
+            }
+        }
+
+        // relative URI (i.e. no scheme component, but filename can still start with "/") 
+        String context = OpenCms.getSystemInfo().getOpenCmsContext();
+        if ((context != null) && path.startsWith(context)) {
+            // URI is starting with opencms context
+            String siteRoot = null;
+            if (basePath != null) {
+                siteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
+            }
+
+            // cut context from path
+            path = path.substring(context.length());
+
+            if (siteRoot != null) {
+                // special case: relative path contains a site root, i.e. we are in the root site                
+                if (!path.startsWith(siteRoot)) {
+                    // path does not already start with the site root, we have to add this path as site prefix
+                    return cms.getRequestContext().addSiteRoot(siteRoot, path + suffix);
+                } else {
+                    // since path already contains the site root, we just leave it unchanged
+                    return path + suffix;
+                }
+            } else {
+                // site root is added with standard mechanism
+                return cms.getRequestContext().addSiteRoot(path + suffix);
+            }
+        }
+
+        // URI with relative path is relative to the given relativePath if available and in a site, 
+        // otherwise invalid
+        if (CmsStringUtil.isNotEmpty(path) && (path.charAt(0) != '/')) {
+            if (basePath != null) {
+                String absolutePath;
+                int pos = path.indexOf("../../galleries/pics/");
+                if (pos >= 0) {
+                    // HACK: mixed up editor path to system gallery image folder
+                    return CmsWorkplace.VFS_PATH_SYSTEM + path.substring(pos + 6) + suffix;
+                }
+                absolutePath = CmsLinkManager.getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(basePath));
+                if (OpenCms.getSiteManager().getSiteRoot(absolutePath) != null) {
+                    return absolutePath + suffix;
+                }
+                // HACK: some editor components (e.g. HtmlArea) mix up the editor URL with the current request URL 
+                absolutePath = CmsLinkManager.getAbsoluteUri(path, cms.getRequestContext().getSiteRoot()
+                    + CmsWorkplace.VFS_PATH_EDITORS);
+                if (OpenCms.getSiteManager().getSiteRoot(absolutePath) != null) {
+                    return absolutePath + suffix;
+                }
+                // HACK: same as above, but XmlContent editor has one path element more
+                absolutePath = CmsLinkManager.getAbsoluteUri(path, cms.getRequestContext().getSiteRoot()
+                    + CmsWorkplace.VFS_PATH_EDITORS
+                    + "xmlcontent/");
+                if (OpenCms.getSiteManager().getSiteRoot(absolutePath) != null) {
+                    return absolutePath + suffix;
+                }
+            }
+
+            return null;
+        }
+
+        // relative URI (= VFS path relative to currently selected site root)
+        if (CmsStringUtil.isNotEmpty(path)) {
+            return cms.getRequestContext().addSiteRoot(path) + suffix;
+        }
+
+        // URI without path (typically local link)
+        return suffix;
     }
 }

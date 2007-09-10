@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/I_CmsLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/09/10 13:16:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.opencms.file.CmsObject;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.2
  * 
@@ -91,5 +91,44 @@ public interface I_CmsLinkSubstitutionHandler {
      * @return a link <i>from</i> the URI stored in the provided OpenCms user context
      *      <i>to</i> the VFS resource indicated by the given <code>link</code> and <code>siteRoot</code>
      */
-    String substituteLink(CmsObject cms, String link, String siteRoot, boolean forceSecure);
+    String getLink(CmsObject cms, String link, String siteRoot, boolean forceSecure);
+
+    /**
+     * Returns the resource root path for the given target URI in the OpenCms VFS, or <code>null</code> in
+     * case the target URI points to an external site.<p>
+     * 
+     * If the target URI contains no site information, but starts with the opencms context, the context is removed:<pre>
+     * /opencms/opencms/system/further_path -> /system/further_path</pre><p>
+     * 
+     * If the target URI contains no site information, the path will be prefixed with the current site
+     * from the provided OpenCms user context:<pre>
+     * /folder/page.html -> /sites/mysite/folder/page.html</pre><p>
+     *  
+     * If the path of the target URI is relative, i.e. does not start with "/", 
+     * the path will be prefixed with the current site and the given relative path,
+     * then normalized.
+     * If no relative path is given, <code>null</code> is returned.
+     * If the normalized path is outsite a site, null is returned.<pre>
+     * page.html -> /sites/mysite/page.html
+     * ../page.html -> /sites/mysite/page.html
+     * ../../page.html -> null</pre><p>
+     * 
+     * If the target URI contains a scheme/server name that denotes an opencms site, 
+     * it is replaced by the appropriate site path:<pre>
+     * http://www.mysite.de/folder/page.html -> /sites/mysite/folder/page.html</pre><p>
+     * 
+     * If the target URI contains a scheme/server name that does not match with any site, 
+     * or if the URI is opaque or invalid,
+     * <code>null</code> is returned:<pre>
+     * http://www.elsewhere.com/page.html -> null
+     * mailto:someone@elsewhere.com -> null</pre><p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param targetUri the target URI
+     * @param basePath path to use as base site for the target URI (can be <code>null</code>)
+     * 
+     * @return the resource root path for the given target URI in the OpenCms VFS, or <code>null</code> in
+     *      case the target URI points to an external site
+     */
+    String getRootPath(CmsObject cms, String targetUri, String basePath);
 }

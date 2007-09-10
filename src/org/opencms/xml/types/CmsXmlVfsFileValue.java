@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/09/10 13:16:55 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsLinkUpdateUtil;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
@@ -55,7 +54,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 7.0.0 
  */
@@ -235,8 +234,8 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
                 }
                 // remove the site root, because the next call will append it anyway
                 path = cms.getRequestContext().removeSiteRoot(value);
-                // get the site path
-                path = CmsLinkManager.getSitePath(cms, null, path);
+                // get the root path
+                path = OpenCms.getLinkManager().getRootPath(cms, path);
                 if (path == null) {
                     path = value;
                 }

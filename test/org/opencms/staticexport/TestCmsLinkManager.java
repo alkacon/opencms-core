@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsLinkManager.java,v $
- * Date   : $Date: 2007/08/13 16:30:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/09/10 13:16:55 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -43,7 +44,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -73,6 +74,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
         suite.addTest(new TestCmsLinkManager("testToAbsolute"));
         suite.addTest(new TestCmsLinkManager("testLinkSubstitution"));
+        suite.addTest(new TestCmsLinkManager("testSymmetricSubstitution"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -90,7 +92,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
         return wrapper;
     }
-    
+
     /**
      * Tests the method getAbsoluteUri.<p>
      */
@@ -118,7 +120,32 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         System.out.println(test);
         assertEquals(test, "/dirA/index.html");
     }
-    
+
+    /**
+     * Tests symmetric link / root path substitution.<p>
+     * 
+     * @throws Exception if test fails
+     */
+    public void testSymmetricSubstitution() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing symmetric link / root path substitution substitution");
+
+        // read the resource to make sure we certainly use an existing root path
+        CmsResource res = cms.readResource("/xmlcontent/article_0001.html");
+        CmsLinkManager lm = OpenCms.getLinkManager();
+
+        // first try: no server info
+        String link = lm.substituteLinkForRootPath(cms, res.getRootPath());
+        String rootPath = lm.getRootPath(cms, link);
+        assertEquals(res.getRootPath(), rootPath);
+
+        // second try: with server and protocol
+        link = lm.getServerLink(cms, res.getRootPath());
+        rootPath = lm.getRootPath(cms, link);
+        assertEquals(res.getRootPath(), rootPath);
+    }
+
     /**
      * Tests the link substitution.<p>
      * 
@@ -150,25 +177,25 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
             "/sites/default");
         System.out.println(test);
         assertEquals("/data/opencms/folder1/", test);
-                
+
         test = CmsLinkManager.getRelativeUri("/index.html", "/index.html");
         System.out.println(test);
         assertEquals("index.html", test);
-        
+
         test = CmsLinkManager.getRelativeUri("/folder1/index.html", "/folder1/");
         System.out.println(test);
         assertEquals("./", test);
-        
+
         test = CmsLinkManager.getRelativeUri("/index.html", "/");
         System.out.println(test);
         assertEquals("./", test);
-        
+
         test = CmsLinkManager.getRelativeUri("/index.html", "./");
         System.out.println(test);
         assertEquals("./", test);
-        
+
         test = CmsLinkManager.getRelativeUri("/", "/");
         System.out.println(test);
-        assertEquals("./", test);        
+        assertEquals("./", test);
     }
 }

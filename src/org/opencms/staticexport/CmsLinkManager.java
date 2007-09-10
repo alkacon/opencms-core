@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/09/06 11:50:23 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2007/09/10 13:16:55 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,13 +41,10 @@ import org.opencms.main.CmsPermalinkResourceHandler;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsExternalLinksValidationResult;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 
 import org.apache.commons.logging.Log;
@@ -60,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.72 $ 
+ * @version $Revision: 1.73 $ 
  * 
  * @since 6.0.0 
  */
@@ -176,174 +173,22 @@ public class CmsLinkManager {
     }
 
     /**
-     * Returns the site path for the given target URI.<p>
-     * 
-     * If the URI contains no site information, but starts with the opencms context, the context is removed.<p>
-     * <pre>/opencms/opencms/system/further_path -> /system/further_path</pre>
-     * 
-     * If the URI contains no site information, the path will be prefixed with the current site
-     * (if mysite is the site currently selected in the workplace or in the request).<p>
-     * <pre>/folder/page.html -> /sites/mysite/folder/page.html</pre>
-     *  
-     * If the path of the URI is relative, i.e. does not start with "/", 
-     * the path will be prefixed with the current site and the given relative path,
-     * then normalized.
-     * If no relative path is given, <code>null</code> is returned.
-     * If the normalized path is outsite a site, null is returned.<p>
-     * <pre>page.html -> /sites/mysite/{relativePath}/page.html
-     * ../page.html -> /sites/mysite/page.html
-     * ../../page.html -> null</pre>
-     * 
-     * If the URI contains a scheme/server name that denotes an opencms site, 
-     * it is replaced by the appropriate site path.<p>
-     * <pre>http://www.mysite.de/folder/page.html -> /sites/mysite/folder/page.html</pre>
-     * 
-     * If the URI contains a scheme/server name that does not match with any site, 
-     * or if the URI is opaque or invalid,
-     * <code>null</code> is returned.<p>
-     * <pre>http://www.elsewhere.com/page.html -> null
-     * mailto:someone@elsewhere.com -> null</pre>
+     * Returns the resource root path for the given target URI in the OpenCms VFS, or <code>null</code> in
+     * case the target URI points to an external site.<p>
      * 
      * @param cms the current users OpenCms context
      * @param basePath path to use as base site for the target URI (can be <code>null</code>)
      * @param targetUri the target URI
      * 
-     * @return the root path for the target URI or null
+     * @return the resource root path for the given target URI in the OpenCms VFS, or <code>null</code> in
+     *      case the target URI points to an external site
+     *      
+     * @deprecated use {@link #getRootPath(CmsObject, String, String)} instead, obtain the link manager 
+     *      with {@link OpenCms#getLinkManager()}
      */
     public static String getSitePath(CmsObject cms, String basePath, String targetUri) {
 
-        if (cms == null) {
-            // required by unit test cases
-            return targetUri;
-        }
-
-        URI uri;
-        String path;
-        String fragment;
-        String query;
-        String suffix;
-
-        // malformed uri
-        try {
-            uri = new URI(targetUri);
-            path = uri.getPath();
-
-            fragment = uri.getFragment();
-            if (fragment != null) {
-                fragment = "#" + fragment;
-            } else {
-                fragment = "";
-            }
-
-            query = uri.getQuery();
-            if (query != null) {
-                query = "?" + query;
-            } else {
-                query = "";
-            }
-        } catch (Exception e) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(Messages.LOG_MALFORMED_URI_1, targetUri), e);
-            }
-            return null;
-        }
-
-        // concatenate fragment and query 
-        suffix = fragment.concat(query);
-
-        // opaque URI
-        if (uri.isOpaque()) {
-            return null;
-        }
-
-        // absolute URI (i.e. URI has a scheme component like http:// ...)
-        if (uri.isAbsolute()) {
-            CmsSiteMatcher matcher = new CmsSiteMatcher(targetUri);
-            if (OpenCms.getSiteManager().isMatching(matcher)) {
-                if (path.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-                    path = path.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                }
-                if (OpenCms.getSiteManager().isWorkplaceRequest(matcher)) {
-                    // workplace URL, use current site root
-                    // this is required since the workplace site does not have a site root to set 
-                    return cms.getRequestContext().addSiteRoot(path + suffix);
-                } else {
-                    // add the site root of the matching site
-                    return cms.getRequestContext().addSiteRoot(
-                        OpenCms.getSiteManager().matchSite(matcher).getSiteRoot(),
-                        path + suffix);
-                }
-            } else {
-                return null;
-            }
-        }
-
-        // relative URI (i.e. no scheme component, but filename can still start with "/") 
-        String context = OpenCms.getSystemInfo().getOpenCmsContext();
-        if ((context != null) && path.startsWith(context)) {
-            // URI is starting with opencms context
-            String siteRoot = null;
-            if (basePath != null) {
-                siteRoot = OpenCms.getSiteManager().getSiteRoot(basePath);
-            }
-
-            // cut context from path
-            path = path.substring(context.length());
-
-            if (siteRoot != null) {
-                // special case: relative path contains a site root, i.e. we are in the root site                
-                if (!path.startsWith(siteRoot)) {
-                    // path does not already start with the site root, we have to add this path as site prefix
-                    return cms.getRequestContext().addSiteRoot(siteRoot, path + suffix);
-                } else {
-                    // since path already contains the site root, we just leave it unchanged
-                    return path + suffix;
-                }
-            } else {
-                // site root is added with standard mechanism
-                return cms.getRequestContext().addSiteRoot(path + suffix);
-            }
-        }
-
-        // URI with relative path is relative to the given relativePath if available and in a site, 
-        // otherwise invalid
-        if (CmsStringUtil.isNotEmpty(path) && (path.charAt(0) != '/')) {
-            if (basePath != null) {
-                String absolutePath;
-                int pos = path.indexOf("../../galleries/pics/");
-                if (pos >= 0) {
-                    // HACK: mixed up editor path to system gallery image folder
-                    return CmsWorkplace.VFS_PATH_SYSTEM + path.substring(pos + 6) + suffix;
-                }
-                absolutePath = getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(basePath));
-                if (OpenCms.getSiteManager().getSiteRoot(absolutePath) != null) {
-                    return absolutePath + suffix;
-                }
-                // HACK: some editor components (e.g. HtmlArea) mix up the editor URL with the current request URL 
-                absolutePath = getAbsoluteUri(path, cms.getRequestContext().getSiteRoot()
-                    + CmsWorkplace.VFS_PATH_EDITORS);
-                if (OpenCms.getSiteManager().getSiteRoot(absolutePath) != null) {
-                    return absolutePath + suffix;
-                }
-                // HACK: same as above, but XmlContent editor has one path element more
-                absolutePath = getAbsoluteUri(path, cms.getRequestContext().getSiteRoot()
-                    + CmsWorkplace.VFS_PATH_EDITORS
-                    + "xmlcontent/");
-                if (OpenCms.getSiteManager().getSiteRoot(absolutePath) != null) {
-                    return absolutePath + suffix;
-                }
-            }
-
-            return null;
-        }
-
-        // relative URI (= VFS path relative to currently selected site root)
-        if (CmsStringUtil.isNotEmpty(path)) {
-            return cms.getRequestContext().addSiteRoot(path) + suffix;
-        }
-
-        // URI without path (typically local link)
-        return suffix;
+        return OpenCms.getLinkManager().getRootPath(cms, targetUri, basePath);
     }
 
     /**
@@ -466,6 +311,70 @@ public class CmsLinkManager {
     public CmsExternalLinksValidationResult getPointerLinkValidationResult() {
 
         return m_pointerLinkValidationResult;
+    }
+
+    /**
+     * Returns the resource root path for the given target URI in the OpenCms VFS, or <code>null</code> in
+     * case the target URI points to an external site.<p>
+     * 
+     * See {@link #getRootPath(CmsObject, String)} for a full explanation.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param targetUri the target URI
+     * 
+     * @return the resource root path for the given target URI in the OpenCms VFS, or <code>null</code> in
+     *      case the target URI points to an external site
+     *      
+     * @see #getRootPath(CmsObject, String, String)     
+     *      
+     * @since 7.0.2
+     */
+    public String getRootPath(CmsObject cms, String targetUri) {
+
+        return getRootPath(cms, targetUri, null);
+    }
+
+    /**
+     * Returns the resource root path for the given target URI in the OpenCms VFS, or <code>null</code> in
+     * case the target URI points to an external site.<p>
+     * 
+     * If the target URI contains no site information, but starts with the opencms context, the context is removed:<pre>
+     * /opencms/opencms/system/further_path -> /system/further_path</pre><p>
+     * 
+     * If the target URI contains no site information, the path will be prefixed with the current site
+     * from the provided OpenCms user context:<pre>
+     * /folder/page.html -> /sites/mysite/folder/page.html</pre><p>
+     *  
+     * If the path of the target URI is relative, i.e. does not start with "/", 
+     * the path will be prefixed with the current site and the given relative path,
+     * then normalized.
+     * If no relative path is given, <code>null</code> is returned.
+     * If the normalized path is outsite a site, null is returned.<pre>
+     * page.html -> /sites/mysite/page.html
+     * ../page.html -> /sites/mysite/page.html
+     * ../../page.html -> null</pre><p>
+     * 
+     * If the target URI contains a scheme/server name that denotes an opencms site, 
+     * it is replaced by the appropriate site path:<pre>
+     * http://www.mysite.de/folder/page.html -> /sites/mysite/folder/page.html</pre><p>
+     * 
+     * If the target URI contains a scheme/server name that does not match with any site, 
+     * or if the URI is opaque or invalid,
+     * <code>null</code> is returned:<pre>
+     * http://www.elsewhere.com/page.html -> null
+     * mailto:someone@elsewhere.com -> null</pre><p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param targetUri the target URI
+     * @param basePath path to use as base site for the target URI (can be <code>null</code>)
+     * @return the resource root path for the given target URI in the OpenCms VFS, or <code>null</code> in
+     *      case the target URI points to an external site
+     *      
+     * @since 7.0.2
+     */
+    public String getRootPath(CmsObject cms, String targetUri, String basePath) {
+
+        return m_linkSubstitutionHandler.getRootPath(cms, targetUri, basePath);
     }
 
     /**
@@ -625,7 +534,7 @@ public class CmsLinkManager {
      */
     public String substituteLink(CmsObject cms, String link, String siteRoot, boolean forceSecure) {
 
-        return m_linkSubstitutionHandler.substituteLink(cms, link, siteRoot, forceSecure);
+        return m_linkSubstitutionHandler.getLink(cms, link, siteRoot, forceSecure);
     }
 
     /**
@@ -687,7 +596,7 @@ public class CmsLinkManager {
         if (hasScheme(link)) {
             // the link has a scheme, that is starts with something like "http://"
             // usually this should be a link to an external resource, but check anyway
-            sitePath = getSitePath(cms, null, link);
+            sitePath = getRootPath(cms, link);
             if (sitePath == null) {
                 // probably an external link, don't touch this
                 return link;
