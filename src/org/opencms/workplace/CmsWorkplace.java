@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.165 $
+ * Date   : $Date: 2007/09/10 08:35:58 $
+ * Version: $Revision: 1.166 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.165 $ 
+ * @version $Revision: 1.166 $ 
  * 
  * @since 6.0.0 
  */
@@ -1084,7 +1084,7 @@ public abstract class CmsWorkplace {
     public void fillParamValues(HttpServletRequest request) {
 
         m_parameterMap = null;
-        // ensure a multipart request is pared only once (for "forward" screnarios with reports)
+        // ensure a multipart request is parsed only once (for "forward" scenarios with reports)
         if (null == request.getAttribute(REQUEST_ATTRIBUTE_MULTIPART)) {
             // check if this is a multipart request 
             m_multiPartFileItems = CmsRequestUtil.readMultipartFileItems(request);
@@ -1115,6 +1115,10 @@ public abstract class CmsWorkplace {
             if (CmsStringUtil.isEmpty(value)) {
                 value = null;
             }
+
+            // TODO: this is very dangerous since most of the dialogs does not send encoded data
+            // and by decoding not encoded data the data will get corrupted, for instance '1+2' will become '1 2'.
+            // we should ensure that we decode the data only if the data has been encoded
             value = decodeParamValue(name, value);
             try {
                 if (LOG.isDebugEnabled() && (value != null)) {

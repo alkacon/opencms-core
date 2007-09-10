@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/09/10 08:35:58 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,7 +155,7 @@ public class CmsChnav extends CmsDialog {
         if (maxValue != 0) {
             firstValue = maxValue / 2;
         }
-        
+
         List options = new ArrayList(navList.size() + 1);
         List values = new ArrayList(navList.size() + 1);
 
@@ -237,7 +237,8 @@ public class CmsChnav extends CmsDialog {
 
         // get request parameters
         String filename = getParamResource();
-        String newText = getParamNavtext();
+        // do not use #getParamNavText since it is decoded, see CmsWorkplace#fillParamValues(HttpServletRequest)
+        String newText = getJsp().getRequest().getParameter(PARAM_NAVTEXT);
         String selectedPosString = getParamNavpos();
 
         try {
