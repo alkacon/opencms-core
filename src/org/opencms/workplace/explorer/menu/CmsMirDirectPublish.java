@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirDirectPublish.java,v $
- * Date   : $Date: 2007/09/10 12:49:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/09/10 13:34:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.5.6
  */
@@ -64,6 +64,7 @@ public class CmsMirDirectPublish extends A_CmsMenuItemRule {
         if (!resourceUtil[0].isInsideProject()) {
             CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PUBLISH_OTHERPROJECT_0);
         }
+
         CmsLock lock = resourceUtil[0].getLock();
         if (lock.isNullLock()
             || (lock.isExclusiveOwnedInProjectBy(
@@ -94,6 +95,9 @@ public class CmsMirDirectPublish extends A_CmsMenuItemRule {
             }
         }
 
+        if (lock.isInherited()) {
+            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PUBLISH_INHERITED_0);
+        }
         return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PUBLISH_NOT_LOCKED_0);
     }
 
