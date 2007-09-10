@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2007/08/23 10:12:14 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2007/09/10 11:48:20 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsDefaultPasswordHandler;
@@ -105,6 +106,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsImportExport.class.getName());
 
+        suite.addTest(new TestCmsImportExport("testImportMovedFolder2"));
+        suite.addTest(new TestCmsImportExport("testImportMovedFolder"));
         suite.addTest(new TestCmsImportExport("testSetup"));
         suite.addTest(new TestCmsImportExport("testUserImport"));
         suite.addTest(new TestCmsImportExport("testImportExportFolder"));
@@ -562,6 +565,211 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             OpenCms.getPublishManager().waitWhileRunning();
 
             assertFilter(cms, cms.readResource(filename), OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
+        } finally {
+            try {
+                if (zipExportFilename != null) {
+                    File file = new File(zipExportFilename);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+            } catch (Throwable t) {
+                // intentionally left blank
+            }
+        }
+    }
+
+    /**
+     * Tests the import of a folder that has been moved.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testImportMovedFolder() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing the import of a folder that has been moved.");
+        String filename = "newtestfile.html";
+        String foldername = "/folderToMove/";
+        String folder2 = "/movedFolder/";
+        String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/testImportExportMovedFolder.zip");
+
+        try {
+            cms.getRequestContext().setSiteRoot("/");
+            // create test file & folder
+            CmsResource folderBefore = cms.createResource(foldername, CmsResourceTypeFolder.getStaticTypeId());
+            cms.createResource(foldername + filename, CmsResourceTypePlain.getStaticTypeId());
+
+            // publish the folder
+            cms.unlockResource(foldername);
+            OpenCms.getPublishManager().publishResource(cms, foldername);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            storeResources(cms, foldername, true);
+
+            // export the folder
+            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+            vfsExportHandler.setFileName(zipExportFilename);
+            List exportPaths = new ArrayList(1);
+            exportPaths.add(foldername);
+            vfsExportHandler.setExportPaths(exportPaths);
+            vfsExportHandler.setIncludeSystem(false);
+            vfsExportHandler.setIncludeUnchanged(true);
+            vfsExportHandler.setExportUserdata(false);
+            OpenCms.getImportExportManager().exportData(
+                cms,
+                vfsExportHandler,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // move the folder
+            cms.lockResource(foldername);
+            cms.moveResource(foldername, folder2);
+
+            // publish the file
+            cms.unlockResource(folder2);
+            OpenCms.getPublishManager().publishResource(cms, folder2);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            assertFalse(cms.existsResource(foldername));
+            assertFalse(cms.existsResource(foldername + filename));
+            assertTrue(cms.existsResource(folder2));
+            assertTrue(cms.existsResource(folder2 + filename));
+
+            cms.readResource(folderBefore.getStructureId()); // check resource by id
+            try {
+                cms.readResource(foldername); // check resource by name
+                fail("should not be found");
+            } catch (Exception e) {
+                // ok
+            }
+
+            // re-import the exported files
+            OpenCms.getImportExportManager().importData(
+                cms,
+                zipExportFilename,
+                "/",
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // publish the file
+            cms.unlockResource(foldername);
+            OpenCms.getPublishManager().publishResource(cms, foldername);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            assertFalse(cms.existsResource(folder2));
+            assertFalse(cms.existsResource(folder2 + filename));
+            assertFilter(cms, foldername, OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
+            assertFilter(cms, foldername + filename, OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
+
+            // check locks
+            List lockedResources = cms.getLockedResources("/", CmsLockFilter.FILTER_ALL);
+            assertFalse(lockedResources.contains(foldername));
+            assertFalse(lockedResources.contains(folder2));
+
+            // check content
+            String offlineContent = new String(cms.readFile(foldername + filename).getContents());
+            cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+            assertEquals(offlineContent, new String(cms.readFile(foldername + filename).getContents()));
+        } finally {
+            try {
+                if (zipExportFilename != null) {
+                    File file = new File(zipExportFilename);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+            } catch (Throwable t) {
+                // intentionally left blank
+            }
+        }
+    }
+
+    /**
+     * Tests the import of a folder that has been moved without publishing.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testImportMovedFolder2() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing the import of a folder that has been moved without publishing.");
+        String filename = "newtestfile2.html";
+        String foldername = "/folderToMove2/";
+        String folder2 = "/movedFolder2/";
+        String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/testImportExportMovedFolder.zip");
+
+        try {
+            cms.getRequestContext().setSiteRoot("/");
+            // create test file & folder
+            CmsResource folderBefore = cms.createResource(foldername, CmsResourceTypeFolder.getStaticTypeId());
+            cms.createResource(foldername + filename, CmsResourceTypePlain.getStaticTypeId());
+
+            // publish the folder
+            cms.unlockResource(foldername);
+            OpenCms.getPublishManager().publishResource(cms, foldername);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            storeResources(cms, foldername, true);
+
+            // export the folder
+            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+            vfsExportHandler.setFileName(zipExportFilename);
+            List exportPaths = new ArrayList(1);
+            exportPaths.add(foldername);
+            vfsExportHandler.setExportPaths(exportPaths);
+            vfsExportHandler.setIncludeSystem(false);
+            vfsExportHandler.setIncludeUnchanged(true);
+            vfsExportHandler.setExportUserdata(false);
+            OpenCms.getImportExportManager().exportData(
+                cms,
+                vfsExportHandler,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // move the folder
+            cms.lockResource(foldername);
+            cms.moveResource(foldername, folder2);
+
+            assertFalse(cms.existsResource(foldername));
+            assertFalse(cms.existsResource(foldername + filename));
+            assertTrue(cms.existsResource(folder2));
+            assertTrue(cms.existsResource(folder2 + filename));
+
+            cms.readResource(folderBefore.getStructureId()); // check resource by id
+            try {
+                cms.readResource(foldername); // check resource by name
+                fail("should not be found");
+            } catch (Exception e) {
+                // ok
+            }
+
+            // re-import the exported files
+            OpenCms.getImportExportManager().importData(
+                cms,
+                zipExportFilename,
+                "/",
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // publish the file
+            cms.unlockResource(foldername);
+            OpenCms.getPublishManager().publishResource(cms, foldername);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            assertFalse(cms.existsResource(folder2));
+            assertFalse(cms.existsResource(folder2 + filename));
+            assertFilter(cms, foldername, OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
+            assertFilter(cms, foldername + filename, OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
+
+            // check locks
+            List lockedResources = cms.getLockedResources("/", CmsLockFilter.FILTER_ALL);
+            assertFalse(lockedResources.contains(foldername));
+            assertFalse(lockedResources.contains(folder2));
+
+            // check content
+            String offlineContent = new String(cms.readFile(foldername + filename).getContents());
+            cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+            assertEquals(offlineContent, new String(cms.readFile(foldername + filename).getContents()));
         } finally {
             try {
                 if (zipExportFilename != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/09/07 12:02:16 $
- * Version: $Revision: 1.595 $
+ * Date   : $Date: 2007/09/10 11:48:20 $
+ * Version: $Revision: 1.596 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1440,6 +1440,17 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         try {
+            // need to provide the parent folder id for resource creation
+            String parentFolderName = CmsResource.getParentFolder(resourcePath);
+            CmsResource parentFolder = readFolder(dbc, parentFolderName, CmsResourceFilter.IGNORE_EXPIRATION);
+
+            CmsLock parentLock = getLock(dbc, parentFolder);
+            if (!parentLock.isUnlocked() && !parentLock.isOwnedBy(dbc.currentUser())) {
+                throw new CmsLockException(Messages.get().container(
+                    Messages.ERR_CREATE_RESOURCE_PARENT_LOCK_1,
+                    dbc.removeSiteRoot(resourcePath)));
+            }
+
             // check import configuration of "lost and found" folder
             boolean useLostAndFound = importCase && !OpenCms.getImportExportManager().overwriteCollidingResources();
 
@@ -1464,10 +1475,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // if the resource does exist, we have to check the id later to decide what to do
             }
 
-            // need to provide the parent folder id for resource creation
-            String parentFolderName = CmsResource.getParentFolder(resourcePath);
-            CmsResource parentFolder = readFolder(dbc, parentFolderName, CmsResourceFilter.IGNORE_EXPIRATION);
-
             // check the permissions
             if (currentResourceByName == null) {
                 // resource does not exist - check parent folder
@@ -1486,7 +1493,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     !importCase,
                     CmsResourceFilter.ALL);
             }
-            if (currentResourceById != null) {
+            if ((currentResourceById != null) && !currentResourceById.equals(currentResourceByName)) {
                 // resource already exists - check existing resource              
                 m_securityManager.checkPermissions(
                     dbc,
@@ -1710,9 +1717,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // resource does not exist.
                 newResource = m_vfsDriver.createResource(dbc, dbc.currentProject().getUuid(), newResource, content);
             } else {
-                // lock the original resource
-                lockResource(dbc, overwrittenResource, CmsLockType.EXCLUSIVE);
-
                 // resource already exists. 
                 // probably the resource is a merged page file that gets overwritten during import, or it gets 
                 // overwritten by a copy operation. if so, the structure & resource state are not modified to changed.

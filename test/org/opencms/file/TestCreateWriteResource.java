@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2007/08/29 13:30:26 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/09/10 11:48:20 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -83,6 +83,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCreateWriteResource.class.getName());
 
+        suite.addTest(new TestCreateWriteResource("testCreateResourceLockedFolder"));
         suite.addTest(new TestCreateWriteResource("testImportResource"));
         suite.addTest(new TestCreateWriteResource("testImportResourceAgain"));
         suite.addTest(new TestCreateWriteResource("testImportSibling"));
@@ -105,7 +106,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
 
             protected void tearDown() {
 
-                // removeOpenCms();
+                removeOpenCms();
             }
         };
 
@@ -365,6 +366,81 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         if (created.getResourceId().equals(original.getResourceId())) {
             fail("A created resource that replaced a deleted resource must not have the same resource id!");
         }
+
+        // publish the project
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
+    }
+
+    /**
+     * Test resource creation in a locked folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateResourceLockedFolder() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing resource creation in a locked folder");
+
+        String foldername = "/folder1/";
+        String resourcename = foldername + "newResLF.html";
+
+        // lock the folder
+        cms.lockResource(foldername);
+
+        // login as test2
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        // try to create the file
+        try {
+            cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
+            fail("should not be able to create a file in a locked folder.");
+        } catch (CmsLockException e) {
+            // ok, ignore
+        }
+
+        // now try as the user that owns the folder lock
+        cms = getCmsObject();
+
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
+    }
+
+    /**
+     * Test the create resource method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateResourceWithSpecialChars() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing create resource with special character \"$\"");
+
+        String resourcename = "/folder1/test$2.html";
+        long timestamp = System.currentTimeMillis() - 1;
+
+        String contentStr = "Hello this is my content";
+        byte[] content = contentStr.getBytes();
+
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content, null);
+
+        // ensure created resource type
+        assertResourceType(cms, resourcename, CmsResourceTypePlain.getStaticTypeId());
+        // project must be current project
+        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, resourcename, CmsResource.STATE_NEW);
+        // date last modified 
+        assertDateLastModifiedAfter(cms, resourcename, timestamp);
+        // date created
+        assertDateCreatedAfter(cms, resourcename, timestamp);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
+        // check the content
+        assertContent(cms, resourcename, content);
 
         // publish the project
         cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
@@ -844,46 +920,5 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // make sure nothing has been changed
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
         assertFilter(cms, target, OpenCmsTestResourceFilter.FILTER_EQUAL);
-    }
-
-    /**
-     * Test the create resource method.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testCreateResourceWithSpecialChars() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing create resource with special character \"$\"");
-
-        String resourcename = "/folder1/test$2.html";
-        long timestamp = System.currentTimeMillis() - 1;
-
-        String contentStr = "Hello this is my content";
-        byte[] content = contentStr.getBytes();
-
-        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content, null);
-
-        // ensure created resource type
-        assertResourceType(cms, resourcename, CmsResourceTypePlain.getStaticTypeId());
-        // project must be current project
-        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
-        // state must be "new"
-        assertState(cms, resourcename, CmsResource.STATE_NEW);
-        // date last modified 
-        assertDateLastModifiedAfter(cms, resourcename, timestamp);
-        // date created
-        assertDateCreatedAfter(cms, resourcename, timestamp);
-        // the user last modified must be the current user
-        assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
-        // check the content
-        assertContent(cms, resourcename, content);
-
-        // publish the project
-        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
-        OpenCms.getPublishManager().publishProject(cms);
-        OpenCms.getPublishManager().waitWhileRunning();
-
-        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
     }
 }

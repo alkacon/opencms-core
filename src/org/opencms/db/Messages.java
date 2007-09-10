@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2007/09/06 15:09:26 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2007/09/10 11:48:20 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 6.0.0 
  */
@@ -155,6 +155,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_RESOURCE_LOCK_1 = "ERR_CREATE_RESOURCE_LOCK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CREATE_RESOURCE_PARENT_LOCK_1 = "ERR_CREATE_RESOURCE_PARENT_LOCK_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CREATE_SIBLING_1 = "ERR_CREATE_SIBLING_1";
