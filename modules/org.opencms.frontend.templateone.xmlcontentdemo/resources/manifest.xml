@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.0</opencms_version>
-		<createdate>Mon, 25 Jun 2007 14:14:28 GMT</createdate>
+		<opencms_version>7.0.2</opencms_version>
+		<createdate>Mon, 10 Sep 2007 11:13:47 GMT</createdate>
 		<project>Offline</project>
 		<export_version>6</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains demo resources for OpenCms 7.0 XML content.</p>
 <p>Install this module if you want to see the structured content capabilities of OpenCms.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.0</version>
+		<version>7.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -47,19 +47,19 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25" autosetnavigation="false" autosettitle="false" info="desc.article" />
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25" autosetnavigation="false" autosettitle="false" info="desc.article"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="widgetdemo" key="fileicon.widgetdemo" icon="xmlcontent.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=widgetdemo" order="26" autosetnavigation="false" autosettitle="false" info="desc.widgetdemo" />
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=widgetdemo" order="26" autosetnavigation="false" autosettitle="false" info="desc.widgetdemo"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="bookmark" key="fileicon.bookmark" icon="xmlcontent.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=bookmark" order="27" autosetnavigation="false" autosettitle="false" info="desc.bookmark" />
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=bookmark" order="27" autosetnavigation="false" autosettitle="false" info="desc.bookmark"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
@@ -698,6 +698,42 @@
 				<property>
 					<name>template</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontentdemo/list_EL.jsp</source>
+			<destination>xmlcontentdemo/list_EL.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>dc97f0c8-5f8b-11dc-9281-77d46570ac78</uuidstructure>
+			<uuidresource>dc97f0c9-5f8b-11dc-9281-77d46570ac78</uuidresource>
+			<datelastmodified>Mon, 10 Sep 2007 11:10:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Sep 2007 10:52:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[EL list demo]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content article demo page using EL]]></value>
+				</property>
+				<property>
+					<name>collector</name>
+					<value><![CDATA[allInFolderDateReleasedDesc]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>
