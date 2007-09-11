@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/09/07 15:23:26 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2007/09/11 08:49:50 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.82 $ 
+ * @version $Revision: 1.83 $ 
  * 
  * @since 6.0.0 
  */
@@ -505,7 +505,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     public String createTempFile(CmsObject cms, String resourceName, CmsUUID currentProjectId) throws CmsException {
 
         // check that the current user has write permissions
-        if (!cms.hasPermissions(cms.readResource(resourceName), CmsPermissionSet.ACCESS_WRITE)) {
+        if (!cms.hasPermissions(cms.readResource(resourceName, CmsResourceFilter.ALL), CmsPermissionSet.ACCESS_WRITE)) {
             throw new CmsPermissionViolationException(org.opencms.db.Messages.get().container(
                 org.opencms.db.Messages.ERR_PERM_DENIED_2,
                 resourceName,
