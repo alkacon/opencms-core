@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2007/09/10 13:16:55 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/11 13:44:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  * 
@@ -63,6 +63,35 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
     private static final Log LOG = CmsLog.getLog(CmsDefaultLinkSubstitutionHandler.class);
 
     /**
+     * Returns the resource root path in the OpenCms VFS for the given link, or <code>null</code> in
+     * case the link points to an external site.<p>
+     * 
+     * If the target URI contains no site information, but starts with the opencms context, the context is removed:<pre>
+     * /opencms/opencms/system/further_path -> /system/further_path</pre>
+     * 
+     * If the target URI contains no site information, the path will be prefixed with the current site
+     * from the provided OpenCms user context:<pre>
+     * /folder/page.html -> /sites/mysite/folder/page.html</pre>
+     *  
+     * If the path of the target URI is relative, i.e. does not start with "/", 
+     * the path will be prefixed with the current site and the given relative path,
+     * then normalized.
+     * If no relative path is given, <code>null</code> is returned.
+     * If the normalized path is outsite a site, null is returned.<pre>
+     * page.html -> /sites/mysite/page.html
+     * ../page.html -> /sites/mysite/page.html
+     * ../../page.html -> null</pre>
+     * 
+     * If the target URI contains a scheme/server name that denotes an opencms site, 
+     * it is replaced by the appropriate site path:<pre>
+     * http://www.mysite.de/folder/page.html -> /sites/mysite/folder/page.html</pre><p>
+     * 
+     * If the target URI contains a scheme/server name that does not match with any site, 
+     * or if the URI is opaque or invalid,
+     * <code>null</code> is returned:<pre>
+     * http://www.elsewhere.com/page.html -> null
+     * mailto:someone@elsewhere.com -> null</pre>
+     * 
      * @see org.opencms.staticexport.I_CmsLinkSubstitutionHandler#getLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
     public String getLink(CmsObject cms, String link, String siteRoot, boolean forceSecure) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/I_CmsLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2007/09/10 13:16:55 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/09/11 13:44:23 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,18 +41,33 @@ import org.opencms.file.CmsObject;
  * which is the central method to calculate links for the use on web pages. 
  * This method is also used by the <code>&lt;cms:link /&gt;</code> tag.<p> 
  *
+ * Moreover, this handler is plugged into 
+ * {@link CmsLinkManager#getRootPath(CmsObject, String, String)},
+ * which basically is the revered method that gets a VFS root path from a link.<p>
+ * 
+ * For the implementation, you must implement the methods in this interface so that:<pre>
+ * String path; // assume we have a valid VFS resource root path
+ * CmsObject cms; // assume we have a valid OpenCms user context
+ * CmsLinkManager lm = OpenCms.getLinkManager();
+ * String link = lm.substituteLinkForRootPath(cms, path);
+ * String rootPath = lm.getRootPath(cms, link);
+ * link.equals(rootPath); // this must be true!</pre>
+ *
  * Using this handler, you can completely customize the behavior of the link substitution.<p>
  * 
  * The default implementation of this interface is {@link CmsDefaultLinkSubstitutionHandler}.<p>
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.2
  * 
  * @see CmsLinkManager#substituteLink(org.opencms.file.CmsObject, String, String, boolean) 
- *      for the method where this handler is used
+ *      for the method where this handler is used to create a link from a VFS root path
+ * @see CmsLinkManager#getRootPath(CmsObject, String, String)
+ *      for the method where this handler is used to create VFS root path from a link 
+ *     
  * @see CmsDefaultLinkSubstitutionHandler
  *      for the default implementation of this interface
  */
@@ -68,7 +83,7 @@ public interface I_CmsLinkSubstitutionHandler {
      * to the configured static export settings.<p>
      * 
      * In case <code>link</code> is a relative URI, the current URI contained in the provided 
-     * OpenCms user context <code>cms</code> is nornally used to make the relative <code>link</code> absolute.<p>
+     * OpenCms user context <code>cms</code> is normally used to make the relative <code>link</code> absolute.<p>
      * 
      * The provided <code>siteRoot</code> is assumed to be the "home" of the link.
      * In case the current site of the given OpenCms user context <code>cms</code> is different from the 
@@ -90,45 +105,40 @@ public interface I_CmsLinkSubstitutionHandler {
      * 
      * @return a link <i>from</i> the URI stored in the provided OpenCms user context
      *      <i>to</i> the VFS resource indicated by the given <code>link</code> and <code>siteRoot</code>
+     *      
+     * @see #getRootPath(CmsObject, String, String) for the reverse function, which creates a VFS 
      */
     String getLink(CmsObject cms, String link, String siteRoot, boolean forceSecure);
 
     /**
-     * Returns the resource root path for the given target URI in the OpenCms VFS, or <code>null</code> in
-     * case the target URI points to an external site.<p>
+     * Returns the resource root path in the OpenCms VFS for the given target URI link, or <code>null</code> in
+     * case the link points to an external site.<p>
      * 
-     * If the target URI contains no site information, but starts with the opencms context, the context is removed:<pre>
-     * /opencms/opencms/system/further_path -> /system/further_path</pre><p>
+     * The default implementation applies the following transformations to the link:<ul>
+     * <li>In case the link starts with a VFS prefix (for example <code>/opencms/opencms</code>, 
+     *      this prefix is removed from the result
+     * <li>In case the link is not a root path, the current site root is appended to the result.<p>
+     * <li>In case the link is relative, it will be made absolute using the given absolute <code>basePath</code>
+     *      as starting point.<p>
+     * <li>In case the link contains a server schema (for example <code>http://www.mysite.de/</code>),
+     *      which points to a configured site in OpenCms, the server schema is replaced with 
+     *      the root path of the site.<p>
+     * <li>In case the link points to an external site, or in case it is not a valid URI, 
+     *      then <code>null</code> is returned.<p> 
+     * </ul>
      * 
-     * If the target URI contains no site information, the path will be prefixed with the current site
-     * from the provided OpenCms user context:<pre>
-     * /folder/page.html -> /sites/mysite/folder/page.html</pre><p>
-     *  
-     * If the path of the target URI is relative, i.e. does not start with "/", 
-     * the path will be prefixed with the current site and the given relative path,
-     * then normalized.
-     * If no relative path is given, <code>null</code> is returned.
-     * If the normalized path is outsite a site, null is returned.<pre>
-     * page.html -> /sites/mysite/page.html
-     * ../page.html -> /sites/mysite/page.html
-     * ../../page.html -> null</pre><p>
-     * 
-     * If the target URI contains a scheme/server name that denotes an opencms site, 
-     * it is replaced by the appropriate site path:<pre>
-     * http://www.mysite.de/folder/page.html -> /sites/mysite/folder/page.html</pre><p>
-     * 
-     * If the target URI contains a scheme/server name that does not match with any site, 
-     * or if the URI is opaque or invalid,
-     * <code>null</code> is returned:<pre>
-     * http://www.elsewhere.com/page.html -> null
-     * mailto:someone@elsewhere.com -> null</pre><p>
+     * Please note the above text describes the default behavior as implemented by 
+     * {@link CmsDefaultLinkSubstitutionHandler}, which can be fully customized using this handler interface.<p> 
      * 
      * @param cms the current users OpenCms context
-     * @param targetUri the target URI
-     * @param basePath path to use as base site for the target URI (can be <code>null</code>)
+     * @param targetUri the target URI link
+     * @param basePath path to use as base in case the target URI is relative (can be <code>null</code>)
      * 
-     * @return the resource root path for the given target URI in the OpenCms VFS, or <code>null</code> in
-     *      case the target URI points to an external site
+     * @return the resource root path in the OpenCms VFS for the given target URI link, or <code>null</code> in
+     *      case the link points to an external site
+     *      
+     * @see #getLink(CmsObject, String, String, boolean) for the reverse function, which creates a link
+     *      form a VFS resource path
      */
     String getRootPath(CmsObject cms, String targetUri, String basePath);
 }

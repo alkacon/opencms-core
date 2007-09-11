@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/CmsTestLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2007/09/11 11:59:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/11 13:44:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  */
 public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHandler {
 
@@ -76,8 +76,8 @@ public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHa
 
         if (path.startsWith(FOLDER_SYSTEM_NEWS)) {
             String newsPath = path.substring(FOLDER_SYSTEM_NEWS.length());
-            // check if a "__locale" parameter is part of the path, if so overwrite the locale
             String loc = locale.getLanguage();
+            // check if a "__locale" parameter is part of the path, if so overwrite the locale
             int pos = newsPath.indexOf('?');
             if ((pos > 0) && (newsPath.indexOf(CmsLocaleManager.PARAMETER_LOCALE, pos) >= 0)) {
                 // locale parameter was found
@@ -102,10 +102,11 @@ public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHa
      * and in this case replaces it with the system news folder (like <code>/system/news/</code>).<p>
      * 
      * @param path the path to check and replace
+     * @param addLocale if true, the locale parameter <code>__locale=xx</code> is appended
      * 
      * @return the system news folder if the path points to a localized news path, or the path parameter if not
      */
-    private static String replaceSystemUri(String path) {
+    private static String replaceSystemUri(String path, boolean addLocale) {
 
         String result = path;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(path) || (path.length() < 4)) {
@@ -115,7 +116,7 @@ public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHa
         if (check.startsWith(FOLDER_NEWS)) {
             String loc = path.substring(1, 3);
             check = check.substring(FOLDER_NEWS.length());
-            if (!Locale.ENGLISH.toString().equals(loc) && (check.indexOf(CmsLocaleManager.PARAMETER_LOCALE) < 0)) {
+            if (addLocale && (check.indexOf(CmsLocaleManager.PARAMETER_LOCALE) < 0)) {
                 // append locale parameter if required, but not for default "en" locale
                 check = CmsRequestUtil.appendParameter(check, CmsLocaleManager.PARAMETER_LOCALE, loc);
             }
@@ -149,7 +150,8 @@ public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHa
             String siteRoot = OpenCms.getSiteManager().getSiteRoot(result);
             // in case a site root was appended, it must be removed
             String path = (siteRoot != null) ? result.substring(siteRoot.length()) : result;
-            String replace = replaceSystemUri(path);
+            boolean addLocale = (path.indexOf("/de/") >= 0) || (path.indexOf(CmsLocaleManager.PARAMETER_LOCALE) >= 0);
+            String replace = replaceSystemUri(path, addLocale);
             if (!path.equals(replace)) {
                 // this is a link to a news folder
                 result = replace;
