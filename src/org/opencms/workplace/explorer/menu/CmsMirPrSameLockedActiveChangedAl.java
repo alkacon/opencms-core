@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirPrSameLockedActiveChangedAl.java,v $
- * Date   : $Date: 2007/09/10 08:46:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/11 10:28:15 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,8 +32,11 @@
 package org.opencms.workplace.explorer.menu;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.lock.CmsLock;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 
 /**
@@ -45,7 +48,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6
  */
@@ -61,6 +64,19 @@ public class CmsMirPrSameLockedActiveChangedAl extends A_CmsMenuItemRule {
         } else if (resourceUtil[0].getResource().getState().isNew()
             || (resourceUtil[0].getResource().isFile() && resourceUtil[0].getResource().getState().isUnchanged())) {
             return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NEW_UNCHANGED_0);
+        }
+        try {
+            if (!resourceUtil[0].isEditable()
+                || !cms.hasPermissions(
+                    resourceUtil[0].getResource(),
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.ALL)) {
+                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
+            }
+        } catch (CmsException e) {
+            // error checking permissions, disable entry completely
+            return CmsMenuItemVisibilityMode.VISIBILITY_INVISIBLE;
         }
         return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
     }
