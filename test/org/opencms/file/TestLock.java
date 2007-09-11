@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2007/08/23 11:10:21 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/09/11 12:41:00 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class TestLock extends OpenCmsTestCase {
 
@@ -98,6 +98,7 @@ public class TestLock extends OpenCmsTestCase {
         suite.addTest(new TestLock("testLockForBaseOperations"));
         suite.addTest(new TestLock("testCopyToLockedFolder"));
         suite.addTest(new TestLock("testCreationInLockedFolder"));
+        suite.addTest(new TestLock("testTempFileCreationInLockedFolder"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -137,9 +138,12 @@ public class TestLock extends OpenCmsTestCase {
         cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
-        // TODO: define the expected behavior
-        cms.copyResource(source, folder + destination);
-        assertLock(cms, folder + destination, CmsLockType.INHERITED, cms.readUser("test1"));
+        try {
+            cms.copyResource(source, folder + destination);
+            fail("it is not allowed to create a resource in a folder locked by other user");
+        } catch (CmsLockException e) {
+            // ok, ignore
+        }
     }
 
     /**
@@ -159,9 +163,12 @@ public class TestLock extends OpenCmsTestCase {
         cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
 
-        // TODO: define the expected behavior
-        cms.createResource(fileName, CmsResourceTypePlain.getStaticTypeId());
-        assertLock(cms, fileName, CmsLockType.INHERITED, cms.readUser("test1"));
+        try {
+            cms.createResource(fileName, CmsResourceTypePlain.getStaticTypeId());
+            fail("it is not allowed to create a resource in a folder locked by other user");
+        } catch (CmsLockException e) {
+            // ok, ignore
+        }
     }
 
     /**
@@ -905,5 +912,35 @@ public class TestLock extends OpenCmsTestCase {
 
         // the newly created resource must now be locked to user "test2"
         assertLock(cms, source, CmsLockType.EXCLUSIVE);
+    }
+
+    /**
+     * Tests creating a new temporary file in a folder locked by another user.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testTempFileCreationInLockedFolder() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing creating a new file in a folder locked by another user");
+
+        String fileName = "/folder2/~creationtest.html";
+
+        // NOTE: folder still locked by test1 from previous test case
+
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        try {
+            cms.createResource(fileName, CmsResourceTypePlain.getStaticTypeId());
+            fail("it is not allowed to create a resource in a folder locked by other user");
+        } catch (CmsLockException e) {
+            // ok, ignore
+        }
+
+        // it should be allowed for the root admin
+        cms = getCmsObject();
+        cms.createResource(fileName, CmsResourceTypePlain.getStaticTypeId());
+        assertLock(cms, fileName, CmsLockType.INHERITED, cms.readUser("test1"));
     }
 }
