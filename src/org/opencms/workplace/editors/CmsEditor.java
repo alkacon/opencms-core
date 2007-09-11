@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/09/07 15:23:26 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2007/09/11 10:31:04 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,8 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplace;
@@ -67,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  */
@@ -749,7 +751,20 @@ public abstract class CmsEditor extends CmsEditorBase {
             getCloneCms().writeFile(orgFile);
         } else {
             // original file does not exist, remove visibility permission entries and copy temporary file
-            OpenCms.getWorkplaceManager().removeTempFilePermissions(cms, getParamTempfile(), getSettings().getProject());
+
+            // switch to the temporary file project
+            cms.getRequestContext().setCurrentProject(cms.readProject(getSettings().getProject()));
+            // lock the temporary file
+            cms.changeLock(getParamTempfile());
+            // remove visibility permissions for everybody on temporary file if possible
+            if (cms.hasPermissions(tempFile, CmsPermissionSet.ACCESS_CONTROL)) {
+                cms.rmacc(getParamTempfile(), I_CmsPrincipal.PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers());
+                cms.rmacc(
+                    getParamTempfile(),
+                    I_CmsPrincipal.PRINCIPAL_GROUP,
+                    OpenCms.getDefaultUsers().getGroupProjectmanagers());
+            }
+
             cms.copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
         }
         // remove the temporary file flag
@@ -768,7 +783,48 @@ public abstract class CmsEditor extends CmsEditorBase {
      */
     protected String createTempFile() throws CmsException {
 
-        return OpenCms.getWorkplaceManager().createTempFile(getCms(), getParamResource(), getSettings().getProject());
+        String temporaryFilename = OpenCms.getWorkplaceManager().createTempFile(
+            getCms(),
+            getParamResource(),
+            getSettings().getProject());
+
+        CmsObject cms = getCms();
+        try {
+            // switch to the temporary file project
+            cms.getRequestContext().setCurrentProject(
+                cms.readProject(OpenCms.getWorkplaceManager().getTempFileProjectId()));
+            // lock the temporary file
+            cms.changeLock(temporaryFilename);
+            // touch the temporary file
+            cms.setDateLastModified(temporaryFilename, System.currentTimeMillis(), false);
+            // set the temporary file flag
+            CmsResource tempFile = cms.readResource(temporaryFilename, CmsResourceFilter.ALL);
+            int flags = tempFile.getFlags();
+            if ((flags & CmsResource.FLAG_TEMPFILE) == 0) {
+                flags += CmsResource.FLAG_TEMPFILE;
+            }
+            cms.chflags(temporaryFilename, flags);
+            // remove eventual release & expiration date from temporary file to make preview in editor work
+            cms.setDateReleased(temporaryFilename, CmsResource.DATE_RELEASED_DEFAULT, false);
+            cms.setDateExpired(temporaryFilename, CmsResource.DATE_EXPIRED_DEFAULT, false);
+            // remove visibility permissions for everybody on temporary file if possible
+            if (cms.hasPermissions(tempFile, CmsPermissionSet.ACCESS_CONTROL)) {
+                cms.chacc(
+                    temporaryFilename,
+                    I_CmsPrincipal.PRINCIPAL_GROUP,
+                    OpenCms.getDefaultUsers().getGroupUsers(),
+                    "-v");
+                cms.chacc(
+                    temporaryFilename,
+                    I_CmsPrincipal.PRINCIPAL_GROUP,
+                    OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                    "-v");
+            }
+        } finally {
+            // switch back to current project
+            cms.getRequestContext().setCurrentProject(cms.readProject(getSettings().getProject()));
+        }
+        return temporaryFilename;
     }
 
     /**

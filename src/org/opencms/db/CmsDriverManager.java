@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/09/10 11:48:20 $
- * Version: $Revision: 1.596 $
+ * Date   : $Date: 2007/09/11 10:31:03 $
+ * Version: $Revision: 1.597 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -245,13 +245,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /** Mode for reading project resources from the db. */
     public static final int READMODE_UNMATCHSTATE = 2;
 
+    /** Prefix char for temporary files in the VFS. */
+    public static final String TEMP_FILE_PREFIX = "~";
+
     /** Key to indicate complete update. */
     public static final int UPDATE_ALL = 3;
 
     /** Key to indicate update of resource record. */
     public static final int UPDATE_RESOURCE = 4;
 
-    /** Key to indicate update of lastmodified project reference. */
+    /** Key to indicate update of last modified project reference. */
     public static final int UPDATE_RESOURCE_PROJECT = 6;
 
     /** Key to indicate update of resource state. */
@@ -1035,7 +1038,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
 
-        // determine desitnation folder        
+        // determine destination folder        
         String destinationFoldername = CmsResource.getParentFolder(destination);
 
         // read the destination folder (will also check read permissions)
@@ -1445,10 +1448,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsResource parentFolder = readFolder(dbc, parentFolderName, CmsResourceFilter.IGNORE_EXPIRATION);
 
             CmsLock parentLock = getLock(dbc, parentFolder);
+            // it is not allowed to create a resource in a folder locked by other user
             if (!parentLock.isUnlocked() && !parentLock.isOwnedBy(dbc.currentUser())) {
-                throw new CmsLockException(Messages.get().container(
-                    Messages.ERR_CREATE_RESOURCE_PARENT_LOCK_1,
-                    dbc.removeSiteRoot(resourcePath)));
+                // one exception is if the admin user tries to create a temporary resource
+                if (!m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.ROOT_ADMIN)
+                    || !CmsResource.getName(resourcePath).startsWith(TEMP_FILE_PREFIX)) {
+                    throw new CmsLockException(Messages.get().container(
+                        Messages.ERR_CREATE_RESOURCE_PARENT_LOCK_1,
+                        dbc.removeSiteRoot(resourcePath)));
+                }
             }
 
             // check import configuration of "lost and found" folder

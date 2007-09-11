@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/09/10 08:35:58 $
- * Version: $Revision: 1.166 $
+ * Date   : $Date: 2007/09/11 10:31:02 $
+ * Version: $Revision: 1.167 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.workplace;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
+import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.166 $ 
+ * @version $Revision: 1.167 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,16 +138,14 @@ public abstract class CmsWorkplace {
     /** Path to exported system image folder. */
     public static final String RFS_PATH_RESOURCES = "/resources/";
 
-    /** Prefix char for temporary files in the VFS. */
-    private static final char TEMP_FILE_PREFIX_CHAR = '~';
-
     /** 
      * Prefix for temporary files in the VFS. 
      * 
-     * @deprecated use {@link #isTemporaryFile(CmsResource)}, {@link #isTemporaryFileName(String)} or 
-     * {@link #getTemporaryFileName(String)} instead
+     * @see #isTemporaryFile(CmsResource)
+     * @see #isTemporaryFileName(String)  
+     * @see #getTemporaryFileName(String)
      */
-    public static final String TEMP_FILE_PREFIX = String.valueOf(TEMP_FILE_PREFIX_CHAR);
+    public static final String TEMP_FILE_PREFIX = CmsDriverManager.TEMP_FILE_PREFIX;
 
     /** Directory name of content default_bodies folder. */
     public static final String VFS_DIR_DEFAULTBODIES = "default_bodies/";
@@ -410,7 +409,9 @@ public abstract class CmsWorkplace {
                     jsp.getCmsObject().readProject(CmsProject.ONLINE_PROJECT_ID));
                 m_styleUri = jsp.link("/system/workplace/commons/style/");
             } catch (CmsException e) {
-                // ins log schreiben
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             } finally {
                 jsp.getCmsObject().getRequestContext().setCurrentProject(project);
             }
@@ -438,7 +439,7 @@ public abstract class CmsWorkplace {
         }
         StringBuffer result = new StringBuffer(resourceName.length() + 2);
         result.append(CmsResource.getFolderPath(resourceName));
-        result.append(TEMP_FILE_PREFIX_CHAR);
+        result.append(TEMP_FILE_PREFIX);
         result.append(CmsResource.getName(resourceName));
         return result.toString();
     }
@@ -574,8 +575,7 @@ public abstract class CmsWorkplace {
     public static boolean isTemporaryFile(CmsResource resource) {
 
         return (resource != null)
-            && ((resource.isFile() && (((resource.getFlags() & CmsResource.FLAG_TEMPFILE) > 0) || (resource.getName().charAt(
-                0) == TEMP_FILE_PREFIX_CHAR))));
+            && ((resource.isFile() && (((resource.getFlags() & CmsResource.FLAG_TEMPFILE) > 0) || (isTemporaryFileName(resource.getName())))));
     }
 
     /**
@@ -593,8 +593,7 @@ public abstract class CmsWorkplace {
      */
     public static boolean isTemporaryFileName(String resourceName) {
 
-        return (resourceName != null)
-            && ((resourceName.indexOf(TEMP_FILE_PREFIX_CHAR) >= 0) && (CmsResource.getName(resourceName).charAt(0) == TEMP_FILE_PREFIX_CHAR));
+        return (resourceName != null) && (CmsResource.getName(resourceName).startsWith(TEMP_FILE_PREFIX));
     }
 
     /**
