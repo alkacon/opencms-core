@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPermissionHandler.java,v $
- * Date   : $Date: 2007/09/06 15:09:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/09/11 13:13:34 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.0.2
  */
@@ -61,10 +61,10 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
     private static final Log LOG = CmsLog.getLog(CmsDefaultPermissionHandler.class);
 
     /** Driver Manager instance. */
-    private CmsDriverManager m_driverManager;
+    protected CmsDriverManager m_driverManager;
 
     /** Security Manager instance. */
-    private CmsSecurityManager m_securityManager;
+    protected CmsSecurityManager m_securityManager;
 
     /**
      * @see org.opencms.security.I_CmsPermissionHandler#hasPermissions(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet, boolean, org.opencms.file.CmsResourceFilter)
