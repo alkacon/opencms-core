@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/CmsTestLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2007/09/10 16:19:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/09/11 11:59:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,17 +32,20 @@
 package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Test handler for custom link substitution.<p>
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  */
 public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHandler {
 
@@ -73,7 +76,22 @@ public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHa
 
         if (path.startsWith(FOLDER_SYSTEM_NEWS)) {
             String newsPath = path.substring(FOLDER_SYSTEM_NEWS.length());
-            result = "/" + locale.getLanguage() + FOLDER_NEWS + newsPath;
+            // check if a "__locale" parameter is part of the path, if so overwrite the locale
+            String loc = locale.getLanguage();
+            int pos = newsPath.indexOf('?');
+            if ((pos > 0) && (newsPath.indexOf(CmsLocaleManager.PARAMETER_LOCALE, pos) >= 0)) {
+                // locale parameter was found
+                String query = newsPath.substring(pos);
+                Map params = CmsRequestUtil.createParameterMap(query);
+                String[] locs = (String[])params.get(CmsLocaleManager.PARAMETER_LOCALE);
+                if ((locs != null) && (locs.length > 0)) {
+                    // remove locale from parameters and change URI to target language
+                    loc = locs[0];
+                    params.remove(CmsLocaleManager.PARAMETER_LOCALE);
+                    newsPath = CmsRequestUtil.appendParameters(newsPath.substring(0, pos), params, true);
+                }
+            }
+            result = "/" + loc + FOLDER_NEWS + newsPath;
         }
 
         return result;
@@ -95,7 +113,13 @@ public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHa
         }
         String check = path.substring(3);
         if (check.startsWith(FOLDER_NEWS)) {
-            result = FOLDER_SYSTEM_NEWS + check.substring(FOLDER_NEWS.length());
+            String loc = path.substring(1, 3);
+            check = check.substring(FOLDER_NEWS.length());
+            if (!Locale.ENGLISH.toString().equals(loc) && (check.indexOf(CmsLocaleManager.PARAMETER_LOCALE) < 0)) {
+                // append locale parameter if required, but not for default "en" locale
+                check = CmsRequestUtil.appendParameter(check, CmsLocaleManager.PARAMETER_LOCALE, loc);
+            }
+            result = FOLDER_SYSTEM_NEWS + check;
         }
 
         return result;

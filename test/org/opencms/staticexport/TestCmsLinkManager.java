@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsLinkManager.java,v $
- * Date   : $Date: 2007/09/10 14:10:45 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/09/11 11:59:38 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,18 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.xml.page.CmsXmlPage;
+
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -46,7 +51,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0
  */
@@ -149,6 +154,9 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         assertEquals(res.getRootPath(), rootPath);
     }
 
+    /** Content for a simple test page. */
+    private static final String PAGE_01 = "<html><body><a href=\"/system/news/test.html?__locale=de\">test</a></body></html>";
+
     /**
      * Tests symmetric link / root path substitution with a custom link handler.<p>
      * 
@@ -165,20 +173,57 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
 
         // create required special "/system/news/" folder with a resource
         cms.createResource("/system/news", CmsResourceTypeFolder.getStaticTypeId());
-        cms.createResource("/system/news/text.txt", CmsResourceTypePlain.getStaticTypeId());
+        String resName = "/system/news/test.html";
+        cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
         OpenCms.getPublishManager().publishResource(cms, "/system/news");
+        OpenCms.getPublishManager().waitWhileRunning();
+        CmsResource res = cms.readResource(resName);
 
-        CmsResource res = cms.readResource("/system/news/text.txt");
+        // test with default setup
+        testCustomLinkHandler(cms, res.getRootPath());
+        // test with "empty" VFS prefix
+        OpenCms.getStaticExportManager().setVfsPrefix("");
+        OpenCms.getStaticExportManager().initialize(cms);
+        testCustomLinkHandler(cms, res.getRootPath());
+        // test when current URI is in "/system/" folder and current site root is empty
+        cms.getRequestContext().setUri(resName);
+        cms.getRequestContext().setSiteRoot("");
+        testCustomLinkHandler(cms, res.getRootPath());
+        // test with localized information
+        testCustomLinkHandler(cms, res.getRootPath() + "?__locale=de");
+
+        // now try with some real content on a page
+        CmsXmlPage page = new CmsXmlPage(Locale.ENGLISH, CmsEncoder.ENCODING_UTF_8);
+        page.addValue("body", Locale.ENGLISH);
+        page.setStringValue(cms, "body", Locale.ENGLISH, PAGE_01);
+
+        cms.lockResource(resName);
+        CmsFile file = cms.readFile(res);
+        file.setContents(page.marshal());
+        cms.writeFile(file);
+    }
+
+    /**
+     * Internal test method for custom link test.<p>
+     * 
+     * @param cms the current OpenCms context
+     * @param path the resource path in the VFS to check the links for
+     * 
+     * @throws Exception in case the test fails
+     */
+    private void testCustomLinkHandler(CmsObject cms, String path) throws Exception {
+
+        CmsLinkManager lm = OpenCms.getLinkManager();
 
         // first try: no server info
-        String link = lm.substituteLinkForRootPath(cms, res.getRootPath());
+        String link = lm.substituteLinkForRootPath(cms, path);
         String rootPath = lm.getRootPath(cms, link);
-        assertEquals(res.getRootPath(), rootPath);
+        assertEquals(path, rootPath);
 
         // second try: with server and protocol
-        link = lm.getServerLink(cms, res.getRootPath());
+        link = lm.getServerLink(cms, path);
         rootPath = lm.getRootPath(cms, link);
-        assertEquals(res.getRootPath(), rootPath);
+        assertEquals(path, rootPath);
     }
 
     /**
