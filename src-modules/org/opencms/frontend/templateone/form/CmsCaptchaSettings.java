@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaSettings.java,v $
- * Date   : $Date: 2007/08/13 16:29:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/09/11 10:08:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Achim Westermann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public final class CmsCaptchaSettings implements Cloneable {
 
@@ -387,6 +387,8 @@ public final class CmsCaptchaSettings implements Cloneable {
             m_parameterMap = CmsRequestUtil.readParameterMapFromMultiPart(
                 jsp.getRequestContext().getEncoding(),
                 mulipartFileItems);
+        } else {
+            m_parameterMap = jsp.getRequest().getParameterMap();
         }
 
         // image width
