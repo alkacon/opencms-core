@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/09/11 10:31:03 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2007/09/11 12:11:06 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,6 +62,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -105,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.84 $ 
+ * @version $Revision: 1.85 $ 
  * 
  * @since 6.0.0 
  */
@@ -536,6 +537,42 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         } finally {
             // switch back to current project
             adminCms.getRequestContext().setCurrentProject(cms.readProject(currentProjectId));
+        }
+
+        try {
+            // switch to the temporary file project
+            cms.getRequestContext().setCurrentProject(
+                cms.readProject(OpenCms.getWorkplaceManager().getTempFileProjectId()));
+            // lock the temporary file
+            cms.changeLock(temporaryFilename);
+            // touch the temporary file
+            cms.setDateLastModified(temporaryFilename, System.currentTimeMillis(), false);
+            // set the temporary file flag
+            CmsResource tempFile = cms.readResource(temporaryFilename, CmsResourceFilter.ALL);
+            int flags = tempFile.getFlags();
+            if ((flags & CmsResource.FLAG_TEMPFILE) == 0) {
+                flags += CmsResource.FLAG_TEMPFILE;
+            }
+            cms.chflags(temporaryFilename, flags);
+            // remove eventual release & expiration date from temporary file to make preview in editor work
+            cms.setDateReleased(temporaryFilename, CmsResource.DATE_RELEASED_DEFAULT, false);
+            cms.setDateExpired(temporaryFilename, CmsResource.DATE_EXPIRED_DEFAULT, false);
+            // remove visibility permissions for everybody on temporary file if possible
+            if (cms.hasPermissions(tempFile, CmsPermissionSet.ACCESS_CONTROL)) {
+                cms.chacc(
+                    temporaryFilename,
+                    I_CmsPrincipal.PRINCIPAL_GROUP,
+                    OpenCms.getDefaultUsers().getGroupUsers(),
+                    "-v");
+                cms.chacc(
+                    temporaryFilename,
+                    I_CmsPrincipal.PRINCIPAL_GROUP,
+                    OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+                    "-v");
+            }
+        } finally {
+            // switch back to current project
+            cms.getRequestContext().setCurrentProject(cms.readProject(currentProjectId));
         }
 
         return temporaryFilename;

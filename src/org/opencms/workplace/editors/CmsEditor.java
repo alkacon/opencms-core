@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/09/11 10:31:04 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2007/09/11 12:11:06 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
@@ -783,48 +783,7 @@ public abstract class CmsEditor extends CmsEditorBase {
      */
     protected String createTempFile() throws CmsException {
 
-        String temporaryFilename = OpenCms.getWorkplaceManager().createTempFile(
-            getCms(),
-            getParamResource(),
-            getSettings().getProject());
-
-        CmsObject cms = getCms();
-        try {
-            // switch to the temporary file project
-            cms.getRequestContext().setCurrentProject(
-                cms.readProject(OpenCms.getWorkplaceManager().getTempFileProjectId()));
-            // lock the temporary file
-            cms.changeLock(temporaryFilename);
-            // touch the temporary file
-            cms.setDateLastModified(temporaryFilename, System.currentTimeMillis(), false);
-            // set the temporary file flag
-            CmsResource tempFile = cms.readResource(temporaryFilename, CmsResourceFilter.ALL);
-            int flags = tempFile.getFlags();
-            if ((flags & CmsResource.FLAG_TEMPFILE) == 0) {
-                flags += CmsResource.FLAG_TEMPFILE;
-            }
-            cms.chflags(temporaryFilename, flags);
-            // remove eventual release & expiration date from temporary file to make preview in editor work
-            cms.setDateReleased(temporaryFilename, CmsResource.DATE_RELEASED_DEFAULT, false);
-            cms.setDateExpired(temporaryFilename, CmsResource.DATE_EXPIRED_DEFAULT, false);
-            // remove visibility permissions for everybody on temporary file if possible
-            if (cms.hasPermissions(tempFile, CmsPermissionSet.ACCESS_CONTROL)) {
-                cms.chacc(
-                    temporaryFilename,
-                    I_CmsPrincipal.PRINCIPAL_GROUP,
-                    OpenCms.getDefaultUsers().getGroupUsers(),
-                    "-v");
-                cms.chacc(
-                    temporaryFilename,
-                    I_CmsPrincipal.PRINCIPAL_GROUP,
-                    OpenCms.getDefaultUsers().getGroupProjectmanagers(),
-                    "-v");
-            }
-        } finally {
-            // switch back to current project
-            cms.getRequestContext().setCurrentProject(cms.readProject(getSettings().getProject()));
-        }
-        return temporaryFilename;
+        return OpenCms.getWorkplaceManager().createTempFile(getCms(), getParamResource(), getSettings().getProject());
     }
 
     /**

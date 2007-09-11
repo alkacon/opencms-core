@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/09/11 10:31:03 $
- * Version: $Revision: 1.597 $
+ * Date   : $Date: 2007/09/11 12:11:06 $
+ * Version: $Revision: 1.598 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1451,8 +1451,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // it is not allowed to create a resource in a folder locked by other user
             if (!parentLock.isUnlocked() && !parentLock.isOwnedBy(dbc.currentUser())) {
                 // one exception is if the admin user tries to create a temporary resource
-                if (!m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.ROOT_ADMIN)
-                    || !CmsResource.getName(resourcePath).startsWith(TEMP_FILE_PREFIX)) {
+                if (!CmsResource.getName(resourcePath).startsWith(TEMP_FILE_PREFIX)
+                    || !m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.ROOT_ADMIN)) {
                     throw new CmsLockException(Messages.get().container(
                         Messages.ERR_CREATE_RESOURCE_PARENT_LOCK_1,
                         dbc.removeSiteRoot(resourcePath)));
