@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/10 13:26:01 $
- * Version: $Revision: 1.885 $
+ * Date   : $Date: 2007/09/11 14:14:02 $
+ * Version: $Revision: 1.886 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -77,6 +77,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 ! Added new database tool to remove publish locks
 ! Added support for using %(property.XXX) in XML default values to the CmsDefaultXmlContentHandler 
 ! Added cause messages to inactive context menu entries to Explorer view
+! Sites are now also sorted by the NavPos property  
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog

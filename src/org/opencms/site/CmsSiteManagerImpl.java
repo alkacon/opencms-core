@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/09/11 14:14:02 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.2
  */
@@ -252,7 +252,7 @@ public final class CmsSiteManagerImpl {
                 return Collections.EMPTY_LIST;
             }
 
-            Collections.sort(siteroots);
+            Collections.sort(siteroots); // sort by resource name
             i = siteroots.iterator();
             while (i.hasNext()) {
                 String folder = (String)i.next();
@@ -274,17 +274,21 @@ public final class CmsSiteManagerImpl {
                             if (title == null) {
                                 title = folder;
                             }
+                            String position = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_NAVPOS, false).getValue();
                             result.add(new CmsSite(
                                 folder,
                                 res.getStructureId(),
                                 title,
-                                (CmsSiteMatcher)siteServers.get(folder)));
+                                (CmsSiteMatcher)siteServers.get(folder),
+                                position));
                         }
                     } catch (CmsException e) {
                         // user probably has no read access to the folder, ignore and continue iterating            
                     }
                 }
             }
+
+            Collections.sort(result);
         } catch (Throwable t) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_SITE_PROP_FAILED_0), t);
         } finally {

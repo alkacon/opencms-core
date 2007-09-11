@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2007/09/11 14:14:02 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,11 +50,11 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
-public final class CmsSite implements Cloneable {
+public final class CmsSite implements Cloneable, Comparable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSite.class);
@@ -67,6 +67,9 @@ public final class CmsSite implements Cloneable {
 
     /** If set to true, secure resources will only be available using the configured secure url. */
     private boolean m_exclusiveUrl;
+
+    /** This value defines a relative sorting order. */
+    private float m_position;
 
     /** The Url of the secure server. */
     private CmsSiteMatcher m_secureServer;
@@ -92,7 +95,7 @@ public final class CmsSite implements Cloneable {
      */
     public CmsSite(String siteRoot, CmsSiteMatcher siteMatcher) {
 
-        this(siteRoot, CmsUUID.getNullUUID(), siteRoot, siteMatcher);
+        this(siteRoot, CmsUUID.getNullUUID(), siteRoot, siteMatcher, "");
     }
 
     /**
@@ -105,7 +108,7 @@ public final class CmsSite implements Cloneable {
      */
     public CmsSite(String siteRoot, CmsUUID siteRootUUID, String title) {
 
-        this(siteRoot, siteRootUUID, title, CmsSiteMatcher.DEFAULT_MATCHER);
+        this(siteRoot, siteRootUUID, title, CmsSiteMatcher.DEFAULT_MATCHER, "");
     }
 
     /**
@@ -115,13 +118,21 @@ public final class CmsSite implements Cloneable {
      * @param siteRootUUID UUID of this site's root directory in the OpenCms VFS
      * @param title display name of this site
      * @param siteMatcher the site matcher for this site
+     * @param position the sorting position
      */
-    public CmsSite(String siteRoot, CmsUUID siteRootUUID, String title, CmsSiteMatcher siteMatcher) {
+    public CmsSite(String siteRoot, CmsUUID siteRootUUID, String title, CmsSiteMatcher siteMatcher, String position) {
 
         setSiteRoot(siteRoot);
         setSiteRootUUID(siteRootUUID);
         setTitle(title);
         setSiteMatcher(siteMatcher);
+        // init the position value
+        m_position = Float.MAX_VALUE;
+        try {
+            m_position = Float.parseFloat(position);
+        } catch (Throwable e) {
+            // m_position will have Float.MAX_VALUE, so this site will appear last
+        }
         m_aliases = new ArrayList();
     }
 
@@ -136,7 +147,31 @@ public final class CmsSite implements Cloneable {
             getSiteRoot(),
             (CmsUUID)getSiteRootUUID().clone(),
             getTitle(),
-            (CmsSiteMatcher)getSiteMatcher().clone());
+            (CmsSiteMatcher)getSiteMatcher().clone(),
+            String.valueOf(getPosition()));
+    }
+
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object that) {
+
+        if (that == this) {
+            return 0;
+        }
+        if (that instanceof CmsSite) {
+            float thatPos = ((CmsSite)that).getPosition();
+            // please note: can't just subtract and cast to int here because of float precision loss
+            if (m_position == thatPos) {
+                if (m_position == Float.MAX_VALUE) {
+                    // if they both do not have any position, sort by title
+                    return m_title.compareTo(((CmsSite)that).getTitle());
+                }
+                return 0;
+            }
+            return (m_position < thatPos) ? -1 : 1;
+        }
+        return 0;
     }
 
     /**
@@ -164,6 +199,16 @@ public final class CmsSite implements Cloneable {
     }
 
     /**
+     * Returns the sorting position.<p>
+     *
+     * @return the sorting position
+     */
+    public float getPosition() {
+
+        return m_position;
+    }
+
+    /**
      * Returns the secure server url of this site root.<p>
      * 
      * @return the secure server url
@@ -171,6 +216,43 @@ public final class CmsSite implements Cloneable {
     public String getSecureUrl() {
 
         return m_secureServer.getUrl();
+    }
+
+    /**
+     * Returns the server prefix for the given resource in this site, used to distinguish between 
+     * secure (https) and non-secure (http) sites.<p>
+     * 
+     * This is required since a resource may have an individual "secure" setting using the property
+     * {@link CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
+     * must be delivered only using a secure protocol.<p>
+     * 
+     * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
+     * 
+     * @param cms the current users OpenCms context
+     * @param resource the resource to use
+     * 
+     * @return the server prefix for the given resource in this site
+     * 
+     * @see #getSecureUrl()
+     * @see #getUrl()
+     */
+    public String getServerPrefix(CmsObject cms, CmsResource resource) {
+
+        if (equals(OpenCms.getSiteManager().getDefaultSite())) {
+            return OpenCms.getSiteManager().getWorkplaceServer();
+        }
+        boolean secure = false;
+        if (hasSecureServer()) {
+            try {
+                secure = Boolean.valueOf(
+                    cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
+            } catch (CmsException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        return (secure ? getSecureUrl() : getUrl());
     }
 
     /**
@@ -205,43 +287,6 @@ public final class CmsSite implements Cloneable {
             try {
                 secure = Boolean.valueOf(
                     cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
-            } catch (CmsException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-        }
-        return (secure ? getSecureUrl() : getUrl());
-    }
-
-    /**
-     * Returns the server prefix for the given resource in this site, used to distinguish between 
-     * secure (https) and non-secure (http) sites.<p>
-     * 
-     * This is required since a resource may have an individual "secure" setting using the property
-     * {@link CmsPropertyDefinition#PROPERTY_SECURE}, which means this resource
-     * must be delivered only using a secure protocol.<p>
-     * 
-     * The result will look like <code>http://site.enterprise.com:8080/</code> or <code>https://site.enterprise.com/</code>.<p> 
-     * 
-     * @param cms the current users OpenCms context
-     * @param resource the resource to use
-     * 
-     * @return the server prefix for the given resource in this site
-     * 
-     * @see #getSecureUrl()
-     * @see #getUrl()
-     */
-    public String getServerPrefix(CmsObject cms, CmsResource resource) {
-
-        if (equals(OpenCms.getSiteManager().getDefaultSite())) {
-            return OpenCms.getSiteManager().getWorkplaceServer();
-        }
-        boolean secure = false;
-        if (hasSecureServer()) {
-            try {
-                secure = Boolean.valueOf(
-                    cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue()).booleanValue();
             } catch (CmsException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(e.getLocalizedMessage(), e);
