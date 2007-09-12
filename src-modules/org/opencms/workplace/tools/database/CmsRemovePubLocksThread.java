@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsRemovePubLocksThread.java,v $
- * Date   : $Date: 2007/09/07 10:07:58 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/12 12:18:42 $
+ * Version: $Revision: 1.4 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -64,7 +64,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  */
@@ -120,7 +120,7 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
             getReport().println(Messages.get().container(Messages.RPT_DB_PUBLOCKS_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
             CmsObject cms = getCms();
             CmsLockFilter filter = CmsLockFilter.FILTER_ALL;
-            filter.filterType(CmsLockType.PUBLISH);
+            filter = filter.filterType(CmsLockType.PUBLISH);
 
             Iterator it = m_resources.iterator();
             while (it.hasNext()) {
