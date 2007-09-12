@@ -46,3 +46,31 @@ FCKLang.DlgImgStateNew			= "Dieses Bild ist neu und noch nicht online verf\u00fc
 FCKLang.DlgImgStateChanged		= "Die \u00c4nderungen an diesem Bild wurden noch nicht publiziert.";
 
 FCKLang.DlgImgAjaxWait			= "Bitte warten Sie...";
+
+// Common FCK Image Dialog
+FCKLang.DlgImgTitle		= "Bild Eigenschaften";
+FCKLang.DlgImgInfoTab		= "Bild-Info";
+FCKLang.DlgImgBtnUpload		= "Zum Server senden";
+FCKLang.DlgImgURL		= "Bildauswahl";
+FCKLang.DlgImgUpload		= "Upload";
+FCKLang.DlgImgAlt		= "Alternativer Text";
+FCKLang.DlgImgWidth		= "Breite";
+FCKLang.DlgImgHeight		= "H\u00f6he";
+FCKLang.DlgImgLockRatio		= "Gr\u00f6\u00dfenverh\u00e4ltnis beibehalten";
+FCKLang.DlgBtnResetSize		= "Gr\u00f6\u00dfe zur\u00fccksetzen";
+FCKLang.DlgImgBorder		= "Rahmen";
+FCKLang.DlgImgHSpace		= "H-Abstand";
+FCKLang.DlgImgVSpace		= "V-Abstand";
+FCKLang.DlgImgAlign		= "Ausrichtung";
+FCKLang.DlgImgAlignLeft		= "Links";
+FCKLang.DlgImgAlignAbsBottom	= "Abs Unten";
+FCKLang.DlgImgAlignAbsMiddle	= "Abs Mitte";
+FCKLang.DlgImgAlignBaseline	= "Baseline";
+FCKLang.DlgImgAlignBottom	= "Unten";
+FCKLang.DlgImgAlignMiddle	= "Mitte";
+FCKLang.DlgImgAlignRight	= "Rechts";
+FCKLang.DlgImgAlignTextTop	= "Text Oben";
+FCKLang.DlgImgAlignTop		= "Oben";
+FCKLang.DlgImgPreview		= "Vorschau";
+FCKLang.DlgImgAlertUrl		= "Bitte geben Sie die Bild-URL an";
+FCKLang.DlgImgLinkTab		= "Link";
