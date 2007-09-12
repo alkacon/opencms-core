@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2007/09/12 07:29:34 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  * 
@@ -522,7 +522,7 @@ public class CmsImportExportManager {
      * folders in the /system/ folder. Changes to these folders usually should not be imported to 
      * another system.<p>
      * 
-     * @return the list of immutable resources, or Collections.EMPTY_LIST
+     * @return the list of immutable resources, or {@link Collections#EMPTY_LIST}
      */
     public List getImmutableResources() {
 
@@ -534,8 +534,10 @@ public class CmsImportExportManager {
      * a specified resource.<p>
      * 
      * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
+     * 
      * @return an instance of an import/export handler implementation
-     * @throws CmsImportExportException if somethong goes wrong
+     * 
+     * @throws CmsImportExportException if something goes wrong
      */
     public I_CmsImportExportHandler getImportExportHandler(String importFile) throws CmsImportExportException {
 
