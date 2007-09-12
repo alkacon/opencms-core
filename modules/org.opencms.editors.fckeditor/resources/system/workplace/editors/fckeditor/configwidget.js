@@ -22,7 +22,10 @@ if (CmsStringUtil.isEmpty(configuration)) {
 FCKConfig.AutoDetectLanguage = false;
 FCKConfig.DefaultLanguage = "<%= wp.getLocale().getLanguage() %>";
 
-FCKConfig.ProcessHTMLEntities = false;
+FCKConfig.ProcessHTMLEntities = true;
+FCKConfig.ProcessNumericEntities = false;
+FCKConfig.IncludeLatinEntities = false;
+FCKConfig.IncludeGreekEntities = false;
 
 FCKConfig.BaseHref = "<%= site %>";
 
