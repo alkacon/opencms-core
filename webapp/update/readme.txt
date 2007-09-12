@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 6.x/7.x to OpenCms 7.0.1
+            Instructions for updating OpenCms 6.x/7.x to OpenCms 7.0.2
 
 
                                     WARNING:
@@ -17,7 +17,7 @@ IMPORTANT: Before using this upgrade wizard, make sure you have a full backup
 of your OpenCms installation and database.
 
 
-Follow the following steps to update from OpenCms 6.x/7.x to OpenCms 7.0.1:
+Follow the following steps to update from OpenCms 6.x/7.x to OpenCms 7.0.2:
 
 
 1. Shutdown your OpenCms servlet container
@@ -27,7 +27,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7.0.1.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7.0.2.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
@@ -46,9 +46,9 @@ in the config file WEB-INF/config/opencms.properties.
 
 3.a. Important Note only for 6.x Updates: Manual configuration files update
 
-The automatic configuration files update from OpenCms 6.x to OpenCms 7.0 is working, 
+The automatic configuration files update from OpenCms 6.x to OpenCms 7.0.x is working, 
 but just for the essentials.
-To get the full power of OpenCms 7.0 you need to use an OpenCms 7.0 
+To get the full power of OpenCms 7.0.x you need to use an OpenCms 7.0.x 
 opencms-workplace.xml configuration file. One is provided under update/config, but
 you will need to manually copy it to your WEB-INF/config/ folder.
 
@@ -68,7 +68,7 @@ lines 10-11:
 # Rebuild search indexes
 rebuildAllIndexes
 ---
-and delete them or comment it out.
+and delete them or comment them out.
 
 4. Restart your OpenCms servlet container
 
@@ -81,7 +81,7 @@ Open the URL $SERVER_NAME/$CONTEXT_NAME/update/ in your Browser, e.g.
 
 http://yourserver:8080/opencms/update/
 
-The update wizard should appear which looks very similar to the OpenCms setup
+The update wizard should appear, which looks very similar to the OpenCms setup
 wizard. Make sure to read the instructions and the disclaimer on the start 
 page. Then execute the wizard which guides you through the update process.
 
@@ -90,7 +90,8 @@ Important Note only for 6.x Updates:
 
 The first step is a database update, please notice that until now this is working
 and has been tested only for MySQL versions 4.1 and 5.0, and for Oracle versions 
-9i and 10g.
+9i and 10g. And it should also work for PostgreSQL, but it is not implemented for
+MsSQL.
 
 This process is very time and space consuming, for instance, for a system with 
 3,128 resources it takes about 5 minutes, but an update of a system with 120,000+ 
