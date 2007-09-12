@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="javadoc" name="Javadoc modules templateone dev">
-	<property name="opencms.input" value="../../" />
-	<property name="opencms.output" value="${opencms.input}../BuildCms/" />
+	
+	<property name="opencms.input" 						value="../../" />
+	<property name="opencms.output" 					value="${opencms.input}../BuildCms/" />
+    <property name="opencms.input.libs.runtime"			location="${opencms.input}/lib/runtime" />
+    <property name="opencms.input.libs.compile"			location="${opencms.input}/lib/compile" />
+    <property name="opencms.input.libs.db.base"			location="${opencms.input}/webapp/setup/database" />
 
-	<property name="srcdir" value="${opencms.input}/src-modules" />
-	<property name="imgdir" value="${basedir}/logos" />
-	<property name="partname" value="modules-templateone" />
+	<property name="srcdir" 							value="${opencms.input}/src-modules" />
+	<property name="imgdir" 							value="${basedir}/logos" />
+	<property name="partname" 							value="modules-templateone" />
 
 	<!-- dont change this property! -->
-	<property name="destdir" value="${opencms.output}/doc/${partname}" />
+	<property name="destdir" 							value="${opencms.output}/doc/${partname}" />
 
 	<taskdef resource="net/sf/antcontrib/antlib.xml">
 		<classpath>
-			<pathelement location="${opencms.input}/webapp/WEB-INF/lib/ant-contrib-1.0b1.jar" />
+	          <pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar"/>
 		</classpath>
 	</taskdef>
 
@@ -38,10 +42,18 @@
 			nodeprecatedlist="false" 
 			nodeprecated="false" 
 			stylesheetfile="javadoc.css" 
-			doctitle="OpenCms Templateone Module API, version 7.0.1" Windowtitle="OpenCms Templateone Module API, version 7.0" additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src={@docRoot}/logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src={@docRoot}logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;">
-			<classpath>
-				<fileset dir="${opencms.input}/webapp/WEB-INF/lib/" includes="*.jar" />
-			</classpath>
+			doctitle="OpenCms Templateone Module API, version 7.0.2" Windowtitle="OpenCms Templateone Module API, version 7.0" additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src={@docRoot}/logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src={@docRoot}logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;">
+       	    <classpath>
+       	      <fileset dir="${opencms.input.libs.compile}">
+       	        <include name="**/*.jar"/>
+       	      </fileset>
+     	      <fileset dir="${opencms.input.libs.runtime}">
+     	        <include name="**/*.jar"/>
+     	      </fileset>
+       	      <fileset dir="${opencms.input.libs.db.base}">
+       	        <include name="**/*.jar"/>
+       	      </fileset>
+       	    </classpath>
 			<sourcepath>
 				<pathelement location="${srcdir}" />
 				<!-- This avoids complaints about non-existant sources, at buildtime no opencms.jar for the classpath at hand. -->

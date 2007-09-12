@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="Javadoc Core" default="javadoc">
-<property name="opencms.input" value="../../"/>
-    <property name="opencms.output" value="${opencms.input}../BuildCms/"/>
-    <property name="srcdir" value="${opencms.input}/src"/>
-    <property name="imgdir" value="${opencms.input}/doc/javadoc/logos"  />
-    <property name="partname"   value="core" />
+	
+	<property name="opencms.input" 						value="../../"/>
+    <property name="opencms.input.libs.runtime"			location="${opencms.input}/lib/runtime" />
+    <property name="opencms.input.libs.compile"			location="${opencms.input}/lib/compile" />
+    <property name="opencms.input.libs.db.base"			location="${opencms.input}/webapp/setup/database" />
+    <property name="opencms.output" 					value="${opencms.input}../BuildCms/"/>
+    <property name="srcdir" 							value="${opencms.input}/src"/>
+    <property name="imgdir" 							value="${opencms.input}/doc/javadoc/logos"  />
+    <property name="partname"   						value="core" />
  
     <!-- dont change this property! -->
-    <property name="destdir" value="${opencms.output}/doc/${partname}"  />
+    <property name="destdir" 							value="${opencms.output}/doc/${partname}"  />
   
     <taskdef resource="net/sf/antcontrib/antlib.xml">
 	      <classpath>
-	          <pathelement location="${opencms.input}/webapp/WEB-INF/lib/ant-contrib-1.0b1.jar"/>
+	          <pathelement location="${opencms.input.libs.compile}/ant-contrib-1.0b1.jar"/>
         </classpath>
     </taskdef>
 
@@ -40,14 +44,24 @@
           nodeprecated="false" 
           stylesheetfile="${opencms.input}/doc/javadoc/javadoc.css" 
           overview="${srcdir}/org/opencms/main/overview.html"
-          doctitle="OpenCms Core API, version 7.0.1" 
-          Windowtitle="OpenCms Core API, version 7.0.1"
+          doctitle="OpenCms Core API, version 7.0.2" 
+          Windowtitle="OpenCms Core API, version 7.0.2"
           additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src={@docRoot}/logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src={@docRoot}logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;"    
         >
             <package name="org.opencms.*"/>
-            <classpath>
-                <fileset dir="${opencms.input}/webapp/WEB-INF/lib/" includes="*.jar" />
-            </classpath>
+        	
+       	    <classpath>
+       	      <fileset dir="${opencms.input.libs.compile}">
+       	        <include name="**/*.jar"/>
+       	      </fileset>
+     	      <fileset dir="${opencms.input.libs.runtime}">
+     	        <include name="**/*.jar"/>
+     	      </fileset>
+       	      <fileset dir="${opencms.input.libs.db.base}">
+       	        <include name="**/*.jar"/>
+       	      </fileset>
+       	    </classpath>
+
             <fileset dir="${srcdir}" >
               <include name="**/*.java" />
               <exclude name="**/Messages.java" />
