@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/09/11 12:11:06 $
- * Version: $Revision: 1.598 $
+ * Date   : $Date: 2007/09/12 08:43:27 $
+ * Version: $Revision: 1.599 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -7066,7 +7066,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             histRes.getSiblingCount(),
             histRes.getLength(),
             histRes.getDateContent(),
-            histRes.getVersion() + 1);
+            histRes.getVersion());
 
         // prevent the date last modified is set to the current time
         newResource.setDateLastModified(newResource.getDateLastModified());
@@ -9277,6 +9277,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // restore the state to unchanged 
             res.setState(newState);
             m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL, false);
+        }
+
+        // delete all offline relations
+        m_vfsDriver.deleteRelations(dbc, dbc.currentProject().getUuid(), offlineResource, CmsRelationFilter.TARGETS);
+        // get online relations
+        List relations = m_vfsDriver.readRelations(
+            dbc,
+            CmsProject.ONLINE_PROJECT_ID,
+            onlineResource,
+            CmsRelationFilter.TARGETS);
+        // write offline relations
+        Iterator itRelations = relations.iterator();
+        while (itRelations.hasNext()) {
+            CmsRelation relation = (CmsRelation)itRelations.next();
+            m_vfsDriver.createRelation(dbc, dbc.currentProject().getUuid(), relation);
         }
 
         // update the cache

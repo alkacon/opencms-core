@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2007/08/13 16:29:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/09/12 08:43:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -102,6 +102,7 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         suite.addTest(new TestLinkParseableResourceTypes("testImportResourceNonLinkParseable"));
         suite.addTest(new TestLinkParseableResourceTypes("testDeleteResource"));
         suite.addTest(new TestLinkParseableResourceTypes("testDeleteFolder"));
+        suite.addTest(new TestLinkParseableResourceTypes("testUndoChanges"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -753,6 +754,61 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
         assertRelationOperation(cms, replaced, target, sources + 1, 1);
+    }
+
+    /**
+     * Test undoChanges method.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testUndoChanges() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing 'undoChanges' method");
+
+        String sourceName = "/index.html";
+        CmsResource source = cms.readResource(sourceName);
+        String targetName = "/folder1/index.html";
+        CmsResource target = cms.readResource(targetName);
+
+        List relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
+        assertEquals(1, relations.size());
+        assertTrue(cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).isEmpty());
+
+        // add new relation
+        cms.lockResource(sourceName);
+        cms.addRelationToResource(sourceName, targetName, CmsRelationType.CATEGORY.getName());
+
+        relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
+        assertEquals(2, relations.size());
+        assertRelation(new CmsRelation(source, target, CmsRelationType.CATEGORY), (CmsRelation)relations.get(1));
+        relations = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES);
+        assertEquals(1, relations.size());
+        assertRelation(new CmsRelation(source, target, CmsRelationType.CATEGORY), (CmsRelation)relations.get(0));
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, sourceName);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // delete relation
+        cms.lockResource(sourceName);
+        cms.deleteRelationsFromResource(
+            sourceName,
+            CmsRelationFilter.TARGETS.filterResource(target).filterNotDefinedInContent());
+
+        relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
+        assertEquals(1, relations.size());
+        assertTrue(cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES).isEmpty());
+
+        // undo changes
+        cms.undoChanges(sourceName, CmsResource.UNDO_CONTENT);
+
+        relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
+        assertEquals(2, relations.size());
+        assertRelation(new CmsRelation(source, target, CmsRelationType.CATEGORY), (CmsRelation)relations.get(1));
+        relations = cms.getRelationsForResource(targetName, CmsRelationFilter.SOURCES);
+        assertEquals(1, relations.size());
+        assertRelation(new CmsRelation(source, target, CmsRelationType.CATEGORY), (CmsRelation)relations.get(0));
     }
 
     /**
