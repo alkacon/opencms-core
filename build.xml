@@ -92,7 +92,7 @@
     	<echo message="Tomcat home is: ${tomcat.home}" />        
     </target>
 
-    <target name="clean" description="Delete existing ouput directories">
+    <target name="clean" description="Delete existing output directories">
     	
         <delete dir="${opencms.output.tests}" />
         <delete dir="${opencms.output.warfiles}" />
