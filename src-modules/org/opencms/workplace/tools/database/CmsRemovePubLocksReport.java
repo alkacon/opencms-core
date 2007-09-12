@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsRemovePubLocksReport.java,v $
- * Date   : $Date: 2007/09/06 15:08:23 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/09/12 09:36:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,11 +45,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * A report for displaying the remove publish lock process</code>.<p>
+ * A report for displaying the remove publish lock process.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.0.2
  */
