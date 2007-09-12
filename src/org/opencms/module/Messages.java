@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:05 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/09/12 14:54:30 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,29 +39,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DELETE_MODULE_PROJECT_DESC_1 = "GUI_DELETE_MODULE_PROJECT_DESC_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DELETE_MODULE_PROJECT_NAME_1 = "GUI_DELETE_MODULE_PROJECT_NAME_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DELETE_MODULE_BEGIN_0 = "RPT_DELETE_MODULE_BEGIN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DELETE_MODULE_END_0 = "RPT_DELETE_MODULE_END_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_MOVE_RESOURCE_FAILED_1 = "LOG_MOVE_RESOURCE_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_CHECK_DEPENDENCY_INVALID_MODE_1 = "ERR_CHECK_DEPENDENCY_INVALID_MODE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DELETE_MODULE_CHECK_LOCKS_2 = "ERR_DELETE_MODULE_CHECK_LOCKS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORT_MOD_ALREADY_INSTALLED_1 = "ERR_IMPORT_MOD_ALREADY_INSTALLED_1";
@@ -127,10 +115,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SAX_MODULE_IMPORT_1 = "ERR_SAX_MODULE_IMPORT_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_IMPORT_MODULE_PROJECT_NAME_1 = "GUI_IMPORT_MODULE_PROJECT_NAME_1";
+    public static final String GUI_DELETE_MODULE_PROJECT_DESC_1 = "GUI_DELETE_MODULE_PROJECT_DESC_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_MODULE_PROJECT_NAME_1 = "GUI_DELETE_MODULE_PROJECT_NAME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMPORT_MODULE_PROJECT_DESC_1 = "GUI_IMPORT_MODULE_PROJECT_DESC_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMPORT_MODULE_PROJECT_NAME_1 = "GUI_IMPORT_MODULE_PROJECT_NAME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_EXPORT_POINT_2 = "INIT_ADD_EXPORT_POINT_2";
@@ -232,6 +226,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_MODULE_UPDATED_2 = "LOG_MODULE_UPDATED_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_MOVE_RESOURCE_FAILED_1 = "LOG_MOVE_RESOURCE_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_OLD_MODULE_IMPORTED_0 = "LOG_OLD_MODULE_IMPORTED_0";
 
     /** Message constant for key in the resource bundle. */
@@ -239,6 +236,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DELETE_0 = "RPT_DELETE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_MODULE_BEGIN_0 = "RPT_DELETE_MODULE_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_MODULE_END_0 = "RPT_DELETE_MODULE_END_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORT_MODULE_BEGIN_0 = "RPT_EXPORT_MODULE_BEGIN_0";

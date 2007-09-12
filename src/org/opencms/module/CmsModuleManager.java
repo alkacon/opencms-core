@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2007/09/06 13:53:28 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2007/09/12 14:54:30 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,8 +40,11 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.lock.CmsLock;
+import org.opencms.lock.CmsLockException;
+import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
@@ -52,6 +55,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,10 +167,10 @@ public class CmsModuleManager {
                 String moduleDependencyName = dependency.getName();
 
                 if (mode) {
-                    // get the list of dependend modules
+                    // get the list of dependent modules
                     List moduleDependencies = (List)ret.get(moduleDependencyName);
                     if (moduleDependencies == null) {
-                        // build a new list if "b" has no dependend modules yet
+                        // build a new list if "b" has no dependent modules yet
                         moduleDependencies = new ArrayList();
                         ret.put(moduleDependencyName, moduleDependencies);
                     }
@@ -376,7 +380,7 @@ public class CmsModuleManager {
     }
 
     /**
-     * Checks if a modules depedencies are fulfilled.<p> 
+     * Checks if a modules dependencies are fulfilled.<p> 
      * 
      * The possible values for the <code>mode</code> parameter are:<dl>
      * <dt>{@link #DEPENDENCY_MODE_DELETE}</dt>
@@ -470,13 +474,14 @@ public class CmsModuleManager {
      * @param cms must be initialized with "Admin" permissions 
      * @param moduleName the name of the module to delete
      * @param replace indicates if the module is replaced (true) or finally deleted (false)
-     * @param report the report to print progesss messages to
+     * @param report the report to print progress messages to
      * 
      * @throws CmsRoleViolationException if the required module manager role permissions are not available 
      * @throws CmsConfigurationException if a module with this name is not available for deleting
+     * @throws CmsLockException if the module resources can not be locked
      */
     public synchronized void deleteModule(CmsObject cms, String moduleName, boolean replace, I_CmsReport report)
-    throws CmsRoleViolationException, CmsConfigurationException {
+    throws CmsRoleViolationException, CmsConfigurationException, CmsLockException {
 
         // check for module manager role permissions
         OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
@@ -493,11 +498,6 @@ public class CmsModuleManager {
         }
 
         CmsModule module = (CmsModule)m_modules.get(moduleName);
-        boolean removeResourceTypes = !module.getResourceTypes().isEmpty();
-        if (removeResourceTypes) {
-            // mark the resource manager to reinitialize if necessary
-            OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module);
-        }
 
         if (!replace) {
             // module is deleted, not replaced
@@ -523,7 +523,42 @@ public class CmsModuleManager {
                 }
             } catch (Throwable t) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_MOD_UNINSTALL_ERR_1, moduleName), t);
+                report.println(
+                    Messages.get().container(Messages.LOG_MOD_UNINSTALL_ERR_1, moduleName),
+                    I_CmsReport.FORMAT_WARNING);
             }
+        }
+
+        boolean removeResourceTypes = !module.getResourceTypes().isEmpty();
+        if (removeResourceTypes) {
+            // mark the resource manager to reinitialize if necessary
+            OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module);
+        }
+
+        // check locks
+        List lockedResources = new ArrayList();
+        CmsLockFilter filter1 = CmsLockFilter.FILTER_ALL.filterNotLockableByUser(cms.getRequestContext().currentUser());
+        CmsLockFilter filter2 = CmsLockFilter.FILTER_INHERITED;
+        List moduleResources = module.getResources();
+        for (int iLock = 0; iLock < moduleResources.size(); iLock++) {
+            String resourceName = (String)moduleResources.get(iLock);
+            try {
+                lockedResources.addAll(cms.getLockedResources(resourceName, filter1));
+                lockedResources.addAll(cms.getLockedResources(resourceName, filter2));
+            } catch (CmsException e) {
+                // may happen if the resource has already been deleted
+                LOG.error(e.getLocalizedMessage(), e);
+                report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
+            }
+        }
+        if (!lockedResources.isEmpty()) {
+            CmsMessageContainer msg = Messages.get().container(
+                Messages.ERR_DELETE_MODULE_CHECK_LOCKS_2,
+                moduleName,
+                CmsStringUtil.collectionAsString(lockedResources, ","));
+            report.addError(msg.key(cms.getRequestContext().getLocale()));
+            report.println(msg);
+            throw new CmsLockException(msg);
         }
 
         // now remove the module
@@ -567,7 +602,7 @@ public class CmsModuleManager {
                     LOG.error(
                         Messages.get().getBundle().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, projectFiles.get(i)),
                         e);
-                    report.println(e);
+                    report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
                 }
             }
 
@@ -616,7 +651,7 @@ public class CmsModuleManager {
                 } catch (CmsException e) {
                     // ignore the exception and delete the next resource
                     LOG.error(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_EXC_1, currentResource), e);
-                    report.println(e);
+                    report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
                 }
             }
 
@@ -641,7 +676,7 @@ public class CmsModuleManager {
         // update the configuration
         updateModuleConfiguration();
 
-        // reinit the manager is nescessary
+        // reinit the manager is necessary
         if (removeResourceTypes) {
             OpenCms.getResourceManager().initialize(cms);
         }
@@ -823,7 +858,7 @@ public class CmsModuleManager {
      * @param module the module to update
      * 
      * @throws CmsRoleViolationException if the required module manager role permissions are not available 
-     * @throws CmsConfigurationException if a module with this name is not available for updateing 
+     * @throws CmsConfigurationException if a module with this name is not available for updating 
      */
     public synchronized void updateModule(CmsObject cms, CmsModule module)
     throws CmsRoleViolationException, CmsConfigurationException {
@@ -876,7 +911,7 @@ public class CmsModuleManager {
     }
 
     /**
-     * Initializes the list of esport points from all configured modules.<p>
+     * Initializes the list of export points from all configured modules.<p>
      */
     private synchronized void initModuleExportPoints() {
 

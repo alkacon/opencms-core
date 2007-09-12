@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleIssues.java,v $
- * Date   : $Date: 2007/08/13 16:30:06 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/09/12 14:54:30 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,15 +28,23 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.module;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.lock.CmsLockException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -47,49 +55,60 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestModuleIssues extends OpenCmsTestCase {
-  
+
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestModuleIssues(String arg0) {
+
         super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestModuleIssues.class.getName());
-                
+
         suite.addTest(new TestModuleIssues("testAdditionalSystemFolder"));
-        
+        suite.addTest(new TestModuleIssues("testModuleDeletion"));
+
         // important: this must be the last called method since the OpenCms installation is removed from there
         suite.addTest(new TestModuleIssues("testShutdownMethod"));
-        
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
+            /**
+             * @see junit.extensions.TestSetup#setUp()
+             */
             protected void setUp() {
+
                 setupOpenCms("simpletest", "/sites/default/");
             }
-            
+
+            /**
+             * @see junit.extensions.TestSetup#tearDown()
+             */
             protected void tearDown() {
+
                 // done in "testShutdownMethod"
                 // removeOpenCms();
             }
         };
-        
+
         return wrapper;
-    }     
+    }
 
     /**
      * Issue: Additional "system" folder created in current site after module import.<p>
@@ -97,19 +116,24 @@ public class TestModuleIssues extends OpenCmsTestCase {
      * @throws Throwable if something goes wrong
      */
     public void testAdditionalSystemFolder() throws Throwable {
-        
-        CmsObject cms = getCmsObject();     
+
+        CmsObject cms = getCmsObject();
         echo("Testing for additional 'system' folder after module import");
-              
-        String moduleName = "org.opencms.test.modules.test3";        
-        String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/" + moduleName + ".zip");
-        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
-        
+
+        String moduleName = "org.opencms.test.modules.test3";
+        String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/" + moduleName + ".zip");
+        OpenCms.getImportExportManager().importData(
+            cms,
+            moduleFile,
+            null,
+            new CmsShellReport(cms.getRequestContext().getLocale()));
+
         // basic check if the module was imported correctly
-        if (! OpenCms.getModuleManager().hasModule(moduleName)) {
+        if (!OpenCms.getModuleManager().hasModule(moduleName)) {
             fail("Module '" + moduleName + "' was not imported!");
         }
-        
+
         cms.getRequestContext().setSiteRoot("/");
         boolean found = true;
         try {
@@ -118,44 +142,158 @@ public class TestModuleIssues extends OpenCmsTestCase {
             // this is the expected result
             found = false;
         }
-        
+
         if (found) {
             fail("Additional 'system' folder was created!");
         }
-    }  
-    
+    }
+
     /**
-     * Issue: Sthudown method never called on module.<p>
+     * Issue: Module can not be deleted if there are locked resources.<p>
      * 
-     * @throws Exception if something goews wrong
+     * @throws Throwable if something goes wrong
      */
-    public void testShutdownMethod() throws Exception {
-        
-        echo("Testing module shutdown method");
-              
-        String moduleName = "org.opencms.configuration.TestModule1";
-        
-        // basic check if the module was imported correctly (during configuration)
-        if (! OpenCms.getModuleManager().hasModule(moduleName)) {
-            fail("Module '" + moduleName + "' was not imported!");
+    public void testModuleDeletion() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing module deletion with locked resources");
+
+        // create the resources for the test
+        String folderName = "/testModuleDeletion/";
+        String fileOneName = folderName + "fileOne.txt";
+        String fileTwoName = folderName + "fileTwo.txt";
+
+        cms.createResource(folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource(fileOneName, CmsResourceTypePlain.getStaticTypeId(), "first test file".getBytes(), null);
+        cms.createResource(fileTwoName, CmsResourceTypePlain.getStaticTypeId(), "second test file".getBytes(), null);
+
+        cms.unlockResource(folderName);
+
+        // create module
+        String moduleName = "org.opencms.test.modules.testModuleDeletion";
+        List resources = new ArrayList();
+        resources.add(folderName);
+        CmsModule module = new CmsModule(
+            moduleName,
+            "test",
+            "test",
+            null,
+            "test",
+            new CmsModuleVersion("0.0.1"),
+            "test",
+            "test@test.com",
+            System.currentTimeMillis(),
+            cms.getRequestContext().currentUser().getName(),
+            System.currentTimeMillis(),
+            null,
+            null,
+            resources,
+            null);
+        OpenCms.getModuleManager().addModule(cms, module);
+
+        // lock a module file by other user
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.lockResource(fileOneName);
+
+        // now try to delete
+        cms = getCmsObject();
+        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
+        try {
+            OpenCms.getModuleManager().deleteModule(cms, moduleName, false, report);
+            fail("it should not be possible to delete a module containing a file locked by other user");
+        } catch (CmsLockException e) {
+            // ok, ignore
         }
-        
-        I_CmsModuleAction actionInstance = OpenCms.getModuleManager().getModule(moduleName).getActionInstance();
-        
-        if (actionInstance == null) {
-            fail("Module '" + moduleName + "' has no action instance!");            
+        // the report error, and the module files, and the module itself
+        if (!report.hasError() || !cms.existsResource(fileOneName) || !OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("it should not be possible to delete a module containing a file locked by other user");
         }
 
-        if (! (actionInstance instanceof TestModuleActionImpl)) {
-            fail("Module '" + moduleName + "' has action class of unexpected type!");                        
-        } 
-        
+        // lock a super module folder by other user
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.lockResource("/");
+
+        // now try to delete again
+        cms = getCmsObject();
+        report = new CmsShellReport(Locale.ENGLISH);
+        try {
+            OpenCms.getModuleManager().deleteModule(cms, moduleName, false, report);
+            fail("it should not be possible to delete a module when a super folder is locked by other user");
+        } catch (CmsLockException e) {
+            // ok, ignore
+        }
+        // the report error, and the module files, and the module itself
+        if (!report.hasError() || !cms.existsResource(fileOneName) || !OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("it should not be possible to delete a module when a super folder is locked by other user");
+        }
+
+        // lock a super module folder by the same user
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.changeLock("/");
+
+        // now try to delete again
+        cms = getCmsObject();
+        report = new CmsShellReport(Locale.ENGLISH);
+        try {
+            OpenCms.getModuleManager().deleteModule(cms, moduleName, false, report);
+            fail("it should not be possible to delete a module when a super folder is locked by the same user");
+        } catch (CmsLockException e) {
+            // ok, ignore
+        }
+        // the report error, and the module files, and the module itself
+        if (!report.hasError() || !cms.existsResource(fileOneName) || !OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("it should not be possible to delete a module when a super folder is locked by the same user");
+        }
+
+        // lock only module resources by the same user
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.unlockResource("/");
+        cms.lockResource(fileTwoName);
+
+        // now try to delete again
+        cms = getCmsObject();
+        report = new CmsShellReport(Locale.ENGLISH);
+        OpenCms.getModuleManager().deleteModule(cms, moduleName, false, report);
+        // the report error, and the module files, and the module itself
+        if (report.hasError() || cms.existsResource(fileOneName) || OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("it should be possible to delete a module containing a file locked by the same user");
+        }
+    }
+
+    /**
+     * Issue: Shutdown method never called on module.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testShutdownMethod() throws Exception {
+
+        echo("Testing module shutdown method");
+
+        String moduleName = "org.opencms.configuration.TestModule1";
+
+        // basic check if the module was imported correctly (during configuration)
+        if (!OpenCms.getModuleManager().hasModule(moduleName)) {
+            fail("Module '" + moduleName + "' was not imported!");
+        }
+
+        I_CmsModuleAction actionInstance = OpenCms.getModuleManager().getModule(moduleName).getActionInstance();
+
+        if (actionInstance == null) {
+            fail("Module '" + moduleName + "' has no action instance!");
+        }
+
+        if (!(actionInstance instanceof TestModuleActionImpl)) {
+            fail("Module '" + moduleName + "' has action class of unexpected type!");
+        }
+
         // remove OpenCms installations, must call shutdown
         removeOpenCms();
-        
+
         // check if shutdown flag was set to "true"
-        assertTrue(TestModuleActionImpl.m_shutDown);   
-        
+        assertTrue(TestModuleActionImpl.m_shutDown);
+
         // reset flag for next test
         TestModuleActionImpl.m_shutDown = false;
     }
