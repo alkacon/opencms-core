@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/09/07 09:02:57 $
- * Version: $Revision: 1.154 $
+ * Date   : $Date: 2007/09/12 13:12:51 $
+ * Version: $Revision: 1.155 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.154 $
+ * @version $Revision: 1.155 $
  * 
  * @since 6.0.0 
  */
@@ -1447,7 +1447,7 @@ public final class CmsObject {
     /**
      * Returns the edition lock state for a specified resource.<p>
      * 
-     * This can be of all types for them {@link CmsLockType#isSystem()} is <code>false</code>.<p> 
+     * If the resource is waiting to be publish you might get a lock of type {@link CmsLockType#PUBLISH}.<p>
      * 
      * @param resource the resource to return the edition lock state for
      * 
@@ -1462,6 +1462,8 @@ public final class CmsObject {
 
     /**
      * Returns the lock state for a specified resource name.<p>
+     * 
+     * If the resource is waiting to be publish you might get a lock of type {@link CmsLockType#PUBLISH}.<p>
      * 
      * @param resourcename the name if the resource to get the lock state for (full current site relative path)
      * 
