@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/12 10:26:01 $
- * Version: $Revision: 1.887 $
+ * Date   : $Date: 2007/09/12 10:42:33 $
+ * Version: $Revision: 1.888 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.0.2 - xxxxx, 2007
+OpenCms 7.0.2 - September 12, 2007
 * Fixed issue #1291: Now using the correct line break format for UNIX in cmsshell.sh
 * Fixed issue #1460: Parent locks are now correctly filtered by the CmsLockFilter
 * Fixed issue #1486: Added missing CmsPrincipal comparator
@@ -78,7 +78,8 @@ OpenCms 7.0.2 - xxxxx, 2007
 ! Added new database tool to remove publish locks
 ! Added support for using %(property.XXX) in XML default values to the CmsDefaultXmlContentHandler 
 ! Added cause messages to inactive context menu entries to Explorer view
-! Sites are now also sorted by the NavPos property  
+! Sites are now also sorted by the NavPos property
+! Added I_CmsPermissionHandler that allows customization of VFS permissions
 
 OpenCms 7.0.1 - July 11, 2007
 * Fixed bug switching on/off descriptions in new resource dialog
