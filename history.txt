@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/11 14:14:02 $
- * Version: $Revision: 1.886 $
+ * Date   : $Date: 2007/09/12 10:26:01 $
+ * Version: $Revision: 1.887 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -61,6 +61,7 @@ OpenCms 7.0.2 - xxxxx, 2007
 - Refactored libs for better handling of runtime and compile-time dependencies
 - Refactored setup/update wizard to a separate opencms-setup.jar
 - Search index generation will now skip documents where no default locale matches the index locale
+- Updated mysql-connector-java.jar to version 5.0.7
 ! Added <cms:contentaccess> tag and bean for easy access to XML contents on JSP using the EL with JSTL
 ! Added JSP EL ${cms:...} function implementations that allow convenient access to OpenCms utility functions
 ! Added new option "searchsettings" to XML content handler, used to reduce visibility of fields in search "content"
