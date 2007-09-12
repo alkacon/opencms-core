@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirActiveNonDeleted.java,v $
- * Date   : $Date: 2007/09/10 08:46:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/12 11:51:23 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6
  */
@@ -54,7 +54,7 @@ public class CmsMirActiveNonDeleted extends A_CmsMenuItemRule {
         if (!resourceUtil[0].getResource().getState().isDeleted()) {
             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
         }
-        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_NOTDELETED_0);
+        return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_DELETED_0);
     }
 
     /**

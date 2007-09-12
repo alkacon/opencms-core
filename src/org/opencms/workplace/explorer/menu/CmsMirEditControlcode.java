@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirEditControlcode.java,v $
- * Date   : $Date: 2007/09/10 08:46:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/12 11:51:23 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.9.2
  */
@@ -76,6 +76,9 @@ public class CmsMirEditControlcode extends A_CmsMenuItemRule {
                             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
                         }
                     } else if (OpenCms.getRoleManager().hasRole(cms, CmsRole.DEVELOPER)) {
+                        if (resourceUtil[0].getResource().getState().isDeleted()) {
+                            return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_DELETED_0);
+                        }
                         return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
                     }
                 }
@@ -94,6 +97,9 @@ public class CmsMirEditControlcode extends A_CmsMenuItemRule {
                                 CmsResourceFilter.ALL)) {
                             return CmsMenuItemVisibilityMode.VISIBILITY_ACTIVE;
                         } else {
+                            if (resourceUtil[0].getResource().getState().isDeleted()) {
+                                return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_DELETED_0);
+                            }
                             return CmsMenuItemVisibilityMode.VISIBILITY_INACTIVE.addMessageKey(Messages.GUI_CONTEXTMENU_TITLE_INACTIVE_PERM_WRITE_0);
                         }
                     }
