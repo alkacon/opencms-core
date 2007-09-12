@@ -115,7 +115,6 @@
 			<resource uri="/system/workplace/explorer/sibling/"/>
 			<resource uri="/system/workplace/explorer/readme.txt"/>
 			<resource uri="/system/workplace/resources/tools/ex_history/"/>
-			<resource uri="/system/categories/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -127,19 +126,6 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 25 Jun 2007 14:04:50 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/categories</destination>
-			<type>folder</type>
-			<uuidstructure>41563817-12a7-11dc-a287-2b20cd96941e</uuidstructure>
-			<datelastmodified>Mon, 04 Jun 2007 14:24:07 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 04 Jun 2007 14:24:07 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
