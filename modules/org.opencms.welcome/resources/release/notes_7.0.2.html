@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="en">
+    <element name="body">
+      <links>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
+          <uuid>f0d8f8ae-11b7-11db-91cd-fdbae480bac9</uuid>
+        </link>
+        <link name="link1" internal="false" type="A">
+          <target><![CDATA[http://bugzilla.opencms.org/]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<h1>Release Notes for OpenCms 7.0.2</h1>
+<p>September 12, 2007: This is the release of OpenCms 7.0.2. OpenCms 7 is a major upgrade, and it vastly expands the features of OpenCms 6. Version 7.0.2 is a stability upgrade which fixes several issues reported with the OpenCms 7.0.0  and 7.0.1 release. Some new features are available as well.</p>
+<h2><strong>Features of the OpenCms 7 release</strong></h2>
+<ul>
+    <li>An update Wizard for OpenCms 6 installations on MySQL and Oracle is available.</li>
+    <li>Support for the PostgreSQL database now included.</li>
+    <li>Improved backward compatibility with OpenCms version 6.</li>
+    <li>The internal link management has been greatly improved.</li>
+    <li>If files (or folders) are moved / renamed, all links to these files are now kept intact.</li>
+    <li>Deleting a resource that is linked by other resources does now display a warning / confirmation dialog.</li>
+    <li>The new "Content Relationship Engine" (CRE) allows defining arbitrary relations between OpenCms resources.</li>
+    <li>Native support for WebDAV access to the OpenCms VFS has been added.</li>
+    <li>Publishing of resources is now done using a queue, so a user can continue to work after publishing has started.</li>
+    <li>The concept of "Organization Units" (OUs) has been added to the internal user management.</li>
+    <li>System permissions are now based on a complete new set of "Roles".</li>
+    <li>It is now possible to delegate management of users / groups in OUs to Sub-Administrators.</li>
+    <li>A "switch user" (su) function for Administrators in the OpenCms Workplace is now available.</li>
+    <li>Many usability improvements for the OpenCms Workplace have been made, especially concerning the handling of other users locks.</li>
+    <li>Many dialogs in the OpenCms Workplace are more responsive because of the use of Ajax technologies.</li>
+    <li>The context menus in the Workplace are now cascading and can be configured individually based on the users permissions.</li>
+    <li>A new "Undelete" function is available on the context menu to restore deleted resources, including complete deleted subtrees.</li>
+    <li>The full text search has been greatly improved so that individual resource properties or fields from XML content can be searched directly.</li>
+    <li>A "time warp" feature in the Workplace now allows users to view resources with date expired / date released settings.</li>
+    <li>Auto correction for structured XML contents now allows changes to the XML schema of existing resources.</li>
+    <li>A configurable search tool is now available for content managers in the Workplace.</li>
+    <li>A "permalink" handler for resources is available for external references in case a resource is moved or renamed.</li>
+    <li>Link management support has been added in editors for standard HTML tags 'area', 'object' &amp; 'embed'.</li>
+    <li>The core database structure has been optimized.</li>
+    <li>JSP 2.0 and Servlet 2.4 are now used by default.</li>
+</ul>
+<h2>Fixed issues and improvements in OpenCms 7.0.2</h2>
+<ul>
+    <li>Fixed issue #1291: Now using the correct line break format for UNIX in cmsshell.sh</li>
+    <li>Fixed issue #1460: Parent locks are now correctly filtered by the CmsLockFilter</li>
+    <li>Fixed issue #1486: Added missing CmsPrincipal comparator</li>
+    <li>Fixed issue #1499: Extended context menu rules to prevent direct publishing of files in unpublished folders</li>
+    <li>Fixed issue #1503: CmsScheduleManager now uses the current time as the request time</li>
+    <li>Fixed issue #1508: Publish notification popup can now be switched off in the user preferences dialog (errors are always shown)</li>
+    <li>Fixed issue #1513: Trying to disable an indirect assigned role now displays an error message</li>
+    <li>Fixed issue #1516: Resource type array has been replaced by a self-expanding HashMap</li>
+    <li>Fixed issue #1519: Roots field in search index now always uses Whitespace analyzer (search index rebuild is required)</li>
+    <li>Fixed issue #1521: The change navigation dialog was having problems with special characters like '+'</li>
+    <li>Fixed issue #1522: Fixed problems with temporary file creation when the user does not have write permissions on the parent folder</li>
+    <li>Fixed issue #1523: Fixed implementation of the deprecated version of the CmsObject#importUser method</li>
+    <li>Fixed issue with validation errors using the display widget on boolean values</li>
+    <li>Fixed several spelling issues in the German locale</li>
+    <li>Fixed issue with "new" siblings causing content changes in "old" siblings not to be published</li>
+    <li>Fixed issue with handling of DB statements and result sets in update wizard</li>
+    <li>Fixed issue in A_CmlXmlDocument where the xpath for #getValues(...) was not correctly accessing the bookmarks</li>
+    <li>Fixed issue with workplace encoding being system default while workplace folder was set to UTF-8</li>
+    <li>Fixed issue with no Exception being thrown in case a &lt;cms:include&gt; of a non-existing file is done</li>
+    <li>Fixed issue while deleting groups</li>
+    <li>Fixed issue while moving a folder with deleted subresources</li>
+    <li>Fixed issue with the 'publish with related resources' feature</li>
+    <li>Fixed issue with the 'before publish' event</li>
+    <li>Fixed issue with siblings in the history</li>
+    <li>Fixed issue with anchor links in XML Pages</li>
+    <li>Fixed issue with imported overwriting files not being correctly published</li>
+    <li>Fixed issue with workplace AJAX requests not working in IE if ActiveX is disabled</li>
+    <li>Fixed issue with context menu sometimes appearing at the wrong position in the workplace explorer</li>
+    <li>Fixed issue with aging request time in combination with date released in CmsObject instances stored by core classes</li>
+    <li>Fixed issue with creating a new resource in a locked folder</li>
+    <li>Fixed issue with validating links during publishing while deleting several linked resources</li>
+    <li>Fixed issue with FCKeditor saving HTML contents in one long line</li>
+    <li>Improvement: Improved implementation of CmsUUID serialization, added Junit tests for de-serialization of old versions</li>
+    <li>Improvement: Split XSD for default XML content appinfo elements in 2 files, one for elements, the other for the base "appinfo" node</li>
+    <li>Improvement: Search index generation will now skip documents where no default locale matches the index locale</li>
+    <li>Improvement: Added &lt;cms:contentaccess&gt; tag and bean for easy access to XML contents on JSP using the EL with JSTL</li>
+    <li>Improvement: Added JSP EL ${cms:...} function implementations that allow convenient access to OpenCms utility functions</li>
+    <li>Improvement: Added new option "searchsettings" to XML content handler, used to reduce visibility of fields in search "content"</li>
+    <li>Improvement: Added support for multiple mappings of the same value to the default XML content handler</li>
+    <li>Improvement: Added update wizard for postgresql</li>
+    <li>Improvement: Added rebuild search index event</li>
+    <li>Improvement: XML content editor will now copy a locale from a configured list of defaults in case a selected locale does not exist</li>
+    <li>Improvement: Added possibility to limit searches to time ranges of the creation and last modification date of resources</li>
+    <li>Improvement: Added new CmsDateResourceCollector that uses a configurable list dates to collect the resources</li>
+    <li>Improvement: Added I_CmsLinkSubstitutionHandler that allows complete customization of generated links on web pages</li>
+    <li>Improvement: Added #removeAttribute(String) method to CmsRequestContext</li>
+    <li>Improvement: Added a state column to the list of publish reports</li>
+    <li>Improvement: Added server time information to the new/edit schedule job dialog</li>
+    <li>Improvement: Added new database tool to remove publish locks</li>
+    <li>Improvement: Added support for using %(property.XXX) in XML default values to the CmsDefaultXmlContentHandler</li>
+    <li>Improvement: Added cause messages to inactive context menu entries to Explorer view</li>
+    <li>Improvement: Sites are now also sorted by the NavPos property</li>
+    <li>General: Deprecated CmsFile#upgrade(CmsResource) method as this is now done automatically in CmsObject#readFile(CmsResource)</li>
+    <li>General: Updated year information in file comment headers to 2007</li>
+    <li>General: Refactored libs for better handling of runtime and compile-time dependencies</li>
+    <li>General: Refactored setup/update wizard to a separate opencms-setup.jar</li>
+    <li>General: Updated Lucene jars to version 2.2.0</li>
+    <li>General: Updated jug.jar used by CmsUUID to version 2.0.0 (from doomdark.org to safehaus.org version)</li>
+</ul>
+<h2>Backward compatibility</h2>
+<p>We recommend everyone who uses an earlier version of OpenCms to update to the 7.0.2 release. OpenCms 7.0.0 has a critical bug that makes it impossible to apply permissions to resources outside the /system/ folder. In case you are using one of the previous versions (OpenCms 7 alpha, beta or release candidates), there have been a lot of issues fixed in the final release.</p>
+<p>OpenCms 7 is largely backward compatible with version 6. Most templates and other OpenCms developed code from version 6 should work "out of the box" with version 7. A number of API methods from OpenCms 6 have been marked as "deprecated". In case you have made extensive use of OpenCms internal classes and APIs from version 6, there may be some changes required in your code. However, in most cases this should not take longer than a couple of hours.</p>
+<p>Please note that since OpenCms 7 uses JSP 2.0 and Servlet 2.4 standards by default, you may have to change that back to JSP 1.2 / Servlet 2.3 so your existing OpenCms JSP templates run without change. You must edit the "web-app" node in the OpenCms web.xml file to do that.</p>
+<h2>Compatibility with Java versions, Servlet containers and Databases</h2>
+<p>OpenCms 7 has been written and tested using Java 1.5 / 1.6. It works well with Java 1.4 using the optional "Java 1.4 compatibility package". It won't work with Java 1.3. We have tested only with SUNs version of the JDK. However, OpenCms has no dependencies to sun.* packages so it should in theory run with all compliant JVMs.</p>
+<p>We have tested this release on the Tomcat servlet engine. OpenCms 7.0.1 works "out of the box" with Tomcat 5.5, which we recommend. Others have reported deploying 7 development versions successfully on other servlet containers like JBoss, BEA and Websphere. We appreciate any feedback regarding other servlet containers.</p>
+<p>On the database side, we have tested with MySQL 4.0.x, MySQL 4.1, MySQL 5.x, Oracle 9.x and Oracle 10.x, as well as PostgreSQL 8.2.x and 7.4.x. The automatic update wizard for OpenCms 7 supports MySQL and Oracle.</p>
+<h2>Regarding version numbers and CVS build tags</h2>
+<p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS tag numbers for all OpenCms 7 final releases are "build_7_0_x", so the 7.0.2 release is tagged "build_7_0_2". Development of maintenance releases (like 7.0.2) is currently done in CVS HEAD.</p>
+<h2>How you can help</h2>
+<p>Contributions to the OpenCms core development are most welcome. Please contact the core development team on the <a target="extern" href="%(link0)">opencms-dev</a> mailing list in case you are interested in supporting the development of OpenCms.</p>
+<p>Please use our Bugzilla to report bugs in this release: <a target="extern" href="%(link1)">http://bugzilla.opencms.org/<br />
+</a></p>
+<p>Thank you for using OpenCms and have fun with OpenCms 7.0.2 :-)</p>]]></content>
+    </element>
+  </page>
+</pages>
