@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/08/30 15:17:41 $
- * Version: $Revision: 1.229 $
+ * Date   : $Date: 2007/09/12 09:35:45 $
+ * Version: $Revision: 1.230 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,6 +82,7 @@ import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsValidationHandler;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManagerImpl;
+import org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.util.CmsFileUtil;
@@ -138,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.229 $ 
+ * @version $Revision: 1.230 $ 
  * 
  * @since 6.0.0 
  */
@@ -1315,6 +1316,8 @@ public final class OpenCmsCore {
             m_runtimeProperties = new Hashtable();
             // the default event manager must be available because the configuration already registers events 
             m_eventManager = new CmsEventManager();
+            // default link manager is required for test cases
+            m_linkManager = new CmsLinkManager(new CmsDefaultLinkSubstitutionHandler());
         }
     }
 
