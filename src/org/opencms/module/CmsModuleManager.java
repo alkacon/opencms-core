@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2007/09/12 14:54:30 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2007/09/13 10:25:00 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -547,7 +547,9 @@ public class CmsModuleManager {
                 lockedResources.addAll(cms.getLockedResources(resourceName, filter2));
             } catch (CmsException e) {
                 // may happen if the resource has already been deleted
-                LOG.error(e.getLocalizedMessage(), e);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e.getMessageContainer(), e);
+                }
                 report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
             }
         }
@@ -592,17 +594,17 @@ public class CmsModuleManager {
             // copy the module resources to the project
             List projectFiles = module.getResources();
             for (int i = 0; i < projectFiles.size(); i++) {
-                try {
-                    String resourceName = (String)projectFiles.get(i);
-                    if (cms.existsResource(resourceName, CmsResourceFilter.ALL)) {
+                String resourceName = (String)projectFiles.get(i);
+                if (cms.existsResource(resourceName, CmsResourceFilter.ALL)) {
+                    try {
                         cms.copyResourceToProject(resourceName);
+                    } catch (CmsException e) {
+                        // may happen if the resource has already been deleted
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().getBundle().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, resourceName));
+                        }
+                        report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
                     }
-                } catch (CmsException e) {
-                    // may happen if the resource has already been deleted
-                    LOG.error(
-                        Messages.get().getBundle().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, projectFiles.get(i)),
-                        e);
-                    report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
                 }
             }
 
