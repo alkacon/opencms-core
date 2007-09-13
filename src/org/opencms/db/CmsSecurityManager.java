@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/09/06 15:09:26 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2007/09/13 13:46:53 $
+ * Version: $Revision: 1.108 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -115,9 +115,6 @@ public final class CmsSecurityManager {
 
     /** The initialized OpenCms driver manager to access the database. */
     protected CmsDriverManager m_driverManager;
-
-    /** The class used for cache key generation. */
-    private I_CmsCacheKey m_keyGenerator;
 
     /** The lock manager. */
     private CmsLockManager m_lockManager;
@@ -2697,17 +2694,6 @@ public final class CmsSecurityManager {
         m_dbContextFactory = dbContextFactory;
 
         CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)configurationManager.getConfiguration(CmsSystemConfiguration.class);
-        CmsCacheSettings settings = systemConfiguration.getCacheSettings();
-
-        String className = settings.getCacheKeyGenerator();
-        try {
-            // initialize the key generator
-            m_keyGenerator = (I_CmsCacheKey)Class.forName(className).newInstance();
-        } catch (Exception e) {
-            throw new CmsInitException(org.opencms.main.Messages.get().container(
-                org.opencms.main.Messages.ERR_CRITICAL_CLASS_CREATION_1,
-                className), e);
-        }
 
         // create the driver manager
         m_driverManager = CmsDriverManager.newInstance(configurationManager, this, dbContextFactory, publishEngine);
@@ -2745,7 +2731,7 @@ public final class CmsSecurityManager {
             }
         }
 
-        m_permissionHandler.init(m_driverManager);
+        m_permissionHandler.init(m_driverManager, systemConfiguration);
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SECURITY_MANAGER_INIT_0));
@@ -5562,34 +5548,7 @@ public final class CmsSecurityManager {
         boolean checkLock,
         CmsResourceFilter filter) throws CmsException {
 
-        // check if the resource is valid according to the current filter
-        // if not, throw a CmsResourceNotFoundException
-        if (!filter.isValid(dbc.getRequestContext(), resource)) {
-            return I_CmsPermissionHandler.PERM_FILTERED;
-        }
-
-        // checking the filter is less cost intensive then checking the cache,
-        // this is why basic filter results are not cached
-        String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(
-            filter.requireVisible() && checkLock ? "11" : (!filter.requireVisible() && checkLock ? "01"
-            : (filter.requireVisible() && !checkLock ? "10" : "00")),
-            dbc,
-            resource,
-            requiredPermissions);
-        I_CmsPermissionHandler.CmsPermissionCheckResult cacheResult = OpenCms.getMemoryMonitor().getCachedPermission(
-            cacheKey);
-        if (cacheResult != null) {
-            return cacheResult;
-        }
-
-        I_CmsPermissionHandler.CmsPermissionCheckResult result = m_permissionHandler.hasPermissions(
-            dbc,
-            resource,
-            requiredPermissions,
-            checkLock,
-            filter);
-        OpenCms.getMemoryMonitor().cachePermission(cacheKey, result);
-        return result;
+        return m_permissionHandler.hasPermissions(dbc, resource, requiredPermissions, checkLock, filter);
     }
 
     /**

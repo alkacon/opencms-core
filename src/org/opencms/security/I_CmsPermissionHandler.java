@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPermissionHandler.java,v $
- * Date   : $Date: 2007/09/06 15:09:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/09/13 13:46:53 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,10 @@
 
 package org.opencms.security;
 
+import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
@@ -43,9 +45,11 @@ import org.opencms.util.A_CmsModeIntEnumeration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.0.2
+ * 
+ * @see CmsSecurityManager#hasPermissions(org.opencms.file.CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
  */
 public interface I_CmsPermissionHandler {
 
@@ -136,6 +140,7 @@ public interface I_CmsPermissionHandler {
      * Initializes internal variables needed to work.<p>
      * 
      * @param driverManager the driver manager
+     * @param systemConfiguration the system configuration instance
      */
-    void init(CmsDriverManager driverManager);
+    void init(CmsDriverManager driverManager, CmsSystemConfiguration systemConfiguration);
 }

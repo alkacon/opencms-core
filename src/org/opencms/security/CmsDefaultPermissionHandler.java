@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPermissionHandler.java,v $
- * Date   : $Date: 2007/09/11 13:13:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/09/13 13:46:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,16 +31,21 @@
 
 package org.opencms.security;
 
+import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsSecurityManager;
+import org.opencms.db.I_CmsCacheKey;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
 import java.util.Iterator;
 
@@ -51,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.2
  */
@@ -66,6 +71,9 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
     /** Security Manager instance. */
     protected CmsSecurityManager m_securityManager;
 
+    /** The class used for cache key generation. */
+    private I_CmsCacheKey m_keyGenerator;
+
     /**
      * @see org.opencms.security.I_CmsPermissionHandler#hasPermissions(org.opencms.db.CmsDbContext, org.opencms.file.CmsResource, org.opencms.security.CmsPermissionSet, boolean, org.opencms.file.CmsResourceFilter)
      */
@@ -75,6 +83,25 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
         CmsPermissionSet requiredPermissions,
         boolean checkLock,
         CmsResourceFilter filter) throws CmsException {
+
+        // check if the resource is valid according to the current filter
+        // if not, throw a CmsResourceNotFoundException
+        if (!filter.isValid(dbc.getRequestContext(), resource)) {
+            return I_CmsPermissionHandler.PERM_FILTERED;
+        }
+
+        // checking the filter is less cost intensive then checking the cache,
+        // this is why basic filter results are not cached
+        String cacheKey = m_keyGenerator.getCacheKeyForUserPermissions(
+            filter.requireVisible() && checkLock ? "11" : (!filter.requireVisible() && checkLock ? "01"
+            : (filter.requireVisible() && !checkLock ? "10" : "00")),
+            dbc,
+            resource,
+            requiredPermissions);
+        CmsPermissionCheckResult cacheResult = OpenCms.getMemoryMonitor().getCachedPermission(cacheKey);
+        if (cacheResult != null) {
+            return cacheResult;
+        }
 
         int denied = 0;
 
@@ -186,15 +213,29 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
                         permissions.getPermissionString()}));
             }
         }
+        OpenCms.getMemoryMonitor().cachePermission(cacheKey, result);
+
         return result;
     }
 
     /**
-     * @see org.opencms.security.I_CmsPermissionHandler#init(org.opencms.db.CmsDriverManager)
+     * @see org.opencms.security.I_CmsPermissionHandler#init(org.opencms.db.CmsDriverManager, CmsSystemConfiguration)
      */
-    public void init(CmsDriverManager driverManager) {
+    public void init(CmsDriverManager driverManager, CmsSystemConfiguration systemConfiguration) {
 
         m_driverManager = driverManager;
         m_securityManager = driverManager.getSecurityManager();
+
+        CmsCacheSettings settings = systemConfiguration.getCacheSettings();
+
+        String className = settings.getCacheKeyGenerator();
+        try {
+            // initialize the key generator
+            m_keyGenerator = (I_CmsCacheKey)Class.forName(className).newInstance();
+        } catch (Exception e) {
+            throw new CmsInitException(org.opencms.main.Messages.get().container(
+                org.opencms.main.Messages.ERR_CRITICAL_CLASS_CREATION_1,
+                className), e);
+        }
     }
 }
