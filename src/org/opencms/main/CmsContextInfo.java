@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsContextInfo.java,v $
- * Date   : $Date: 2007/08/30 15:17:42 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/09/13 11:54:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.security.CmsOrganizationalUnit;
 
 import java.util.Locale;
 
@@ -43,7 +44,7 @@ import java.util.Locale;
  * Contains user information for automated creation of a  
  * {@link org.opencms.file.CmsRequestContext} during system runtime.<p>
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -438,6 +439,7 @@ public class CmsContextInfo {
      */
     public void setOuFqn(String ouFqn) {
 
+        checkFrozen();
         m_ouFqn = ouFqn;
     }
 
@@ -521,6 +523,7 @@ public class CmsContextInfo {
 
         checkFrozen();
         m_userName = userName;
+        setOuFqn(CmsOrganizationalUnit.getParentFqn(userName));
     }
 
     /**
