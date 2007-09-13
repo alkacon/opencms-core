@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/09/13 09:53:41 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2007/09/13 10:06:42 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.86 $ 
+ * @version $Revision: 1.87 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,7 +133,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The customized workplace foot. */
     private CmsWorkplaceCustomFoot m_customFoot;
 
-    /** The default acces for explorer types. */
+    /** The default access for explorer types. */
     private CmsExplorerTypeAccess m_defaultAccess;
 
     /** The configured default locale of the workplace. */
@@ -142,7 +142,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The default property setting for setting new property values. */
     private boolean m_defaultPropertiesOnStructure;
 
-    /** The default user seetings. */
+    /** The default user settings. */
     private CmsDefaultUserSettings m_defaultUserSettings;
 
     /** The configured dialog handlers. */
