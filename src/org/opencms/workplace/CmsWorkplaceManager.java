@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2007/09/11 12:11:06 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2007/09/13 09:53:41 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.85 $ 
+ * @version $Revision: 1.86 $ 
  * 
  * @since 6.0.0 
  */
@@ -195,10 +195,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The configured workplace galleries. */
     private Map m_galleries;
 
-    /** Contains all folders that should be labled if siblings exist. */
+    /** Contains all folders that should be labeled if siblings exist. */
     private List m_labelSiteFolders;
 
-    /** List of installed workplace locales, soreted ascending. */
+    /** List of installed workplace locales, sorted ascending. */
     private List m_locales;
 
     /** The configured list of localized workplace folders. */
@@ -219,7 +219,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /** The condition definitions for the resource types  which are triggered before opening the editor. */
     private List m_preEditorConditionDefinitions;
 
-    /** Indicates if the user managemet icon should be displayed in the workplace. */
+    /** Indicates if the user management icon should be displayed in the workplace. */
     private boolean m_showUserGroupIcon;
 
     /** The temporary file project used by the editors. */
@@ -273,7 +273,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_editorCssHandlers = new ArrayList();
         m_customFoot = new CmsWorkplaceCustomFoot();
 
-        // important to set this to null to avoid unneccessary overhead during configuration phase
+        // important to set this to null to avoid unnecessary overhead during configuration phase
         m_explorerTypeSettings = null;
     }
 
@@ -281,6 +281,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * Returns true if the provided request was done by a Workplace user.<p>
      * 
      * @param req the request to check
+     * 
      * @return true if the provided request was done by a Workplace user
      */
     public static boolean isWorkplaceUser(HttpServletRequest req) {
@@ -288,7 +289,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         HttpSession session = req.getSession(false);
         if (session != null) {
             // if a session is available, check for a workplace configuration
-            return null != session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+            return (null != session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS));
         }
         // no session means no workplace use
         return false;
@@ -297,7 +298,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /**
      * Adds a dialog handler instance to the list of configured dialog handlers.<p>
      * 
-     * @param clazz the instanciated dialog handler to add
+     * @param clazz the instantiated dialog handler to add
      */
     public void addDialogHandler(I_CmsDialogHandler clazz) {
 
@@ -629,10 +630,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns the instanciated dialog handler class for the key or null, if there is no mapping for the key.<p>
+     * Returns the instantiated dialog handler class for the key or null, if there is no mapping for the key.<p>
      *  
      * @param key the key whose associated value is to be returned
-     * @return the instanciated dialog handler class for the key
+     * 
+     * @return the instantiated dialog handler class for the key
      */
     public Object getDialogHandler(String key) {
 
@@ -650,9 +652,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns the instanciated editor action handler class.<p>
+     * Returns the instantiated editor action handler class.<p>
      * 
-     * @return the instanciated editor action handler class
+     * @return the instantiated editor action handler class
      */
     public I_CmsEditorActionHandler getEditorActionHandler() {
 
@@ -660,9 +662,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns the instanciated editor CSS handler classes.<p>
+     * Returns the instantiated editor CSS handler classes.<p>
      * 
-     * @return the instanciated editor CSS handler classes
+     * @return the instantiated editor CSS handler classes
      */
     public List getEditorCssHandlers() {
 
@@ -670,9 +672,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns the instanciated editor display option class.<p>
+     * Returns the instantiated editor display option class.<p>
      * 
-     * @return the instanciated editor display option class
+     * @return the instantiated editor display option class
      */
     public CmsEditorDisplayOptions getEditorDisplayOptions() {
 
@@ -680,9 +682,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns the instanciated editor handler class.<p>
+     * Returns the instantiated editor handler class.<p>
      * 
-     * @return the instanciated editor handler class
+     * @return the instantiated editor handler class
      */
     public I_CmsEditorHandler getEditorHandler() {
 
@@ -703,6 +705,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * Returns the explorer type settings for the specified resource type.<p>
      * 
      * @param type the resource type for which the settings are required
+     * 
      * @return the explorer type settings for the specified resource type
      */
     public CmsExplorerTypeSettings getExplorerTypeSetting(String type) {
@@ -741,6 +744,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * Returns the value (in bytes) for the maximum file upload size of the current user.<p>
      * 
      * @param cms the initialized CmsObject
+     * 
      * @return the value (in bytes) for the maximum file upload size
      */
     public long getFileBytesMaxUploadSize(CmsObject cms) {
@@ -768,9 +772,10 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * Returns the system-wide file view settings for the workplace.<p>
      * 
      * Note that this instance may not modified (invocation of setters) directly or a
-     * <code>{@link org.opencms.main.CmsRuntimeException}</code> will be thrown. 
+     * <code>{@link org.opencms.main.CmsRuntimeException}</code> will be thrown.<p>
+     * 
      * It has to be cloned first and then may be written back to the workplace settings using 
-     * method {@link #setFileViewSettings(CmsObject, org.opencms.util.CmsRfsFileViewer)}.
+     * method {@link #setFileViewSettings(CmsObject, org.opencms.util.CmsRfsFileViewer)}.<p>
      * 
      * @return the system-wide file view settings for the workplace
      */
@@ -782,7 +787,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     /**
      * Returns a collection of all available galleries.<p>
      * 
-     * The Map has the gallery type name as key and an instance of the gallery class (not completely initialized) as value.<p>
+     * The Map has the gallery type name as key and an instance of the 
+     * gallery class (not completely initialized) as value.<p>
      * 
      * @return a collection of all available galleries
      */
@@ -879,6 +885,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * If no rule set with the specified name is found, <code>null</code> is returned.<p>
      * 
      * @param ruleName the name of the rule set to get
+     * 
      * @return the menu rule set with the given name
      */
     public CmsMenuRule getMenuRule(String ruleName) {
@@ -949,6 +956,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * Returns the condition definition for the given resource type that is triggered before opening the editor.<p>
      * 
      * @param resourceType the resource type 
+     * 
      * @return the condition definition for the given resource type class name or null if none is found
      */
     public I_CmsPreEditorActionDefinition getPreEditorConditionDefinition(I_CmsResourceType resourceType) {
@@ -988,7 +996,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns the condition definitions for the different resource types which are triggered before opening the editor.<p>
+     * Returns the condition definitions for the different resource 
+     * types which are triggered before opening the editor.<p>
      * 
      * @return the condition definitions
      */
@@ -1045,9 +1054,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     }
 
     /**
-     * Returns the instanciated workplace editor manager class.<p>
+     * Returns the instantiated workplace editor manager class.<p>
      * 
-     * @return the instanciated workplace editor manager class
+     * @return the instantiated workplace editor manager class
      */
     public CmsWorkplaceEditorManager getWorkplaceEditorManager() {
 
@@ -1427,7 +1436,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * @param cms the CmsObject for ensuring security constraints. 
      * 
      * @param fileViewSettings the system-wide file view settings for the workplace to set 
-     * @throws CmsRoleViolationException if the current user does not own the administrator role  ({@link CmsRole#ROOT_ADMIN})  
+     * 
+     * @throws CmsRoleViolationException if the current user does not own the administrator role ({@link CmsRole#ROOT_ADMIN})  
      * */
     public void setFileViewSettings(CmsObject cms, CmsRfsFileViewer fileViewSettings) throws CmsRoleViolationException {
 
@@ -1603,6 +1613,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * This is likely to change in future implementations.<p>
      * 
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
+     * 
      * @return the workplace locale set
      */
     private List initWorkplaceLocales(CmsObject cms) {
