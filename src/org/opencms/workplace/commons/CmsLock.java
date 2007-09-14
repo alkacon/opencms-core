@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2007/08/13 16:29:44 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/09/14 13:16:59 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -921,7 +921,16 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
                 CmsRelationFilter.TARGETS.filterStrong().filterIncludeChildren()).iterator();
             while (itRelations.hasNext()) {
                 CmsRelation relation = (CmsRelation)itRelations.next();
-                CmsResource target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
+                CmsResource target = null;
+                try {
+                    target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
+                } catch (CmsException e) {
+                    // error reading a resource, should usually never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(getLocale()), e);
+                    }
+                    continue;
+                }
                 // we are interested just in unpublished resources
                 if (target.getState().isUnchanged()) {
                     continue;
@@ -936,14 +945,22 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
                         continue;
                     }
                 }
-                org.opencms.lock.CmsLock lock = getCms().getLock(targetName);
-                if (!lock.isUnlocked() && filter.match("/", lock)) {
-                    // just add resources that may come in question
-                    lockedResources.add(targetName + "*");
+                try {
+                    org.opencms.lock.CmsLock lock = getCms().getLock(targetName);
+                    if (!lock.isUnlocked() && filter.match("/", lock)) {
+                        // just add resources that may come in question
+                        lockedResources.add(targetName + "*");
+                    }
+                } catch (CmsException e) {
+                    // error reading a lock, should usually never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(getLocale()), e);
+                    }
+                    continue;
                 }
             }
         } catch (CmsException e) {
-            // error reading a resource, should usually never happen
+            // error reading the relations, should usually never happen
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(getLocale()), e);
             }
