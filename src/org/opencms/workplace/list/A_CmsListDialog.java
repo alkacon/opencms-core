@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:49 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2007/09/14 11:05:26 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -305,8 +305,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * Performs the dialog actions depending on the initialized action.<p>
      * 
      * @throws JspException if dialog actions fail
-     * @throws IOException in case of errros forwarding to the required result page
-     * @throws ServletException in case of errros forwarding to the required result page
+     * @throws IOException in case of errors forwarding to the required result page
+     * @throws ServletException in case of errors forwarding to the required result page
      */
     public void actionDialog() throws JspException, ServletException, IOException {
 
@@ -388,8 +388,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 
      * @throws JspException if dialog actions fail
-     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
-     * @throws ServletException in case of errros forwarding to the required result page
+     * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
+     * @throws ServletException in case of errors forwarding to the required result page
      */
     public void displayDialog() throws JspException, IOException, ServletException {
 
@@ -403,8 +403,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
      *                   you have to call manually the <code>{@link #defaultActionHtml()}</code> method.
      * 
      * @throws JspException if dialog actions fail
-     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
-     * @throws ServletException in case of errros forwarding to the required result page
+     * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
+     * @throws ServletException in case of errors forwarding to the required result page
      */
     public void displayDialog(boolean writeLater) throws JspException, IOException, ServletException {
 
@@ -432,7 +432,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 executeSelectPage();
                 break;
             default:
-                //noop
+                // ignore
         }
         listSave();
     }
@@ -448,9 +448,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public void executeListIndepActions() {
 
         if (getList().getMetadata().getItemDetailDefinition(getParamListAction()) != null) {
-            // toogle item details
+            // toggle item details
             getList().getMetadata().toogleDetailState(getParamListAction());
-            // lazzy initialization
+            // lazy initialization
             initializeDetail(getParamListAction());
         }
         listSave();
@@ -542,9 +542,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Returns the Selected Items.<p>
+     * Returns the selected Items.<p>
      *
-     * @return the Selelected Items
+     * @return the selected Items
      */
     public String getParamSelItems() {
 
@@ -613,7 +613,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /**
      * This method re-read the rows of the list, the user should call this method after executing an action
-     * that add or remove rows to the list. 
+     * that add or remove rows to the list.<p>
      */
     public synchronized void refreshList() {
 
@@ -715,9 +715,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Sets the Selelected Items.<p>
+     * Sets the selected Items.<p>
      *
-     * @param paramSelItems the Selelected Items to set
+     * @param paramSelItems the selected Items to set
      */
     public void setParamSelItems(String paramSelItems) {
 
@@ -951,7 +951,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Lazzy details initialization.<p>
+     * Lazy details initialization.<p>
      * 
      * @param detailId the id of the detail column
      */
@@ -1068,7 +1068,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /**
      * Creates the default search action.<p>
      * 
-     * Can be overriden for more sofisticated search.<p>
+     * Can be overridden for more sophisticated search.<p>
      * 
      * @param metadata the metadata of the list to do searchable
      * @param columnId the if of the column to search into
@@ -1105,7 +1105,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Should be overriden for parameter validation.<p>
+     * Should be overridden for parameter validation.<p>
      * 
      * @throws Exception if the parameters are not valid
      */
