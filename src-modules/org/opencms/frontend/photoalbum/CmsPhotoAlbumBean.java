@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/photoalbum/CmsPhotoAlbumBean.java,v $
- * Date   : $Date: 2007/08/13 16:30:18 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/21 12:53:40 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.3 
  */
@@ -366,7 +366,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
             // loop error messages
             for (int i = 0; i < getConfigErrors().size(); i++) {
                 if (i > 0) {
-                    getJspContext().getOut().println("<br>");
+                    getJspContext().getOut().println("<br />");
                 }
                 getJspContext().getOut().print(getConfigErrors().get(i));
             }
@@ -403,7 +403,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
             link.append(getRequestContext().getUri());
             link.append("?");
             link.append(PARAM_ACTION).append("=").append(VALUE_ACTION_DETAIL);
-            link.append("&");
+            link.append("&amp;");
             link.append(PARAM_IMAGE).append("=").append(photoIndex - 1);
             result.append(link(link.toString()));
             result.append("\">");
@@ -426,7 +426,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
             link.append(getRequestContext().getUri());
             link.append("?");
             link.append(PARAM_ACTION).append("=").append(VALUE_ACTION_DETAIL);
-            link.append("&");
+            link.append("&amp;");
             link.append(PARAM_IMAGE).append("=").append(photoIndex + 1);
             result.append(link(link.toString()));
             result.append("\">");
@@ -435,7 +435,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
         } else {
             result.append(fillNavSpaces(" - " + m_messages.key(Messages.GUI_NAVIGATION_NEXT_0)));
         }
-        result.append("<br>");
+        result.append("<br />");
 
         // build the link to the thumbnail overview
         int thumbPage = 1;
@@ -450,7 +450,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
         link.append(getRequestContext().getUri());
         link.append("?");
         link.append(PARAM_ACTION).append("=").append(VALUE_ACTION_THUMBNAIL);
-        link.append("&");
+        link.append("&amp;");
         link.append(PARAM_PAGE).append("=").append(thumbPage);
         result.append(link(link.toString()));
         result.append("\">");
@@ -504,7 +504,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
                 link.append(getRequestContext().getUri());
                 link.append("?");
                 link.append(PARAM_ACTION).append("=").append(VALUE_ACTION_THUMBNAIL);
-                link.append("&");
+                link.append("&amp;");
                 link.append(PARAM_PAGE).append("=").append(getCurrentPage() - 1);
                 result.append(link(link.toString()));
                 result.append("\">");
@@ -527,7 +527,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
                 link.append(getRequestContext().getUri());
                 link.append("?");
                 link.append(PARAM_ACTION).append("=").append(VALUE_ACTION_THUMBNAIL);
-                link.append("&");
+                link.append("&amp;");
                 link.append(PARAM_PAGE).append("=").append(getCurrentPage() + 1);
                 result.append(link(link.toString()));
                 result.append("\">");
@@ -637,7 +637,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
         result.append(title);
         result.append("\" title=\"");
         result.append(title);
-        result.append("\">");
+        result.append("\" />");
         result.append("</td>\n</tr>\n");
 
         // show the navigation if configured position is bottom above text
@@ -740,7 +740,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
                     link.append(getRequestContext().getUri());
                     link.append("?");
                     link.append(PARAM_ACTION).append("=").append(VALUE_ACTION_DETAIL);
-                    link.append("&").append(PARAM_IMAGE).append("=").append(photoIndex);
+                    link.append("&amp;").append(PARAM_IMAGE).append("=").append(photoIndex);
                     result.append(link(link.toString()));
                     result.append("\">");
                     // create the scaled thumbnail
@@ -757,11 +757,11 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
                     result.append(title);
                     result.append("\" title=\"");
                     result.append(title);
-                    result.append("\">");
+                    result.append("\" />");
                     result.append("</a>");
                     if (getConfiguration().showThumbTitle() && CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
                         // show title below the thumbnail
-                        result.append("<br clear=\"all\"><span");
+                        result.append("<br clear=\"all\" /><span");
                         result.append(getStyle().getClassThumbImageTitle());
                         result.append(">");
                         result.append(title);
