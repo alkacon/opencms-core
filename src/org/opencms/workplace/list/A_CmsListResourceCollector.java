@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2007/08/13 16:29:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/09/24 12:47:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.1.0 
  */
@@ -344,8 +344,8 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
                 m_resCache.put(item.getId(), res);
             } catch (CmsException e) {
                 // should never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
                 }
             }
         }
