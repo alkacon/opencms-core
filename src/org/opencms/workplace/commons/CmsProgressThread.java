@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressThread.java,v $
- * Date   : $Date: 2007/08/13 16:29:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/24 12:46:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.0
  */
@@ -61,7 +61,7 @@ public class CmsProgressThread extends Thread {
     /** The description to show for the progress. */
     private String m_description;
 
-    /** Stores the error occured while the thread was running. */
+    /** Stores the error occurred while the thread was running. */
     private Throwable m_error;
 
     /** The time the thread has finished. */
