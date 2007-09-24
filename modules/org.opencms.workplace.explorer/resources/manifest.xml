@@ -67,7 +67,6 @@
 			<resource uri="/system/workplace/commons/renameimages.jsp"/>
 			<resource uri="/system/workplace/commons/replace.jsp"/>
 			<resource uri="/system/workplace/commons/report-brokenrelations.jsp"/>
-			<resource uri="/system/workplace/commons/report-potentialbrokenrelations.jsp"/>
 			<resource uri="/system/workplace/commons/report-progress.jsp"/>
 			<resource uri="/system/workplace/commons/report-publishresources.jsp"/>
 			<resource uri="/system/workplace/commons/report-locks.jsp"/>
@@ -2639,30 +2638,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Lock Dialog - Locked Resources Dialog]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/commons/report-potentialbrokenrelations.jsp</source>
-			<destination>system/workplace/commons/report-potentialbrokenrelations.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>f7557dda-7885-11db-8fc4-9362e1ae9c5d</uuidstructure>
-			<uuidresource>f7557ddb-7885-11db-8fc4-9362e1ae9c5d</uuidresource>
-			<datelastmodified>Mon, 23 Apr 2007 12:27:53 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 20 Nov 2006 10:57:51 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Publish Dialog - Broken Relations Report]]></value>
 				</property>
 				<property>
 					<name>export</name>

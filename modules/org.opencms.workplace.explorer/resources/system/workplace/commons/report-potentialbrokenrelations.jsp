@@ -1,1 +1,0 @@
-<%= new org.opencms.workplace.commons.CmsPublishProject(pageContext, request, response).buildReport() %>
