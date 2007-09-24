@@ -1,7 +1,7 @@
 /* 
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2007/08/13 16:29:56 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/09/24 12:56:25 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.safehaus.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -336,7 +336,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
             o = in.readObject();
         } catch (Throwable e) {
             // there are 2 development version of OpenCms (6.1.7 and 6.1.8) which had a different format, 
-            // here the Object was preceeded by a Long 
+            // here the Object was preceded by a Long 
             try {
                 // first read the long, we don't really need it but it must be removed from the stream
                 in.readLong();
