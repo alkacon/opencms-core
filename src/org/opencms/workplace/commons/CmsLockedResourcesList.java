@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesList.java,v $
- * Date   : $Date: 2007/08/13 16:29:43 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/24 12:46:30 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -270,18 +270,18 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
                 html.append(">");
                 html.append("<img src='");
                 html.append(CmsWorkplace.getSkinUri());
-                html.append(this.getIconPath());
+                html.append(super.getIconPath());
                 html.append("'");
                 html.append(" alt='");
-                html.append(this.getName().key(wp.getLocale()));
+                html.append(super.getName().key(wp.getLocale()));
                 html.append("'");
                 html.append(" title='");
-                html.append(this.getName().key(wp.getLocale()));
+                html.append(super.getName().key(wp.getLocale()));
                 html.append("'");
                 html.append(">");
                 html.append("&nbsp;");
                 html.append("<a href='#'>");
-                html.append(this.getName().key(wp.getLocale()));
+                html.append(super.getName().key(wp.getLocale()));
                 html.append("</a>");
                 html.append("</span>");
                 return html.toString();
