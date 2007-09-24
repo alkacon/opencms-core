@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2007/08/30 12:05:47 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2007/09/24 13:59:06 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,7 +73,7 @@ public final class CmsStringUtil {
     /** Constant for <code>"false"</code>. */
     public static final String FALSE = Boolean.toString(false);
 
-    /** a convienient shorthand to the line separator constant. */
+    /** a convenient shorthand to the line separator constant. */
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     /** Context macro. */
@@ -82,7 +82,7 @@ public final class CmsStringUtil {
     /** Contains all chars that end a sentence in the {@link #trimToSize(String, int, int, String)} method. */
     public static final char[] SENTENCE_ENDING_CHARS = {'.', '!', '?'};
 
-    /** a convienient shorthand for tabulations.  */
+    /** a convenient shorthand for tabulations.  */
     public static final String TABULATOR = "  ";
 
     /** Constant for <code>"true"</code>. */
@@ -137,6 +137,7 @@ public final class CmsStringUtil {
      * 
      * @param filename the filename to be changed
      * @param suffix the new suffix of the file
+     * 
      * @return the filename with the replaced suffix
      */
     public static String changeFileNameSuffixTo(String filename, String suffix) {
@@ -152,17 +153,17 @@ public final class CmsStringUtil {
 
     /**
      * Checks if a given name is composed only of the characters <code>a...z,A...Z,0...9</code>
-     * and the provided <code>contraints</code>.<p> 
+     * and the provided <code>constraints</code>.<p> 
      * 
      * If the check fails, an Exception is generated. The provided bundle and key is
      * used to generate the Exception. 4 parameters are passed to the Exception:<ol>
      * <li>The <code>name</code>
      * <li>The first illegal character found
      * <li>The position where the illegal character was found
-     * <li>The <code>contraints</code></ol>
+     * <li>The <code>constraints</code></ol>
      * 
      * @param name the name to check
-     * @param contraints the additional character contraints
+     * @param contraints the additional character constraints
      * @param key the key to use for generating the Exception (if required)
      * @param bundle the bundle to use for generating the Exception (if required)
      * 
@@ -210,13 +211,14 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Replaces occurences of special control characters in the given input with 
+     * Replaces occurrences of special control characters in the given input with 
      * a HTML representation.<p>
      * 
-     * This method currrently replaces line breaks to <code>&lt;br/&gt;</code> and special HTML chars 
+     * This method currently replaces line breaks to <code>&lt;br/&gt;</code> and special HTML chars 
      * like <code>&lt; &gt; &amp; &quot;</code> with their HTML entity representation.<p>
      * 
      * @param source the String to escape
+     * 
      * @return the escaped String
      */
     public static String escapeHtml(String source) {
@@ -233,9 +235,10 @@ public final class CmsStringUtil {
     /**
      * Escapes a String so it may be used in JavaScript String definitions.<p>
      * 
-     * This method replaces line breaks, quotationmarks and \ characters.<p>
+     * This method replaces line breaks, quotation marks and \ characters.<p>
      * 
      * @param source the String to escape
+     * 
      * @return the escaped String
      */
     public static String escapeJavaScript(String source) {
@@ -252,10 +255,10 @@ public final class CmsStringUtil {
      * Escapes a String so it may be used as a Perl5 regular expression.<p>
      * 
      * This method replaces the following characters in a String:<br>
-     * <code>{}[]()\$^.*+/</code>
-     * 
+     * <code>{}[]()\$^.*+/</code><p>
      * 
      * @param source the string to escape
+     * 
      * @return the escaped string
      */
     public static String escapePattern(String source) {
@@ -324,7 +327,7 @@ public final class CmsStringUtil {
      * given text and a default value for this attribute; and returns a <code>{@link Map}</code>
      * with 2 values: a <code>{@link String}</code> with key <code>"text"</code> with the new text
      * without the given attribute, and another <code>{@link String}</code> with key <code>"value"</code>
-     * with the new extended value for the given attribute, this value is sourrounded by the same type of 
+     * with the new extended value for the given attribute, this value is surrounded by the same type of 
      * quotation marks as in the given text.<p> 
      * 
      * @param text the text to search in
@@ -339,7 +342,7 @@ public final class CmsStringUtil {
         retValue.put("text", text);
         retValue.put("value", "'" + defValue + "'");
         if ((text != null) && (text.toLowerCase().indexOf(attribute.toLowerCase()) >= 0)) {
-            // this doesnot work for things like "att=method()" without quotations.
+            // this does not work for things like "att=method()" without quotations.
             String quotation = "\'";
             int pos1 = text.toLowerCase().indexOf(attribute.toLowerCase());
             // looking for the opening quotation mark
@@ -365,12 +368,13 @@ public final class CmsStringUtil {
     }
 
     /**
-     * Extracts the content of a &lt;body&gt tag in a HTML page.<p>
+     * Extracts the content of a <code>&lt;body&gt;</code> tag in a HTML page.<p>
      * 
      * This method should be pretty robust and work even if the input HTML does not contains
      * a valid body tag.<p> 
      * 
      * @param content the content to extract the body from
+     * 
      * @return the extracted body tag content
      */
     public static String extractHtmlBody(String content) {
@@ -407,6 +411,7 @@ public final class CmsStringUtil {
      * or encoding information is contained in the input.<p>
      * 
      * @param content the xml content to extract the encoding from
+     * 
      * @return the extracted encoding, or null if no xml encoding setting was found in the input 
      */
     public static String extractXmlEncoding(String content) {
@@ -431,12 +436,13 @@ public final class CmsStringUtil {
     /**
      * Formats a resource name that it is displayed with the maximum length and path information is adjusted.<p>
      * In order to reduce the length of the displayed names, single folder names are removed/replaced with ... successively, 
-     * starting with the second! folder. The first folder is removed as last.
+     * starting with the second! folder. The first folder is removed as last.<p>
      * 
      * Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns <code>/myfolder/.../index.html</code>.<p>
      * 
      * @param name the resource name to format
      * @param maxLength the maximum length of the resource name (without leading <code>/...</code>)
+     * 
      * @return the formatted resource name
      */
     public static String formatResourceName(String name, int maxLength) {
@@ -486,6 +492,7 @@ public final class CmsStringUtil {
      * If the runtime is greater then 24 hours, the format dd:hh:mm:ss is used.<p> 
      * 
      * @param runtime the time to format
+     * 
      * @return the formatted runtime
      */
     public static String formatRuntime(long runtime) {
@@ -583,6 +590,7 @@ public final class CmsStringUtil {
      * or the empty String <code>""</code>.<p> 
      * 
      * @param value the value to check
+     * 
      * @return true, if the provided value is null or the empty String, false otherwise
      */
     public static boolean isEmpty(String value) {
@@ -595,6 +603,7 @@ public final class CmsStringUtil {
      * or contains only white spaces.<p> 
      * 
      * @param value the value to check
+     * 
      * @return true, if the provided value is null or contains only white spaces, false otherwise
      */
     public static boolean isEmptyOrWhitespaceOnly(String value) {
@@ -610,7 +619,7 @@ public final class CmsStringUtil {
      * @param value2 the second object to compare
      * 
      * @return <code>true</code> if the provided Objects are either both <code>null</code> 
-     * or equal according to {@link Object#equals(Object)} 
+     *              or equal according to {@link Object#equals(Object)} 
      */
     public static boolean isEqual(Object value1, Object value2) {
 
@@ -625,6 +634,7 @@ public final class CmsStringUtil {
      * nor the empty String <code>""</code>.<p> 
      * 
      * @param value the value to check
+     * 
      * @return true, if the provided value is not null and not the empty String, false otherwise
      */
     public static boolean isNotEmpty(String value) {
@@ -637,7 +647,9 @@ public final class CmsStringUtil {
      * nor contains only white spaces.<p> 
      * 
      * @param value the value to check
-     * @return true, if the provided value is null or contains only white spaces, false otherwise
+     * 
+     * @return <code>true</code>, if the provided value is <code>null</code> 
+     *          or contains only white spaces, <code>false</code> otherwise
      */
     public static boolean isNotEmptyOrWhitespaceOnly(String value) {
 
@@ -648,6 +660,7 @@ public final class CmsStringUtil {
      * Checks if the given class name is a valid Java class name.<p>
      * 
      * @param className the name to check
+     * 
      * @return true if the given class name is a valid Java class name
      */
     public static boolean isValidJavaClassName(String className) {
@@ -829,7 +842,7 @@ public final class CmsStringUtil {
      *
      * @param source the String to split
      * @param delimiter the delimiter to split at
-     * @param trim flag to indicate if leading and trailing whitespaces should be omitted
+     * @param trim flag to indicate if leading and trailing white spaces should be omitted
      *
      * @return the List of splitted Substrings
      */
@@ -877,7 +890,7 @@ public final class CmsStringUtil {
      * 
      * @param source the String to split
      * @param delimiter the delimiter to split at
-     * @param trim flag to indicate if leading and trailing whitespaces should be omitted
+     * @param trim flag to indicate if leading and trailing white spaces should be omitted
      * 
      * @return the Array of splitted Substrings
      */
@@ -913,7 +926,7 @@ public final class CmsStringUtil {
 
     /**
      * Splits a String into substrings along the provided <code>paramDelim</code> delimiter,
-     * then each substring is treat as a key-value pair delimited by <code>keyValDelim</code>.
+     * then each substring is treat as a key-value pair delimited by <code>keyValDelim</code>.<p>
      * 
      * @param source the string to split
      * @param paramDelim the string to delimit each key-value pair
@@ -945,7 +958,7 @@ public final class CmsStringUtil {
      * Replaces a set of <code>searchString</code> and <code>replaceString</code> pairs, 
      * given by the <code>substitutions</code> Map parameter.<p>
      * 
-     * @param source the constent which is scanned
+     * @param source the string to scan
      * @param substitions the map of substitutions
      * 
      * @return the substituted String
@@ -1032,6 +1045,7 @@ public final class CmsStringUtil {
      * 
      * @param htmlContent the HTML to replace the context path in 
      * @param context the context path of the server
+     * 
      * @return the HTML with the replaced context path
      */
     public static String substituteContextPath(String htmlContent, String context) {
@@ -1049,7 +1063,8 @@ public final class CmsStringUtil {
      * @param content the content which is scanned
      * @param searchString the String which is searched in content
      * @param replaceItem the new String which replaces searchString
-     * @param occurences must be a "g" if all occurences of searchString shall be replaced
+     * @param occurences must be a "g" if all occurrences of searchString shall be replaced
+     * 
      * @return String the substituted String
      */
     public static String substitutePerl(String content, String searchString, String replaceItem, String occurences) {
@@ -1069,7 +1084,7 @@ public final class CmsStringUtil {
     /**
      * Returns the java String literal for the given String. <p>
      *  
-     * This is the form of the String that had to be written into sourcecode 
+     * This is the form of the String that had to be written into source code 
      * using the unicode escape sequence for special characters. <p> 
      * 
      * Example: "Ä" would be transformed to "\\u00C4".<p>
@@ -1217,7 +1232,7 @@ public final class CmsStringUtil {
      * valid characters.<p>
      *
      * @param name the resource name to check
-     * @return true if the resource name is vaild, false otherwise 
+     * @return true if the resource name is valid, false otherwise 
      * 
      * @deprecated use {@link org.opencms.file.CmsResource#checkResourceName(String)} instead
      */
@@ -1231,7 +1246,7 @@ public final class CmsStringUtil {
             return false;
         }
         if (name.length() != name.trim().length()) {
-            // leading or trainling white space are not allowed
+            // leading or trailing white space are not allowed
             return false;
         }
         for (int i = 0; i < l; i++) {
