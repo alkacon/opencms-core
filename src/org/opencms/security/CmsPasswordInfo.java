@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPasswordInfo.java,v $
- * Date   : $Date: 2007/08/13 16:29:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/09/25 14:16:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,9 +107,9 @@ public class CmsPasswordInfo {
     }
 
     /**
-     * Returns the current Pwd.<p>
+     * Returns the current password.<p>
      *
-     * @return the current Pwd
+     * @return the current password
      */
     public String getCurrentPwd() {
 
@@ -117,9 +117,9 @@ public class CmsPasswordInfo {
     }
 
     /**
-     * Returns the new Pwd.<p>
+     * Returns the new password.<p>
      *
-     * @return the new Pwd
+     * @return the new password
      */
     public String getNewPwd() {
 
@@ -144,9 +144,9 @@ public class CmsPasswordInfo {
     }
 
     /**
-     * Sets the current Pwd.<p>
+     * Sets the current password.<p>
      *
-     * @param currentPwd the current Pwd to set
+     * @param currentPwd the current password to set
      */
     public void setCurrentPwd(String currentPwd) {
 
@@ -162,9 +162,9 @@ public class CmsPasswordInfo {
     }
 
     /**
-     * Sets the new Pwd.<p>
+     * Sets the new password.<p>
      *
-     * @param newPwd the new Pwd to set
+     * @param newPwd the new password to set
      */
     public void setNewPwd(String newPwd) {
 
