@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobEnqueued.java,v $
- * Date   : $Date: 2007/08/30 12:46:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/25 09:25:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.5
  */
@@ -77,6 +77,9 @@ public class CmsPublishJobEnqueued extends CmsPublishJobBase {
 
     /**
      * Returns the report for this publish job.<p>
+     * 
+     * This is not the original report, it is wrapper that 
+     * also writes to a temporary file.<p>
      * 
      * @return the report for this publish job
      */
