@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/08/30 10:38:19 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2007/09/25 09:26:26 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -853,7 +853,7 @@ public class CmsPublishProject extends CmsMultiDialog {
         }
         OpenCms.getPublishManager().publishProject(
             getCms(),
-            new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot(), true, false),
+            new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot()),
             publishList);
         // wait 2 seconds, may be it finishes fast
         OpenCms.getPublishManager().waitWhileRunning(1500);
