@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/25 08:34:26 $
- * Version: $Revision: 1.893 $
+ * Date   : $Date: 2007/09/25 08:40:15 $
+ * Version: $Revision: 1.894 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -24,6 +24,7 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue with OpenCms not starting anymore if there are pending publish jobs for users not in the root ou
 * Fixed issue with org.opencms.util.CmsHtmlStripper preserving complete HTML in case no preserve Tags are configured
 * Fixed issue with static export generating links from a resource to a related resource in a rfs rule
+* Fixed issue with importing a resource where the ID is already in use by other resource
 - Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
 
 OpenCms 7.0.2 - September 12, 2007

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/09/12 08:43:27 $
- * Version: $Revision: 1.599 $
+ * Date   : $Date: 2007/09/25 08:40:15 $
+ * Version: $Revision: 1.600 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -344,8 +344,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param runtimeInfoFactory the initialized OpenCms runtime info factory
      * @param publishEngine the publish engine
      * 
-     * @return CmsDriverManager the instanciated driver manager
-     * @throws CmsInitException if the driver manager couldn't be instanciated
+     * @return CmsDriverManager the instantiated driver manager
+     * @throws CmsInitException if the driver manager couldn't be instantiated
      */
     public static CmsDriverManager newInstance(
         CmsConfigurationManager configurationManager,
@@ -1422,7 +1422,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param content the content for the new resource
      * @param properties the properties for the new resource
      * @param importCase if <code>true</code>, signals that this operation is done while 
-     *                      importing resource, causing different lock behaviour and 
+     *                      importing resource, causing different lock behavior and 
      *                      potential "lost and found" usage
      * 
      * @return the created resource
@@ -1471,13 +1471,15 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
 
             // check if the resource already exists by id
-            CmsResource currentResourceById = null;
             try {
-                currentResourceById = readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL);
-                // reset if it is the same as by name
-                if ((currentResourceByName != null)
-                    && currentResourceById.getRootPath().equals(currentResourceByName.getRootPath())) {
-                    currentResourceById = null;
+                CmsResource currentResourceById = readResource(dbc, resource.getStructureId(), CmsResourceFilter.ALL);
+                // it is not allowed to import resources when there is already a resource with the same id but different path 
+                if (!currentResourceById.getRootPath().equals(resourcePath)) {
+                    throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
+                        Messages.ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3,
+                        dbc.removeSiteRoot(resourcePath),
+                        dbc.removeSiteRoot(currentResourceById.getRootPath()),
+                        currentResourceById.getStructureId()));
                 }
             } catch (CmsVfsResourceNotFoundException e) {
                 // if the resource does exist, we have to check the id later to decide what to do
@@ -1500,54 +1502,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     CmsPermissionSet.ACCESS_WRITE,
                     !importCase,
                     CmsResourceFilter.ALL);
-            }
-            if ((currentResourceById != null) && !currentResourceById.equals(currentResourceByName)) {
-                // resource already exists - check existing resource              
-                m_securityManager.checkPermissions(
-                    dbc,
-                    currentResourceById,
-                    CmsPermissionSet.ACCESS_WRITE,
-                    !importCase,
-                    CmsResourceFilter.ALL);
-            }
-
-            // first handle a possible moved resource
-            if (currentResourceById != null) {
-                // a resource in another place is using the same id
-                if (!importCase) {
-                    // direct "overwrite" of a resource is possible only during import, 
-                    // or if the resource has been deleted
-                    throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
-                        Messages.ERR_RESOURCE_WITH_ID_ALREADY_EXISTS_3,
-                        dbc.removeSiteRoot(resource.getRootPath()),
-                        currentResourceById.getRootPath(),
-                        currentResourceById.getStructureId()));
-                }
-                // lock the resource by id, will throw an exception if not lockable
-                lockResource(dbc, currentResourceById, CmsLockType.EXCLUSIVE);
-
-                // deleted resources were not moved to L&F
-                if (currentResourceById.getState().isDeleted()) {
-                    if (!currentResourceById.isFolder()) {
-                        // trigger createResource instead of writeResource
-                        currentResourceById = null;
-                    }
-                } else {
-                    // the resource already exists
-                    if (!resource.isFolder()
-                        && useLostAndFound
-                        && (!currentResourceById.getResourceId().equals(resource.getResourceId()))) {
-                        // semantic change: the current resource is moved to L&F and the imported resource will overwrite the old one                
-                        // will leave the resource with state deleted, 
-                        // but it does not matter, since the state will be set later again
-                        moveToLostAndFound(dbc, currentResourceById, false);
-                    }
-                }
-
-                if (currentResourceByName == null) {
-                    // move resource back to original place
-                    moveResource(dbc, currentResourceById, resourcePath, true);
-                }
             }
 
             // now look for the resource by name
@@ -1585,8 +1539,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
             // if null, create new resource, if not null write resource
-            CmsResource overwrittenResource = (currentResourceById != null ? currentResourceById
-            : currentResourceByName);
+            CmsResource overwrittenResource = currentResourceByName;
 
             // extract the name (without path)
             String targetName = CmsResource.getName(resourcePath);
@@ -3007,7 +2960,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see org.opencms.db.CmsPublishList
      */
-    public synchronized void fillPublishList(CmsDbContext dbc, CmsPublishList publishList) throws CmsException {
+    public void fillPublishList(CmsDbContext dbc, CmsPublishList publishList) throws CmsException {
 
         if (!publishList.isDirectPublish()) {
             // when publishing a project
@@ -5071,7 +5024,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      */
-    public synchronized void publishJob(CmsObject cms, CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report)
+    public void publishJob(CmsObject cms, CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report)
     throws CmsException {
 
         try {
