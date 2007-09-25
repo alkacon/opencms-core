@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportRfsRule.java,v $
- * Date   : $Date: 2007/08/13 16:30:09 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/25 08:29:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,10 +40,12 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * Help class for storing of rfs-rules..<p>
+ * Help class for storing of rfs-rules.<p>
  * 
  * @author Michael Moossen
- * @version $Revision: 1.4 $
+ * 
+ * @version $Revision: 1.5 $
+ * 
  * @since 6.0.0
  */
 public class CmsStaticExportRfsRule {
@@ -72,7 +74,7 @@ public class CmsStaticExportRfsRule {
     /** Name of rule. */
     private String m_name;
 
-    /** List of regular expresions to determine related system resources. */
+    /** List of regular expressions to determine related system resources. */
     private List m_relatedSystemResources;
 
     /** configured Url prefix. */
@@ -81,7 +83,7 @@ public class CmsStaticExportRfsRule {
     /** Url prefix pattern. */
     private String m_rfsPrefix;
 
-    /** Source regex. */
+    /** Source regular expression. */
     private final Pattern m_source;
 
     /** Relative links value. */
@@ -92,7 +94,7 @@ public class CmsStaticExportRfsRule {
      * 
      * @param name the name of the rule
      * @param description the description for the rule
-     * @param source the source regex
+     * @param source the source regular expression
      * @param rfsPrefix the url prefix
      * @param exportPath the rfs export path
      * @param exportWorkPath the rfs export work path
@@ -125,7 +127,7 @@ public class CmsStaticExportRfsRule {
      * 
      * @param name the name of the rule
      * @param description the description for the rule
-     * @param source the source regex
+     * @param source the source regular expression
      * @param rfsPrefix the url prefix
      * @param exportPath the rfs export path
      * @param exportWorkPath the rfs export work path
@@ -149,9 +151,9 @@ public class CmsStaticExportRfsRule {
     }
 
     /**
-     * Adds a regex of related system resources.<p>
+     * Adds a regular expression of related system resources.<p>
      * 
-     * @param regex the regex to add
+     * @param regex the regular expression to add
      */
     public void addRelatedSystemRes(String regex) {
 
@@ -196,7 +198,7 @@ public class CmsStaticExportRfsRule {
     }
 
     /**
-     * Returns the configured rfs export Path with unstubstituted context values.<p>
+     * Returns the configured rfs export Path with unsubstituted context values.<p>
      *
      * @return the configured rfs export Path
      */
@@ -216,7 +218,7 @@ public class CmsStaticExportRfsRule {
     }
 
     /**
-     * Returns the configured rfs export Work Path with unstubstituted context values.<p>
+     * Returns the configured rfs export Work Path with unsubstituted context values.<p>
      * 
      * @return the configured rfs export Work Path
      */
@@ -262,7 +264,7 @@ public class CmsStaticExportRfsRule {
     }
 
     /**
-     * Returns the configured url Prefix with unstubstituted context values.<p>
+     * Returns the configured url Prefix with unsubstituted context values.<p>
      *
      * @return the configured url Prefix
      */
@@ -272,9 +274,9 @@ public class CmsStaticExportRfsRule {
     }
 
     /**
-     * Returns the source regex pattern.<p>
+     * Returns the source regular expression pattern.<p>
      *
-     * @return the source regex pattern
+     * @return the source regular expression pattern
      */
     public Pattern getSource() {
 
@@ -295,6 +297,7 @@ public class CmsStaticExportRfsRule {
      * Checks if a vfsName matches the given related system resource patterns.<p>
      * 
      * @param vfsName the vfs name of a resource to check
+     * 
      * @return true if the name matches one of the given related system resource patterns
      */
     public boolean match(String vfsName) {
