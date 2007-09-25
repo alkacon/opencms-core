@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2007/08/13 16:30:10 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2007/09/25 10:49:18 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,7 +90,7 @@ public class CmsFlexController {
     /** The CmsResource that was initialized by the original request, required for URI actions. */
     private CmsResource m_resource;
 
-    /** Indicates if the respose should be streamed. */
+    /** Indicates if the response should be streamed. */
     private boolean m_streaming;
 
     /** Exception that was caught during inclusion of sub elements. */
@@ -103,7 +103,7 @@ public class CmsFlexController {
     private boolean m_top;
 
     /**
-     * Creates a new controller form the old one, exchaning just the provided OpenCms user context.<p>
+     * Creates a new controller form the old one, exchanging just the provided OpenCms user context.<p>
      * 
      * @param cms the OpenCms user context for this controller
      * @param base the base controller
