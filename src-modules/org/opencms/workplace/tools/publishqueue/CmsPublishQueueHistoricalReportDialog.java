@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueHistoricalReportDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/25 09:26:09 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,18 +54,18 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.5
  */
 public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
 
     /** The pages array for possible multi-page dialogs. This is a dummy. */
-    public static String[] PAGES = {"page1"};
+    private static final String[] PAGES = {"page1"};
 
     /** Request parameter name for the publish job id. */
     public static final String PARAM_ID = "id";
-    
+
     /** The path to the underlying file. */
     protected String m_jobId = null;
 
@@ -121,14 +121,13 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
 
         BufferedReader reader = null;
         try {
-            CmsPublishJobFinished publishJob = (CmsPublishJobFinished)OpenCms.getPublishManager()
-                .getJobByPublishHistoryId(new CmsUUID(m_jobId));
+            CmsPublishJobFinished publishJob = (CmsPublishJobFinished)OpenCms.getPublishManager().getJobByPublishHistoryId(
+                new CmsUUID(m_jobId));
             byte[] contents = OpenCms.getPublishManager().getReportContents(publishJob);
             StringBuffer result = new StringBuffer();
-            
-            if (contents != null) {         
-                reader = new BufferedReader(new InputStreamReader(
-                    new ByteArrayInputStream(contents)));
+
+            if (contents != null) {
+                reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(contents)));
                 String read = reader.readLine();
                 while (read != null) {
                     result.append(read).append("\n");
@@ -137,13 +136,9 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
             }
             return result.toString();
         } catch (IOException ioex) {
-            throw new CmsException(Messages.get().container(
-                Messages.ERR_FILE_ARG_ACCESS_1,
-                m_jobId), ioex);
+            throw new CmsException(Messages.get().container(Messages.ERR_FILE_ARG_ACCESS_1, m_jobId), ioex);
         } catch (CmsException ex) {
-            throw new CmsException(Messages.get().container(
-                Messages.ERR_FILE_ARG_ACCESS_1,
-                m_jobId), ex);            
+            throw new CmsException(Messages.get().container(Messages.ERR_FILE_ARG_ACCESS_1, m_jobId), ex);
         } finally {
             if (reader != null) {
                 try {
@@ -189,8 +184,8 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
             fileContentHeader = key(Messages.GUI_PERSONALQUEUE_LIST_NAME_0);
         } else {
             Object[] params = new Object[3];
-            CmsPublishJobFinished publishJob = (CmsPublishJobFinished)OpenCms.getPublishManager()
-                .getJobByPublishHistoryId(new CmsUUID(m_jobId));
+            CmsPublishJobFinished publishJob = (CmsPublishJobFinished)OpenCms.getPublishManager().getJobByPublishHistoryId(
+                new CmsUUID(m_jobId));
             // project name
             params[0] = publishJob.getProjectName();
             // user name
