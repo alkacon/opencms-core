@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressWidget.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/09/25 14:55:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.0.0
  */
@@ -89,7 +89,7 @@ public class CmsProgressWidget {
     /** The default width of the progress bar. */
     private static final String DEFAULT_COLOR = "blue";
 
-    /** The default refresh reate (in ms) of the progress bar. */
+    /** The default refresh rate (in ms) of the progress bar. */
     private static final int DEFAULT_REFRESH_RATE = 2000;
 
     /** The default width of the progress bar. */
@@ -220,7 +220,7 @@ public class CmsProgressWidget {
                             }
                         }
                     } else {
-                        // wait the configured resfresh reate before returning
+                        // wait the configured refresh rate before returning
                         synchronized (this) {
                             wait(getRefreshRate());
                         }
@@ -228,7 +228,7 @@ public class CmsProgressWidget {
                 }
 
                 if (!thread.isAlive()) {
-                    // is an error occured in the execution of the thread?
+                    // is an error occurred in the execution of the thread?
                     if (thread.getError() != null) {
                         return createError(Messages.get().getBundle(getJsp().getRequestContext().getLocale()).key(
                             Messages.GUI_PROGRESS_ERROR_IN_THREAD_0), thread.getError());
