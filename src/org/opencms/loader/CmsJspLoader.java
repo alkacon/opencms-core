@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2007/08/13 16:29:53 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2007/09/25 10:56:38 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -114,7 +114,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.105 $ 
+ * @version $Revision: 1.106 $ 
  * 
  * @since 6.0.0 
  * 
@@ -125,7 +125,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /** Property value for "cache" that indicates that the FlexCache should be bypassed. */
     public static final String CACHE_PROPERTY_BYPASS = "bypass";
 
-    /** Property value for "cache" that indicates that the ouput should be streamed. */
+    /** Property value for "cache" that indicates that the output should be streamed. */
     public static final String CACHE_PROPERTY_STREAM = "stream";
 
     /** Default jsp folder constant. */
@@ -155,7 +155,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /** Cache max age parameter name. */
     public static final String PARAM_CLIENT_CACHE_MAXAGE = "client.cache.maxage";
 
-    /** Error page commited parameter name. */
+    /** Error page committed parameter name. */
     public static final String PARAM_JSP_ERRORPAGE_COMMITTED = "jsp.errorpage.committed";
 
     /** Jsp folder parameter name. */
@@ -173,7 +173,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /** The resource loader configuration. */
     private Map m_configuration;
 
-    /** Flag to indicate if error pages are marked as "commited". */
+    /** Flag to indicate if error pages are marked as "committed". */
     // TODO: This is a hack, investigate this issue with different runtime environments
     private boolean m_errorPagesAreNotCommited; // default false should work for Tomcat > 4.1
 
@@ -303,7 +303,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                             // set previously saved error code
                             res.setStatus(errorCode.intValue());
                         }
-                        // proecess the headers
+                        // process the headers
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                         res.getOutputStream().write(result);
                         res.getOutputStream().flush();
@@ -417,7 +417,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         CmsFlexController controller = null;
         if (top) {
-            // only check for existing contoller if this is the "top" request/response
+            // only check for existing controller if this is the "top" request/response
             controller = CmsFlexController.getController(req);
         }
         if (controller == null) {
@@ -480,7 +480,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             m_clientCacheMaxAge = Long.parseLong(maxAge);
         }
 
-        // get the "error pages are commited or not" flag from the configuration
+        // get the "error pages are committed or not" flag from the configuration
         m_errorPagesAreNotCommited = config.getBoolean(PARAM_JSP_ERRORPAGE_COMMITTED, true);
 
         // output setup information
@@ -641,6 +641,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @param content the JSP content to parse
      * @param controller the current JSP controller
      * @param updatedFiles a set of already updated jsp files
+     * 
      * @return the parsed JSP content
      */
     private String parseJspCmsTag(String content, CmsFlexController controller, Set updatedFiles) {
@@ -745,6 +746,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @param content the JSP content to parse
      * @param encoding the encoding to use for the JSP
      * @param isHardInclude indicated if this page is actually a "hard" include with <code>&lt;%@ include file="..." &gt;</code>
+     * 
      * @return the parsed JSP content
      */
     private String parseJspEncoding(String content, String encoding, boolean isHardInclude) {
@@ -848,7 +850,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             // encoding setting was not found
             // if this is not a "hard" include then add the encoding to the top of the page
             // checking for the hard include is important to prevent errors with 
-            // multiple page encoding settings if a templete is composed from several hard included elements
+            // multiple page encoding settings if a template is composed from several hard included elements
             // this is an issue in Tomcat 4.x but not 5.x
             StringBuffer buf2 = new StringBuffer(buf.length() + 32);
             buf2.append("<%@ page pageEncoding=\"");
@@ -867,6 +869,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @param content the JSP content to parse
      * @param controller the current JSP controller
      * @param updatedFiles a set of already updated files
+     * 
      * @return the parsed JSP content
      */
     private String parseJspIncludes(String content, CmsFlexController controller, Set updatedFiles) {
@@ -941,7 +944,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     // now try to update the referenced file 
                     String jspname = updateJsp(argument, controller, updatedFiles);
                     if (jspname != null) {
-                        // only change something in case no error had occured
+                        // only change something in case no error had occurred
                         directive = pre + jspname + suf;
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(Messages.get().getBundle().key(
@@ -1021,7 +1024,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @param res the servlet response
      * 
      * @throws IOException might be thrown by the servlet environment
-     * @throws CmsException in case of errors acessing OpenCms functions
+     * @throws CmsException in case of errors accessing OpenCms functions
      */
     private void showSource(CmsObject cms, CmsResource file, HttpServletRequest req, HttpServletResponse res)
     throws CmsException, IOException {
@@ -1044,15 +1047,16 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * Updates a JSP page in the "real" file system in case the VFS resource has changed.<p>
      * 
      * Also processes the <code>&lt;%@ cms %&gt;</code> tags before the JSP is written to the real FS.
-     * Also recursivly updates all files that are referenced by a <code>&lt;%@ cms %&gt;</code> tag 
+     * Also recursively updates all files that are referenced by a <code>&lt;%@ cms %&gt;</code> tag 
      * on this page to make sure the file actually exists in the real FS. 
      * All <code>&lt;%@ include %&gt;</code> tags are parsed and the name in the tag is translated
      * from the OpenCms VFS path to the path in the real FS. 
      * The same is done for filenames in <code>&lt;%@ page errorPage=... %&gt;</code> tags.
      * 
-     * @param resource the reqested JSP file resource in the VFS
+     * @param resource the requested JSP file resource in the VFS
      * @param controller the controller for the JSP integration
      * @param updatedFiles a Set containing all JSP pages that have been already updated
+     * 
      * @return the file name of the updated JSP in the "real" FS
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
@@ -1196,11 +1200,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /**
      * Updates a JSP page in the "real" file system in case the VFS resource has changed based on the resource name.<p>
      * 
-     * Gernates a resource based on the provided name and calls {@link #updateJsp(CmsResource, CmsFlexController, Set)}.<p>
+     * Generates a resource based on the provided name and calls {@link #updateJsp(CmsResource, CmsFlexController, Set)}.<p>
      * 
      * @param vfsName the name of the JSP file resource in the VFS
      * @param controller the controller for the JSP integration
      * @param updatedFiles a Set containing all JSP pages that have been already updated
+     * 
      * @return the file name of the updated JSP in the "real" FS
      */
     private String updateJsp(String vfsName, CmsFlexController controller, Set updatedFiles) {

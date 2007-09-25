@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2007/09/25 10:49:18 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2007/09/25 10:52:16 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,10 +189,12 @@ public class CmsFlexController {
     }
 
     /**
-     * Provides access to a root cause Exception that might have occured in a complex include scenario.<p>
+     * Provides access to a root cause Exception that might have occurred in a complex include scenario.<p>
      * 
      * @param req the current request
+     * 
      * @return the root cause exception or null if no root cause exception is available
+     * 
      * @see #getThrowable()
      */
     public static Throwable getThrowable(ServletRequest req) {
@@ -206,10 +208,12 @@ public class CmsFlexController {
     }
 
     /**
-     * Provides access to URI of a VFS resource that caused an exception that might have occured in a complex inlucde scenario.<p>
+     * Provides access to URI of a VFS resource that caused an exception that might have occurred in a complex include scenario.<p>
      * 
      * @param req the current request
-     * @return to URI of a VFS resource that caused an exception, or null
+     * 
+     * @return to URI of a VFS resource that caused an exception, or <code>null</code>
+     * 
      * @see #getThrowableResourceUri()
      */
     public static String getThrowableResourceUri(ServletRequest req) {
@@ -299,7 +303,7 @@ public class CmsFlexController {
      * not cached to long in proxies. This can be controlled by the <code>maxAge</code> parameter. 
      * If <code>maxAge</code> is lower then 0, then a default max age of 86400000 msec (1 day) is used.<p> 
      * 
-     * @param res the reponse to set the "Expires" date header for
+     * @param res the response to set the "Expires" date header for
      * @param maxAge maximum amount of time in milliseconds the response remains valid
      * @param dateExpires the date to set (if this is not in the future, it is ignored)
      */
@@ -334,7 +338,7 @@ public class CmsFlexController {
     /**
      * Sets the "last modified" date header for a given http request.<p>
      * 
-     * @param res the reponse to set the "last modified" date header for
+     * @param res the response to set the "last modified" date header for
      * @param dateLastModified the date to set (if this is lower then 0, the current time is set)
      */
     public static void setDateLastModifiedHeader(HttpServletResponse res, long dateLastModified) {
@@ -548,6 +552,7 @@ public class CmsFlexController {
      * another resource, then this will be <code>false</code>.   
      * 
      * @return <code>true</code> if this controller was generated as top level controller
+     * 
      * @see org.opencms.loader.I_CmsResourceLoader#dump(CmsObject, CmsResource, String, java.util.Locale, HttpServletRequest, HttpServletResponse)
      * @see org.opencms.jsp.CmsJspActionElement#getContent(String)
      */
@@ -604,11 +609,12 @@ public class CmsFlexController {
      * Sets an exception (Throwable) that was caught during inclusion of sub elements.<p>
      * 
      * If another exception is already set in this controller, then the additional exception
-     * is ignored.
+     * is ignored.<p>
      * 
      * @param throwable the exception (Throwable) to set
-     * @param resource the URI of the VFS resource the error occured on (might be null if unknown)
-     * @return the exception stored in the contoller
+     * @param resource the URI of the VFS resource the error occurred on (might be <code>null</code> if unknown)
+     * 
+     * @return the exception stored in the controller
      */
     public Throwable setThrowable(Throwable throwable, String resource) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/08/19 05:56:19 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2007/09/25 10:56:38 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,7 +79,7 @@ public class CmsLogin extends CmsJspLoginBean {
     /** Action constant: Default action, display the dialog. */
     public static final int ACTION_DISPLAY = 0;
 
-    /** Action constant: Login sucessful. */
+    /** Action constant: Login successful. */
     public static final int ACTION_LOGIN = 1;
 
     /** Action constant: Logout. */
@@ -318,7 +318,7 @@ public class CmsLogin extends CmsJspLoginBean {
                         // the user account is temporarily disabled because of too many login failures
                         m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_TEMP_DISABLED_0);
                     } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_WITH_MESSAGE_1 == getLoginException().getMessageContainer().getKey()) {
-                        // all logins have been diasabled be the Administration
+                        // all logins have been disabled be the Administration
                         CmsLoginMessage loginMessage = OpenCms.getLoginManager().getLoginMessage();
                         if (loginMessage != null) {
                             m_message = Messages.get().container(
@@ -353,7 +353,7 @@ public class CmsLogin extends CmsJspLoginBean {
                 // requested resource does either not exist or is not readable by user
                 if (CmsFrameset.JSP_WORKPLACE_URI.equals(resource)) {
                     // we know the Workplace exists, so the user does not have access to the Workplace
-                    // probalbly this is a "Guest" user in a default setup where "Guest" has no access to the Workplace
+                    // probably this is a "Guest" user in a default setup where "Guest" has no access to the Workplace
                     m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0);
                     m_action = ACTION_DISPLAY;
                 } else if (getCmsObject().existsResource(CmsFrameset.JSP_WORKPLACE_URI)) {
