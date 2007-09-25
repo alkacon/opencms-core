@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/19 09:17:01 $
- * Version: $Revision: 1.892 $
+ * Date   : $Date: 2007/09/25 08:34:26 $
+ * Version: $Revision: 1.893 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -21,10 +21,10 @@ Legend:
 
 OpenCms 7.0.3 - xxx, 2007
 * Fixed issue with deleting module with locked resources
-- Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
 * Fixed issue with OpenCms not starting anymore if there are pending publish jobs for users not in the root ou
 * Fixed issue with org.opencms.util.CmsHtmlStripper preserving complete HTML in case no preserve Tags are configured
-
+* Fixed issue with static export generating links from a resource to a related resource in a rfs rule
+- Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
 
 OpenCms 7.0.2 - September 12, 2007
 * Fixed issue #1291: Now using the correct line break format for UNIX in cmsshell.sh

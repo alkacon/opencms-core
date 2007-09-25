@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.127 $
+ * Date   : $Date: 2007/09/25 08:34:26 $
+ * Version: $Revision: 1.128 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.127 $ 
+ * @version $Revision: 1.128 $ 
  * 
  * @since 6.0.0 
  */
@@ -467,7 +467,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @return status code of the export operation, status codes are the same as http status codes (200,303,304)
      * @throws CmsException in case of errors accessing the VFS
      * @throws ServletException in case of errors accessing the servlet 
-     * @throws IOException in case of erros writing to the export output stream
+     * @throws IOException in case of errors writing to the export output stream
      * @throws CmsStaticExportException if static export is disabled
      */
     public int export(HttpServletRequest req, HttpServletResponse res, CmsObject cms, CmsStaticExportData data)
@@ -1144,14 +1144,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the static export rfs name for a given vfs resoure where the link to the 
+     * Returns the static export rfs name for a given vfs resource where the link to the 
      * resource includes request parameters.<p>
      * 
      * @param cms an initialized cms context
      * @param vfsName the name of the vfs resource
      * @param parameters the parameters of the link pointing to the resource
      * 
-     * @return the static export rfs name for a give vfs resoure
+     * @return the static export rfs name for a give vfs resource
      */
     public String getRfsName(CmsObject cms, String vfsName, String parameters) {
 
@@ -1245,6 +1245,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
             return getRfsPrefix(cms.getRequestContext().addSiteRoot(vfsName)).concat(rfsName);
         } else {
+            // check if we are generating a link to a related resource in the same rfs rule
+            String source = cms.getRequestContext().addSiteRoot(cms.getRequestContext().getUri());
+            Iterator it = m_rfsRules.iterator();
+            while (it.hasNext()) {
+                CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)it.next();
+                if (rule.getSource().matcher(source).matches() && rule.match(vfsName)) {
+                    return rule.getRfsPrefix().concat(rfsName);
+                }
+            }
+            // this is a link across rfs rules 
             return getRfsPrefix(cms.getRequestContext().getSiteRoot() + "/").concat(rfsName);
         }
     }
@@ -1252,9 +1262,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Returns the prefix for exported links in the "real" file system.<p>
      * 
-     * The returned value will be a direcory like prefix. The value is configured
+     * The returned value will be a directory like prefix. The value is configured
      * in the <code>opencms-importexport.xml</code> configuration file. An optimization
-     * of the configured value will be performed, where all relative path infprmation is resolved
+     * of the configured value will be performed, where all relative path information is resolved
      * (for example <code>/export/../static</code> will be resolved to <code>/export</code>. 
      * Moreover, if the configured path ends with a <code>/</code>, this will be cut off 
      * (for example <code>/export/</code> becomes <code>/export</code>.<p>
