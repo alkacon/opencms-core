@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2007/08/13 16:29:55 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/09/25 12:46:06 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,7 +103,7 @@ public class CmsJspBean {
      * Returns the CmsObject from the wrapped request.<p>
      *
      * This is a convenience method in case you need access to
-     * the CmsObject in your JSP scriplets.
+     * the CmsObject in your JSP scriplets.<p>
      *
      * @return the CmsObject from the wrapped request
      */
@@ -116,9 +116,9 @@ public class CmsJspBean {
     }
 
     /**
-     * Returns the JSP page context this bean was initilized with.<p>
+     * Returns the JSP page context this bean was initialized with.<p>
      * 
-     * @return the JSP page context this bean was initilized with
+     * @return the JSP page context this bean was initialized with
      */
     public PageContext getJspContext() {
 
@@ -126,9 +126,9 @@ public class CmsJspBean {
     }
 
     /**
-     * Returns the request this bean was initilized with.<p>
+     * Returns the request this bean was initialized with.<p>
      * 
-     * @return the request this bean was initilized with
+     * @return the request this bean was initialized with
      */
     public HttpServletRequest getRequest() {
 
@@ -146,9 +146,9 @@ public class CmsJspBean {
     }
 
     /**
-     * Returns the reponse wrapped by this element.<p>
+     * Returns the response wrapped by this element.<p>
      * 
-     * @return the reponse wrapped by this element
+     * @return the response wrapped by this element
      */
     public HttpServletResponse getResponse() {
 
@@ -181,14 +181,14 @@ public class CmsJspBean {
     }
 
     /**
-     * Returns <code>true</code> if Exceptions are handled by the class instace and supressed on the 
+     * Returns <code>true</code> if Exceptions are handled by the class instance and suppressed on the 
      * output page, or <code>false</code> if they will be thrown and have to be handled by the calling class.<p>
      * 
      * The default is <code>true</code>.
      * If set to <code>false</code> Exceptions that occur internally will be wrapped into
      * a RuntimeException and thrown to the calling class instance.<p>
      * 
-     * @return <code>true</code> if Exceptions are supressed, or
+     * @return <code>true</code> if Exceptions are suppressed, or
      *      <code>false</code> if they will be thrown and have to be handled by the calling class
      */
     public boolean isSupressingExceptions() {
@@ -235,12 +235,12 @@ public class CmsJspBean {
     }
 
     /**
-     * Controls if Exceptions that occur in methods of this class are supressed (true)
+     * Controls if Exceptions that occur in methods of this class are suppressed (true)
      * or not (false).<p>
      * 
-     * The default is <code>true</code>.
-     * If set to <code>false</code> all Exceptions that occur internally will be wrapped into
-     * a RuntimeException and thrown to the calling class instance.<p>
+     * The default is <code>true</code>. If set to <code>false</code> all Exceptions that
+     * occur internally will be wrapped into a RuntimeException and thrown to the calling 
+     * class instance.<p>
      * 
      * @param value the value to set the Exception handing to
      */
@@ -250,13 +250,13 @@ public class CmsJspBean {
     }
 
     /**
-     * Returns the Flex controller derived from the request this bean was initilized with.<p>
+     * Returns the Flex controller derived from the request this bean was initialized with.<p>
      * 
      * This is protected since the CmsFlexController this is really an internal OpenCms 
      * helper function, not part of the public OpenCms API. It must not be used on JSP pages, 
      * only from subclasses of this bean.<p>
      * 
-     * @return the Flex controller derived from the request this bean was initilized with
+     * @return the Flex controller derived from the request this bean was initialized with
      */
     protected CmsFlexController getController() {
 
@@ -267,10 +267,10 @@ public class CmsJspBean {
      * Internally localizes the given <code>CmsMessageContainer</code> to a String. <p>
      * 
      * If the user request context is at hand, the user's locale will be chosen. If 
-     * no user request context is available, the default locale is used. 
-     * <p>
+     * no user request context is available, the default locale is used. <p>
      * 
      * @param container the message container that allows localization of the represented message.
+     * 
      * @return the message String of the container argument localized to the user's locale (if available) or 
      *         to the default locale. 
      */
@@ -290,7 +290,7 @@ public class CmsJspBean {
      * Handles any exception that might occur in the context of this element to 
      * ensure that templates are not disturbed.<p>
      * 
-     * @param t the Throwable that was catched
+     * @param t the Throwable that was caught
      */
     protected void handleException(Throwable t) {
 
@@ -318,9 +318,9 @@ public class CmsJspBean {
     }
 
     /**
-     * Returns true if this bean has not been initilized (i.e. init() has not been called so far), false otherwise.<p>
+     * Returns true if this bean has not been initialized (i.e. init() has not been called so far), false otherwise.<p>
      * 
-     * @return true if this bean has not been initilized
+     * @return true if this bean has not been initialized
      */
     protected boolean isNotInitialized() {
 
