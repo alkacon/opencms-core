@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/26 15:07:16 $
- * Version: $Revision: 1.902 $
+ * Date   : $Date: 2007/09/26 15:59:23 $
+ * Version: $Revision: 1.903 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 7.0.3 - xxx, 2007
+* Fixed issue #1335: Typo in content-file of 404-handler
 * Fixed issue #1420: Allowing workplace login page to be customized 
 * Fixed issue #1468: Missing encoding property for german localization property files
 * Fixed issue #1530: Showing user password in plain text in the workplace
