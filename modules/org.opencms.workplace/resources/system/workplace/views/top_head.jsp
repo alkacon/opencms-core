@@ -1,4 +1,6 @@
 <%@ page import="
+    org.opencms.file.CmsPropertyDefinition,
+    org.opencms.util.CmsRequestUtil,
 	org.opencms.workplace.*,
 	org.opencms.workplace.help.*,
 	org.opencms.jsp.*"
@@ -99,8 +101,10 @@ if (wp.isHelpEnabled()) {
 %>
        
 <td style="width: 100%">&nbsp;</td>
-<%= wp.buttonBarSeparator(5, 0) %>  
-<%= wp.button("../../login/index.html?logout=true", "_top", "logout.png", org.opencms.workplace.Messages.GUI_BUTTON_EXIT_0, buttonStyle) %>
+<%= wp.buttonBarSeparator(5, 0) %><% 
+	String loginJsp = cms.getCmsObject().readPropertyObject(cms.getRequestContext().getUri(), CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true).getValue();
+	String exitLink = cms.link(CmsRequestUtil.appendParameter(loginJsp, CmsLogin.PARAM_ACTION_LOGOUT, String.valueOf(true))); %>
+<%= wp.button(exitLink, "_top", "logout.png", org.opencms.workplace.Messages.GUI_BUTTON_EXIT_0, buttonStyle) %>
 
 <% if (buttonStyle != 2) {%>
 
