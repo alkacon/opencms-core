@@ -112,6 +112,10 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
 					<name>locale</name>
 					<value><![CDATA[de]]></value>
 				</property>
