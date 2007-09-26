@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/06/27 15:33:54 $
- * Version: $Revision: 1.818 $
+ * Date   : $Date: 2007/09/26 15:51:32 $
+ * Version: $Revision: 1.818.2.1 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ OpenCms 6.2.4 - xxxx, 2007
 - Changed internal message bufffer
 * Fixed issue with editor content scrambled after save, when top-folder content-encoding is set to non-default.
 * Fixed issue that prevented to see historical versions of XML content resources
+* Fixed issue #1343: Removed missing class reference from direct_edit.jsp
 
 OpenCms 6.2.3 - November 30, 2006
 * Fixed error when searching in sites with uppercase letters in site path

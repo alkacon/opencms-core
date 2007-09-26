@@ -10,7 +10,7 @@
 // Create a JSP action element
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 String uri = cms.getRequestContext().getUri();
-CmsEditorBase wp = new CmsEditorBase(cms);
+CmsDialog wp = new CmsDialog(cms);
 
 String editTarget = request.getParameter(CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_TARGET);
 String editElement = request.getParameter(CmsDirectEditJspIncludeProvider.DIRECT_EDIT_PARAM_ELEMENT);
