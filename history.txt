@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/26 08:45:44 $
- * Version: $Revision: 1.898 $
+ * Date   : $Date: 2007/09/26 10:32:03 $
+ * Version: $Revision: 1.899 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -28,6 +28,7 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue with displaying running publish report
 * Fixed issue with NPEs in the publish dialog
 ! Added new '__site' parameter to set the site in the workplace server
+* Fixed issue removing publish locks when aborting a publish job during shutdown
 - Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
 
 OpenCms 7.0.2 - September 12, 2007

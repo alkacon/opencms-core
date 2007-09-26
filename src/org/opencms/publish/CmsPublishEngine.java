@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/08/24 08:39:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/09/26 10:32:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.5.5
  */
@@ -153,7 +153,7 @@ public final class CmsPublishEngine implements Runnable {
     throws CmsException {
 
         // check the driver manager
-        if (m_driverManager == null || m_dbContextFactory == null) {
+        if ((m_driverManager == null) || (m_dbContextFactory == null)) {
             // the resources are unlocked in the driver manager
             throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_NOT_INITIALIZED_0));
         }
@@ -322,7 +322,8 @@ public final class CmsPublishEngine implements Runnable {
 
     /**
      * Shuts down all this static export manager.<p>
-     * NOTE: this method may or may NOT be called (i.e. killall in the stop script), if a system is stopped !
+     * 
+     * NOTE: this method may or may NOT be called (i.e. kill -9 in the stop script), if a system is stopped.<p>
      * 
      * This is required since there may still be a thread running when the system is being shut down.<p>
      */
@@ -353,22 +354,14 @@ public final class CmsPublishEngine implements Runnable {
                 }
             }
 
-            CmsPublishJobInfoBean publishJob = m_currentPublishThread.getPublishJob();
-            m_listeners.fireAbort(m_adminUserId, new CmsPublishJobEnqueued(publishJob));
-            I_CmsReport report = m_currentPublishThread.getReport();
-            report.println();
-            report.println();
-            report.println(
-                Messages.get().container(Messages.RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0),
-                I_CmsReport.FORMAT_ERROR);
-            report.println();
-
-            try {
-                // write report to db
-                m_driverManager.writePublishReport(m_dbContextFactory.getDbContext(), publishJob);
-            } catch (CmsException exc) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(exc.getLocalizedMessage(), exc);
+            if (m_currentPublishThread != null) {
+                CmsPublishJobInfoBean publishJob = m_currentPublishThread.getPublishJob();
+                try {
+                    abortPublishJob(m_adminUserId, new CmsPublishJobEnqueued(publishJob), false);
+                } catch (CmsException e) {
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 }
             }
         }
@@ -402,10 +395,20 @@ public final class CmsPublishEngine implements Runnable {
                 throw new CmsPublishException(Messages.get().container(
                     Messages.ERR_PUBLISH_ENGINE_MISSING_PUBLISH_JOB_0));
             }
-        } else {
+        } else if (!m_shuttingDown) {
             // engine is currently publishing the job to abort
             m_currentPublishThread.abort();
+        } else if (m_shuttingDown && (m_currentPublishThread != null)) {
+            // aborting the current job during shut down
+            I_CmsReport report = m_currentPublishThread.getReport();
+            report.println();
+            report.println();
+            report.println(
+                Messages.get().container(Messages.RPT_PUBLISH_JOB_ABORT_SHUTDOWN_0),
+                I_CmsReport.FORMAT_ERROR);
+            report.println();
         }
+
         // unlock all resources
         if (publishJob.getPublishList() != null) {
             unlockPublishList(publishJob.m_publishJob);
@@ -547,7 +550,7 @@ public final class CmsPublishEngine implements Runnable {
     throws CmsException {
 
         // check the driver manager
-        if (m_driverManager == null || m_dbContextFactory == null) {
+        if ((m_driverManager == null) || (m_dbContextFactory == null)) {
             throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_NOT_INITIALIZED_0));
         }
 
@@ -570,7 +573,7 @@ public final class CmsPublishEngine implements Runnable {
      */
     protected boolean isRunning() {
 
-        return ((m_engineState == CmsPublishEngineState.ENGINE_STARTED && !m_publishQueue.isEmpty()) || (m_currentPublishThread != null));
+        return (((m_engineState == CmsPublishEngineState.ENGINE_STARTED) && !m_publishQueue.isEmpty()) || (m_currentPublishThread != null));
     }
 
     /**
@@ -713,7 +716,7 @@ public final class CmsPublishEngine implements Runnable {
         if (m_engineState != CmsPublishEngineState.ENGINE_STARTED) {
             m_engineState = CmsPublishEngineState.ENGINE_STARTED;
             // start publish job if jobs waiting
-            if (m_currentPublishThread == null && !m_publishQueue.isEmpty()) {
+            if ((m_currentPublishThread == null) && !m_publishQueue.isEmpty()) {
                 run();
             }
         }
@@ -758,8 +761,8 @@ public final class CmsPublishEngine implements Runnable {
     private boolean isEnabled() {
 
         try {
-            if (m_engineState == CmsPublishEngineState.ENGINE_STOPPED
-                || m_engineState == CmsPublishEngineState.ENGINE_STARTED) {
+            if ((m_engineState == CmsPublishEngineState.ENGINE_STOPPED)
+                || (m_engineState == CmsPublishEngineState.ENGINE_STARTED)) {
                 OpenCms.getLoginManager().checkLoginAllowed();
                 return true;
             } else {
