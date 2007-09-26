@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/08/29 13:30:26 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/09/26 13:27:42 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,12 +131,9 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         List errors = new ArrayList();
 
         try {
-            // in the case the confirmation widget has not be enabled 
-            if (CmsStringUtil.isNotEmpty(m_pwdInfo.getNewPwd())) {
-                m_pwdInfo.setConfirmation(m_pwdInfo.getConfirmation());
-            }
             // if new create it first
             if (isNewUser()) {
+                m_pwdInfo.validate();
                 CmsUser newUser = createUser(
                     m_paramOufqn + m_user.getSimpleName(),
                     m_pwdInfo.getNewPwd(),
@@ -148,9 +145,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
                 newUser.setAddress(m_user.getAddress());
                 m_user = newUser;
             } else if (CmsStringUtil.isNotEmpty(m_pwdInfo.getNewPwd())) {
-                if (!m_pwdInfo.getNewPwd().equals(m_pwdInfo.getConfirmation())) {
-                    m_pwdInfo.setConfirmation(null);
-                }
+                m_pwdInfo.validate();
                 getCms().setPassword(m_user.getName(), m_pwdInfo.getNewPwd());
             }
             // test the group name

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPasswordInfo.java,v $
- * Date   : $Date: 2007/09/25 14:16:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/09/26 13:27:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,6 +93,7 @@ public class CmsPasswordInfo {
         if (m_userName == null) {
             throw new CmsIllegalStateException(Messages.get().container(Messages.ERR_INVALID_USER_CONTEXT_0));
         }
+        validate();
         m_cms.setPassword(m_userName, getCurrentPwd(), getNewPwd());
     }
 
@@ -137,9 +138,6 @@ public class CmsPasswordInfo {
         if (CmsStringUtil.isEmpty(getNewPwd()) && CmsStringUtil.isEmpty(confirmation)) {
             return;
         }
-        if (!getNewPwd().equals(confirmation)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEWPWD_MISMATCH_0));
-        }
         m_confirmation = confirmation;
     }
 
@@ -178,5 +176,15 @@ public class CmsPasswordInfo {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_NEWPWD_0), e);
         }
         m_newPwd = newPwd;
+    }
+
+    /**
+     * Validates that the confirmation matches the new password.<p>
+     */
+    public void validate() {
+
+        if (!getNewPwd().equals(getConfirmation())) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NEWPWD_MISMATCH_0));
+        }
     }
 }

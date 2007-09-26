@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/26 10:32:03 $
- * Version: $Revision: 1.899 $
+ * Date   : $Date: 2007/09/26 13:27:42 $
+ * Version: $Revision: 1.900 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 7.0.3 - xxx, 2007
+* Fixed issue #1530: Showing user password in plain text in the workplace
 * Fixed issue with deleting module with locked resources
 * Fixed issue with OpenCms not starting anymore if there are pending publish jobs for users not in the root ou
 * Fixed issue with org.opencms.util.CmsHtmlStripper preserving complete HTML in case no preserve Tags are configured
