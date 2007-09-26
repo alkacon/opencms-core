@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/26 08:25:48 $
- * Version: $Revision: 1.896 $
+ * Date   : $Date: 2007/09/26 08:29:32 $
+ * Version: $Revision: 1.897 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -27,6 +27,7 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue with importing a resource where the ID is already in use by other resource
 * Fixed issue with displaying running publish report
 * Fixed issue with NPEs in the publish dialog
+! Added new '__site' parameter to set the site in the workplace server
 - Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
 
 OpenCms 7.0.2 - September 12, 2007
