@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/09/13 13:46:53 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2007/09/26 13:17:31 $
+ * Version: $Revision: 1.109 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -133,13 +133,13 @@ public final class CmsSecurityManager {
     /**
      * Creates a new instance of the OpenCms security manager.<p>
      * 
-     * @param configurationManager the configuation manager
+     * @param configurationManager the configuration manager
      * @param runtimeInfoFactory the initialized OpenCms runtime info factory
      * @param publishEngine the publish engine
      * 
      * @return a new instance of the OpenCms security manager
      * 
-     * @throws CmsInitException if the securtiy manager could not be initialized
+     * @throws CmsInitException if the security manager could not be initialized
      */
     public static CmsSecurityManager newInstance(
         CmsConfigurationManager configurationManager,
@@ -234,7 +234,7 @@ public final class CmsSecurityManager {
      * @param groupname the name of the group
      * @param readRoles if reading roles or groups
      *
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not successful
      */
     public void addUserToGroup(CmsRequestContext context, String username, String groupname, boolean readRoles)
     throws CmsException {
@@ -259,7 +259,9 @@ public final class CmsSecurityManager {
      * 
      * @param context the current request context
      * @param resource the resource to change the lock for
+     * 
      * @throws CmsException if something goes wrong
+     * 
      * @see org.opencms.file.types.I_CmsResourceType#changeLock(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void changeLock(CmsRequestContext context, CmsResource resource) throws CmsException {
@@ -284,14 +286,14 @@ public final class CmsSecurityManager {
      *
      * @param context the current request context
      * @param resource the resource on which property definition values are changed
-     * @param propertyDefinition the name of the propertydefinition to change the value
-     * @param oldValue the old value of the propertydefinition
-     * @param newValue the new value of the propertydefinition
+     * @param propertyDefinition the name of the property definition to change the value
+     * @param oldValue the old value of the property definition
+     * @param newValue the new value of the property definition
      * @param recursive if true, change recursively all property values on sub-resources (only for folders)
      * 
      * @return a list with the <code>{@link CmsResource}</code>'s where the property value has been changed
      *
-     * @throws CmsVfsException for now only when the search for the oldvalue failed. 
+     * @throws CmsVfsException for now only when the search for the old value fails 
      * @throws CmsException if operation was not successful
      */
     public synchronized List changeResourcesInFolderWithProperty(
@@ -484,7 +486,7 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param publishList the publish list to check (contains the information about the resources / project to publish)
      * 
-     * @throws CmsException if the user does not have the required permissions becasue of project lock state
+     * @throws CmsException if the user does not have the required permissions because of project lock state
      * @throws CmsMultiException if issues occur like a direct publish is attempted on a resource 
      *         whose parent folder is new or deleted in the offline project, 
      *         or if the current user has no management access to the current project
@@ -600,8 +602,10 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param resource the resource to change the flags for
      * @param flags the new resource flags for this resource
+     * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (({@link CmsPermissionSet#ACCESS_WRITE} required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (({@link CmsPermissionSet#ACCESS_WRITE} required)
+     * 
      * @see org.opencms.file.types.I_CmsResourceType#chflags(CmsObject, CmsSecurityManager, CmsResource, int)
      */
     public void chflags(CmsRequestContext context, CmsResource resource, int flags)
@@ -635,7 +639,7 @@ public final class CmsSecurityManager {
      * @param type the new resource type for this resource
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (({@link CmsPermissionSet#ACCESS_WRITE} required)).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (({@link CmsPermissionSet#ACCESS_WRITE} required))
      * 
      * @see org.opencms.file.types.I_CmsResourceType#chtype(CmsObject, CmsSecurityManager, CmsResource, int)
      * @see CmsObject#chtype(String, int)
@@ -658,7 +662,7 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Copies the access control entries of a given resource to a destination resorce.<p>
+     * Copies the access control entries of a given resource to a destination resource.<p>
      *
      * Already existing access control entries of the destination resource are removed.<p>
      * 
@@ -667,7 +671,7 @@ public final class CmsSecurityManager {
      * @param destination the resource to which the access control entries are copied
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_CONTROL} required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_CONTROL} required)
      */
     public void copyAccessControlEntries(CmsRequestContext context, CmsResource source, CmsResource destination)
     throws CmsException, CmsSecurityException {
@@ -754,8 +758,10 @@ public final class CmsSecurityManager {
      * 
      * @param context the current request context
      * @param resource the resource to apply this operation to
+     * 
      * @throws CmsException if something goes wrong
-     * @throws CmsRoleViolationException if the current user does not have management access to the project.
+     * @throws CmsRoleViolationException if the current user does not have management access to the project
+     * 
      * @see org.opencms.file.types.I_CmsResourceType#copyResourceToProject(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void copyResourceToProject(CmsRequestContext context, CmsResource resource)
@@ -786,7 +792,7 @@ public final class CmsSecurityManager {
      * @return the amount of locked resources in this project
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsRoleViolationException if the current user does not have management access to the project.
+     * @throws CmsRoleViolationException if the current user does not have management access to the project
      */
     public int countLockedResources(CmsRequestContext context, CmsUUID id)
     throws CmsException, CmsRoleViolationException {
@@ -821,8 +827,7 @@ public final class CmsSecurityManager {
      * @return a <code>{@link CmsGroup}</code> object representing the newly created group
      * 
      * @throws CmsException if operation was not successful.
-     * @throws CmsRoleViolationException if the  role {@link CmsRole#ACCOUNT_MANAGER} is not owned by the current user.
-     * 
+     * @throws CmsRoleViolationException if the  role {@link CmsRole#ACCOUNT_MANAGER} is not owned by the current user
      */
     public CmsGroup createGroup(CmsRequestContext context, String name, String description, int flags, String parent)
     throws CmsException, CmsRoleViolationException {
@@ -896,7 +901,7 @@ public final class CmsSecurityManager {
      * @return the created project
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#PROJECT_MANAGER}.
+     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#PROJECT_MANAGER}
      */
     public CmsProject createProject(
         CmsRequestContext context,
@@ -937,7 +942,7 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if the current project is online.
-     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#WORKPLACE_MANAGER}.
+     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#WORKPLACE_MANAGER}
      */
     public CmsPropertyDefinition createPropertyDefinition(CmsRequestContext context, String name)
     throws CmsException, CmsSecurityException, CmsRoleViolationException {
@@ -967,7 +972,9 @@ public final class CmsSecurityManager {
      * @param type the type of the resource to create
      * @param content the content for the new resource
      * @param properties the properties for the new resource
+     * 
      * @return the created resource
+     * 
      * @throws CmsException if something goes wrong
      * 
      * @see org.opencms.file.types.I_CmsResourceType#createResource(CmsObject, CmsSecurityManager, String, byte[], List)
@@ -1102,7 +1109,7 @@ public final class CmsSecurityManager {
      * Deletes all entries in the published resource table.<p>
      * 
      * @param context the current request context
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
+     * @param linkType the type of resource deleted (0= non-parameter, 1=parameter)
      * 
      * @throws CmsException if something goes wrong
      */
@@ -1126,7 +1133,7 @@ public final class CmsSecurityManager {
      * @param groupId the id of the group to be deleted
      * @param replacementId the id of the group to be transfered, can be <code>null</code>
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      * @throws CmsSecurityException if the group is a default group.
      * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      */
@@ -1161,10 +1168,9 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param name the name of the group that is to be deleted
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      * @throws CmsSecurityException if the group is a default group.
      * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
-     * 
      */
     public void deleteGroup(CmsRequestContext context, String name)
     throws CmsException, CmsRoleViolationException, CmsSecurityException {
@@ -1199,7 +1205,7 @@ public final class CmsSecurityManager {
      * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
      * @param report the report for output logging
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#WORKPLACE_MANAGER}
      */
     public void deleteHistoricalVersions(
@@ -1231,9 +1237,9 @@ public final class CmsSecurityManager {
     /**
      * Deletes an organizational unit.<p>
      *
-     * Only organizational units that contain no suborganizational unit can be deleted.<p>
+     * Only organizational units that contain no sub organizational unit can be deleted.<p>
      * 
-     * The organizational unit can not be delete if it is used in the reuqest context, 
+     * The organizational unit can not be delete if it is used in the request context, 
      * or if the current user belongs to it.<p>
      * 
      * All users and groups in the given organizational unit will be deleted.<p>
@@ -1371,7 +1377,7 @@ public final class CmsSecurityManager {
      * @param siblingMode indicates how to handle siblings of the deleted resource
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user does not have {@link CmsPermissionSet#ACCESS_WRITE} on the given resource.
+     * @throws CmsSecurityException if the user does not have {@link CmsPermissionSet#ACCESS_WRITE} on the given resource
      *  
      * @see org.opencms.file.types.I_CmsResourceType#deleteResource(CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceDeleteMode)
      */
@@ -1398,8 +1404,8 @@ public final class CmsSecurityManager {
      * 
      * @param context the current request context
      * @param resourceName The name of the resource to be deleted in the static export
-     * @param linkType the type of resource deleted (0= non-paramter, 1=parameter)
-     * @param linkParameter the parameters ofthe resource
+     * @param linkType the type of resource deleted (0= non-parameter, 1=parameter)
+     * @param linkParameter the parameters of the resource
      * 
      * @throws CmsException if something goes wrong
      */
@@ -1677,7 +1683,7 @@ public final class CmsSecurityManager {
      * @return list of <code>{@link CmsHistoryProject}</code> objects 
      *           with all projects from history.
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getAllHistoricalProjects(CmsRequestContext context) throws CmsException {
 
@@ -1703,7 +1709,7 @@ public final class CmsSecurityManager {
      * 
      * @return a list of objects of type <code>{@link CmsProject}</code>
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getAllManageableProjects(CmsRequestContext context) throws CmsException {
 
@@ -1732,7 +1738,7 @@ public final class CmsSecurityManager {
      *
      * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getChildren(CmsRequestContext context, String groupname, boolean includeSubChildren)
     throws CmsException {
@@ -1798,7 +1804,7 @@ public final class CmsSecurityManager {
      *
      * @return a list of <code>{@link CmsGroup}</code> objects filtered by the given IP address
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getGroupsOfUser(
         CmsRequestContext context,
@@ -1833,7 +1839,9 @@ public final class CmsSecurityManager {
      * 
      * @param context the current request context
      * @param resource the resource to return the lock state for
+     * 
      * @return the lock state of the resource
+     * 
      * @throws CmsException if something goes wrong
      */
     public CmsLock getLock(CmsRequestContext context, CmsResource resource) throws CmsException {
@@ -1923,7 +1931,7 @@ public final class CmsSecurityManager {
      * 
      * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      * 
      * @see org.opencms.security.CmsOrgUnitManager#getOrganizationalUnits(CmsObject, String, boolean)
      */
@@ -1978,7 +1986,7 @@ public final class CmsSecurityManager {
      * 
      * @return group the parent group or <code>null</code>
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public CmsGroup getParent(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -2089,13 +2097,13 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns all relations for the given resource mathing the given filter.<p> 
+     * Returns all relations for the given resource matching the given filter.<p> 
      * 
      * @param context the current user context
      * @param resource the resource to retrieve the relations for
      * @param filter the filter to match the relation 
      * 
-     * @return all {@link org.opencms.relations.CmsRelation} objects for the given resource mathing the given filter
+     * @return all {@link org.opencms.relations.CmsRelation} objects for the given resource matching the given filter
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -2273,7 +2281,7 @@ public final class CmsSecurityManager {
      *
      * @return all <code>{@link CmsUser}</code> objects in the group
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getUsersOfGroup(
         CmsRequestContext context,
@@ -2568,16 +2576,16 @@ public final class CmsSecurityManager {
      * the created resource will be made a sibling of the existing resource,
      * and both will share the new content.<p>
      * 
-     * Note: the id used to identify the content record (pk of the record) is generated
-     * on each call of this method (with valid content) !
-     * 
      * @param context the current request context
      * @param resourcePath the name of the resource to create (full path)
      * @param resource the new resource to create
      * @param content the content for the new resource
      * @param properties the properties for the new resource
-     * @param importCase if true, signals that this operation is done while importing resource, causing different lock behaviour and potential "lost and found" usage
+     * @param importCase if <code>true</code>, signals that this operation is done while importing resource, 
+     *                   causing different lock behavior and potential "lost and found" usage
+     * 
      * @return the created resource
+     * 
      * @throws CmsException if something goes wrong
      */
     public CmsResource importResource(
@@ -2611,8 +2619,8 @@ public final class CmsSecurityManager {
      * @param id the id of the user
      * @param name the new name for the user
      * @param password the new password for the user
-     * @param firstname the firstname of the user
-     * @param lastname the lastname of the user
+     * @param firstname the first name of the user
+     * @param lastname the last name of the user
      * @param email the email of the user
      * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
      * @param dateCreated the creation date
@@ -2830,7 +2838,7 @@ public final class CmsSecurityManager {
      * 
      * @return the logged in user
      *
-     * @throws CmsException if the login was not succesful
+     * @throws CmsException if the login was not successful
      */
     public CmsUser loginUser(CmsRequestContext context, String username, String password, String remoteAddress)
     throws CmsException {
@@ -2950,7 +2958,6 @@ public final class CmsSecurityManager {
      * @throws CmsSecurityException if resource could not be copied 
      * 
      * @see CmsObject#moveResource(String, String)
-     * 
      * @see org.opencms.file.types.I_CmsResourceType#moveResource(CmsObject, CmsSecurityManager, CmsResource, String)
      */
     public void moveResource(CmsRequestContext context, CmsResource source, String destination)
@@ -3049,7 +3056,7 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads all historical versions of a resource.<br>
+     * Reads all historical versions of a resource.<p>
      * 
      * The reading excludes the file content, if the resource is a file.<p>
      *
@@ -3108,7 +3115,7 @@ public final class CmsSecurityManager {
      * @param resource the resource to start
      * @param filter the resource filter to match while reading the ancestors
      * 
-     * @return the first ancestor folder matching the filter criteria or null if no folder was found
+     * @return the first ancestor folder matching the filter criteria or <code>null</code> if no folder was found
      * 
      * @throws CmsException if something goes wrong
      */
@@ -3153,7 +3160,7 @@ public final class CmsSecurityManager {
      * @return a list of all child resources
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (read is required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (read is required)
      * 
      */
     public List readChildResources(
@@ -3190,8 +3197,8 @@ public final class CmsSecurityManager {
      *   <li>if still no file could be found, the configured default files in the 
      *       <code>opencms-vfs.xml</code> configuration are iterated until a match is 
      *       found, and
-     *   <li>if still no file could be found, <code>null</code> is retuned
-     * </ol>
+     *   <li>if still no file could be found, <code>null</code> is returned
+     * </ol><p>
      * 
      * @param context the request context
      * @param resource the folder to get the default file for
@@ -3353,7 +3360,7 @@ public final class CmsSecurityManager {
      *
      * @return the requested group
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public CmsGroup readGroup(CmsRequestContext context, CmsUUID groupId) throws CmsException {
 
@@ -3377,7 +3384,7 @@ public final class CmsSecurityManager {
      *
      * @return the requested group
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public CmsGroup readGroup(CmsRequestContext context, String groupname) throws CmsException {
 
@@ -3453,7 +3460,7 @@ public final class CmsSecurityManager {
      * Reads the list of all <code>{@link CmsProperty}</code> objects that belong to the given historical resource.<p>
      * 
      * @param context the current request context
-     * @param resource the historcial resource entry to read the properties for
+     * @param resource the historical resource entry to read the properties for
      * 
      * @return the list of <code>{@link CmsProperty}</code> objects
      * 
@@ -3647,7 +3654,7 @@ public final class CmsSecurityManager {
      * @param project the project to get the project resources for
      * 
      * @return the list of all resources, as <code>{@link String}</code> objects 
-     *              that define the "view" of the given project.
+     *              that define the "view" of the given project
      * 
      * @throws CmsException if something goes wrong
      */
@@ -3714,7 +3721,7 @@ public final class CmsSecurityManager {
      * @param name the name of the property definition to read
      * 
      * @return the property definition that was read, 
-     *          or <code>null</code> if there is no property definition with the given name.
+     *          or <code>null</code> if there is no property definition with the given name
      * 
      * @throws CmsException if something goes wrong
      */
@@ -3775,7 +3782,7 @@ public final class CmsSecurityManager {
      * properties directly attached to the resource. While merging, a property
      * on a parent folder that has already been found will be ignored.
      * So e.g. if a resource has a property "Title" attached, and it's parent folder 
-     * has the same property attached but with a differrent value, the result list will
+     * has the same property attached but with a different value, the result list will
      * contain only the property with the value from the resource, not form the parent folder(s).<p>
      * 
      * @param context the context of the current request
@@ -3807,7 +3814,7 @@ public final class CmsSecurityManager {
      * Reads the resources that were published in a publish task for a given publish history ID.<p>
      * 
      * @param context the current request context
-     * @param publishHistoryId unique int ID to identify each publish task in the publish history
+     * @param publishHistoryId unique ID to identify each publish task in the publish history
      * 
      * @return a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects
      * 
@@ -4006,7 +4013,7 @@ public final class CmsSecurityManager {
      * 
      * @return a list of <code>{@link CmsResource}</code> objects matching the filter criteria
      *  
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (read is required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (read is required)
      * @throws CmsException if something goes wrong
      * 
      */
@@ -4128,7 +4135,7 @@ public final class CmsSecurityManager {
      * 
      * @return a list of <code>{@link CmsResource}</code>s that 
      *          are siblings to the specified resource, 
-     *          including the specified resource itself.
+     *          including the specified resource itself
      * 
      * @throws CmsException if something goes wrong
      */
@@ -4153,7 +4160,7 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param rfsName the rfs name of the resource
      * 
-     * @return the paramter string of the requested resource
+     * @return the parameter string of the requested resource
      * 
      * @throws CmsException if something goes wrong
      */
@@ -4233,7 +4240,7 @@ public final class CmsSecurityManager {
      *
      * @return user read form the cms
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public CmsUser readUser(CmsRequestContext context, String username) throws CmsException {
 
@@ -4252,15 +4259,15 @@ public final class CmsSecurityManager {
     /**
      * Returns a user object if the password for the user is correct.<p>
      *
-     * If the user/pwd pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
+     * If the user/password pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
      *
      * @param context the current request context
-     * @param username the username of the user that is to be read
+     * @param username the user name of the user that is to be read
      * @param password the password of the user that is to be read
      * 
      * @return user read
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public CmsUser readUser(CmsRequestContext context, String username, String password) throws CmsException {
 
@@ -4284,7 +4291,7 @@ public final class CmsSecurityManager {
      * @param principal the id of the principal to remove the the access control entry for
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (conrol of access control is required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (control of access control is required).
      * 
      */
     public void removeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsUUID principal)
@@ -4340,8 +4347,10 @@ public final class CmsSecurityManager {
      * 
      * @param context the current request context
      * @param resource the resource to apply this operation to
+     * 
      * @throws CmsException if something goes wrong
-     * @throws CmsRoleViolationException if the current user does not have management access to the project.
+     * @throws CmsRoleViolationException if the current user does not have management access to the project
+     * 
      * @see org.opencms.file.types.I_CmsResourceType#copyResourceToProject(CmsObject, CmsSecurityManager, CmsResource)
      */
     public void removeResourceFromProject(CmsRequestContext context, CmsResource resource)
@@ -4371,7 +4380,7 @@ public final class CmsSecurityManager {
      * @param groupname the name of the group
      * @param readRoles if to read roles or groups
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      * 
      */
@@ -4403,7 +4412,7 @@ public final class CmsSecurityManager {
      * @param properties the new properties of the resource
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required)
      * 
      * @see CmsObject#replaceResource(String, int, byte[], List)
      * @see org.opencms.file.types.I_CmsResourceType#replaceResource(CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
@@ -4439,7 +4448,7 @@ public final class CmsSecurityManager {
      * @param newPassword the new password
      * 
      * @throws CmsException if the user data could not be read from the database
-     * @throws CmsSecurityException if the specified username and old password could not be verified
+     * @throws CmsSecurityException if the specified user name and old password could not be verified
      */
     public void resetPassword(CmsRequestContext context, String username, String oldPassword, String newPassword)
     throws CmsException, CmsSecurityException {
@@ -4525,7 +4534,7 @@ public final class CmsSecurityManager {
      * @param version the version number to restore
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required)
      * 
      * @see CmsObject#restoreResourceVersion(CmsUUID, int)
      * @see org.opencms.file.types.I_CmsResourceType#restoreResource(CmsObject, CmsSecurityManager, CmsResource, int)
@@ -4556,7 +4565,7 @@ public final class CmsSecurityManager {
      * @param dateExpired the new expire date of the changed resource
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required)
      * 
      * @see CmsObject#setDateExpired(String, long, boolean)
      * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
@@ -4579,14 +4588,14 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Changes the "last modified" timestamp of a resource.<p>
+     * Changes the "last modified" time stamp of a resource.<p>
      * 
      * @param context the current request context
      * @param resource the resource to touch
-     * @param dateLastModified timestamp the new timestamp of the changed resource
+     * @param dateLastModified the new time stamp of the changed resource
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required)
      * 
      * @see CmsObject#setDateLastModified(String, long, boolean)
      * @see org.opencms.file.types.I_CmsResourceType#setDateLastModified(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
@@ -4616,7 +4625,7 @@ public final class CmsSecurityManager {
      * @param dateReleased the new release date of the changed resource
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required)
      * 
      * @see CmsObject#setDateReleased(String, long, boolean)
      * @see org.opencms.file.types.I_CmsResourceType#setDateReleased(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
@@ -4647,7 +4656,7 @@ public final class CmsSecurityManager {
      *                      or <code>null</code> if the parent
      *                      group should be deleted.
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      * 
      */
@@ -4676,7 +4685,7 @@ public final class CmsSecurityManager {
      * @param username the name of the user
      * @param newPassword the new password
      * 
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not successful
      * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      */
     public void setPassword(CmsRequestContext context, String username, String newPassword)
@@ -4760,7 +4769,7 @@ public final class CmsSecurityManager {
      * @param mode the undo mode, one of the <code>{@link CmsResource}#UNDO_XXX</code> constants
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required)
      * 
      * @see CmsObject#undoChanges(String, CmsResource.CmsResourceUndoMode)
      * @see org.opencms.file.types.I_CmsResourceType#undoChanges(CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceUndoMode)
@@ -4791,7 +4800,7 @@ public final class CmsSecurityManager {
      * @param projectId the id of the project to be published
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsRoleViolationException if the current user does not own the required permissions. 
+     * @throws CmsRoleViolationException if the current user does not own the required permissions
      */
     public void unlockProject(CmsRequestContext context, CmsUUID projectId)
     throws CmsException, CmsRoleViolationException {
@@ -4819,7 +4828,7 @@ public final class CmsSecurityManager {
      * @param resource the resource to unlock
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required)
      * 
      * @see CmsObject#unlockResource(String)
      * @see org.opencms.file.types.I_CmsResourceType#unlockResource(CmsObject, CmsSecurityManager, CmsResource)
@@ -4878,7 +4887,7 @@ public final class CmsSecurityManager {
      * 
      * @return <code>true</code>, if the user is in the group; or <code>false</code> otherwise
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public boolean userInGroup(CmsRequestContext context, String username, String groupname) throws CmsException {
 
@@ -4899,7 +4908,7 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * This method checks if a new password follows the rules for
+     * Checks if a new password follows the rules for
      * new passwords, which are defined by a Class implementing the 
      * <code>{@link org.opencms.security.I_CmsPasswordHandler}</code> 
      * interface and configured in the opencms.properties file.<p>
@@ -4950,7 +4959,7 @@ public final class CmsSecurityManager {
      * @param resource the resource
      * @param ace the entry to write
      * 
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_CONTROL} required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_CONTROL} required)
      * @throws CmsException if something goes wrong
      */
     public void writeAccessControlEntry(CmsRequestContext context, CmsResource resource, CmsAccessControlEntry ace)
@@ -4987,7 +4996,7 @@ public final class CmsSecurityManager {
      * 
      * @return the written resource (may have been modified)
      *
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_WRITE} required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_WRITE} required)
      * @throws CmsException if something goes wrong
      * 
      * @see CmsObject#writeFile(CmsFile)
@@ -5014,14 +5023,14 @@ public final class CmsSecurityManager {
      *
      * The group id has to be a valid OpenCms group id.<br>
      * 
-     * The group with the given id will be completely overriden
+     * The group with the given id will be completely overridden
      * by the given data.<p>
      *
      * @param context the current request context
      * @param group the group that should be written
      *
-     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#ACCOUNT_MANAGER} for the current project. 
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsRoleViolationException if the current user does not own the role {@link CmsRole#ACCOUNT_MANAGER} for the current project
+     * @throws CmsException if operation was not successful
      */
     public void writeGroup(CmsRequestContext context, CmsGroup group) throws CmsException, CmsRoleViolationException {
 
@@ -5043,7 +5052,7 @@ public final class CmsSecurityManager {
      * @param publishTag the correlative publish tag
      * @param publishDate the date of publishing
      *
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public void writeHistoryProject(CmsRequestContext context, int publishTag, long publishDate) throws CmsException {
 
@@ -5090,7 +5099,7 @@ public final class CmsSecurityManager {
      *
      * The organizational unit id has to be a valid OpenCms organizational unit id.<p>
      * 
-     * The organizational unit with the given id will be completely overriden
+     * The organizational unit with the given id will be completely overridden
      * by the given data.<p>
      *
      * @param context the current request context
@@ -5120,13 +5129,13 @@ public final class CmsSecurityManager {
      *
      * The project id has to be a valid OpenCms project id.<br>
      * 
-     * The project with the given id will be completely overriden
+     * The project with the given id will be completely overridden
      * by the given data.<p>
      *
      * @param project the project that should be written
      * @param context the current request context
      * 
-     * @throws CmsRoleViolationException if the current user does not own the required permissions. 
+     * @throws CmsRoleViolationException if the current user does not own the required permissions
      * @throws CmsException if operation was not successful
      */
     public void writeProject(CmsRequestContext context, CmsProject project)
@@ -5151,7 +5160,7 @@ public final class CmsSecurityManager {
      * @param property the property to write
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_WRITE} required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_WRITE} required)
      * 
      * @see CmsObject#writePropertyObject(String, CmsProperty)
      * @see org.opencms.file.types.I_CmsResourceType#writePropertyObject(CmsObject, CmsSecurityManager, CmsResource, CmsProperty)
@@ -5186,7 +5195,7 @@ public final class CmsSecurityManager {
      * @param properties the list of properties to write
      * 
      * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_WRITE} required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_WRITE} required)
      * 
      * @see CmsObject#writePropertyObjects(String, List)
      * @see org.opencms.file.types.I_CmsResourceType#writePropertyObjects(CmsObject, CmsSecurityManager, CmsResource, List)
@@ -5213,7 +5222,7 @@ public final class CmsSecurityManager {
      * @param context the current request context
      * @param resource the resource to write
      *
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_WRITE} required).
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource ({@link CmsPermissionSet#ACCESS_WRITE} required)
      * @throws CmsException if something goes wrong
      */
     public void writeResource(CmsRequestContext context, CmsResource resource)
@@ -5238,9 +5247,9 @@ public final class CmsSecurityManager {
      * 
      * @param context the current request context
      * @param resourceName The name of the resource to be added to the static export
-     * @param linkType the type of resource exported (0= non-paramter, 1=parameter)
+     * @param linkType the type of resource exported (0= non-parameter, 1=parameter)
      * @param linkParameter the parameters added to the resource
-     * @param timestamp a timestamp for writing the data into the db
+     * @param timestamp a time stamp for writing the data into the db
      * 
      * @throws CmsException if something goes wrong
      */
@@ -5270,14 +5279,14 @@ public final class CmsSecurityManager {
      * 
      * The user id has to be a valid OpenCms user id.<br>
      * 
-     * The user with the given id will be completely overriden
+     * The user with the given id will be completely overridden
      * by the given data.<p>
      *
      * @param context the current request context
      * @param user the user to be updated
      *
-     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER} for the current project. 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER} for the current project
+     * @throws CmsException if operation was not successful
      */
     public void writeUser(CmsRequestContext context, CmsUser user) throws CmsException, CmsRoleViolationException {
 
@@ -5376,7 +5385,7 @@ public final class CmsSecurityManager {
      * @param dbc the current database context
      * @param resource the resource to check
      * 
-     * @throws CmsException in case there is a system lock contained in the given resouce
+     * @throws CmsException in case there is a system lock contained in the given resource
      */
     protected void checkSystemLocks(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
