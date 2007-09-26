@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/09/26 08:25:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.5 
  */
@@ -245,7 +245,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
         List publishResources = getSettings().getPublishList().getAllResources();
 
         // get content
-        List resourceNames = getList().getAllContent();
+        List resourceNames = new ArrayList(getList().getAllContent());
         Iterator itResourceNames = resourceNames.iterator();
         int count = 0;
         while (itResourceNames.hasNext()) {

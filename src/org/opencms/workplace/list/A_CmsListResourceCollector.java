@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2007/09/24 12:47:00 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/09/26 08:25:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.0 
  */
@@ -337,15 +337,16 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
         CmsResource res = (CmsResource)m_resCache.get(item.getId());
         if (res == null) {
-            try {
-                res = cms.readResource(
-                    (String)item.get(A_CmsListExplorerDialog.LIST_COLUMN_NAME),
-                    CmsResourceFilter.ALL);
-                m_resCache.put(item.getId(), res);
-            } catch (CmsException e) {
-                // should never happen
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
+            CmsUUID id = new CmsUUID(item.getId());
+            if (!id.isNullUUID()) {
+                try {
+                    res = cms.readResource(id, CmsResourceFilter.ALL);
+                    m_resCache.put(item.getId(), res);
+                } catch (CmsException e) {
+                    // should never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
                 }
             }
         }
@@ -375,7 +376,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
     }
 
     /**
-     * The parameter must follow the syntax "page:nr" where nr is the number of the page to be displayed.
+     * The parameter must follow the syntax "page:nr" where nr is the number of the page to be displayed.<p>
      * 
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
@@ -431,7 +432,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
 
     /**
      * The parameter must follow the syntax "mode|projectId" where mode is either "new", "changed", "deleted" 
-     * or "modified" and projectId is the id of the project to be displayed.
+     * or "modified" and projectId is the id of the project to be displayed.<p>
      * 
      * @see org.opencms.file.collectors.I_CmsResourceCollector#setDefaultCollectorParam(java.lang.String)
      */
