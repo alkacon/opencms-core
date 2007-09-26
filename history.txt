@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/26 08:29:32 $
- * Version: $Revision: 1.897 $
+ * Date   : $Date: 2007/09/26 08:45:44 $
+ * Version: $Revision: 1.898 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -23,7 +23,7 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue with deleting module with locked resources
 * Fixed issue with OpenCms not starting anymore if there are pending publish jobs for users not in the root ou
 * Fixed issue with org.opencms.util.CmsHtmlStripper preserving complete HTML in case no preserve Tags are configured
-* Fixed issue with static export generating links from a resource to a related resource in a rfs rule
+* Fixed issue with static export generating wrong links from a resource to a related resource in a rfs rule
 * Fixed issue with importing a resource where the ID is already in use by other resource
 * Fixed issue with displaying running publish report
 * Fixed issue with NPEs in the publish dialog
