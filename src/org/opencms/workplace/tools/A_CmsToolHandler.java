@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2007/08/13 16:29:53 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/09/27 12:34:30 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspNavBuilder;
@@ -54,19 +55,19 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
-    /** Property for the params arg.<p> */
+    /** Property for the parameters argument.<p> */
     public static final String ARG_PARAM_NAME = "params";
 
-    /** Property for the path arg.<p> */
+    /** Property for the path argument.<p> */
     public static final String ARG_PATH_NAME = "path";
 
-    /** Property definition for the args.<p> */
+    /** Property definition for the arguments.<p> */
     public static final String ARGS_PROPERTY_DEFINITION = "admintoolhandler-args";
 
     /** Argument separator.<p> */
@@ -78,7 +79,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /** Argument name and value separator.<p> */
     public static final String VALUE_SEPARATOR = ":";
 
-    /** Property for the confirmation message arg.<p> */
+    /** Property for the confirmation message argument.<p> */
     private static final String ARG_CONFIRMATION_NAME = "confirmation";
 
     /** The static log object for this class. */
@@ -367,7 +368,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     }
 
     /**
-     * Default implementation.
+     * Default implementation.<p>
      * 
      * It takes the icon path from <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVIMAGE}</code> property, 
      * or uses a default icon if undefined, the name is taken from the 
@@ -397,6 +398,14 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
      */
     public boolean setup(CmsObject cms, CmsToolRootHandler root, String resourcePath) {
 
+        try {
+            resourcePath = cms.getSitePath(cms.readResource(resourcePath));
+        } catch (CmsException e) {
+            // should not happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
         CmsJspNavElement navElem = CmsJspNavBuilder.getNavigationForResource(cms, resourcePath);
 
         String name = navElem.getNavText();
@@ -445,22 +454,18 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
         String path = resourcePath;
         setLink(cms, resourcePath);
-        try {
-            if (cms.readResource(resourcePath).isFolder()) {
+        if (CmsResource.isFolder(path)) {
+            path = CmsToolManager.TOOLPATH_SEPARATOR
+                + resourcePath.substring(
+                    root.getUri().length(),
+                    resourcePath.lastIndexOf(CmsToolManager.TOOLPATH_SEPARATOR));
+        } else {
+            if (resourcePath.lastIndexOf('.') > -1) {
                 path = CmsToolManager.TOOLPATH_SEPARATOR
-                    + resourcePath.substring(
-                        root.getUri().length(),
-                        resourcePath.lastIndexOf(CmsToolManager.TOOLPATH_SEPARATOR));
+                    + resourcePath.substring(root.getUri().length(), resourcePath.lastIndexOf('.'));
             } else {
-                if (resourcePath.lastIndexOf('.') > -1) {
-                    path = CmsToolManager.TOOLPATH_SEPARATOR
-                        + resourcePath.substring(root.getUri().length(), resourcePath.lastIndexOf('.'));
-                } else {
-                    path = CmsToolManager.TOOLPATH_SEPARATOR + resourcePath.substring(root.getUri().length());
-                }
+                path = CmsToolManager.TOOLPATH_SEPARATOR + resourcePath.substring(root.getUri().length());
             }
-        } catch (CmsException e) {
-            // ignore
         }
         // install point
         setPath(path);
@@ -507,7 +512,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
             // set admin page as link
             link = CmsToolManager.VIEW_JSPPAGE_LOCATION;
 
-            // try to use the folder def file as link
+            // try to use the folder default file as link
             CmsProperty prop = cms.readPropertyObject(resourcePath, CmsPropertyDefinition.PROPERTY_DEFAULT_FILE, false);
             String defFile = "index.jsp";
             if (!prop.isNullProperty()) {
@@ -525,7 +530,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
                 link = defFile;
             }
         } catch (CmsException e) {
-            // noop
+            // not a folder or no default file, ignore
         }
 
         setLink(link);
@@ -566,7 +571,10 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
                 }
             }
         } catch (CmsException e) {
-            // noop
+            // should never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
         }
     }
 }
