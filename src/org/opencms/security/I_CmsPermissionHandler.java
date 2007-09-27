@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPermissionHandler.java,v $
- * Date   : $Date: 2007/09/13 13:46:53 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/09/27 14:52:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.security;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
-import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
@@ -45,11 +44,11 @@ import org.opencms.util.A_CmsModeIntEnumeration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.2
  * 
- * @see CmsSecurityManager#hasPermissions(org.opencms.file.CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
+ * @see org.opencms.db.CmsSecurityManager#hasPermissions(org.opencms.file.CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)
  */
 public interface I_CmsPermissionHandler {
 
