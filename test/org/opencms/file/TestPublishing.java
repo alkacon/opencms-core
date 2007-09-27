@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/09/07 11:10:29 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/09/27 10:27:08 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLockFilter;
+import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsMultiException;
 import org.opencms.main.OpenCms;
@@ -52,6 +53,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -64,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -101,6 +103,7 @@ public class TestPublishing extends OpenCmsTestCase {
         suite.addTest(new TestPublishing("testPublishNewFilesInNewFolder"));
         suite.addTest(new TestPublishing("testPublishChangedFiles"));
         suite.addTest(new TestPublishing("testPublishLockedFiles"));
+        suite.addTest(new TestPublishing("testPublishFolderWithLockedFiles"));
         suite.addTest(new TestPublishing("testPublishDeletedFiles"));
         suite.addTest(new TestPublishing("testPublishProjectLastmodified"));
         suite.addTest(new TestPublishing("testPublishProjectLastmodifiedFolder"));
@@ -779,6 +782,50 @@ public class TestPublishing extends OpenCmsTestCase {
         assertEquals(2, histFile2.getVersion());
         file = cms.readFile(histFile2);
         assertEquals(new String("test text".getBytes()), new String(file.getContents()));
+    }
+
+    /**
+     * Test publishing a folder with locked files.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishFolderWithLockedFiles() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publish a folder with locked files");
+
+        String folder = "/folder2/subfolder21/";
+        String resource = "image1.gif";
+
+        // touch the folder
+        cms.lockResource(folder);
+        cms.setDateLastModified(folder, System.currentTimeMillis(), false);
+        cms.unlockResource(folder);
+
+        // lock a resource in the folder
+        cms.lockResource(folder + resource);
+        cms.setDateLastModified(folder + resource, System.currentTimeMillis(), false);
+
+        // publish the folder without subresources
+        CmsPublishList publishList = OpenCms.getPublishManager().getPublishList(
+            cms,
+            Collections.singletonList(cms.readResource(folder)),
+            false,
+            false);
+        OpenCms.getPublishManager().publishProject(
+            cms,
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            publishList);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // ensure the folder has been published
+        assertState(cms, folder, CmsResource.STATE_UNCHANGED);
+        // ensure the folder is unlocked
+        assertLock(cms, folder, CmsLockType.UNLOCKED);
+        // ensure that the changed resource is still changed in the offline project
+        assertState(cms, folder + resource, CmsResource.STATE_CHANGED);
+        // ensure the resource is still locked
+        assertLock(cms, folder + resource);
     }
 
     /**
