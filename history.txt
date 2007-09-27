@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/27 09:33:34 $
- * Version: $Revision: 1.908 $
+ * Date   : $Date: 2007/09/27 09:36:20 $
+ * Version: $Revision: 1.909 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 7.0.3 - xxx, 2007
+* Fixed issue #1303: Corrected style sheets path in static export configuration
 * Fixed issue #1304: In static export configuration the rfs-prefix parameter accepts URLs again
 * Fixed issue #1319: Updated comments on renaming servlets in web.xml 
 * Fixed issue #1320: Added warning to 'readme.txt' about overwriting the web.xml file in update wizard 
