@@ -35,6 +35,7 @@ and 'WEB-INF' to the OpenCms webapp directory. Be sure that the files 'opencms.t
 and 'lib/opencms.jar' are replaced with the new version from the archive before you 
 continue. Be also sure that after unpacking the tomcat user has write permissions on 
 the whole web application directory.
+Be also aware that the 'web.xml' might be overwritten.
 
 
 3. Enable the upgrade wizard
