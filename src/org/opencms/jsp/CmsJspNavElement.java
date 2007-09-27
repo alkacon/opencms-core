@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2007/08/13 16:29:55 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/09/27 11:01:52 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,14 +41,14 @@ import java.util.Map;
 /**
  * Bean to collect navigation information from a resource in the OpenCms VFS.<p>
  *
- * Each nav element contains a number of information about a VFS resource,
+ * Each navigation element contains a number of information about a VFS resource,
  * obtained either from the resources properties or attributes.
  * You can use this information to generate a HTML navigation for 
  * files in the VFS in your template.<p>
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  * 
@@ -67,11 +67,11 @@ public class CmsJspNavElement implements Comparable {
     /**
      * Empty constructor required for every JavaBean, does nothing.<p>
      * 
-     * Call one of the init methods afer you have created an instance 
+     * Call one of the init methods after you have created an instance 
      * of the bean. Instead of using the constructor you should use 
      * the static factory methods provided by this class to create
      * navigation beans that are properly initialized with current 
-     * OpenCms context.
+     * OpenCms context.<p>
      * 
      * @see CmsJspNavBuilder#getNavigationForResource()
      * @see CmsJspNavBuilder#getNavigationForFolder()
@@ -84,7 +84,7 @@ public class CmsJspNavElement implements Comparable {
 
     /**
      * Create a new instance of the bean and calls the init method 
-     * with the provided parametes.<p>
+     * with the provided parameters.<p>
      * 
      * @param resource will be passed to <code>init</code>
      * @param properties will be passed to <code>init</code>
@@ -98,7 +98,7 @@ public class CmsJspNavElement implements Comparable {
 
     /**
      * Create a new instance of the bean and calls the init method 
-     * with the provided parametes.<p>
+     * with the provided parameters.<p>
      * 
      * @param resource will be passed to <code>init</code>
      * @param properties will be passed to <code>init</code>
@@ -121,7 +121,7 @@ public class CmsJspNavElement implements Comparable {
         }
         if (obj instanceof CmsJspNavElement) {
             float pos = ((CmsJspNavElement)obj).getNavPosition();
-            // please note: can't just substract and cast to int here because of float precision loss
+            // please note: can't just subtract and cast to int here because of float precision loss
             if (m_position == pos) {
                 return 0;
             }
@@ -145,11 +145,11 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the value of the property PROPERTY_DESCRIPTION of this nav element,
+     * Returns the value of the property PROPERTY_DESCRIPTION of this navigation element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return the value of the property PROPERTY_DESCRIPTION of this nav element
-     * or <code>null</code> if this property is not set
+     * @return the value of the property PROPERTY_DESCRIPTION of this navigation element
+     *          or <code>null</code> if this property is not set
      */
     public String getDescription() {
 
@@ -157,16 +157,16 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the filename of the nav element, i.e.
-     * the name of the nav resource without any path information.<p>
+     * Returns the filename of the navigation element, i.e.
+     * the name of the navigation resource without any path information.<p>
      * 
-     * @return the filename of the nav element, i.e.
-     * the name of the nav resource without any path information
+     * @return the filename of the navigation element, i.e.
+     *          the name of the navigation resource without any path information
      */
     public String getFileName() {
 
         if (m_fileName == null) {
-            // use "lazy initialiting"
+            // use "lazy initializing"
             if (!m_resource.endsWith("/")) {
                 m_fileName = m_resource.substring(m_resource.lastIndexOf("/") + 1, m_resource.length());
             } else {
@@ -179,8 +179,8 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the value of the property <code>{@link CmsPropertyDefinition#PROPERTY_NAVINFO}</code> of this nav element,
-     * or <code>null</code> if this property is not set.<p> 
+     * Returns the value of the property <code>{@link CmsPropertyDefinition#PROPERTY_NAVINFO}</code> of this 
+     * navigation element, or <code>null</code> if this property is not set.<p> 
      * 
      * @return the value of the property or <code>null</code> if this property is not set
      */
@@ -190,8 +190,8 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the value of the property <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> of this nav element,
-     * or <code>null</code> if this property is not set.<p> 
+     * Returns the value of the property <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> of this 
+     * navigation element, or <code>null</code> if this property is not set.<p> 
      * 
      * @return the value of the property or <code>null</code> if this property is not set
      */
@@ -201,8 +201,8 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the value of the property <code>{@link CmsPropertyDefinition#PROPERTY_NAVIMAGE}</code> of this nav element,
-     * or <code>null</code> if this property is not set.<p> 
+     * Returns the value of the property <code>{@link CmsPropertyDefinition#PROPERTY_NAVIMAGE}</code> of this 
+     * navigation element, or <code>null</code> if this property is not set.<p> 
      * 
      * @return the value of the property or <code>null</code> if this property is not set
      */
@@ -213,12 +213,12 @@ public class CmsJspNavElement implements Comparable {
 
     /**
      * Returns the value of the property C_PROPERTY_NAVPOS converted to a <code>float</code>,
-     * or a value of <code>Float.MAX_VALUE</code> if the nav position property is not 
+     * or a value of <code>Float.MAX_VALUE</code> if the navigation position property is not 
      * set (or not a valid number) for this resource.<p>
      * 
      * @return float the value of the property C_PROPERTY_NAVPOS converted to a <code>float</code>,
-     * or a value of <code>Float.MAX_VALUE</code> if the nav position property is not 
-     * set (or not a valid number) for this resource
+     *          or a value of <code>Float.MAX_VALUE</code> if the navigation position property is not 
+     *          set (or not a valid number) for this resource
      */
     public float getNavPosition() {
 
@@ -226,18 +226,18 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the value of the property PROPERTY_NAVTEXT of this nav element,
+     * Returns the value of the property PROPERTY_NAVTEXT of this navigation element,
      * or a warning message if this property is not set 
      * (this method will never return <code>null</code>).<p> 
      * 
-     * @return the value of the property PROPERTY_NAVTEXT of this nav element,
-     * or a warning message if this property is not set 
-     * (this method will never return <code>null</code>)
+     * @return the value of the property PROPERTY_NAVTEXT of this navigation element,
+     *          or a warning message if this property is not set 
+     *          (this method will never return <code>null</code>)
      */
     public String getNavText() {
 
         if (m_text == null) {
-            // use "lazy initialiting"
+            // use "lazy initializing"
             m_text = (String)m_properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
             if (m_text == null) {
                 m_text = CmsMessages.formatUnknownKey(CmsPropertyDefinition.PROPERTY_NAVTEXT);
@@ -247,23 +247,23 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the nav tree level of this resource.<p>
+     * Returns the navigation tree level of this resource.<p>
      * 
-     * @return int the nav tree level of this resource
+     * @return the navigation tree level of this resource
      */
     public int getNavTreeLevel() {
 
         if (m_navTreeLevel < 0) {
-            // use "lazy initialiting"
+            // use "lazy initializing"
             m_navTreeLevel = CmsResource.getPathLevel(m_resource);
         }
         return m_navTreeLevel;
     }
 
     /**
-     * Returns the name of the parent folder of the resource of this nav element.<p>
+     * Returns the name of the parent folder of the resource of this navigation element.<p>
      * 
-     * @return the name of the parent folder of the resource of this nav element
+     * @return the name of the parent folder of the resource of this navigation element
      */
     public String getParentFolderName() {
 
@@ -271,14 +271,14 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the original Hashtable of all file properties of the resource that
-     * the nav element belongs to.<p>
+     * Returns the original map of all file properties of the resource that
+     * the navigation element belongs to.<p>
      * 
      * Please note that the original reference is returned, so be careful when making 
-     * changes to the Hashtable.<p>
+     * changes to the map.<p>
      * 
-     * @return the original Hashtable of all file properties of the resource that
-     * the nav element belongs to
+     * @return the original map of all file properties of the resource that
+     *          the navigation element belongs to
      */
     public Map getProperties() {
 
@@ -286,12 +286,13 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the value of the selected property from this nav element.<p> 
+     * Returns the value of the selected property from this navigation element.<p> 
      * 
-     * The nav element contains a hash of all file properties of the resource that
-     * the nav element belongs to.<p>
+     * The navigation element contains a hash of all file properties of the resource that
+     * the navigation element belongs to.<p>
      * 
      * @param key the property name to look up
+     * 
      * @return the value of the selected property
      */
     public String getProperty(String key) {
@@ -300,9 +301,9 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the resource name this nav element was initalized with.<p>
+     * Returns the resource name this navigation element was initialized with.<p>
      * 
-     * @return the resource name this nav element was initalized with
+     * @return the resource name this navigation element was initialized with
      */
     public String getResourceName() {
 
@@ -310,11 +311,11 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the value of the property PROPERTY_TITLE of this nav element,
+     * Returns the value of the property PROPERTY_TITLE of this navigation element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return the value of the property PROPERTY_TITLE of this nav element
-     * or <code>null</code> if this property is not set
+     * @return the value of the property PROPERTY_TITLE of this navigation element
+     *          or <code>null</code> if this property is not set
      */
     public String getTitle() {
 
@@ -346,14 +347,14 @@ public class CmsJspNavElement implements Comparable {
      * Initialized the member variables of this bean with the values 
      * provided.<p>
      * 
-     * A resource will be in the nav if at least one of the two properties 
+     * A resource will be in the navigation if at least one of the two properties 
      * <code>I_CmsConstants.PROPERTY_NAVTEXT</code> or 
      * <code>I_CmsConstants.PROPERTY_NAVPOS</code> is set. Otherwise
-     * it will be ignored.
+     * it will be ignored.<p>
      * 
      * This bean does provides static methods to create a new instance 
      * from the context of a current CmsObject. Call these static methods
-     * in order to get a properly initialized bean.
+     * in order to get a properly initialized bean.<p>
      * 
      * @param resource the name of the resource to extract the navigation 
      *     information from
@@ -373,17 +374,17 @@ public class CmsJspNavElement implements Comparable {
         try {
             m_position = Float.parseFloat((String)m_properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS));
         } catch (Exception e) {
-            // m_position will have Float.MAX_VALUE, so nevigation element will 
+            // m_position will have Float.MAX_VALUE, so navigation element will 
             // appear last in navigation
         }
     }
 
     /**
-     * Returns <code>true</code> if this nav element describes a folder, <code>false</code>
-     * otherwise.<p>
+     * Returns <code>true</code> if this navigation element describes a folder, 
+     * <code>false</code> otherwise.<p>
      * 
-     * @return <code>true</code> if this nav element describes a folder, <code>false</code>
-     * otherwise.<p>
+     * @return <code>true</code> if this navigation element describes a folder, 
+     *          <code>false</code> otherwise.<p>
      */
     public boolean isFolderLink() {
 
@@ -391,21 +392,20 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns <code>true</code> if this nav element is in the navigation, <code>false</code>
-     * otherwise.<p>
+     * Returns <code>true</code> if this navigation element is in the navigation, 
+     * <code>false</code> otherwise.<p>
      * 
      * A resource is considered to be in the navigation, if <ol>
      * <li>it has the property PROPERTY_NAVTEXT set
      * <li><em>or</em> it has the property PROPERTY_NAVPOS set 
      * <li><em>and</em> it is not a temporary file as defined by {@link CmsWorkplace#isTemporaryFileName(String)}.</ol> 
      * 
-     * @return <code>true</code> if this nav element is in the navigation, <code>false</code>
-     * otherwise
+     * @return <code>true</code> if this navigation element is in the navigation, <code>false</code> otherwise
      */
     public boolean isInNavigation() {
 
         if (m_hasNav == null) {
-            // use "lazy initialiting"
+            // use "lazy initializing"
             Object o1 = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
             Object o2 = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS);
             m_hasNav = Boolean.valueOf(((o1 != null) || (o2 != null)) && !CmsWorkplace.isTemporaryFileName(m_resource));
