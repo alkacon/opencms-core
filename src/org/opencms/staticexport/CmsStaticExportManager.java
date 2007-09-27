@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2007/09/25 08:34:26 $
- * Version: $Revision: 1.128 $
+ * Date   : $Date: 2007/09/27 09:33:34 $
+ * Version: $Revision: 1.129 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,6 +63,8 @@ import org.opencms.workplace.CmsWorkplace;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -84,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.128 $ 
+ * @version $Revision: 1.129 $ 
  * 
  * @since 6.0.0 
  */
@@ -2323,6 +2325,27 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
+      * Checks if a String is a valid URL. 
+      * 
+      * @param inputString The String to check can be <code>null</code>
+      * 
+      * @return <code>true</code> if the String is not <code>null</code> and a valid URL
+      */
+    private boolean isValidURL(String inputString) {
+
+        boolean isValid = false;
+        try {
+            if (inputString != null) {
+                URL tempURL = new URL(inputString);
+                isValid = (tempURL.getProtocol() != null);
+            }
+        } catch (MalformedURLException mue) {
+            // ignore because it is not harmful
+        }
+        return isValid;
+    }
+
+    /**
      * Returns a normalized export path.<p>
      * 
      * Replacing macros, normalizing the path and taking care of relative paths.<p>
@@ -2354,6 +2377,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     private String normalizeRfsPrefix(String rfsPrefix) {
 
         String result = insertContextStrings(rfsPrefix);
+        if (!isValidURL(result)) {
+            result = CmsFileUtil.normalizePath(result, '/');
+        }
         result = CmsFileUtil.normalizePath(result, '/');
         if (CmsResource.isFolder(result)) {
             // ensure prefix does NOT end with a folder '/'
