@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/27 08:13:21 $
- * Version: $Revision: 1.904 $
+ * Date   : $Date: 2007/09/27 08:36:10 $
+ * Version: $Revision: 1.905 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 7.0.3 - xxx, 2007
+* Fixed issue #1321: Servlet name no longer hard-coded in setup wizard 
 * Fixed issue #1326: Corrected typo in logout message (german locale)
 * Fixed issue #1335: Corrected typo in content-file of 404-handler (german locale)
 * Fixed issue #1420: Allowing workplace login page to be customized 

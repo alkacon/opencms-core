@@ -15,12 +15,11 @@
     </description>
 
     <!--
-        Changing the servlet name from "opencms" to something else requires 3 changes in this file.        
+        Changing the servlet name from "opencms" to something else requires 2 changes in this file.        
         For example, to change the servlet name to "mycms" you must:
         
         1. Change the <context-param> called "OpenCmsServlet" from "/opencms/*" to "/mycms/*"
         2. Change the <servlet-mapping> for "OpenCmsServlet" from "/opencms/*" to "/mycms/*"
-        3. Change the <error-page> setting for the 404 error from "/opencms/handle404" to "/mycms/handle404"
     -->
 
     <context-param>

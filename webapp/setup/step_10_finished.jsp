@@ -2,7 +2,15 @@
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
-	String openLink = request.getContextPath() + "/opencms/index.jsp";
+	String servletMapping = Bean.getServletMapping();
+	if (!servletMapping.startsWith("/")) {
+	    servletMapping = "/" + servletMapping;
+	}
+	if (servletMapping.endsWith("/*")) {
+	    // usually a mapping must be in the form "/opencms/*", cut off all slashes
+	    servletMapping = servletMapping.substring(0, servletMapping.length() - 2);
+	}
+	String openLink = request.getContextPath() + servletMapping + "/index.jsp";
 	if (Bean.isInitialized()) {
 		Bean.prepareStep10();
 		session.invalidate();
