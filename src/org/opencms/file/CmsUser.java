@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/08/13 16:29:58 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2007/09/27 09:52:03 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Map;
 /**
  * A user principal in the OpenCms permission system.<p>
  *
- * A user in OpenCms is uniquely definded by its user named returned by
+ * A user in OpenCms is uniquely defined by its user named returned by
  * <code>{@link #getName()}</code>.<p>
  * 
  * Basic users in OpenCms are users that can access the OpenCms Workplace.
@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 6.0.0
  * 
@@ -91,7 +91,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     /** The first name of this user. */
     private String m_firstname;
 
-    /** Boolean flag whether the last-login timestamp of this user was modified. */
+    /** Boolean flag whether the last-login time stamp of this user was modified. */
     private boolean m_isTouched;
 
     /** The last login date of this user. */
@@ -106,7 +106,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     /**
      * Creates a new, empty OpenCms user principal.<p>
      *
-     * Mostly intented to be used with the <code>org.opencms.workplace.tools.accounts.A_CmsEditUserDialog</code>.<p>
+     * Mostly intended to be used with the <code>org.opencms.workplace.tools.accounts.A_CmsEditUserDialog</code>.<p>
      */
     public CmsUser() {
 
@@ -188,7 +188,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      * 
      * That means, the parameter should only be composed by digits and standard english letters.<p>
      * 
-     * @param zipcode the zipcode to validate
+     * @param zipcode the zip code to validate
      */
     public static void checkZipCode(String zipcode) {
 
@@ -324,7 +324,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     /**
      * Returns the country information of this user.<p>
      *
-     * This informaion is stored in the "additional information" storage map
+     * This information is stored in the "additional information" storage map
      * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_COUNTRY}</code>.<p>
      *
      * @return the country information of this user
@@ -404,9 +404,9 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns the firstname of this user.<p>
+     * Returns the first name of this user.<p>
      *
-     * @return the firstname of this user
+     * @return the first name of this user
      */
     public String getFirstname() {
 
@@ -448,9 +448,9 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns the lastname of this user.<p>
+     * Returns the last name of this user.<p>
      *
-     * @return the lastname of this user
+     * @return the last name of this user
      */
     public String getLastname() {
 
@@ -470,7 +470,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     /**
      * Returns the zip code information of this user.<p>
      * 
-     * This informaion is stored in the "additional information" storage map
+     * This information is stored in the "additional information" storage map
      * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_ZIPCODE}</code>.<p>
      *
      * @return the zip code information of this user 
@@ -499,9 +499,9 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if this user is not able to manage itselfs.<p> 
+     * Returns <code>true</code> if this user is not able to manage itself.<p> 
      * 
-     * @return <code>true</code> if this user is not able to manage itselfs 
+     * @return <code>true</code> if this user is not able to manage itself 
      */
     public boolean isManaged() {
 
@@ -539,7 +539,7 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Stores a value in this users "additional information" storage map with the gicen access key.<p>
+     * Stores a value in this users "additional information" storage map with the given access key.<p>
      * 
      * @param key the key to store the value under
      * @param value the value to store in the users "additional information" storage map
