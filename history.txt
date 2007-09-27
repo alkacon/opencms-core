@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/27 12:34:30 $
- * Version: $Revision: 1.910 $
+ * Date   : $Date: 2007/09/27 14:56:25 $
+ * Version: $Revision: 1.911 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -38,8 +38,9 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue with importing a resource where the ID is already in use by other resource
 * Fixed issue with displaying running publish report
 * Fixed issue with NPEs in the publish dialog
+* Fixed issue with removing publish locks when aborting a publish job during shutdown
 ! Added new '__site' parameter to set the site in the workplace server
-* Fixed issue removing publish locks when aborting a publish job during shutdown
+- Added new 'force repair' option to the 'Repair xml content' tool
 - Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
 
 OpenCms 7.0.2 - September 12, 2007

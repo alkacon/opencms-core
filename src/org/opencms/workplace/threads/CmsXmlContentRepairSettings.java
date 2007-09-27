@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsXmlContentRepairSettings.java,v $
- * Date   : $Date: 2007/08/13 16:30:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/27 14:56:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.2.0
  */
@@ -51,6 +51,9 @@ public final class CmsXmlContentRepairSettings {
 
     /** Needed to verify if a VFS path String denotes a folder in VFS. */
     private final CmsObject m_cms;
+
+    /** Flag indicating if to force the reparation. */
+    private boolean m_force;
 
     /** Flag indicating if resources in sub folders should be repaired, too. */
     private boolean m_includeSubFolders;
@@ -92,6 +95,16 @@ public final class CmsXmlContentRepairSettings {
     }
 
     /**
+     * Checks if to force the reparation.<p>
+     *
+     * @return <code>true</code> if to force the reparation
+     */
+    public boolean isForce() {
+
+        return m_force;
+    }
+
+    /**
      * Returns the flag indicating if resources in sub folders should be repaired, too.<p>
      *
      * @return the flag indicating if resources in sub folders should be repaired, too
@@ -99,6 +112,16 @@ public final class CmsXmlContentRepairSettings {
     public boolean isIncludeSubFolders() {
 
         return m_includeSubFolders;
+    }
+
+    /**
+     * Sets the force reparation flag.<p>
+     *
+     * @param force the force reparation flag to set
+     */
+    public void setForce(boolean force) {
+
+        m_force = force;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsXmlContentRepairDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/27 14:56:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.2.0
  */
@@ -151,7 +151,7 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
         // create export file name block
         result.append(createWidgetBlockStart(Messages.get().getBundle(getLocale()).key(
             Messages.GUI_XMLCONTENTREPAIR_DIALOG_BLOCK_SETTINGS_0)));
-        result.append(createDialogRowsHtml(0, 2));
+        result.append(createDialogRowsHtml(0, 3));
         result.append(createWidgetBlockEnd());
 
         // close table
@@ -176,6 +176,8 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
             getCms().getRequestContext().getSiteRoot()), 1, 1));
 
         addWidget(new CmsWidgetDialogParameter(m_settings, "includeSubFolders", PAGES[0], new CmsCheckboxWidget("")));
+
+        addWidget(new CmsWidgetDialogParameter(m_settings, "force", PAGES[0], new CmsCheckboxWidget("")));
 
         addWidget(new CmsWidgetDialogParameter(m_settings, "resourceType", PAGES[0], new CmsSelectWidget(
             getXmlContentResourceTypes())));
@@ -257,12 +259,12 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
                 resTypeNames.add(resType.getTypeName());
             }
         }
-        
+
         // create the selector options
         List result = new ArrayList(resTypeNames.size() + 2);
         // add empty "please select" option to selector
         result.add(new CmsSelectWidgetOption("", true, key(Messages.GUI_XMLCONTENTREPAIR_DIALOG_RESTYPE_SELECT_0)));
-        
+
         // sort the resource type names alphabetically
         Collections.sort(resTypeNames);
         i = resTypeNames.iterator();
@@ -271,7 +273,7 @@ public class CmsXmlContentRepairDialog extends CmsWidgetDialog {
             String resTypeName = (String)i.next();
             result.add(new CmsSelectWidgetOption(resTypeName));
         }
- 
+
         // add option for generic XML content without "own" resource types at the end
         result.add(new CmsSelectWidgetOption(
             TYPE_XMLCONTENT,

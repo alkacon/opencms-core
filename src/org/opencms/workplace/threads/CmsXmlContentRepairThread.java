@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsXmlContentRepairThread.java,v $
- * Date   : $Date: 2007/08/13 16:30:04 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/09/27 14:56:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  */
 public class CmsXmlContentRepairThread extends A_CmsReportThread {
@@ -169,14 +169,15 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
                 CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
 
                 // check the XML structure
-                boolean fixFile = false;
-                try {
-                    xmlContent.validateXmlStructure(resolver);
-                } catch (CmsXmlException e) {
-                    // XML structure is not valid, this file has to be fixed
-                    fixFile = true;
+                boolean fixFile = m_settings.isForce();
+                if (!fixFile) {
+                    try {
+                        xmlContent.validateXmlStructure(resolver);
+                    } catch (CmsXmlException e) {
+                        // XML structure is not valid, this file has to be fixed
+                        fixFile = true;
+                    }
                 }
-
                 if (fixFile) {
 
                     // check the lock state of the file to repair

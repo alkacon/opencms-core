@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/08/22 11:11:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/09/27 14:56:25 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -784,6 +784,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                         CmsXmlContentRepairSettings settings = new CmsXmlContentRepairSettings(m_cms);
                         settings.setIncludeSubFolders(true);
                         settings.setVfsFolder("/");
+                        settings.setForce(true);
                         settings.setResourceType(type.getTypeName());
 
                         CmsXmlContentRepairThread t = new CmsXmlContentRepairThread(m_cms, settings);
