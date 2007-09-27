@@ -21,6 +21,20 @@
         1. Change the <context-param> called "OpenCmsServlet" from "/opencms/*" to "/mycms/*"
         2. Change the <servlet-mapping> for "OpenCmsServlet" from "/opencms/*" to "/mycms/*"
     -->
+    
+    <!--
+	    Changing the errorhandler servlet name from "opencms-errorhandler" to something
+		else requires 3 changes in this file.
+		For example, to change the servlet name to "mycms-errorhandler" you must:
+
+		1. Change the <servlet-mapping> for "OpenCmsServletErrorHandler" from
+		   "/opencms-errorhandler/*" to "/mycms-errorhandler/*"
+		2. Change the <error-page> setting for the 404 error from
+		   "/opencms-errorhandler/handle404" to "/mycms-errorhandler/handle404"
+		3. Change the <error-page> setting for the 500 error from
+	       "/opencms-errorhandler/system/handler/handle500.html" to
+	       "/mycms-errorhandler/system/handler/handle500.html"
+    -->
 
     <context-param>
         <param-name>OpenCmsServlet</param-name>

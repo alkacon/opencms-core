@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/27 08:40:59 $
- * Version: $Revision: 1.906 $
+ * Date   : $Date: 2007/09/27 08:50:09 $
+ * Version: $Revision: 1.907 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 7.0.3 - xxx, 2007
+* Fixed issue #1319: Updated comments on renaming servlets in web.xml 
 * Fixed issue #1320: Added warning to 'readme.txt' about overwriting the web.xml file in update wizard 
 * Fixed issue #1321: Servlet name no longer hard-coded in setup wizard 
 * Fixed issue #1326: Corrected typo in logout message (german locale)
