@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2007/08/13 16:29:40 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/09/28 09:19:09 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,7 +118,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * 
      * @param cms the current cms object
      * @param currWpPath the current path in the OpenCms workplace
+     * 
      * @return a sorted map with the body file title as key and absolute path to the body file as value
+     * 
      * @throws CmsException if reading a folder or file fails
      */
     public static TreeMap getBodies(CmsObject cms, String currWpPath) throws CmsException {
@@ -132,7 +134,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * @param cms the current cms object
      * @param currWpPath the current path in the OpenCms workplace
      * @param emptyMap flag indicating if it is OK to return a filtered empty Map
+     * 
      * @return a sorted map with the body file title as key and absolute path to the body file as value
+     * 
      * @throws CmsException if reading a folder or file fails
      */
     public static TreeMap getBodies(CmsObject cms, String currWpPath, boolean emptyMap) throws CmsException {
@@ -145,7 +149,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * 
      * @param cms the current cms object
      * @param currWpPath the current path in the OpenCms workplace
+     * 
      * @return a sorted map with the template title as key and absolute path to the template as value
+     * 
      * @throws CmsException if reading a folder or file fails
      */
     public static TreeMap getTemplates(CmsObject cms, String currWpPath) throws CmsException {
@@ -159,7 +165,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * @param cms the current cms object
      * @param currWpPath the current path in the OpenCms workplace
      * @param emptyMap flag indicating if it is OK to return a filtered empty Map
+     * 
      * @return a sorted map with the template title as key and absolute path to the template as value
+     * 
      * @throws CmsException if reading a folder or file fails
      */
     public static TreeMap getTemplates(CmsObject cms, String currWpPath, boolean emptyMap) throws CmsException {
@@ -171,10 +179,12 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * Returns a sorted Map of all available elements in the specified subfolder of the OpenCms modules.<p>
      * 
      * @param cms the current cms object
-     * @param elementFolder the module subfolder to serach for elements
+     * @param elementFolder the module subfolder to search for elements
      * @param currWpPath the current path in the OpenCms workplace
      * @param emptyMap flag indicating if it is OK to return a filtered empty Map
+     * 
      * @return a sorted map with the element title as key and absolute path to the element as value
+     * 
      * @throws CmsException if reading a folder or file fails
      */
     protected static TreeMap getElements(CmsObject cms, String elementFolder, String currWpPath, boolean emptyMap)
@@ -194,9 +204,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             List moduleTemplateFiles = new ArrayList();
             String folder = cms.getSitePath((CmsFolder)modules.get(i));
             try {
-                moduleTemplateFiles = cms.getFilesInFolder(
-                    folder + elementFolder,
-                    CmsResourceFilter.DEFAULT.addRequireVisible());
+                moduleTemplateFiles = cms.getFilesInFolder(folder + elementFolder, CmsResourceFilter.DEFAULT);
             } catch (CmsException e) {
                 // folder not available, list will be empty
                 if (LOG.isDebugEnabled()) {
@@ -319,6 +327,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * Builds the html for the page body file select box.<p>
      * 
      * @param attributes optional attributes for the &lt;select&gt; tag
+     * 
      * @return the html for the page body file select box
      */
     public String buildSelectBodyFile(String attributes) {
@@ -359,6 +368,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      * Builds the html for the page template select box.<p>
      * 
      * @param attributes optional attributes for the &lt;select&gt; tag
+     * 
      * @return the html for the page template select box
      */
     public String buildSelectTemplates(String attributes) {
@@ -406,9 +416,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     }
 
     /**
-     * Returns the request parameter flag inidicating if the suffix field is present or not.<p>
+     * Returns the request parameter flag indicating if the suffix field is present or not.<p>
      * 
-     * @return the request parameter flag inidicating if the suffix field is present or not
+     * @return the request parameter flag indicating if the suffix field is present or not
      */
     public String getParamSuffixCheck() {
 
@@ -436,9 +446,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     }
 
     /**
-     * Sets the request parameter flag inidicating if the suffix field is present or not.<p>
+     * Sets the request parameter flag indicating if the suffix field is present or not.<p>
      * 
-     * @param paramSuffixCheck he request parameter flag inidicating if the suffix field is present or not
+     * @param paramSuffixCheck he request parameter flag indicating if the suffix field is present or not
      */
     public void setParamSuffixCheck(String paramSuffixCheck) {
 
@@ -473,10 +483,11 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             // set resource name if we are in new folder wizard mode
             setInitialResourceName();
             setAction(ACTION_DEFAULT);
-            
+
             // build title for new resource dialog  
             String title = null;
-            CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.getStaticTypeName());
+            CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
+                CmsResourceTypeXmlPage.getStaticTypeName());
             if ((set != null) && (CmsStringUtil.isNotEmptyOrWhitespaceOnly(set.getTitleKey()))) {
                 title = getMessages().key(set.getTitleKey(), true);
             }
@@ -486,5 +497,4 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             setParamTitle(title);
         }
     }
-
 }
