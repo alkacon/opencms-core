@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2007/09/26 08:29:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/09/28 08:07:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,14 +62,14 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  */
 public final class CmsSiteManagerImpl {
 
-    /** Request parameter to force site selection. */
-    public static final String PARAMETER_SITE = "__site";
+    /** Session attribute to force site selection. */
+    public static final String SESSION_ATTR_SITE = "__site";
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteManagerImpl.class);
@@ -655,28 +655,18 @@ public final class CmsSiteManagerImpl {
     public CmsSite matchRequest(HttpServletRequest req) {
 
         CmsSite site = null;
+
         // if this is a workplace request
         if (isWorkplaceRequest(req)) {
-            // check request for the parameter
-            String siteParam = req.getParameter(PARAMETER_SITE);
+            // check session for the site attribute
+            String siteParam = (String)req.getSession().getAttribute(SESSION_ATTR_SITE);
             if (siteParam != null) {
-                // parameter found in request
+                // site attribute found in session
                 site = OpenCms.getSiteManager().getSiteForSiteRoot(siteParam);
-                if (site != null) {
-                    // if the parameter identifies a site, 
-                    // set the session attribute
-                    req.getSession().setAttribute(PARAMETER_SITE, siteParam);
-                } else {
-                    // if the request parameter does not identifies a site,
+                if (site == null) {
+                    // if the session attribute does not identify a valid site,
                     // be sure to remove the session attribute 
-                    req.getSession().removeAttribute(PARAMETER_SITE);
-                }
-            } else {
-                // check session for the attribute
-                siteParam = (String)req.getSession().getAttribute(PARAMETER_SITE);
-                if (siteParam != null) {
-                    // attribute found in session
-                    site = OpenCms.getSiteManager().getSiteForSiteRoot(siteParam);
+                    req.getSession().removeAttribute(SESSION_ATTR_SITE);
                 }
             }
         }
