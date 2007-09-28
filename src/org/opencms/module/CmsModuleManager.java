@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2007/09/13 10:25:00 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2007/09/28 16:04:39 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -535,47 +535,16 @@ public class CmsModuleManager {
             OpenCms.getWorkplaceManager().removeExplorerTypeSettings(module);
         }
 
-        // check locks
-        List lockedResources = new ArrayList();
-        CmsLockFilter filter1 = CmsLockFilter.FILTER_ALL.filterNotLockableByUser(cms.getRequestContext().currentUser());
-        CmsLockFilter filter2 = CmsLockFilter.FILTER_INHERITED;
-        List moduleResources = module.getResources();
-        for (int iLock = 0; iLock < moduleResources.size(); iLock++) {
-            String resourceName = (String)moduleResources.get(iLock);
-            try {
-                lockedResources.addAll(cms.getLockedResources(resourceName, filter1));
-                lockedResources.addAll(cms.getLockedResources(resourceName, filter2));
-            } catch (CmsException e) {
-                // may happen if the resource has already been deleted
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(e.getMessageContainer(), e);
-                }
-                report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
-            }
-        }
-        if (!lockedResources.isEmpty()) {
-            CmsMessageContainer msg = Messages.get().container(
-                Messages.ERR_DELETE_MODULE_CHECK_LOCKS_2,
-                moduleName,
-                CmsStringUtil.collectionAsString(lockedResources, ","));
-            report.addError(msg.key(cms.getRequestContext().getLocale()));
-            report.println(msg);
-            throw new CmsLockException(msg);
-        }
-
-        // now remove the module
-        module = (CmsModule)m_modules.remove(moduleName);
-
         CmsProject previousProject = cms.getRequestContext().currentProject();
+        // try to create a new offline project for deletion 
+        CmsProject deleteProject = null;
         try {
-            CmsProject deleteProject = null;
-
+            // try to read a (leftover) module delete project
+            deleteProject = cms.readProject(Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
+                Messages.GUI_DELETE_MODULE_PROJECT_NAME_1,
+                new Object[] {moduleName}));
+        } catch (CmsException e) {
             try {
-                // try to read a (leftover) module delete project
-                deleteProject = cms.readProject(Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
-                    Messages.GUI_DELETE_MODULE_PROJECT_NAME_1,
-                    new Object[] {moduleName}));
-            } catch (CmsException e) {
                 // create a Project to delete the module
                 deleteProject = cms.createProject(
                     Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
@@ -587,8 +556,55 @@ public class CmsModuleManager {
                     OpenCms.getDefaultUsers().getGroupAdministrators(),
                     OpenCms.getDefaultUsers().getGroupAdministrators(),
                     CmsProject.PROJECT_TYPE_TEMPORARY);
+            } catch (CmsException e1) {
+                throw new CmsConfigurationException(e1.getMessageContainer(), e1);
             }
+        }
 
+        try {
+            cms.getRequestContext().setCurrentProject(deleteProject);
+
+            // check locks
+            List lockedResources = new ArrayList();
+            CmsLockFilter filter1 = CmsLockFilter.FILTER_ALL.filterNotLockableByUser(cms.getRequestContext().currentUser());
+            CmsLockFilter filter2 = CmsLockFilter.FILTER_INHERITED;
+            List moduleResources = module.getResources();
+            for (int iLock = 0; iLock < moduleResources.size(); iLock++) {
+                String resourceName = (String)moduleResources.get(iLock);
+                try {
+                    lockedResources.addAll(cms.getLockedResources(resourceName, filter1));
+                    lockedResources.addAll(cms.getLockedResources(resourceName, filter2));
+                } catch (CmsException e) {
+                    // may happen if the resource has already been deleted
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(e.getMessageContainer(), e);
+                    }
+                    report.println(e.getMessageContainer(), I_CmsReport.FORMAT_WARNING);
+                }
+            }
+            if (!lockedResources.isEmpty()) {
+                CmsMessageContainer msg = Messages.get().container(
+                    Messages.ERR_DELETE_MODULE_CHECK_LOCKS_2,
+                    moduleName,
+                    CmsStringUtil.collectionAsString(lockedResources, ","));
+                report.addError(msg.key(cms.getRequestContext().getLocale()));
+                report.println(msg);
+                cms.getRequestContext().setCurrentProject(previousProject);
+                try {
+                    cms.deleteProject(deleteProject.getUuid());
+                } catch (CmsException e1) {
+                    throw new CmsConfigurationException(e1.getMessageContainer(), e1);
+                }
+                throw new CmsLockException(msg);
+            }
+        } finally {
+            cms.getRequestContext().setCurrentProject(previousProject);
+        }
+
+        // now remove the module
+        module = (CmsModule)m_modules.remove(moduleName);
+
+        try {
             cms.getRequestContext().setCurrentProject(deleteProject);
 
             // copy the module resources to the project
