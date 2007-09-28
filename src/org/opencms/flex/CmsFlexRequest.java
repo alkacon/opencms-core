@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2007/09/27 15:29:59 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2007/09/28 08:02:45 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,18 +125,18 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_includeCalls = new Vector();
         m_parameters = req.getParameterMap();
         m_isOnline = cms.getRequestContext().currentProject().isOnlineProject();
-        String[] paras = req.getParameterValues(PARAMETER_FLEX);
+        String[] params = req.getParameterValues(PARAMETER_FLEX);
         boolean nocachepara = CmsHistoryResourceHandler.isHistoryRequest(req);
         boolean dorecompile = false;
-        if (paras != null) {
+        if (params != null) {
             if (OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER)) {
-                List l = Arrays.asList(paras);
+                List paramList = Arrays.asList(params);
                 boolean firstCall = controller.isEmptyRequestList();
-                nocachepara |= l.contains("nocache");
-                dorecompile = l.contains("recompile");
-                boolean p_on = l.contains("online");
-                boolean p_off = l.contains("offline");
-                if (l.contains("purge") && firstCall) {
+                nocachepara |= paramList.contains("nocache");
+                dorecompile = paramList.contains("recompile");
+                boolean p_on = paramList.contains("online");
+                boolean p_off = paramList.contains("offline");
+                if (paramList.contains("purge") && firstCall) {
                     OpenCms.fireCmsEvent(new CmsEvent(
                         I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
                         new HashMap(0)));
@@ -144,7 +144,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                         I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
                         Collections.singletonMap("action", new Integer(CmsFlexCache.CLEAR_ENTRIES))));
                     dorecompile = false;
-                } else if ((l.contains("clearcache") || dorecompile) && firstCall) {
+                } else if ((paramList.contains("clearcache") || dorecompile) && firstCall) {
                     if (!(p_on || p_off)) {
                         OpenCms.fireCmsEvent(new CmsEvent(
                             I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
@@ -161,7 +161,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
                                 Collections.singletonMap("action", new Integer(CmsFlexCache.CLEAR_OFFLINE_ALL))));
                         }
                     }
-                } else if (l.contains("clearvariations") && firstCall) {
+                } else if (paramList.contains("clearvariations") && firstCall) {
                     if (!(p_on || p_off)) {
                         OpenCms.fireCmsEvent(new CmsEvent(
                             I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR,
