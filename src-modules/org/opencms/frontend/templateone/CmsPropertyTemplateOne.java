@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2007/09/05 11:19:35 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2007/09/28 09:19:17 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,8 +103,8 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      * Loop this to create form fields or get HTTP request data and set the property values.<p>
      */
     private static final String[] DEFAULT_PROPERTIES = {
-
-    CmsPropertyDefinition.PROPERTY_TITLE, CmsPropertyDefinition.PROPERTY_DESCRIPTION};
+        CmsPropertyDefinition.PROPERTY_TITLE,
+        CmsPropertyDefinition.PROPERTY_DESCRIPTION};
 
     /** Mode used for switching between different radio types. */
     private static final String ENABLE = "enable";
