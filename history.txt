@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/28 09:19:09 $
- * Version: $Revision: 1.912 $
+ * Date   : $Date: 2007/09/28 11:48:24 $
+ * Version: $Revision: 1.913 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ OpenCms 7.0.3 - xxx, 2007
 ! Added new '__site' parameter to set the site in the workplace server
 - Added new 'force repair' option to the 'Repair xml content' tool
 - Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
+* Fixed issue with mapping of values in xml contents to attributes of siblings
 
 OpenCms 7.0.2 - September 12, 2007
 * Fixed issue #1291: Now using the correct line break format for UNIX in cmsshell.sh

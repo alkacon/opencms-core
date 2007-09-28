@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/09/07 13:01:32 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2007/09/28 11:48:24 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 6.0.0 
  */
@@ -333,10 +333,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 // switch the current URI to the XML document resource so that properties can be read
                 CmsResource file = value.getDocument().getFile();
                 CmsSite site = OpenCms.getSiteManager().getSiteForRootPath(file.getRootPath());
-                if (site != null) { 
-                newCms = OpenCms.initCmsObject(cms);
-                newCms.getRequestContext().setSiteRoot(site.getSiteRoot());
-                newCms.getRequestContext().setUri(newCms.getSitePath(file));
+                if (site != null) {
+                    newCms = OpenCms.initCmsObject(cms);
+                    newCms.getRequestContext().setSiteRoot(site.getSiteRoot());
+                    newCms.getRequestContext().setUri(newCms.getSitePath(file));
                 }
             } catch (Exception e) {
                 // on any error just use the default input OpenCms context
@@ -796,7 +796,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                                 if (date == 0) {
                                     date = CmsResource.DATE_RELEASED_DEFAULT;
                                 }
-                                file.setDateReleased(date);
+                                rootCms.setDateReleased(filename, date, false);
                                 break;
                             case 1: // date expired
                                 date = 0;
@@ -808,7 +808,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                                 if (date == 0) {
                                     date = CmsResource.DATE_EXPIRED_DEFAULT;
                                 }
-                                file.setDateExpired(date);
+                                rootCms.setDateExpired(filename, date, false);
                                 break;
                             default:
                                 // ignore invalid / other mappings                                
