@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/09/28 11:48:24 $
- * Version: $Revision: 1.913 $
+ * Date   : $Date: 2007/10/05 10:41:17 $
+ * Version: $Revision: 1.914 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue #1420: Allowing workplace login page to be customized 
 * Fixed issue #1468: Missing encoding property for german localization property files
 * Fixed issue #1477: User with workplace user role only can again choose template when creating file with free text
+* Fixed issue #1529: Validation for elements of type OpenCmsVfsFile/OpenCmsVarLink fails with parameters
 * Fixed issue #1530: Showing user password in plain text in the workplace
 * Fixed issue with deleting module with locked resources
 * Fixed issue with OpenCms not starting anymore if there are pending publish jobs for users not in the root ou

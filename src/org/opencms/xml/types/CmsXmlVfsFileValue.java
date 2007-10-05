@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2007/09/10 13:16:55 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/10/05 10:41:17 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsLinkUpdateUtil;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
@@ -54,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 7.0.0 
  */
@@ -221,7 +222,10 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
         m_element.clearContent();
-        if (value == null) {
+        // ensure the String value is re-calculated next time it's needed
+        m_stringValue = null;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            // no valid value given
             return;
         }
         String path = value;
@@ -230,21 +234,37 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
             String oldSite = cms.getRequestContext().getSiteRoot();
             try {
                 if (siteRoot != null) {
+                    // only switch the site if needed
                     cms.getRequestContext().setSiteRoot(siteRoot);
+                    // remove the site root, because the link manager call will append it anyway
+                    path = cms.getRequestContext().removeSiteRoot(value);
                 }
-                // remove the site root, because the next call will append it anyway
-                path = cms.getRequestContext().removeSiteRoot(value);
+                // remove parameters, if not the link manager call might fail
+                String query = "";
+                int pos = path.indexOf(CmsRequestUtil.URL_DELIMITER);
+                int anchorPos = path.indexOf('#');
+                if ((pos == -1) || ((anchorPos > -1) && (pos > anchorPos))) {
+                    pos = anchorPos;
+                }
+                if (pos > -1) {
+                    query = path.substring(pos);
+                    path = path.substring(0, pos);
+                }
                 // get the root path
                 path = OpenCms.getLinkManager().getRootPath(cms, path);
                 if (path == null) {
                     path = value;
+                } else {
+                    // append parameters again
+                    path += query;
                 }
             } finally {
-                cms.getRequestContext().setSiteRoot(oldSite);
+                if (siteRoot != null) {
+                    cms.getRequestContext().setSiteRoot(oldSite);
+                }
             }
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(path)) {
-            m_stringValue = null;
             return;
         }
         CmsRelationType type = getContentDefinition().getContentHandler().getRelationType(this);
@@ -253,8 +273,6 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
         link.checkConsistency(cms);
         // update xml node
         CmsLinkUpdateUtil.updateXmlForVfsFile(link, m_element.addElement(CmsXmlPage.NODE_LINK));
-        // ensure the String value is re-calculated next time
-        m_stringValue = null;
     }
 
     /**

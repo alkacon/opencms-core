@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVarLinkValue.java,v $
- * Date   : $Date: 2007/09/10 13:16:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/10/05 10:41:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsLinkUpdateUtil;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
@@ -54,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.0 
  */
@@ -100,8 +101,8 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
      * Creates a new schema type descriptor for the type "OpenCmsVfsFile".<p>
      * 
      * @param name the name of the XML node containing the value according to the XML schema
-     * @param minOccurs minimum number of occurences of this type according to the XML schema
-     * @param maxOccurs maximum number of occurences of this type according to the XML schema
+     * @param minOccurs minimum number of occurrences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurrences of this type according to the XML schema
      */
     public CmsXmlVarLinkValue(String name, String minOccurs, String maxOccurs) {
 
@@ -246,14 +247,32 @@ public class CmsXmlVarLinkValue extends A_CmsXmlContentValue {
             String oldSite = cms.getRequestContext().getSiteRoot();
             try {
                 if (siteRoot != null) {
+                    // only switch the site if needed
                     cms.getRequestContext().setSiteRoot(siteRoot);
+                    // remove the site root, because the link manager call will append it anyway
+                    path = cms.getRequestContext().removeSiteRoot(value);
                 }
-                // remove the site root, because the next call will append it anyway
-                path = cms.getRequestContext().removeSiteRoot(value);
+                // remove parameters, if not the link manager call might fail
+                String query = "";
+                int pos = path.indexOf(CmsRequestUtil.URL_DELIMITER);
+                int anchorPos = path.indexOf('#');
+                if ((pos == -1) || ((anchorPos > -1) && (pos > anchorPos))) {
+                    pos = anchorPos;
+                }
+                if (pos > -1) {
+                    query = path.substring(pos);
+                    path = path.substring(0, pos);
+                }
                 // get the root path
                 path = OpenCms.getLinkManager().getRootPath(cms, path);
+                if (path != null) {
+                    // append parameters again
+                    path += query;
+                }
             } finally {
-                cms.getRequestContext().setSiteRoot(oldSite);
+                if (siteRoot != null) {
+                    cms.getRequestContext().setSiteRoot(oldSite);
+                }
             }
         }
         boolean internal = (path != null);
