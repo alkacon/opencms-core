@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsResourceInit.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/10/05 10:39:44 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,6 +52,9 @@ public interface I_CmsResourceInit {
 
     /**
      * Possibility to modify or change the CmsFile with the CmsObject.<p>
+     * 
+     * Caution: reading parameters from the request, destroys special characters in all
+     * parameters, because the encoding for the request was not set yet.<p>
      * 
      * @param resource the requested file
      * @param cms the current CmsObject

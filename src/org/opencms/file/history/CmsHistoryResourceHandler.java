@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryResourceHandler.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/10/05 10:39:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.9.1
  */
@@ -107,14 +107,14 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
         // during a real request and NOT during a dummy-request while doing
         // a static export
         if (req != null) {
-            String version = req.getParameter(PARAM_VERSION);
+            String uri = cms.getRequestContext().getUri();
+            // check if the resource starts with the HISTORY_HANDLER
+            if (uri.startsWith(HISTORY_HANDLER)) {
+                String version = req.getParameter(PARAM_VERSION);
 
-            // only do something if the resource was not found and there was a "versionid" parameter included
-            if ((resource == null) && (version != null)) {
+                // only do something if the resource was not found and there was a "versionid" parameter included
+                if ((resource == null) && (version != null)) {
 
-                String uri = cms.getRequestContext().getUri();
-                // check if the resource starts with the HISTORY_HANDLER
-                if (uri.startsWith(HISTORY_HANDLER)) {
                     // test if the current user is allowed to read historical versions of resources
                     // this can be done by trying to read the history handler resource
                     if (cms.existsResource(HISTORY_HANDLER)) {
