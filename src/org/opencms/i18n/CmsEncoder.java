@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2007/08/13 16:30:09 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/10/05 10:14:35 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,16 +56,16 @@ import org.apache.commons.logging.Log;
  * core classes to ensure the encoding is always handled the same way.<p>
  * 
  * The de- and encoding uses the same coding mechanism as JavaScript, special characters are
- * replaxed with <code>%hex</code> where hex is a two digit hex number.<p>
+ * replaced with <code>%hex</code> where hex is a two digit hex number.<p>
  * 
  * <b>Note:</b> On the client side (browser) instead of using corresponding <code>escape</code>
  * and <code>unescape</code> JavaScript functions, better use <code>encodeURIComponent</code> and
- * <code>decodeURIComponent</code> functions wich are work properly with unicode characters.
+ * <code>decodeURIComponent</code> functions which are work properly with unicode characters.
  * These functions are supported in IE 5.5+ and NS 6+ only.<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,7 +119,8 @@ public final class CmsEncoder {
      * to {@link #encodeHtmlEntities(String, String)}. <p>
      *  
      * @param input the input to adjust the HTML encoding for
-     * @param encoding the charset to encode the result with
+     * @param encoding the charset to encode the result with\
+     * 
      * @return the input with the decoded/encoded HTML entities
      */
     public static String adjustHtmlEncoding(String input, String encoding) {
@@ -133,7 +134,8 @@ public final class CmsEncoder {
      * @param input the byte array to convert
      * @param oldEncoding the current encoding of the byte array
      * @param newEncoding the new encoding of the byte array
-     * @return byte[] the byte array encoded in the new encoding
+     * 
+     * @return the byte array encoded in the new encoding
      */
     public static byte[] changeEncoding(byte[] input, String oldEncoding, String newEncoding) {
 
@@ -161,6 +163,7 @@ public final class CmsEncoder {
      * 
      * @param bytes the bytes to decode 
      * @param encoding the encoding scheme to use for decoding the bytes
+     * 
      * @return the bytes decoded to a String
      */
     public static String createString(byte[] bytes, String encoding) {
@@ -186,7 +189,7 @@ public final class CmsEncoder {
                 // this can also _never_ happen since the default encoding is always valid
             }
         }
-        // this code is unreachable in pratice
+        // this code is unreachable in practice
         LOG.error(Messages.get().getBundle().key(Messages.ERR_ENCODING_ISSUES_1, encoding));
         return null;
     }
@@ -196,6 +199,7 @@ public final class CmsEncoder {
      * with GET ant POST requests.<p>
      * 
      * @param source the String to decode
+     * 
      * @return String the decoded source String
      */
     public static String decode(String source) {
@@ -210,10 +214,11 @@ public final class CmsEncoder {
      * 
      * In case you don't know what encoding to use, set the value of 
      * the <code>encoding</code> parameter to <code>null</code>. 
-     * This method will then default to UTF-8 encoding, which is propably the right one.<p>
+     * This method will then default to UTF-8 encoding, which is probably the right one.<p>
      * 
      * @param source The string to decode
      * @param encoding The encoding to use (if null, the system default is used)
+     * 
      * @return The decoded source String
      */
     public static String decode(String source, String encoding) {
@@ -239,12 +244,13 @@ public final class CmsEncoder {
 
     /**
      * Decodes HTML entity references like <code>&amp;#8364;</code> that are contained in the 
-     * String to a regulat character, but only if that character is contained in the given 
+     * String to a regular character, but only if that character is contained in the given 
      * encodings charset.<p> 
      * 
-     * @param input the input to decode the HTML enties in
+     * @param input the input to decode the HTML entities in
      * @param encoding the charset to decode the input for
      * @return the input with the decoded HTML entities
+     * 
      * @see #encodeHtmlEntities(String, String)
      */
     public static String decodeHtmlEntities(String input, String encoding) {
@@ -261,10 +267,10 @@ public final class CmsEncoder {
             if (c < 128) {
                 // first 128 chars are contained in almost every charset
                 entity = new String(new char[] {(char)c});
-                // this is intendend as performance improvement since 
+                // this is intended as performance improvement since 
                 // the canEncode() operation appears quite CPU heavy
             } else if (encoder.canEncode((char)c)) {
-                // encoder can endoce this char
+                // encoder can encode this char
                 entity = new String(new char[] {(char)c});
             }
             matcher.appendReplacement(result, entity);
@@ -277,7 +283,9 @@ public final class CmsEncoder {
      * Decodes a string used as parameter in an uri in a way independent of other encodings/decodings applied before.<p>
      * 
      * @param input the encoded parameter string
+     * 
      * @return the decoded parameter string
+     * 
      * @see #encodeParameter(String)
      */
     public static String decodeParameter(String input) {
@@ -291,6 +299,7 @@ public final class CmsEncoder {
      * with GET ant POST requests.<p>
      * 
      * @param source the String to encode
+     * 
      * @return String the encoded source String
      */
     public static String encode(String source) {
@@ -305,10 +314,11 @@ public final class CmsEncoder {
      * 
      * In case you don't know what encoding to use, set the value of 
      * the <code>encoding</code> parameter to <code>null</code>. 
-     * This method will then default to UTF-8 encoding, which is propably the right one.<p>
+     * This method will then default to UTF-8 encoding, which is probably the right one.<p>
      * 
      * @param source the String to encode
      * @param encoding the encoding to use (if null, the system default is used)
+     * 
      * @return the encoded source String
      */
     public static String encode(String source, String encoding) {
@@ -343,7 +353,9 @@ public final class CmsEncoder {
      * 
      * @param input the input to encode for HTML
      * @param encoding the charset to encode the result with
+     * 
      * @return the input with the encoded HTML entities
+     * 
      * @see #decodeHtmlEntities(String, String)
      */
     public static String encodeHtmlEntities(String input, String encoding) {
@@ -357,7 +369,7 @@ public final class CmsEncoder {
             if (c < 128) {
                 // first 128 chars are contained in almost every charset
                 result.append((char)c);
-                // this is intendend as performance improvement since 
+                // this is intended as performance improvement since 
                 // the canEncode() operation appears quite CPU heavy
             } else if (encoder.canEncode((char)c)) {
                 // encoder can encode this char
@@ -394,7 +406,7 @@ public final class CmsEncoder {
             if (c < 128) {
                 // first 128 chars are contained in almost every charset
                 result.append((char)c);
-                // this is intendend as performance improvement since 
+                // this is intended as performance improvement since 
                 // the canEncode() operation appears quite CPU heavy
             } else if (encoder.canEncode((char)c)) {
                 // encoder can encode this char
@@ -422,6 +434,7 @@ public final class CmsEncoder {
      * Finally, the entity prefix is replaced with characters not used as delimiters in urls.<p>
      * 
      * @param input the parameter string
+     * 
      * @return the encoded parameter string
      */
     public static String encodeParameter(String input) {
@@ -434,9 +447,10 @@ public final class CmsEncoder {
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
      * 
-     * @param source The textstring to be encoded.
+     * @param source The text to be encoded
      * @param encoding the encoding type
-     * @return The JavaScript escaped string.
+     * 
+     * @return The JavaScript escaped string
      */
     public static String escape(String source, String encoding) {
 
@@ -452,6 +466,7 @@ public final class CmsEncoder {
      * <code>((ch != 32) && ((ch > 122) || (ch < 48) || (ch == 60) || (ch == 62)))</code><p>
      * 
      * @param source the String to escape
+     * 
      * @return String the escaped String
      * 
      * @see #escapeXml(String)
@@ -496,6 +511,7 @@ public final class CmsEncoder {
      * <code>(ch > 255)</code><p>
      * 
      * @param source the String to escape
+     * 
      * @return String the escaped String
      * 
      * @see #escapeXml(String)
@@ -521,11 +537,12 @@ public final class CmsEncoder {
 
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
-     * Muliple blanks are encoded _multiply _with %20.
+     * Multiple blanks are encoded _multiply _with <code>%20</code>.<p>
      * 
-     * @param source The textstring to be encoded.
+     * @param source The text to be encoded
      * @param encoding the encoding type
-     * @return The JavaScript escaped string.
+     * 
+     * @return The JavaScript escaped string
      */
     public static String escapeWBlanks(String source, String encoding) {
 
@@ -560,9 +577,10 @@ public final class CmsEncoder {
      * <li><b>&gt;</b> with &amp;gt;
      * <li><b>&amp;</b> with &amp;amp;
      * <li><b>&quot;</b> with &amp;quot;
-     * </ul>
+     * </ul><p>
      * 
      * @param source the string to escape
+     * 
      * @return the escaped string
      * 
      * @see #escapeHtml(String)
@@ -582,7 +600,7 @@ public final class CmsEncoder {
      * <li><b>&gt;</b> with &amp;gt;
      * <li><b>&amp;</b> with &amp;amp;
      * <li><b>&quot;</b> with &amp;quot;
-     * </ul>
+     * </ul><p>
      * 
      * @param source the string to escape
      * @param doubleEscape if <code>false</code>, all entities that already are escaped are left untouched
@@ -646,6 +664,7 @@ public final class CmsEncoder {
      * 
      * @param encoding the encoding to check and resolve
      * @param fallback the fallback encoding scheme
+     * 
      * @return the resolved encoding name, or the fallback value
      */
     public static String lookupEncoding(String encoding, String fallback) {
@@ -674,6 +693,7 @@ public final class CmsEncoder {
      * It converts from the default "UTF-8" to the currently selected system encoding.<p>
      * 
      * @param input the String to convert
+     * 
      * @return String the converted String
      */
     public static String redecodeUriComponent(String input) {
@@ -687,11 +707,12 @@ public final class CmsEncoder {
 
     /**
      * Decodes a String in a way that is compatible with the JavaScript 
-     * unescape function.
+     * unescape function.<p>
      * 
-     * @param source The String to be decoded.
+     * @param source The String to be decoded
      * @param encoding the encoding type
-     * @return The JavaScript unescaped String.
+     * 
+     * @return The JavaScript unescaped String
      */
     public static String unescape(String source, String encoding) {
 
