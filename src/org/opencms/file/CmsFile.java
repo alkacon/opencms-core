@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2007/08/13 16:29:58 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/10/05 12:11:58 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 6.0.0 
  */
@@ -96,7 +96,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * 
      * @param structureId the id of this resources structure record
      * @param resourceId the id of this resources resource record
-     * @param path the filename of this resouce
+     * @param path the filename of this resource
      * @param type the type of this resource
      * @param flags the flags of this resource
      * @param projectId the project id this resource was last modified in
@@ -177,7 +177,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @deprecated use {@link CmsObject#readFile(CmsResource)} instead
      */
     public static CmsFile upgrade(CmsResource resource, CmsObject cms) throws CmsException {
-        
+
         // the logic here has been moved to the readFile(CmsResource) method in the CmsObject
         return cms.readFile(resource);
     }
@@ -255,6 +255,8 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
 
     /**
      * Sets the contents of this file.<p>
+     * 
+     * This will also set the date content, but only if the content is already set.<p>
      *
      * @param value the content of this file
      */
