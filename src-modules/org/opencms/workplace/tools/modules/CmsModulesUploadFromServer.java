@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2007/08/13 16:29:53 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/10/05 16:42:06 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,8 @@ import org.opencms.workplace.tools.CmsToolManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,23 +67,47 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsModulesUploadFromServer extends CmsWidgetDialog {
 
+    /**
+     * A <code>{@link Comparator}</code> for <code>{@link CmsSelectWidgetOption}</code> instances.<p>
+     * 
+     * @author Achim Westermann
+     * 
+     * @version $Revision: 1.24 $
+     * 
+     * @since 7.0.3
+     *
+     */
+    private class ComparatorSelectWidgetOption implements Comparator {
+
+        /**
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        public int compare(Object o1, Object o2) {
+
+            CmsSelectWidgetOption s1 = (CmsSelectWidgetOption)o1;
+            CmsSelectWidgetOption s2 = (CmsSelectWidgetOption)o2;
+            return s1.getOption().compareTo(s2.getOption());
+        }
+
+    }
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "ModulesUploadServer";
+
+    /** The import action. */
+    protected static final String IMPORT_ACTION_REPORT = "/system/workplace/admin/modules/reports/import.jsp";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
     /** Modulename parameter. */
     public static final String PARAM_MODULENAME = "modulename";
-
-    /** The import action. */
-    protected static final String IMPORT_ACTION_REPORT = "/system/workplace/admin/modules/reports/import.jsp";
 
     /** The replace action. */
     protected static final String REPLACE_ACTION_REPORT = "/system/workplace/admin/modules/reports/replace.jsp";
@@ -176,25 +202,6 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
     }
 
     /**
-     * Gets the module parameter.<p>
-     * 
-     * @return the module parameter
-     */
-    public String getModuleupload() {
-
-        return m_moduleupload;
-    }
-
-    /** 
-     * Sets the module parameter.<p>
-     * @param module the module parameter
-     */
-    public void setModuleupload(String module) {
-
-        m_moduleupload = module;
-    }
-
-    /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
      * 
      * @param dialog the dialog (page) to get the HTML for
@@ -233,11 +240,57 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
 
         if (selectOptions.isEmpty()) {
             // no import modules available, display message
-            addWidget(new CmsWidgetDialogParameter(this, "moduleupload", PAGES[0], new CmsDisplayWidget(key(Messages.GUI_MODULES_IMPORT_NOT_AVAILABLE_0))));
+            addWidget(new CmsWidgetDialogParameter(this, "moduleupload", PAGES[0], new CmsDisplayWidget(
+                key(Messages.GUI_MODULES_IMPORT_NOT_AVAILABLE_0))));
         } else {
             // add the file select box widget
             addWidget(new CmsWidgetDialogParameter(this, "moduleupload", PAGES[0], new CmsSelectWidget(selectOptions)));
         }
+    }
+
+    /**
+     * Returns the list of all modules available on the server in prepared CmsSelectWidgetOption objects.<p>
+     * 
+     * @return List of module names in CmsSelectWidgetOption objects
+     */
+    private List getModulesFromServer() {
+
+        List result = new ArrayList();
+
+        // get the systems-exportpath
+        String exportpath = OpenCms.getSystemInfo().getPackagesRfsPath();
+        exportpath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportpath + "modules");
+        File folder = new File(exportpath);
+
+        // get a list of all files
+        String[] list = folder.list();
+        for (int i = 0; i < list.length; i++) {
+            try {
+                File diskFile = new File(exportpath, list[i]);
+                // check if it is a file and ends with zip -> this is a module
+                if (diskFile.isFile() && diskFile.getName().endsWith(".zip")) {
+                    result.add(new CmsSelectWidgetOption(diskFile.getName()));
+                } else if (diskFile.isDirectory() && ((new File(diskFile + File.separator + "manifest.xml")).exists())) {
+                    // this is a folder with manifest file -> this a module
+                    result.add(new CmsSelectWidgetOption(diskFile.getName()));
+                }
+            } catch (Throwable t) {
+                // ignore and continue
+            }
+        }
+
+        Collections.sort(result, new ComparatorSelectWidgetOption());
+        return result;
+    }
+
+    /**
+     * Gets the module parameter.<p>
+     * 
+     * @return the module parameter
+     */
+    public String getModuleupload() {
+
+        return m_moduleupload;
     }
 
     /**
@@ -273,38 +326,13 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
         setDialogObject(m_moduleupload);
     }
 
-    /**
-     * Returns the list of all modules available on the server in prepared CmsSelectWidgetOption objects.<p>
-     * 
-     * @return List of module names in CmsSelectWidgetOption objects
+    /** 
+     * Sets the module parameter.<p>
+     * @param module the module parameter
      */
-    private List getModulesFromServer() {
+    public void setModuleupload(String module) {
 
-        List result = new ArrayList();
-
-        // get the systems-exportpath
-        String exportpath = OpenCms.getSystemInfo().getPackagesRfsPath();
-        exportpath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(exportpath + "modules");
-        File folder = new File(exportpath);
-
-        // get a list of all files
-        String[] list = folder.list();
-        for (int i = 0; i < list.length; i++) {
-            try {
-                File diskFile = new File(exportpath, list[i]);
-                // check if it is a file and ends with zip -> this is a module
-                if (diskFile.isFile() && diskFile.getName().endsWith(".zip")) {
-                    result.add(new CmsSelectWidgetOption(diskFile.getName()));
-                } else if (diskFile.isDirectory() && ((new File(diskFile + File.separator + "manifest.xml")).exists())) {
-                    // this is a folder with manifest file -> this a module
-                    result.add(new CmsSelectWidgetOption(diskFile.getName()));
-                }
-            } catch (Throwable t) {
-                // ignore and continue
-            }
-        }
-
-        return result;
+        m_moduleupload = module;
     }
 
 }
