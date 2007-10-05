@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2007/08/13 16:29:55 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/10/05 14:45:02 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,7 +81,7 @@ public class CmsJspTagUser extends TagSupport {
     /** Array list for fast lookup. */
     private static final List USER_PROPERTIES_LIST = Arrays.asList(USER_PROPERTIES);
 
-    // internal member variables
+    /** The property name. */
     private String m_property;
 
     /**
@@ -128,6 +128,7 @@ public class CmsJspTagUser extends TagSupport {
             case 7: // description
                 result = user.getDescription(cms.getRequestContext().getLocale());
                 break;
+            // following 3 attributes are no longer supported
             case 8: // group
             case 9: // currentgroup
             case 10: // defaultgroup
