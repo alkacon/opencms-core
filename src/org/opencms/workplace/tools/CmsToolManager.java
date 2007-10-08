@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2007/08/13 16:29:53 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2007/10/08 15:43:33 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,7 +74,7 @@ public class CmsToolManager {
     /**  Property definition name to look for. */
     public static final String HANDLERCLASS_PROPERTY = "admintoolhandler-class";
 
-    /**  Navegation bar separator (html code). */
+    /**  Navigation bar separator (html code). */
     public static final String NAVBAR_SEPARATOR = "\n&nbsp;&gt;&nbsp;\n";
 
     /**  Tool root separator. */
@@ -216,7 +216,7 @@ public class CmsToolManager {
     }
 
     /**
-     * Returns the navegation bar html code for the given tool path.<p>
+     * Returns the navigation bar html code for the given tool path.<p>
      * 
      * @param toolPath the path
      * @param wp the jsp page
@@ -443,7 +443,7 @@ public class CmsToolManager {
     /**
      * This method initializes the tool manager for the current user.<p>
      * 
-     * @param wp the jsp page comming from
+     * @param wp the jsp page coming from
      */
     public synchronized void initParams(CmsToolDialog wp) {
 
@@ -769,7 +769,7 @@ public class CmsToolManager {
      * @param wp the workplace object
      * @param path the path to repair
      * 
-     * @return a valida and visible tool path
+     * @return a valid and visible tool path
      */
     private String repairPath(CmsWorkplace wp, String path) {
 
