@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/10/08 10:50:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.2 
  */
@@ -299,7 +299,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         String resourcePath;
         CmsResource resource;
         try {
-            resource = cms.readResource(structureId);
+            resource = cms.readResource(structureId, CmsResourceFilter.ALL);
             resourcePath = resource.getRootPath();
         } catch (CmsException e) {
             throw new CmsRuntimeException(e.getMessageContainer(), e);

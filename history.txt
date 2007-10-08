@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/10/05 16:41:12 $
- * Version: $Revision: 1.915 $
+ * Date   : $Date: 2007/10/08 10:50:55 $
+ * Version: $Revision: 1.916 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ OpenCms 7.0.3 - xxx, 2007
 - Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
 * Fixed issue with mapping of values in xml contents to attributes of siblings
 ! New Collector timeFrameAndCategories (CmsTimeFrameCategoryCollector) collects files within a time frame. 
+* Fixed issue not able to show history dialog for resources which are expired
 
 OpenCms 7.0.2 - September 12, 2007
 * Fixed issue #1291: Now using the correct line break format for UNIX in cmsshell.sh
