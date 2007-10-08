@@ -949,54 +949,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/unit_groups.jsp</source>
-			<destination>system/workplace/admin/accounts/unit_groups.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>61e275f7-a541-11db-886b-75cc2042336b</uuidstructure>
-			<uuidresource>61e275f8-a541-11db-886b-75cc2042336b</uuidresource>
-			<datelastmodified>Wed, 14 Mar 2007 14:12:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 16 Jan 2007 09:10:17 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_GROUPSUNIT_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/accounts/icons/big/group.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_GROUPSUNIT_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[5]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_GROUPSUNIT_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Edit Assigned Groups]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[path:/accounts/orgunit/groups]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/admin/accounts/unit_management.jsp</source>
 			<destination>system/workplace/admin/accounts/unit_management.jsp</destination>
 			<type>jsp</type>
