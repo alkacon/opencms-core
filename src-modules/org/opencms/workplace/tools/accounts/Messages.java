@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/09/05 13:42:37 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/10/08 15:44:20 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,8 +39,8 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -711,15 +711,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPS_TRANSFER_NOTICE_TEXT_0 = "GUI_GROUPS_TRANSFER_NOTICE_TEXT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_GROUPSORGUNIT_ADMIN_TOOL_GROUP_0 = "GUI_GROUPSORGUNIT_ADMIN_TOOL_GROUP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_GROUPSORGUNIT_ADMIN_TOOL_HELP_0 = "GUI_GROUPSORGUNIT_ADMIN_TOOL_HELP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_GROUPSORGUNIT_ADMIN_TOOL_NAME_0 = "GUI_GROUPSORGUNIT_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPUSERS_LIST_NAME_0 = "GUI_GROUPUSERS_LIST_NAME_0";
