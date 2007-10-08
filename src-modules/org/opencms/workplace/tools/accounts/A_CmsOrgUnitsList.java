@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/10/08 15:44:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -284,10 +284,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
-        List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(
-            getCms(),
-            CmsRole.ACCOUNT_MANAGER.forOrgUnit(""),
-            true);
+        List orgUnits = getOrgUnits();
         Iterator itOrgUnits = orgUnits.iterator();
         while (itOrgUnits.hasNext()) {
             CmsOrganizationalUnit childOrgUnit = (CmsOrganizationalUnit)itOrgUnits.next();
@@ -297,6 +294,18 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
             ret.add(item);
         }
         return ret;
+    }
+
+    /**
+     * Returns the organizational units to display.<p>
+     * 
+     * @return the organizational units
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected List getOrgUnits() throws CmsException {
+
+        return OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
     }
 
     /**

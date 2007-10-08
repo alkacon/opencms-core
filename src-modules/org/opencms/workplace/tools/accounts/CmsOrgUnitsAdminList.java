@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsAdminList.java,v $
- * Date   : $Date: 2007/08/13 16:29:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/10/08 15:44:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
-import org.opencms.security.CmsRole;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
@@ -58,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -68,10 +67,10 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
     public static final String LIST_ID = "lsoua";
 
     /** list action id constant. */
-    private static final String LIST_ACTION_OVERVIEW = "ao";
+    protected static final String LIST_ACTION_OVERVIEW = "ao";
 
     /** list column id constant. */
-    private static final String LIST_COLUMN_OVERVIEW = "co";
+    protected static final String LIST_COLUMN_OVERVIEW = "co";
 
     /**
      * Public constructor.<p>
@@ -138,10 +137,10 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/orgunit", params);
         } else if (getParamListAction().equals(LIST_ACTION_USER)) {
             // forward to the edit user screen
-            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/orgunit/users", params);
+            getToolManager().jspForwardTool(this, getUsersToolPath(), params);
         } else if (getParamListAction().equals(LIST_ACTION_GROUP)) {
             // forward to the edit user screen
-            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/orgunit/groups", params);
+            getToolManager().jspForwardTool(this, getGroupsToolPath(), params);
         } else if (getParamListAction().equals(LIST_DEFACTION_OVERVIEW)) {
             // forward to the edit user screen
             getToolManager().jspForwardTool(this, getCurrentToolPath() + "/orgunit", params);
@@ -149,6 +148,26 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
             throwListUnsupportedActionException();
         }
         listSave();
+    }
+
+    /**
+     * Returns the tool path of the groups management tool.<p>
+     * 
+     * @return the tool path of the groups management tool
+     */
+    protected String getGroupsToolPath() {
+
+        return getCurrentToolPath() + "/orgunit/groups";
+    }
+
+    /**
+     * Returns the tool path of the users management tool.<p>
+     * 
+     * @return the tool path of the users management tool
+     */
+    protected String getUsersToolPath() {
+
+        return getCurrentToolPath() + "/orgunit/users";
     }
 
     /**
@@ -161,18 +180,28 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
      */
     public void forwardToSingleAdminOU() throws ServletException, IOException, CmsException {
 
-        List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
-        
+        List orgUnits = getOrgUnits();
+
         if (orgUnits.isEmpty()) {
             OpenCms.getWorkplaceManager().getToolManager().jspForwardTool(this, "/", null);
             return;
         }
-        
+
         Map params = new HashMap();
         params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, ((CmsOrganizationalUnit)orgUnits.get(0)).getName());
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
-        OpenCms.getWorkplaceManager().getToolManager().jspForwardTool(this, "/accounts/orgunit", params);
+        OpenCms.getWorkplaceManager().getToolManager().jspForwardTool(this, getForwardToolPath(), params);
+    }
+
+    /**
+     * Returns the tool path to forward if there is only one single organizational unit.<p>
+     * 
+     * @return the tool path to forward
+     */
+    protected String getForwardToolPath() {
+
+        return "/accounts/orgunit";
     }
 
     /**
@@ -194,7 +223,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
      */
     public boolean hasMoreAdminOUs() throws CmsException {
 
-        List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
+        List orgUnits = getOrgUnits();
 
         if (orgUnits == null) {
             return false;
