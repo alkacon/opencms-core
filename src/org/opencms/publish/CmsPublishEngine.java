@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/09/26 10:32:03 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/10/09 12:31:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.5.5
  */
@@ -149,8 +149,7 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @throws CmsException if something goes wrong while cloning the cms context  
      */
-    public synchronized void enqueuePublishJob(CmsObject cms, CmsPublishList publishList, I_CmsReport report)
-    throws CmsException {
+    public void enqueuePublishJob(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws CmsException {
 
         // check the driver manager
         if ((m_driverManager == null) || (m_dbContextFactory == null)) {
@@ -186,7 +185,7 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @return the publish job with the given publish history id, or <code>null</code>
      */
-    public synchronized CmsPublishJobBase getJobByPublishHistoryId(CmsUUID publishHistoryId) {
+    public CmsPublishJobBase getJobByPublishHistoryId(CmsUUID publishHistoryId) {
 
         // try current running job
         if ((m_currentPublishThread != null)
@@ -215,14 +214,16 @@ public final class CmsPublishEngine implements Runnable {
     /**
      * Controls the publish process.<p>
      */
-    public synchronized void run() {
+    public void run() {
 
         try {
-            try {
-                // give the finishing publish thread enough time to clean up
-                wait(200);
-            } catch (InterruptedException e) {
-                // ignore
+            synchronized (this) {
+                try {
+                    // give the finishing publish thread enough time to clean up
+                    wait(200);
+                } catch (InterruptedException e) {
+                    // ignore
+                }
             }
 
             // create a publish thread only if engine is started
@@ -307,7 +308,7 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @param driverManager the driver manager instance
      */
-    public synchronized void setDriverManager(CmsDriverManager driverManager) {
+    public void setDriverManager(CmsDriverManager driverManager) {
 
         m_driverManager = driverManager;
         CmsDbContext dbc = m_dbContextFactory.getDbContext();
@@ -327,7 +328,7 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * This is required since there may still be a thread running when the system is being shut down.<p>
      */
-    public synchronized void shutDown() {
+    public void shutDown() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(org.opencms.main.Messages.get().getBundle().key(
@@ -382,7 +383,7 @@ public final class CmsPublishEngine implements Runnable {
      * @throws CmsException if there is some problem during unlocking the resources
      * @throws CmsPublishException if the publish job can not be aborted 
      */
-    protected synchronized void abortPublishJob(CmsUUID userId, CmsPublishJobEnqueued publishJob, boolean removeJob)
+    protected void abortPublishJob(CmsUUID userId, CmsPublishJobEnqueued publishJob, boolean removeJob)
     throws CmsException, CmsPublishException {
 
         // abort event should be raised before the job is removed implicitly
@@ -474,7 +475,7 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @return the driver manager instance
      */
-    protected synchronized CmsDriverManager getDriverManager() {
+    protected CmsDriverManager getDriverManager() {
 
         return m_driverManager;
     }
@@ -605,7 +606,7 @@ public final class CmsPublishEngine implements Runnable {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected synchronized void publishJobFinished(CmsPublishJobInfoBean publishJob) throws CmsException {
+    protected void publishJobFinished(CmsPublishJobInfoBean publishJob) throws CmsException {
 
         // in order to avoid not removable publish locks, unlock all assigned resources again
         unlockPublishList(publishJob);
@@ -711,7 +712,7 @@ public final class CmsPublishEngine implements Runnable {
     /**
      * Starts the publish engine, i.e. publish jobs are accepted and processed.<p>
      */
-    protected synchronized void startEngine() {
+    protected void startEngine() {
 
         if (m_engineState != CmsPublishEngineState.ENGINE_STARTED) {
             m_engineState = CmsPublishEngineState.ENGINE_STARTED;
