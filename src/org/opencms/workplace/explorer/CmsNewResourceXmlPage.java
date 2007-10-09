@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2007/09/28 09:19:09 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/10/09 15:46:10 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,7 +204,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             List moduleTemplateFiles = new ArrayList();
             String folder = cms.getSitePath((CmsFolder)modules.get(i));
             try {
-                moduleTemplateFiles = cms.getFilesInFolder(folder + elementFolder, CmsResourceFilter.DEFAULT);
+                moduleTemplateFiles = cms.getFilesInFolder(
+                    folder + elementFolder,
+                    CmsResourceFilter.DEFAULT.addRequireVisible());
             } catch (CmsException e) {
                 // folder not available, list will be empty
                 if (LOG.isDebugEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2007/08/13 16:29:46 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/10/09 15:46:10 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,7 +146,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     /**
      * Returns the Group name parameter.<p>
      *
-     * @return the Group name paramter
+     * @return the Group name parameter
      */
     public String getParamGroupname() {
 
@@ -192,7 +192,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
     public boolean hasUsersInOtherOus() {
 
         if (m_hasUsersInOtherOus == null) {
-            // lazzy initialization
+            // lazy initialization
             m_hasUsersInOtherOus = Boolean.FALSE;
             try {
                 Iterator itUsers = getUsers(true).iterator();
@@ -261,6 +261,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         List ret = new ArrayList();
 
         boolean withOtherOus = hasUsersInOtherOus()
+            && (getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU) != null)
             && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU).isVisible();
 
         // get content        

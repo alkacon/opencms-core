@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/09/26 13:27:42 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/10/09 15:46:10 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -275,6 +275,16 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public String getParamUserid() {
 
         return m_paramUserid;
+    }
+
+    /**
+     * Returns the password information.<p>
+     *
+     * @return the password information
+     */
+    public CmsPasswordInfo getPwdInfo() {
+
+        return m_pwdInfo;
     }
 
     /**
