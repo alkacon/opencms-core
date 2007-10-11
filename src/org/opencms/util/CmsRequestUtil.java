@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2007/08/28 08:11:16 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/10/11 10:18:34 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -551,6 +551,8 @@ public final class CmsRequestUtil {
             return null;
         }
         DiskFileUpload fu = new DiskFileUpload();
+        // set encoding to correctly handle special chars (e.g. in filenames)
+        fu.setHeaderEncoding(request.getCharacterEncoding());
         // maximum size that will be stored in memory
         fu.setSizeThreshold(4096);
         // the location for saving data that is larger than getSizeThreshold()

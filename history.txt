@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/10/08 10:50:55 $
- * Version: $Revision: 1.916 $
+ * Date   : $Date: 2007/10/11 10:18:34 $
+ * Version: $Revision: 1.917 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue with mapping of values in xml contents to attributes of siblings
 ! New Collector timeFrameAndCategories (CmsTimeFrameCategoryCollector) collects files within a time frame. 
 * Fixed issue not able to show history dialog for resources which are expired
+* Fixed issue with corrupted characters in filenames while uploading files without the applet
 
 OpenCms 7.0.2 - September 12, 2007
 * Fixed issue #1291: Now using the correct line break format for UNIX in cmsshell.sh
