@@ -250,7 +250,6 @@ function activateOcms(id) {
 	if (bt != null) {
 		bt.style.backgroundImage = "url(<%= CmsWorkplace.getSkinUri() %>buttons/directedit_op.png)";
 	}
-
 }
 function deactivateOcms(id) {
 	var el = document.getElementById(id);
@@ -346,7 +345,8 @@ function keyUpOcms(evt) {
 	if (!evt) {
 		evt = window.event;
 	}
-	if ((evt.type == "keyup") && (evt.keyCode == 32) && evt.ctrlKey) {
+	// [CTRL] + [Space] does not work in Firefox 2.0.x and destroys the event capturing
+	if ((evt.type == "keyup") && (evt.keyCode == 32) && (evt.ctrlKey || evt.shiftKey)) {
 		toggleVisibleOcms();
 	}
 }
