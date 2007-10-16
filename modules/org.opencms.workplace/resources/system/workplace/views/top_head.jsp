@@ -102,7 +102,7 @@ if (wp.isHelpEnabled()) {
        
 <td style="width: 100%">&nbsp;</td>
 <%= wp.buttonBarSeparator(5, 0) %><% 
-	String loginJsp = cms.getCmsObject().readPropertyObject(cms.getRequestContext().getUri(), CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true).getValue();
+	String loginJsp = cms.getCmsObject().readPropertyObject(cms.getRequestContext().getUri(), CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true).getValue("/system/login/index.html");
 	String exitLink = cms.link(CmsRequestUtil.appendParameter(loginJsp, CmsLogin.PARAM_ACTION_LOGOUT, String.valueOf(true))); %>
 <%= wp.button(exitLink, "_top", "logout.png", org.opencms.workplace.Messages.GUI_BUTTON_EXIT_0, buttonStyle) %>
 
