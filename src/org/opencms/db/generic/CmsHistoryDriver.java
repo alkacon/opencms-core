@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/10/16 11:00:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.9.1
  */
@@ -1264,7 +1264,10 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             Iterator dummy = properties.iterator();
             while (dummy.hasNext()) {
                 CmsProperty property = (CmsProperty)dummy.next();
-                CmsPropertyDefinition propDef = readPropertyDefinition(dbc, property.getName());
+                CmsPropertyDefinition propDef = m_driverManager.getVfsDriver().readPropertyDefinition(
+                    dbc,
+                    property.getName(),
+                    dbc.currentProject().getUuid());
 
                 for (int i = 0; i < 2; i++) {
                     int mappingType;
