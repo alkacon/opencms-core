@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Messages.java,v $
- * Date   : $Date: 2007/09/06 15:32:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/10/17 12:00:53 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,6 +50,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_FILE_UPLOAD_1 = "ERR_ACTION_FILE_UPLOAD_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ACTION_ZIPFILE_UPLOAD_0 = "ERR_ACTION_ZIPFILE_UPLOAD_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FILE_NOT_FOUND_1 = "ERR_FILE_NOT_FOUND_1";
@@ -68,6 +71,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_HTMLIMPORT_PARSE_1 = "ERR_HTMLIMPORT_PARSE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ZIPFILE_READ_1 = "ERR_ZIPFILE_READ_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ZIPFILE_UNZIP_1 = "ERR_ZIPFILE_UNZIP_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_SEARCH_0 = "GUI_BUTTON_SEARCH_0";
@@ -119,6 +128,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0 = "GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLDEFAULT_ADMIN_TOOL_HELP_0 = "GUI_HTMLDEFAULT_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLDEFAULT_ADMIN_TOOL_NAME_0 = "GUI_HTMLDEFAULT_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HTMLIMPORT_ADMIN_TOOL_HELP_0 = "GUI_HTMLIMPORT_ADMIN_TOOL_HELP_0";
@@ -247,6 +262,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_HTML_IMPORT_END_0 = "RPT_HTML_IMPORT_END_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_HTML_UNZIP_0 = "RPT_HTML_UNZIP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_IMPORT_0 = "RPT_IMPORT_0";
 
     /** Message constant for key in the resource bundle. */
@@ -262,14 +280,6 @@ public final class Messages extends A_CmsMessageBundle {
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
-    }
-
-    /**
      * Returns an instance of this localized message accessor.<p>
      * 
      * @return an instance of this localized message accessor
@@ -277,6 +287,14 @@ public final class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
+    }
+
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
     }
 
     /**

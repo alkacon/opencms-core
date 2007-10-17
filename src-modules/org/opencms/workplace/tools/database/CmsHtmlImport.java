@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/10/17 12:00:53 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,12 +56,15 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsLink;
 import org.opencms.report.I_CmsReport;
 import org.opencms.staticexport.CmsLinkTable;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -74,6 +77,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
@@ -81,21 +86,46 @@ import org.apache.commons.logging.Log;
 /**
  * This class implements the HTML->OpenCms Template converter for OpenCms 6.x.<p>
  * 
+ * The HTML files can lay in a directory or in a zip file. The entries in the zip file 
+ * are saved temporary in the tmp-directory of the system. Every file is stored into the 
+ * correct location in the OpenCms VFS.<p>
+ * 
+ * 
  * @author Michael Emmerich 
  * @author Armen Markarian 
  * @author Peter Bonrad
+ * @author Anja Röttgers
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlImport {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsHtmlImport.class);
-    
     /** filename of the meta.properties file. */
     public static final String META_PROPERTIES = "meta.properties";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHtmlImport.class);
+
+    /**
+     * This function creates a folder in the temporary-directory.<p>
+     * 
+     * @param name the name of the folder
+     * 
+     * @return the folder file
+     * 
+     * @throws Exception if the folder can not create
+     */
+    public static File createTempFolder(String name) throws Exception {
+
+        File folder = null;
+        folder = File.createTempFile(name, "", null);
+        folder.delete();
+        folder.mkdirs();
+        folder.deleteOnExit();
+        return folder;
+    }
 
     /** the CmsObject to use. */
     private CmsObject m_cmsObject;
@@ -118,11 +148,14 @@ public class CmsHtmlImport {
     /** Storage for external links. */
     private HashSet m_externalLinks;
 
-    /** The file index contains all resourcenames in the real file system and their renamed ones in the OpenCms VFS. */
+    /** The file index contains all resource names in the real file system and their renamed ones in the OpenCms VFS. */
     private HashMap m_fileIndex;
 
-    /** the HTML converter to parse and modifiy the content. */
+    /** the HTML converter to parse and modify the content. */
     private CmsHtmlImportConverter m_htmlConverter;
+
+    /** the path of the import temporary file in the "real" file system.*/
+    private String m_httpDir;
 
     /** the image gallery name. */
     private String m_imageGallery;
@@ -139,19 +172,10 @@ public class CmsHtmlImport {
     /** should broken links be kept. */
     private boolean m_keepBrokenLinks;
 
-    /** leave downloads at the original location. */
-    private boolean m_leaveDownloads;
-
-    /** leave external links at the original location. */
-    private boolean m_leaveExternalLinks;
-
-    /** leave images at the original location. */
-    private boolean m_leaveImages;
-
     /** the external link gallery name. */
     private String m_linkGallery;
 
-    /** the locale use for content definition. */
+    /** the local use for content definition. */
     private String m_locale;
 
     /** the overwrite value new resources. */
@@ -275,6 +299,16 @@ public class CmsHtmlImport {
     }
 
     /**
+     * Returns the httpDir.<p>
+     *
+     * @return the httpDir
+     */
+    public String getHttpDir() {
+
+        return m_httpDir;
+    }
+
+    /**
      * Returns the imageGallery.<p>
      *
      * @return the imageGallery
@@ -315,9 +349,9 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Returns the locale.<p>
+     * Returns the local.<p>
      *
-     * @return the locale
+     * @return the local
      */
     public String getLocale() {
 
@@ -355,36 +389,6 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Returns the leaveDownloads.<p>
-     *
-     * @return the leaveDownloads
-     */
-    public boolean isLeaveDownloads() {
-
-        return m_leaveDownloads;
-    }
-
-    /**
-     * Returns the leaveExternalLinks.<p>
-     *
-     * @return the leaveExternalLinks
-     */
-    public boolean isLeaveExternalLinks() {
-
-        return m_leaveExternalLinks;
-    }
-
-    /**
-     * Returns the leaveImages.<p>
-     *
-     * @return the leaveImages
-     */
-    public boolean isLeaveImages() {
-
-        return m_leaveImages;
-    }
-
-    /**
      * Returns the overwrite.<p>
      *
      * @return the overwrite
@@ -392,6 +396,16 @@ public class CmsHtmlImport {
     public boolean isOverwrite() {
 
         return m_overwrite;
+    }
+
+    /**
+     * Sets the cmsObject.<p>
+     *
+     * @param cmsObject the cmsObject to set
+     */
+    public void setCmsObject(CmsObject cmsObject) {
+
+        m_cmsObject = cmsObject;
     }
 
     /**
@@ -435,6 +449,16 @@ public class CmsHtmlImport {
     }
 
     /**
+     * Sets the httpDir.<p>
+     *
+     * @param httpDir the httpDir to set
+     */
+    public void setHttpDir(String httpDir) {
+
+        m_httpDir = httpDir;
+    }
+
+    /**
      * Sets the imageGallery.<p>
      *
      * @param imageGallery the imageGallery to set
@@ -475,36 +499,6 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Sets the leaveDownloads.<p>
-     *
-     * @param leaveDownloads the leaveDownloads to set
-     */
-    public void setLeaveDownloads(boolean leaveDownloads) {
-
-        m_leaveDownloads = leaveDownloads;
-    }
-
-    /**
-     * Sets the leaveExternalLinks.<p>
-     *
-     * @param leaveExternalLinks the leaveExternalLinks to set
-     */
-    public void setLeaveExternalLinks(boolean leaveExternalLinks) {
-
-        m_leaveExternalLinks = leaveExternalLinks;
-    }
-
-    /**
-     * Sets the leaveImages.<p>
-     *
-     * @param leaveImages the leaveImages to set
-     */
-    public void setLeaveImages(boolean leaveImages) {
-
-        m_leaveImages = leaveImages;
-    }
-
-    /**
      * Sets the linkGallery.<p>
      *
      * @param linkGallery the linkGallery to set
@@ -515,9 +509,9 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Sets the locale.<p>
+     * Sets the local.<p>
      *
-     * @param locale the locale to set
+     * @param locale the local to set
      */
     public void setLocale(String locale) {
 
@@ -555,10 +549,12 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Imports all resources from the real filesystem, stores them into the correct locations
+     * Imports all resources from the real file system, stores them into the correct locations
      * in the OpenCms VFS and modifies all links. This method is called form the JSP to start the
      * import process.<p>
+     * 
      * @param report StringBuffer for reporting
+     * 
      * @throws Exception if something goes wrong
      */
     public void startImport(I_CmsReport report) throws Exception {
@@ -567,11 +563,19 @@ public class CmsHtmlImport {
             m_report = report;
             m_report.println(Messages.get().container(Messages.RPT_HTML_IMPORT_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
 
+            boolean isStream = !CmsStringUtil.isEmptyOrWhitespaceOnly(m_httpDir);
+            File streamFolder = null;
+            if (isStream) {
+                // the input is starting through the HTTP upload
+                streamFolder = unzipStream();
+                m_inputDir = streamFolder.getAbsolutePath();
+            }
+
             // first build the index of all resources
             buildIndex(m_inputDir);
             // build list with all parent resources of input directory for links to outside import folder
             buildParentPath();
-            // copy and parse all html files first. during the copy process we will collect all 
+            // copy and parse all HTML files first. during the copy process we will collect all 
             // required data for downloads and images
             copyHtmlFiles(m_inputDir);
             // now copy the other files
@@ -579,6 +583,16 @@ public class CmsHtmlImport {
             // finally create all the external links    
             createExternalLinks();
             m_report.println(Messages.get().container(Messages.RPT_HTML_IMPORT_END_0), I_CmsReport.FORMAT_HEADLINE);
+
+            if (isStream && streamFolder != null) {
+                // delete the files of the zip file
+                CmsFileUtil.purgeDirectory(streamFolder);
+                // deletes the zip file
+                File file = new File(m_httpDir);
+                if (file.exists() && file.canWrite()) {
+                    file.delete();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -587,13 +601,15 @@ public class CmsHtmlImport {
     /**
      * Add a new external link to the storage of external links.<p>
      * 
-     * All links in this storage are later used to create entries in the external link gallery.
+     * All links in this storage are later used to create entries in the external link gallery.<p>
+     * 
      * @param externalLink link to an external resource
+     * 
      * @return the complete path to the external link file, if one is created.
      */
     public String storeExternalLink(String externalLink) {
 
-        if (!m_leaveExternalLinks) {
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_linkGallery)) {
             m_externalLinks.add(externalLink);
             return getExternalLinkFile(externalLink);
         }
@@ -602,9 +618,10 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Add a new image info to the storage of image infos.<p>
+     * Add a new image info to the storage of image info's.<p>
      * 
-     * The image infoes are later used to set the description properties of the images.
+     * The image info's are later used to set the description properties of the images.<p>
+     * 
      * @param image the name of the image
      * @param altText the alt-text of the image
      */
@@ -614,11 +631,13 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Translated a link into the real filesystem to its new location in the OpenCms VFS.<p>
+     * Translated a link into the real file system to its new location in the OpenCms VFS.<p>
      * 
-     * This is needed by the HtmlConverter to get the correct links for link translation.
-     * @param link link to the real filesystem
-     * @return string containing absulute link into the OpenCms VFS
+     * This is needed by the HtmlConverter to get the correct links for link translation.<p>
+     * 
+     * @param link link to the real file system
+     * 
+     * @return string containing absolute link into the OpenCms VFS
      */
     public String translateLink(String link) {
 
@@ -631,7 +650,7 @@ public class CmsHtmlImport {
                 translatedLink = link;
             }
 
-            // relative link to opencms root
+            // relative link to OpenCms root
             else if (link.startsWith("/")) {
 
                 // strip cms context path
@@ -674,16 +693,18 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Tests if all given input parameters for the HTML Import are valid, i.e. that all the 
+     * Tests if all given input parameters for the HTML Import are valid, that is that all the 
      * given folders do exist. <p>
      * 
      * @throws CmsIllegalArgumentException if some parameters are not valid
      */
     public void validate() throws CmsIllegalArgumentException {
 
-        // check the input directory
+        // check the input directory and the HTTP upload file
+        File httpDir = (m_httpDir != null ? new File(m_httpDir) : null);
         File inputDir = new File(m_inputDir);
-        if (!inputDir.exists() || inputDir.isFile()) {
+        if ((!inputDir.exists() || inputDir.isFile())
+            && (httpDir == null || !httpDir.exists() || httpDir.isDirectory())) {
             // the input directory is not valid
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.GUI_HTMLIMPORT_INPUTDIR_1,
@@ -699,7 +720,7 @@ public class CmsHtmlImport {
             }
             m_cmsObject.readFolder(m_destinationDir);
         } catch (CmsException e) {
-            // an excpetion is thrown if the folder does not exist
+            // an exception is thrown if the folder does not exist
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.GUI_HTMLIMPORT_DESTDIR_1,
                 m_destinationDir), e);
@@ -707,7 +728,7 @@ public class CmsHtmlImport {
 
         // check the image gallery
         // only if flag for leaving images at original location is off
-        if (!m_leaveImages) {
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_imageGallery)) {
             try {
                 CmsFolder folder = m_cmsObject.readFolder(m_imageGallery);
                 // check if folder is a image gallery
@@ -718,7 +739,7 @@ public class CmsHtmlImport {
                         m_imageGallery));
                 }
             } catch (CmsException e) {
-                // an excpetion is thrown if the folder does not exist
+                // an exception is thrown if the folder does not exist
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.GUI_HTMLIMPORT_IMGGALLERY_1,
                     m_imageGallery), e);
@@ -727,7 +748,7 @@ public class CmsHtmlImport {
 
         // check the link gallery
         // only if flag for leaving external links at original location is off
-        if (!m_leaveExternalLinks) {
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_linkGallery)) {
             try {
                 CmsFolder folder = m_cmsObject.readFolder(m_linkGallery);
                 // check if folder is a link gallery
@@ -738,7 +759,7 @@ public class CmsHtmlImport {
                         m_linkGallery));
                 }
             } catch (CmsException e) {
-                // an excpetion is thrown if the folder does not exist
+                // an exception is thrown if the folder does not exist
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.GUI_HTMLIMPORT_LINKGALLERY_1,
                     m_linkGallery), e);
@@ -746,7 +767,7 @@ public class CmsHtmlImport {
         }
 
         // check the download gallery
-        if ((!isExternal(m_downloadGallery)) && (!m_leaveDownloads)) {
+        if ((!isExternal(m_downloadGallery)) && (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_downloadGallery))) {
             try {
                 CmsFolder folder = m_cmsObject.readFolder(m_downloadGallery);
                 // check if folder is a download gallery
@@ -757,7 +778,7 @@ public class CmsHtmlImport {
                         m_downloadGallery));
                 }
             } catch (CmsException e) {
-                // an excpetion is thrown if the folder does not exist
+                // an exception is thrown if the folder does not exist
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.GUI_HTMLIMPORT_DOWNGALLERY_1,
                     m_downloadGallery), e);
@@ -768,7 +789,7 @@ public class CmsHtmlImport {
         try {
             m_cmsObject.readResource(m_template, CmsResourceFilter.ALL);
         } catch (CmsException e) {
-            // an excpetion is thrown if the template does not exist
+            // an exception is thrown if the template does not exist
             if (!isValidElement()) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.GUI_HTMLIMPORT_TEMPLATE_1,
@@ -836,9 +857,8 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Builds a map with all parents of the destination dir to the real file system.
-     * So links to resources of outside the import folder can be found.
-     *
+     * Builds a map with all parents of the destination directory to the real file system.<p>
+     * So links to resources of outside the import folder can be found.<p>
      */
     private void buildParentPath() {
 
@@ -851,16 +871,32 @@ public class CmsHtmlImport {
         while ((pos > 0) && (destFolder != null)) {
             inputDir = inputDir.substring(0, pos);
             m_parents.put(inputDir + "/", destFolder);
-            
-            pos = inputDir.lastIndexOf("/", pos-1);
+
+            pos = inputDir.lastIndexOf("/", pos - 1);
             destFolder = CmsResource.getParentFolder(destFolder);
+        }
+    }
+
+    /**
+     * This function close a InputStream.<p>
+     * 
+     * @param stream the <code> {@link InputStream} </code> Object
+     */
+    private void closeStream(InputStream stream) {
+
+        if (stream != null) {
+            try {
+                stream.close();
+            } catch (Exception ex) {
+                LOG.error(ex.getLocalizedMessage(), ex);
+            }
         }
     }
 
     /**
      * Copies all  HTML files to the VFS.<p>
      * 
-     * @param startfolder startfolder the folder to start with
+     * @param startfolder the folder to start with
      * 
      * @throws Exception if something goes wrong
      */
@@ -882,7 +918,7 @@ public class CmsHtmlImport {
                 } else {
                     // create a new file in the VFS      
                     String vfsFileName = (String)m_fileIndex.get(subresources[i].getAbsolutePath().replace('\\', '/'));
-                    // check if this is an Html file, do only import and parse those
+                    // check if this is an HTML file, do only import and parse those
                     int type = getFileType(vfsFileName);
                     if (CmsResourceTypePlain.getStaticTypeId() == type) {
                         Hashtable properties = new Hashtable();
@@ -908,7 +944,7 @@ public class CmsHtmlImport {
     /**
      * Copies all files except HTML files to the VFS.<p>
      * 
-     * @param startfolder startfolder the folder to start with
+     * @param startfolder the folder to start with
      */
     private void copyOtherFiles(String startfolder) {
 
@@ -961,7 +997,7 @@ public class CmsHtmlImport {
                                 byte[] content = getFileBytes(subresources[i]);
                                 // get the filename from the fileIndex list
 
-                                // check if there are some image infos stored for this resource
+                                // check if there are some image info's stored for this resource
                                 List properties = new ArrayList();
                                 String altText = (String)m_imageInfo.get(subresources[i].getAbsolutePath().replace(
                                     '\\',
@@ -1045,7 +1081,7 @@ public class CmsHtmlImport {
                     linkUrl.getBytes(),
                     properties);
             } catch (CmsException e) {
-                // do nothing here, an exception will be thrown if this link already exisits                
+                // do nothing here, an exception will be thrown if this link already exists                
             }
             m_report.println(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -1057,8 +1093,8 @@ public class CmsHtmlImport {
      * Creates a file in the VFS.<p>
      * 
      * @param filename the complete filename in the real file system
-     * @param position the default nav pos of this folder
-     * @param content the html content of the file
+     * @param position the default navigation position of this folder
+     * @param content the HTML content of the file
      * @param properties the file properties
      */
     private void createFile(String filename, int position, String content, Hashtable properties) {
@@ -1078,11 +1114,11 @@ public class CmsHtmlImport {
                 if ((properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS) == null)
                     && (properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT) != null)) {
                     // set the position in the folder as navpos
-                    // we have to add one to the postion, since it is counted from 0
+                    // we have to add one to the position, since it is counted from 0
                     properties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, (position + 1) + "");
                 }
 
-                // create new xml page
+                // create new XML page
                 Locale locale = new Locale(m_locale);
                 CmsXmlPage page = new CmsXmlPage(locale, OpenCms.getSystemInfo().getDefaultEncoding());
                 page.addValue(m_element, locale);
@@ -1102,7 +1138,7 @@ public class CmsHtmlImport {
                         link.checkConsistency(m_cmsObject);
                     }
                 }
-                // marshal xml page and get the content
+                // marshal XML page and get the content
                 byte[] contentByteArray = page.marshal();
                 List oldProperties = new ArrayList();
 
@@ -1171,8 +1207,8 @@ public class CmsHtmlImport {
     /**
      * Creates a folder in the VFS.<p>
      * 
-     * @param foldername the complete foldername in the real file system
-     * @param position the default nav pos of this folder
+     * @param foldername the complete folder name in the real file system
+     * @param position the default navigation position of this folder
      * @param properties the file properties
      */
     private void createFolder(String foldername, int position, Hashtable properties) {
@@ -1200,10 +1236,10 @@ public class CmsHtmlImport {
                     propertyFile.load(new FileInputStream(new File(propertyFileName)));
                     metaPropertiesFound = true;
                 } catch (Exception e1) {
-                    // do nothing if the propertyfile could not be loaded since it is not required
+                    // do nothing if the property file could not be loaded since it is not required
                     // that such s file does exist
                 }
-                // now copy all values from the propertyfile to the already found properties of the
+                // now copy all values from the property file to the already found properties of the
                 // new folder in OpenCms
                 // only do this if we have found a meta.properties file          
                 if (metaPropertiesFound) {
@@ -1217,7 +1253,7 @@ public class CmsHtmlImport {
                             // copy to the properties of the OpenCms folder
                             properties.put(property, propertyvalue);
                         } catch (Exception e2) {
-                            // just skip this property if it could ne be read.
+                            // just skip this property if it could not be read.
                             e2.printStackTrace();
                         }
                     }
@@ -1225,7 +1261,7 @@ public class CmsHtmlImport {
                     // check if we have to set the navpos property.
                     if (properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS) == null) {
                         // set the position in the folder as navpos
-                        // we have to add one to the postion, since it is counted from 0
+                        // we have to add one to the position, since it is counted from 0
                         properties.put(CmsPropertyDefinition.PROPERTY_NAVPOS, (position + 1) + "");
                     }
                     // check if we have to set the navpos property.
@@ -1278,10 +1314,11 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Compares 2 pathes for the base part which have both equal.
+     * Compares two path's for the base part which have both equal.<p>
      * 
      * @param path1 the first path to compare
      * @param path2 the second path to compare
+     * 
      * @return the base path of both which are equal
      */
     private String getBasePath(String path1, String path2) {
@@ -1306,9 +1343,10 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Creates the filename of the file of the external link.
+     * Creates the filename of the file of the external link.<p>
      * 
      * @param link the link to get the file path for.
+     * 
      * @return the filename of the file for the external link.
      */
     private String getExternalLinkFile(String link) {
@@ -1322,7 +1360,9 @@ public class CmsHtmlImport {
      * Returns a byte array containing the content of server FS file.<p>
      *
      * @param file the name of the file to read
+     * 
      * @return bytes[] the content of the file
+     * 
      * @throws CmsException if something goes wrong
      */
     private byte[] getFileBytes(File file) throws CmsException {
@@ -1346,22 +1386,15 @@ public class CmsHtmlImport {
                 Messages.get().container(Messages.ERR_GET_FILE_BYTES_1, file.getAbsolutePath()),
                 e);
         } finally {
-            try {
-                if (fileStream != null) {
-                    fileStream.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            closeStream(fileStream);
         }
     }
 
     /**
-     * Returns the OpenCms file type of a real filesystem file. <p>
+     * Returns the OpenCms file type of a real file system file. <p>
+     * This is made by checking the extension.<p>
      * 
-     * This is made by checking the extension.
-     * 
-     * @param filename the name of the file in the real filesystem  
+     * @param filename the name of the file in the real file system  
      * 
      * @return the id of the OpenCms file type
      * 
@@ -1384,10 +1417,11 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Gets a valid VfsName form a given name in the real filesystem.<p>
+     * Gets a valid VfsName form a given name in the real file system.<p>
      * 
-     * This name will ater be used for all link translations during the HTML-parsing process.
-     * @param relativeName the name in the real fielsystem, relative to the start folder
+     * This name will later be used for all link translations during the HTML-parsing process.<p>
+     * 
+     * @param relativeName the name in the real file system, relative to the start folder
      * @param name the name of the file
      * @param isFile flag to indicate that the resource is a file
      * 
@@ -1397,7 +1431,7 @@ public class CmsHtmlImport {
      */
     private String getVfsName(String relativeName, String name, boolean isFile) throws Exception {
 
-        // first translate all fileseperators to the valid "/" in OpenCms
+        // first translate all file-separators to the valid "/" in OpenCms
         String vfsName = relativeName.replace('\\', '/');
         // the resource is a file
         if (isFile) {
@@ -1413,18 +1447,20 @@ public class CmsHtmlImport {
                 relativeName = relativeName.substring(0, dot) + name;
             }
 
-            // depending on the filetype, the resource must be moved into a special folder in 
+            // depending on the file-type, the resource must be moved into a special folder in 
             // OpenCms:
             // images -> move into image gallery, if flag to leave at original location is off
-            // binary -> move into download gallery, if flag to leaave at original location is off
+            // binary -> move into download gallery, if flag to leave at original location is off
             // plain -> move into destination folder
-            // other -> move into download gallery, if flag to leaave at original location is off
-            if ((CmsResourceTypeImage.getStaticTypeId() == filetype) && (!m_leaveImages)) {
+            // other -> move into download gallery, if flag to leave at original location is off
+            boolean leaveImages = CmsStringUtil.isEmptyOrWhitespaceOnly(m_imageGallery);
+            boolean leaveDownload = CmsStringUtil.isEmptyOrWhitespaceOnly(m_downloadGallery);
+            if ((CmsResourceTypeImage.getStaticTypeId() == filetype) && (!leaveImages)) {
                 // move to image gallery
                 // as the image gallery is "flat", we must use the file name and not the complete
                 // relative name
                 vfsName = m_imageGallery + name;
-            } else if ((CmsResourceTypePlain.getStaticTypeId() == filetype) || (m_leaveImages) || (m_leaveDownloads)) {
+            } else if ((CmsResourceTypePlain.getStaticTypeId() == filetype) || (leaveImages) || (leaveDownload)) {
                 // move to destination folder
                 //vfsName=m_destinationDir+relativeName;
 
@@ -1462,10 +1498,11 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Tests if a filename is an external name, i.e. this name does not point into the OpenCms Vfs.<p>
+     * Tests if a filename is an external name, that is this name does not point into the OpenCms VFS.<p>
+     * A filename is an external name if it contains the string "://", e.g. "http://" or "ftp://".<p>
      * 
-     * A filename is an external name if it contains the string "://", e.g. "http://" or "ftp://"
      * @param filename the filename to test 
+     * 
      * @return true or false
      */
     private boolean isExternal(String filename) {
@@ -1488,9 +1525,12 @@ public class CmsHtmlImport {
         List elementList = new ArrayList();
         try {
             // get Elements of template stored in Property "template-elements"
-            String elements = m_cmsObject.readPropertyObject(m_template, CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, false).getValue();
+            String elements = m_cmsObject.readPropertyObject(
+                m_template,
+                CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                false).getValue();
             // template may contain more than one Element
-            // Elements are seperated by the delimiter ","
+            // Elements are separated by the delimiter ","
             if (elements != null) {
                 StringTokenizer T = new StringTokenizer(elements, ",");
                 while (T.hasMoreTokens()) {
@@ -1519,12 +1559,14 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Reads the content of an Html file from the real file system and parses it for link
+     * Reads the content of an HTML file from the real file system and parses it for link
      * transformation.<p>
      * 
-     * @param  file the filein the real file system
+     * @param  file the file in the real file system
      * @param properties the file properties
-     * @return the modified Html code of the file
+     * 
+     * @return the modified HTML code of the file
+     * 
      * @throws CmsException if something goes wrong
      */
     private String parseHtmlFile(File file, Hashtable properties) throws CmsException {
@@ -1538,7 +1580,7 @@ public class CmsHtmlImport {
             String contentString = new String(content, m_inputEncoding);
             // escape the string to remove all special chars
             contentString = CmsEncoder.escapeNonAscii(contentString);
-            // we must substitute all occurences of "&#", otherwiese tidy would remove them
+            // we must substitute all occurrences of "&#", otherwise tidy would remove them
             contentString = CmsStringUtil.substitute(contentString, "&#", "{subst}");
             // parse the content                  
             parsedHtml = m_htmlConverter.convertHTML(
@@ -1547,7 +1589,7 @@ public class CmsHtmlImport {
                 m_startPattern,
                 m_endPattern,
                 properties);
-            // resubstidute the converted HTML code
+            // resubstitute the converted HTML code
             parsedHtml = CmsStringUtil.substitute(parsedHtml, "{subst}", "&#");
         } catch (Exception e) {
             CmsMessageContainer message = Messages.get().container(
@@ -1560,17 +1602,99 @@ public class CmsHtmlImport {
     }
 
     /**
-     * Validates a fielname for OpenCms.<p>
+     * This function reads the zip-file and saved the files and directories in a new 
+     * temporary-folder.<p>
      * 
-     * This method checks if there are any illegal characters in the fielname and modifies them
-     * if nescessary. In addition it ensures that no dublicate filenames are created.
+     * @return the temporary-folder where the files from the zip-file are saved
+     */
+    private File unzipStream() {
+
+        ZipInputStream importZip = null;
+        File folder = null;
+        try {
+            // read the zip file
+            importZip = new ZipInputStream(new FileInputStream(m_httpDir));
+            // create a temporary-folder, where to unzip the zip file
+            folder = createTempFolder("import_html");
+            ZipEntry entry = null;
+            byte[] buffer = null;
+            while (true) {
+                try {
+                    // get the next entry
+                    entry = importZip.getNextEntry();
+                    if (entry == null) {
+                        break;
+                    }
+                    String name = entry.getName();
+                    // make a report for the user
+                    m_report.print(Messages.get().container(Messages.RPT_HTML_UNZIP_0), I_CmsReport.FORMAT_NOTE);
+                    m_report.print(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        name));
+                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                    // replace the VFS separator with the separator of the file system
+                    name = name.replace('/', File.separatorChar);
+                    String path = folder + File.separator + name;
+                    if (entry.isDirectory()) {
+                        // create a directory
+                        File importFile = new File(path);
+                        importFile.mkdirs();
+                    } else {
+                        // create a file and read the content
+                        int size = new Long(entry.getSize()).intValue();
+                        if (size == -1) {
+                            buffer = CmsFileUtil.readFully(importZip, false);
+                        } else {
+                            buffer = CmsFileUtil.readFully(importZip, size, false);
+                        }
+                        // create a new temporary file
+                        File importFile = new File(path);
+                        importFile.createNewFile();
+                        // write the content in the file
+                        FileOutputStream fileOutput = new FileOutputStream(importFile.getAbsoluteFile());
+                        fileOutput.write(buffer);
+                        fileOutput.close();
+                    }
+                    importZip.closeEntry();
+                    m_report.println(
+                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                        I_CmsReport.FORMAT_OK);
+                } catch (Exception ex) {
+                    String name = (entry != null ? entry.getName() : "");
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(Messages.get().getBundle().key(Messages.ERR_ZIPFILE_UNZIP_1, name), ex);
+                    }
+                    m_report.println(
+                        Messages.get().container(Messages.ERR_ZIPFILE_UNZIP_1, name),
+                        I_CmsReport.FORMAT_ERROR);
+                }
+                entry = null;
+            }
+        } catch (Exception ex) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_ZIPFILE_READ_1, m_httpDir), ex);
+            }
+            m_report.println(Messages.get().container(Messages.ERR_ZIPFILE_READ_1, m_httpDir), I_CmsReport.FORMAT_ERROR);
+        } finally {
+            closeStream(importZip);
+        }
+        return folder;
+
+    }
+
+    /**
+     * Validates a filename for OpenCms.<p>
+     * 
+     * This method checks if there are any illegal characters in the filename and modifies them
+     * if necessary. In addition it ensures that no duplicate filenames are created.<p>
      * 
      * @param filename the filename to validate
+     * 
      * @return a validated and unique filename in OpenCms
      */
     private String validateFilename(String filename) {
 
-        // if its an external filename, use it directley        
+        // if its an external filename, use it directly        
         if (isExternal(filename)) {
             return filename;
         }
