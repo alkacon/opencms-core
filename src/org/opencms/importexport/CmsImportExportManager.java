@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2007/09/12 07:29:34 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2007/10/17 10:54:38 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  * 
@@ -267,55 +267,6 @@ public class CmsImportExportManager {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportExportManager.class);
 
-    /** Boolean flag whether imported pages should be converted into XML pages. */
-    private boolean m_convertToXmlPage;
-
-    /** List of property keys that should be removed from imported resources. */
-    private List m_ignoredProperties;
-
-    /** List of immutable resources that should remain unchanged when resources are imported. */
-    private List m_immutableResources;
-
-    /** The initialized import/export handlers. */
-    private List m_importExportHandlers;
-
-    /** Import princial group translations. */
-    private Map m_importGroupTranslations;
-
-    /** Import princial user translations. */
-    private Map m_importUserTranslations;
-
-    /** The configured import versions class names. */
-    private List m_importVersionClasses;
-
-    /** Boolean flag whether colliding resources should be overwritten during the import. */
-    private boolean m_overwriteCollidingResources;
-
-    /** The user export settings. */
-    private CmsUserExportSettings m_userExportSettings;
-
-    /** The URL of a 4.x OpenCms app. to import content correct into 5.x OpenCms apps. */
-    private String m_webAppUrl;
-
-    /**
-     * Creates a new instance for the import/export manager, will be called by the import/export configuration manager.
-     */
-    public CmsImportExportManager() {
-
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(Messages.INIT_IMPORTEXPORT_INITIALIZING_0));
-        }
-
-        m_importExportHandlers = new ArrayList();
-        m_immutableResources = new ArrayList();
-        m_ignoredProperties = new ArrayList();
-        m_convertToXmlPage = true;
-        m_importGroupTranslations = new HashMap();
-        m_importUserTranslations = new HashMap();
-        m_overwriteCollidingResources = true;
-        m_importVersionClasses = new ArrayList();
-    }
-
     /**
      * Returns the "manifest.xml" of an available import resource as a dom4j document.<p>
      * 
@@ -387,6 +338,58 @@ public class CmsImportExportManager {
             }
         }
         return null;
+    }
+
+    /** Boolean flag whether imported pages should be converted into XML pages. */
+    private boolean m_convertToXmlPage;
+
+    /** The default values of the HTML->OpenCms Template converter. */
+    private CmsExtendedHtmlImportDefault m_extendedHtmlImportDefault;
+
+    /** List of property keys that should be removed from imported resources. */
+    private List m_ignoredProperties;
+
+    /** List of immutable resources that should remain unchanged when resources are imported. */
+    private List m_immutableResources;
+
+    /** The initialized import/export handlers. */
+    private List m_importExportHandlers;
+
+    /** Import princial group translations. */
+    private Map m_importGroupTranslations;
+
+    /** Import princial user translations. */
+    private Map m_importUserTranslations;
+
+    /** The configured import versions class names. */
+    private List m_importVersionClasses;
+
+    /** Boolean flag whether colliding resources should be overwritten during the import. */
+    private boolean m_overwriteCollidingResources;
+
+    /** The user export settings. */
+    private CmsUserExportSettings m_userExportSettings;
+
+    /** The URL of a 4.x OpenCms app. to import content correct into 5.x OpenCms apps. */
+    private String m_webAppUrl;
+
+    /**
+     * Creates a new instance for the import/export manager, will be called by the import/export configuration manager.
+     */
+    public CmsImportExportManager() {
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().getBundle().key(Messages.INIT_IMPORTEXPORT_INITIALIZING_0));
+        }
+
+        m_importExportHandlers = new ArrayList();
+        m_immutableResources = new ArrayList();
+        m_ignoredProperties = new ArrayList();
+        m_convertToXmlPage = true;
+        m_importGroupTranslations = new HashMap();
+        m_importUserTranslations = new HashMap();
+        m_overwriteCollidingResources = true;
+        m_importVersionClasses = new ArrayList();
     }
 
     /**
@@ -502,6 +505,16 @@ public class CmsImportExportManager {
 
         OpenCms.getRoleManager().checkRole(cms, CmsRole.DATABASE_MANAGER);
         handler.exportData(cms, report);
+    }
+
+    /**
+     * Returns the extendedHtmlImportDefault.<p>
+     *
+     * @return the extendedHtmlImportDefault
+     */
+    public CmsExtendedHtmlImportDefault getExtendedHtmlImportDefault() {
+
+        return (m_extendedHtmlImportDefault != null ? m_extendedHtmlImportDefault : new CmsExtendedHtmlImportDefault());
     }
 
     /**
@@ -705,6 +718,16 @@ public class CmsImportExportManager {
     public void setConvertToXmlPage(String convertToXmlPage) {
 
         setConvertToXmlPage(Boolean.valueOf(convertToXmlPage).booleanValue());
+    }
+
+    /**
+     * Sets the extendedHtmlImportDefault.<p>
+     *
+     * @param extendedHtmlImportDefault the extendedHtmlImportDefault to set
+     */
+    public void setExtendedHtmlImportDefault(CmsExtendedHtmlImportDefault extendedHtmlImportDefault) {
+
+        m_extendedHtmlImportDefault = extendedHtmlImportDefault;
     }
 
     /**

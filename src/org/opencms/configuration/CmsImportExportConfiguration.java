@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2007/10/17 10:54:38 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.configuration;
 
 import org.opencms.db.CmsUserExportSettings;
+import org.opencms.importexport.CmsExtendedHtmlImportDefault;
 import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsLog;
@@ -42,6 +43,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsStaticExportExportRule;
 import org.opencms.staticexport.CmsStaticExportManager;
 import org.opencms.staticexport.CmsStaticExportRfsRule;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.util.Iterator;
@@ -58,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 6.0.0
  */
@@ -78,6 +80,57 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
     /** Node that indicates page conversion. */
     public static final String N_CONVERT = "convert";
+
+    /**  The main configuration node for the extended html import. */
+    public static final String N_EXTHTMLIMPORT = "extendedhtmlimport";
+
+    /**  The node name of the html import destination node. */
+    public static final String N_EXTHTMLIMPORT_DESTINATION = "destination";
+
+    /**  The node name of the html import download gallery node. */
+    public static final String N_EXTHTMLIMPORT_DOWNLOAD = "download";
+
+    /**  The node name of the html import template node. */
+    public static final String N_EXTHTMLIMPORT_ELEMENT = "element";
+
+    /**  The node name of the html import encoding node. */
+    public static final String N_EXTHTMLIMPORT_ENCODING = "encoding";
+
+    /**  The node name of the html import image gallery node. */
+    public static final String N_EXTHTMLIMPORT_EXTERNALLINK = "externallink";
+
+    /**  The node name of the html import galleries node. */
+    public static final String N_EXTHTMLIMPORT_GALLERIES = "galleries";
+
+    /**  The node name of the html import image gallery node. */
+    public static final String N_EXTHTMLIMPORT_IMAGE = "image";
+
+    /**  The node name of the html import input node. */
+    public static final String N_EXTHTMLIMPORT_INPUT = "input";
+
+    /**  The node name of the html import overwritefiles node. */
+    public static final String N_EXTHTMLIMPORT_KEEPBROKENLINKS = "keepbrokenlinks";
+
+    /**  The node name of the html import locale node. */
+    public static final String N_EXTHTMLIMPORT_LOCALE = "locale";
+
+    /**  The node name of the html import overwritefiles node. */
+    public static final String N_EXTHTMLIMPORT_OVERWRITE = "overwritefiles";
+
+    /**  The node name of the html import pattern node. */
+    public static final String N_EXTHTMLIMPORT_PATTERN = "pattern";
+
+    /**  The node name of the html import end pattern node. */
+    public static final String N_EXTHTMLIMPORT_PATTERN_END = "end";
+
+    /**  The node name of the html import start pattern node. */
+    public static final String N_EXTHTMLIMPORT_PATTERN_START = "start";
+
+    /**  The node name of the html import settings node. */
+    public static final String N_EXTHTMLIMPORT_SETTINGS = "settings";
+
+    /**  The node name of the html import template node. */
+    public static final String N_EXTHTMLIMPORT_TEMPLATE = "template";
 
     /** The node name of the repository filter node. */
     public static final String N_FILTER = "filter";
@@ -579,6 +632,72 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         if (m_repositoryManager == null) {
             m_repositoryManager = new CmsRepositoryManager(false);
         }
+        // creation of the extended HTML importer       
+        digester.addObjectCreate("*/" + N_EXTHTMLIMPORT, CmsExtendedHtmlImportDefault.class);
+        // extended HTML importer  finished
+        digester.addSetNext("*/" + N_EXTHTMLIMPORT, "setExtendedHtmlImportManager");
+        digester.addCallMethod("*/" + N_EXTHTMLIMPORT + "/" + N_EXTHTMLIMPORT_DESTINATION, "setDestinationDir", 0);
+        digester.addCallMethod("*/" + N_EXTHTMLIMPORT + "/" + N_EXTHTMLIMPORT_INPUT, "setInputDir", 0);
+        digester.addCallMethod("*/"
+            + N_EXTHTMLIMPORT
+            + "/"
+            + N_EXTHTMLIMPORT_GALLERIES
+            + "/"
+            + N_EXTHTMLIMPORT_DOWNLOAD, "setDownloadGallery", 0);
+        digester.addCallMethod(
+            "*/" + N_EXTHTMLIMPORT + "/" + N_EXTHTMLIMPORT_GALLERIES + "/" + N_EXTHTMLIMPORT_IMAGE,
+            "setImageGallery",
+            0);
+        digester.addCallMethod("*/"
+            + N_EXTHTMLIMPORT
+            + "/"
+            + N_EXTHTMLIMPORT_GALLERIES
+            + "/"
+            + N_EXTHTMLIMPORT_EXTERNALLINK, "setLinkGallery", 0);
+        digester.addCallMethod(
+            "*/" + N_EXTHTMLIMPORT + "/" + N_EXTHTMLIMPORT_SETTINGS + "/" + N_EXTHTMLIMPORT_TEMPLATE,
+            "setTemplate",
+            0);
+        digester.addCallMethod(
+            "*/" + N_EXTHTMLIMPORT + "/" + N_EXTHTMLIMPORT_SETTINGS + "/" + N_EXTHTMLIMPORT_ELEMENT,
+            "setElement",
+            0);
+        digester.addCallMethod(
+            "*/" + N_EXTHTMLIMPORT + "/" + N_EXTHTMLIMPORT_SETTINGS + "/" + N_EXTHTMLIMPORT_LOCALE,
+            "setLocale",
+            0);
+        digester.addCallMethod(
+            "*/" + N_EXTHTMLIMPORT + "/" + N_EXTHTMLIMPORT_SETTINGS + "/" + N_EXTHTMLIMPORT_ENCODING,
+            "setEncoding",
+            0);
+        digester.addCallMethod("*/"
+            + N_EXTHTMLIMPORT
+            + "/"
+            + N_EXTHTMLIMPORT_SETTINGS
+            + "/"
+            + N_EXTHTMLIMPORT_PATTERN
+            + "/"
+            + N_EXTHTMLIMPORT_PATTERN_START, "setStartPattern", 0);
+        digester.addCallMethod("*/"
+            + N_EXTHTMLIMPORT
+            + "/"
+            + N_EXTHTMLIMPORT_SETTINGS
+            + "/"
+            + N_EXTHTMLIMPORT_PATTERN
+            + "/"
+            + N_EXTHTMLIMPORT_PATTERN_END, "setEndPattern", 0);
+        digester.addCallMethod("*/"
+            + N_EXTHTMLIMPORT
+            + "/"
+            + N_EXTHTMLIMPORT_SETTINGS
+            + "/"
+            + N_EXTHTMLIMPORT_OVERWRITE, "setOverwrite", 0);
+        digester.addCallMethod("*/"
+            + N_EXTHTMLIMPORT
+            + "/"
+            + N_EXTHTMLIMPORT_SETTINGS
+            + "/"
+            + N_EXTHTMLIMPORT_KEEPBROKENLINKS, "setKeepBrokenLinks", 0);
     }
 
     /**
@@ -898,6 +1017,58 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
                 }
             }
         }
+        CmsExtendedHtmlImportDefault htmlimport = m_importExportManager.getExtendedHtmlImportDefault();
+        if (htmlimport != null) {
+            // <extendedhtmlimport>
+            Element htmlImportElement = parent.addElement(N_EXTHTMLIMPORT);
+            // <destination> node
+            htmlImportElement.addElement(N_EXTHTMLIMPORT_DESTINATION).setText(htmlimport.getDestinationDir());
+            // <input> node            
+            htmlImportElement.addElement(N_EXTHTMLIMPORT_INPUT).setText(htmlimport.getInputDir());
+
+            // <galleries> node              
+            Element galleryElement = htmlImportElement.addElement(N_EXTHTMLIMPORT_GALLERIES);
+            // <download> node    
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(htmlimport.getDownloadGallery())) {
+                galleryElement.addElement(N_EXTHTMLIMPORT_DOWNLOAD).setText(htmlimport.getDownloadGallery());
+            }
+            // <image> node  
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(htmlimport.getImageGallery())) {
+                galleryElement.addElement(N_EXTHTMLIMPORT_IMAGE).setText(htmlimport.getImageGallery());
+            }
+            // <externallink> node  
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(htmlimport.getLinkGallery())) {
+                galleryElement.addElement(N_EXTHTMLIMPORT_EXTERNALLINK).setText(htmlimport.getLinkGallery());
+            }
+
+            // <settings> node              
+            Element settingElement = htmlImportElement.addElement(N_EXTHTMLIMPORT_SETTINGS);
+            // <template> node  
+            settingElement.addElement(N_EXTHTMLIMPORT_TEMPLATE).setText(htmlimport.getTemplate());
+            // <element> node  
+            settingElement.addElement(N_EXTHTMLIMPORT_ELEMENT).setText(htmlimport.getElement());
+            // <locale> node  
+            settingElement.addElement(N_EXTHTMLIMPORT_LOCALE).setText(htmlimport.getLocale());
+            // <encoding> node  
+            settingElement.addElement(N_EXTHTMLIMPORT_ENCODING).setText(htmlimport.getEncoding());
+
+            // <pattern> node              
+            Element patternElement = settingElement.addElement(N_EXTHTMLIMPORT_PATTERN);
+            // <start> node  
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(htmlimport.getStartPattern())) {
+                patternElement.addElement(N_EXTHTMLIMPORT_PATTERN_START).setText(htmlimport.getStartPattern());
+            }
+            // <end> node  
+            if (!CmsStringUtil.isEmptyOrWhitespaceOnly(htmlimport.getEndPattern())) {
+                patternElement.addElement(N_EXTHTMLIMPORT_PATTERN_END).setText(htmlimport.getEndPattern());
+            }
+
+            // <overwrite> node  
+            settingElement.addElement(N_EXTHTMLIMPORT_OVERWRITE).setText(htmlimport.getOverwrite());
+            // <keepbrokenlinks> node  
+            settingElement.addElement(N_EXTHTMLIMPORT_KEEPBROKENLINKS).setText(htmlimport.getKeepBrokenLinks());
+            // </extendedhtmlimport>
+        }
 
         // return the configured node
         return importexportElement;
@@ -952,6 +1123,16 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     }
 
     /**
+     * Sets the extendedHtmlImportManager.<p>
+     *
+     * @param extendedHtmlImportManager the extendedHtmlImportManager to set
+     */
+    public void setExtendedHtmlImportManager(CmsExtendedHtmlImportDefault extendedHtmlImportManager) {
+
+        m_importExportManager.setExtendedHtmlImportDefault(extendedHtmlImportManager);
+    }
+
+    /**
      * Sets the generated import/export manager.<p>
      * 
      * @param manager the import/export manager to set
@@ -996,4 +1177,5 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         m_importExportManager.setUserExportSettings(userExportSettings);
     }
+
 }

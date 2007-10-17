@@ -1,7 +1,7 @@
 <!-- 
 # The root configuration node is called <opencms> for all OpenCms configurations.
 -->
-<!ELEMENT opencms (importexport, staticexport, usercsvexport?, repositories?)>
+<!ELEMENT opencms (importexport, staticexport, usercsvexport?, repositories?, extendedhtmlimport?)>
 
 <!--
 # <importexport> configuration:
@@ -393,3 +393,92 @@
 
 <!ELEMENT filter (regex*)>
 <!ATTLIST filter type CDATA #REQUIRED>
+
+<!--
+# <extendedhtmlimport> configuration:
+#
+# In this node the default values of the extended html import are stored.
+-->
+<!ELEMENT extendedhtmlimport (
+	destination, 
+	input,
+	galleries,
+	settings )>
+
+<!--
+# the destination directory in the OpenCms VFS.
+-->
+<!ELEMENT destination (#PCDATA)>
+
+<!--
+# the input directory in the "real" file system.
+-->
+<!ELEMENT input (#PCDATA)>
+
+<!--
+# the name of the galleries. 
+-->
+<!ELEMENT galleries (download?, image?, externallink?)>
+
+<!--
+# the download gallery name.
+-->
+<!ELEMENT download (#PCDATA)>
+
+<!--
+# the image gallery name.
+-->
+<!ELEMENT image (#PCDATA)>
+
+<!--
+# the external link gallery name.
+-->
+<!ELEMENT externallink (#PCDATA)>
+
+<!--
+# the settings for the HTML->OpenCms Template converter.
+-->
+<!ELEMENT settings (
+	template,
+	element,
+	locale,
+	encoding,
+	pattern,
+	overwritefiles,
+	keepbrokenlinks )>
+<!--
+# the template use for all pages.
+-->
+<!ELEMENT template (#PCDATA)>
+
+<!--
+# the element name of the template.
+-->
+<!ELEMENT element (#PCDATA)>
+
+<!--
+# the locale use for content definition.
+-->
+<!ELEMENT locale (#PCDATA)>
+
+<!--
+# the encoding used for all imported input files.
+-->
+<!ELEMENT encoding (#PCDATA)>
+
+<!--
+# the end and start pattern for extracting content.
+-->
+<!ELEMENT pattern (start?, end?)>
+<!ELEMENT start (#PCDATA)>
+<!ELEMENT end (#PCDATA)>
+
+<!--
+# the overwrite value new resources.
+-->
+<!ELEMENT overwritefiles (#PCDATA)>
+
+<!--
+# should broken links be kept.
+-->
+<!ELEMENT keepbrokenlinks (#PCDATA)>
