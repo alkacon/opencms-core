@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2007/10/17 10:54:38 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2007/10/17 15:55:41 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  * 
@@ -514,7 +514,20 @@ public class CmsImportExportManager {
      */
     public CmsExtendedHtmlImportDefault getExtendedHtmlImportDefault() {
 
-        return (m_extendedHtmlImportDefault != null ? m_extendedHtmlImportDefault : new CmsExtendedHtmlImportDefault());
+        return getExtendedHtmlImportDefault(false);
+    }
+    
+    /**
+     * Returns the extendedHtmlImportDefault.<p>
+     *
+     *@param withNull returns the extendenHtmlImport as null if its null, 
+     *otherwise a new CmsExtendedHtmlImportDefault Object is generated.
+     *
+     * @return the extendedHtmlImportDefault
+     */
+    public CmsExtendedHtmlImportDefault getExtendedHtmlImportDefault(boolean withNull) {
+
+        return (withNull || m_extendedHtmlImportDefault != null ? m_extendedHtmlImportDefault : new CmsExtendedHtmlImportDefault());
     }
 
     /**

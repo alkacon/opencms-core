@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2007/10/17 10:54:38 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2007/10/17 15:55:41 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 6.0.0
  */
@@ -1017,7 +1017,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
                 }
             }
         }
-        CmsExtendedHtmlImportDefault htmlimport = m_importExportManager.getExtendedHtmlImportDefault();
+        CmsExtendedHtmlImportDefault htmlimport = m_importExportManager.getExtendedHtmlImportDefault(true);
         if (htmlimport != null) {
             // <extendedhtmlimport>
             Element htmlImportElement = parent.addElement(N_EXTHTMLIMPORT);
