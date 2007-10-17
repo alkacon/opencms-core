@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsExternalLinksValidator.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/10/17 14:55:03 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -56,7 +55,7 @@ import java.util.Map;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,7 +86,7 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
             }
         } catch (MalformedURLException mue) {
             return false;
-        } catch (IOException ioe) {
+        } catch (Exception ex) {
             return false;
         }
     }
