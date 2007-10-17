@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.0</opencms_version>
-		<createdate>Mon, 25 Jun 2007 14:18:37 GMT</createdate>
+		<opencms_version>7.0.3</opencms_version>
+		<createdate>Mon, 15 Oct 2007 15:35:18 GMT</createdate>
 		<project>Offline</project>
 		<export_version>6</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms database maintainance tools.</p>
 <p>Install this module if you want to import/export data, it also contains a static export tool.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.2</version>
+		<version>7.0.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -32,8 +32,16 @@
 			<resource uri="/system/workplace/admin/database/"/>
 			<resource uri="/system/workplace/resources/tools/database/"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.database/"/>
+			<resource uri="/system/workplace/commons/newresource_uploadHtml.jsp"/>
+			<resource uri="/system/workplace/resources/filetypes/htmlimport.png"/>
+			<resource uri="/system/workplace/explorer/uploadhtml/uploadHtml.jsp"/>
 		</resources>
 		<parameters/>
+		<explorertypes>
+			<explorertype name="uploadhtml" key="fileicon.uploadhtml" icon="htmlimport.png">
+				<newresource uri="newresource_uploadHtml.jsp" order="101" autosetnavigation="false" autosettitle="false" info="desc.uploadhtml"/>
+			</explorertype>
+		</explorertypes>
 	</module>
 	<files>
 		<file>
@@ -259,54 +267,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/database/htmlimport.jsp</source>
-			<destination>system/workplace/admin/database/htmlimport.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>b36771de-629d-11db-8367-090ef06f8da4</uuidstructure>
-			<uuidresource>b36771df-629d-11db-8367-090ef06f8da4</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/database/icons/big/htmlimport.png]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[11]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Extended Htmlimport]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/admin/database/importhttp.jsp</source>
 			<destination>system/workplace/admin/database/importhttp.jsp</destination>
 			<type>jsp</type>
@@ -505,6 +465,148 @@
 				<property>
 					<name>admintoolhandler-class</name>
 					<value><![CDATA[org.opencms.workplace.tools.database.CmsStaticExportToolHandler]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/database/htmlimport</destination>
+			<type>folder</type>
+			<uuidstructure>379d609a-757b-11dc-922e-7799c52f7191</uuidstructure>
+			<datelastmodified>Mon, 08 Oct 2007 08:53:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Oct 2007 08:48:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/database/icons/big/htmlimport.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_EXTENDEDTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[11]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Extended Htmlimport]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/database/htmlimport/htmldefault.jsp</source>
+			<destination>system/workplace/admin/database/htmlimport/htmldefault.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>6d66255c-757b-11dc-922e-7799c52f7191</uuidstructure>
+			<uuidresource>6d66255d-757b-11dc-922e-7799c52f7191</uuidresource>
+			<datelastmodified>Mon, 15 Oct 2007 15:23:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Oct 2007 08:49:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_HTMLDEFAULT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/database/icons/big/htmldefault.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_HTMLDEFAULT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Default Htmlimport]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/database/htmlimport/htmlimport.jsp</source>
+			<destination>system/workplace/admin/database/htmlimport/htmlimport.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>640c58d2-757b-11dc-922e-7799c52f7191</uuidstructure>
+			<uuidresource>640c58d3-757b-11dc-922e-7799c52f7191</uuidresource>
+			<datelastmodified>Thu, 11 Oct 2007 08:54:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Oct 2007 08:49:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/database/icons/big/htmlimport.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Htmlimport]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.database.CmsDatabaseToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -786,6 +888,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/database/icons/big/htmldefault.png</source>
+			<destination>system/workplace/resources/tools/database/icons/big/htmldefault.png</destination>
+			<type>image</type>
+			<uuidstructure>59f4aa52-7b32-11dc-a308-7799c52f7191</uuidstructure>
+			<uuidresource>59f4aa53-7b32-11dc-a308-7799c52f7191</uuidresource>
+			<datelastmodified>Mon, 15 Oct 2007 15:21:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Oct 2007 15:21:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[htmldefault]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/tools/database/icons/big/htmlimport.png</source>
 			<destination>system/workplace/resources/tools/database/icons/big/htmlimport.png</destination>
 			<type>image</type>
@@ -913,6 +1039,168 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/commons</destination>
+			<type>folder</type>
+			<uuidstructure>8272cacb-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/newresource_uploadHtml.jsp</source>
+			<destination>system/workplace/commons/newresource_uploadHtml.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>b402bb97-7810-11dc-9289-7799c52f7191</uuidstructure>
+			<uuidresource>a641f473-7802-11dc-bb96-7799c52f7191</uuidresource>
+			<datelastmodified>Fri, 12 Oct 2007 09:29:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 11 Oct 2007 14:02:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - New resource upload HTML]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:resource=${param.resource}|path:/history]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/explorer</destination>
+			<type>folder</type>
+			<uuidstructure>c59d76ba-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 05 Nov 2005 14:40:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Explorer Tools]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[/system/workplace/views/explorer/explorer_files.jsp?mode=explorerview&reload=true]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/explorer/uploadhtml</destination>
+			<type>folder</type>
+			<uuidstructure>3d2326bc-789b-11dc-9dda-7799c52f7191</uuidstructure>
+			<datelastmodified>Mon, 15 Oct 2007 12:40:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 12 Oct 2007 08:15:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Upload HTML]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[uploadHtml.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/explorer/uploadhtml/uploadHtml.jsp</source>
+			<destination>system/workplace/explorer/uploadhtml/uploadHtml.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>f2855e0f-789c-11dc-88e8-7799c52f7191</uuidstructure>
+			<uuidresource>f2855e10-789c-11dc-88e8-7799c52f7191</uuidresource>
+			<datelastmodified>Mon, 15 Oct 2007 14:02:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 12 Oct 2007 08:27:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_HTMLIMPORT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - New resource upload HTML]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:resource=${param.resource}|path:/uploadhtml]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes</destination>
+			<type>folder</type>
+			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes/htmlimport.png</destination>
+			<type>image</type>
+			<uuidstructure>99c13ef7-7b2f-11dc-8b52-7799c52f7191</uuidstructure>
+			<uuidresource>c56813fc-d72e-11d9-b767-0d179596440c</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
 				</property>
 			</properties>
 			<relations/>
