@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/10/16 11:00:01 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/10/17 15:16:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.9.1
  */
@@ -790,7 +790,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         int resourcePublishTag = 1;
 
         try {
-            // get the max version id
+            // get the max publish tag from project history 
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_HISTORY_MAXTAG");
             res = stmt.executeQuery();
@@ -802,8 +802,14 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 }
             }
 
+        } catch (SQLException exc) {
+            LOG.error(Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), exc);
+        } finally {
             m_sqlManager.closeAll(dbc, null, stmt, res);
+        }
 
+        try {
+            // get the max publish tag from resource history 
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_MAXTAG");
             res = stmt.executeQuery();
 
@@ -813,14 +819,15 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             }
-
-            if (resourcePublishTag > projectPublishTag) {
-                projectPublishTag = resourcePublishTag;
-            }
         } catch (SQLException exc) {
-            return 1;
+            LOG.error(Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), exc);
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        // return the biggest 
+        if (resourcePublishTag > projectPublishTag) {
+            projectPublishTag = resourcePublishTag;
         }
 
         return projectPublishTag;
