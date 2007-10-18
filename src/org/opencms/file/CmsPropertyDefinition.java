@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2007/08/20 15:12:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/10/18 15:14:18 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0 
  */
@@ -133,7 +133,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property for JSP additional suffix during static export, default is "html". */
     public static final String PROPERTY_EXPORTSUFFIX = "exportsuffix";
 
-    /** Property to control the folders where templatea or default bodies should be available. */
+    /** Property to control the folders where template or default bodies should be available. */
     public static final String PROPERTY_FOLDERS_AVAILABLE = "folders.available";
 
     /** Property constant for <code>"image.size"</code>. */
