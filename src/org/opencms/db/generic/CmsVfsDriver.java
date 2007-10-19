@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/10/17 15:24:23 $
- * Version: $Revision: 1.270 $
+ * Date   : $Date: 2007/10/19 07:30:12 $
+ * Version: $Revision: 1.271 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.270 $
+ * @version $Revision: 1.271 $
  * 
  * @since 6.0.0 
  */
@@ -2840,7 +2840,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 Messages.ERR_GENERIC_SQL_1,
                 CmsDbSqlException.getErrorQuery(stmt)), e);
         } finally {
-            m_sqlManager.closeAll(dbc, conn, null, null);
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
     }
 
