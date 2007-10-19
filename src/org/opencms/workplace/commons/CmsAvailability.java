@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2007/08/13 16:29:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/10/19 08:24:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -759,13 +759,13 @@ public class CmsAvailability extends CmsMultiDialog {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for dialog     
+            // build title for dialog
             setDialogTitle(
                 Messages.GUI_AVAILABILITY_NOTIFICATION_SETTINGS_1,
                 Messages.GUI_AVAILABILITY_NOTIFICATION_MULTI_2);
         }
     }
-    
+
     /**
      * Modifies the release and expire date of a resource, and changes the notification interval. <p>
      * 
