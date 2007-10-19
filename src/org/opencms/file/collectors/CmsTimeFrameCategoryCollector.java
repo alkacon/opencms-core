@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsTimeFrameCategoryCollector.java,v $
- * Date   : $Date: 2007/10/05 16:41:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/10/19 10:46:43 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,8 +37,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.collectors.A_CmsResourceCollector;
-import org.opencms.file.collectors.CmsCollectorData;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -66,7 +64,7 @@ import java.util.List;
  * 
  * <b>Demo usage:</b><br/>
  * <pre>
- * &tl;cms:contentload collector="timeFrameAndCategories" 
+ * &lt;cms:contentload collector="timeFrameAndCategories" 
  *   param="
  *     resource=/de/events/|
  *     resourceType=xmlcontent|
@@ -147,8 +145,13 @@ import java.util.List;
  * <p>
  * 
  * All other key - value pairs are ignored.<p>
- *   
  * 
+ * @author Michael Emmerich
+ * 
+ * @version $Revision: 1.2 $
+ * 
+ * @since 7.0.3
+ *
  */
 public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
 
@@ -215,16 +218,6 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
      * </li>
      * </ul>
      * <p>
-     * 
-     * All other key - value pairs are ignored.<p>
-     * 
-     * 
-     * @author Achim Westermann
-     * 
-     * @version $Revision: 1.1 $
-     * 
-     * @since 7.0.0
-     *
      */
     private class CollectorDataPropertyBased extends CmsCollectorData {
 
@@ -504,12 +497,11 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
     public static final DateFormat DATEFORMAT_SQL = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /**
-     * Defcon.<p>
+     * Public constructor.<p>
      */
     public CmsTimeFrameCategoryCollector() {
 
         super();
-
     }
 
     /**
@@ -600,7 +592,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
             prop = cms.readPropertyObject(res, timeProperty, true);
             if (!prop.isNullProperty()) {
                 resTime = Long.parseLong(prop.getValue());
-                if (resTime < start || resTime > end) {
+                if ((resTime < start) || (resTime > end)) {
                     itResults.remove();
                 }
             }
@@ -646,5 +638,4 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         // Step 5: result limit
         return shrinkToFit(result, data.getCount());
     }
-
 }
