@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/10/11 10:18:34 $
- * Version: $Revision: 1.917 $
+ * Date   : $Date: 2007/10/19 08:18:11 $
+ * Version: $Revision: 1.918 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -25,29 +25,30 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue #1304: In static export configuration the rfs-prefix parameter accepts URLs again
 * Fixed issue #1319: Updated comments on renaming servlets in web.xml 
 * Fixed issue #1320: Added warning to 'readme.txt' about overwriting the web.xml file in update wizard 
-* Fixed issue #1321: Servlet name no longer hard-coded in setup wizard 
-* Fixed issue #1326: Corrected typo in logout message (german locale)
-* Fixed issue #1335: Corrected typo in content-file of 404-handler (german locale)
+* Fixed issue #1321: Servlet name is no longer hard-coded in setup wizard 
+* Fixed issue #1326: Corrected typos in logout message (German locale)
+* Fixed issue #1335: Corrected typos in content-file of 404-handler (German locale)
 * Fixed issue #1420: Allowing workplace login page to be customized 
-* Fixed issue #1468: Missing encoding property for german localization property files
-* Fixed issue #1477: User with workplace user role only can again choose template when creating file with free text
+* Fixed issue #1468: Missing encoding property for German localization property files
+* Fixed issue #1477: User with "workplace user" role can again choose a template when creating file with free text
 * Fixed issue #1529: Validation for elements of type OpenCmsVfsFile/OpenCmsVarLink fails with parameters
-* Fixed issue #1530: Showing user password in plain text in the workplace
-* Fixed issue with deleting module with locked resources
-* Fixed issue with OpenCms not starting anymore if there are pending publish jobs for users not in the root ou
+* Fixed issue #1530: The user password is not longer shown in plain text in the error message for password confirmation
+* Fixed issue with deleting a module that contains locked resources
+* Fixed issue with OpenCms not starting if there are pending publish jobs for users not in the root OU
 * Fixed issue with org.opencms.util.CmsHtmlStripper preserving complete HTML in case no preserve Tags are configured
-* Fixed issue with static export generating wrong links from a resource to a related resource in a rfs rule
+* Fixed issue with static export generating wrong links from a resource to a related resource in a RFS rule
 * Fixed issue with importing a resource where the ID is already in use by other resource
 * Fixed issue with displaying running publish report
 * Fixed issue with NPEs in the publish dialog
 * Fixed issue with removing publish locks when aborting a publish job during shutdown
-! Added new '__site' parameter to set the site in the workplace server
-- Added new 'force repair' option to the 'Repair xml content' tool
+* Fixed issue with mapping of values in XML contents to attributes of siblings
+* Fixed issue with history dialog not working for resources which are expired
+* Fixed issue with corrupted characters in filenames when uploading files without the applet
 - Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
-* Fixed issue with mapping of values in xml contents to attributes of siblings
-! New Collector timeFrameAndCategories (CmsTimeFrameCategoryCollector) collects files within a time frame. 
-* Fixed issue not able to show history dialog for resources which are expired
-* Fixed issue with corrupted characters in filenames while uploading files without the applet
+! Added new 'force repair' option to the 'Repair XML content' tool
+! Added new '__site' parameter to set the site in the workplace server
+! Added new Collector timeFrameAndCategories (CmsTimeFrameCategoryCollector) that collects files within a time frame  
+! Added database support for HSQL, contributed by Sebastian Himberger
 
 OpenCms 7.0.2 - September 12, 2007
 * Fixed issue #1291: Now using the correct line break format for UNIX in cmsshell.sh
