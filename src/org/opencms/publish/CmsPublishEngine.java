@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2007/10/09 12:31:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/10/19 13:31:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.5.5
  */
@@ -447,7 +447,11 @@ public final class CmsPublishEngine implements Runnable {
      */
     protected void enableEngine() {
 
-        m_engineState = CmsPublishEngineState.ENGINE_STOPPED;
+        m_engineState = CmsPublishEngineState.ENGINE_STARTED;
+        // start publish job if jobs waiting
+        if ((m_currentPublishThread == null) && !m_publishQueue.isEmpty()) {
+            run();
+        }
     }
 
     /**
