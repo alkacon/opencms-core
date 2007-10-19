@@ -400,8 +400,8 @@
 # In this node the default values of the extended html import are stored.
 -->
 <!ELEMENT extendedhtmlimport (
-	destination, 
-	input,
+	destination?, 
+	input?,
 	galleries,
 	settings )>
 

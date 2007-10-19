@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Messages.java,v $
- * Date   : $Date: 2007/10/17 12:00:53 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/10/19 08:43:59 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,12 +39,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_FILE_EXPORT_0 = "ERR_ACTION_FILE_EXPORT_0";
 
@@ -254,6 +254,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_DB_PUBLOCKS_UNLOCKING_1 = "RPT_DB_PUBLOCKS_UNLOCKING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_HTML_DELETE_0 = "RPT_HTML_DELETE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_HTML_IMPORT_BEGIN_0 = "RPT_HTML_IMPORT_BEGIN_0";

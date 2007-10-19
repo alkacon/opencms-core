@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Attic/CmsNewResourceUploadHtml.java,v $
- * Date   : $Date: 2007/10/17 12:00:53 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsNewResourceExtendedHtmlImport.java,v $
+ * Date   : $Date: 2007/10/19 08:43:59 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * @version $Revision: 1.1 $
  * 
  */
-public class CmsNewResourceUploadHtml extends CmsHtmlImportDialog {
+public class CmsNewResourceExtendedHtmlImport extends CmsHtmlImportDialog {
 
     /** the action parameter for the advanced button. */
     public static final String ACTION_IMPORT = "dialogimport";
@@ -76,7 +76,7 @@ public class CmsNewResourceUploadHtml extends CmsHtmlImportDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsNewResourceUploadHtml(CmsJspActionElement jsp) {
+    public CmsNewResourceExtendedHtmlImport(CmsJspActionElement jsp) {
 
         super(jsp);
 
@@ -89,7 +89,7 @@ public class CmsNewResourceUploadHtml extends CmsHtmlImportDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsNewResourceUploadHtml(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsNewResourceExtendedHtmlImport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }

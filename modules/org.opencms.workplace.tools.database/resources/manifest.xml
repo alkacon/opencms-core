@@ -39,7 +39,7 @@
 		<parameters/>
 		<explorertypes>
 			<explorertype name="uploadhtml" key="fileicon.uploadhtml" icon="htmlimport.png">
-				<newresource uri="newresource_uploadHtml.jsp" order="101" autosetnavigation="false" autosettitle="false" info="desc.uploadhtml"/>
+				<newresource uri="newresource_uploadHtml.jsp" order="90" autosetnavigation="false" autosettitle="false" info="desc.uploadhtml"/>
 			</explorertype>
 		</explorertypes>
 	</module>

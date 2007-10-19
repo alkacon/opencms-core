@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImportDialog.java,v $
- * Date   : $Date: 2007/10/17 12:00:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/10/19 08:43:59 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -104,7 +104,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Peter Bonrad
  * @author Anja Röttgers
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  */
 public class CmsHtmlImportDialog extends CmsWidgetDialog {
@@ -174,7 +174,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
             if (isDisplayMode(MODE_DEFAULT)) {
                 // default mode the default values are saved in the configuration file
 
-                m_htmlimport.validate();
+                m_htmlimport.validate(null, true);
 
                 // fill the extended 
                 fillExtendedHtmlImportDefault();
@@ -184,11 +184,12 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
 
             } else {
                 // advanced and standard mode the importing is starting
+                FileItem fi = getHttpImportFileItem();
 
-                // read the file
-                setHttpImportDir();
+                m_htmlimport.validate(fi, false);
 
-                m_htmlimport.validate();
+                // write the file in the temporary directory
+                writeHttpImportDir(fi);
 
                 Map params = new HashMap();
 
@@ -570,28 +571,16 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     }
 
     /**
-     * This function reads the file item from the multipart-request and if its exits then the 
+     * This function reads the file item and if its exits then the 
      * file is saved in the temporary directory of the system.<p>
+     * 
+     * @param fi the file item from the multipart-request
      * 
      * @throws CmsException if something goes wrong.
      */
-    private void setHttpImportDir() throws CmsException {
+    private void writeHttpImportDir(FileItem fi) throws CmsException {
 
-        m_htmlimport.setHttpDir("");
         try {
-            // get the file item from the multipart-request
-            Iterator it = getMultiPartFileItems().iterator();
-            FileItem fi = null;
-            while (it.hasNext()) {
-                fi = (FileItem)it.next();
-                if (fi.getName() != null) {
-                    // found the file object, leave iteration
-                    break;
-                } else {
-                    // this is no file object, check next item
-                    continue;
-                }
-            }
 
             if (fi != null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
                 //write the file in the tmp-directory of the system
@@ -609,4 +598,32 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
         }
     }
 
+    /**
+     * Checks if a multipart-request file item exists and returns it.<p>
+     * 
+     * @return <code>true</code> if a multipart-request file exists
+     */
+    private FileItem getHttpImportFileItem() {
+
+        FileItem result = null;
+        m_htmlimport.setHttpDir("");
+        // get the file item from the multipart-request
+        Iterator it = getMultiPartFileItems().iterator();
+        FileItem fi = null;
+        while (it.hasNext()) {
+            fi = (FileItem)it.next();
+            if (fi.getName() != null) {
+                // found the file object, leave iteration
+                break;
+            } else {
+                // this is no file object, check next item
+                continue;
+            }
+        }
+
+        if (fi != null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
+            result = fi;
+        }
+        return result;
+    }
 }

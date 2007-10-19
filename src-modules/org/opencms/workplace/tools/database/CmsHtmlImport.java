@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2007/10/17 12:00:53 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/10/19 08:43:59 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,6 +81,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 
 /**
@@ -96,7 +97,7 @@ import org.apache.commons.logging.Log;
  * @author Peter Bonrad
  * @author Anja Röttgers
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -582,9 +583,9 @@ public class CmsHtmlImport {
             copyOtherFiles(m_inputDir);
             // finally create all the external links    
             createExternalLinks();
-            m_report.println(Messages.get().container(Messages.RPT_HTML_IMPORT_END_0), I_CmsReport.FORMAT_HEADLINE);
 
             if (isStream && streamFolder != null) {
+                m_report.println(Messages.get().container(Messages.RPT_HTML_DELETE_0), I_CmsReport.FORMAT_NOTE);
                 // delete the files of the zip file
                 CmsFileUtil.purgeDirectory(streamFolder);
                 // deletes the zip file
@@ -593,6 +594,7 @@ public class CmsHtmlImport {
                     file.delete();
                 }
             }
+            m_report.println(Messages.get().container(Messages.RPT_HTML_IMPORT_END_0), I_CmsReport.FORMAT_HEADLINE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -696,29 +698,41 @@ public class CmsHtmlImport {
      * Tests if all given input parameters for the HTML Import are valid, that is that all the 
      * given folders do exist. <p>
      * 
+     * @param fi a file item if a file is uploaded per HTTP otherwise <code>null</code>
+     * @param isdefault if this sets, then the destination and input directory can be empty
+     * 
      * @throws CmsIllegalArgumentException if some parameters are not valid
      */
-    public void validate() throws CmsIllegalArgumentException {
+    public void validate(FileItem fi, boolean isdefault) throws CmsIllegalArgumentException {
 
         // check the input directory and the HTTP upload file
-        File httpDir = (m_httpDir != null ? new File(m_httpDir) : null);
-        File inputDir = new File(m_inputDir);
-        if ((!inputDir.exists() || inputDir.isFile())
-            && (httpDir == null || !httpDir.exists() || httpDir.isDirectory())) {
-            // the input directory is not valid
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.GUI_HTMLIMPORT_INPUTDIR_1,
-                m_inputDir));
+        if (fi == null) {
+
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_inputDir) && !isdefault) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.GUI_HTMLIMPORT_INPUTDIR_1,
+                    m_inputDir));
+            } else if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_inputDir)) {
+
+                File inputDir = new File(m_inputDir);
+                if (!inputDir.exists() || inputDir.isFile()) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.GUI_HTMLIMPORT_INPUTDIR_1,
+                        m_inputDir));
+                }
+            }
         }
 
         // check the destination directory        
         try {
-            if (CmsStringUtil.isEmpty(m_destinationDir)) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_destinationDir) && !isdefault) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.GUI_HTMLIMPORT_DESTDIR_1,
                     m_destinationDir));
+            } else if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_destinationDir)) {
+                m_cmsObject.readFolder(m_destinationDir);
             }
-            m_cmsObject.readFolder(m_destinationDir);
+
         } catch (CmsException e) {
             // an exception is thrown if the folder does not exist
             throw new CmsIllegalArgumentException(Messages.get().container(
@@ -1649,6 +1663,10 @@ public class CmsHtmlImport {
                         }
                         // create a new temporary file
                         File importFile = new File(path);
+                        File parent = importFile.getParentFile();
+                        if (parent != null) {
+                            parent.mkdirs();
+                        }
                         importFile.createNewFile();
                         // write the content in the file
                         FileOutputStream fileOutput = new FileOutputStream(importFile.getAbsoluteFile());
