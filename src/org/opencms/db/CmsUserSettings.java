@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2006/09/27 10:07:04 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2007/10/22 10:05:04 $
+ * Version: $Revision: 1.38.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.38.2.1 $
  * 
  * @since 6.0.0
  */
@@ -88,12 +88,6 @@ public class CmsUserSettings {
 
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_ZIPCODE = "USER_ZIPCODE";
-
-    /** The default button style. */
-    private static final int BUTTONSTYLE_DEFAULT = 1;
-
-    /** The default number of entries per page. */
-    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
 
     /** Flag for displaying the date created column. */
     public static final int FILELIST_DATE_CREATED = 1024;
@@ -134,6 +128,12 @@ public class CmsUserSettings {
     /** Flag for displaying the user who last modified column. */
     public static final int FILELIST_USER_LASTMODIFIED = 2048;
 
+    /** The default button style. */
+    private static final int BUTTONSTYLE_DEFAULT = 1;
+
+    /** The default number of entries per page. */
+    private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
+
     /** Identifier prefix for all keys in the user additional info table. */
     private static final String PREFERENCES = "USERPREFERENCES_";
 
@@ -168,6 +168,9 @@ public class CmsUserSettings {
     private int m_explorerFileEntries;
 
     private int m_explorerSettings;
+
+    /** The list of numbers in the preferences dialog, how much entries shown on a page. */
+    private String m_exporerFileEntryOptions;
 
     private Locale m_locale;
 
@@ -409,6 +412,16 @@ public class CmsUserSettings {
     public int getExplorerSettings() {
 
         return m_explorerSettings;
+    }
+
+    /**
+     * Returns the exporerFileEntryOptions.<p>
+     *
+     * @return the exporerFileEntryOptions
+     */
+    public String getExporerFileEntryOptions() {
+
+        return m_exporerFileEntryOptions;
     }
 
     /** 
@@ -1352,21 +1365,6 @@ public class CmsUserSettings {
     }
 
     /**
-     * Sets a specific explorer setting depending on the set parameter.<p>
-     * 
-     * @param set true if the setting should be set, otherwise false
-     * @param setting the settings constant value for the explorer settings
-     */
-    private void setExplorerSetting(boolean set, int setting) {
-
-        if (set) {
-            m_explorerSettings |= setting;
-        } else {
-            m_explorerSettings &= ~setting;
-        }
-    }
-
-    /**
      * Sets the explorer start settings.<p>
      * 
      * @param settings explorer start settings tu use
@@ -1374,6 +1372,16 @@ public class CmsUserSettings {
     public void setExplorerSettings(int settings) {
 
         m_explorerSettings = settings;
+    }
+
+    /**
+     * Sets the exporerFileEntryOptions.<p>
+     *
+     * @param exporerFileEntryOptions the exporerFileEntryOptions to set
+     */
+    public void setExporerFileEntryOptions(String exporerFileEntryOptions) {
+
+        m_exporerFileEntryOptions = exporerFileEntryOptions;
     }
 
     /**
@@ -1390,7 +1398,7 @@ public class CmsUserSettings {
      * Sets if the "create index page" checkbox in the new folder 
      * dialog should be initially be checked or not. <p>
      * 
-     * @param controls if the "create index page" checkbox in the new folder 
+     * @param setting if the "create index page" checkbox in the new folder 
      *      dialog should be initially be checked or not.
      */
     public void setNewFolderCreateIndexPage(Boolean setting) {
@@ -1402,7 +1410,7 @@ public class CmsUserSettings {
      * Sets if the "edit properties" checkbox in the new folder 
      * dialog should be initially be checked or not. <p>
      * 
-     * @param controls if the "edit properties" checkbox in the new folder 
+     * @param setting if the "edit properties" checkbox in the new folder 
      *      dialog should be initially be checked or not.
      */
     public void setNewFolderEditPropertes(Boolean setting) {
@@ -1665,21 +1673,6 @@ public class CmsUserSettings {
     }
 
     /**
-     * Sets a specific task message setting depending on the set parameter.<p>
-     * 
-     * @param set true if the setting should be set, otherwise false
-     * @param setting the settings constant value for the task message settings
-     */
-    private void setTaskMessageSetting(boolean set, int setting) {
-
-        if (set) {
-            m_taskMessages |= setting;
-        } else {
-            m_taskMessages &= ~setting;
-        }
-    }
-
-    /**
      * Sets the task message values.<p>
      * 
      * @param value the value of the task messages
@@ -1877,5 +1870,35 @@ public class CmsUserSettings {
     public boolean useUploadApplet() {
 
         return m_uploadApplet;
+    }
+
+    /**
+     * Sets a specific explorer setting depending on the set parameter.<p>
+     * 
+     * @param set true if the setting should be set, otherwise false
+     * @param setting the settings constant value for the explorer settings
+     */
+    private void setExplorerSetting(boolean set, int setting) {
+
+        if (set) {
+            m_explorerSettings |= setting;
+        } else {
+            m_explorerSettings &= ~setting;
+        }
+    }
+
+    /**
+     * Sets a specific task message setting depending on the set parameter.<p>
+     * 
+     * @param set true if the setting should be set, otherwise false
+     * @param setting the settings constant value for the task message settings
+     */
+    private void setTaskMessageSetting(boolean set, int setting) {
+
+        if (set) {
+            m_taskMessages |= setting;
+        } else {
+            m_taskMessages &= ~setting;
+        }
     }
 }

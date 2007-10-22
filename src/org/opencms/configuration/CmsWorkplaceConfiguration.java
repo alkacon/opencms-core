@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/10/26 12:25:35 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2007/10/22 10:05:04 $
+ * Version: $Revision: 1.43.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.43.2.1 $
  * 
  * @since 6.0.0
  */
@@ -201,6 +201,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the entry node. */
     public static final String N_ENTRY = "entry";
+
+    /** The node name of the file entryoptions node. */
+    public static final String N_ENTRYOPTIONS = "entryoptions";
 
     /** The name of the expand inherited permissions node. */
     public static final String N_EXPANDPERMISSIONSINHERITED = "expand-permissionsinherited";
@@ -390,20 +393,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the view node. */
     public static final String N_WORKPLACEVIEW = "workplaceview";
-
-    /** The configured workplace manager. */
-    private CmsWorkplaceManager m_workplaceManager;
-
-    /**
-     * Public constructor, will be called by configuration manager.<p> 
-     */
-    public CmsWorkplaceConfiguration() {
-
-        setXmlFileName(DEFAULT_XML_FILE_NAME);
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_INIT_0));
-        }
-    }
 
     /**
      * Adds the explorer type rules to the given digester.<p>
@@ -618,6 +607,20 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                     }
                 }
             }
+        }
+    }
+
+    /** The configured workplace manager. */
+    private CmsWorkplaceManager m_workplaceManager;
+
+    /**
+     * Public constructor, will be called by configuration manager.<p> 
+     */
+    public CmsWorkplaceConfiguration() {
+
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_INIT_0));
         }
     }
 
@@ -972,6 +975,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_EXPLORERGENERALOPTIONS
             + "/"
             + N_ENTRIES, "setExplorerFileEntries", 0);
+
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_EXPLORERPREFERENCES
+            + "/"
+            + N_EXPLORERGENERALOPTIONS
+            + "/"
+            + N_ENTRYOPTIONS, "setExporerFileEntryOptions", 0);
 
         // add explorer display options rules 
         digester.addCallMethod("*/"
@@ -1541,6 +1555,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <reporttype> node
         explorerGeneraloptions.addElement(N_ENTRIES).setText(
             "" + m_workplaceManager.getDefaultUserSettings().getExplorerFileEntries());
+        // add the <entryoptions> node
+        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(m_workplaceManager.getDefaultUserSettings().getExporerFileEntryOptions())) {
+            explorerGeneraloptions.addElement(N_ENTRYOPTIONS).setText(
+                m_workplaceManager.getDefaultUserSettings().getExporerFileEntryOptions());
+        }
         // add the <explorer-displayoption> node
         Element explorerDisplayoptions = explorerPreferences.addElement(N_EXPLORERDISPLAYOPTIONS);
         // add the <show-title> node
