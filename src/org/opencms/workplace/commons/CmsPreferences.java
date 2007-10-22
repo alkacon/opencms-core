@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2007/10/22 10:04:11 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 6.0.0
  */
@@ -487,17 +487,28 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectExplorerFileEntries(String htmlAttributes) {
 
-        String[] opts = new String[] {"10", "25", "50", "100", key(Messages.GUI_LABEL_UNLIMITED_0)};
-        List options = new ArrayList(java.util.Arrays.asList(opts));
-        String[] vals = new String[] {"10", "25", "50", "100", "" + Integer.MAX_VALUE};
+        String emptyOption = OpenCms.getWorkplaceManager().getDefaultUserSettings().getExporerFileEntryOptions();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(emptyOption)) {
+            emptyOption = "10,25,50,100";
+        }
+        // remove all non digits without ',' 
+        emptyOption = emptyOption.replaceAll("[^0-9|^,]", "");
+        // remove all empty entries
+        emptyOption = emptyOption.replaceAll(",,", ",");
+        List opts = CmsStringUtil.splitAsList(emptyOption, ",", true);
+        opts.add(key(Messages.GUI_LABEL_UNLIMITED_0));
+        opts.remove("0");
+        List vals = CmsStringUtil.splitAsList(emptyOption, ",", true);
+        vals.add("" + Integer.MAX_VALUE);
+        vals.remove("0");
         int selectedIndex = 2;
-        for (int i = 0; i < vals.length; i++) {
-            if (vals[i].equals(getParamTabExFileEntries())) {
+        for (int i = 0; i < vals.size(); i++) {
+            if (vals.get(i).equals(getParamTabExFileEntries())) {
                 selectedIndex = i;
+                break;
             }
         }
-        List values = new ArrayList(java.util.Arrays.asList(vals));
-        return buildSelect(htmlAttributes, options, values, selectedIndex);
+        return buildSelect(htmlAttributes, opts, vals, selectedIndex);
     }
 
     /**

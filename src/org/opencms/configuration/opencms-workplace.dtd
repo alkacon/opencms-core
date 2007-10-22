@@ -583,12 +583,18 @@
 # The explorer generaloptions describes the general layout settings for the explorer.
 -->										
 <!ELEMENT explorer-generaloptions (buttonstyle,
-								   entries)>
+								   entries,entryoptions?)>
 								   
 <!--
 # The number of entries shown on one page of the the explorer filelist.
 -->									   
 <!ELEMENT entries (#PCDATA)>	
+
+<!--
+# The list of numbers in the preferences dialog, how much entries shown on a page. 
+# The entries must be separated with ','.
+-->	
+<!ELEMENT entryoptions (#PCDATA)>
 
 <!--
 # The explorer displayoption define which columns are show nin the explorer fillist.

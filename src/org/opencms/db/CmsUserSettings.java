@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/09/10 12:50:08 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2007/10/22 10:04:11 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 6.0.0
  */
@@ -91,21 +91,6 @@ public class CmsUserSettings {
         /** Serializable version id. */
         private static final long serialVersionUID = 6611568161885127011L;
 
-        /** The localization key for this style. */
-        private final String m_key;
-
-        /**
-         * Private constructor.<p>
-         * 
-         * @param style the workplace search result style string representation
-         * @param key the localization key for this style
-         */
-        private CmsSearchResultStyle(String style, String key) {
-
-            super(style);
-            m_key = key;
-        }
-
         /**
          * Returns the copy mode object from the old copy mode integer.<p>
          * 
@@ -122,6 +107,21 @@ public class CmsUserSettings {
             } else {
                 return STYLE_EXPLORER;
             }
+        }
+
+        /** The localization key for this style. */
+        private final String m_key;
+
+        /**
+         * Private constructor.<p>
+         * 
+         * @param style the workplace search result style string representation
+         * @param key the localization key for this style
+         */
+        private CmsSearchResultStyle(String style, String key) {
+
+            super(style);
+            m_key = key;
         }
 
         /**
@@ -272,6 +272,9 @@ public class CmsUserSettings {
     private int m_explorerFileEntries;
 
     private int m_explorerSettings;
+
+    /** The list of numbers in the preferences dialog, how much entries shown on a page. */
+    private String m_exporerFileEntryOptions;
 
     private Locale m_locale;
 
@@ -523,6 +526,16 @@ public class CmsUserSettings {
     public int getExplorerSettings() {
 
         return m_explorerSettings;
+    }
+
+    /**
+     * Returns the exporerFileEntryOptions.<p>
+     *
+     * @return the exporerFileEntryOptions
+     */
+    public String getExporerFileEntryOptions() {
+
+        return m_exporerFileEntryOptions;
     }
 
     /** 
@@ -1490,6 +1503,16 @@ public class CmsUserSettings {
     public void setExplorerSettings(int settings) {
 
         m_explorerSettings = settings;
+    }
+
+    /**
+     * Sets the exporerFileEntryOptions.<p>
+     *
+     * @param exporerFileEntryOptions the exporerFileEntryOptions to set
+     */
+    public void setExporerFileEntryOptions(String exporerFileEntryOptions) {
+
+        m_exporerFileEntryOptions = exporerFileEntryOptions;
     }
 
     /**
