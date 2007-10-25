@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2007/09/10 14:04:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/10/25 08:53:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -140,7 +140,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.1.3
  * 
@@ -154,7 +154,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.8 $
+     * @version $Revision: 1.9 $
      * 
      * @since 6.1.6
      * 
@@ -253,7 +253,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.8 $
+     * @version $Revision: 1.9 $
      * 
      * @since 6.1.6
      * 
@@ -263,10 +263,10 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
         /** Serial UID required for safe serialization. */
         private static final long serialVersionUID = -4078389792834878256L;
 
-        /** The {@link CmsMacroResolver} compatible macro to resolve for comparison. * */
+        /** The {@link CmsMacroResolver} compatible macro to resolve for comparison.  */
         private String m_comparatorMacro;
 
-        /** To access resource related values with the {@link CmsMacroResolver} for comparison. * */
+        /** To access resource related values with the {@link CmsMacroResolver} for comparison.  */
         private CmsObject m_macroCmsObjectInner;
 
         /** The {@link CmsMacroResolver} to use for macro resolvation for comparison. * */
