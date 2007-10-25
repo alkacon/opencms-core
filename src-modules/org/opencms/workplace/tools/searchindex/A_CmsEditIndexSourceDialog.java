@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsEditIndexSourceDialog.java,v $
- * Date   : $Date: 2007/08/13 16:30:01 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/10/25 08:53:50 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,13 +75,13 @@ public abstract class A_CmsEditIndexSourceDialog extends CmsWidgetDialog {
     public static final String KEY_PREFIX = "indexsource";
 
     /** Defines which pages are valid for this dialog. */
-    public static final String[] PAGES = {"page1"};
+    protected static final String[] PAGES = {"page1"};
 
     /** 
      * The request parameter for the indexsource to work with when contacting 
      * this dialog from another. <p>
      * 
-     * It may be emtpy if we are on the new indexsource dialog (/searchindex/new-indexsource.jsp).<p>
+     * It may be empty if we are on the new indexsource dialog (/searchindex/new-indexsource.jsp).<p>
      *      
      **/
     public static final String PARAM_INDEXSOURCE = "indexsource";
