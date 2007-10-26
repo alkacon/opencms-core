@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/10/26 14:39:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6
  */
@@ -295,6 +295,16 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
     }
 
     /**
+     * Checks if the new organizational unit dialog has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the new organizational unit dialog has to be displayed
+     */
+    protected boolean isNewOrgUnit() {
+
+        return getCurrentToolPath().equals("/accounts/orgunit/mgmt/new");
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
     protected void validateParamaters() throws Exception {
@@ -304,15 +314,5 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
             // test the needed parameters
             OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).getName();
         }
-    }
-
-    /**
-     * Checks if the new organizational unit dialog has to be displayed.<p>
-     * 
-     * @return <code>true</code> if the new organizational unit dialog has to be displayed
-     */
-    private boolean isNewOrgUnit() {
-
-        return getCurrentToolPath().equals("/accounts/orgunit/mgmt/new");
     }
 }
