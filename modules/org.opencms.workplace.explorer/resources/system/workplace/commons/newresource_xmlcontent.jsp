@@ -89,7 +89,7 @@ case CmsNewResource.ACTION_DEFAULT:
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_APPENDSUFFIXHTML %>" id="<%= wp.PARAM_APPENDSUFFIXHTML %>" type="checkbox" value="true" checked="checked">&nbsp;<%= wp.key(Messages.GUI_NEWRESOURCE_APPENDSUFFIX_HTML_0) %></td>    
+	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_APPENDSUFFIXHTML %>" id="<%= wp.PARAM_APPENDSUFFIXHTML %>" type="checkbox" value="true" checked="checked">&nbsp;<%= wp.key(Messages.GUI_NEWRESOURCE_APPENDSUFFIX_HTML_1, new String[] {wp.getSuffixHtml()}) %></td>    
 </tr>
 </table>
 
