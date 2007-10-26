@@ -87,7 +87,7 @@ default:
 </tr>
 <tr>
 	<td>&nbsp;</td>
-	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input type="hidden" name="<%= wp.PARAM_SUFFIXCHECK %>" value="true"><input name="<%= wp.PARAM_APPENDSUFFIXHTML %>" id="<%= wp.PARAM_APPENDSUFFIXHTML %>" type="checkbox" value="true" checked="checked">&nbsp;<%= wp.key(Messages.GUI_NEWRESOURCE_APPENDSUFFIX_HTML_0) %></td>    
+	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input type="hidden" name="<%= wp.PARAM_SUFFIXCHECK %>" value="true"><input name="<%= wp.PARAM_APPENDSUFFIXHTML %>" id="<%= wp.PARAM_APPENDSUFFIXHTML %>" type="checkbox" value="true" checked="checked">&nbsp;<%= wp.key(Messages.GUI_NEWRESOURCE_APPENDSUFFIX_HTML_1, new String[] {wp.getSuffixHtml()}) %></td>    
 </tr>
 </table>
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2006/03/31 15:25:51 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/10/26 10:22:29 $
+ * Version: $Revision: 1.14.4.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.4.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -267,8 +267,12 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_0 = "GUI_NEWRESOURCE_0";
 
-    /** Message constant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. 
+     * @deprecated use {@link #GUI_NEWRESOURCE_APPENDSUFFIX_HTML_1} with {@link CmsNewResource#getSuffixHtml()}*/
     public static final String GUI_NEWRESOURCE_APPENDSUFFIX_HTML_0 = "GUI_NEWRESOURCE_APPENDSUFFIX_HTML_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NEWRESOURCE_APPENDSUFFIX_HTML_1 = "GUI_NEWRESOURCE_APPENDSUFFIX_HTML_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_CONVERSION_DELIM_BEST_0 = "GUI_NEWRESOURCE_CONVERSION_DELIM_BEST_0";
@@ -475,14 +479,6 @@ public final class Messages extends A_CmsMessageBundle {
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
-    }
-
-    /**
      * Returns an instance of this localized message accessor.<p>
      * 
      * @return an instance of this localized message accessor
@@ -507,6 +503,14 @@ public final class Messages extends A_CmsMessageBundle {
         sb.append(state);
         sb.append(GUI_STATE_POSTFIX);
         return sb.toString();
+    }
+
+    /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
     }
 
     /**

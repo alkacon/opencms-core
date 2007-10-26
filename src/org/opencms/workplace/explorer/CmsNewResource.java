@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2006/03/28 16:48:21 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/10/26 10:22:29 $
+ * Version: $Revision: 1.26.6.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.26.6.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,42 +136,6 @@ public class CmsNewResource extends CmsDialog {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResource.class);
-
-    private String m_availableResTypes;
-    private boolean m_limitedRestypes;
-    private String m_page;
-
-    private String m_paramAppendSuffixHtml;
-    private String m_paramCurrentFolder;
-    private String m_paramNewResourceEditProps;
-    private String m_paramNewResourceType;
-    private String m_paramNewResourceUri;
-    private String m_paramPage;
-
-    /** a boolean flag that indicates if the create resource operation was successfull or not. */
-    private boolean m_resourceCreated;
-
-    /**
-     * Public constructor with JSP action element.<p>
-     * 
-     * @param jsp an initialized JSP action element
-     */
-    public CmsNewResource(CmsJspActionElement jsp) {
-
-        super(jsp);
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsNewResource(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
-    }
 
     /**
      * A factory to return handlers to create new resources.<p>
@@ -233,6 +197,42 @@ public class CmsNewResource extends CmsDialog {
         }
 
         return handler;
+    }
+    private String m_availableResTypes;
+    private boolean m_limitedRestypes;
+
+    private String m_page;
+    private String m_paramAppendSuffixHtml;
+    private String m_paramCurrentFolder;
+    private String m_paramNewResourceEditProps;
+    private String m_paramNewResourceType;
+    private String m_paramNewResourceUri;
+
+    private String m_paramPage;
+
+    /** a boolean flag that indicates if the create resource operation was successfull or not. */
+    private boolean m_resourceCreated;
+
+    /**
+     * Public constructor with JSP action element.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     */
+    public CmsNewResource(CmsJspActionElement jsp) {
+
+        super(jsp);
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsNewResource(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
     }
 
     /**
@@ -512,6 +512,27 @@ public class CmsNewResource extends CmsDialog {
     }
 
     /**
+     * Returns the suffix of the first default file. If nothing is defined, then ".html" is returned.<p>
+     * 
+     * @return the suffix of the first default file otherwise ".html"
+     */
+    public String getSuffixHtml() {
+
+        String result = "";
+        if (OpenCms.getDefaultFiles().size() > 0) {
+            String defaultfile = (String)OpenCms.getDefaultFiles().get(0);
+            int index = defaultfile.indexOf('.');
+            if (index >= 0) {
+                result = defaultfile.substring(index, defaultfile.length());
+            }
+        }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(result)) {
+            result = ".html";
+        }
+        return result;
+    }
+
+    /**
      * Returns true if the resource is created successfully; otherwise false.<p>
      * 
      * @return true if the resource is created successfully; otherwise false
@@ -592,18 +613,19 @@ public class CmsNewResource extends CmsDialog {
     }
 
     /**
-     * Appends a ".html" suffix to the given resource name if no suffix is present and the append suffix option is checked.<p>
+     * Appends the suffix of the first default file suffix to the given resource name if no suffix is present and the 
+     * append suffix option is checked.<p>
      * 
      * @param resourceName the resource name to check
      * @param forceSuffix if true, the suffix is appended overriding the append suffix option
-     * @return the reource name with ".html" suffix if no suffix was present and the append suffix option is checked
+     * @return the resource name with the default file suffix if no suffix was present and the append suffix option is checked
      */
     protected String appendSuffixHtml(String resourceName, boolean forceSuffix) {
 
         // append ".html" suffix to new file if not present
         if ((forceSuffix || Boolean.valueOf(getParamAppendSuffixHtml()).booleanValue())
             && resourceName.indexOf('.') < 0) {
-            resourceName += ".html";
+            resourceName += getSuffixHtml();
         }
         return resourceName;
     }
