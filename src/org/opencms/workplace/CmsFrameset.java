@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2007/08/29 13:30:25 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2007/10/26 14:39:50 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -70,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.90 $ 
+ * @version $Revision: 1.91 $ 
  * 
  * @since 6.0.0 
  */
@@ -367,7 +369,7 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Returns the startup URI for display in the main body frame, this can 
-     * either be the user default view, or (if set) a sepcific startup resource.<p> 
+     * either be the user default view, or (if set) a specific startup resource.<p> 
      * 
      * @return the startup URI for display in the main body frame
      */
@@ -381,6 +383,16 @@ public class CmsFrameset extends CmsWorkplace {
             // reset the startup URI, so that it is not displayed again on reload of the frameset
             getSettings().setViewStartup(null);
         }
+        // add eventual request parameters to startup uri
+        if (getJsp().getRequest().getParameterMap().size() > 0) {
+            Set params = getJsp().getRequest().getParameterMap().entrySet();
+            Iterator i = params.iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry)i.next();
+                result = CmsRequestUtil.appendParameter(result, (String)entry.getKey(), ((String[])entry.getValue())[0]);
+            }
+        }
+        // append the frame name to the startup uri
         return CmsRequestUtil.appendParameter(result, CmsFrameset.PARAM_WP_FRAME, FRAMES[2]);
     }
 
