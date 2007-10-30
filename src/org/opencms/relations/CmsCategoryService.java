@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/10/30 09:22:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.9.2
  */
@@ -145,7 +145,7 @@ public class CmsCategoryService {
         } else {
             folderPath += name;
         }
-        folderPath = getCategoryFolderPath(name);
+        folderPath = getCategoryFolderPath(folderPath);
         CmsResource resource;
         try {
             resource = cms.createResource(folderPath, CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, properties);
