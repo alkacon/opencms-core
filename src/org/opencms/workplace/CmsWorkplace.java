@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2007/09/28 08:07:38 $
- * Version: $Revision: 1.169 $
+ * Date   : $Date: 2007/10/30 11:11:51 $
+ * Version: $Revision: 1.170 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,6 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.site.CmsSite;
-import org.opencms.site.CmsSiteManagerImpl;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -90,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.169 $ 
+ * @version $Revision: 1.170 $ 
  * 
  * @since 6.0.0 
  */
@@ -1930,14 +1929,6 @@ public abstract class CmsWorkplace {
                 // create the settings object
                 m_settings = new CmsWorkplaceSettings();
                 m_settings = initWorkplaceSettings(m_cms, m_settings, false);
-                // check session for the site attribute
-                String siteParam = (String)m_session.getAttribute(CmsSiteManagerImpl.SESSION_ATTR_SITE);
-                if (siteParam != null) {
-                    // site attribute found in session
-                    if (OpenCms.getSiteManager().getSiteForSiteRoot(siteParam) != null) {
-                        m_settings.setSite(siteParam);
-                    }
-                }
 
                 storeSettings(m_session, m_settings);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2007/09/28 08:07:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/10/30 11:12:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,14 +62,11 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.2
  */
 public final class CmsSiteManagerImpl {
-
-    /** Session attribute to force site selection. */
-    public static final String SESSION_ATTR_SITE = "__site";
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSiteManagerImpl.class);
@@ -654,27 +651,9 @@ public final class CmsSiteManagerImpl {
      */
     public CmsSite matchRequest(HttpServletRequest req) {
 
-        CmsSite site = null;
+        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
+        CmsSite site = matchSite(matcher);
 
-        // if this is a workplace request
-        if (isWorkplaceRequest(req)) {
-            // check session for the site attribute
-            String siteParam = (String)req.getSession().getAttribute(SESSION_ATTR_SITE);
-            if (siteParam != null) {
-                // site attribute found in session
-                site = OpenCms.getSiteManager().getSiteForSiteRoot(siteParam);
-                if (site == null) {
-                    // if the session attribute does not identify a valid site,
-                    // be sure to remove the session attribute 
-                    req.getSession().removeAttribute(SESSION_ATTR_SITE);
-                }
-            }
-        }
-        // if no site found jet, match using url 
-        if (site == null) {
-            CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
-            site = matchSite(matcher);
-        }
         if (LOG.isDebugEnabled()) {
             String requestServer = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort();
             LOG.debug(Messages.get().getBundle().key(
