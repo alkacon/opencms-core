@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:06 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/10/30 11:33:29 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -48,6 +48,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INITIALIZE_WORKPLACE_0 = "ERR_INITIALIZE_WORKPLACE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROJECT_NOT_ACCESSIBLE_2 = "ERR_PROJECT_NOT_ACCESSIBLE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SITE_NOT_ACCESSIBLE_2 = "ERR_SITE_NOT_ACCESSIBLE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WORKPLACE_DIALOG_0 = "ERR_WORKPLACE_DIALOG_0";
