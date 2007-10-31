@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2007/10/30 11:12:48 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/10/31 10:09:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.2
  */
@@ -269,7 +270,12 @@ public final class CmsSiteManagerImpl {
                 if (compatible) {
                     try {
                         CmsResource res = cms.readResource(folder);
-                        if (!workplaceMode || cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW)) {
+                        if (!workplaceMode
+                            || cms.hasPermissions(
+                                res,
+                                CmsPermissionSet.ACCESS_VIEW,
+                                false,
+                                CmsResourceFilter.ONLY_VISIBLE)) {
                             String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
                             if (title == null) {
                                 title = folder;

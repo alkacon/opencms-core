@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/10/26 10:20:11 $
- * Version: $Revision: 1.921 $
+ * Date   : $Date: 2007/10/31 10:09:50 $
+ * Version: $Revision: 1.922 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue with mapping of values in XML contents to attributes of siblings
 * Fixed issue with history dialog not working for resources which are expired
 * Fixed issue with corrupted characters in filenames when uploading files without the applet
+* Fixed issue with filtering the accessible sites with the view permission
 - Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
 ! Added new 'force repair' option to the 'Repair XML content' tool
 ! Added new '__site' parameter to set the site in the workplace server
