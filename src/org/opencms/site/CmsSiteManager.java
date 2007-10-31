@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2007/03/27 15:07:51 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2007/10/31 10:13:35 $
+ * Version: $Revision: 1.53.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.53.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,7 +138,7 @@ public final class CmsSiteManager implements Cloneable {
             }
         }
         // add default site
-        if (workplaceMode && OpenCms.getSiteManager().getDefaultSite() != null) {
+        if (workplaceMode && (OpenCms.getSiteManager().getDefaultSite() != null)) {
             String folder = OpenCms.getSiteManager().getDefaultSite().getSiteRoot() + "/";
             if (!siteroots.contains(folder)) {
                 siteroots.add(folder);
@@ -163,7 +164,8 @@ public final class CmsSiteManager implements Cloneable {
                 String folder = (String)i.next();
                 try {
                     CmsResource res = cms.readResource(folder);
-                    if (!workplaceMode || cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW)) {
+                    if (!workplaceMode
+                        || cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ONLY_VISIBLE)) {
                         String title = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue();
                         if (title == null) {
                             title = folder;

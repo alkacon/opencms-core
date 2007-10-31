@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/10/26 10:22:29 $
- * Version: $Revision: 1.818.2.3 $
+ * Date   : $Date: 2007/10/31 10:13:35 $
+ * Version: $Revision: 1.818.2.4 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ OpenCms 6.2.4 - xxxx, 2007
 * Fixed issue #1343: Removed missing class reference from direct_edit.jsp
 ! Added a configurable entry in the workplace xml to show the list of entries on a page in the preferences dialog
 ! The suffix of new resources is generated through the first default file in the opencms-vfs file
+! Fixed issue with filtering the accessible sites with the view permission
 
 OpenCms 6.2.3 - November 30, 2006
 * Fixed error when searching in sites with uppercase letters in site path

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/09/22 15:17:02 $
- * Version: $Revision: 1.161 $
+ * Date   : $Date: 2007/10/31 10:13:34 $
+ * Version: $Revision: 1.161.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.161 $ 
+ * @version $Revision: 1.161.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -494,7 +494,7 @@ public abstract class CmsWorkplace {
         try {
             // check access to the site
             res = cms.readResource("/");
-            access = cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW);
+            access = cms.hasPermissions(res, CmsPermissionSet.ACCESS_VIEW, false, CmsResourceFilter.ONLY_VISIBLE);
         } catch (CmsException e) {
             // error reading site root, in this case we will use a readable default
             if (LOG.isInfoEnabled()) {
@@ -692,7 +692,7 @@ public abstract class CmsWorkplace {
         StringBuffer result = new StringBuffer(256);
 
         String anchorStart = "<a href=\"";
-        if (href != null && href.toLowerCase().startsWith("javascript:")) {
+        if ((href != null) && href.toLowerCase().startsWith("javascript:")) {
             anchorStart = "<a href=\"#\" onclick=\"";
         }
 
@@ -721,7 +721,7 @@ public abstract class CmsWorkplace {
                 result.append("style=\"background-image: url('");
                 result.append(imagePath);
                 result.append(image);
-                if (image != null && image.indexOf('.') == -1) {
+                if ((image != null) && (image.indexOf('.') == -1)) {
                     // append default suffix for button images
                     result.append(".png");
                 }
@@ -784,7 +784,7 @@ public abstract class CmsWorkplace {
                 result.append("><img class=\"button\" src=\"");
                 result.append(imagePath);
                 result.append(image);
-                if (image != null && image.indexOf('.') == -1) {
+                if ((image != null) && (image.indexOf('.') == -1)) {
                     // append default suffix for button images
                     result.append(".png");
                 }
@@ -1002,8 +1002,8 @@ public abstract class CmsWorkplace {
             if (lock.isNullLock()
                 || (!lock.isNullLock() && !lock.getUserId().equals(getCms().getRequestContext().currentUser().getId()))) {
                 throw new CmsException(Messages.get().container(Messages.ERR_WORKPLACE_LOCK_RESOURCE_1, resource));
-        	}
-    	}
+            }
+        }
     }
 
     /**
@@ -1203,8 +1203,8 @@ public abstract class CmsWorkplace {
             // create a new macro resolver "with everything we got"
             m_macroResolver = CmsMacroResolver.newInstance()
             // initialize resolver with the objects available
-                .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
-                    (m_jsp == null) ? null : m_jsp.getJspContext());
+            .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
+                (m_jsp == null) ? null : m_jsp.getJspContext());
         }
         return m_macroResolver;
     }
@@ -1477,7 +1477,7 @@ public abstract class CmsWorkplace {
             StringBuffer result = new StringBuffer(128);
             result.append("</head>\n<body unselectable=\"on\"");
             if (getSettings().isViewAdministration()) {
-                if (className == null || "dialog".equals(className)) {
+                if ((className == null) || "dialog".equals(className)) {
                     className = "dialogadmin";
                 }
                 if (parameters == null) {
