@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/08/13 16:29:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/10/31 15:17:20 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,11 +43,14 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.6 
  */
 public class CmsOrganizationalUnit {
+
+    /** The flag constant to hide the organizational units from the login form. */
+    public static final int FLAG_HIDE_LOGIN = 1;
 
     /** The character used to separate each level in a fully qualified name. */
     public static final String SEPARATOR = "/";
@@ -143,6 +146,16 @@ public class CmsOrganizationalUnit {
             return fqn.substring(1);
         }
         return fqn;
+    }
+
+    /**
+     * Adds the given flag to the flags for this organizational unit.<p>
+     * 
+     * @param flag the flag to add
+     */
+    public void addFlag(int flag) {
+
+        m_flags = (m_flags ^ flag);
     }
 
     /**
@@ -282,6 +295,28 @@ public class CmsOrganizationalUnit {
     }
 
     /**
+     * Checks if this organizational unit has the given flag set.<p>
+     * 
+     * @param flag the flag to check
+     * 
+     * @return <code>true</code> if this organizational unit has the given flag set
+     */
+    public boolean hasFlag(int flag) {
+
+        return (m_flags & flag) == flag;
+    }
+
+    /**
+     * Checks if this organizational unit has the "hide login" flag set.<p>
+     * 
+     * @return <code>true</code> if this organizational unit has the "hide login" flag set
+     */
+    public boolean hasFlagHideLogin() {
+
+        return hasFlag(FLAG_HIDE_LOGIN);
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -305,6 +340,14 @@ public class CmsOrganizationalUnit {
         }
 
         m_description = description;
+    }
+
+    /**
+     * Sets the "hide login" flag.<p>
+     */
+    public void setFlagHideLogin() {
+
+        addFlag(FLAG_HIDE_LOGIN);
     }
 
     /**

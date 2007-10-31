@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/09/25 10:56:38 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2007/10/31 15:17:20 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -662,6 +662,9 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("<table class=\"dialogbox\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>\n");
         html.append("<div class=\"dialoghead\">");
 
+        if (m_oufqn == null) {
+            m_oufqn = CmsOrganizationalUnit.SEPARATOR;
+        }
         if (m_action == ACTION_DISPLAY) {
             html.append("<div id='titleId'");
             if (!m_oufqn.equals(CmsOrganizationalUnit.SEPARATOR)) {
@@ -887,6 +890,13 @@ public class CmsLogin extends CmsJspLoginBean {
             try {
                 m_ous.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), ""));
                 m_ous.addAll(OpenCms.getOrgUnitManager().getOrganizationalUnits(getCmsObject(), "", true));
+                Iterator itOus = m_ous.iterator();
+                while (itOus.hasNext()) {
+                    CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
+                    if (ou.hasFlagHideLogin()) {
+                        itOus.remove();
+                    }
+                }
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
             }
