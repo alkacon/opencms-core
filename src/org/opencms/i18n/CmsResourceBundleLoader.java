@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsResourceBundleLoader.java,v $
- * Date   : $Date: 2007/08/13 16:30:09 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/05 11:15:16 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.AccessControlException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -53,7 +54,7 @@ import java.util.ResourceBundle;
  * bundle, the Java VM (and the webapp container that runs OpenCms) must be restarted. 
  * This non-standard resource bundle loader avoids this by providing a flushable cache.<p>
  * 
- * In case the requersted bundle can not be found, a fallback mechanism to 
+ * In case the requested bundle can not be found, a fallback mechanism to 
  * {@link java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale)} is used to look up 
  * the resource bundle with the Java default resource bundle loading mechanism.<p>
  * 
@@ -63,7 +64,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.2.0 
  */
@@ -282,6 +283,11 @@ public final class CmsResourceBundleLoader {
                     is = new FileInputStream(file);
                 } catch (IOException ex) {
                     // this will happen if the resource is contained for example in a .jar file
+                    is = CmsResourceBundleLoader.class.getClassLoader().getResourceAsStream(resourceName);
+                } catch (AccessControlException acex) {
+                    // fixed bug #1550
+                    // this will happen if the resource is contained for example in a .jar file
+                    // and security manager is turned on.
                     is = CmsResourceBundleLoader.class.getClassLoader().getResourceAsStream(resourceName);
                 }
             }
