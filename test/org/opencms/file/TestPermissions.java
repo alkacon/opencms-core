@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/11/05 13:51:21 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,10 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
- */
-/**
- * Comment for <code>TestPermissions</code>.<p>
+ * @version $Revision: 1.26 $
  */
 public class TestPermissions extends OpenCmsTestCase {
 
@@ -525,7 +522,13 @@ public class TestPermissions extends OpenCmsTestCase {
                 + resultList.size()
                 + " invisible resources in a folder with filter excluding invisible resources");
         }
-        // read again now inclusing invisible resources
+        boolean hasViewAccess = cms.hasPermissions(
+            cms.readResource(folder, CmsResourceFilter.ALL),
+            CmsPermissionSet.ACCESS_VIEW,
+            false,
+            CmsResourceFilter.ONLY_VISIBLE);
+        assertFalse("the user has view access permission despite the view permission has been removed", hasViewAccess);
+        // read again now including invisible resources
         resultList = cms.readResources(folder, CmsResourceFilter.ALL);
         if (resultList.size() != 6) {
             fail("There should be 6 visible resource in the folder, not " + resultList.size());
