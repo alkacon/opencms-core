@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/11/05 16:11:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.5.5
  */
@@ -106,7 +106,7 @@ public class CmsPublishManager {
      * Constructor used to create a pre-initialized instance.<p>
      * 
      * @param historySize the size of the publish history
-     * @param queuePersistance indicates if th equeue is re-initialzed on startup
+     * @param queuePersistance indicates if the queue is re-initialized on startup
      * @param queueShutdowntime the amount of time to wait for a publish job during shutdown
      */
     public CmsPublishManager(int historySize, boolean queuePersistance, int queueShutdowntime) {
