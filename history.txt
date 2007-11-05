@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/05 11:15:16 $
- * Version: $Revision: 1.923 $
+ * Date   : $Date: 2007/11/05 12:02:07 $
+ * Version: $Revision: 1.924 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue #1477: User with "workplace user" role can again choose a template when creating file with free text
 * Fixed issue #1529: Validation for elements of type OpenCmsVfsFile/OpenCmsVarLink fails with parameters
 * Fixed issue #1530: The user password is not longer shown in plain text in the error message for password confirmation
+* Fixed issue #1542: Links to exported files containing anchors are not resolved correctly
 * Fixed issue #1550: Problem in CmsResourceBundleLoader using a SecurityManager
 * Fixed issue with deleting a module that contains locked resources
 * Fixed issue with OpenCms not starting if there are pending publish jobs for users not in the root OU

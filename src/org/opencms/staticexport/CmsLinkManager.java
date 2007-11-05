@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2007/09/11 13:44:23 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2007/11/05 12:02:07 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.75 $ 
+ * @version $Revision: 1.76 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,15 +122,17 @@ public class CmsLinkManager {
         }
         try {
             URL url = new URL(new URL(m_baseUrl, baseUri), relativeUri);
-            if (url.getQuery() == null) {
-                return url.getPath();
-            } else {
-                StringBuffer result = new StringBuffer(url.getPath().length() + url.getQuery().length() + 2);
-                result.append(url.getPath());
+            StringBuffer result = new StringBuffer(100);
+            result.append(url.getPath());
+            if (url.getQuery() != null) {
                 result.append('?');
                 result.append(url.getQuery());
-                return result.toString();
             }
+            if (url.getRef() != null) {
+                result.append('#');
+                result.append(url.getRef());
+            }
+            return result.toString();
         } catch (MalformedURLException e) {
             return relativeUri;
         }
