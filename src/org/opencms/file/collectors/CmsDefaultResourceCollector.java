@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2007/08/13 16:30:08 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/11/05 10:54:36 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
  */
@@ -334,7 +334,12 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
 
         // create a list and return it
         ArrayList result = new ArrayList(1);
-        result.add(cms.readFile(param));
+        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+            result.add(cms.readFile(param));
+        } else {
+            // ignore release and expiration date in offline projects to be able to preview file
+            result.add(cms.readFile(param, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED));
+        }
         return result;
     }
 }
