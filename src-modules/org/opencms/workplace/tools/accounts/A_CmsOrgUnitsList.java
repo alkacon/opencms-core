@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2007/10/08 15:44:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/05 14:10:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -305,7 +305,16 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
      */
     protected List getOrgUnits() throws CmsException {
 
-        return OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
+        List ous = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
+        Iterator it = ous.iterator();
+        while (it.hasNext()) {
+            CmsOrganizationalUnit ou = (CmsOrganizationalUnit)it.next();
+            if (ou.hasFlagHide()) {
+                // remove ous that are not supposed to appear in the list
+                it.remove();
+            }
+        }
+        return ous;
     }
 
     /**

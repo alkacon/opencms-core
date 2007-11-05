@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/08/23 10:25:02 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2007/11/05 14:10:19 $
+ * Version: $Revision: 1.117 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.116 $
+ * @version $Revision: 1.117 $
  * 
  * @since 6.0.0 
  */
@@ -346,7 +346,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // create the ou object
             CmsOrganizationalUnit ou = internalCreateOrgUnitFromResource(dbc, ouFolder);
 
-            if (ou.getParentFqn() != null) {
+            if ((ou.getParentFqn() != null) && !ou.hasFlagNoDefaults()) {
                 // if not the root ou, create default roles & groups
                 // for the root ou, are created in #fillDefaults
                 Locale locale = dbc.getRequestContext().getLocale();
@@ -2602,7 +2602,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Iterator itEntries = additionalInfo.entrySet().iterator();
         while (itEntries.hasNext()) {
             Map.Entry entry = (Map.Entry)itEntries.next();
-            if (entry.getKey() != null && entry.getValue() != null) {
+            if ((entry.getKey() != null) && (entry.getValue() != null)) {
                 writeUserInfo(dbc, userId, (String)entry.getKey(), entry.getValue());
             }
         }

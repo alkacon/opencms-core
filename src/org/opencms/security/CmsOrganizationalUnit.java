@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/10/31 15:17:20 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/05 14:10:19 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,16 +41,21 @@ import java.util.Locale;
 /**
  * An organizational unit in OpenCms.<p>
  *
+ * Be sure the flags does not conflict with the flags defined in {@link org.opencms.file.CmsResource}.<p>
+ *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.6 
  */
 public class CmsOrganizationalUnit {
 
-    /** The flag constant to hide the organizational units from the login form. */
-    public static final int FLAG_HIDE_LOGIN = 1;
+    /** The flag constant to hide the organizational units from the login form and account management. */
+    public static final int FLAG_HIDE = 1;
+
+    /** The flag constant to prevent default groups and projects to be created while creating the organizational unit. */
+    public static final int FLAG_NO_DEFAULTS = 4;
 
     /** The character used to separate each level in a fully qualified name. */
     public static final String SEPARATOR = "/";
@@ -307,13 +312,23 @@ public class CmsOrganizationalUnit {
     }
 
     /**
-     * Checks if this organizational unit has the "hide login" flag set.<p>
+     * Checks if this organizational unit has the "hide" flag set.<p>
      * 
-     * @return <code>true</code> if this organizational unit has the "hide login" flag set
+     * @return <code>true</code> if this organizational unit has the "hide" flag set
      */
-    public boolean hasFlagHideLogin() {
+    public boolean hasFlagHide() {
 
-        return hasFlag(FLAG_HIDE_LOGIN);
+        return hasFlag(FLAG_HIDE);
+    }
+
+    /**
+     * Checks if this organizational unit has the "no defaults" flag set.<p>
+     * 
+     * @return <code>true</code> if this organizational unit has the "no defaults" flag set
+     */
+    public boolean hasFlagNoDefaults() {
+
+        return hasFlag(FLAG_NO_DEFAULTS);
     }
 
     /**
@@ -343,11 +358,19 @@ public class CmsOrganizationalUnit {
     }
 
     /**
-     * Sets the "hide login" flag.<p>
+     * Sets the "hide" flag.<p>
      */
-    public void setFlagHideLogin() {
+    public void setFlagHide() {
 
-        addFlag(FLAG_HIDE_LOGIN);
+        addFlag(FLAG_HIDE);
+    }
+
+    /**
+     * Sets the "no defaults" flag.<p>
+     */
+    public void setFlagNoDefaults() {
+
+        addFlag(FLAG_NO_DEFAULTS);
     }
 
     /**
