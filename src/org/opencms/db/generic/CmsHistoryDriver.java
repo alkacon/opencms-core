@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/10/17 15:16:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/11/05 13:49:46 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.9.1
  */
@@ -1268,13 +1268,15 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         PreparedStatement stmt = null;
 
         try {
+            conn = m_sqlManager.getConnection(dbc);
             Iterator dummy = properties.iterator();
             while (dummy.hasNext()) {
                 CmsProperty property = (CmsProperty)dummy.next();
-                CmsPropertyDefinition propDef = m_driverManager.getVfsDriver().readPropertyDefinition(
-                    dbc,
-                    property.getName(),
-                    dbc.currentProject().getUuid());
+                CmsPropertyDefinition propDef = readPropertyDefinition(dbc, property.getName());
+                if (propDef == null) {
+                    // create if missing
+                    propDef = createPropertyDefinition(dbc, property.getName(), CmsPropertyDefinition.TYPE_NORMAL);
+                }
 
                 for (int i = 0; i < 2; i++) {
                     int mappingType;
@@ -1298,7 +1300,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                         }
                     }
 
-                    conn = m_sqlManager.getConnection(dbc);
                     stmt = m_sqlManager.getPreparedStatement(conn, "C_PROPERTIES_HISTORY_CREATE");
 
                     stmt.setString(1, resource.getStructureId().toString());
@@ -1309,7 +1310,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                     stmt.setInt(6, publishTag);
 
                     stmt.executeUpdate();
-                    m_sqlManager.closeAll(dbc, conn, stmt, null);
+                    m_sqlManager.closeAll(dbc, null, stmt, null);
                 }
             }
         } catch (SQLException e) {
