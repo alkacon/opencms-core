@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlStripper.java,v $
- * Date   : $Date: 2007/08/13 16:29:50 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/11/05 14:46:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.9.2
  */
@@ -97,13 +97,34 @@ public class TestCmsHtmlStripper extends TestCase {
 
     /**
      * Tests <code>{@link CmsHtmlStripper#stripHtml(String)}</code> 
-     * with no configuration (bypass-mode).<p>
+     * with all HTML tags of test files as preserve tags (manual bypass-mode).<p>
      * 
      * @throws Exception in case the test fails
      */
     public void testStripHtmlBypass() throws Exception {
 
         CmsHtmlStripper stripper = new CmsHtmlStripper(false);
+        stripper.addPreserveTag("html");
+        stripper.addPreserveTag("head");
+        stripper.addPreserveTag("title");
+        stripper.addPreserveTag("body");
+        stripper.addPreserveTag("table");
+        stripper.addPreserveTag("tr");
+        stripper.addPreserveTag("td");
+        stripper.addPreserveTag("h1");
+        stripper.addPreserveTag("h3");
+        stripper.addPreserveTag("dd");
+        stripper.addPreserveTag("dl");
+        stripper.addPreserveTag("a");
+        stripper.addPreserveTag("p");
+        stripper.addPreserveTag("strong");
+        stripper.addPreserveTag("ul");
+        stripper.addPreserveTag("li");
+        stripper.addPreserveTag("br");
+        stripper.addPreserveTag("img");
+        stripper.addPreserveTag("tbody");
+        stripper.addPreserveTag("b");
+        
 
         String content1 = CmsFileUtil.readFile("org/opencms/util/testHtml_01.html", CmsEncoder.ENCODING_ISO_8859_1);
         String result1 = stripper.stripHtml(content1);
