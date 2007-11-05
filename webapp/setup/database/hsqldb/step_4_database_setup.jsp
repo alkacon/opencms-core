@@ -1,6 +1,4 @@
-<%@ page import="
-	java.util.*,java.io.File
-" session="true" %><%--
+<%@ page import="org.opencms.setup.*,java.util.*,java.io.File" session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
@@ -8,8 +6,8 @@
 	String nextPage = "../../step_4a_database_validation.jsp";		
 	// previous page
 	String prevPage = "../../step_2_check_components.jsp";
-    // TODO: Use static  	
-    boolean isFormSubmitted = Bean.setDbParamaters(request, "hsqldb");
+
+    boolean isFormSubmitted = Bean.setDbParamaters(request, CmsSetupBean.HSQLDB_PROVIDER);
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
