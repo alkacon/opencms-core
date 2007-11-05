@@ -291,7 +291,7 @@ public class CmsGroupWidget extends A_CmsWidget {
             int groupIndex = configuration.indexOf(CONFIGURATION_USER);
             if (groupIndex != -1) {
                 // user is given
-                String user = configuration.substring(CONFIGURATION_USER.length() + 1);
+                String user = configuration.substring(groupIndex + CONFIGURATION_USER.length() + 1);
                 if (user.indexOf('|') != -1) {
                     // cut eventual following configuration values
                     user = user.substring(0, user.indexOf('|'));
@@ -301,7 +301,7 @@ public class CmsGroupWidget extends A_CmsWidget {
             int oufqnIndex = configuration.indexOf(CONFIGURATION_OUFQN);
             if (oufqnIndex != -1) {
                 // user is given
-                String oufqn = configuration.substring(CONFIGURATION_OUFQN.length() + 1);
+                String oufqn = configuration.substring(oufqnIndex + CONFIGURATION_OUFQN.length() + 1);
                 if (oufqn.indexOf('|') != -1) {
                     // cut eventual following configuration values
                     oufqn = oufqn.substring(0, oufqn.indexOf('|'));
