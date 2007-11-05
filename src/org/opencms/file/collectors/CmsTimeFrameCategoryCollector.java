@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsTimeFrameCategoryCollector.java,v $
- * Date   : $Date: 2007/10/19 10:46:43 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/11/05 08:45:14 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -148,7 +148,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.3
  *
@@ -273,7 +273,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         private boolean m_sortDescending;
 
         /** The end of the validity time frame.*/
-        private long m_timeFrameEnd = 0;
+        private long m_timeFrameEnd = Long.MAX_VALUE;
 
         /** The start of the validity time frame.*/
         private long m_timeFrameStart = 0;
