@@ -30,11 +30,11 @@
 		if(createDb || createTables)	{
 			db = new CmsSetupDb(Bean.getWebAppRfsPath());
 			temp = request.getParameter("dropDb");
-			dropDb = temp != null && "Yes".equals(temp);
+			dropDb = (temp != null) && "Yes".equals(temp) || Bean.getDatabase().startsWith("db2");
 
 			/* check if database exists */
 			if(!dropDb)	{
-			    if (Bean.getDatabase().startsWith("oracle")) {
+			    if (Bean.getDatabase().startsWith("oracle") || Bean.getDatabase().startsWith("db2")) {
 					db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(), Bean.getDbWorkPwd());
 				} else {
 					db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());

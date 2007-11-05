@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2007/08/22 11:11:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/11/05 16:15:46 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -110,11 +110,14 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSetupBean implements I_CmsShellCommands {
+
+    /** DB provider constant for db2. */
+    public static final String DB2_PROVIDER = "db2";
 
     /** Folder constant name.<p> */
     public static final String FOLDER_BACKUP = "backup" + File.separatorChar;
@@ -131,11 +134,17 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** DB provider constant. */
     public static final String GENERIC_PROVIDER = "generic";
 
+    /** DB provider constant for hsqldb. */
+    public static final String HSQLDB_PROVIDER = "hsqldb";
+
     /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
     public static final String HTML_MESSAGE_FILE = "org/opencms/setup/htmlmsg.properties";
 
     /** DB provider constant for maxdb. */
     public static final String MAXDB_PROVIDER = "maxdb";
+
+    /** DB provider constant for mssql. */
+    public static final String MSSQL_PROVIDER = "mssql";
 
     /** DB provider constant for mysql. */
     public static final String MYSQL_PROVIDER = "mysql";
@@ -1576,18 +1585,21 @@ public class CmsSetupBean implements I_CmsShellCommands {
             conStr = "";
         }
         String database = "";
-        if (provider.equals(MYSQL_PROVIDER)) {
+        if (provider.equals(MYSQL_PROVIDER) || provider.equals(MSSQL_PROVIDER) || provider.equals(DB2_PROVIDER)) {
             database = request.getParameter("db");
         } else if (provider.equals(POSTGRESQL_PROVIDER)) {
             database = request.getParameter("dbName");
         }
-        if (provider.equals(MYSQL_PROVIDER) || provider.equals(POSTGRESQL_PROVIDER)) {
+        if (provider.equals(MYSQL_PROVIDER)
+            || provider.equals(MSSQL_PROVIDER)
+            || provider.equals(POSTGRESQL_PROVIDER)
+            || provider.equals(DB2_PROVIDER)) {
             isFormSubmitted = (isFormSubmitted && (database != null));
         }
 
         if (isInitialized()) {
             String createDb = request.getParameter("createDb");
-            if (createDb == null) {
+            if ((createDb == null) || provider.equals(DB2_PROVIDER)) {
                 createDb = "";
             }
 
@@ -1610,7 +1622,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     setDbProperty(getDatabase() + ".constr", conStr + getDbProperty(getDatabase() + ".templateDb"));
                     setDbProperty(getDatabase() + ".constr.newDb", conStr + getDbProperty(getDatabase() + ".newDb"));
                     conStr += database;
-                } else if (provider.equals(MYSQL_PROVIDER) || provider.equals(POSTGRESQL_PROVIDER)) {
+                } else if (provider.equals(MYSQL_PROVIDER)
+                    || provider.equals(DB2_PROVIDER)
+                    || provider.equals(MSSQL_PROVIDER)
+                    || provider.equals(POSTGRESQL_PROVIDER)) {
                     if (!conStr.endsWith("/")) {
                         conStr += "/";
                     }
@@ -1626,7 +1641,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 String dbWorkUser = request.getParameter("dbWorkUser");
                 String dbWorkPwd = request.getParameter("dbWorkPwd");
 
-                setDbCreateUser(dbCreateUser);
+                if (!provider.equals(DB2_PROVIDER)) {
+                    setDbCreateUser(dbCreateUser);
+                }
                 setDbCreatePwd(dbCreatePwd);
 
                 if (dbWorkUser.equals("")) {
@@ -1651,11 +1668,13 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     setDbProperty(getDatabase() + ".indexTablespace", dbIndexTablespace);
                 }
                 Map replacer = new HashMap();
-                if (!provider.equals(MYSQL_PROVIDER)) {
+                if (!provider.equals(MYSQL_PROVIDER) || provider.equals(MSSQL_PROVIDER)) {
                     replacer.put("${user}", dbWorkUser);
                     replacer.put("${password}", dbWorkPwd);
                 }
-                if (provider.equals(MYSQL_PROVIDER) || provider.equals(POSTGRESQL_PROVIDER)) {
+                if (provider.equals(MYSQL_PROVIDER)
+                    || provider.equals(MSSQL_PROVIDER)
+                    || provider.equals(POSTGRESQL_PROVIDER)) {
                     replacer.put("${database}", database);
                 }
                 if (provider.equals(ORACLE_PROVIDER)) {
@@ -1667,6 +1686,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
                 if (provider.equals(GENERIC_PROVIDER)
                     || provider.equals(ORACLE_PROVIDER)
+                    || provider.equals(DB2_PROVIDER)
                     || provider.equals(MAXDB_PROVIDER)) {
                     request.getSession().setAttribute("createTables", createTables);
                 }

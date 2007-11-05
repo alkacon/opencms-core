@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/05 12:02:07 $
- * Version: $Revision: 1.924 $
+ * Date   : $Date: 2007/11/05 16:16:04 $
+ * Version: $Revision: 1.925 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ OpenCms 7.0.3 - xxx, 2007
 ! Added new '__site' parameter to set the site in the workplace server
 ! Added new Collector timeFrameAndCategories (CmsTimeFrameCategoryCollector) that collects files within a time frame  
 ! Added database support for HSQL, contributed by Sebastian Himberger
+! Added database support for DB2
 ! Added the upload per HTTP in the extended HTML import in the Administration view
 ! Saving default values for the extended HTML import in the import-export file
 ! Added the extended HTML import in the 'new' dialog
