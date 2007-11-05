@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/10/31 10:13:35 $
- * Version: $Revision: 1.818.2.4 $
+ * Date   : $Date: 2007/11/05 11:13:31 $
+ * Version: $Revision: 1.818.2.5 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,8 @@ OpenCms 6.2.4 - xxxx, 2007
 ! Added a configurable entry in the workplace xml to show the list of entries on a page in the preferences dialog
 ! The suffix of new resources is generated through the first default file in the opencms-vfs file
 ! Fixed issue with filtering the accessible sites with the view permission
+* Fixed issue #1346: Problem in CmsResourceBundleLoader using a SecurityManager
+
 
 OpenCms 6.2.3 - November 30, 2006
 * Fixed error when searching in sites with uppercase letters in site path

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsResourceBundleLoader.java,v $
- * Date   : $Date: 2006/03/27 14:53:01 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/11/05 11:13:31 $
+ * Version: $Revision: 1.2.6.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.security.AccessControlException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -53,7 +54,7 @@ import java.util.ResourceBundle;
  * bundle, the Java VM (and the webapp container that runs OpenCms) must be restarted. 
  * This non-standard resource bundle loader avoids this by providing a flushable cache.<p>
  * 
- * In case the requersted bundle can not be found, a fallback mechanism to 
+ * In case the requested bundle can not be found, a fallback mechanism to 
  * {@link java.util.ResourceBundle#getBundle(java.lang.String, java.util.Locale)} is used to look up 
  * the resource bundle with the Java default resource bundle loading mechanism.<p>
  * 
@@ -63,7 +64,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.6.1 $ 
  * 
  * @since 6.2.0 
  */
@@ -108,7 +109,7 @@ public final class CmsResourceBundleLoader {
                 return false;
             }
             BundleKey key = (BundleKey)o;
-            return m_hashcode == key.m_hashcode && m_baseName.equals(key.m_baseName) && m_locale.equals(key.m_locale);
+            return (m_hashcode == key.m_hashcode) && m_baseName.equals(key.m_baseName) && m_locale.equals(key.m_locale);
         }
 
         /**
@@ -235,7 +236,7 @@ public final class CmsResourceBundleLoader {
             CmsResourceBundle bundle = tryBundle(baseName, locale, wantBase);
 
             // Try the default locale if neccessary.
-            if (bundle == null && !locale.equals(defaultLocale)) {
+            if ((bundle == null) && !locale.equals(defaultLocale)) {
                 bundle = tryBundle(baseName, defaultLocale, true);
             }
 
@@ -282,6 +283,11 @@ public final class CmsResourceBundleLoader {
                     is = new FileInputStream(file);
                 } catch (IOException ex) {
                     // this will happen if the resource is contained for example in a .jar file
+                    is = CmsResourceBundleLoader.class.getClassLoader().getResourceAsStream(resourceName);
+                } catch (AccessControlException acex) {
+                    // fixed bug #1346
+                    // this will happen if the resource is contained for example in a .jar file
+                    // and security manager is turned on.
                     is = CmsResourceBundleLoader.class.getClassLoader().getResourceAsStream(resourceName);
                 }
             }
@@ -363,7 +369,7 @@ public final class CmsResourceBundleLoader {
             int idx = bundleName.lastIndexOf('_');
             // Try the non-localized base name only if we already have a
             // localized child bundle, or wantBase is true.
-            if (idx > baseLen || (idx == baseLen && (first != null || wantBase))) {
+            if ((idx > baseLen) || ((idx == baseLen) && ((first != null) || wantBase))) {
                 bundleName = bundleName.substring(0, idx);
             } else {
                 break;
