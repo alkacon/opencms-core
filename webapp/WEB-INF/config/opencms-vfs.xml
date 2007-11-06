@@ -602,6 +602,7 @@
 		<xmlcontent>
 			<widgets>
 				<widget class="org.opencms.widgets.CmsCalendarWidget" alias="DateTimeWidget"/>
+				<widget class="org.opencms.widgets.CmsCategoryWidget" alias="CategoryWidget"/>
 				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget"/>
 				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget"/>
 				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />				

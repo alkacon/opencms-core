@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace base files.</p>
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.1</version>
+		<version>7.0.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -79,6 +79,7 @@
 			<resource uri="/system/workplace/resources/commons/workplace.png"/>
 			<resource uri="/system/workplace/resources/components/js_calendar/"/>
 			<resource uri="/system/workplace/resources/components/js_colorpicker/"/>
+			<resource uri="/system/workplace/resources/components/widgets/category.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/colorpicker.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/combo.png"/>
 			<resource uri="/system/workplace/resources/components/widgets/combobox.js"/>
@@ -2852,6 +2853,26 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/category.js</source>
+			<destination>system/workplace/resources/components/widgets/category.js</destination>
+			<type>plain</type>
+			<uuidstructure>8a713fea-eab7-dfdb-91cd-fdbae480bac9</uuidstructure>
+			<uuidresource>c517cf1a-f1b0-ead9-81f2-c726a0fc5cd5</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS for the category selector widget]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
