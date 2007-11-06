@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddXmlContentWidgets.java,v $
- * Date   : $Date: 2007/08/22 11:11:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/11/06 14:48:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,13 +34,20 @@ package org.opencms.setup.xml;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
+import org.opencms.widgets.CmsCategoryWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsGroupWidget;
+import org.opencms.widgets.CmsInputWidgetPlaintext;
+import org.opencms.widgets.CmsLocalizationWidget;
 import org.opencms.widgets.CmsMultiSelectWidget;
+import org.opencms.widgets.CmsTextareaWidgetPlaintext;
 import org.opencms.widgets.CmsUserWidget;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
@@ -50,11 +57,13 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.1.8 
  */
 public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
+
+    private Map m_widgetData;
 
     /** List of xpaths to update. */
     private List m_xpaths;
@@ -83,33 +92,16 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
             if (getXPathsToUpdate().contains(xpath)) {
-                if (xpath.indexOf("DisplayWidget") > 0) {
-                    CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_ALIAS, "DisplayWidget");
-                    CmsSetupXmlHelper.setValue(
-                        document,
-                        xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                        CmsDisplayWidget.class.getName());
-                } else if (xpath.indexOf("MultiSelectWidget") > 0) {
-                    CmsSetupXmlHelper.setValue(
-                        document,
-                        xpath + "/@" + I_CmsXmlConfiguration.A_ALIAS,
-                        "MultiSelectWidget");
-                    CmsSetupXmlHelper.setValue(
-                        document,
-                        xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                        CmsMultiSelectWidget.class.getName());
-                } else if (xpath.indexOf("UserWidget") > 0) {
-                    CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_ALIAS, "UserWidget");
-                    CmsSetupXmlHelper.setValue(
-                        document,
-                        xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                        CmsUserWidget.class.getName());
-                } else if (xpath.indexOf("GroupWidget") > 0) {
-                    CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_ALIAS, "GroupWidget");
-                    CmsSetupXmlHelper.setValue(
-                        document,
-                        xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                        CmsGroupWidget.class.getName());
+                Iterator it = getWidgetData().entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry entry = (Map.Entry)it.next();
+                    String widgetName = (String)entry.getKey();
+                    String className = (String)entry.getValue();
+                    if (xpath.indexOf(widgetName) > 0) {
+                        CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_ALIAS, widgetName);
+                        CmsSetupXmlHelper.setValue(document, xpath + "/@" + I_CmsXmlConfiguration.A_CLASS, className);
+                        break;
+                    }
                 }
                 return true;
             }
@@ -147,12 +139,35 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
             xp.append("[@").append(I_CmsXmlConfiguration.A_ALIAS);
             xp.append("='");
             m_xpaths = new ArrayList();
-            m_xpaths.add(xp.toString() + "DisplayWidget']");
-            m_xpaths.add(xp.toString() + "MultiSelectWidget']");
-            m_xpaths.add(xp.toString() + "UserWidget']");
-            m_xpaths.add(xp.toString() + "GroupWidget']");
+            Iterator it = getWidgetData().entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry)it.next();
+                String widgetName = (String)entry.getKey();
+                m_xpaths.add(xp.toString() + widgetName + "']");
+            }
         }
         return m_xpaths;
+    }
+
+    /**
+     * Returns the widget data.<p>
+     * 
+     * @return the widget data
+     */
+    private Map getWidgetData() {
+
+        if (m_widgetData == null) {
+            m_widgetData = new HashMap();
+            m_widgetData.put("DisplayWidget", CmsDisplayWidget.class.getName());
+            m_widgetData.put("MultiSelectWidget", CmsMultiSelectWidget.class.getName());
+            m_widgetData.put("UserWidget", CmsUserWidget.class.getName());
+            m_widgetData.put("GroupWidget", CmsGroupWidget.class.getName());
+            m_widgetData.put("CategoryWidget", CmsCategoryWidget.class.getName());
+            m_widgetData.put("LocalizationWidget", CmsLocalizationWidget.class.getName());
+            m_widgetData.put("TextareaWidgetPlaintext", CmsTextareaWidgetPlaintext.class.getName());
+            m_widgetData.put("StringWidgetPlaintext", CmsInputWidgetPlaintext.class.getName());
+        }
+        return m_widgetData;
     }
 
 }

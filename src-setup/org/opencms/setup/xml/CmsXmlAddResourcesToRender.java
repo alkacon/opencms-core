@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/Attic/CmsXmlAddBackupResourceHandler.java,v $
- * Date   : $Date: 2007/08/22 11:11:45 $
+ * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddResourcesToRender.java,v $
+ * Date   : $Date: 2007/11/06 14:48:39 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -32,26 +32,24 @@
 package org.opencms.setup.xml;
 
 import org.opencms.configuration.CmsConfigurationManager;
-import org.opencms.configuration.CmsSystemConfiguration;
-import org.opencms.configuration.I_CmsXmlConfiguration;
-import org.opencms.file.history.CmsHistoryResourceHandler;
+import org.opencms.configuration.CmsImportExportConfiguration;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Node;
 
 /**
- * Adds the new backup resource handler to the resource initialization handlers.<p>
+ * Adds the new resources to render in the static export configuration, from 6.2.3 to 7.0.x.<p>
  * 
  * @author Michael Moossen
  * 
  * @version $Revision: 1.1 $ 
  * 
- * @since 6.1.8 
+ * @since 6.9.2
  */
-public class CmsXmlAddBackupResourceHandler extends A_CmsSetupXmlUpdate {
+public class CmsXmlAddResourcesToRender extends A_CmsSetupXmlUpdate {
 
     /** List of xpaths to update. */
     private List m_xpaths;
@@ -61,7 +59,7 @@ public class CmsXmlAddBackupResourceHandler extends A_CmsSetupXmlUpdate {
      */
     public String getName() {
 
-        return "Add new backup resource handler";
+        return "Add new resources to render";
     }
 
     /**
@@ -69,7 +67,7 @@ public class CmsXmlAddBackupResourceHandler extends A_CmsSetupXmlUpdate {
      */
     public String getXmlFilename() {
 
-        return CmsSystemConfiguration.DEFAULT_XML_FILE_NAME;
+        return CmsImportExportConfiguration.DEFAULT_XML_FILE_NAME;
     }
 
     /**
@@ -80,10 +78,10 @@ public class CmsXmlAddBackupResourceHandler extends A_CmsSetupXmlUpdate {
         Node node = document.selectSingleNode(xpath);
         if (node == null) {
             if (xpath.equals(getXPathsToUpdate().get(0))) {
-                CmsSetupXmlHelper.setValue(
-                    document,
-                    xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                    CmsHistoryResourceHandler.class.getName());
+                CmsSetupXmlHelper.setValue(document, getCommonPath()
+                    + "/"
+                    + CmsImportExportConfiguration.N_REGEX
+                    + "[100]", "/system/workplace/commons/style/.*");
             }
             return true;
         }
@@ -95,9 +93,14 @@ public class CmsXmlAddBackupResourceHandler extends A_CmsSetupXmlUpdate {
      */
     protected String getCommonPath() {
 
-        // /opencms/system/resourceinit
-        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
-            CmsSystemConfiguration.N_SYSTEM).append("/").append(CmsSystemConfiguration.N_RESOURCEINIT).toString();
+        // /opencms/importexport/staticexport/rendersettings/resourcestorender/
+        StringBuffer xp = new StringBuffer(256);
+        xp.append("/").append(CmsConfigurationManager.N_ROOT);
+        xp.append("/").append(CmsImportExportConfiguration.N_IMPORTEXPORT);
+        xp.append("/").append(CmsImportExportConfiguration.N_STATICEXPORT);
+        xp.append("/").append(CmsImportExportConfiguration.N_STATICEXPORT_RENDERSETTINGS);
+        xp.append("/").append(CmsImportExportConfiguration.N_STATICEXPORT_RESOURCESTORENDER);
+        return xp.toString();
     }
 
     /**
@@ -106,17 +109,19 @@ public class CmsXmlAddBackupResourceHandler extends A_CmsSetupXmlUpdate {
     protected List getXPathsToUpdate() {
 
         if (m_xpaths == null) {
-            // /opencms/system/resourceinit/resourceinithandler[@class='org.opencms.file.CmsBackupResourceHandler']
+            // "/opencms/importexport/staticexport/rendersettings/resourcestorende/regex[text()='...']";
             StringBuffer xp = new StringBuffer(256);
             xp.append("/").append(CmsConfigurationManager.N_ROOT);
-            xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
-            xp.append("/").append(CmsSystemConfiguration.N_RESOURCEINIT);
-            xp.append("/").append(CmsSystemConfiguration.N_RESOURCEINITHANDLER);
-            xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
-            xp.append("='").append(CmsHistoryResourceHandler.class.getName());
-            xp.append("']");
-            m_xpaths = Collections.singletonList(xp.toString());
+            xp.append("/").append(CmsImportExportConfiguration.N_IMPORTEXPORT);
+            xp.append("/").append(CmsImportExportConfiguration.N_STATICEXPORT);
+            xp.append("/").append(CmsImportExportConfiguration.N_STATICEXPORT_RENDERSETTINGS);
+            xp.append("/").append(CmsImportExportConfiguration.N_STATICEXPORT_RESOURCESTORENDER);
+            xp.append("/").append(CmsImportExportConfiguration.N_REGEX);
+            xp.append("[text()='");
+            m_xpaths = new ArrayList();
+            m_xpaths.add(xp.toString() + "/system/workplace/commons/style/.*']");
         }
         return m_xpaths;
     }
+
 }

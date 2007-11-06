@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2007/08/22 11:11:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/11/06 14:48:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -74,7 +74,14 @@ public class CmsSetupXmlManager {
         // put the plugins here in chronological order (or first remove then add)
 
         // importexport
-        m_plugins.add(new CmsXmlAddImportClasses());
+        m_plugins.add(new CmsXmlRemoveImmutables());
+        m_plugins.add(new CmsXmlRemoveImportVersions());
+        m_plugins.add(new CmsXmlRemoveImportHandlers());
+        //these are not properly working
+        //m_plugins.add(new CmsXmlRemoveResourcesToRender());
+        //m_plugins.add(new CmsXmlAddResourcesToRender());
+        m_plugins.add(new CmsXmlAddImportVersions());
+        m_plugins.add(new CmsXmlAddImmutables());
 
         // search
         m_plugins.add(new CmsXmlRemovePageSearchIndexSource1());
@@ -82,27 +89,35 @@ public class CmsSetupXmlManager {
         m_plugins.add(new CmsXmlAddDEHelpSearchIndex());
 
         // system
-        m_plugins.add(new CmsXmlAddBackupResourceHandler());
+        m_plugins.add(new CmsXmlRemoveResourceHandlers());
         m_plugins.add(new CmsXmlAddContentNotification());
+        m_plugins.add(new CmsXmlAddResourceHandlers());
 
         // vfs
+        m_plugins.add(new CmsXmlRemoveResourceLoaders());
+        m_plugins.add(new CmsXmlRemoveResourceTypes());
         m_plugins.add(new CmsXmlReplaceHtmlAreaWidgets());
         m_plugins.add(new CmsXmlAddImageLoader());
         m_plugins.add(new CmsXmlAddImgGalleryParam());
         m_plugins.add(new CmsXmlAddXmlContentWidgets());
+        m_plugins.add(new CmsXmlAddXmlSchemaTypes());
+        m_plugins.add(new CmsXmlAddMimeTypes());
+        m_plugins.add(new CmsXmlAddResourceTypes());
 
         // workplace
-        m_plugins.add(new CmsXmlUpdateDefaultProperties());
+        if (false) {
+            // all this plugins apply to v6 and not anymore to v7
+            m_plugins.add(new CmsXmlUpdateDefaultProperties());
 
-        m_plugins.add(new CmsXmlAddAvailabilityContextMenu());
-        m_plugins.add(new CmsXmlAddMultiContextMenu());
-        m_plugins.add(new CmsXmlUpdateHistoryContextMenu());
-        m_plugins.add(new CmsXmlAddImgGalleryContextMenues());
-        m_plugins.add(new CmsXmlAddPublishButtonAppearance());
-        m_plugins.add(new CmsXmlUpdateDefaultPermissions());
-        m_plugins.add(new CmsXmlAddAutoSetFeatures());
-        m_plugins.add(new CmsXmlUpdateLocalizationKeys());
-
+            m_plugins.add(new CmsXmlAddAvailabilityContextMenu());
+            m_plugins.add(new CmsXmlAddMultiContextMenu());
+            m_plugins.add(new CmsXmlUpdateHistoryContextMenu());
+            m_plugins.add(new CmsXmlAddImgGalleryContextMenues());
+            m_plugins.add(new CmsXmlAddPublishButtonAppearance());
+            m_plugins.add(new CmsXmlUpdateDefaultPermissions());
+            m_plugins.add(new CmsXmlAddAutoSetFeatures());
+            m_plugins.add(new CmsXmlUpdateLocalizationKeys());
+        }
         setup();
     }
 

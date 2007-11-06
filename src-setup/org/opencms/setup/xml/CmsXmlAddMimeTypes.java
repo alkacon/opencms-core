@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddMimeTypes.java,v $
- * Date   : $Date: 2007/08/22 11:11:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/11/06 14:48:39 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,12 +42,11 @@ import org.dom4j.Document;
 import org.dom4j.Node;
 
 /**
- * Adds the new mime types node.
- * <p>
+ * Adds the new mime types node.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.2.3
  */
@@ -588,10 +587,7 @@ public class CmsXmlAddMimeTypes extends A_CmsSetupXmlUpdate {
                         document,
                         mPath + "/@" + CmsVfsConfiguration.A_EXTENSION,
                         m_mimeTypes[i][0]);
-                    CmsSetupXmlHelper.setValue(
-                        document,
-                        mPath + "/@" + I_CmsXmlConfiguration.A_TYPE,
-                        m_mimeTypes[i][1]);
+                    CmsSetupXmlHelper.setValue(document, mPath + "/@" + I_CmsXmlConfiguration.A_TYPE, m_mimeTypes[i][1]);
                 }
             }
             return true;
