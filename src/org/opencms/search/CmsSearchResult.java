@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2007/11/06 15:35:50 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.search;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
 import org.opencms.search.fields.CmsSearchField;
@@ -52,7 +53,7 @@ import org.apache.lucene.document.Field;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +70,9 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
 
     /** The excerpt of this search result. */
     protected String m_excerpt;
+
+    /** The excerpt of this search result with XML escaped. */
+    protected String m_excerptXmlEscaped;
 
     /** The resource path of this search result. */
     protected String m_path;
@@ -230,12 +234,50 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     }
 
     /**
-     * Returns the excerpt.<p>
+     * Returns the excerpt with all XML or HTML escaped.<p>
+     * 
+     * If content is extracted from HTML pages, the all HTML or XML is removed because by the text 
+     * extraction since this is not part of the content. However, in certain cases a PDF or Word 
+     * document may also contain HTML. If this is extracted, the HTML will not be removed by the text 
+     * extractor since it is part of the content.<p>  
      *
-     * @return the excerpt
+     * @return the excerpt with all XML or HTML escaped
+     * 
+     * @see #getExcerpt(boolean)
      */
     public String getExcerpt() {
 
+        return getExcerpt(true);
+    }
+
+    /**
+     * Returns the excerpt with optional XML escaping.<p>
+     *
+     * If content is extracted from HTML pages, the all HTML or XML is removed because by the text 
+     * extraction since this is not part of the content. However, in certain cases a PDF or Word 
+     * document may also contain HTML. If this is extracted, the HTML will not be removed by the text 
+     * extractor since it is part of the content.<p>  
+     *
+     * @param escapeXml if <code>true</code>, the result will be XML escaped
+     *
+     * @return the excerpt with optional XML escaping
+     * 
+     * @see #getExcerpt()
+     * @see CmsEncoder#escapeXml(String)
+     * 
+     * @since 7.0.3
+     */
+    public String getExcerpt(boolean escapeXml) {
+
+        if (escapeXml) {
+            if (m_excerptXmlEscaped == null) {
+                // must calculate the XML escaped excerpt first
+                m_excerptXmlEscaped = CmsEncoder.escapeXml(m_excerpt);
+            }
+            // return excerpt with XML escaping
+            return m_excerptXmlEscaped;
+        }
+        // return the excerpt without XML escaping
         return m_excerpt;
     }
 

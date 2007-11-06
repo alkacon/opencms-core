@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/06 11:27:40 $
- * Version: $Revision: 1.929 $
+ * Date   : $Date: 2007/11/06 15:35:50 $
+ * Version: $Revision: 1.930 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue with filtering the accessible sites with the view permission
 * Fixed issue with context menu in Firefox browsers calling the selected action twice
 * Fixed issue with missing excerpts using default search field configuration
+* Fixed issue with displaying search result excerpts containing HTML code
 - Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
 ! Added new 'force repair' option to the 'Repair XML content' tool
 ! Added new Collector CmsTimeFrameCategoryCollector that collects files within a time frame and/or a category
