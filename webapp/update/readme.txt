@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 6.x/7.x to OpenCms 7.0.2
+            Instructions for updating OpenCms 6.x/7.x to OpenCms 7.0.3
 
 
                                     WARNING:
@@ -17,7 +17,7 @@ IMPORTANT: Before using this upgrade wizard, make sure you have a full backup
 of your OpenCms installation and database.
 
 
-Follow the following steps to update from OpenCms 6.x/7.x to OpenCms 7.0.2:
+Follow the following steps to update from OpenCms 6.x/7.x to OpenCms 7.0.3:
 
 
 1. Shutdown your OpenCms servlet container
@@ -27,7 +27,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7.0.2.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7.0.3.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
@@ -48,12 +48,14 @@ in the config file WEB-INF/config/opencms.properties.
 3.a. Important Note only for 6.x Updates: Manual configuration files update
 
 The automatic configuration files update from OpenCms 6.x to OpenCms 7.0.x is working, 
-but just for the essentials.
-To get the full power of OpenCms 7.0.x you need to use an OpenCms 7.0.x 
-opencms-workplace.xml configuration file. One is provided under update/config, but
-you will need to manually copy it to your WEB-INF/config/ folder.
+for all configuration files, except the opencms-workplace.xml file, since it has been 
+completely restructured.
+Before continuing you need to get an OpenCms 7.0.x opencms-workplace.xml configuration 
+file. One is provided under update/config, but you will need to manually copy it to 
+your WEB-INF/config/ folder. This procedure is to prevent that your changes get lost,
+but you are the responsible for customizing this configuration file again.
 
-If you decide not to update this configuration file, some context menu entries will
+If you decide not to update this configuration file, most context menu entries will
 not properly work and you will not get the context menu entries for the new features.
 
 3.b. Disable search index update
