@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchInDocuments.java,v $
- * Date   : $Date: 2007/08/20 13:06:59 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2007/11/06 10:19:33 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
@@ -518,7 +518,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         assertEquals(expected, searchResult.size());
 
         // check if "the" and "a" is contained in the excerpt
-        // it may have been removed as term in the search, but it should be in the exerpt result anyway
+        // it may have been removed as term in the search, but it should be in the excerpt result anyway
         boolean foundThe = false;
         boolean foundA = false;
         Iterator i = searchResult.iterator();

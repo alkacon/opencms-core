@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2007/08/30 09:03:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/06 10:18:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.0 
  */
@@ -184,7 +184,7 @@ public class CmsSearchField {
      * @param isIndexed controls if the field is indexed, see {@link #setIndexed(boolean)}
      * @param isTokenized controls if the field is tokenized, see {@link #setStored(boolean)}
      * @param isInExcerpt controls if the field is in the excerpt, see {@link #isInExcerptAndStored()}
-     * @param boost the boost factror for the field, see {@link #setBoost(float)}
+     * @param boost the boost factor for the field, see {@link #setBoost(float)}
      * @param defaultValue the default value for the field, see {@link #setDefaultValue(String)}
      */
     public CmsSearchField(
