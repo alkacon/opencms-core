@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/05 16:16:04 $
- * Version: $Revision: 1.925 $
+ * Date   : $Date: 2007/11/06 09:26:41 $
+ * Version: $Revision: 1.926 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue with history dialog not working for resources which are expired
 * Fixed issue with corrupted characters in filenames when uploading files without the applet
 * Fixed issue with filtering the accessible sites with the view permission
+* Fixed issue with context menu in Firefox browsers calling the selected action twice
 - Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
 ! Added new 'force repair' option to the 'Repair XML content' tool
 ! Added new '__site' parameter to set the site in the workplace server

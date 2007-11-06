@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2007/09/10 08:46:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/11/06 09:26:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.6 
  */
@@ -403,23 +403,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         StringBuffer link = new StringBuffer(128);
                         if (isSingleSelection) {
                             // create link for single resource context menu
-                            link.append("href=\"");
-                            link.append(itemLink);
-                            if (itemLink.indexOf('?') > -1) {
-                                link.append("&resource=");
-                            } else {
-                                link.append("?resource=");
-                            }
-                            link.append(getCms().getSitePath(resUtil[0].getResource()));
-                            link.append("\"");
-                            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(itemTarget)) {
-                                // href has a target set
-                                link.append(" target=\"");
-                                link.append(itemTarget);
-                                link.append("\"");
-                            }
-                            // mouse up event is necessary for Firefox browser
-                            link.append(" onmouseup=\"top.submitSingleAction('");
+                            link.append("href=\"javascript:top.submitSingleAction('");
                             link.append(itemLink);
                             link.append("', '");
                             link.append(itemTarget);
@@ -427,10 +411,6 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         } else {
                             // create link for multi resource context menu
                             link.append("href=\"javascript:top.submitMultiAction('");
-                            link.append(itemLink);
-                            link.append("');\"");
-                            // mouse up event is necessary for Firefox browser
-                            link.append(" onmouseup=\"top.submitMultiAction('");
                             link.append(itemLink);
                             link.append("');\"");
                         }
