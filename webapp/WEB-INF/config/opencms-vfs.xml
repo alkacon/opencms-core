@@ -577,6 +577,7 @@
 			    <mimetype extension=".vrt" type="x-world/x-vrt" />
 			    <mimetype extension=".xgz" type="xgl/drawing" />
 			    <mimetype extension=".xmz" type="xgl/movie" />
+				<mimetype extension=".rss" type="application/rss+xml" />
 			</mimetypes>
 		</resources>
 		<defaultfiles>
