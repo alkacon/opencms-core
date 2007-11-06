@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/06 10:34:44 $
- * Version: $Revision: 1.928 $
+ * Date   : $Date: 2007/11/06 11:27:40 $
+ * Version: $Revision: 1.929 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -51,14 +51,14 @@ OpenCms 7.0.3 - xxx, 2007
 * Fixed issue with missing excerpts using default search field configuration
 - Updated simapi.jar to version 0.9.6, fixing the "missing line" issue when scaling images
 ! Added new 'force repair' option to the 'Repair XML content' tool
-! Added new Collector timeFrameAndCategories (CmsTimeFrameCategoryCollector) that collects files within a time frame  
+! Added new Collector CmsTimeFrameCategoryCollector that collects files within a time frame and/or a category
 ! Added database support for HSQL, contributed by Sebastian Himberger
 ! Added database support for DB2
 ! Added the upload per HTTP in the extended HTML import in the Administration view
-! Saving default values for the extended HTML import in the import-export file
+! Added feature for saving default settings for the extended HTML import in the import-export configuration file
 ! Added the extended HTML import in the 'new' dialog
-! Added a configurable entry in the workplace xml to show the list of entries on a page in the preferences dialog
-! The suffix of new resources is generated through the first default file in the opencms-vfs file
+! Added a configurable entry in the workplace xml to show the list of entries per page in the preferences dialog
+! Added configuration of the suffix of new resources, it is generated using the first default file in the vfs configuration file
 ! Added new widget for categories
 
 OpenCms 7.0.2 - September 12, 2007
