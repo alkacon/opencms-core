@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2007/08/13 16:29:52 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/11/06 10:20:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.0 
  */
@@ -101,7 +101,15 @@ public class CmsSearchFieldConfiguration implements Comparable {
 
         CmsSearchField field;
         // content mapping
-        field = new CmsSearchField(CmsSearchField.FIELD_CONTENT, "%(key.field.content)", true, true);
+        field = new CmsSearchField(
+            CmsSearchField.FIELD_CONTENT,
+            "%(key.field.content)",
+            true,
+            true,
+            true,
+            true,
+            CmsSearchField.BOOST_DEFAULT,
+            null);
         field.addMapping(new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, null));
         result.addField(field);
 
