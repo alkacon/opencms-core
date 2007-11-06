@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/09/06 15:09:27 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2007/11/06 16:40:00 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 /**
- * Monitors OpenCms memory consumtion.<p>
+ * Monitors OpenCms memory consumption.<p>
  * 
  * The memory monitor also provides all kind of caches used in the OpenCms core.<p>
  * 
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.61 $ 
+ * @version $Revision: 1.62 $ 
  * 
  * @since 6.0.0 
  */
