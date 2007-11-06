@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2007/08/13 16:30:14 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/11/06 11:26:42 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -304,7 +304,7 @@ public interface I_CmsXmlDocument {
      * or <code>false</code> otherwise.<p> 
      * 
      * This is only used with implementations that support enabling and disabling individual values,
-     * such as {@link org.opencms.xml.page#CmsXmlPage}. If enabling / disabling values is not supported,
+     * such as {@link org.opencms.xml.page.CmsXmlPage}. If enabling / disabling values is not supported,
      * this is identical to {@link #hasValue(String, Locale)}.<p>
      * 
      * You can provide an index by appending a number in square brackets 
@@ -324,7 +324,7 @@ public interface I_CmsXmlDocument {
      * in this XML document, and that value is enabled, or <code>false</code> otherwise.<p> 
      * 
      * This is only used with implementations that support enabling and disabling individual values,
-     * such as {@link org.opencms.xml.page#CmsXmlPage}. If enabling / disabling values is not supported,
+     * such as {@link org.opencms.xml.page.CmsXmlPage}. If enabling / disabling values is not supported,
      * this is identical to {@link #hasValue(String, Locale, int)}.<p>
      * 
      * @param path the path to check
