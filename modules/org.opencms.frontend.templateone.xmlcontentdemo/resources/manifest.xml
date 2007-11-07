@@ -30,7 +30,7 @@
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/"/>
-			<resource uri="/system/workplace/resources/filetypes/article.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/articledemo.gif"/>
 			<resource uri="/xmlcontentdemo/"/>
 		</resources>
 		<parameters/>
@@ -46,7 +46,7 @@
 			</type>
 		</resourcetypes>
 		<explorertypes>
-			<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
+			<explorertype name="article" key="fileicon.article" icon="articledemo.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25" autosetnavigation="false" autosettitle="false" info="desc.article"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
@@ -1973,11 +1973,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/filetypes/article.gif</source>
-			<destination>system/workplace/resources/filetypes/article.gif</destination>
+			<source>system/workplace/resources/filetypes/articledemo.gif</source>
+			<destination>system/workplace/resources/filetypes/articledemo.gif</destination>
 			<type>image</type>
-			<uuidstructure>a8fa1298-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>a17837da-2769-11d9-a415-1fd2a335da0f</uuidresource>
+			<uuidstructure>d9cf1644-8d11-11dc-8e4b-cfc7ed92933b</uuidstructure>
+			<uuidresource>d9cf1645-8d11-11dc-8e4b-cfc7ed92933b</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
