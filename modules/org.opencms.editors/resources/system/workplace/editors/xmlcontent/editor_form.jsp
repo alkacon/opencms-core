@@ -308,7 +308,22 @@ if ((wp.getAction() == CmsXmlContentEditor.ACTION_CHECK) && (! wp.hasValidationE
 	%>
 	<script type="text/javascript">
 	<!--
-		setTimeout('submitSaveAction();', 20);
+		function checkEditorsLoaded() {
+			if (!editorsLoaded()) {
+				setTimeout('checkEditorsLoaded();', 20);
+			} else {
+				submitSaveAction();
+			}
+		}
+		try {
+			if (editorInstances != null && editorInstances.length > 0) {
+				checkEditorsLoaded();
+			} else {
+				setTimeout('submitSaveAction();', 20);
+			}
+		} catch (e) {
+			setTimeout('submitSaveAction();', 20);
+		}
 	//-->
 	</script>
 	<%

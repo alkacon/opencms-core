@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.fckeditor/resources/system/workplace/resources/components/widgets/fckeditor.js,v $
- * Date   : $Date: 2007/09/10 12:28:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/11/07 10:22:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@
 var editorInstances = new Array();
 var contentFields = new Array();
 var expandedToolbars = new Array();
+var editorsLoaded = false;
 
 // generates the FCKeditor instances
 function generateEditors() {
@@ -77,4 +78,10 @@ function fitWindow(editorInstance) {
 function FCKeditor_OnComplete(editorInstance) {
 	editorInstance.Events.AttachEvent("OnFocus", showToolbar);
 	editorInstance.Events.AttachEvent("OnBlur", fitWindow);
+	editorsLoaded = true;
+}
+
+// checks if at least one of the editors was loaded successfully
+function editorsLoaded() {
+	return editorsLoaded;
 }
