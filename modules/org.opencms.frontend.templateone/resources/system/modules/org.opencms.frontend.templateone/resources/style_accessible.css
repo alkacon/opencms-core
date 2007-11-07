@@ -38,7 +38,11 @@ String navLeftFont = cms.getConfigValue("navleft.font", "#000000");
 String navLeftActiveColor = cms.getOptionalConfigValue("navleft.font.color", navLeftFont);
 String navLeftActiveWeight = cms.getFontWeight("navleft.font.bold", "true");
 
-String navLeftImgBgUri = cms.link(cms.getConfigValue("navleft.img.bg.uri", "/system/galleries/pics/ocms-templateone/bg_nav.jpg"));
+String navLeftImgBgUri = cms.getConfigValue("navleft.img.bg.uri", "");
+
+if (!"".equals(navLeftImgBgUri)) {
+	navLeftImgBgUri = cms.link(navLeftImgBgUri );
+}
 
 // content area
 String contentAccessibleBg = cms.getConfigValue("content.accessible.bg", "#FFFFFF");

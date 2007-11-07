@@ -74,12 +74,7 @@
     <head.nav.border>#CCCCCC</head.nav.border>
     <navleft.bg>#FFFFFF</navleft.bg>
     <navleft.font>#333333</navleft.font>
-    <navleft.img.bg.uri>
-      <link type="WEAK">
-        <target><![CDATA[/system/galleries/pics/ocms-templateone/head_img.jpg]]></target>
-        <uuid>8e930a9e-11b7-11db-91cd-fdbae480bac9</uuid>
-      </link>
-    </navleft.img.bg.uri>
+    <navleft.img.bg.uri/>
     <content.bg>#FFFFFF</content.bg>
     <content.border>#FFFFFF</content.border>
     <content.font>#666666</content.font>
