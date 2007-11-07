@@ -146,8 +146,12 @@ You should now be able to log into the OpenCms workplace as before.
 
 7. After restarting
 
-You might need to uninstall no longer supported legacy (OpenCms5) modules, 
-like, org.opencms.legacy (which includes the old workflow engine) 
+You might need to uninstall no longer supported legacy (OpenCms version 5 and 6)
+modules, like:
+- org.opencms.legacy (which includes the old workflow engine)
+- org.opencms.editors.htmlarea (discontinued HtmlArea WYSIWYG editor)
+- org.opencms.editors.ledit (discontinued text editor for Internet Explorer)
+- org.opencms.editor.msdhtml (discontinued Microsoft ActiveX WYSIWYG editor)
 
 
 IMPORTANT: PLEASE READ THIS
