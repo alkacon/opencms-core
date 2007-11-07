@@ -9,6 +9,7 @@
     <property name="opencms.input.libs.compile"			location="${opencms.input}/lib/compile" />
 	<property name="opencms.build" 						location="${opencms.output}/build" />
 	<property name="opencms.core.lib" 					location="${opencms.build}/jars-core" />
+    <property name="java.target.version"                value="1.5" />
 
 	<property environment="env" />
 	<property file="${basedir}/opencms.properties" />
