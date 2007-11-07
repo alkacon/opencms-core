@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/comptest/CmsSetupTests.java,v $
- * Date   : $Date: 2007/08/22 11:11:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/11/07 11:49:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,6 +78,7 @@ public class CmsSetupTests {
         List tests = new ArrayList();
         tests.add(new CmsSetupTestFolderPermissions());
         tests.add(new CmsSetupTestJdkVersion());
+        tests.add(new CmsSetupTestJavaTempDir());
         tests.add(new CmsSetupTestOperatingSystem());
         tests.add(new CmsSetupTestServletEngine());
         tests.add(new CmsSetupTestSimapi());
@@ -97,9 +98,9 @@ public class CmsSetupTests {
     }
 
     /**
-     * Returns true, if the conditions in all testes were fulfilled.<p>
+     * Returns true, if the conditions in all tests were fulfilled.<p>
      * 
-     * @return true, if the conditions in all testes were fulfilled
+     * @return true, if the conditions in all tests were fulfilled
      */
     public boolean isGreen() {
 
