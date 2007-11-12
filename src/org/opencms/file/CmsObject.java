@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/09/12 13:12:51 $
- * Version: $Revision: 1.155 $
+ * Date   : $Date: 2007/11/12 13:57:07 $
+ * Version: $Revision: 1.156 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.155 $
+ * @version $Revision: 1.156 $
  * 
  * @since 6.0.0 
  */
@@ -2662,7 +2662,7 @@ public final class CmsObject {
      * The result list may include resources with the same name of  
      * resources (with different id's).<p>
      * 
-     * Us in conjunction with the {@link #restoreDeletedResource(CmsUUID)} 
+     * Use in conjunction with the {@link #restoreDeletedResource(CmsUUID)} 
      * method.<p>
      * 
      * @param resourcename the parent path to read the resources from
