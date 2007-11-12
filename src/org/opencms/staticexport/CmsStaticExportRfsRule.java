@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportRfsRule.java,v $
- * Date   : $Date: 2007/09/25 08:29:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/11/12 13:58:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,10 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +46,7 @@ import java.util.regex.Pattern;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -191,7 +193,7 @@ public class CmsStaticExportRfsRule {
      */
     public String getExportPath() {
 
-        if (OpenCms.getStaticExportManager().isFullStaticExport()) {
+        if (OpenCms.getStaticExportManager().isUseTempDir() && OpenCms.getStaticExportManager().isFullStaticExport()) {
             return getExportWorkPath();
         }
         return m_exportPath;
@@ -231,6 +233,25 @@ public class CmsStaticExportRfsRule {
         // if work path not configured set to default value
         return CmsStaticExportManager.EXPORT_DEFAULT_WORKPATH
             + OpenCms.getResourceManager().getFileTranslator().translateResource(m_name);
+    }
+
+    /**
+     * Returns the rfs name for the given locale, only used for multi-language export.<p>
+     * 
+     * @param rfsName the original rfs name
+     * @param fileSeparator the file separator to use
+     * 
+     * @return the rfs name for the given locale
+     */
+    public String getLocalizedRfsName(String rfsName, String fileSeparator) {
+
+        String locRfsName = null;
+
+        // this might be too simple
+        locRfsName = CmsStringUtil.substitute(rfsName, fileSeparator
+            + CmsLocaleManager.getDefaultLocale().toString()
+            + fileSeparator, fileSeparator + getName() + fileSeparator);
+        return locRfsName;
     }
 
     /**
