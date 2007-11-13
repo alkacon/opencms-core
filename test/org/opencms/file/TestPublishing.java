@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2007/09/27 10:27:08 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/11/13 11:53:29 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class TestPublishing extends OpenCmsTestCase {
 
@@ -306,7 +306,6 @@ public class TestPublishing extends OpenCmsTestCase {
         offlineFile.setContents("xyz".getBytes());
         offlineFile = cms.writeFile(offlineFile);
         offlineFile = cms.readFile(resName);
-        assertTrue(offlineFile.getDateContent() < System.currentTimeMillis());
         assertDateContentAfter(cms, resName, time);
 
         // check the online project before publishing
