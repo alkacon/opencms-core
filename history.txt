@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/12 14:02:36 $
- * Version: $Revision: 1.934 $
+ * Date   : $Date: 2007/11/13 08:39:36 $
+ * Version: $Revision: 1.935 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -21,6 +21,7 @@ Legend:
 
 OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with static export not correctly deleting exported jsp pages
+- Added new multi language static export feature
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation
