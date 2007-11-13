@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2007/09/10 10:11:52 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/11/13 11:53:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -240,8 +240,11 @@ public class TestLinkValidation extends OpenCmsTestCase {
         String folderName = "testBrokenLinkFolder/";
         String folderName2 = "testBrokenLinkFolder2/";
         String imgName = "testBrokenLinkFile2.gif";
+
+        // create a new resource
         CmsResource res = cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
 
+        // just check that there are no relations after creation
         List relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
         assertTrue(relations.isEmpty());
         relations = cms.getRelationsForResource(resName, CmsRelationFilter.SOURCES);
@@ -249,7 +252,10 @@ public class TestLinkValidation extends OpenCmsTestCase {
         relations = cms.getRelationsForResource(resName, CmsRelationFilter.TARGETS);
         assertTrue(relations.isEmpty());
 
+        // set the content to create a relation to an image in a folder
         setContent(cms, resName, "<img src='" + folderName + imgName + "' >");
+
+        // check the new created relation, first as a broken link 
         relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
         assertEquals(1, relations.size());
         CmsRelation expected = new CmsRelation(
@@ -265,8 +271,11 @@ public class TestLinkValidation extends OpenCmsTestCase {
         assertEquals(1, relations.size());
         assertRelation(expected, (CmsRelation)relations.get(0));
 
+        // create an image in a different folder 
         cms.createResource(folderName2, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         cms.createResource(folderName2 + imgName, CmsResourceTypeImage.getStaticTypeId());
+
+        // just check the relation is still broken
         relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
         assertEquals(1, relations.size());
         assertRelation(expected, (CmsRelation)relations.get(0));
@@ -276,8 +285,12 @@ public class TestLinkValidation extends OpenCmsTestCase {
         assertEquals(1, relations.size());
         assertRelation(expected, (CmsRelation)relations.get(0));
 
+        // now move the folder so that the image path matches the link
         cms.moveResource(folderName2, folderName);
+        // check that it is at the right place
         CmsResource img = cms.readResource(folderName + imgName);
+
+        // check that the relation is now OK
         relations = cms.getRelationsForResource(resName, CmsRelationFilter.ALL);
         assertEquals(1, relations.size());
         expected = new CmsRelation(
