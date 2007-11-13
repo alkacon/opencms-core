@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/08/14 09:46:25 $
- * Version: $Revision: 1.248 $
+ * Date   : $Date: 2007/11/13 14:33:39 $
+ * Version: $Revision: 1.249 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.248 $
+ * @version $Revision: 1.249 $
  * 
  * @since 6.0.0 
  */
@@ -2826,16 +2826,22 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             throw e;
         }
 
+        // delete the ACL online and offline
         try {
-            // delete the ACL online and offline
-            m_driverManager.getUserDriver().removeAccessControlEntries(
-                dbc,
-                onlineProject,
-                onlineResource.getResourceId());
-            m_driverManager.getUserDriver().removeAccessControlEntries(
-                dbc,
-                dbc.currentProject(),
-                offlineResource.getResourceId());
+            if (onlineResource.getSiblingCount() == 1) {
+                // only if no siblings left
+                m_driverManager.getUserDriver().removeAccessControlEntries(
+                    dbc,
+                    onlineProject,
+                    onlineResource.getResourceId());
+            }
+            if (offlineResource.getSiblingCount() == 1) {
+                // only if no siblings left
+                m_driverManager.getUserDriver().removeAccessControlEntries(
+                    dbc,
+                    dbc.currentProject(),
+                    offlineResource.getResourceId());
+            }
         } catch (CmsDataAccessException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_REMOVING_ACL_1, offlineResource.toString()), e);

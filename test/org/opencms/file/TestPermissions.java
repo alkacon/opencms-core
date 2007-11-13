@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2007/11/05 13:51:21 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2007/11/13 14:33:39 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,8 +35,10 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsLogReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
@@ -46,6 +48,7 @@ import org.opencms.util.CmsUUID;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -56,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  */
 public class TestPermissions extends OpenCmsTestCase {
 
@@ -84,6 +87,7 @@ public class TestPermissions extends OpenCmsTestCase {
 
         suite.addTest(new TestPermissions("testLockStatusPermission"));
         suite.addTest(new TestPermissions("testPublishPermissions"));
+        suite.addTest(new TestPermissions("testSiblingPermissions"));
         suite.addTest(new TestPermissions("testVisiblePermission"));
         suite.addTest(new TestPermissions("testVisiblePermissionForFolder"));
         suite.addTest(new TestPermissions("testFilterForFolder"));
@@ -109,7 +113,214 @@ public class TestPermissions extends OpenCmsTestCase {
     }
 
     /**
-     * Test the publish permisssions.<p>
+     * @throws Throwable if something goes wrong
+     */
+    public void testDefaultPermissions() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing default permissions");
+
+        String resourcename = "testDefaultPermissions.txt";
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
+
+        cms.createUser("testAdmin", "secret", "", null);
+        cms.addUserToGroup("testAdmin", OpenCms.getDefaultUsers().getGroupAdministrators());
+        cms.createUser("testProjectmanager", "secret", "", null);
+        cms.addUserToGroup("testProjectmanager", OpenCms.getDefaultUsers().getGroupProjectmanagers());
+        cms.createUser("testUser", "secret", "", null);
+        cms.addUserToGroup("testUser", OpenCms.getDefaultUsers().getGroupUsers());
+        cms.createUser("testGuest", "secret", "", null);
+        cms.addUserToGroup("testGuest", OpenCms.getDefaultUsers().getGroupGuests());
+
+        assertEquals("+r+w+v+c+d", cms.getPermissions(resourcename, "testAdmin").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(resourcename, "testProjectmanager").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r+v", cms.getPermissions(resourcename, "testGuest").getPermissionString());
+    }
+
+    /**
+     * Test the resource filter files in a folder.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testFilterForFolder() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing resource filer for the files in a folder");
+
+        String folder = "/types";
+        // read only "image" resources
+        List resultList;
+        // resources in folder only method
+        resultList = cms.getResourcesInFolder(
+            folder,
+            CmsResourceFilter.requireType(CmsResourceTypeImage.getStaticTypeId()));
+        if (resultList.size() != 1) {
+            fail("There is only 1 image resource in the folder, not " + resultList.size());
+        }
+        // files in folder only method
+        resultList = cms.getFilesInFolder(folder, CmsResourceFilter.requireType(CmsResourceTypeImage.getStaticTypeId()));
+        if (resultList.size() != 1) {
+            fail("There is only 1 image resource in the folder, not " + resultList.size());
+        }
+        // subtree method
+        resultList = cms.readResources(folder, CmsResourceFilter.requireType(CmsResourceTypeImage.getStaticTypeId()));
+        if (resultList.size() != 1) {
+            fail("There is only 1 image resource in the folder, not " + resultList.size());
+        }
+    }
+
+    /**
+     * Test the lock status permissions.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testLockStatusPermission() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing lock status permissions on a file");
+
+        String resource = "/folder1/page1.html";
+        CmsResource res = cms.readResource(resource);
+
+        // first lock resource as user "test1"
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        cms.lockResource(resource);
+        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));
+
+        // now check resource as user "test2"
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL));
+        assertFalse(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));
+
+        // switch the lock to user "test2"
+        cms.changeLock(resource);
+        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));
+
+        // back to user "test1"
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL));
+        assertFalse(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));
+
+        // switch the lock to user "test1"
+        cms.changeLock(resource);
+        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));
+        cms.unlockResource(resource);
+    }
+
+    /**
+     * Tests the inheritance of permissions.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPermissionInheritance() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing inheritance of permissions");
+
+        String foldername = "testPermissionInheritance";
+        String subfoldername = foldername + "/" + "subfolder";
+        String resourcename = foldername + "/test.txt";
+        String subresourcename = subfoldername + "/subtest.txt";
+
+        cms.createResource(foldername, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(subfoldername, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
+        cms.createResource(subresourcename, CmsResourceTypePlain.getStaticTypeId());
+
+        assertEquals("+r+w+v", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o");
+
+        assertEquals("", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("+r+w+v", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o+i");
+        assertEquals("", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+
+        cms.createGroup("GroupA", "", 0, "");
+        cms.createGroup("GroupB", "", 0, "");
+        cms.createGroup("GroupC", "", 0, "");
+        cms.createGroup("GroupD", "", 0, "");
+
+        cms.addUserToGroup("testUser", "GroupA");
+        cms.addUserToGroup("testUser", "GroupB");
+        cms.addUserToGroup("testUser", "GroupC");
+        cms.addUserToGroup("testUser", "GroupD");
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupA", "+r");
+        assertEquals("+r", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupA", "+r+i");
+        assertEquals("+r", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("+r", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupB", "+w");
+        assertEquals("+r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("+r", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupB", "+w+i");
+        assertEquals("+r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("+r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupC", "-r");
+        assertEquals("-r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("+r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("+r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupC", "-r+i");
+        assertEquals("-r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("-r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("-r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupD", "-w");
+        assertEquals("-r-w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("-r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("-r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupD", "-w+i");
+        assertEquals("-r-w", cms.getPermissions(resourcename, "testUser").getPermissionString());
+        assertEquals("-r-w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
+        assertEquals("-r-w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
+    }
+
+    /**
+     * Tests the overwriting of permissions.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPermissionOverwrite() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing permission overwrite");
+
+        String foldername = "testPermissionOverwrite";
+        cms.createResource(foldername, CmsResourceTypeFolder.getStaticTypeId());
+
+        assertEquals("+r+w+v", cms.getPermissions(foldername, "testUser").getPermissionString());
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o");
+        assertEquals("", cms.getPermissions(foldername, "testUser").getPermissionString());
+
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "-r");
+        assertEquals("-r+w+v", cms.getPermissions(foldername, "testUser").getPermissionString());
+    }
+
+    /**
+     * Test the publish permissions.<p>
      * 
      * @throws Throwable if something goes wrong
      */
@@ -261,32 +472,69 @@ public class TestPermissions extends OpenCmsTestCase {
     }
 
     /**
+     * Test the permissions on siblings.<p>
+     * 
      * @throws Throwable if something goes wrong
      */
-    public void testDefaultPermissions() throws Throwable {
+    public void testSiblingPermissions() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        echo("Testing default permissions");
+        echo("Testing permissions on siblings");
 
-        String resourcename = "testDefaultPermissions.txt";
-        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
+        String resName1 = "/folder1/page4.html";
+        // set some permissions on a resource
+        CmsResource res1 = cms.readResource(resName1);
+        CmsUser user = cms.readUser(OpenCms.getDefaultUsers().getUserGuest());
+        CmsPermissionSet permissions = new CmsPermissionSetCustom("-r");
+        TestChacc.chaccFileUser(this, cms, resName1, user, permissions, 0);
 
-        cms.createUser("testAdmin", "secret", "", null);
-        cms.addUserToGroup("testAdmin", OpenCms.getDefaultUsers().getGroupAdministrators());
-        cms.createUser("testProjectmanager", "secret", "", null);
-        cms.addUserToGroup("testProjectmanager", OpenCms.getDefaultUsers().getGroupProjectmanagers());
-        cms.createUser("testUser", "secret", "", null);
-        cms.addUserToGroup("testUser", OpenCms.getDefaultUsers().getGroupUsers());
-        cms.createUser("testGuest", "secret", "", null);
-        cms.addUserToGroup("testGuest", OpenCms.getDefaultUsers().getGroupGuests());
+        // create a sibling
+        String resName2 = "/folder1/page4sib.html";
+        cms.createSibling(resName1, resName2, null);
 
-        assertEquals("+r+w+v+c+d", cms.getPermissions(resourcename, "testAdmin").getPermissionString());
-        assertEquals("+r+w+v", cms.getPermissions(resourcename, "testProjectmanager").getPermissionString());
-        assertEquals("+r+w+v", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("+r+v", cms.getPermissions(resourcename, "testGuest").getPermissionString());
+        // check that the sibling also has the permission set
+        CmsAccessControlEntry ace = new CmsAccessControlEntry(
+            res1.getResourceId(),
+            user.getId(),
+            permissions.getAllowedPermissions(),
+            permissions.getDeniedPermissions(),
+            CmsAccessControlEntry.ACCESS_FLAGS_USER);
+        assertAce(cms, resName1, ace);
+        assertAcl(cms, resName1, user.getId(), permissions);
+
+        // delete the sibling
+        cms.deleteResource(resName2, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // check the permissions on the remaining resource
+        assertAce(cms, resName1, ace);
+        assertAcl(cms, resName1, user.getId(), permissions);
+
+        // create the sibling again
+        cms.createSibling(resName1, resName2, null);
+        // check that the sibling also has the permission set
+        assertAce(cms, resName1, ace);
+        assertAcl(cms, resName1, user.getId(), permissions);
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, resName2, true, new CmsLogReport(Locale.ENGLISH, getClass()));
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // delete the sibling
+        cms.lockResource(resName2);
+        cms.deleteResource(resName2, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // publish
+        OpenCms.getPublishManager().publishResource(cms, resName2);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // check the permissions on the remaining resource
+        assertAce(cms, resName1, ace);
+        assertAcl(cms, resName1, user.getId(), permissions);
     }
 
     /**
+     * Test permissions after deleting a user.<p>
+     * 
      * @throws Throwable if something goes wrong
      */
     public void testUserDeletion() throws Throwable {
@@ -327,223 +575,7 @@ public class TestPermissions extends OpenCmsTestCase {
     }
 
     /**
-     * Tests the overwriting of permissions.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testPermissionOverwrite() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing permission overwrite");
-
-        String foldername = "testPermissionOverwrite";
-        cms.createResource(foldername, CmsResourceTypeFolder.getStaticTypeId());
-
-        assertEquals("+r+w+v", cms.getPermissions(foldername, "testUser").getPermissionString());
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o");
-        assertEquals("", cms.getPermissions(foldername, "testUser").getPermissionString());
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "-r");
-        assertEquals("-r+w+v", cms.getPermissions(foldername, "testUser").getPermissionString());
-    }
-
-    /**
-     * Tests the inheritance of permissions.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testPermissionInheritance() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing inheritance of permissions");
-
-        String foldername = "testPermissionInheritance";
-        String subfoldername = foldername + "/" + "subfolder";
-        String resourcename = foldername + "/test.txt";
-        String subresourcename = subfoldername + "/subtest.txt";
-
-        cms.createResource(foldername, CmsResourceTypeFolder.getStaticTypeId());
-        cms.createResource(subfoldername, CmsResourceTypeFolder.getStaticTypeId());
-        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId());
-        cms.createResource(subresourcename, CmsResourceTypePlain.getStaticTypeId());
-
-        assertEquals("+r+w+v", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("+r+w+v", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("+r+w+v", cms.getPermissions(subresourcename, "testUser").getPermissionString());
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o");
-
-        assertEquals("", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("+r+w+v", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("+r+w+v", cms.getPermissions(subresourcename, "testUser").getPermissionString());
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o+i");
-        assertEquals("", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("", cms.getPermissions(subresourcename, "testUser").getPermissionString());
-
-        cms.createGroup("GroupA", "", 0, "");
-        cms.createGroup("GroupB", "", 0, "");
-        cms.createGroup("GroupC", "", 0, "");
-        cms.createGroup("GroupD", "", 0, "");
-
-        cms.addUserToGroup("testUser", "GroupA");
-        cms.addUserToGroup("testUser", "GroupB");
-        cms.addUserToGroup("testUser", "GroupC");
-        cms.addUserToGroup("testUser", "GroupD");
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupA", "+r");
-        assertEquals("+r", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("", cms.getPermissions(subresourcename, "testUser").getPermissionString());
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupA", "+r+i");
-        assertEquals("+r", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("+r", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("+r", cms.getPermissions(subresourcename, "testUser").getPermissionString());
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupB", "+w");
-        assertEquals("+r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("+r", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("+r", cms.getPermissions(subresourcename, "testUser").getPermissionString());
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupB", "+w+i");
-        assertEquals("+r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("+r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("+r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupC", "-r");
-        assertEquals("-r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("+r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("+r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupC", "-r+i");
-        assertEquals("-r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("-r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("-r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupD", "-w");
-        assertEquals("-r-w", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("-r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("-r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
-
-        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupD", "-w+i");
-        assertEquals("-r-w", cms.getPermissions(resourcename, "testUser").getPermissionString());
-        assertEquals("-r-w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
-        assertEquals("-r-w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
-    }
-
-    /**
-     * Test the resource filter files in a folder.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testFilterForFolder() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing resource filer for the files in a folder");
-
-        String folder = "/types";
-        // read only "image" resources
-        List resultList;
-        // resources in folder only method
-        resultList = cms.getResourcesInFolder(
-            folder,
-            CmsResourceFilter.requireType(CmsResourceTypeImage.getStaticTypeId()));
-        if (resultList.size() != 1) {
-            fail("There is only 1 image resource in the folder, not " + resultList.size());
-        }
-        // files in folder only method
-        resultList = cms.getFilesInFolder(folder, CmsResourceFilter.requireType(CmsResourceTypeImage.getStaticTypeId()));
-        if (resultList.size() != 1) {
-            fail("There is only 1 image resource in the folder, not " + resultList.size());
-        }
-        // subtree method
-        resultList = cms.readResources(folder, CmsResourceFilter.requireType(CmsResourceTypeImage.getStaticTypeId()));
-        if (resultList.size() != 1) {
-            fail("There is only 1 image resource in the folder, not " + resultList.size());
-        }
-    }
-
-    /**
-     * Test the visible permisssions on a list of files in a folder.<p>
-     * 
-     * @throws Throwable if something goes wrong
-     */
-    public void testVisiblePermissionForFolder() throws Throwable {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing visible permissions on a list of files in a folder");
-
-        String folder = "/types";
-
-        // apply permissions to folder
-        cms.lockResource(folder);
-        // modify the resource permissions for the tests
-        // remove all "Users" group permissions 
-        cms.chacc(
-            folder,
-            I_CmsPrincipal.PRINCIPAL_GROUP,
-            OpenCms.getDefaultUsers().getGroupUsers(),
-            0,
-            0,
-            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
-        // also for "Project managers" to avoid conflicts with other tests in this suite
-        cms.chacc(
-            folder,
-            I_CmsPrincipal.PRINCIPAL_GROUP,
-            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
-            0,
-            0,
-            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
-        // allow only read for user "test1"
-        cms.chacc(
-            folder,
-            I_CmsPrincipal.PRINCIPAL_USER,
-            "test1",
-            CmsPermissionSet.PERMISSION_READ,
-            0,
-            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
-        // allow read and visible for user "test2"
-        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ
-            + CmsPermissionSet.PERMISSION_VIEW, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE
-            + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
-        cms.unlockResource(folder);
-
-        List resultList;
-
-        cms.loginUser("test1", "test1");
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        // read excluding invisible resources
-        resultList = cms.readResources(folder, CmsResourceFilter.ONLY_VISIBLE);
-        if (resultList.size() > 0) {
-            fail("Was able to read "
-                + resultList.size()
-                + " invisible resources in a folder with filter excluding invisible resources");
-        }
-        boolean hasViewAccess = cms.hasPermissions(
-            cms.readResource(folder, CmsResourceFilter.ALL),
-            CmsPermissionSet.ACCESS_VIEW,
-            false,
-            CmsResourceFilter.ONLY_VISIBLE);
-        assertFalse("the user has view access permission despite the view permission has been removed", hasViewAccess);
-        // read again now including invisible resources
-        resultList = cms.readResources(folder, CmsResourceFilter.ALL);
-        if (resultList.size() != 6) {
-            fail("There should be 6 visible resource in the folder, not " + resultList.size());
-        }
-
-        cms.loginUser("test2", "test2");
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        resultList = cms.readResources(folder, CmsResourceFilter.ONLY_VISIBLE);
-        if (resultList.size() != 6) {
-            fail("There should be 6 visible resource in the folder, not " + resultList.size());
-        }
-    }
-
-    /**
-     * Test the visible permisssions.<p>
+     * Test the visible permissions.<p>
      * 
      * @throws Throwable if something goes wrong
      */
@@ -622,43 +654,78 @@ public class TestPermissions extends OpenCmsTestCase {
     }
 
     /**
-     * Test the lock status permisssions.<p>
+     * Test the visible permissions on a list of files in a folder.<p>
      * 
      * @throws Throwable if something goes wrong
      */
-    public void testLockStatusPermission() throws Throwable {
+    public void testVisiblePermissionForFolder() throws Throwable {
 
         CmsObject cms = getCmsObject();
-        echo("Testing lock status permissions on a file");
+        echo("Testing visible permissions on a list of files in a folder");
 
-        String resource = "/folder1/page1.html";
-        CmsResource res = cms.readResource(resource);
+        String folder = "/types";
 
-        // first lock resource as user "test1"
+        // apply permissions to folder
+        cms.lockResource(folder);
+        // modify the resource permissions for the tests
+        // remove all "Users" group permissions 
+        cms.chacc(
+            folder,
+            I_CmsPrincipal.PRINCIPAL_GROUP,
+            OpenCms.getDefaultUsers().getGroupUsers(),
+            0,
+            0,
+            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
+        // also for "Project managers" to avoid conflicts with other tests in this suite
+        cms.chacc(
+            folder,
+            I_CmsPrincipal.PRINCIPAL_GROUP,
+            OpenCms.getDefaultUsers().getGroupProjectmanagers(),
+            0,
+            0,
+            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
+        // allow only read for user "test1"
+        cms.chacc(
+            folder,
+            I_CmsPrincipal.PRINCIPAL_USER,
+            "test1",
+            CmsPermissionSet.PERMISSION_READ,
+            0,
+            CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
+        // allow read and visible for user "test2"
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ
+            + CmsPermissionSet.PERMISSION_VIEW, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE
+            + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
+        cms.unlockResource(folder);
+
+        List resultList;
+
         cms.loginUser("test1", "test1");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        cms.lockResource(resource);
-        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));
+        // read excluding invisible resources
+        resultList = cms.readResources(folder, CmsResourceFilter.ONLY_VISIBLE);
+        if (resultList.size() > 0) {
+            fail("Was able to read "
+                + resultList.size()
+                + " invisible resources in a folder with filter excluding invisible resources");
+        }
+        boolean hasViewAccess = cms.hasPermissions(
+            cms.readResource(folder, CmsResourceFilter.ALL),
+            CmsPermissionSet.ACCESS_VIEW,
+            false,
+            CmsResourceFilter.ONLY_VISIBLE);
+        assertFalse("the user has view access permission despite the view permission has been removed", hasViewAccess);
+        // read again now including invisible resources
+        resultList = cms.readResources(folder, CmsResourceFilter.ALL);
+        if (resultList.size() != 6) {
+            fail("There should be 6 visible resource in the folder, not " + resultList.size());
+        }
 
-        // now check resource as user "test2"
         cms.loginUser("test2", "test2");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL));
-        assertFalse(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));
-
-        // switch the lock to user "test2"
-        cms.changeLock(resource);
-        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));
-
-        // back to user "test1"
-        cms.loginUser("test1", "test1");
-        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
-        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL));
-        assertFalse(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));
-
-        // switch the lock to user "test1"
-        cms.changeLock(resource);
-        assertTrue(cms.hasPermissions(res, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL));
-        cms.unlockResource(resource);
+        resultList = cms.readResources(folder, CmsResourceFilter.ONLY_VISIBLE);
+        if (resultList.size() != 6) {
+            fail("There should be 6 visible resource in the folder, not " + resultList.size());
+        }
     }
 }
