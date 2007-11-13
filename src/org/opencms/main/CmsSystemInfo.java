@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2007/09/07 11:52:43 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2007/11/13 11:52:19 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,13 +78,13 @@ public class CmsSystemInfo {
     /** Static version number to use if version.properties can not be read. */
     private static final String DEFAULT_VERSION_NUMBER = "7.0.x";
 
-    /** The abolute path to the "opencms.properties" configuration file (in the "real" file system). */
+    /** The absolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
 
     /** The web application context path. */
     private String m_contextPath;
 
-    /** Default encoding, can be overwritten in "opencms.properties". */
+    /** Default encoding, can be set in opencms-system.xml. */
     private String m_defaultEncoding;
 
     /** The default web application (usually "ROOT"). */
@@ -244,8 +244,8 @@ public class CmsSystemInfo {
     /**
      * Return the OpenCms default character encoding.<p>
      * 
-     * The default is set in the "opencms.properties" file.
-     * If this is not set in "opencms.properties" the default 
+     * The default is set in the opencms-system.xml file.
+     * If this is not set in opencms-system.xml the default 
      * is "UTF-8".<p>
      * 
      * @return the default encoding, e.g. "UTF-8" or "ISO-8859-1"
@@ -622,7 +622,7 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Sets the default encoding, called after the properties have been read.<p>
+     * Sets the default encoding, called after the configuration files have been read.<p>
      *  
      * @param encoding the default encoding to set
      */
