@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestOpenCmsSingleton.java,v $
- * Date   : $Date: 2007/08/13 16:30:02 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/11/13 11:54:02 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test the static OpenCms singleton object.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class TestOpenCmsSingleton extends OpenCmsTestCase {
 
@@ -121,14 +121,17 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
             CmsResourceTypeJsp.getStaticTypeId());
         // note: default test configuration is done in opencms-vfs.xml and may be different from standard installation
         List defaultProperties = jsp.getConfiguredDefaultProperties();
-        assertEquals("Test configuration has 2 default properties configured for JSP", 2, defaultProperties.size());        
+        assertEquals("Test configuration has 2 default properties configured for JSP", 2, defaultProperties.size());
         Iterator i = defaultProperties.iterator();
         String jspEncoding = null;
         while (i.hasNext()) {
             CmsProperty property = (CmsProperty)i.next();
             if (CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING.equals(property.getName())) {
                 jspEncoding = property.getValue();
-                assertEquals("Test configuration has property value '${opencms.default.encoding}' configured for JSP", 2, defaultProperties.size());        
+                assertEquals(
+                    "Test configuration has property value '${opencms.default.encoding}' configured for JSP",
+                    2,
+                    defaultProperties.size());
                 // resolve the macro
                 CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
                 jspEncoding = CmsMacroResolver.newInstance().setCmsObject(cms).resolveMacros(jspEncoding);
@@ -272,25 +275,24 @@ public class TestOpenCmsSingleton extends OpenCmsTestCase {
     public void testInitResource() throws Exception {
 
         echo("Testing access to initResource method");
-        
+
         CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-        
-        cms.loginUser("Admin", "admin");        
+
+        cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         cms.getRequestContext().setSiteRoot("/sites/default/");
 
-
         HttpServletRequest req = new OpenCmsTestServletRequest();
         HttpServletResponse res = new OpenCmsTestServletResponse();
-        
+
         CmsResource resource = OpenCms.initResource(cms, "/folder1/subfolder12/", req, res);
-        assertEquals ("/sites/default/folder1/subfolder12/index.html", resource.getRootPath());
-        
+        assertEquals("/sites/default/folder1/subfolder12/index.html", resource.getRootPath());
+
         CmsProperty defaultFileProperty = new CmsProperty("default-file", "page1.html", null);
         cms.lockResource("/folder1/subfolder12/");
         cms.writePropertyObject("/folder1/subfolder12/", defaultFileProperty);
-        
+
         CmsResource resource2 = OpenCms.initResource(cms, "/folder1/subfolder12/", req, res);
-        assertEquals ("/sites/default/folder1/subfolder12/page1.html", resource2.getRootPath());        
-    }    
+        assertEquals("/sites/default/folder1/subfolder12/page1.html", resource2.getRootPath());
+    }
 }
