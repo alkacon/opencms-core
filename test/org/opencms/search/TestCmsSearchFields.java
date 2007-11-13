@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchFields.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/11/13 14:34:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in special fields of extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestCmsSearchFields extends OpenCmsTestCase {
 
@@ -113,9 +113,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         echo("Testing searching in non-standard content fields");
 
         // the search index may not have been created so far
-        OpenCms.getSearchManager().rebuildIndex(
-            INDEX_ONLINE,
-            new CmsShellReport(Locale.ENGLISH));
+        OpenCms.getSearchManager().rebuildIndex(INDEX_ONLINE, new CmsShellReport(Locale.ENGLISH));
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
