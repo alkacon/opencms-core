@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsTermHighlighterHtml.java,v $
- * Date   : $Date: 2007/11/08 14:00:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/11/13 16:52:19 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.lucene.search.highlight.QueryScorer;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,10 +91,15 @@ public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
 
                 TokenStream stream = analyzer.tokenStream(fieldName, new StringReader(text));
 
-                if (highlighter == null) {
+                if (params.isExcerptOnlySearchedFields()) {
+                    // highlight the search query only in the matching fields 
                     highlighter = new Highlighter(new QueryScorer(query, fieldName));
+                } else {
+                    // highlight search query in all fields
+                    if (highlighter == null) {
+                        highlighter = new Highlighter(new QueryScorer(query));
+                    }
                 }
-
                 String fragment = highlighter.getBestFragments(
                     stream,
                     text,

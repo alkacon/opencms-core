@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2007/08/27 11:28:14 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2007/11/13 16:52:19 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.65 $ 
+ * @version $Revision: 1.66 $ 
  * 
  * @since 6.0.0 
  */
@@ -772,36 +772,31 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 query.add(categoryQuery, BooleanClause.Occur.MUST);
             }
 
+            // create the index searcher
+            searcher = new IndexSearcher(m_path);
+
+            // store separate fields query for excerpt highlighting  
+            Query fieldsQuery;
             if ((params.getFields() != null) && (params.getFields().size() > 0)) {
+                BooleanQuery booleanFieldsQuery = new BooleanQuery();
                 // this is a "regular" query over one or more fields
-                BooleanQuery fieldsQuery = new BooleanQuery();
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                 for (int i = 0; i < params.getFields().size(); i++) {
                     QueryParser p = new QueryParser((String)params.getFields().get(i), languageAnalyzer);
-                    fieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
+                    booleanFieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
                 }
-                // finally add the field queries to the main query
-                query.add(fieldsQuery, BooleanClause.Occur.MUST);
+                fieldsQuery = searcher.rewrite(booleanFieldsQuery);
             } else {
                 // if no fields are provided, just use the "content" field by default
                 QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, languageAnalyzer);
-                query.add(p.parse(params.getQuery()), BooleanClause.Occur.MUST);
+                fieldsQuery = searcher.rewrite(p.parse(params.getQuery()));
             }
+            // finally add the field queries to the main query
+            query.add(fieldsQuery, BooleanClause.Occur.MUST);
 
-            // create the index searcher
-            searcher = new IndexSearcher(m_path);
-            Query finalQuery;
-
-            if (m_createExcerpt || LOG.isDebugEnabled()) {
-                // we re-write the query because this enables highlighting of wildcard terms in excerpts 
-                finalQuery = searcher.rewrite(query);
-            } else {
-                finalQuery = query;
-            }
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_BASE_QUERY_1, query));
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_REWRITTEN_QUERY_1, finalQuery));
-
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FIELDS_QUERY_1, fieldsQuery));
             }
 
             // collect the categories
@@ -811,13 +806,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 // this may slow down searched by an order of magnitude
                 categoryCollector = new CmsSearchCategoryCollector(searcher);
                 // perform a first search to collect the categories
-                searcher.search(finalQuery, categoryCollector);
+                searcher.search(query, categoryCollector);
                 // store the result
                 searchResults.setCategories(categoryCollector.getCategoryCountResult());
             }
 
             // perform the search operation          
-            hits = searcher.search(finalQuery, params.getSort());
+            hits = searcher.search(query, params.getSort());
 
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
@@ -854,7 +849,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                                 String excerpt = null;
                                 if (m_createExcerpt) {
                                     I_CmsTermHighlighter highlighter = OpenCms.getSearchManager().getHighlighter();
-                                    excerpt = highlighter.getExcerpt(doc, this, params, finalQuery, languageAnalyzer);
+                                    excerpt = highlighter.getExcerpt(doc, this, params, fieldsQuery, languageAnalyzer);
                                 }
                                 searchResult = new CmsSearchResult(Math.round(hits.score(i) * 100f), doc, excerpt);
                                 searchResults.add(searchResult);

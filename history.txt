@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/13 14:56:10 $
- * Version: $Revision: 1.937 $
+ * Date   : $Date: 2007/11/13 16:52:19 $
+ * Version: $Revision: 1.938 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -22,6 +22,7 @@ Legend:
 OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with static export not correctly deleting exported jsp pages
 * Fixed issue with deleting ACEs from siblings when deleting one
+* Fixed issue with search result excerpts highlighting path terms
 - Added new multi language static export feature
 - Added flags to organizational units to be hidden from the login form or from the account management view
 
