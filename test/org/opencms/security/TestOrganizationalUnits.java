@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/08/13 16:30:12 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/13 12:00:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -1387,7 +1387,6 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertEquals(0, rootOu.getFlags());
         assertNull(rootOu.getParentFqn());
         assertEquals("root organizational unit", rootOu.getDescription(Locale.ENGLISH));
-        assertEquals("Hauptorganisationseinheit", rootOu.getDescription(Locale.GERMAN));
         assertEquals("", rootOu.getName());
         assertEquals(CmsUUID.getNullUUID(), rootOu.getProjectId());
         assertEquals(cms.readFolder("/system/orgunits").getStructureId(), rootOu.getId());
