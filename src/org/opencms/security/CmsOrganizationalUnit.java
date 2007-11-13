@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/11/05 14:10:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/11/13 14:56:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,14 +45,17 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.5.6 
  */
 public class CmsOrganizationalUnit {
 
-    /** The flag constant to hide the organizational units from the login form and account management. */
-    public static final int FLAG_HIDE = 1;
+    /** The flag constant to hide the organizational units from the account management GUI. */
+    public static final int FLAG_HIDE_GUI = 8;
+
+    /** The flag constant to hide the organizational units from the login form. */
+    public static final int FLAG_HIDE_LOGIN = 1;
 
     /** The flag constant to prevent default groups and projects to be created while creating the organizational unit. */
     public static final int FLAG_NO_DEFAULTS = 4;
@@ -312,13 +315,23 @@ public class CmsOrganizationalUnit {
     }
 
     /**
-     * Checks if this organizational unit has the "hide" flag set.<p>
+     * Checks if this organizational unit has the "hide from account management GUI" flag set.<p>
      * 
-     * @return <code>true</code> if this organizational unit has the "hide" flag set
+     * @return <code>true</code> if this organizational unit has the "hide from account management GUI" flag set
      */
-    public boolean hasFlagHide() {
+    public boolean hasFlagHideGUI() {
 
-        return hasFlag(FLAG_HIDE);
+        return hasFlag(FLAG_HIDE_GUI);
+    }
+
+    /**
+     * Checks if this organizational unit has the "hide from login form" flag set.<p>
+     * 
+     * @return <code>true</code> if this organizational unit has the "hide from login form" flag set
+     */
+    public boolean hasFlagHideLogin() {
+
+        return hasFlag(FLAG_HIDE_LOGIN);
     }
 
     /**
@@ -358,11 +371,19 @@ public class CmsOrganizationalUnit {
     }
 
     /**
-     * Sets the "hide" flag.<p>
+     * Sets the "hide from account management GUI" flag.<p>
      */
-    public void setFlagHide() {
+    public void setFlagHideGUI() {
 
-        addFlag(FLAG_HIDE);
+        addFlag(FLAG_HIDE_GUI);
+    }
+
+    /**
+     * Sets the "hide from login form" flag.<p>
+     */
+    public void setFlagHideLogin() {
+
+        addFlag(FLAG_HIDE_LOGIN);
     }
 
     /**

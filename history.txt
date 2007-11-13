@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/13 14:33:39 $
- * Version: $Revision: 1.936 $
+ * Date   : $Date: 2007/11/13 14:56:10 $
+ * Version: $Revision: 1.937 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -23,6 +23,7 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with static export not correctly deleting exported jsp pages
 * Fixed issue with deleting ACEs from siblings when deleting one
 - Added new multi language static export feature
+- Added flags to organizational units to be hidden from the login form or from the account management view
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation
