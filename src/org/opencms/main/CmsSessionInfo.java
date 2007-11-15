@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2007/11/15 11:44:30 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -172,9 +172,9 @@ public class CmsSessionInfo implements Comparable, Serializable {
     }
 
     /**
-     * Returns the fully qualified name of the organizational unit ofr this session.<p>
+     * Returns the fully qualified name of the organizational unit for this session.<p>
      * 
-     * @return the fully qualified name of the organizational unit ofr this session
+     * @return the fully qualified name of the organizational unit for this session
      */
     public String getOrganizationalUnitFqn() {
 
@@ -214,10 +214,10 @@ public class CmsSessionInfo implements Comparable, Serializable {
     }
 
     /**
-     * Returns the time, in miliseconds, this session has been active,
+     * Returns the time, in milliseconds, this session has been active,
      * that is the time of the last update minus the creation time.<p> 
      * 
-     * @return the time, in miliseconds, this session has been active
+     * @return the time, in milliseconds, this session has been active
      */
     public long getTimeActive() {
 
@@ -264,7 +264,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
 
     /**
      * Returns <code>true</code> if this session info has expired, that 
-     * is it has not been updated in the time set by the maximum inactivitiy interval.<p>
+     * is it has not been updated in the time set by the maximum inactivity interval.<p>
      *  
      * @return <code>true</code> if this session info has expired
      */
