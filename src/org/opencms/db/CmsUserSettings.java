@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2007/10/22 10:04:11 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2007/11/15 14:35:45 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 6.0.0
  */
@@ -1107,9 +1107,21 @@ public class CmsUserSettings {
         }
         // start project       
         if (!getStartProject().equals(OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject())) {
-            m_user.setAdditionalInfo(PREFERENCES
-                + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
-                + CmsWorkplaceConfiguration.N_PROJECT, getStartProject());
+            try {
+                // be sure the project is valid
+                if (cms != null) {
+                    cms.readProject(getStartProject());
+                }
+                m_user.setAdditionalInfo(PREFERENCES
+                    + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                    + CmsWorkplaceConfiguration.N_PROJECT, getStartProject());
+            } catch (Exception e) {
+                if (cms != null) {
+                    m_user.deleteAdditionalInfo(PREFERENCES
+                        + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
+                        + CmsWorkplaceConfiguration.N_PROJECT);
+                }
+            }
         } else if (cms != null) {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
