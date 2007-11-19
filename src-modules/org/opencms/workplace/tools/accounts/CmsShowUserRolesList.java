@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserRolesList.java,v $
- * Date   : $Date: 2007/08/13 16:29:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -184,6 +185,20 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
     public void setParamUserid(String userid) {
 
         m_paramUserid = userid;
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#writeDialog()
+     */
+    public void writeDialog() throws IOException {
+
+        try {
+            if (!getCms().readUser(new CmsUUID(getParamUserid())).isWebuser()) {
+                super.writeDialog();
+            }
+        } catch (CmsException e) {
+            // ignore
+        }
     }
 
     /**

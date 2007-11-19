@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2007/08/13 16:29:49 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2007/11/19 14:40:53 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.security.Principal;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +74,9 @@ public interface I_CmsPrincipal extends Principal {
 
     /** Flag to indicate a user is not able to manage himself. */
     int FLAG_USER_MANAGED = 2;
+
+    /** Flag to indicate a user is a webuser. */
+    int FLAG_USER_WEBUSER = 32768; //2^15
 
     /** Identifier for group principals. */
     String PRINCIPAL_GROUP = "GROUP";

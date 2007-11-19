@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2007/09/27 09:52:03 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2007/11/19 14:40:53 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 6.0.0
  * 
@@ -219,6 +219,8 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
      * @param type the user type to check
      * 
      * @return true if the provided user type indicates a system user
+     * 
+     * @deprecated the user type concept has been abandoned
      */
     public static boolean isSystemUser(int type) {
 
@@ -524,6 +526,16 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     public boolean isUser() {
 
         return true;
+    }
+
+    /**
+     * Checks if the user is marked as webuser.<p>
+     * 
+     * @return <code>true</code> if the user is marked as webuser
+     */
+    public boolean isWebuser() {
+
+        return (getFlags() & FLAG_USER_WEBUSER) == FLAG_USER_WEBUSER;
     }
 
     /**

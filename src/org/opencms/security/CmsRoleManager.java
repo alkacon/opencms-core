@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2007/08/13 16:29:49 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/19 14:40:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.6
  */
@@ -175,6 +175,10 @@ public class CmsRoleManager {
         Iterator it = getOrgUnitsForRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn), includeSubOus).iterator();
         while (it.hasNext()) {
             CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
+            if (orgUnit.hasFlagWebuser()) {
+                // webuser are never manageable
+                continue;
+            }
             users.addAll(OpenCms.getOrgUnitManager().getUsers(cms, orgUnit.getName(), false));
         }
         return users;
@@ -261,6 +265,7 @@ public class CmsRoleManager {
         boolean recursive) throws CmsException {
 
         List groups;
+        ouFqn = CmsOrganizationalUnit.removeLeadingSeparator(ouFqn);
         if (!recursive) {
             groups = m_securityManager.getGroupsOfUser(
                 cms.getRequestContext(),

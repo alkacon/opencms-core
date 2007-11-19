@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitOverviewDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,8 @@
 
 package org.opencms.workplace.tools.accounts;
 
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6
  */
@@ -130,37 +130,22 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
      */
     protected void initOrgUnitObject() {
 
-        if (m_orgunit == null) {
-            try {
-                m_orgunit = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn());
-                m_orgUnitBean = new CmsOrgUnitBean();
-                m_orgUnitBean.setDescription(m_orgunit.getDescription(getLocale()));
-                m_orgUnitBean.setName(m_orgunit.getName());
-                if (!m_orgunit.getName().equals("")) {
-                    m_orgUnitBean.setParentOu(m_orgunit.getParentFqn());
-                }
-                m_orgUnitBean.setFqn(m_orgunit.getName());
-                m_orgUnitBean.setResources(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
-                    getCms(),
-                    m_orgunit.getName()));
-            } catch (Exception e) {
-                // noop
+        try {
+            CmsOrganizationalUnit orgunit = OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                getCms(),
+                getParamOufqn());
+            m_orgUnitBean = new CmsOrgUnitBean();
+            m_orgUnitBean.setDescription(orgunit.getDescription(getLocale()));
+            m_orgUnitBean.setName(orgunit.getName());
+            if (!orgunit.getName().equals("")) {
+                m_orgUnitBean.setParentOu(orgunit.getParentFqn());
             }
-        } else {
-            try {
-                m_orgUnitBean = new CmsOrgUnitBean();
-                m_orgUnitBean.setDescription(m_orgunit.getDescription(getLocale()));
-                m_orgUnitBean.setName(m_orgunit.getName());
-                if (!m_orgunit.getName().equals("")) {
-                    m_orgUnitBean.setParentOu(m_orgunit.getParentFqn());
-                }
-                m_orgUnitBean.setFqn(m_orgunit.getName());
-                m_orgUnitBean.setResources(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
-                    getCms(),
-                    m_orgunit.getName()));
-            } catch (CmsException e) {
-                // noop
-            }
+            m_orgUnitBean.setFqn(orgunit.getName());
+            m_orgUnitBean.setResources(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                getCms(),
+                orgunit.getName()));
+        } catch (Exception e) {
+            // noop
         }
     }
 }

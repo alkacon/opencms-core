@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditGroupDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,7 +142,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
         }
 
         if (errors.isEmpty() && isNewGroup()) {
-            if (getParamCloseLink() != null && getParamCloseLink().indexOf("path=" + getListRootPath()) > -1) {
+            if ((getParamCloseLink() != null) && (getParamCloseLink().indexOf("path=" + getListRootPath()) > -1)) {
                 // set closelink
                 Map argMap = new HashMap();
                 argMap.put("groupid", m_group.getId());
@@ -321,11 +321,19 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
             result.append(createDialogRowsHtml(0, 4));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
-            result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
-            result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(5, 6));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockEnd());
+            boolean webuserOu = false;
+            try {
+                webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser();
+            } catch (CmsException e) {
+                // ignore
+            }
+            if (!webuserOu) {
+                result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
+                result.append(createWidgetTableStart());
+                result.append(createDialogRowsHtml(5, 6));
+                result.append(createWidgetTableEnd());
+                result.append(dialogBlockEnd());
+            }
         }
 
         result.append(createWidgetTableEnd());
@@ -339,11 +347,16 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
 
         // initialize the user object to use for the dialog
         initGroupObject();
-
+        boolean webuserOu = false;
+        try {
+            webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser();
+        } catch (CmsException e) {
+            // ignore
+        }
         setKeyPrefix(KEY_PREFIX);
 
         // widgets to display
-        if (m_group.getId() == null && isEditable(m_group)) {
+        if ((m_group.getId() == null) && isEditable(m_group)) {
             addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsInputWidget()));
         } else {
             addWidget(new CmsWidgetDialogParameter(this, "name", PAGES[0], new CmsDisplayWidget()));
@@ -356,15 +369,19 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
                 getParamOufqn())));
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsCheckboxWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsCheckboxWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsCheckboxWidget()));
+            if (!webuserOu) {
+                addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsCheckboxWidget()));
+                addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsCheckboxWidget()));
+            }
         } else {
             addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "parentGroup", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(this, "assignedOu", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_group, "enabled", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsDisplayWidget()));
+            if (!webuserOu) {
+                addWidget(new CmsWidgetDialogParameter(m_group, "projectManager", PAGES[0], new CmsDisplayWidget()));
+                addWidget(new CmsWidgetDialogParameter(m_group, "projectCoWorker", PAGES[0], new CmsDisplayWidget()));
+            }
         }
     }
 
@@ -416,7 +433,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
                 // test
                 m_group.getId();
             }
-            if (m_group.getParentId() != null && !m_group.getParentId().isNullUUID()) {
+            if ((m_group.getParentId() != null) && !m_group.getParentId().isNullUUID()) {
                 setParentGroup(getCms().getParent(m_group.getName()).getName());
             }
         } catch (Exception e) {

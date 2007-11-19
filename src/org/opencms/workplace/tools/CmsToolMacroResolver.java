@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolMacroResolver.java,v $
- * Date   : $Date: 2007/08/13 16:29:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,12 +53,13 @@ import java.util.List;
  *   <li>admin.jobName|id</li>
  *   <li>admin.projectName|id</li>
  *   <li>admin.ouDescription|fqn</li>
+ *   <li>admin.ouType|fqn</li>
  *   <li>admin.roleName|id</li>
  * </ul><p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * @since 6.0.0 
  */
 public class CmsToolMacroResolver implements I_CmsMacroResolver {
@@ -82,6 +83,9 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
     public static final String KEY_OUDESCRIPTION = "ouDescription.";
 
     /** Identifier for admin parameter names. */
+    public static final String KEY_OUTYPE = "ouType.";
+
+    /** Identifier for admin parameter names. */
     public static final String KEY_ROLENAME = "roleName.";
 
     /** Identified for admin parameter commands. */
@@ -91,6 +95,7 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
         KEY_JOBNAME,
         KEY_PROJECTNAME,
         KEY_OUDESCRIPTION,
+        KEY_OUTYPE,
         KEY_ROLENAME};
 
     /** The admin commands wrapped in a List. */
@@ -167,10 +172,18 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
                 return OpenCms.getScheduleManager().getJob(id).getJobName();
             }
             if (macro == CmsToolMacroResolver.KEY_OUDESCRIPTION) {
-                return OpenCms.getOrgUnitManager().readOrganizationalUnit(m_wp.getCms(), id).getDisplayName(m_wp.getLocale());
+                return OpenCms.getOrgUnitManager().readOrganizationalUnit(m_wp.getCms(), id).getDisplayName(
+                    m_wp.getLocale());
+            }
+            if (macro == CmsToolMacroResolver.KEY_OUTYPE) {
+                if (OpenCms.getOrgUnitManager().readOrganizationalUnit(m_wp.getCms(), id).hasFlagWebuser()) {
+                    return Messages.get().getBundle(m_wp.getLocale()).key(Messages.GUI_OU_TYPE_WEBUSER_0);
+                }
+                return Messages.get().getBundle(m_wp.getLocale()).key(Messages.GUI_OU_TYPE_NORMAL_0);
             }
             if (macro == CmsToolMacroResolver.KEY_ROLENAME) {
-                return CmsRole.valueOf(m_wp.getCms().readGroup(id)).getName(m_wp.getCms().getRequestContext().getLocale());
+                return CmsRole.valueOf(m_wp.getCms().readGroup(id)).getName(
+                    m_wp.getCms().getRequestContext().getLocale());
             }
         } catch (Exception e) {
             // ignore

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2007/11/13 12:00:07 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/11/19 14:40:53 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -128,7 +128,9 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         suite.addTest(new TestOrganizationalUnits("testMembership"));
         suite.addTest(new TestOrganizationalUnits("testPersistence"));
         suite.addTest(new TestOrganizationalUnits("testDelete"));
+        suite.addTest(new TestOrganizationalUnits("testRoleCacheIssue"));
         suite.addTest(new TestOrganizationalUnits("testBadName"));
+        suite.addTest(new TestOrganizationalUnits("testWebuserOU"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -147,7 +149,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
     }
 
     /**
-     * Tests handling with a deeper level ou.<p>
+     * Tests ou creating with illegal name.<p>
      * 
      * @throws Throwable if something goes wrong
      */
@@ -1126,16 +1128,6 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         // check default project
         CmsProject defProj = cms.readProject(ou.getName() + "Offline");
 
-        // resource addition tests
-        try {
-            OpenCms.getOrgUnitManager().addResourceToOrgUnit(cms, ou.getName(), "/folder1");
-            fail("it should not be possible to add a resource that is contained in another ou resource");
-        } catch (CmsDataAccessException e) {
-            // ok, just check again to be sure
-            assertEquals(1, OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).size());
-            assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).contains(
-                cms.readResource("/")));
-        }
         // check the project resources
         List projRes = cms.readProjectResources(defProj);
         List ouResources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName());
@@ -1222,6 +1214,39 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             assertTrue(ou2Resources.contains(cms.readResource(cms.getRequestContext().removeSiteRoot(
                 (String)projRes2.get(i)))));
         }
+    }
+
+    /**
+     * Tests role cache issue after creating a new ou.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testRoleCacheIssue() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Test role cache issue after creating a new ou");
+
+        // ensure the roles are cached
+        List roles = OpenCms.getRoleManager().getRolesOfUser(
+            cms,
+            cms.getRequestContext().currentUser().getName(),
+            "",
+            true,
+            false,
+            true);
+
+        // create a new ou
+        OpenCms.getOrgUnitManager().createOrganizationalUnit(cms, "/testRoleIssue", "Test role cache issue", 0, "/");
+
+        List newRoles = OpenCms.getRoleManager().getRolesOfUser(
+            cms,
+            cms.getRequestContext().currentUser().getName(),
+            "",
+            true,
+            false,
+            true);
+
+        assertTrue(newRoles.size() > roles.size());
     }
 
     /**
@@ -1507,6 +1532,66 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         } catch (CmsAuthentificationException e) {
             // ok, ignore
         }
+    }
+
+    /**
+     * Tests webuser ou behavior.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testWebuserOU() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Test webuser ou behavior");
+
+        // try to create a normal ou without associated resource
+        try {
+            OpenCms.getOrgUnitManager().createOrganizationalUnit(cms, "/webuser", "webuser test", 0, null);
+            fail("it should not be possible to create a normal ou without associated resource");
+        } catch (CmsVfsException e) {
+            // ok
+        }
+
+        // create a webuser ou without associated resource
+        CmsOrganizationalUnit ou = OpenCms.getOrgUnitManager().createOrganizationalUnit(
+            cms,
+            "/webuser",
+            "webuser test",
+            CmsOrganizationalUnit.FLAG_WEBUSERS,
+            null);
+        // check the new created ou
+        // no default Users group
+        try {
+            cms.readGroup(ou.getName() + OpenCms.getDefaultUsers().getGroupUsers());
+            fail("webuser ou should not have a default group");
+        } catch (CmsDbEntryNotFoundException e) {
+            // ok, ignore
+        }
+        assertTrue(OpenCms.getOrgUnitManager().getGroups(cms, ou.getName(), true).isEmpty());
+        // no default Offline project
+        try {
+            cms.readProject(ou.getName() + "Offline");
+            fail("webuser ou should not have a default project");
+        } catch (CmsDbEntryNotFoundException e) {
+            // ok, ignore
+        }
+        // no roles except account manager
+        List roles = OpenCms.getRoleManager().getRoles(cms, ou.getName(), true);
+        assertEquals(1, roles.size());
+        assertEquals(CmsRole.ACCOUNT_MANAGER.forOrgUnit(ou.getName()), roles.get(0));
+        // check resources
+        assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).isEmpty());
+
+        // add a resource
+        OpenCms.getOrgUnitManager().addResourceToOrgUnit(cms, ou.getName(), "/");
+        // check
+        List res = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName());
+        assertEquals(1, res.size());
+        assertEquals(cms.readResource("/"), res.get(0));
+        // remove resource
+        OpenCms.getOrgUnitManager().removeResourceFromOrgUnit(cms, ou.getName(), "/");
+        // check resources
+        assertTrue(OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(cms, ou.getName()).isEmpty());
     }
 
     /**

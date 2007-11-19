@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRolesList.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import java.util.Locale;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -175,6 +175,7 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
 
         List ret = new ArrayList();
         List roles = getRoles();
+        List pRoles = new ArrayList(roles);
         Iterator itRoles = roles.iterator();
         while (itRoles.hasNext()) {
             CmsRole role = (CmsRole)itRoles.next();
@@ -195,7 +196,7 @@ public abstract class A_CmsRolesList extends A_CmsListDialog {
             if (role.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)) {
                 // add all roles as parent of the workplace user role
                 dependency = "";
-                Iterator itWuParents = getRoles().iterator();
+                Iterator itWuParents = pRoles.iterator();
                 while (itWuParents.hasNext()) {
                     CmsRole wuParent = (CmsRole)itWuParents.next();
                     if (wuParent.forOrgUnit(null).equals(CmsRole.WORKPLACE_USER)

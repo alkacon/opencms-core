@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2007/08/13 16:29:46 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.security.CmsOrganizationalUnit;
@@ -46,17 +47,25 @@ import org.opencms.workplace.tools.CmsDefaultToolHandler;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Users management tool handler that hides the tool if the current user
  * has not the needed privileges.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
+
+    /** Account manager file path constant. */
+    private static final String ACCMAN_FILE = "/system/workplace/admin/accounts/account_managers.jsp";
+
+    /** Additional info file path constant. */
+    private static final String ADDINFO_FILE = "/system/workplace/admin/accounts/user_allinfo.jsp";
 
     /** Assign users file path constant. */
     private static final String ASSIGN_FILE = "/system/workplace/admin/accounts/user_assign.jsp";
@@ -67,17 +76,23 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /** Edit file path constant. */
     private static final String EDIT_FILE = "/system/workplace/admin/accounts/unit_edit.jsp";
 
+    /** Group users file path constant. */
+    private static final String GROUP_USERS_FILE = "/system/workplace/admin/accounts/group_users.jsp";
+
     /** Edit group users file path constant. */
     private static final String GROUPUSERS_FILE = "/system/workplace/admin/accounts/group_users.jsp";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsAccountsToolHandler.class);
 
     /** New file path constant. */
     private static final String NEW_FILE = "/system/workplace/admin/accounts/unit_new.jsp";
 
+    /** Organizational unit roles file path constant. */
+    private static final String OUROLES_FILE = "/system/workplace/admin/accounts/roles_list.jsp";
+
     /** Overview file path constant. */
     private static final String OVERVIEW_FILE = "/system/workplace/admin/accounts/unit_overview.jsp";
-
-    /** Additional info file path constant. */
-    private static final String ADDINFO_FILE = "/system/workplace/admin/accounts/user_allinfo.jsp";
 
     /** Visibility flag module parameter name. */
     private static final String PARAM_VISIBILITY_FLAG = "visibility";
@@ -88,11 +103,20 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /** Role users edit file path constant. */
     private static final String ROLEUSERS_EDIT_FILE = "/system/workplace/admin/accounts/role_users.jsp";
 
+    /** Switch user file path constant. */
+    private static final String SWITCHUSER_FILE = "/system/workplace/admin/accounts/user_switch.jsp";
+
+    /** User roles file path constant. */
+    private static final String USERROLE_FILE = "/system/workplace/admin/accounts/user_role.jsp";
+
     /** Visibility parameter value constant. */
     private static final String VISIBILITY_ALL = "all";
 
     /** Visibility parameter value constant. */
     private static final String VISIBILITY_NONE = "none";
+
+    /** Flag to indicate if the current ou is a webuser ou. */
+    private boolean m_webuserOu = false;
 
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#getDisabledHelpText()
@@ -174,6 +198,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
         if (getVisibilityFlag().equals(VISIBILITY_NONE)) {
             return false;
         }
+
         if (getLink().equals(ADDINFO_FILE)) {
             CmsWorkplaceUserInfoManager manager = OpenCms.getWorkplaceManager().getUserInfoManager();
             if ((manager == null) || (manager.getBlocks() == null) || manager.getBlocks().isEmpty()) {
@@ -181,55 +206,83 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             }
         }
         CmsObject cms = wp.getCms();
+        if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)) {
+            return false;
+        }
         String ouFqn = wp.getJsp().getRequest().getParameter(A_CmsOrgUnitDialog.PARAM_OUFQN);
         if (ouFqn == null) {
             ouFqn = cms.getRequestContext().getOuFqn();
         }
         String parentOu = CmsOrganizationalUnit.getParentFqn(ouFqn);
+        try {
+            m_webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(wp.getCms(), ouFqn).hasFlagWebuser();
+        } catch (CmsException e) {
+            // ignore
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
 
         if (getLink().equals(OVERVIEW_FILE)) {
             if (parentOu != null) {
-                return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER) && !OpenCms.getRoleManager().hasRole(
-                    cms,
-                    CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
+                return !OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(parentOu));
             }
-            return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
+            return true;
         } else if (getLink().equals(EDIT_FILE)) {
             if (parentOu != null) {
                 return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
                     cms,
                     CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
             }
-            return false;
         } else if (getLink().equals(NEW_FILE)) {
+            if (m_webuserOu) {
+                return false;
+            }
             return OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR);
         } else if (getLink().equals(PARENT_FILE)) {
             if (parentOu != null) {
                 return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(parentOu));
             }
-            return false;
         } else if (getLink().equals(DELETE_FILE)) {
             if (parentOu != null) {
                 return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
                     cms,
                     CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
             }
-            return false;
         } else if (getLink().equals(ASSIGN_FILE)) {
             try {
                 List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(
                     cms,
                     CmsRole.ACCOUNT_MANAGER.forOrgUnit(""),
                     true);
-                if (orgUnits.size() > 1) {
-                    return true;
+                if (orgUnits.size() == 1) {
+                    return false;
                 }
-                return false;
+                return !m_webuserOu;
             } catch (CmsException e) {
-                return super.isVisible(cms);
+                // ignore
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
+        } else if (getLink().equals(OUROLES_FILE)) {
+            return !m_webuserOu;
+        } else if (getLink().equals(SWITCHUSER_FILE)
+            || getLink().equals(USERROLE_FILE)
+            || getLink().equals(GROUP_USERS_FILE)) {
+            String userId = wp.getJsp().getRequest().getParameter(A_CmsEditUserDialog.PARAM_USERID);
+            try {
+                return !wp.getCms().readUser(new CmsUUID(userId)).isWebuser();
+            } catch (Exception e) {
+                // ignore
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        } else if (getLink().equals(ACCMAN_FILE)) {
+            return m_webuserOu;
         }
-        return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER);
+        return true;
     }
 
     /**

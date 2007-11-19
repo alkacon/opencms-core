@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/11/19 14:40:53 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 6.0.0 
  */
@@ -134,9 +134,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_ORGUNIT_ALREADY_CONTAINS_PRINCIPAL_2 = "ERR_ORGUNIT_ALREADY_CONTAINS_PRINCIPAL_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_ORGUNIT_ALREADY_CONTAINS_RESOURCE_2 = "ERR_ORGUNIT_ALREADY_CONTAINS_RESOURCE_2";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_ORGUNIT_DOESNOT_CONTAINS_PRINCIPAL_2 = "ERR_ORGUNIT_DOESNOT_CONTAINS_PRINCIPAL_2";
 
     /** Message constant for key in the resource bundle. */
@@ -189,7 +186,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_PARENT_ID_1 = "ERR_READ_PARENT_ID_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_PUBLISH_JOB_1 = "ERR_READ_PUBLISH_JOB_1";
 

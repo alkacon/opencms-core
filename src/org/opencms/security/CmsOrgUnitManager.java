@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrgUnitManager.java,v $
- * Date   : $Date: 2007/08/13 16:29:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/11/19 14:40:53 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.5.6
  */
@@ -63,7 +63,7 @@ public class CmsOrgUnitManager {
 
         m_securityManager = securityManager;
     }
-    
+
     /**
      * Adds a resource to the given organizational unit.<p>
      * 
@@ -103,7 +103,11 @@ public class CmsOrgUnitManager {
         int flags,
         String resourceName) throws CmsException {
 
-        CmsResource resource = cms.readResource(resourceName);
+        CmsResource resource = null;
+        if (((flags & CmsOrganizationalUnit.FLAG_WEBUSERS) == 0) || (resourceName != null)) {
+            // only normal OUs have to have at least one resource
+            resource = cms.readResource(resourceName);
+        }
         return m_securityManager.createOrganizationalUnit(cms.getRequestContext(), ouFqn, description, flags, resource);
     }
 
@@ -224,11 +228,8 @@ public class CmsOrgUnitManager {
 
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
         CmsResource resource = cms.readResource(resourceName, CmsResourceFilter.ALL);
-        
-        m_securityManager.removeResourceFromOrgUnit(
-            cms.getRequestContext(),
-            orgUnit,
-            resource);
+
+        m_securityManager.removeResourceFromOrgUnit(cms.getRequestContext(), orgUnit, resource);
     }
 
     /**

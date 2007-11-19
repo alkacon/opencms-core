@@ -214,6 +214,102 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/admin/accounts/accman_users.jsp</source>
+			<destination>system/workplace/admin/accounts/accman_users.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>a29c0352-9450-11dc-b9a1-ef8e0ae2a83b</uuidstructure>
+			<uuidresource>8e76a8cd-abab-11db-ad82-c7b5ef626300</uuidresource>
+			<datelastmodified>Fri, 16 Nov 2007 14:34:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 24 Jan 2007 13:05:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_ROLEUSERS_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/user.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_ROLEUSERS_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_ROLEUSERS_ADMIN_TOOL_NAME_0}:${key.GUI_ROLEUSERS_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit Users for Role Account Manager]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&role=${param.oufqn}RoleAccountManagers&action=initial|path:/accounts/orgunit/accman/edit]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/account_managers.jsp</source>
+			<destination>system/workplace/admin/accounts/account_managers.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>0077123a-9450-11dc-b9a1-ef8e0ae2a83b</uuidstructure>
+			<uuidresource>974fac98-abab-11db-ad82-c7b5ef626300</uuidresource>
+			<datelastmodified>Fri, 16 Nov 2007 15:29:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 24 Jan 2007 13:05:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_OVERVIEWROLE_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/accounts/icons/big/role.png]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_ROLES_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_OVERVIEWACCMAN_ADMIN_TOOL_NAME_0}:${key.GUI_OVERVIEWACCMAN_ADMIN_TOOL_NAVBARNAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Overview Account Manager Role Users]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:oufqn=${param.oufqn}&role=${param.oufqn}RoleAccountManagers&action=initial|path:/accounts/orgunit/accman]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.accounts.CmsAccountsToolHandler]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/admin/accounts/all_groups_list.jsp</source>
 			<destination>system/workplace/admin/accounts/all_groups_list.jsp</destination>
 			<type>jsp</type>
@@ -717,7 +813,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/role_overview.jsp</source>
 			<destination>system/workplace/admin/accounts/role_overview.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>974fac97-abab-11db-ad82-c7b5ef626300</uuidstructure>
@@ -757,7 +852,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/role_users.jsp</source>
 			<destination>system/workplace/admin/accounts/role_users.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>8e76a8cc-abab-11db-ad82-c7b5ef626300</uuidstructure>
@@ -2374,6 +2468,26 @@
 			<datelastmodified>Wed, 07 Feb 2007 11:31:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 26 Oct 2006 09:13:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/accounts/buttons/webuser_ou.png</source>
+			<destination>system/workplace/resources/tools/accounts/buttons/webuser_ou.png</destination>
+			<type>image</type>
+			<uuidstructure>2d7e18f8-9452-11dc-b9a1-ef8e0ae2a83b</uuidstructure>
+			<uuidresource>2d7e18f9-9452-11dc-b9a1-ef8e0ae2a83b</uuidresource>
+			<datelastmodified>Fri, 16 Nov 2007 14:42:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 16 Nov 2007 14:42:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

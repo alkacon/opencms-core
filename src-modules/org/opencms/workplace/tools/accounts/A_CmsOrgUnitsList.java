@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2007/11/13 14:56:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.6 
  */
@@ -90,6 +90,9 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     public static final String LIST_ACTION_USER = "au";
 
     /** list column id constant. */
+    public static final String LIST_COLUMN_ADMIN = "ca";
+
+    /** list column id constant. */
     public static final String LIST_COLUMN_DELETE = "cd";
 
     /** list column id constant. */
@@ -106,6 +109,9 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_USER = "cu";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_WEBUSER = "cw";
 
     /** list action id constant. */
     public static final String LIST_DEFACTION_OVERVIEW = "do";
@@ -291,6 +297,10 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(childOrgUnit.getName());
             item.set(LIST_COLUMN_NAME, CmsOrganizationalUnit.SEPARATOR + childOrgUnit.getName());
             item.set(LIST_COLUMN_DESCRIPTION, childOrgUnit.getDescription(getLocale()));
+            item.set(LIST_COLUMN_ADMIN, Boolean.valueOf(OpenCms.getRoleManager().hasRole(
+                getCms(),
+                CmsRole.ADMINISTRATOR.forOrgUnit(childOrgUnit.getName()))));
+            item.set(LIST_COLUMN_WEBUSER, Boolean.valueOf(childOrgUnit.hasFlagWebuser()));
             ret.add(item);
         }
         return ret;
@@ -305,16 +315,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
      */
     protected List getOrgUnits() throws CmsException {
 
-        List ous = OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
-        Iterator it = ous.iterator();
-        while (it.hasNext()) {
-            CmsOrganizationalUnit ou = (CmsOrganizationalUnit)it.next();
-            if (ou.hasFlagHideGUI()) {
-                // remove ous that are not supposed to appear in the list
-                it.remove();
-            }
-        }
-        return ous;
+        return OpenCms.getRoleManager().getOrgUnitsForRole(getCms(), CmsRole.ACCOUNT_MANAGER.forOrgUnit(""), true);
     }
 
     /**
@@ -344,15 +345,25 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
             }
 
             /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                if (getItem() != null) {
+                    if (((Boolean)getItem().get(LIST_COLUMN_WEBUSER)).booleanValue()) {
+                        return PATH_BUTTONS + "webuser_ou.png";
+                    }
+                }
+                return super.getIconPath();
+            }
+
+            /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
             public boolean isEnabled() {
 
                 if (getItem() != null) {
-                    if (!OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ADMINISTRATOR)) {
-                        return false;
-                    }
-                    return true;
+                    return ((Boolean)getItem().get(LIST_COLUMN_ADMIN)).booleanValue();
                 }
                 return super.isVisible();
             }
@@ -415,6 +426,16 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
         nameCol.setWidth("40%");
         // add it to the list definition
         metadata.addColumn(nameCol);
+
+        // create column for manageable flag
+        CmsListColumnDefinition adminCol = new CmsListColumnDefinition(LIST_COLUMN_ADMIN);
+        adminCol.setVisible(false);
+        metadata.addColumn(adminCol);
+
+        // create column for webuser flag
+        CmsListColumnDefinition webuserCol = new CmsListColumnDefinition(LIST_COLUMN_WEBUSER);
+        webuserCol.setVisible(false);
+        metadata.addColumn(webuserCol);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/09/25 08:40:15 $
- * Version: $Revision: 1.600 $
+ * Date   : $Date: 2007/11/19 14:40:53 $
+ * Version: $Revision: 1.601 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -638,7 +638,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsRole wpUser = CmsRole.WORKPLACE_USER.forOrgUnit(group.getOuFqn());
             if (!role.equals(wpUser)
                 && !role.getChildren(true).contains(wpUser)
-                && !userInGroup(dbc, username, wpUser.getGroupName(), true)) {
+                && !m_securityManager.hasRole(dbc, user, wpUser)) {
                 addUserToGroup(dbc, username, wpUser.getGroupName(), true);
             }
         }
@@ -1275,9 +1275,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
             description,
             flags,
             parent,
-            resource.getRootPath());
+            resource != null ? resource.getRootPath() : null);
         // put the new created org unit into the cache
         OpenCms.getMemoryMonitor().cacheOrgUnit(orgUnit);
+
+        // flush relevant caches
+        clearcache(true);
+        OpenCms.getMemoryMonitor().flushProperties();
+        OpenCms.getMemoryMonitor().flushPropertyLists();
+
+        // create a publish list for the 'virtual' publish event
+        CmsResource ouRes = readResource(dbc, orgUnit.getId(), CmsResourceFilter.DEFAULT);
+        CmsPublishList pl = new CmsPublishList(ouRes, false);
+        pl.add(ouRes, false);
+
+        // fire the 'virtual' publish event
+        Map eventData = new HashMap();
+        eventData.put(I_CmsEventListener.KEY_PUBLISHID, pl.getPublishHistoryId().toString());
+        eventData.put(I_CmsEventListener.KEY_PROJECTID, dbc.currentProject().getUuid());
+        eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
+        CmsEvent afterPublishEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
+        OpenCms.fireCmsEvent(afterPublishEvent);
+
         // return it
         return orgUnit;
     }
@@ -1920,13 +1939,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, Map additionalInfos)
     throws CmsException, CmsIllegalArgumentException {
 
-        String userName = CmsOrganizationalUnit.getSimpleName(name);
-        // check the user name
-        OpenCms.getValidationHandler().checkUserName(userName);
         // no space before or after the name
         name = name.trim();
+        // check the user name
+        String userName = CmsOrganizationalUnit.getSimpleName(name);
+        OpenCms.getValidationHandler().checkUserName(userName);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USER_1, userName));
+        }
         // check the ou
-        readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
+        CmsOrganizationalUnit ou = readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
         // check the password
         validatePassword(password);
 
@@ -1937,22 +1959,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (description != null) {
             info.put(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, description);
         }
-        if ((name.length() > 0)) {
-            return m_userDriver.createUser(
-                dbc,
-                new CmsUUID(),
-                name,
-                OpenCms.getPasswordHandler().digest(password),
-                " ",
-                " ",
-                " ",
-                0,
-                I_CmsPrincipal.FLAG_ENABLED,
-                0,
-                info);
-        } else {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USER_1, name));
+        int flags = 0;
+        if (ou.hasFlagWebuser()) {
+            flags += I_CmsPrincipal.FLAG_USER_WEBUSER;
         }
+        return m_userDriver.createUser(
+            dbc,
+            new CmsUUID(),
+            name,
+            OpenCms.getPasswordHandler().digest(password),
+            " ",
+            " ",
+            " ",
+            0,
+            I_CmsPrincipal.FLAG_ENABLED + flags,
+            0,
+            info);
     }
 
     /**
@@ -2243,7 +2265,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * Only organizational units that contain no suborganizational unit can be deleted.<p>
      * 
-     * The organizational unit can not be delete if it is used in the reuqest context, 
+     * The organizational unit can not be delete if it is used in the request context, 
      * or if the current user belongs to it.<p>
      * 
      * All users and groups in the given organizational unit will be deleted.<p>
@@ -2288,7 +2310,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         }
         // check users
-        if (!getUsers(dbc, organizationalUnit, false).isEmpty()) {
+        if (!getUsers(dbc, organizationalUnit, true).isEmpty()) {
             throw new CmsDbConsistencyException(Messages.get().container(
                 Messages.ERR_ORGUNIT_DELETE_USERS_1,
                 organizationalUnit.getName()));
@@ -2327,11 +2349,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_projectDriver.writePublishHistory(dbc, pl.getPublishHistoryId(), new CmsPublishedResource(resource));
 
         // flush relevant caches
-        OpenCms.getMemoryMonitor().flushRoles();
-        OpenCms.getMemoryMonitor().flushRoleLists();
-        clearAccessControlListCache();
-
-        OpenCms.getMemoryMonitor().uncacheOrgUnit(organizationalUnit);
+        clearcache(true);
         OpenCms.getMemoryMonitor().flushProperties();
         OpenCms.getMemoryMonitor().flushPropertyLists();
 
@@ -4260,9 +4278,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // no space before or after the name
         name = name.trim();
-        // check the username
-        OpenCms.getValidationHandler().checkUserName(CmsOrganizationalUnit.getSimpleName(name));
+        // check the user name
+        String userName = CmsOrganizationalUnit.getSimpleName(name);
+        OpenCms.getValidationHandler().checkUserName(userName);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(userName)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USER_1, userName));
+        }
+        // check the ou
+        CmsOrganizationalUnit ou = readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
+        // check the password
+        validatePassword(password);
 
+        // check webuser ou
+        if (ou.hasFlagWebuser() && ((flags & I_CmsPrincipal.FLAG_USER_WEBUSER) == 0)) {
+            flags += I_CmsPrincipal.FLAG_USER_WEBUSER;
+        }
         CmsUser newUser = m_userDriver.createUser(
             dbc,
             new CmsUUID(id),

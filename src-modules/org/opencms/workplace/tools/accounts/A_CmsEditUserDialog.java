@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2007/10/09 15:46:10 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -418,6 +418,12 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         if (dialog.equals(PAGES[0])) {
+            boolean webuserOu = false;
+            try {
+                webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser();
+            } catch (CmsException e) {
+                // ignore
+            }
             // create the widgets for the first dialog page
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_IDENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
@@ -430,11 +436,18 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
             int row = isNewUser() ? 12 : 11;
-            result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_SETTINGS_BLOCK_0)));
-            result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(10, row));
-            result.append(createWidgetTableEnd());
-            result.append(dialogBlockEnd());
+            if (!webuserOu) {
+                if (getSites().isEmpty()) {
+                    row -= 1;
+                }
+                result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_SETTINGS_BLOCK_0)));
+                result.append(createWidgetTableStart());
+                result.append(createDialogRowsHtml(10, row));
+                result.append(createWidgetTableEnd());
+                result.append(dialogBlockEnd());
+            } else {
+                row = 9;
+            }
             row++;
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
@@ -472,7 +485,12 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
 
         // initialize the user object to use for the dialog
         initUserObject();
-
+        boolean webuserOu = false;
+        try {
+            webuserOu = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser();
+        } catch (CmsException e) {
+            webuserOu = m_user.isWebuser();
+        }
         setKeyPrefix(KEY_PREFIX);
 
         // widgets to display
@@ -491,13 +509,17 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", "", PAGES[0], new CmsInputWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], new CmsInputWidget(), 0, 1));
             addWidget(new CmsWidgetDialogParameter(m_user, "country", "", PAGES[0], new CmsInputWidget(), 0, 1));
-            addWidget(new CmsWidgetDialogParameter(this, "language", PAGES[0], new CmsSelectWidget(getLanguages())));
-            addWidget(new CmsWidgetDialogParameter(this, "site", PAGES[0], new CmsSelectWidget(getSites())));
-            if (isNewUser()) {
-                addWidget(new CmsWidgetDialogParameter(this, "group", PAGES[0], new CmsGroupWidget(
-                    null,
-                    null,
-                    getParamOufqn())));
+            if (!webuserOu) {
+                addWidget(new CmsWidgetDialogParameter(this, "language", PAGES[0], new CmsSelectWidget(getLanguages())));
+                if (!getSites().isEmpty()) {
+                    addWidget(new CmsWidgetDialogParameter(this, "site", PAGES[0], new CmsSelectWidget(getSites())));
+                }
+                if (isNewUser()) {
+                    addWidget(new CmsWidgetDialogParameter(this, "group", PAGES[0], new CmsGroupWidget(
+                        null,
+                        null,
+                        getParamOufqn())));
+                }
             }
         } else {
             addWidget(new CmsWidgetDialogParameter(this, "description", PAGES[0], new CmsDisplayWidget()));
@@ -509,8 +531,12 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "city", PAGES[0], new CmsDisplayWidget()));
             addWidget(new CmsWidgetDialogParameter(m_user, "country", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(this, "language", PAGES[0], new CmsDisplayWidget()));
-            addWidget(new CmsWidgetDialogParameter(this, "site", PAGES[0], new CmsDisplayWidget()));
+            if (!webuserOu) {
+                addWidget(new CmsWidgetDialogParameter(this, "language", PAGES[0], new CmsDisplayWidget()));
+                if (!getSites().isEmpty()) {
+                    addWidget(new CmsWidgetDialogParameter(this, "site", PAGES[0], new CmsDisplayWidget()));
+                }
+            }
         }
         addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(this, "selfManagement", PAGES[0], new CmsCheckboxWidget()));
@@ -593,7 +619,12 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         // create a new user object
         m_user = new CmsUser();
         m_pwdInfo = new CmsPasswordInfo();
-        m_group = getParamOufqn() + OpenCms.getDefaultUsers().getGroupUsers();
+        m_group = "";
+        try {
+            m_group = getCms().readGroup(getParamOufqn() + OpenCms.getDefaultUsers().getGroupUsers()).getName();
+        } catch (CmsException e) {
+            // ignore
+        }
         m_language = CmsLocaleManager.getDefaultLocale().toString();
         m_site = OpenCms.getSiteManager().getDefaultSite().getSiteRoot();
     }

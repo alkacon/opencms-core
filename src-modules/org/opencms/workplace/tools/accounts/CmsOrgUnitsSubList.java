@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsSubList.java,v $
- * Date   : $Date: 2007/11/13 14:56:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -167,16 +167,6 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
         if (orgUnits.size() < 1) {
             return false;
         }
-        Iterator itOrgUnits = orgUnits.iterator();
-        while (itOrgUnits.hasNext()) {
-            CmsOrganizationalUnit childOrgUnit = (CmsOrganizationalUnit)itOrgUnits.next();
-            if (childOrgUnit.hasFlagHideGUI()) {
-                itOrgUnits.remove();
-            }
-        }
-        if (orgUnits.size() < 1) {
-            return false;
-        }
         return true;
     }
 
@@ -203,12 +193,13 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
         Iterator itOrgUnits = orgUnits.iterator();
         while (itOrgUnits.hasNext()) {
             CmsOrganizationalUnit childOrgUnit = (CmsOrganizationalUnit)itOrgUnits.next();
-            if (childOrgUnit.hasFlagHideGUI()) {
-                continue;
-            }
             CmsListItem item = getList().newItem(childOrgUnit.getName());
             item.set(LIST_COLUMN_NAME, CmsOrganizationalUnit.SEPARATOR + childOrgUnit.getName());
             item.set(LIST_COLUMN_DESCRIPTION, childOrgUnit.getDescription(getLocale()));
+            item.set(LIST_COLUMN_ADMIN, Boolean.valueOf(OpenCms.getRoleManager().hasRole(
+                getCms(),
+                CmsRole.ADMINISTRATOR.forOrgUnit(childOrgUnit.getName()))));
+            item.set(LIST_COLUMN_WEBUSER, Boolean.valueOf(childOrgUnit.hasFlagWebuser()));
             ret.add(item);
         }
         return ret;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:46 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,7 +35,10 @@ import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
+import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6
  */
@@ -64,9 +67,6 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
 
     /** Request parameter name for the organizational unit fqn. */
     public static final String PARAM_OUFQN = "oufqn";
-
-    /** The organizational unit object that is edited on this dialog. */
-    protected CmsOrganizationalUnit m_orgunit;
 
     /** The organizational unit bean object to work with in this dialog. */
     protected CmsOrgUnitBean m_orgUnitBean;
@@ -157,16 +157,76 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
     /**
      * Initializes the organizational unit object to work with depending
      * on the dialog state and request parameters.<p>
-     * 
      */
     protected void initOrgUnitObject() {
 
-        if (m_orgunit == null) {
-            try {
-                m_orgunit = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn());
-            } catch (Exception e) {
-                // noop
+        try {
+            if (CmsStringUtil.isEmpty(getParamAction()) || CmsDialog.DIALOG_INITIAL.equals(getParamAction())) {
+                // edit an existing ou, get the ou object from database
+                CmsOrganizationalUnit orgunit = OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                    getCms(),
+                    getParamOufqn());
+                m_orgUnitBean = new CmsOrgUnitBean();
+                if (!isNewOrgUnit()) {
+                    m_orgUnitBean.setName(orgunit.getName());
+                    m_orgUnitBean.setDescription(orgunit.getDescription(getLocale()));
+                    m_orgUnitBean.setParentOu(orgunit.getParentFqn());
+                    m_orgUnitBean.setFqn(orgunit.getName());
+                    m_orgUnitBean.setNologin(orgunit.hasFlagHideLogin());
+                    m_orgUnitBean.setWebusers(orgunit.hasFlagWebuser());
+                    if (orgunit.getParentFqn() != null) {
+                        m_orgUnitBean.setParentOuDesc(OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                            getCms(),
+                            orgunit.getParentFqn()).getDescription(getLocale())
+                            + " ("
+                            + CmsOrganizationalUnit.SEPARATOR
+                            + orgunit.getParentFqn()
+                            + ")");
+                    }
+                } else {
+                    m_orgUnitBean.setParentOu(orgunit.getName());
+                    m_orgUnitBean.setParentOuDesc(orgunit.getDescription(getLocale())
+                        + " ("
+                        + CmsOrganizationalUnit.SEPARATOR
+                        + orgunit.getName()
+                        + ")");
+                }
+                List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
+                    getCms(),
+                    orgunit.getName());
+                setResourcesInBean(m_orgUnitBean, resources);
+            } else {
+                // this is not the initial call, get the ou object from session
+                m_orgUnitBean = (CmsOrgUnitBean)getDialogObject();
+                // test
+                m_orgUnitBean.getName();
             }
+        } catch (Exception e) {
+            // create a new ou object
+            m_orgUnitBean = new CmsOrgUnitBean();
+            m_orgUnitBean.setParentOu(getParamOufqn());
         }
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // initialize parameters and dialog actions in super implementation
+        super.initWorkplaceRequestValues(settings, request);
+
+        // save the current state of the ou (may be changed because of the widget values)
+        setDialogObject(m_orgUnitBean);
+    }
+
+    /**
+     * Checks if the new organizational unit dialog has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the new organizational unit dialog has to be displayed
+     */
+    protected boolean isNewOrgUnit() {
+
+        return getCurrentToolPath().equals("/accounts/orgunit/mgmt/new");
     }
 }

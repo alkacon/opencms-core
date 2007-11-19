@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/11/13 14:56:10 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -893,7 +893,7 @@ public class CmsLogin extends CmsJspLoginBean {
                 Iterator itOus = m_ous.iterator();
                 while (itOus.hasNext()) {
                     CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
-                    if (ou.hasFlagHideLogin()) {
+                    if (ou.hasFlagHideLogin() || ou.hasFlagWebuser()) {
                         itOus.remove();
                     }
                 }

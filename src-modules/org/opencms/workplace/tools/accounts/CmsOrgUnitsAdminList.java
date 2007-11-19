@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsAdminList.java,v $
- * Date   : $Date: 2007/10/08 15:44:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -57,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -247,7 +248,34 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
         overviewCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         overviewCol.setSorteable(false);
         // add overview action
-        CmsListDirectAction overviewAction = new CmsListDirectAction(LIST_ACTION_OVERVIEW);
+        CmsListDirectAction overviewAction = new CmsListDirectAction(LIST_ACTION_OVERVIEW) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
+             */
+            public CmsMessageContainer getName() {
+
+                if (getItem() != null) {
+                    if (((Boolean)getItem().get(LIST_COLUMN_WEBUSER)).booleanValue()) {
+                        return Messages.get().container(Messages.GUI_WEBOUS_LIST_ACTION_OVERVIEW_NAME_0);
+                    }
+                }
+                return super.getName();
+            }
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
+             */
+            public String getIconPath() {
+
+                if (getItem() != null) {
+                    if (((Boolean)getItem().get(LIST_COLUMN_WEBUSER)).booleanValue()) {
+                        return PATH_BUTTONS + "webuser_ou.png";
+                    }
+                }
+                return super.getIconPath();
+            }
+        };
         overviewAction.setName(Messages.get().container(Messages.GUI_ORGUNITS_LIST_ACTION_OVERVIEW_NAME_0));
         overviewAction.setHelpText(Messages.get().container(Messages.GUI_ORGUNITS_LIST_COLS_OVERVIEW_HELP_0));
         overviewAction.setIconPath(getOverviewIcon());
@@ -307,5 +335,15 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
         nameCol.setSorteable(true);
         // add it to the list definition
         metadata.addColumn(nameCol);
+
+        // create column for manageable flag
+        CmsListColumnDefinition adminCol = new CmsListColumnDefinition(LIST_COLUMN_ADMIN);
+        adminCol.setVisible(false);
+        metadata.addColumn(adminCol);
+
+        // create column for webuser flag
+        CmsListColumnDefinition webuserCol = new CmsListColumnDefinition(LIST_COLUMN_WEBUSER);
+        webuserCol.setVisible(false);
+        metadata.addColumn(webuserCol);
     }
 }

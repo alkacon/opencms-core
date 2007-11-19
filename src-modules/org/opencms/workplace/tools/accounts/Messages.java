@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/10/08 15:44:20 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,8 +39,8 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -833,6 +833,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ORGUNIT_EDITOR_LABEL_CONTENT_BLOCK_0 = "GUI_ORGUNIT_EDITOR_LABEL_CONTENT_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ORGUNIT_EDITOR_LABEL_FLAGS_BLOCK_0 = "GUI_ORGUNIT_EDITOR_LABEL_FLAGS_BLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ORGUNIT_EDITOR_LABEL_IDENTIFICATION_BLOCK_0 = "GUI_ORGUNIT_EDITOR_LABEL_IDENTIFICATION_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1011,6 +1014,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ORGUNITUSERS_LIST_NAME_0 = "GUI_ORGUNITUSERS_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_OVERVIEWACCMAN_ADMIN_TOOL_HELP_0 = "GUI_OVERVIEWACCMAN_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_OVERVIEWACCMAN_ADMIN_TOOL_NAME_0 = "GUI_OVERVIEWACCMAN_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_OVERVIEWACCMAN_ADMIN_TOOL_NAVBARNAME_0 = "GUI_OVERVIEWACCMAN_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_OVERVIEWORGUNIT_ADMIN_TOOL_GROUP_0 = "GUI_OVERVIEWORGUNIT_ADMIN_TOOL_GROUP_0";
@@ -1713,6 +1725,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_VIRTUAL_GROUP_DISABLED_EDITION_HELP_0 = "GUI_VIRTUAL_GROUP_DISABLED_EDITION_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WEBOUS_LIST_ACTION_OVERVIEW_NAME_0 = "GUI_WEBOUS_LIST_ACTION_OVERVIEW_NAME_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.accounts.messages";

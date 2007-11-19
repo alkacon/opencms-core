@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:29:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,112 +39,118 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_ADMIN_INSUFFICIENT_RIGHTS_0 = "ERR_ADMIN_INSUFFICIENT_RIGHTS_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_NOT_CONFIGURED_ROOT_1 = "ERR_NOT_CONFIGURED_ROOT_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_LOADING_0 = "GUI_ADMIN_VIEW_LOADING_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_ROOT_HELP_0 = "GUI_ADMIN_VIEW_ROOT_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_ROOT_NAME_0 = "GUI_ADMIN_VIEW_ROOT_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_UPLEVEL_0 = "GUI_ADMIN_VIEW_UPLEVEL_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CATEGORIES_RELATION_0 = "GUI_CATEGORIES_RELATION_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_NAVBAR_0 = "GUI_COMPARE_NAVBAR_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_TOOL_NAME_0 = "GUI_COMPARE_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIFF_NAVBAR_0 = "GUI_DIFF_NAVBAR_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIFF_TOOL_NAME_0 = "GUI_DIFF_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EMPTY_MESSAGE_0 = "GUI_EMPTY_MESSAGE_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_VIEW_ROOT_HELP_0 = "GUI_EXPLORER_VIEW_ROOT_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_VIEW_ROOT_NAME_0 = "GUI_EXPLORER_VIEW_ROOT_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_0 = "GUI_HISTORY_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_RELATION_SOURCE_0 = "GUI_LINK_RELATION_SOURCE_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_RELATION_TARGET_0 = "GUI_LINK_RELATION_TARGET_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_OU_TYPE_NORMAL_0 = "GUI_OU_TYPE_NORMAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_OU_TYPE_WEBUSER_0 = "GUI_OU_TYPE_WEBUSER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_SHOW_SIBLINGS_0 = "GUI_SHOW_SIBLINGS_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLS_DEFAULT_GROUP_0 = "GUI_TOOLS_DEFAULT_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLS_DEFAULT_HELP_0 = "GUI_TOOLS_DEFAULT_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLS_DEFAULT_NAME_0 = "GUI_TOOLS_DEFAULT_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLS_DISABLED_HELP_0 = "GUI_TOOLS_DISABLED_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TOOLS_DISABLED_ONLINE_HELP_0 = "GUI_TOOLS_DISABLED_ONLINE_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_CREATED_0 = "INIT_TOOLMANAGER_CREATED_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_DUPLICATED_ERROR_3 = "INIT_TOOLMANAGER_DUPLICATED_ERROR_3";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_INCONSISTENT_PATH_2 = "INIT_TOOLMANAGER_INCONSISTENT_PATH_2";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_INSTALL_ERROR_2 = "INIT_TOOLMANAGER_INSTALL_ERROR_2";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_NEWTOOL_FOUND_2 = "INIT_TOOLMANAGER_NEWTOOL_FOUND_2";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_ROOT_SKIPPED_2 = "INIT_TOOLMANAGER_ROOT_SKIPPED_2";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_SETUP_1 = "INIT_TOOLMANAGER_SETUP_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_SETUP_ERROR_1 = "INIT_TOOLMANAGER_SETUP_ERROR_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1 = "INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_MISSING_ADMIN_TOOL_1 = "LOG_MISSING_ADMIN_TOOL_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_MISSING_TOOL_HANDLER_2 = "LOG_MISSING_TOOL_HANDLER_2";
 
     /** Name of the used resource bundle. */

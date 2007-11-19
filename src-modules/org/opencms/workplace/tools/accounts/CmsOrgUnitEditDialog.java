@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/10/26 14:39:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,14 +33,13 @@ package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
-import org.opencms.widgets.CmsOrgUnitWidget;
 import org.opencms.widgets.CmsTextareaWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWidgetDialogParameter;
@@ -58,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6
  */
@@ -66,9 +65,6 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
 
     /** Request parameter name for the sub organizational unit fqn. */
     public static final String PARAM_SUBOUFQN = "suboufqn";
-
-    /** Stores the value of the request parameter for the sub organizational unit fqn. */
-    private String m_paramSuboufqn;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -101,31 +97,35 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
 
         try {
             // if new create it first
-            if (m_orgunit == null) {
+            if (isNewOrgUnit()) {
                 List resourceNames = CmsFileUtil.removeRedundancies(m_orgUnitBean.getResources());
                 CmsOrganizationalUnit newOrgUnit = OpenCms.getOrgUnitManager().createOrganizationalUnit(
                     getCms(),
                     m_orgUnitBean.getFqn(),
                     m_orgUnitBean.getDescription(),
-                    0,
-                    (String)resourceNames.get(0));
+                    m_orgUnitBean.getFlags(),
+                    resourceNames.isEmpty() ? null : (String)resourceNames.get(0));
 
-                m_orgunit = newOrgUnit;
-                resourceNames.remove(0);
-                Iterator itResourceNames = CmsFileUtil.removeRedundancies(resourceNames).iterator();
-                while (itResourceNames.hasNext()) {
-                    OpenCms.getOrgUnitManager().addResourceToOrgUnit(
-                        getCms(),
-                        m_orgunit.getName(),
-                        (String)itResourceNames.next());
+                if (!resourceNames.isEmpty()) {
+                    resourceNames.remove(0);
+                    Iterator itResourceNames = CmsFileUtil.removeRedundancies(resourceNames).iterator();
+                    while (itResourceNames.hasNext()) {
+                        OpenCms.getOrgUnitManager().addResourceToOrgUnit(
+                            getCms(),
+                            newOrgUnit.getName(),
+                            (String)itResourceNames.next());
+                    }
                 }
             } else {
-                m_orgunit.setDescription(m_orgUnitBean.getDescription());
-
+                CmsOrganizationalUnit orgunit = OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                    getCms(),
+                    m_orgUnitBean.getFqn());
+                orgunit.setDescription(m_orgUnitBean.getDescription());
+                orgunit.setFlags(m_orgUnitBean.getFlags());
                 List resourceNamesNew = CmsFileUtil.removeRedundancies(m_orgUnitBean.getResources());
                 List resourcesOld = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
                     getCms(),
-                    m_orgunit.getName());
+                    orgunit.getName());
                 List resourceNamesOld = new ArrayList();
                 Iterator itResourcesOld = resourcesOld.iterator();
                 while (itResourcesOld.hasNext()) {
@@ -137,7 +137,7 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                 while (itResourceNamesNew.hasNext()) {
                     String resourceNameNew = (String)itResourceNamesNew.next();
                     if (!resourceNamesOld.contains(resourceNameNew)) {
-                        OpenCms.getOrgUnitManager().addResourceToOrgUnit(getCms(), m_orgunit.getName(), resourceNameNew);
+                        OpenCms.getOrgUnitManager().addResourceToOrgUnit(getCms(), orgunit.getName(), resourceNameNew);
                     }
                 }
                 Iterator itResourceNamesOld = resourceNamesOld.iterator();
@@ -147,39 +147,19 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
                     if (!resourceNamesNew.contains(resourceNameOld)) {
                         OpenCms.getOrgUnitManager().removeResourceFromOrgUnit(
                             getCms(),
-                            m_orgunit.getName(),
+                            orgunit.getName(),
                             resourceNameOld);
                     }
                 }
+                // write the edited organizational unit
+                OpenCms.getOrgUnitManager().writeOrganizationalUnit(getCms(), orgunit);
             }
-            // write the edited organizational unit
-            OpenCms.getOrgUnitManager().writeOrganizationalUnit(getCms(), m_orgunit);
         } catch (Throwable t) {
             errors.add(t);
         }
 
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
-    }
-
-    /**
-     * Returns the sub organizational unit fqn parameter value.<p>
-     * 
-     * @return the sub organizational unit fqn parameter value
-     */
-    public String getParamSuboufqn() {
-
-        return m_paramSuboufqn;
-    }
-
-    /**
-     * Sets the sub organizational unit fqn parameter value.<p>
-     * 
-     * @param subOuFqn the sub organizational unit fqn parameter value
-     */
-    public void setParamSuboufqn(String subOuFqn) {
-
-        m_paramSuboufqn = subOuFqn;
     }
 
     /**
@@ -200,9 +180,13 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
             result.append(createDialogRowsHtml(0, 2));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
+            result.append(dialogBlockStart(key(Messages.GUI_ORGUNIT_EDITOR_LABEL_FLAGS_BLOCK_0)));
+            result.append(createWidgetTableStart());
+            result.append(createDialogRowsHtml(3, 4));
+            result.append(createWidgetTableEnd());
             result.append(dialogBlockStart(key(Messages.GUI_ORGUNIT_EDITOR_LABEL_CONTENT_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(3, 3));
+            result.append(createDialogRowsHtml(5, 5));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -219,89 +203,31 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
         super.defineWidgets();
 
         // widgets to display
-        if (m_orgUnitBean.getName() == null) {
+        if (isNewOrgUnit()) {
             addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "name", PAGES[0], new CmsInputWidget()));
         } else {
             addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "name", PAGES[0], new CmsDisplayWidget()));
         }
         addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "description", PAGES[0], new CmsTextareaWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "parentOu", PAGES[0], new CmsOrgUnitWidget(
-            CmsRole.ADMINISTRATOR)));
+        addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "parentOuDesc", PAGES[0], new CmsDisplayWidget()));
+
+        if (isNewOrgUnit()) {
+            //            addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "parentOu", PAGES[0], new CmsOrgUnitWidget(
+            //                CmsRole.ADMINISTRATOR)));
+            addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "nologin", PAGES[0], new CmsCheckboxWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "webusers", PAGES[0], new CmsCheckboxWidget()));
+        } else {
+            if (m_orgUnitBean.isWebusers()) {
+                addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "nologin", PAGES[0], new CmsDisplayWidget()));
+            } else {
+                addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "nologin", PAGES[0], new CmsCheckboxWidget()));
+            }
+            addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "webusers", PAGES[0], new CmsDisplayWidget()));
+        }
         addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "resources", PAGES[0], new CmsVfsFileWidget(
             false,
             getCms().getRequestContext().getSiteRoot(),
             false)));
-    }
-
-    /**
-     * Initializes the unit object to work with depending on the dialog state and request parameters.<p>
-     * 
-     */
-    protected void initOrgUnitObject() {
-
-        if (m_orgunit == null) {
-            try {
-                if (isNewOrgUnit()) {
-                    m_orgunit = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamSuboufqn());
-                } else {
-                    m_orgunit = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn());
-                }
-                if (m_orgunit == null) {
-                    m_orgUnitBean = new CmsOrgUnitBean();
-                    m_orgUnitBean.setFqn(getParamOufqn());
-
-                    List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
-                        getCms(),
-                        getParamOufqn());
-                    setResourcesInBean(m_orgUnitBean, resources);
-                } else {
-                    m_orgUnitBean = new CmsOrgUnitBean();
-                    m_orgUnitBean.setDescription(m_orgunit.getDescription(getLocale()));
-                    m_orgUnitBean.setName(m_orgunit.getName());
-                    m_orgUnitBean.setParentOu(m_orgunit.getParentFqn());
-                    m_orgUnitBean.setFqn(m_orgunit.getName());
-                    List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
-                        getCms(),
-                        m_orgunit.getName());
-                    setResourcesInBean(m_orgUnitBean, resources);
-                }
-            } catch (Exception e) {
-                m_orgUnitBean = new CmsOrgUnitBean();
-                m_orgUnitBean.setParentOu(getParamOufqn());
-                try {
-                    List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
-                        getCms(),
-                        getParamOufqn());
-                    setResourcesInBean(m_orgUnitBean, resources);
-                } catch (CmsException ex) {
-                    // noop
-                }
-            }
-        } else {
-            try {
-                m_orgUnitBean = new CmsOrgUnitBean();
-                m_orgUnitBean.setDescription(m_orgunit.getDescription(getLocale()));
-                m_orgUnitBean.setName(m_orgunit.getName());
-                m_orgUnitBean.setParentOu(m_orgunit.getParentFqn());
-                m_orgUnitBean.setFqn(m_orgunit.getName());
-                List resources = OpenCms.getOrgUnitManager().getResourcesForOrganizationalUnit(
-                    getCms(),
-                    m_orgunit.getName());
-                setResourcesInBean(m_orgUnitBean, resources);
-            } catch (CmsException e) {
-                // noop
-            }
-        }
-    }
-
-    /**
-     * Checks if the new organizational unit dialog has to be displayed.<p>
-     * 
-     * @return <code>true</code> if the new organizational unit dialog has to be displayed
-     */
-    protected boolean isNewOrgUnit() {
-
-        return getCurrentToolPath().equals("/accounts/orgunit/mgmt/new");
     }
 
     /**

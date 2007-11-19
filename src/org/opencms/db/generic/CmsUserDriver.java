@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/11/05 14:10:19 $
- * Version: $Revision: 1.117 $
+ * Date   : $Date: 2007/11/19 14:40:53 $
+ * Version: $Revision: 1.118 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.117 $
+ * @version $Revision: 1.118 $
  * 
  * @since 6.0.0 
  */
@@ -168,18 +168,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 if (!vfsPaths.isEmpty()) {
                     throw new CmsDataAccessException(org.opencms.security.Messages.get().container(
                         org.opencms.security.Messages.ERR_ORGUNIT_ROOT_EDITION_0));
-                }
-            }
-
-            // check if already associated
-            Iterator itPaths = vfsPaths.iterator();
-            while (itPaths.hasNext()) {
-                String path = (String)itPaths.next();
-                if (resource.getRootPath().startsWith(path)) {
-                    throw new CmsDataAccessException(Messages.get().container(
-                        Messages.ERR_ORGUNIT_ALREADY_CONTAINS_RESOURCE_2,
-                        orgUnit.getName(),
-                        dbc.removeSiteRoot(resource.getRootPath())));
                 }
             }
 
@@ -319,12 +307,16 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // get the parent ou folder
             CmsResource parentFolder = internalOrgUnitFolder(dbc, parent);
 
-            // check that the associated resource exists and if is a folder
-            CmsResource resource = m_driverManager.readFolder(dbc, associatedResource, CmsResourceFilter.ALL);
+            CmsResource resource = null;
+            // only normal OUs have to have at least one resource
+            if (((flags & CmsOrganizationalUnit.FLAG_WEBUSERS) == 0) || (associatedResource != null)) {
+                // check that the associated resource exists and if is a folder
+                resource = m_driverManager.readFolder(dbc, associatedResource, CmsResourceFilter.ALL);
+            }
 
             String ouPath = ORGUNIT_BASE_FOLDER;
             // validate resource
-            if (parentFolder != null) {
+            if ((parentFolder != null) && (resource != null)) {
                 internalValidateResourceForOrgUnit(
                     dbc,
                     internalCreateOrgUnitFromResource(dbc, parentFolder),
@@ -346,7 +338,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // create the ou object
             CmsOrganizationalUnit ou = internalCreateOrgUnitFromResource(dbc, ouFolder);
 
-            if ((ou.getParentFqn() != null) && !ou.hasFlagNoDefaults()) {
+            if ((ou.getParentFqn() != null)) {
                 // if not the root ou, create default roles & groups
                 // for the root ou, are created in #fillDefaults
                 Locale locale = dbc.getRequestContext().getLocale();
@@ -354,21 +346,29 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     locale = CmsLocaleManager.getDefaultLocale();
                 }
                 // create default groups
-                internalCreateDefaultGroups(dbc, ou.getName(), ou.getDisplayName(locale));
-                // create default project
-                CmsProject project = m_driverManager.createProject(
-                    dbc,
-                    ou.getName() + OFFLINE_PROJECT_NAME,
-                    "",
-                    ou.getName() + OpenCms.getDefaultUsers().getGroupUsers(),
-                    ou.getName() + OpenCms.getDefaultUsers().getGroupUsers(),
-                    CmsProject.PROJECT_TYPE_NORMAL);
+                internalCreateDefaultGroups(dbc, ou.getName(), ou.getDisplayName(locale), ou.hasFlagWebuser());
+                if (!ou.hasFlagWebuser()) {
+                    // create default project
+                    CmsProject project = m_driverManager.createProject(
+                        dbc,
+                        ou.getName() + OFFLINE_PROJECT_NAME,
+                        "",
+                        ou.getName() + OpenCms.getDefaultUsers().getGroupUsers(),
+                        ou.getName() + OpenCms.getDefaultUsers().getGroupUsers(),
+                        CmsProject.PROJECT_TYPE_NORMAL);
 
-                // write project id property
-                internalWriteOrgUnitProperty(dbc, ouFolder, new CmsProperty(
-                    ORGUNIT_PROPERTY_PROJECTID,
-                    project.getUuid().toString(),
-                    null));
+                    // write project id property
+                    internalWriteOrgUnitProperty(dbc, ouFolder, new CmsProperty(
+                        ORGUNIT_PROPERTY_PROJECTID,
+                        project.getUuid().toString(),
+                        null));
+                } else {
+                    // write project id property
+                    internalWriteOrgUnitProperty(dbc, ouFolder, new CmsProperty(
+                        ORGUNIT_PROPERTY_PROJECTID,
+                        CmsUUID.getNullUUID().toString(),
+                        null));
+                }
             } else {
                 // write project id property
                 internalWriteOrgUnitProperty(dbc, ouFolder, new CmsProperty(
@@ -378,9 +378,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
             // reread the ou, to actualize the project id
             ou = internalCreateOrgUnitFromResource(dbc, ouFolder);
-            // add the given resource
-            m_driverManager.addResourceToOrgUnit(dbc, ou, resource);
-
+            if (resource != null) {
+                // add the given resource
+                m_driverManager.addResourceToOrgUnit(dbc, ou, resource);
+            }
             OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES, null);
             // return the new created ou
             return ou;
@@ -766,7 +767,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     public void fillDefaults(CmsDbContext dbc) throws CmsInitException {
 
         try {
-            internalCreateDefaultGroups(dbc, "", "");
+            internalCreateDefaultGroups(dbc, "", "", false);
         } catch (CmsException e) {
             if (CmsLog.INIT.isErrorEnabled()) {
                 CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_DEFAULT_USERS_CREATION_FAILED_0), e);
@@ -883,7 +884,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             // create statement
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GET_USERS_FOR_ORGUNIT_1");
+            if (orgUnit.hasFlagWebuser()) {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GET_WEBUSERS_FOR_ORGUNIT_1");
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_USERS_GET_USERS_FOR_ORGUNIT_1");
+            }
 
             String param = CmsOrganizationalUnit.SEPARATOR + orgUnit.getName();
             if (recursive) {
@@ -1644,7 +1649,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     orgUnit.getName(),
                     dbc.removeSiteRoot(resource.getRootPath())));
             }
-            if (vfsPaths.size() == 1) {
+            if ((vfsPaths.size() == 1) && !orgUnit.hasFlagWebuser()) {
+                // normal ous have to have at least one resource 
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_ORGUNIT_REMOVE_LAST_RESOURCE_2,
                     orgUnit.getName(),
@@ -1988,10 +1994,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * @param dbc the database context
      * @param ouFqn the fully qualified name of the organizational unit to create the principals for
      * @param ouDescription the description of the given organizational unit
+     * @param webuser the webuser ou flag
      * 
      * @throws CmsException if something goes wrong 
      */
-    protected void internalCreateDefaultGroups(CmsDbContext dbc, String ouFqn, String ouDescription)
+    protected void internalCreateDefaultGroups(CmsDbContext dbc, String ouFqn, String ouDescription, boolean webuser)
     throws CmsException {
 
         // create roles
@@ -2004,23 +2011,24 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 Iterator itRoles = CmsRole.getSystemRoles().iterator();
                 while (itRoles.hasNext()) {
                     CmsRole role = (CmsRole)itRoles.next();
-                    if (!role.isOrganizationalUnitIndependent() || (CmsOrganizationalUnit.getParentFqn(ouFqn) == null)) {
-                        String groupName = ouFqn + role.getGroupName();
-                        int flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
-                        if ((role == CmsRole.WORKPLACE_USER) || (role == CmsRole.PROJECT_MANAGER)) {
-                            flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
-                        }
-                        if (role == CmsRole.PROJECT_MANAGER) {
-                            flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
-                        }
-                        createGroup(
-                            dbc,
-                            CmsUUID.getConstantUUID(groupName),
-                            groupName,
-                            "A system role group",
-                            flags,
-                            null);
+                    if (webuser && (role != CmsRole.ACCOUNT_MANAGER)) {
+                        // if webuser ou and not account manager role
+                        continue;
                     }
+                    if (role.isOrganizationalUnitIndependent() && (CmsOrganizationalUnit.getParentFqn(ouFqn) != null)) {
+                        // if role is ou independent and not in the root ou
+                        continue;
+                    }
+                    String groupName = ouFqn + role.getGroupName();
+                    int flags = I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_ROLE;
+                    if ((role == CmsRole.WORKPLACE_USER) || (role == CmsRole.PROJECT_MANAGER)) {
+                        flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
+                    }
+                    if (role == CmsRole.PROJECT_MANAGER) {
+                        flags |= I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
+                    }
+                    createGroup(dbc, CmsUUID.getConstantUUID(groupName), groupName, "A system role group", flags, null);
+
                 }
                 if ((CmsOrganizationalUnit.getParentFqn(ouFqn) == null) && CmsLog.INIT.isInfoEnabled()) {
                     CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATED_0));
@@ -2031,6 +2039,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_SYSTEM_ROLES_CREATION_FAILED_0), e);
             }
             throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), e);
+        }
+
+        if (webuser) {
+            // no default groups for webuser ou
+            return;
         }
 
         // create groups
@@ -2205,7 +2218,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * 
      * @return the organizational unit represented by the given resource
      * 
-     * @throws CmsException if soemthing goes wrong
+     * @throws CmsException if something goes wrong
      */
     protected CmsOrganizationalUnit internalCreateOrgUnitFromResource(CmsDbContext dbc, CmsResource resource)
     throws CmsException {

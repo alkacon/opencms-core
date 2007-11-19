@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUsersList.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/11/19 14:40:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -415,6 +415,10 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
             ret.add(item);
         }
+        CmsListColumnDefinition colDef = getList().getMetadata().getColumnDefinition(LIST_COLUMN_ROLE);
+        if (colDef != null) {
+            colDef.setVisible(!OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), getParamOufqn()).hasFlagWebuser());
+        }
         return ret;
     }
 
@@ -426,16 +430,6 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     protected String getRoleIcon() {
 
         return PATH_BUTTONS + "role.png";
-    }
-
-    /**
-     * Returns the path the switch user icon.<p>
-     * 
-     * @return the path to the switch user icon
-     */
-    protected String getSwitchIcon() {
-
-        return PATH_BUTTONS + "user_switch.png";
     }
 
     /**
@@ -511,7 +505,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         roleCol.setWidth("20");
         roleCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         roleCol.setSorteable(false);
-        // add switch action
+        // add role action
         CmsListDirectAction roleAction = new CmsListDirectAction(LIST_ACTION_ROLE);
         roleAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ROLE_NAME_0));
         roleAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ROLE_HELP_0));
