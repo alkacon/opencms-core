@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/11/19 12:55:08 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -357,7 +358,7 @@ public class CmsSessionManager {
         OpenCms.getRoleManager().checkRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(user.getOuFqn()));
         CmsSessionInfo info = getSessionInfo(req);
         HttpSession session = req.getSession(false);
-        if (info == null || session == null) {
+        if ((info == null) || (session == null)) {
             throw new CmsException(Messages.get().container(Messages.ERR_NO_SESSIONINFO_SESSION_0));
         }
 
@@ -367,7 +368,14 @@ public class CmsSessionManager {
 
         // get the user settings for the given user and set the start project and the site root
         CmsUserSettings settings = new CmsUserSettings(user);
-        CmsProject userProject = cms.readProject(settings.getStartProject());
+        String ouFqn = user.getOuFqn();
+        CmsProject userProject = cms.readProject(ouFqn
+            + OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartProject());
+        try {
+            userProject = cms.readProject(settings.getStartProject());
+        } catch (Exception e) {
+            // ignore, use default
+        }
         String userSiteRoot = settings.getStartSite();
         CmsRequestContext context = new CmsRequestContext(
             user,
@@ -380,16 +388,17 @@ public class CmsSessionManager {
             0,
             null,
             null,
-            null);
+            ouFqn);
+        // delete the stored workplace settings, so the session has to receive them again
+        session.removeAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+
         // create a new CmsSessionInfo and store it inside the session map
         CmsSessionInfo newInfo = new CmsSessionInfo(context, info.getSessionId(), info.getMaxInactiveInterval());
         addSessionInfo(newInfo);
-        // set the site root and the current project to the user preferences
+        // set the site root, project and ou fqn to current cms context
         cms.getRequestContext().setSiteRoot(userSiteRoot);
         cms.getRequestContext().setCurrentProject(userProject);
-
-        // delete the stored workplace settings, so the session has to receive them again
-        session.removeAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+        cms.getRequestContext().setOuFqn(user.getOuFqn());
     }
 
     /**
@@ -560,6 +569,12 @@ public class CmsSessionManager {
         if (!cms.getRequestContext().isUpdateSessionEnabled()) {
             // this request must not update the user session info
             // this is true for long running "thread" requests, e.g. during project publish
+            return;
+        }
+
+        if (cms.getRequestContext().getUri().equals(CmsToolManager.VIEW_JSPPAGE_LOCATION)) {
+            // this request must not update the user session info
+            // if not the switch user feature would not work 
             return;
         }
 

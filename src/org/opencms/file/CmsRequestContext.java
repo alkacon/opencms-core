@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2007/09/13 11:54:40 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2007/11/19 12:55:08 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 6.0.0 
  */
@@ -527,6 +527,30 @@ public final class CmsRequestContext {
     }
 
     /**
+     * Sets the organizational unit fully qualified name.<p>
+     * 
+     * @param ouFqn the organizational unit fully qualified name
+     */
+    public void setOuFqn(String ouFqn) {
+
+        String userOu = CmsOrganizationalUnit.getParentFqn(m_user.getName());
+        if (ouFqn != null) {
+            if (ouFqn.startsWith(userOu)
+                || (ouFqn.startsWith(CmsOrganizationalUnit.SEPARATOR) && ouFqn.substring(1).startsWith(userOu))) {
+                m_ouFqn = ouFqn;
+            } else {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_BAD_ORGUNIT_2,
+                    ouFqn,
+                    userOu));
+            }
+        } else {
+            m_ouFqn = userOu;
+        }
+        m_ouFqn = CmsOrganizationalUnit.removeLeadingSeparator(m_ouFqn);
+    }
+
+    /**
      * Sets the current request time.<p>
      * 
      * @param time the request time
@@ -587,28 +611,5 @@ public final class CmsRequestContext {
         m_user = user;
         m_currentProject = project;
         setOuFqn(ouFqn);
-    }
-
-    /**
-     * Sets the organizational unit fully qualified name.<p>
-     * 
-     * @param ouFqn the organizational unit fully qualified name
-     */
-    private void setOuFqn(String ouFqn) {
-
-        String userOu = CmsOrganizationalUnit.getParentFqn(m_user.getName());
-        if (ouFqn != null) {
-            if (ouFqn.startsWith(userOu) || (ouFqn.startsWith(CmsOrganizationalUnit.SEPARATOR) && ouFqn.substring(1).startsWith(userOu))) {
-                m_ouFqn = ouFqn;
-            } else {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_BAD_ORGUNIT_2,
-                    ouFqn,
-                    userOu));
-            }
-        } else {
-            m_ouFqn = userOu;
-        }
-        m_ouFqn = CmsOrganizationalUnit.removeLeadingSeparator(m_ouFqn);
     }
 }
