@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the base components for the administration view.</p>
 <p>Its allows you to install and/or develop administration tools for OpenCms 7.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.0</version>
+		<version>7.0.4</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

@@ -1,11 +1,16 @@
 <%@ page import="
 	org.opencms.workplace.CmsWorkplace,
 	org.opencms.workplace.administration.CmsAdminMenu,
-	org.opencms.jsp.CmsJspActionElement
+	org.opencms.jsp.CmsJspActionElement,
+	java.util.Collections
 "%><%
 
 	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
     CmsAdminMenu wp = new CmsAdminMenu(jsp);
+    String req = wp.allRequestParamsAsUrl(Collections.singleton("scroll"));
+    if (req.length() > 0) {
+        req += "&";
+    }
 
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -22,16 +27,16 @@
       setContextHelp();
       loadingOff();
       document.getElementById('loaderContainerH').height = pHeight();
-      //window.onresize=checkSize;
     }
     function bodyUnload() {
       loadingOn();
     }
     function checkSize() {
+      var req = 'admin-fs.jsp?<%=req %>scroll=';
       if (wHeight() <= pHeight() && wWidth() < 213) {
-    	parent.location.href='admin-fs.jsp?scroll=true';
+    	parent.location.href = req + 'true';
       } else if (wHeight() > pHeight() && wWidth() > 212) {
-        parent.location.href='admin-fs.jsp?scroll=false';
+        parent.location.href = req + 'false';
       }
     }
     var activeItem = '/';

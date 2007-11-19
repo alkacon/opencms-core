@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2007/08/13 16:29:58 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2007/11/19 12:55:19 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.administration;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -43,7 +44,9 @@ import org.opencms.workplace.tools.CmsToolMacroResolver;
 import org.opencms.workplace.tools.CmsToolManager;
 import org.opencms.workplace.tools.I_CmsIdentifiableObjectContainer;
 
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -52,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,7 +75,7 @@ public class CmsAdminMenu extends CmsToolDialog {
     public CmsAdminMenu(CmsJspActionElement jsp) {
 
         super(jsp);
-        try { 
+        try {
             initAdminTool();
         } catch (Exception e) {
             // ignore, only a role violation, not important for left side menu
@@ -142,6 +145,41 @@ public class CmsAdminMenu extends CmsToolDialog {
         CmsAdminMenuItem item = new CmsAdminMenuItem(id, name, icon, link, helpText, enabled, target);
         group.addMenuItem(item, position);
         return item;
+    }
+
+    /**
+     * Returns all initialized parameters of the current request
+     * that are not in the given exclusion list as hidden field tags that can be inserted in a form.<p>
+     * 
+     * @param excludes the parameters to exclude 
+     * 
+     * @return all initialized parameters of the current request
+     */
+    public String allRequestParamsAsUrl(Collection excludes) {
+
+        StringBuffer result = new StringBuffer(512);
+        Map params = getJsp().getRequest().getParameterMap();
+        Iterator i = params.entrySet().iterator();
+        while (i.hasNext()) {
+            Map.Entry entry = (Map.Entry)i.next();
+            String param = (String)entry.getKey();
+            if ((excludes == null) || (!excludes.contains(param))) {
+                if (result.length() > 0) {
+                    result.append("&");
+                }
+                result.append(param);
+                result.append("=");
+                String value;
+                if (entry.getValue() instanceof String[]) {
+                    value = ((String[])entry.getValue())[0];
+                } else {
+                    value = (String)entry.getValue();
+                }
+                String encoded = CmsEncoder.encode(value, getCms().getRequestContext().getEncoding());
+                result.append(encoded);
+            }
+        }
+        return result.toString();
     }
 
     /**
