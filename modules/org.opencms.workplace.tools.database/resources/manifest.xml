@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.3</opencms_version>
+		<opencms_version>7.0.4</opencms_version>
 		<createdate>Mon, 15 Oct 2007 15:35:18 GMT</createdate>
 		<project>Offline</project>
 		<export_version>6</export_version>
@@ -29,7 +29,14 @@
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.database/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/workplace/admin/database/"/>
+			<resource uri="/system/workplace/admin/database/htmlimport/"/>
+            <resource uri="/system/workplace/admin/database/reports/"/>
+            <resource uri="/system/workplace/admin/database/export.jsp"/>
+            <resource uri="/system/workplace/admin/database/importhttp.jsp"/>
+            <resource uri="/system/workplace/admin/database/importserver.jsp"/>
+            <resource uri="/system/workplace/admin/database/publishlocks.jsp"/>
+            <resource uri="/system/workplace/admin/database/publishlocksreport.jsp"/>
+            <resource uri="/system/workplace/admin/database/staticexport.jsp"/>
 			<resource uri="/system/workplace/resources/tools/database/"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.database/"/>
 			<resource uri="/system/workplace/commons/newresource_uploadHtml.jsp"/>
