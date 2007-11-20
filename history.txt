@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/20 10:24:58 $
- * Version: $Revision: 1.940 $
+ * Date   : $Date: 2007/11/20 12:34:06 $
+ * Version: $Revision: 1.941 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -26,6 +26,7 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with 'switch user' across OUs
 * Fixed issue with cached roles after creating a new organizational unit
 * Fixed issue with NPE in the login form
+* Fixed issue with publish locks when publishing a file and a parent folder in separate publish jobs
 - Added new multi language static export feature
 - Added option to organizational units to be hidden from the login form
 - Added 'webusers' only organizational units 

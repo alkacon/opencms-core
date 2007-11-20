@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/09/07 12:02:16 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2007/11/20 12:34:06 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  * 
@@ -464,9 +464,6 @@ public final class CmsLockManager {
                     String lockedPath = ((CmsLock)itLocks.next()).getResourceName();
                     if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
                         // remove the exclusive locked sub-resource
-                        if (removeSystemLock) {
-                            unlockResource(lockedPath, true);
-                        }
                         unlockResource(lockedPath, false);
                     }
                 }
