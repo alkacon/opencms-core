@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/11/19 14:40:52 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2007/11/20 10:24:58 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -228,7 +228,6 @@ public class CmsLogin extends CmsJspLoginBean {
 
         m_message = null;
         if (cms.getRequestContext().currentUser().isGuestUser()) {
-
             // user is not currently logged in
             m_action = ACTION_DISPLAY;
             m_username = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_USERNAME);
@@ -244,26 +243,30 @@ public class CmsLogin extends CmsJspLoginBean {
             }
             // try to get some info from a cookie
             getCookieData();
-            if (m_oufqn == null) {
-                m_oufqn = CmsOrganizationalUnit.SEPARATOR;
-            }
-            m_ou = null;
-            try {
-                m_ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), m_oufqn);
-            } catch (CmsException e) {
-                m_oufqn = CmsOrganizationalUnit.SEPARATOR;
-                try {
-                    m_ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), m_oufqn);
-                } catch (CmsException exc) {
-                    LOG.error(exc.getLocalizedMessage(), exc);
-                }
-            }
         } else {
             // user is already logged in
+            m_oufqn = cms.getRequestContext().getOuFqn();
             m_action = ACTION_LOGIN;
             m_actionLogout = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_ACTION_LOGOUT);
         }
 
+        // initialize the right ou
+        if (m_oufqn == null) {
+            m_oufqn = CmsOrganizationalUnit.SEPARATOR;
+        }
+        m_ou = null;
+        try {
+            m_ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), m_oufqn);
+        } catch (CmsException e) {
+            m_oufqn = CmsOrganizationalUnit.SEPARATOR;
+            try {
+                m_ou = OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), m_oufqn);
+            } catch (CmsException exc) {
+                LOG.error(exc.getLocalizedMessage(), exc);
+            }
+        }
+
+        // initialize the requested resource
         m_requestedResource = CmsRequestUtil.getNotEmptyParameter(
             getRequest(),
             CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
