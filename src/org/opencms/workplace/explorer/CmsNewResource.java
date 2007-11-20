@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2007/10/26 10:20:11 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2007/11/20 10:49:11 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -946,7 +946,8 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             }
 
             // check permissions for the type
-            if (!settings.isEditable(getCms(), resource)) {
+            if (!settings.isEditable(getCms(), resource)
+                || !settings.getAccess().getPermissions(getCms(), resource).requiresControlPermission()) {
 
                 // the type has no permission for the current user to be created, don't show the type
                 continue;
