@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/20 12:34:06 $
- * Version: $Revision: 1.941 $
+ * Date   : $Date: 2007/11/20 12:35:59 $
+ * Version: $Revision: 1.942 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -27,6 +27,7 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with cached roles after creating a new organizational unit
 * Fixed issue with NPE in the login form
 * Fixed issue with publish locks when publishing a file and a parent folder in separate publish jobs
+* Fixed issue with the creation flag of the explorer type permissions
 - Added new multi language static export feature
 - Added option to organizational units to be hidden from the login form
 - Added 'webusers' only organizational units 
