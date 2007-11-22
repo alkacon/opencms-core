@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2007/08/21 14:02:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/11/22 09:58:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.2
  * 
@@ -387,6 +387,20 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
+     * Returns the String value of the wrapped content value.<p>
+     * 
+     * Note that this will return the empty String <code>""</code> when {@link #getExists()} returns <code>false</code><p>.
+     * 
+     * @return the String value of the wrapped content value
+     * 
+     * @see #toString()
+     */
+    public String getStringValue() {
+
+        return toString();
+    }
+
+    /**
      * Returns a lazy initialized Map that provides the nested sub values 
      * for the current value from the XML content.<p>
      * 
@@ -487,6 +501,7 @@ public final class CmsJspContentAccessValueWrapper {
 
     /**
      * @see java.lang.Object#toString()
+     * @see #getStringValue()
      */
     public String toString() {
 
