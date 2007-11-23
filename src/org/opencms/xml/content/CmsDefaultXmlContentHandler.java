@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/11/09 10:01:04 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2007/11/23 09:33:17 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 6.0.0 
  */
@@ -799,7 +799,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                                 // set the sibling release date
                                 rootCms.setDateReleased(filename, date, false);
                                 // set current file release date
-                                file.setDateReleased(date);
+                                if (filename.equals(rootCms.getSitePath(file))) {
+                                    file.setDateReleased(date);
+                                }
                                 break;
                             case 1: // date expired
                                 date = 0;
@@ -814,7 +816,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                                 // set the sibling expired date
                                 rootCms.setDateExpired(filename, date, false);
                                 // set current file expired date
-                                file.setDateExpired(date);
+                                if (filename.equals(rootCms.getSitePath(file))) {
+                                    file.setDateExpired(date);
+                                }
                                 break;
                             default:
                                 // ignore invalid / other mappings                                
