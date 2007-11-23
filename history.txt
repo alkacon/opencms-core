@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/23 09:33:17 $
- * Version: $Revision: 1.944 $
+ * Date   : $Date: 2007/11/23 09:38:10 $
+ * Version: $Revision: 1.945 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ OpenCms 7.0.4 - xxx, 2008
 ! Added option to organizational units to be hidden from the login form
 ! Added 'webusers' only organizational units 
 ! Added #getStringValue() method to CmsJspContentAccessValueWrapper for better support of 'empty' EL operator 
+! Added database support for AS400
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation

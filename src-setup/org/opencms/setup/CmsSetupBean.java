@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2007/11/05 16:15:46 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/11/23 09:37:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -110,7 +110,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,6 +118,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** DB provider constant for db2. */
     public static final String DB2_PROVIDER = "db2";
+
+    /** DB provider constant for as400. */
+    public static final String AS400_PROVIDER = "as400";
 
     /** Folder constant name.<p> */
     public static final String FOLDER_BACKUP = "backup" + File.separatorChar;
@@ -1585,7 +1588,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
             conStr = "";
         }
         String database = "";
-        if (provider.equals(MYSQL_PROVIDER) || provider.equals(MSSQL_PROVIDER) || provider.equals(DB2_PROVIDER)) {
+        if (provider.equals(MYSQL_PROVIDER)
+            || provider.equals(MSSQL_PROVIDER)
+            || provider.equals(DB2_PROVIDER)
+            || provider.equals(AS400_PROVIDER)) {
             database = request.getParameter("db");
         } else if (provider.equals(POSTGRESQL_PROVIDER)) {
             database = request.getParameter("dbName");
@@ -1593,13 +1599,14 @@ public class CmsSetupBean implements I_CmsShellCommands {
         if (provider.equals(MYSQL_PROVIDER)
             || provider.equals(MSSQL_PROVIDER)
             || provider.equals(POSTGRESQL_PROVIDER)
+            || provider.equals(AS400_PROVIDER)
             || provider.equals(DB2_PROVIDER)) {
             isFormSubmitted = (isFormSubmitted && (database != null));
         }
 
         if (isInitialized()) {
             String createDb = request.getParameter("createDb");
-            if ((createDb == null) || provider.equals(DB2_PROVIDER)) {
+            if ((createDb == null) || provider.equals(DB2_PROVIDER) || provider.equals(AS400_PROVIDER)) {
                 createDb = "";
             }
 
@@ -1630,6 +1637,14 @@ public class CmsSetupBean implements I_CmsShellCommands {
                         conStr += "/";
                     }
                     conStr += database;
+                } else if (provider.equals(AS400_PROVIDER)) {
+                    if (conStr.endsWith("/")) {
+                        conStr = conStr.substring(0, conStr.length() - 1);
+                    }
+                    if (!conStr.endsWith(";")) {
+                        conStr += ";";
+                    }
+                    conStr += "libraries='" + database + "'";
                 }
                 setDbWorkConStr(conStr);
                 if (provider.equals(POSTGRESQL_PROVIDER)) {
@@ -1641,7 +1656,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 String dbWorkUser = request.getParameter("dbWorkUser");
                 String dbWorkPwd = request.getParameter("dbWorkPwd");
 
-                if (!provider.equals(DB2_PROVIDER)) {
+                if ((dbCreateUser != null) && !provider.equals(DB2_PROVIDER) && !provider.equals(AS400_PROVIDER)) {
                     setDbCreateUser(dbCreateUser);
                 }
                 setDbCreatePwd(dbCreatePwd);
@@ -1687,6 +1702,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
                 if (provider.equals(GENERIC_PROVIDER)
                     || provider.equals(ORACLE_PROVIDER)
                     || provider.equals(DB2_PROVIDER)
+                    || provider.equals(AS400_PROVIDER)
                     || provider.equals(MAXDB_PROVIDER)) {
                     request.getSession().setAttribute("createTables", createTables);
                 }

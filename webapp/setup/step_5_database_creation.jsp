@@ -30,11 +30,15 @@
 		if(createDb || createTables)	{
 			db = new CmsSetupDb(Bean.getWebAppRfsPath());
 			temp = request.getParameter("dropDb");
-			dropDb = (temp != null) && "Yes".equals(temp) || Bean.getDatabase().startsWith("db2");
-
+			dropDb = (temp != null) && "Yes".equals(temp);
+			if (Bean.getDatabase().startsWith("db2") || Bean.getDatabase().startsWith("as400")) {
+			    dbExists = true;
+			    dropDb = true;
+			    createDb = false;
+			}
 			/* check if database exists */
 			if(!dropDb)	{
-			    if (Bean.getDatabase().startsWith("oracle") || Bean.getDatabase().startsWith("db2")) {
+			    if (Bean.getDatabase().startsWith("oracle") || Bean.getDatabase().startsWith("db2") || Bean.getDatabase().startsWith("as400")) {
 					db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(), Bean.getDbWorkPwd());
 				} else {
 					db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
@@ -49,7 +53,9 @@
 			}
 			if( !dbExists || dropDb)	{
                 db.closeConnection();
-				db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
+    			if (!Bean.getDatabase().startsWith("db2") && !Bean.getDatabase().startsWith("as400")) {
+	    			db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
+	    		}
 			}
 			else {
 				if (createDb || createTables) {
