@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/db2/CmsSqlManager.java,v $
- * Date   : $Date: 2007/11/05 16:15:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/11/23 09:35:23 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     private static final long serialVersionUID = -10490536414546280L;
 
     /** The filename/path of the SQL query properties. */
-    private static final String QUERY_PROPERTIES = "org/opencms/db/hsqldb/query.properties";
+    private static final String QUERY_PROPERTIES = "org/opencms/db/db2/query.properties";
 
     /**
      * @see org.opencms.db.generic.CmsSqlManager#CmsSqlManager()
