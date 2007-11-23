@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 6.x/7.x to OpenCms 7.0.3
+            Instructions for updating OpenCms 6.x/7.x to OpenCms 7.0.4
 
 
                                     WARNING:
@@ -17,7 +17,7 @@ IMPORTANT: Before using this upgrade wizard, make sure you have a full backup
 of your OpenCms installation and database.
 
 
-Follow the following steps to update from OpenCms 6.x/7.x to OpenCms 7.0.3:
+Follow the following steps to update from OpenCms 6.x/7.x to OpenCms 7.0.4:
 
 
 1. Shutdown your OpenCms servlet container
@@ -27,7 +27,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7.0.3.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_to_7.0.4.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
@@ -140,6 +140,10 @@ the wizard will be locked again (in the opencms.properties file).
 
 
 6. Shutdown and restart your OpenCms servlet container
+
+Note: to be sure all jsp files work correctly please delete the servlet containers
+work directory (ie. ${TOMCAT_HOME}/work/Catalina/localhost/opencms/) and the 
+OpenCms' jsp repository (ie. ${OPENCMS_HOME}/WEB-INF/jsp/)
 
 You should now be able to log into the OpenCms workplace as before.
 
