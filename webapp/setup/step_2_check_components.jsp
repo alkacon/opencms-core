@@ -78,11 +78,14 @@ Alkacon OpenCms Setup Wizard - Component tests
 			} else if (testResult.isYellow()) {
 				resultIcon = "unknown";
 				questionableConditions += "<p>" + testResult.getInfo() + "</p>";
+			} else if (testResult.isGreen() && (testResult.getInfo() != null) && !"".equals(testResult.getInfo())) {
+				questionableConditions += "<p>" + testResult.getInfo() + "</p>";
+				resultIcon = "check";
 			} else {
 				resultIcon = "check";
 			}
 					
-			if (!testResult.isGreen() && testResult.getHelp() != null && !"".equals(testResult.getHelp())) {
+			if (!testResult.isGreen() && (testResult.getHelp() != null) && !"".equals(testResult.getHelp())) {
 				descriptions += Bean.getHtmlPart("C_HELP_START", "" + i) + testResult.getHelp() + Bean.getHtmlPart("C_HELP_END");
 				helpIcon = Bean.getHtmlHelpIcon("" + i, "");
 			} else {
@@ -127,7 +130,11 @@ Alkacon OpenCms Setup Wizard - Component tests
 					out.print("Your system uses components which have not been tested to work with Alkacon OpenCms. It is possible that OpenCms will not run on your system.");
 					out.println(questionableConditions);
 				} else {
-					out.print("<b>Your system uses components which have been tested to work properly with Alkacon OpenCms.</b>");
+					out.println("<b>Your system uses components which have been tested to work properly with Alkacon OpenCms.</b>");
+					if (!"".equals(questionableConditions)) {
+					    out.print(" <b>But, please, be sure to check following points:</b>");					    
+						out.println(questionableConditions);
+					}
 				}
 			%></td>
 			</tr>

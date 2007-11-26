@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/comptest/CmsSetupTestServletContainer.java,v $
- * Date   : $Date: 2007/11/26 10:30:26 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/11/26 11:07:15 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import javax.servlet.ServletConfig;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -74,7 +74,7 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
 
         ServletConfig config = setupBean.getServletConfig();
         String servletContainer = config.getServletContext().getServerInfo();
-        boolean supportedServletContainer = hasSupportedServletContainer(servletContainer, supportedContainers);
+        int supportedServletContainer = hasSupportedServletContainer(servletContainer, supportedContainers);
         int unsupportedServletContainer = unsupportedServletContainer(servletContainer, unsupportedContainers);
 
         testResult.setResult(servletContainer);
@@ -85,9 +85,12 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
             testResult.setHelp("This servlet container does not work with OpenCms. Even though OpenCms is fully standards compliant, "
                 + "the standard leaves some 'grey' (i.e. undefined) areas. "
                 + "Please consider using another, supported servlet container.");
-        } else if (!supportedServletContainer) {
+        } else if (supportedServletContainer < 0) {
             testResult.setYellow();
             testResult.setHelp("This servlet container has not been tested with OpenCms. Please consider using another, supported servlet container.");
+        } else if (supportedServletContainer == 3) {
+            // resin
+            testResult.setInfo("Please be sure that during the Setup Wizard, the web application auto-redeployment feature is deactivated. One way to achieve this, is to set the '<code>dependency-check-interval</code>' option in your <code>resin.conf</code> configuration file to <code>-1</code> or something big like <code>2000s</code>.");
         } else {
             testResult.setGreen();
         }
@@ -102,14 +105,14 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
      * 
      * @return true if this container is supported, false if it was not found in the list
      */
-    private boolean hasSupportedServletContainer(String thisContainer, String[] supportedContainers) {
+    private int hasSupportedServletContainer(String thisContainer, String[] supportedContainers) {
 
         for (int i = 0; i < supportedContainers.length; i++) {
             if (thisContainer.indexOf(supportedContainers[i]) >= 0) {
-                return true;
+                return i;
             }
         }
-        return false;
+        return -1;
     }
 
     /** 
