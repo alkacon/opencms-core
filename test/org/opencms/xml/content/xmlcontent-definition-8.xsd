@@ -39,6 +39,7 @@
 				<mapping element="VfsFile" mapto="propertyList:Description" />
 				<mapping element="VfsFile2" mapto="propertyList:shared:Keywords" />
 				<mapping element="VfsFile3" mapto="propertyList:individual:NavText" />
+				<mapping element="DateTime" mapto="attribute:datereleased" />
 			</mappings>
 			<validationrules>
 				<rule element="String" regex="!.*[Ee]rr.*" />

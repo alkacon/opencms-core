@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2007/08/20 12:10:45 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2007/11/26 13:16:24 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -1559,14 +1559,24 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             xmlcontent.addLocale(cms, Locale.ENGLISH);
         }
 
+        // add EN property
         String titleStrEn = "This must be the Title in EN";
         I_CmsXmlContentValue value;
         value = xmlcontent.addValue(cms, "String", Locale.ENGLISH, 0);
         value.setStringValue(cms, titleStrEn);
+        // add EN release date
+        long timeEN = System.currentTimeMillis() - 1000;
+        value = xmlcontent.addValue(cms, "DateTime", Locale.ENGLISH, 0);
+        value.setStringValue(cms, "" + timeEN);
 
+        // add DE property
         String titleStrDe = "Das ist der Title in DE";
         value = xmlcontent.addValue(cms, "String", Locale.GERMAN, 0);
         value.setStringValue(cms, titleStrDe);
+        // add DE release date
+        long timeDE = System.currentTimeMillis() - 5000;
+        value = xmlcontent.addValue(cms, "DateTime", Locale.GERMAN, 0);
+        value.setStringValue(cms, "" + timeDE);
 
         file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
         cms.writeFile(file);
@@ -1579,12 +1589,14 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             CmsPropertyDefinition.PROPERTY_TITLE,
             false);
         assertEquals(titleStrEn, titlePropertyEn.getValue());
+        assertDateReleased(cms, resourcenameEn, timeEN);
 
         CmsProperty titlePropertyDe = cms.readPropertyObject(
             resourcenameDe,
             CmsPropertyDefinition.PROPERTY_TITLE,
             false);
         assertEquals(titleStrDe, titlePropertyDe.getValue());
+        assertDateReleased(cms, resourcenameDe, timeDE);
     }
 
     /**

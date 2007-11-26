@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/10/19 08:18:11 $
- * Version: $Revision: 1.100 $
+ * Date   : $Date: 2007/11/26 13:16:24 $
+ * Version: $Revision: 1.101 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.100 $
+ * @version $Revision: 1.101 $
  * 
  * @since 6.0.0
  */
@@ -1452,6 +1452,37 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Compares the current expiration date of a resource with a given date.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param dateExpired the expiration date
+     */
+    public void assertDateExpired(CmsObject cms, String resourceName, long dateExpired) {
+
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
+
+            if (res.getDateExpired() != dateExpired) {
+                fail("[DateExpired "
+                    + dateExpired
+                    + " i.e. "
+                    + CmsDateUtil.getHeaderDate(dateExpired)
+                    + " != "
+                    + res.getDateExpired()
+                    + " i.e. "
+                    + CmsDateUtil.getHeaderDate(res.getDateExpired())
+                    + "]");
+
+            }
+
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }
+    }
+
+    /**
      * Compares the current date last modified of a resource with a given date.<p>
      * 
      * @param cms the CmsObject
@@ -1504,6 +1535,37 @@ public class OpenCmsTestCase extends TestCase {
                     + " i.e. "
                     + CmsDateUtil.getHeaderDate(res.getDateLastModified())
                     + "]");
+            }
+
+        } catch (CmsException e) {
+            fail("cannot read resource " + resourceName + " " + CmsException.getStackTraceAsString(e));
+        }
+    }
+
+    /**
+     * Compares the current release date of a resource with a given date.<p>
+     * 
+     * @param cms the CmsObject
+     * @param resourceName the name of the resource to compare
+     * @param dateReleased the release date
+     */
+    public void assertDateReleased(CmsObject cms, String resourceName, long dateReleased) {
+
+        try {
+            // get the actual resource from the vfs
+            CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
+
+            if (res.getDateReleased() != dateReleased) {
+                fail("[DateReleased "
+                    + dateReleased
+                    + " i.e. "
+                    + CmsDateUtil.getHeaderDate(dateReleased)
+                    + " != "
+                    + res.getDateReleased()
+                    + " i.e. "
+                    + CmsDateUtil.getHeaderDate(res.getDateReleased())
+                    + "]");
+
             }
 
         } catch (CmsException e) {
