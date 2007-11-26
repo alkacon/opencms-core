@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/comptest/CmsSetupTests.java,v $
- * Date   : $Date: 2007/11/07 11:49:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/11/26 10:30:26 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +80,7 @@ public class CmsSetupTests {
         tests.add(new CmsSetupTestJdkVersion());
         tests.add(new CmsSetupTestJavaTempDir());
         tests.add(new CmsSetupTestOperatingSystem());
-        tests.add(new CmsSetupTestServletEngine());
+        tests.add(new CmsSetupTestServletContainer());
         tests.add(new CmsSetupTestSimapi());
         tests.add(new CmsSetupTestWarFileUnpacked());
         tests.add(new CmsSetupTestXercesVersion());
