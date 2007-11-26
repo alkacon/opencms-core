@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2007/08/13 16:29:55 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2007/11/26 10:31:13 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,7 +193,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         ServletRequest req,
         ServletResponse res) throws JspException {
 
-        // the Flex controller provides access to the interal OpenCms structures
+        // the Flex controller provides access to the internal OpenCms structures
         CmsFlexController controller = CmsFlexController.getController(req);
 
         if (target == null) {
@@ -468,7 +468,11 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             includeTagAction(pageContext, target, m_element, null, m_editable, m_cacheable, m_parameterMap, req, res);
 
             // must call release here manually to make sure m_parameterMap is cleared
-            release();
+            if (OpenCms.getSystemInfo().isTagIncludeReleaseAfterEndTag()) {
+                release();
+            } else {
+                m_parameterMap = null;
+            }
         }
 
         return EVAL_PAGE;
