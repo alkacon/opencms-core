@@ -2,6 +2,9 @@
 
 	// initialize the workplace class
 	CmsPropertyCustom wp = new CmsPropertyCustom(pageContext, request, response);
+    if (wp.isForwarded()) {
+        return;
+    }
 	String additionalScript = "";
 	
 //////////////////// start of switch statement 
