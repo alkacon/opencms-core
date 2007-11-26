@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/comptest/CmsSetupTestServletContainer.java,v $
- * Date   : $Date: 2007/11/26 11:07:15 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2007/11/26 11:51:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import javax.servlet.ServletConfig;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -64,12 +64,18 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
 
         CmsSetupTestResult testResult = new CmsSetupTestResult(this);
 
-        String[] supportedContainers = {"Apache Tomcat/4", "Apache Tomcat/5", "WebLogic Server 9", "Resin/3"};
+        String[] supportedContainers = {
+            "Apache Tomcat/4.1",
+            "Apache Tomcat/5",
+            "Apache Tomcat/6",
+            "WebLogic Server 9",
+            "Resin/3"};
 
-        String[] unsupportedContainers = {"Tomcat Web Server/3", "Resin/2"};
+        String[] unsupportedContainers = {"Tomcat Web Server/3", "Apache Tomcat/4.0", "Resin/2"};
 
         String[] unsupportedServletContainerInfo = {
-            "Tomcat 3.x is no longer supported. Please use Tomcat 4.x instead.",
+            "Tomcat 3.x is no longer supported. Please use at least Tomcat 4.1.x instead.",
+            "Tomcat 4.0.x is no longer supported. Please use at least Tomcat 4.1.x instead.",
             "The OpenCms JSP integration does not work with Resin 2.x. Please use Resin 3.x instead."};
 
         ServletConfig config = setupBean.getServletConfig();
@@ -88,7 +94,7 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
         } else if (supportedServletContainer < 0) {
             testResult.setYellow();
             testResult.setHelp("This servlet container has not been tested with OpenCms. Please consider using another, supported servlet container.");
-        } else if (supportedServletContainer == 3) {
+        } else if (supportedServletContainer == 4) {
             // resin
             testResult.setInfo("Please be sure that during the Setup Wizard, the web application auto-redeployment feature is deactivated. One way to achieve this, is to set the '<code>dependency-check-interval</code>' option in your <code>resin.conf</code> configuration file to <code>-1</code> or something big like <code>2000s</code>.");
         } else {
