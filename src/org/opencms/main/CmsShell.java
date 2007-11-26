@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2007/08/13 16:29:59 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2007/11/26 10:30:55 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  * 
@@ -438,7 +438,7 @@ public class CmsShell {
             }
             System.out.println(Messages.get().getBundle(locale).key(Messages.GUI_SHELL_WEB_INF_PATH_1, webInfPath));
             // set the path to the WEB-INF folder (the 2nd and 3rd parameters are just reasonable dummies)
-            m_opencms.getSystemInfo().init(webInfPath, servletMapping, null, defaultWebAppName);
+            m_opencms.getSystemInfo().init(webInfPath, servletMapping, null, defaultWebAppName, null);
 
             // now read the configuration properties
             String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();
@@ -609,7 +609,10 @@ public class CmsShell {
         try {
             prompt = CmsStringUtil.substitute(prompt, "${user}", m_cms.getRequestContext().currentUser().getName());
             prompt = CmsStringUtil.substitute(prompt, "${siteroot}", m_cms.getRequestContext().getSiteRoot());
-            prompt = CmsStringUtil.substitute(prompt, "${project}", m_cms.getRequestContext().currentProject().getName());
+            prompt = CmsStringUtil.substitute(
+                prompt,
+                "${project}",
+                m_cms.getRequestContext().currentProject().getName());
             prompt = CmsStringUtil.substitute(prompt, "${uri}", m_cms.getRequestContext().getUri());
         } catch (Throwable t) {
             // ignore

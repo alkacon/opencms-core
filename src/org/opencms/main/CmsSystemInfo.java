@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2007/11/13 11:52:19 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2007/11/26 10:30:55 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,6 +78,18 @@ public class CmsSystemInfo {
     /** Static version number to use if version.properties can not be read. */
     private static final String DEFAULT_VERSION_NUMBER = "7.0.x";
 
+    /** 
+     * The replacement request attribute for the {@link javax.servlet.http.HttpServletRequest#getPathInfo()} method, 
+     * which is needed because this method is not properly implemented in BEA WLS 9.x.<p>
+     */
+    private static final String REQUEST_ERROR_PAGE_ATTRIBUTE_WEBLOGIC = "weblogic.servlet.errorPage";
+
+    /** Constant name to identify Resin servers. */
+    private static final String SERVLET_CONTAINER_RESIN = "Resin/3";
+
+    /** Constant name to identify BEA WebLogic servers. */
+    private static final String SERVLET_CONTAINER_WEBLOGIC = "WebLogic Server 9";
+
     /** The absolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
 
@@ -89,6 +101,9 @@ public class CmsSystemInfo {
 
     /** The default web application (usually "ROOT"). */
     private String m_defaultWebApplicationName;
+
+    /** If the servlet can throw an exception if initialization fails, for instance, Weblogic and Resin have problems with the exception. */
+    private boolean m_failedInitializationThrowsException;
 
     /** Indicates if the version history is enabled. */
     private boolean m_historyEnabled;
@@ -117,14 +132,26 @@ public class CmsSystemInfo {
     /** The absolute path to the "packages" folder (in the "real" file system). */
     private String m_packagesRfsPath;
 
+    /** 
+     * The request error page attribute to use if {@link javax.servlet.http.HttpServletRequest#getPathInfo()}
+     * is not working properly, like in BEA WLS 9.x. 
+     */
+    private String m_requestErrorPageAttribute;
+
     /** The name of the OpenCms server. */
     private String m_serverName;
+
+    /** The name of the servlet container running OpenCms. */
+    private String m_servletContainerName;
 
     /** The servlet path for the OpenCms servlet. */
     private String m_servletPath;
 
     /** The startup time of this OpenCms instance. */
     private long m_startupTime;
+
+    /** If the include tag needs to release after ending, this has to be prevented when running with Resin, for example. */
+    private boolean m_tagIncludeReleaseAfterEndTag = true;
 
     /** The version identifier of this OpenCms installation, contains "OpenCms/" and the version number. */
     private String m_version;
@@ -371,6 +398,17 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Returns the request error page attribute name to use if {@link javax.servlet.http.HttpServletRequest#getPathInfo()}
+     * is not working properly, like in BEA WLS 9.x.<p>
+     * 
+     * @return the request error page attribute name
+     */
+    public String getRequestErrorPageAttribute() {
+
+        return m_requestErrorPageAttribute;
+    }
+
+    /**
      * Returns the time this OpenCms instance is running in milliseconds.<p>
      * 
      * @return the time this OpenCms instance is running in milliseconds
@@ -393,6 +431,16 @@ public class CmsSystemInfo {
     public String getServerName() {
 
         return m_serverName;
+    }
+
+    /**
+     * Returns the name of the servlet container running OpenCms.<p>
+     *
+     * @return the name of the servlet container running OpenCms
+     */
+    public String getServletContainerName() {
+
+        return m_servletContainerName;
     }
 
     /**
@@ -498,6 +546,18 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Checks if the servlet can throw an exception if initialization fails.<p>
+     * 
+     * Some servlet containers like BEA WLS or Resin does not like it.<p>
+     * 
+     * @return <code>true</code> if the servlet can throw an exception if initialization fails
+     */
+    public boolean isFailedInitializationThrowsException() {
+
+        return m_failedInitializationThrowsException;
+    }
+
+    /**
      * Returns if the VFS version history is enabled.<p> 
      * 
      * @return if the VFS version history is enabled
@@ -505,6 +565,18 @@ public class CmsSystemInfo {
     public boolean isHistoryEnabled() {
 
         return m_historyEnabled;
+    }
+
+    /**
+     * Checks if the include tag needs to release after ending.<p>
+     * 
+     * Depends on how the servlet container generates code for tags, for instance, this has to be prevented with Resin.<p>
+     * 
+     * @return <code>true</code> if the include tag needs to release after ending
+     */
+    public boolean isTagIncludeReleaseAfterEndTag() {
+
+        return m_tagIncludeReleaseAfterEndTag;
     }
 
     /**
@@ -552,12 +624,35 @@ public class CmsSystemInfo {
      * @param servletMapping the OpenCms servlet mapping  (e.g. "/opencms/*")
      * @param webApplicationContext the name/path of the OpenCms web application context (optional, will be calculated form the path if null)
      * @param defaultWebApplication the default web application name (usually "ROOT")
+     * @param servletContainerName the name of the servlet container running OpenCms
      */
     protected void init(
         String webInfRfsPath,
         String servletMapping,
         String webApplicationContext,
-        String defaultWebApplication) {
+        String defaultWebApplication,
+        String servletContainerName) {
+
+        // init servlet container name
+        m_servletContainerName = "";
+        if (servletContainerName != null) {
+            // init servlet container dependent parameters
+            m_servletContainerName = servletContainerName;
+
+            // the include tag behavior
+            m_tagIncludeReleaseAfterEndTag = !(m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) > -1);
+
+            // the request error page attribute
+            m_requestErrorPageAttribute = null;
+            if (m_servletContainerName.indexOf(SERVLET_CONTAINER_WEBLOGIC) > -1) {
+                m_requestErrorPageAttribute = REQUEST_ERROR_PAGE_ATTRIBUTE_WEBLOGIC;
+            }
+
+            // the failed initialization behavior
+            m_failedInitializationThrowsException = true;
+            m_failedInitializationThrowsException &= (m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) < 0);
+            m_failedInitializationThrowsException &= (m_servletContainerName.indexOf(SERVLET_CONTAINER_WEBLOGIC) < 0);
+        }
 
         // init base path
         webInfRfsPath = webInfRfsPath.replace('\\', '/');
