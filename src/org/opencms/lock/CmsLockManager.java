@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2007/11/20 12:34:06 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2007/11/26 11:51:56 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  * 
@@ -579,21 +579,6 @@ public final class CmsLockManager {
             m_driverManager.getProjectDriver().writeLocks(dbc, locks);
             m_isDirty = false;
         }
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        try {
-            if (OpenCms.getMemoryMonitor() != null) {
-                OpenCms.getMemoryMonitor().flushLocks(null);
-            }
-        } catch (Throwable t) {
-            // ignore
-        }
-        super.finalize();
     }
 
     /**
