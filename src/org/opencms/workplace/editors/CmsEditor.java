@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/10/26 14:39:50 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2007/11/27 10:30:01 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 6.0.0 
  */
@@ -419,11 +419,11 @@ public abstract class CmsEditor extends CmsEditorBase {
         String filename = getParamResource();
 
         try {
-            CmsResource res = getCms().readResource(filename);
+            CmsResource res = getCms().readResource(filename, CmsResourceFilter.IGNORE_EXPIRATION);
 
             String temporaryFilename = CmsWorkplace.getTemporaryFileName(filename);
-            if (getCms().existsResource(temporaryFilename)) {
-                res = getCms().readResource(temporaryFilename);
+            if (getCms().existsResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                res = getCms().readResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION);
             }
             CmsFile file = getCms().readFile(res);
             CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
