@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2007/09/25 10:56:38 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2007/11/27 12:02:58 $
+ * Version: $Revision: 1.107 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -114,7 +114,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.106 $ 
+ * @version $Revision: 1.107 $ 
  * 
  * @since 6.0.0 
  * 
@@ -207,7 +207,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         m_configuration.put(paramName, paramValue);
     }
 
-    /** Destroy this ResourceLoder, this is a NOOP so far.  */
+    /** 
+     * Destroy this ResourceLoder, this is a NOOP so far.  
+     */
     public void destroy() {
 
         // NOOP
@@ -446,7 +448,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /**
      * Return a String describing the ResourceLoader,
      * which is (localized to the system default locale)
-     * <code>"The OpenCms default resource loader for JSP".</code>
+     * <code>"The OpenCms default resource loader for JSP"</code>.<p>
      * 
      * @return a describing String for the ResourceLoader 
      */
@@ -566,7 +568,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             if (bypass || controller.isForwardMode()) {
                 // once in forward mode, always in forward mode (for this request)
                 controller.setForwardMode(true);
-                // bypass Flex cache for this page, update the JSP first if neccessary            
+                // bypass Flex cache for this page, update the JSP first if necessary            
                 String target = updateJsp(file, controller, new HashSet());
                 // dispatch to external JSP
                 req.getRequestDispatcher(target).forward(controller.getCurrentRequest(), res);
@@ -1051,7 +1053,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * on this page to make sure the file actually exists in the real FS. 
      * All <code>&lt;%@ include %&gt;</code> tags are parsed and the name in the tag is translated
      * from the OpenCms VFS path to the path in the real FS. 
-     * The same is done for filenames in <code>&lt;%@ page errorPage=... %&gt;</code> tags.
+     * The same is done for filenames in <code>&lt;%@ page errorPage=... %&gt;</code> tags.<p>
      * 
      * @param resource the requested JSP file resource in the VFS
      * @param controller the controller for the JSP integration

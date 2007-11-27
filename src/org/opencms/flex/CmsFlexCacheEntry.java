@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2007/08/13 16:30:10 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2007/11/27 12:02:58 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * The include() calls are saved as Strings of the included resource name, 
  * the parameters for the calls are saved in a HashMap.
  * The headers are saved in a HashMap.
- * In case of a redirect, the redircet target is cached in a String.<p>
+ * In case of a redirect, the redirect target is cached in a String.<p>
  *
  * The CmsFlexCacheEntry can also have an expire date value, which indicates the time 
  * that his entry will become invalid and should thus be cleared from the cache.<p>
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  * 
@@ -210,8 +210,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * Completes this cache entry.<p>
      * 
      * A completed cache entry is made "unmodifiable",
-     * so that no further data can be added and existing data can not be changed.
-     * This is to prevend the (unlikley) case that some user-written class 
+     * so that no further data can be added and existing data can not be changed.<p>
+     * 
+     * This is to prevent the (unlikely) case that some user-written class 
      * tries to make changes to a cache entry.<p>
      */
     public void complete() {
@@ -232,8 +233,8 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     /**
      * Returns the list of data entries of this cache entry.<p>
      * 
-     * Data entries are byte arrays representing some kind of ouput
-     * or Strings representing include calls to other resources.
+     * Data entries are byte arrays representing some kind of output
+     * or Strings representing include calls to other resources.<p>
      *
      * @return the list of data elements of this cache entry
      */
@@ -327,6 +328,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      *
      * @param req the request from the client
      * @param res the server response
+     * 
      * @throws CmsFlexCacheException is thrown when problems writing to the response output-stream occur
      * @throws ServletException might be thrown from call to RequestDispatcher.include()
      * @throws IOException might be thrown from call to RequestDispatcher.include() or from Response.sendRedirect()
@@ -361,7 +363,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
                     }
                     // do the include call
                     req.getRequestDispatcher((String)o).include(req, res);
-                    // reset parameters if neccessary
+                    // reset parameters if necessary
                     if (oldMap != null) {
                         req.setParameterMap(oldMap);
                     }
@@ -406,9 +408,9 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      * Sets an expiration date for this cache entry to the next timeout,
      * which indicates the time this entry becomes invalid.<p>
      *
-     * The timeout parameter represents the minute - intervall in which the cache entry
+     * The timeout parameter represents the minute - interval in which the cache entry
      * is to be cleared. 
-     * The intervall always starts at 0.00h. 
+     * The interval always starts at 0.00h. 
      * A value of 60 would indicate that this entry will reach it's expiration date at the beginning of the next 
      * full hour, a timeout of 20 would indicate that the entry is invalidated at x.00, x.20 and x.40 of every hour etc.<p>
      *
@@ -492,7 +494,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
     }
 
     /**
-     * Stores a backward reference to the map and key where this cache entry is stored.
+     * Stores a backward reference to the map and key where this cache entry is stored.<p>
      * 
      * This is required for the FlexCache.<p>
      *

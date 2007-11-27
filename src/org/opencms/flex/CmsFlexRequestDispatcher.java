@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2007/08/13 16:30:10 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2007/11/27 12:02:58 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * This dispatcher will load data from 3 different data sources:
  * <ol>
- * <li>Form the "real" system Filesystem (e.g. for JSP pages)
+ * <li>Form the "real" os File system (e.g. for JSP pages)
  * <li>From the OpenCms VFS
  * <li>From the Flex cache
  * </ol>
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,10 +127,10 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
      * buffering of JSP pages.
      * Because of that I can not just intercept and buffer the stream, since I don't have 
      * access to it (it is wrapped internally in the JSP pages, which have their own buffer).
-     * That leads to a solution where the data is first written to the bufferd stream, 
+     * That leads to a solution where the data is first written to the buffered stream, 
      * but without includes. Then it is parsed again later 
      * in the <code>{@link CmsFlexResponse}</code>, enriched with the 
-     * included elements that have been ommitted in the first case.
+     * included elements that have been omitted in the first case.
      * I would love to see a simpler solution, but this works for now.<p>
      *
      * @param req the servlet request
@@ -159,7 +159,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 // file not found in VFS, treat it as external file
                 m_extTarget = m_vfsTarget;
             } catch (CmsException e) {
-                // if other OpenCms exception occured we are in trouble              
+                // if other OpenCms exception occurred we are in trouble              
                 throw new ServletException(Messages.get().getBundle().key(
                     Messages.ERR_FLEXREQUESTDISPATCHER_VFS_ACCESS_EXCEPTION_0), e);
             }
@@ -179,6 +179,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
      * 
      * @param req the servlet request
      * @param res the servlet response
+     * 
      * @throws ServletException in case something goes wrong
      * @throws IOException in case something goes wrong
      */
@@ -194,7 +195,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
     }
 
     /**
-     * Includes the requested resouce, ignoring the Flex cache.<p>
+     * Includes the requested resource, ignoring the Flex cache.<p>
      * 
      * @param req the servlet request
      * @param res the servlet response
@@ -239,14 +240,14 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         try {
             loader.service(cms, resource, req, res);
         } catch (CmsException e) {
-            // an error occured durion access to OpenCms
+            // an error occurred during access to OpenCms
             controller.setThrowable(e, m_vfsTarget);
             throw new ServletException(e);
         }
     }
 
     /**
-     * Includes the requested resouce, ignoring the Flex cache.<p>
+     * Includes the requested resource, ignoring the Flex cache.<p>
      * 
      * @param req the servlet request
      * @param res the servlet response
@@ -298,7 +299,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         controller.push(w_req, w_res);
 
         // now that the req/res are on the stack, we need to make sure that they are removed later
-        // that's why we have this try { ... } finaly { ... } clause here
+        // that's why we have this try { ... } finally { ... } clause here
         try {
             CmsFlexCacheEntry entry = null;
             if (f_req.isCacheable()) {
@@ -358,7 +359,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                                     m_vfsTarget,
                                     cacheProperty));
                             }
-                            // there will be a vaild key in the response ("cache=never") even after an exception
+                            // there will be a valid key in the response ("cache=never") even after an exception
                             cache.putKey(w_res.getCmsCacheKey());
                         } catch (CmsException e) {
 
@@ -421,7 +422,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                 try {
                     loader.service(cms, resource, w_req, w_res);
                 } catch (CmsException e) {
-                    // an error occured durion access to OpenCms
+                    // an error occurred during access to OpenCms
                     controller.setThrowable(e, m_vfsTarget);
                     throw new ServletException(e);
                 }
