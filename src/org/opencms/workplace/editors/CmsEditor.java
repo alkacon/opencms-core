@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/06/26 10:24:17 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2007/11/27 10:30:13 $
+ * Version: $Revision: 1.42.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.42.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -249,13 +249,13 @@ public abstract class CmsEditor extends CmsDialog {
         List contentLocales = new ArrayList();
         try {
 
-            CmsResource res = getCms().readResource(filename);
+            CmsResource res = getCms().readResource(filename, CmsResourceFilter.IGNORE_EXPIRATION);
 
             String temporaryFilename = CmsResource.getFolderPath(resource)
                 + CmsWorkplace.TEMP_FILE_PREFIX
                 + res.getName();
-            if (getCms().existsResource(temporaryFilename)) {
-                res = getCms().readResource(temporaryFilename);
+            if (getCms().existsResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                res = getCms().readResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION);
             }
             CmsFile file = CmsFile.upgrade(res, getCms());
             CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
@@ -413,13 +413,13 @@ public abstract class CmsEditor extends CmsDialog {
         String filename = getParamResource();
 
         try {
-            CmsResource res = getCms().readResource(filename);
+            CmsResource res = getCms().readResource(filename, CmsResourceFilter.IGNORE_EXPIRATION);
 
             String temporaryFilename = CmsResource.getFolderPath(filename)
                 + CmsWorkplace.TEMP_FILE_PREFIX
                 + res.getName();
-            if (getCms().existsResource(temporaryFilename)) {
-                res = getCms().readResource(temporaryFilename);
+            if (getCms().existsResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                res = getCms().readResource(temporaryFilename, CmsResourceFilter.IGNORE_EXPIRATION);
             }
             CmsFile file = CmsFile.upgrade(res, getCms());
             CmsXmlContent xmlContent = CmsXmlContentFactory.unmarshal(getCms(), file);
