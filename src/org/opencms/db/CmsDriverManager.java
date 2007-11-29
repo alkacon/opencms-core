@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/11/19 14:40:53 $
- * Version: $Revision: 1.601 $
+ * Date   : $Date: 2007/11/29 11:29:11 $
+ * Version: $Revision: 1.602 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -5271,7 +5271,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // read the historical resources
         List versions = m_historyDriver.readAllAvailableVersions(dbc, resource.getStructureId());
-        if (versions.size() > OpenCms.getSystemInfo().getHistoryVersions()) {
+        if ((versions.size() > OpenCms.getSystemInfo().getHistoryVersions())
+            && (OpenCms.getSystemInfo().getHistoryVersions() > -1)) {
             return versions.subList(0, OpenCms.getSystemInfo().getHistoryVersions());
         }
         return versions;
