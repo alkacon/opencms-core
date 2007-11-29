@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2007/08/13 16:29:41 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2007/11/29 09:08:55 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,7 +140,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
             String masterFolder = handler.getModelFolder(cms, currentFolder);
             if (CmsStringUtil.isNotEmpty(masterFolder) && cms.existsResource(masterFolder)) {
                 // folder for master files exists, get all files of the same resource type
-                CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE.addRequireType(resType.getTypeId());
+                CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(resType.getTypeId());
                 return cms.readResources(masterFolder, filter, false);
             } else {
                 // no master folder found

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/23 09:38:10 $
- * Version: $Revision: 1.945 $
+ * Date   : $Date: 2007/11/29 09:08:55 $
+ * Version: $Revision: 1.946 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -28,7 +28,9 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with NPE in the login form
 * Fixed issue with publish locks when publishing a file and a parent folder in separate publish jobs
 * Fixed issue with the creation flag of the explorer type permissions
-* Fixed issue with XML Content attribute mapping when siblings involved
+* Fixed issue with XML content attribute mapping when siblings involved
+* Fixed issue with XML content model file selection of expired model files
+* Fixed issue with direct edit button HTML not XHTML compliant
 ! Added new multi language static export feature
 ! Added option to organizational units to be hidden from the login form
 ! Added 'webusers' only organizational units 

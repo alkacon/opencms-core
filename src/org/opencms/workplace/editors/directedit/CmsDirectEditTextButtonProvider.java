@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditTextButtonProvider.java,v $
- * Date   : $Date: 2007/08/13 16:30:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/29 09:08:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.workplace.editors.Messages;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.2.3 
  */
@@ -143,16 +143,16 @@ public class CmsDirectEditTextButtonProvider extends CmsDirectEditDefaultProvide
         endHtml.append("<form class=\"ocms_nomargin\" name=\"form_").append(editId).append("\" id=\"form_").append(
             editId).append("\" method=\"post\" action=\"").append(linkForEdit).append("\" target=\"_top\">\n");
         endHtml.append("<input type=\"hidden\" name=\"resource\" value=\"").append(params.getResourceName()).append(
-            "\">\n");
-        endHtml.append("<input type=\"hidden\" name=\"directedit\" value=\"true\">\n");
-        endHtml.append("<input type=\"hidden\" name=\"elementlanguage\" value=\"").append(editLocale).append("\">\n");
+            "\"/>\n");
+        endHtml.append("<input type=\"hidden\" name=\"directedit\" value=\"true\"/>\n");
+        endHtml.append("<input type=\"hidden\" name=\"elementlanguage\" value=\"").append(editLocale).append("\"/>\n");
         endHtml.append("<input type=\"hidden\" name=\"elementname\" value=\"").append(params.getElement()).append(
-            "\">\n");
-        endHtml.append("<input type=\"hidden\" name=\"backlink\" value=\"").append(uri).append("\">\n");
-        endHtml.append("<input type=\"hidden\" name=\"newlink\">\n");
-        endHtml.append("<input type=\"hidden\" name=\"closelink\">\n");
-        endHtml.append("<input type=\"hidden\" name=\"redirect\" value=\"true\">\n");
-        endHtml.append("<input type=\"hidden\" name=\"editortitle\">\n");
+            "\"/>\n");
+        endHtml.append("<input type=\"hidden\" name=\"backlink\" value=\"").append(uri).append("\"/>\n");
+        endHtml.append("<input type=\"hidden\" name=\"newlink\"/>\n");
+        endHtml.append("<input type=\"hidden\" name=\"closelink\"/>\n");
+        endHtml.append("<input type=\"hidden\" name=\"redirect\" value=\"true\"/>\n");
+        endHtml.append("<input type=\"hidden\" name=\"editortitle\"/>\n");
         endHtml.append("</form>");
         m_endHtml = endHtml.toString();
 

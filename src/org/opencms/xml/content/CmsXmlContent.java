@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2007/11/29 09:08:55 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.xml.content;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
@@ -79,7 +80,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,7 +145,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     throws CmsException {
 
         // init model from given modelUri
-        CmsFile modelFile = cms.readFile(modelUri);
+        CmsFile modelFile = cms.readFile(modelUri, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
         CmsXmlContent model = CmsXmlContentFactory.unmarshal(cms, modelFile);
 
         // initialize macro resolver to use on model file values

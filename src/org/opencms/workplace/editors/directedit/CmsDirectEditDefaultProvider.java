@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditDefaultProvider.java,v $
- * Date   : $Date: 2007/08/13 16:30:18 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/29 09:08:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.2.3 
  */
@@ -268,7 +268,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider implem
         } else {
             result.append("<img border=\"0\" src=\"").append(CmsWorkplace.getSkinUri()).append(
                 "buttons/directedit_in.png\" title=\"").append(
-                m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_LOCKED_0)).append("\" alt=\"\">");
+                m_messages.key(Messages.GUI_EDITOR_FRONTEND_BUTTON_LOCKED_0)).append("\" alt=\"\"/>");
         }
         result.append("</span></td>\n");
         result.append("</tr></table>\n");
@@ -316,20 +316,20 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider implem
         result.append("<form name=\"form_").append(editId).append("\" id=\"form_").append(editId).append(
             "\" method=\"post\" action=\"").append(editLink).append("\" class=\"ocms_nomargin\" target=\"_top\">\n");
         result.append("<input type=\"hidden\" name=\"resource\" value=\"").append(params.getResourceName()).append(
-            "\">\n");
-        result.append("<input type=\"hidden\" name=\"directedit\" value=\"true\">\n");
-        result.append("<input type=\"hidden\" name=\"elementlanguage\" value=\"").append(editLocale).append("\">\n");
+            "\"/>\n");
+        result.append("<input type=\"hidden\" name=\"directedit\" value=\"true\"/>\n");
+        result.append("<input type=\"hidden\" name=\"elementlanguage\" value=\"").append(editLocale).append("\"/>\n");
         result.append("<input type=\"hidden\" name=\"elementname\" value=\"").append(params.getElement()).append(
-            "\">\n");
-        result.append("<input type=\"hidden\" name=\"backlink\" value=\"").append(uri).append("\">\n");
-        result.append("<input type=\"hidden\" name=\"newlink\">\n");
-        result.append("<input type=\"hidden\" name=\"closelink\">\n");
-        result.append("<input type=\"hidden\" name=\"redirect\" value=\"true\">\n");
-        result.append("<input type=\"hidden\" name=\"editortitle\">\n");
+            "\"/>\n");
+        result.append("<input type=\"hidden\" name=\"backlink\" value=\"").append(uri).append("\"/>\n");
+        result.append("<input type=\"hidden\" name=\"newlink\"/>\n");
+        result.append("<input type=\"hidden\" name=\"closelink\"/>\n");
+        result.append("<input type=\"hidden\" name=\"redirect\" value=\"true\"/>\n");
+        result.append("<input type=\"hidden\" name=\"editortitle\"/>\n");
         result.append("</form>\n");
-        result.append("<span onmouseover=\"activateOcms(\'").append(editId).append(
-            "\');\" onmouseout=\"deactivateOcms(\'").append(editId).append("\');\">\n");
-        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id=\"table_").append(editId).append(
+        result.append("<table onmouseover=\"activateOcms(\'").append(editId).append(
+            "\');\" onmouseout=\"deactivateOcms(\'").append(editId).append("\');\"");
+        result.append(" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" id=\"table_").append(editId).append(
             "\"><tr>\n");
         if (params.getButtonSelection().isShowEdit()) {
             result.append("<td class=\"ocms_de\"><a href=\"#\" onclick=\"javascript:submitOcms(\'").append(editId).append(
@@ -367,7 +367,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider implem
             } else {
                 result.append("<img border=\"0\" src=\"").append(CmsWorkplace.getSkinUri()).append(
                     "buttons/deletecontent.png\" title=\"").append(m_messages.key(Messages.GUI_BUTTON_DELETE_0)).append(
-                    "\" alt=\"\">");
+                    "\" alt=\"\"/>");
             }
             result.append("</span></a></td>\n");
         }
@@ -385,12 +385,11 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider implem
             } else {
                 result.append("<img border=\"0\" src=\"").append(CmsWorkplace.getSkinUri()).append(
                     "buttons/new.png\" title=\"").append(m_messages.key(Messages.GUI_BUTTON_NEW_0)).append(
-                    "\" alt=\"\">");
+                    "\" alt=\"\"/>");
             }
             result.append("</span></a></td>");
         }
         result.append("</tr></table>\n");
-        result.append("</span>\n");
         result.append("</div>\n");
         result.append("<div id=\"").append(editId).append("\" class=\"ocms_de_norm\">");
         return result.toString();
