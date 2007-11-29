@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsResourceLinkRelationList.java,v $
- * Date   : $Date: 2007/08/13 16:29:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/11/29 16:54:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.9.1 
  */
@@ -223,7 +223,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
             CmsResource resource = getResourceUtil(item).getResource();
 
             CmsRelationType relationType = (CmsRelationType)((List)getRelationTypes().get(resource)).remove(0);
-            String localizedRelationType = relationType.getLocalizedName(getLocale());
+            String localizedRelationType = relationType.getLocalizedName(getMessages());
 
             Map itemValues = item.getValues();
             CmsListItem newItem = getList().newItem(localizedRelationType + "_" + resource.getStructureId().toString());

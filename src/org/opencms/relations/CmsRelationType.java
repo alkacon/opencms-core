@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2007/08/13 16:30:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/11/29 16:54:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.relations;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.OpenCms;
@@ -66,7 +67,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.3.0
  */
@@ -386,7 +387,7 @@ public final class CmsRelationType implements Serializable {
             return VALUE_ARRAY[id - 1];
         }
         id -= USER_DEFINED_MODE_LIMIT;
-        if ((id > 0) && (id <= OpenCms.getResourceManager().getRelationTypes().size())) {
+        if ((id >= 0) && (id <= OpenCms.getResourceManager().getRelationTypes().size())) {
             return (CmsRelationType)getAllUserDefined().get(id);
         }
         throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
@@ -487,8 +488,9 @@ public final class CmsRelationType implements Serializable {
             }
             // user defined
             for (int i = 0; i < getAllUserDefined().size(); i++) {
-                if (valueUp.equals(((CmsRelationType)getAllUserDefined().get(i)).m_name)) {
-                    return VALUE_ARRAY[i];
+                CmsRelationType type = (CmsRelationType)getAllUserDefined().get(i);
+                if (valueUp.equals(type.m_name)) {
+                    return type;
                 }
             }
         }
@@ -528,8 +530,20 @@ public final class CmsRelationType implements Serializable {
      */
     public String getLocalizedName(Locale locale) {
 
+        return getLocalizedName(Messages.get().getBundle(locale));
+    }
+
+    /**
+     * Returns a localized name for the given relation type.<p>
+     * 
+     * @param messages the message bundle to use to resolve the name
+     * 
+     * @return a localized name
+     */
+    public String getLocalizedName(CmsMessages messages) {
+
         String nameKey = "GUI_RELATION_TYPE_" + getName() + "_0";
-        return Messages.get().getBundle(locale).key(nameKey);
+        return messages.key(nameKey);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsListResourceLinkRelationCollector.java,v $
- * Date   : $Date: 2007/09/26 08:25:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/11/29 16:54:06 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.9.1 
  */
@@ -118,7 +118,7 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
 
         String itemId;
         if (item.getId().startsWith(item.get(CmsResourceLinkRelationList.LIST_COLUMN_RELATION_TYPE) + "_")) {
-            itemId = item.getId().substring(item.getId().indexOf("_") + 1);
+            itemId = item.getId().substring(item.getId().lastIndexOf("_") + 1);
         } else {
             itemId = item.getId();
         }
