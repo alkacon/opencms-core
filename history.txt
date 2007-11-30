@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/29 11:29:11 $
- * Version: $Revision: 1.947 $
+ * Date   : $Date: 2007/11/30 14:22:24 $
+ * Version: $Revision: 1.948 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ OpenCms 7.0.4 - xxx, 2008
 ! Added 'webusers' only organizational units 
 ! Added #getStringValue() method to CmsJspContentAccessValueWrapper for better support of 'empty' EL operator 
 ! Added database support for AS400
+! Added support for servlet container Resin 3
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation
