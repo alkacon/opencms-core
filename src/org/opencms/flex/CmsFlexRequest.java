@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2007/12/03 12:55:35 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2007/12/03 15:29:08 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -453,6 +453,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     public String getServletPath() {
 
         // unwrap the request to prevent multiple unneeded attempts to generate missing jsp files
+        // m_controller.getTopRequest() does not return the right request here when forwarding
+        // this method is generally called exactly once per request on different servlet containers
+        // only resin calls it twice
         ServletRequest req = getRequest();
         while (req instanceof CmsFlexRequest) {
             req = ((CmsFlexRequest)req).getRequest();

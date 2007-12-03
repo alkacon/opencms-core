@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2007/12/03 12:56:09 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2007/12/03 15:29:08 $
+ * Version: $Revision: 1.111 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -115,7 +115,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.110 $ 
+ * @version $Revision: 1.111 $ 
  * 
  * @since 6.0.0 
  * 
@@ -390,21 +390,16 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         // read the resource from OpenCms 
         CmsFlexController controller = CmsFlexController.getController(request);
         try {
-            // create an OpenCms user context that operates in the root site
-            CmsObject cms = OpenCms.initCmsObject(controller.getCmsObject());
-            // we only need to change the site, but not the project, 
-            // since the request has already the right project set 
-            cms.getRequestContext().setSiteRoot("");
             CmsResource includeResource;
             try {
                 // first try to read the resource assuming no additional jsp extension was needed
-                includeResource = cms.readResource(jspUri);
+                includeResource = readJspResource(controller, jspUri);
             } catch (CmsVfsResourceNotFoundException e) {
                 // try removing the additional jsp extension
                 if (jspUri.endsWith(JSP_EXTENSION)) {
                     jspUri = jspUri.substring(0, jspUri.length() - JSP_EXTENSION.length());
                 }
-                includeResource = cms.readResource(jspUri);
+                includeResource = readJspResource(controller, jspUri);
             }
             // make sure the jsp referenced file is generated
             updateJsp(includeResource, controller, new HashSet(8));
@@ -818,6 +813,27 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     }
 
     /**
+     * Returns the jsp resource identified by the given name, using the controllers cms context.<p>
+     * 
+     * @param controller the flex controller
+     * @param jspName the name of the jsp
+     * 
+     * @return an OpenCms resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private static CmsResource readJspResource(CmsFlexController controller, String jspName) throws CmsException {
+
+        // create an OpenCms user context that operates in the root site
+        CmsObject cms = OpenCms.initCmsObject(controller.getCmsObject());
+        // we only need to change the site, but not the project, 
+        // since the request has already the right project set 
+        cms.getRequestContext().setSiteRoot("");
+        // try to read the resource 
+        return cms.readResource(jspName);
+    }
+
+    /**
      * Updates a JSP page in the "real" file system in case the VFS resource has changed based on the resource name.<p>
      * 
      * Generates a resource based on the provided name and calls {@link #updateJsp(CmsResource, CmsFlexController, Set)}.<p>
@@ -836,10 +852,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
         String jspRfsName;
         try {
-            // create an OpenCms user context that operates in the root site
-            CmsObject cms = OpenCms.initCmsObject(controller.getCmsObject());
-            cms.getRequestContext().setSiteRoot("");
-            CmsResource includeResource = cms.readResource(jspVfsName);
+            CmsResource includeResource = readJspResource(controller, jspVfsName);
             // make sure the jsp referenced file is generated
             jspRfsName = updateJsp(includeResource, controller, updatedFiles);
             if (LOG.isDebugEnabled()) {
