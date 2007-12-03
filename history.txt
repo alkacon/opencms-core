@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/30 14:22:24 $
- * Version: $Revision: 1.948 $
+ * Date   : $Date: 2007/12/03 08:32:13 $
+ * Version: $Revision: 1.949 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,15 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with XML content model file selection of expired model files
 * Fixed issue with direct edit button HTML not XHTML compliant
 * Fixed issue with broken history dialog when setting an unlimited number of versions 
+* Fixed issue with blank pages in Tomcat due to modified include/forward behavior
 ! Added new multi language static export feature
 ! Added option to organizational units to be hidden from the login form
 ! Added 'webusers' only organizational units 
 ! Added #getStringValue() method to CmsJspContentAccessValueWrapper for better support of 'empty' EL operator 
 ! Added database support for AS400
 ! Added support for servlet container Resin 3
+! Added support for servlet container Websphere 6
+- Improved support for servlet container Weblogic 9 (no servlet options needed)
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation
