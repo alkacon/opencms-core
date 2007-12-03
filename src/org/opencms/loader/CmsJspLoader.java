@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2007/12/03 12:55:35 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2007/12/03 12:56:09 $
+ * Version: $Revision: 1.110 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -115,7 +115,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.109 $ 
+ * @version $Revision: 1.110 $ 
  * 
  * @since 6.0.0 
  * 
@@ -375,7 +375,6 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             // nothing to do, this kind of request are handled by the CmsJspLoader#service method
             return;
         }
-        System.out.println(jspUri);
 
         // remove prefixes
         jspUri = jspUri.substring(m_jspWebAppRepository.length());
