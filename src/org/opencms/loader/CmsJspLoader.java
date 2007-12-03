@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2007/12/03 08:32:13 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2007/12/03 12:55:35 $
+ * Version: $Revision: 1.109 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -115,7 +115,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.108 $ 
+ * @version $Revision: 1.109 $ 
  * 
  * @since 6.0.0 
  * 
@@ -358,12 +358,13 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * Updates the internal jsp repository when the servlet container
      * tries to compile a jsp file that may not exist.<p>
      * 
+     * @param servletPath the servlet path, just to avoid unneeded recursive calls
      * @param request the current request
      */
-    public static void updateJspFromRequest(CmsFlexRequest request) {
+    public static void updateJspFromRequest(String servletPath, CmsFlexRequest request) {
 
         // assemble the RFS name of the requested jsp
-        String jspUri = request.getServletPath();
+        String jspUri = servletPath;
         String pathInfo = request.getPathInfo();
         if (pathInfo != null) {
             jspUri += pathInfo;
@@ -374,6 +375,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             // nothing to do, this kind of request are handled by the CmsJspLoader#service method
             return;
         }
+        System.out.println(jspUri);
 
         // remove prefixes
         jspUri = jspUri.substring(m_jspWebAppRepository.length());

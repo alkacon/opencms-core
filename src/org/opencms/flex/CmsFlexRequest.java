@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2007/12/03 08:32:13 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2007/12/03 12:55:35 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,14 +72,6 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /** Request parameter for FlexCache commands. */
     public static final String PARAMETER_FLEX = "_flex";
-
-    /**
-     * Tomcat's request attribute for <code>&lt;jsp-file&gt;</code> element 
-     * of a servlet definition. 
-     */
-    private static final String JSP_FILE = System.getProperty(
-        "org.apache.jasper.Constants.JSP_FILE",
-        "org.apache.catalina.jsp_file");
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexRequest.class);
@@ -272,27 +264,6 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         return m_parameters;
     }
 
-    /**
-     * @see javax.servlet.ServletRequestWrapper#getAttribute(java.lang.String)
-     */
-    public Object getAttribute(String name) {
-
-        // this is a work around for tomcat 5.5/6 creating a new application dispatcher instead
-        // of using our request dispatcher, so missing RFS jsp pages are not requested to OpenCms
-        // and the dispatcher is unable to load the included/forwarded jsp file.
-        if (JSP_FILE.equals(name)) {
-            // generate missing jsp file
-            CmsJspLoader.updateJspFromRequest(this);
-            // unwrap the request to prevent multiple unneeded attempts to generate missing jsp files
-            ServletRequest req = getRequest();
-            while (req instanceof CmsFlexRequest) {
-                req = ((CmsFlexRequest)req).getRequest();
-            }
-            return req.getAttribute(name);
-        }
-        return super.getAttribute(name);
-    }
-
     /** 
      * Returns the full element URI site root path to the resource currently processed.<p>
      * 
@@ -470,6 +441,31 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         buf.append(getRequestURI());
         m_requestUrl = buf;
         return m_requestUrl;
+    }
+
+    /**
+     * This is a work around for servlet containers creating a new application dispatcher 
+     * instead of using our request dispatcher, so missing RFS jsp pages are not requested to 
+     * OpenCms and the dispatcher is unable to load the included/forwarded jsp file.<p>
+     * 
+     * @see javax.servlet.http.HttpServletRequestWrapper#getServletPath()
+     */
+    public String getServletPath() {
+
+        // unwrap the request to prevent multiple unneeded attempts to generate missing jsp files
+        ServletRequest req = getRequest();
+        while (req instanceof CmsFlexRequest) {
+            req = ((CmsFlexRequest)req).getRequest();
+        }
+        String servletPath = null;
+        if (req instanceof HttpServletRequest) {
+            servletPath = ((HttpServletRequest)req).getServletPath();
+        } else {
+            servletPath = super.getServletPath();
+        }
+        // generate missing jsp file
+        CmsJspLoader.updateJspFromRequest(servletPath, this);
+        return servletPath;
     }
 
     /** 
