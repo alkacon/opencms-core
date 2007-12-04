@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2007/10/30 09:22:17 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/12/04 10:46:42 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,17 +56,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.9.2
  */
 public class CmsCategoryService {
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsCategoryService.class);
-
     /** The default base path for categories. */
     private static final String BASE_PATH = "/system/categories/";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsCategoryService.class);
 
     /** The singleton instance. */
     private static CmsCategoryService m_instance;
@@ -172,6 +172,164 @@ public class CmsCategoryService {
     }
 
     /**
+     * Renames/Moves a category from the old path to the new one.<p>
+     * 
+     * @param cms the current cms context
+     * @param oldCatPath the path of the category to move
+     * @param newCatPath the new category path
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void moveCategory(CmsObject cms, String oldCatPath, String newCatPath) throws CmsException {
+
+        cms.moveResource(getCategoryFolderPath(oldCatPath), getCategoryFolderPath(newCatPath));
+    }
+
+    /**
+     * Reads all first level categories, including sub categories if needed.<p> 
+     * 
+     * @param cms the current cms context
+     * @param includeSubCats flag to indicate if sub categories should also be read
+     * 
+     * @return a list of {@link CmsCategory} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readAllCategories(CmsObject cms, boolean includeSubCats) throws CmsException {
+
+        return internalReadCategories(cms, "", includeSubCats);
+    }
+
+    /**
+     * Reads the category identified by the given category path.<p>
+     * 
+     * @param cms the current cms context
+     * @param categoryPath the path of the category to read
+     * 
+     * @return the category
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsCategory readCategory(CmsObject cms, String categoryPath) throws CmsException {
+
+        CmsResource resource = cms.readResource(getCategoryFolderPath(categoryPath));
+        CmsProperty title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        CmsProperty description = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        return new CmsCategory(
+            resource.getStructureId(),
+            getCategoryPath(resource.getRootPath()),
+            title.getValue(),
+            description.getValue());
+    }
+
+    /**
+     * Reads the resources for a category identified by the given category path.<p>
+     * 
+     * @param cms the current cms context
+     * @param categoryPath the path of the category to read the resources for
+     * @param recursive <code>true</code> if including sub-categories
+     * 
+     * @return a list of {@link CmsResource} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readCategoryResources(CmsObject cms, String categoryPath, boolean recursive) throws CmsException {
+
+        List result = new ArrayList();
+        CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.CATEGORY);
+        if (recursive) {
+            filter = filter.filterIncludeChildren();
+        }
+        Iterator itRelations = cms.getRelationsForResource(getCategoryFolderPath(categoryPath), filter).iterator();
+        while (itRelations.hasNext()) {
+            CmsRelation relation = (CmsRelation)itRelations.next();
+            try {
+                result.add(relation.getSource(cms, CmsResourceFilter.DEFAULT));
+            } catch (CmsException e) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Reads the categories for a resource identified by the given resource name.<p>
+     * 
+     * @param cms the current cms context
+     * @param resourceName the path of the resource to get the categories for
+     * 
+     * @return the categories list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readResourceCategories(CmsObject cms, String resourceName) throws CmsException {
+
+        List result = new ArrayList();
+        Iterator itRelations = cms.getRelationsForResource(
+            resourceName,
+            CmsRelationFilter.TARGETS.filterType(CmsRelationType.CATEGORY)).iterator();
+        while (itRelations.hasNext()) {
+            CmsRelation relation = (CmsRelation)itRelations.next();
+            try {
+                CmsResource resource = relation.getTarget(cms, CmsResourceFilter.DEFAULT_FOLDERS);
+                CmsCategory category = new CmsCategory(
+                    resource.getStructureId(),
+                    resource.getRootPath().substring(BASE_PATH.length()),
+                    cms.readPropertyObject(resource, "Title", false).getValue(),
+                    cms.readPropertyObject(resource, "Description", false).getValue());
+                result.add(category);
+            } catch (CmsException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns all sub categories of the given category.<p>
+     * 
+     * @param cms the current cms context
+     * @param categoryPath the path of the category to get the sub categories for
+     * @param includeSubCats if to include sub-subcategories
+     * 
+     * @return a list of {@link CmsCategory} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readSubCategories(CmsObject cms, String categoryPath, boolean includeSubCats) throws CmsException {
+
+        readCategory(cms, categoryPath); // check the category exists
+        return internalReadCategories(cms, categoryPath, includeSubCats);
+    }
+
+    /**
+     * Removes a resource identified by the given resource name from the category
+     * identified by the given category path.<p>
+     * 
+     * @param cms the current cms context
+     * @param resourceName the site relative path to the resource to remove
+     * @param categoryPath the path of the category to remove the resource from
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void removeResourceFromCategory(CmsObject cms, String resourceName, String categoryPath) throws CmsException {
+
+        // check the category exists
+        readCategory(cms, categoryPath);
+
+        // remove the resource just from this category
+        CmsRelationFilter filter = CmsRelationFilter.TARGETS;
+        filter = filter.filterType(CmsRelationType.CATEGORY);
+        filter = filter.filterResource(cms.readResource(getCategoryFolderPath(categoryPath)));
+        filter = filter.filterIncludeChildren();
+        cms.deleteRelationsFromResource(resourceName, filter);
+    }
+
+    /**
      * Returns an OpenCms VFS root path for the given category path.<p>
      * 
      * @param categoryPath the category path to compute the root path for
@@ -253,131 +411,5 @@ public class CmsCategoryService {
                 description.getValue()));
         }
         return categories;
-    }
-
-    /**
-     * Renames/Moves a category from the olda path to the new one.<p>
-     * 
-     * @param cms the current cms context
-     * @param oldCatPath the path of the category to move
-     * @param newCatPath the new category path
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void moveCategory(CmsObject cms, String oldCatPath, String newCatPath) throws CmsException {
-
-        cms.moveResource(getCategoryFolderPath(oldCatPath), getCategoryFolderPath(newCatPath));
-    }
-
-    /**
-     * Reads all first level categories, including sub categories if needed.<p> 
-     * 
-     * @param cms the current cms context
-     * @param includeSubCats flag to indicate if sub categories should also be read
-     * 
-     * @return a list of {@link CmsCategory} objects
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List readAllCategories(CmsObject cms, boolean includeSubCats) throws CmsException {
-
-        return internalReadCategories(cms, "", includeSubCats);
-    }
-
-    /**
-     * Reads the category identified by the given category path.<p>
-     * 
-     * @param cms the current cms context
-     * @param categoryPath the path of the category to read
-     * 
-     * @return the category
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public CmsCategory readCategory(CmsObject cms, String categoryPath) throws CmsException {
-
-        CmsResource resource = cms.readResource(getCategoryFolderPath(categoryPath));
-        CmsProperty title = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        CmsProperty description = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
-        return new CmsCategory(
-            resource.getStructureId(),
-            getCategoryPath(resource.getRootPath()),
-            title.getValue(),
-            description.getValue());
-    }
-
-    /**
-     * Reads the categories for a resource identified by the given resource name.<p>
-     * 
-     * @param cms the current cms context
-     * @param resourceName the path of the resource to get the categories for
-     * 
-     * @return the categories list
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List readResourceCategories(CmsObject cms, String resourceName) throws CmsException {
-
-        List result = new ArrayList();
-        Iterator itRelations = cms.getRelationsForResource(
-            resourceName,
-            CmsRelationFilter.TARGETS.filterType(CmsRelationType.CATEGORY)).iterator();
-        while (itRelations.hasNext()) {
-            CmsRelation relation = (CmsRelation)itRelations.next();
-            try {
-                CmsResource resource = relation.getTarget(cms, CmsResourceFilter.DEFAULT_FOLDERS);
-                CmsCategory category = new CmsCategory(
-                    resource.getStructureId(),
-                    resource.getRootPath().substring(BASE_PATH.length()),
-                    cms.readPropertyObject(resource, "Title", false).getValue(),
-                    cms.readPropertyObject(resource, "Description", false).getValue());
-                result.add(category);
-            } catch (CmsException e) {
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Returns all sub categories of the given category.<p>
-     * 
-     * @param cms the current cms context
-     * @param categoryPath the path of the category to get the sub categories for
-     * @param includeSubCats if to include sub-subcategories
-     * 
-     * @return a list of {@link CmsCategory} objects
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List readSubCategories(CmsObject cms, String categoryPath, boolean includeSubCats) throws CmsException {
-
-        readCategory(cms, categoryPath); // check the category exists
-        return internalReadCategories(cms, categoryPath, includeSubCats);
-    }
-
-    /**
-     * Removes a resource identified by the given resource name from the category
-     * identified by the given category path.<p>
-     * 
-     * @param cms the current cms context
-     * @param resourceName the site relative path to the resource to remove
-     * @param categoryPath the path of the category to remove the resource from
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void removeResourceFromCategory(CmsObject cms, String resourceName, String categoryPath) throws CmsException {
-
-        // check the category exists
-        readCategory(cms, categoryPath);
-
-        // remove the resource just from this category
-        CmsRelationFilter filter = CmsRelationFilter.TARGETS;
-        filter = filter.filterType(CmsRelationType.CATEGORY);
-        filter = filter.filterResource(cms.readResource(getCategoryFolderPath(categoryPath)));
-        filter = filter.filterIncludeChildren();
-        cms.deleteRelationsFromResource(resourceName, filter);
     }
 }
