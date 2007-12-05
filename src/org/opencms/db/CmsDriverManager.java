@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/11/29 11:29:11 $
- * Version: $Revision: 1.602 $
+ * Date   : $Date: 2007/12/05 11:16:17 $
+ * Version: $Revision: 1.603 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -562,7 +562,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param groupname the name of the group
      * @param readRoles if reading roles or groups
      *
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not successful
      * @throws CmsDbEntryNotFoundException if the given user or the given group was not found 
      * 
      * @see #removeUserFromGroup(CmsDbContext, String, String, boolean)
@@ -2059,7 +2059,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param group the id of the group to be deleted
      * @param replacementId the id of the group to be transfered, can be <code>null</code>
      *
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not successful
      * @throws CmsDataAccessException if group to be deleted contains user
      */
     public void deleteGroup(CmsDbContext dbc, CmsGroup group, CmsUUID replacementId)
@@ -2139,7 +2139,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
      * @param report the report for output logging
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public void deleteHistoricalVersions(
         CmsDbContext dbc,
@@ -3331,7 +3331,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @return list of <code>{@link CmsHistoryProject}</code> objects 
      *           with all projects from history.
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getAllHistoricalProjects(CmsDbContext dbc) throws CmsException {
 
@@ -3346,7 +3346,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @return a list of objects of type <code>{@link CmsProject}</code>
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getAllManageableProjects(CmsDbContext dbc) throws CmsException {
 
@@ -3401,7 +3401,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @return a list of all child <code>{@link CmsGroup}</code> objects
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getChildren(CmsDbContext dbc, CmsGroup group, boolean includeSubChildren) throws CmsException {
 
@@ -3415,7 +3415,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsGroup child = (CmsGroup)it.next();
             // add the group itself
             allChildren.add(child);
-            // now get all subchildren for each group
+            // now get all sub-children for each group
             allChildren.addAll(getChildren(dbc, child, true));
         }
         return new ArrayList(allChildren);
@@ -3674,7 +3674,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      * 
      * @see org.opencms.security.CmsOrgUnitManager#getOrganizationalUnits(CmsObject, String, boolean)
      */
@@ -3730,7 +3730,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @return group the parent group or <code>null</code>
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public CmsGroup getParent(CmsDbContext dbc, String groupname) throws CmsException {
 
@@ -4192,7 +4192,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @return all <code>{@link CmsUser}</code> objects in the group
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getUsersOfGroup(
         CmsDbContext dbc,
@@ -5654,7 +5654,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @return the requested group
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public CmsGroup readGroup(CmsDbContext dbc, CmsUUID groupId) throws CmsException {
 
@@ -5676,7 +5676,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @return the requested group
      * 
-     * @throws CmsDataAccessException if operation was not succesful
+     * @throws CmsDataAccessException if operation was not successful
      */
     public CmsGroup readGroup(CmsDbContext dbc, String groupname) throws CmsDataAccessException {
 
@@ -6643,7 +6643,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * @return user read
      * 
-     * @throws CmsDataAccessException if operation was not succesful
+     * @throws CmsDataAccessException if operation was not successful
      */
     public CmsUser readUser(CmsDbContext dbc, String username) throws CmsDataAccessException {
 
@@ -6666,7 +6666,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @return user read
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public CmsUser readUser(CmsDbContext dbc, String username, String password) throws CmsException {
 
@@ -7270,7 +7270,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *                      or <code>null</code> if the parent
      *                      group should be deleted.
      *
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not successful
      * @throws CmsDataAccessException if the group with <code>groupName</code> could not be read from VFS
      */
     public void setParentGroup(CmsDbContext dbc, String groupName, String parentGroupName)
@@ -7297,7 +7297,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param username the name of the user
      * @param newPassword the new password
      * 
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not successful
      * @throws CmsIllegalArgumentException if the user with the <code>username</code> was not found
      */
     public void setPassword(CmsDbContext dbc, String username, String newPassword)
@@ -7907,13 +7907,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
      *
      * The group id has to be a valid OpenCms group id.<br>
      * 
-     * The group with the given id will be completely overriden
+     * The group with the given id will be completely overridden
      * by the given data.<p>
      * 
      * @param dbc the current database context
      * @param group the group that should be written
      * 
-     * @throws CmsException if operation was not succesfull
+     * @throws CmsException if operation was not successful
      */
     public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
 
@@ -7929,7 +7929,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param publishTag the version
      * @param publishDate the date of publishing
      *
-     * @throws CmsDataAccessException if operation was not succesful
+     * @throws CmsDataAccessException if operation was not successful
      */
     public void writeHistoryProject(CmsDbContext dbc, int publishTag, long publishDate) throws CmsDataAccessException {
 
