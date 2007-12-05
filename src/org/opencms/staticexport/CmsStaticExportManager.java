@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2007/11/12 13:58:43 $
- * Version: $Revision: 1.130 $
+ * Date   : $Date: 2007/12/05 16:24:32 $
+ * Version: $Revision: 1.131 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.130 $ 
+ * @version $Revision: 1.131 $ 
  * 
  * @since 6.0.0 
  */
@@ -1307,7 +1307,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         suffix = ".html";
                     }
                 }
-                if (!extension.equals(suffix.toLowerCase())) {
+                if ((suffix != null) && !extension.equals(suffix.toLowerCase())) {
                     rfsName += suffix;
                     extension = suffix;
                 }
