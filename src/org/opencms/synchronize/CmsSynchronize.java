@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2007/08/13 16:30:16 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2007/12/06 11:17:42 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.66 $ 
+ * @version $Revision: 1.67 $ 
  * 
  * @since 6.0.0 
  */
@@ -927,7 +927,7 @@ public class CmsSynchronize {
         // everything is done now, so unlock the resource
         // read the resource again, nescessary to get the actual timestamps
         m_cms.setDateLastModified(resourcename, fsFile.lastModified(), false);
-        res = m_cms.readResource(resourcename);
+        res = m_cms.readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
 
         //add resource to synchronisation list
         CmsSynchronizeList syncList = new CmsSynchronizeList(
