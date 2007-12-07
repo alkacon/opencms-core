@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/12/03 08:32:13 $
- * Version: $Revision: 1.949 $
+ * Date   : $Date: 2007/12/07 08:35:10 $
+ * Version: $Revision: 1.950 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with XML content model file selection of expired model files
 * Fixed issue with direct edit button HTML not XHTML compliant
 * Fixed issue with broken history dialog when setting an unlimited number of versions 
-* Fixed issue with blank pages in Tomcat due to modified include/forward behavior
+* Fixed issue with blank pages while including/forwarding
 ! Added new multi language static export feature
 ! Added option to organizational units to be hidden from the login form
 ! Added 'webusers' only organizational units 
