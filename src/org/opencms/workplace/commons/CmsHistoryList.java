@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2007/10/08 10:50:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/12/07 09:56:50 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -84,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.2 
  */
@@ -452,16 +453,20 @@ public class CmsHistoryList extends A_CmsListDialog {
 
             //version
             item.set(LIST_COLUMN_VERSION, version);
-            // filename
+            // publish date
             item.set(LIST_COLUMN_DATE_PUBLISHED, datePublished);
-            // nicename
+            // last modification date
             item.set(LIST_COLUMN_DATE_LAST_MODIFIED, dateLastModified);
-            // group           
+            // resource type           
             item.set(LIST_COLUMN_FILE_TYPE, filetype);
-            // user           
-            item.set(LIST_COLUMN_USER, CmsPrincipal.readPrincipalIncludingHistory(
-                getCms(),
-                histRes.getUserLastModified()).getName());
+            // user
+            String user = histRes.getUserLastModified().toString();
+            try {
+                user = CmsPrincipal.readPrincipalIncludingHistory(getCms(), histRes.getUserLastModified()).getName();
+            } catch (CmsDbEntryNotFoundException e) {
+                // ignore
+            }
+            item.set(LIST_COLUMN_USER, user);
             // path           
             item.set(LIST_COLUMN_RESOURCE_PATH, getCms().getRequestContext().removeSiteRoot(histRes.getRootPath()));
             // size 
@@ -486,18 +491,22 @@ public class CmsHistoryList extends A_CmsListDialog {
                 CmsListItem item = getList().newItem("" + onlineResource.getVersion());
                 //version
                 item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(-1 * onlineResource.getVersion()));
-                // filename
+                // publish date
                 item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
-                // nicename
+                // last modification date
                 item.set(
                     LIST_COLUMN_DATE_LAST_MODIFIED,
                     getMessages().getDateTime(onlineResource.getDateLastModified()));
-                // group           
+                // resource type           
                 item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(onlineResource.getTypeId()));
-                // user           
-                item.set(LIST_COLUMN_USER, CmsPrincipal.readPrincipalIncludingHistory(
-                    getCms(),
-                    onlineResource.getUserLastModified()).getName());
+                // user   
+                String user = onlineResource.getUserLastModified().toString();
+                try {
+                    user = CmsPrincipal.readPrincipalIncludingHistory(getCms(), onlineResource.getUserLastModified()).getName();
+                } catch (CmsDbEntryNotFoundException e) {
+                    // ignore
+                }
+                item.set(LIST_COLUMN_USER, user);
                 // size 
                 item.set(LIST_COLUMN_SIZE, new Integer(onlineResource.getLength()).toString());
                 // path
@@ -524,11 +533,11 @@ public class CmsHistoryList extends A_CmsListDialog {
             CmsListItem item = getList().newItem("" + offlineResource.getVersion());
             //version
             item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(CmsHistoryResourceHandler.PROJECT_OFFLINE_VERSION));
-            // filename
+            // publish date
             item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
-            // nicename
+            // last modification date
             item.set(LIST_COLUMN_DATE_LAST_MODIFIED, getMessages().getDateTime(offlineResource.getDateLastModified()));
-            // group           
+            // resource type           
             item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(offlineResource.getTypeId()));
             // user           
             item.set(LIST_COLUMN_USER, getCms().readUser(offlineResource.getUserLastModified()).getName());

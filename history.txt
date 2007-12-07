@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/12/07 08:41:49 $
- * Version: $Revision: 1.951 $
+ * Date   : $Date: 2007/12/07 09:56:50 $
+ * Version: $Revision: 1.952 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,8 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with broken history dialog when setting an unlimited number of versions 
 * Fixed issue with blank pages while including/forwarding
 * Fixed issue with synchronizing an expired or not yet released resource
-* Fixed issue with editing preview when the user has not the visible permission set  
+* Fixed issue with editing preview when the user has not the visible permission set
+* Fixed issue with the history list after an update with already deleted users 
 ! Added new multi language static export feature
 ! Added option to organizational units to be hidden from the login form
 ! Added 'webusers' only organizational units 
