@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/11/30 14:13:53 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2007/12/17 15:01:04 $
+ * Version: $Revision: 1.101.2.1 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexRequest;
@@ -105,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.101 $ 
+ * @version $Revision: 1.101.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -116,7 +117,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /** Property value for "cache" that indicates that the FlexCache should be bypassed. */
     public static final String CACHE_PROPERTY_BYPASS = "bypass";
 
-    /** Property value for "cache" that indicates that the ouput should be streamed. */
+    /** Property value for "cache" that indicates that the output should be streamed. */
     public static final String CACHE_PROPERTY_STREAM = "stream";
 
     /** Default jsp folder constant. */
@@ -134,7 +135,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /** Cache max age parameter name. */
     public static final String PARAM_CLIENT_CACHE_MAXAGE = "client.cache.maxage";
 
-    /** Error page commited parameter name. */
+    /** Error page committed parameter name. */
     public static final String PARAM_JSP_ERRORPAGE_COMMITTED = "jsp.errorpage.committed";
 
     /** Jsp folder parameter name. */
@@ -164,7 +165,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /** The resource loader configuration. */
     private Map m_configuration;
 
-    /** Flag to indicate if error pages are marked as "commited". */
+    /** Flag to indicate if error pages are marked as "committed". */
     // TODO: This is a hack, investigate this issue with different runtime environments
     private boolean m_errorPagesAreNotCommited; // default false should work for Tomcat > 4.1
 
@@ -191,6 +192,643 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     }
 
     /**
+     * Updates the internal jsp repository when the servlet container
+     * tries to compile a jsp file that may not exist.<p>
+     * 
+     * @param servletPath the servlet path, just to avoid unneeded recursive calls
+     * @param request the current request
+     */
+    public static void updateJspFromRequest(String servletPath, CmsFlexRequest request) {
+
+        // assemble the RFS name of the requested jsp
+        String jspUri = servletPath;
+        String pathInfo = request.getPathInfo();
+        if (pathInfo != null) {
+            jspUri += pathInfo;
+        }
+
+        // check the file name
+        if ((jspUri == null) || !jspUri.startsWith(m_jspWebAppRepository)) {
+            // nothing to do, this kind of request are handled by the CmsJspLoader#service method
+            return;
+        }
+
+        // remove prefixes
+        jspUri = jspUri.substring(m_jspWebAppRepository.length());
+        if (jspUri.startsWith(CmsFlexCache.REPOSITORY_ONLINE)) {
+            jspUri = jspUri.substring(CmsFlexCache.REPOSITORY_ONLINE.length());
+        } else if (jspUri.startsWith(CmsFlexCache.REPOSITORY_OFFLINE)) {
+            jspUri = jspUri.substring(CmsFlexCache.REPOSITORY_OFFLINE.length());
+        } else {
+            // this is not an OpenCms jsp file
+            return;
+        }
+
+        // read the resource from OpenCms 
+        CmsFlexController controller = CmsFlexController.getController(request);
+        try {
+            CmsResource includeResource;
+            try {
+                // first try to read the resource assuming no additional jsp extension was needed
+                includeResource = readJspResource(controller, jspUri);
+            } catch (CmsVfsResourceNotFoundException e) {
+                // try removing the additional jsp extension
+                if (jspUri.endsWith(JSP_EXTENSION)) {
+                    jspUri = jspUri.substring(0, jspUri.length() - JSP_EXTENSION.length());
+                }
+                includeResource = readJspResource(controller, jspUri);
+            }
+            // make sure the jsp referenced file is generated
+            updateJsp(includeResource, controller, new HashSet(8));
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+        }
+    }
+
+    /**
+     * Parses the JSP and modifies OpenCms critical directive information.<p>
+     * 
+     * @param byteContent the original JSP content
+     * @param encoding the encoding to use for the JSP
+     * @param controller the controller for the JSP integration
+     * @param includes a Set containing all JSP pages that have been already updated
+     * @param isHardInclude indicated if this page is actually a "hard" include with <code>&lt;%@ include file="..." &gt;</code>
+     * 
+     * @return the modified JSP content
+     */
+    private static byte[] parseJsp(
+        byte[] byteContent,
+        String encoding,
+        CmsFlexController controller,
+        Set includes,
+        boolean isHardInclude) {
+
+        String content;
+        // make sure encoding is set correctly
+        try {
+            content = new String(byteContent, encoding);
+        } catch (UnsupportedEncodingException e) {
+            // encoding property is not set correctly 
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_UNSUPPORTED_ENC_1,
+                controller.getCurrentRequest().getElementUri()), e);
+            try {
+                encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                content = new String(byteContent, encoding);
+            } catch (UnsupportedEncodingException e2) {
+                // should not happen since default encoding is always a valid encoding (checked during system startup)
+                content = new String(byteContent);
+            }
+        }
+
+        // parse for special <%@cms file="..." %> tag
+        content = parseJspCmsTag(content, controller, includes);
+        // parse for included files in tags
+        content = parseJspIncludes(content, controller, includes);
+        // parse for <%@page pageEncoding="..." %> tag
+        content = parseJspEncoding(content, encoding, isHardInclude);
+        // convert the result to bytes and return it
+        try {
+            return content.getBytes(encoding);
+        } catch (UnsupportedEncodingException e) {
+            // should not happen since encoding was already checked
+            return content.getBytes();
+        }
+    }
+
+    /**
+     * Parses the JSP content for the special <code>&lt;%cms file="..." %&gt;</code> tag.<p>
+     * 
+     * @param content the JSP content to parse
+     * @param controller the current JSP controller
+     * @param includes a set of already parsed includes
+     * @return the parsed JSP content
+     */
+    private static String parseJspCmsTag(String content, CmsFlexController controller, Set includes) {
+
+        // check if a JSP directive occurs in the file
+        int i1 = content.indexOf(DIRECTIVE_START);
+        if (i1 < 0) {
+            // no directive occurs
+            return content;
+        }
+
+        StringBuffer buf = new StringBuffer(content.length());
+        int p0 = 0, i2 = 0, slen = DIRECTIVE_START.length(), elen = DIRECTIVE_END.length();
+
+        while (i1 >= 0) {
+            // parse the file and replace JSP filename references 
+            i2 = content.indexOf(DIRECTIVE_END, i1 + slen);
+            if (i2 < 0) {
+                // wrong syntax (missing end directive) - let the JSP compiler produce the error message
+                return content;
+            } else if (i2 > i1) {
+                String directive = content.substring(i1 + slen, i2);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DIRECTIVE_DETECTED_3,
+                        DIRECTIVE_START,
+                        directive,
+                        DIRECTIVE_END));
+                }
+
+                int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
+                while (directive.charAt(t1) == ' ') {
+                    t1++;
+                }
+                String argument = null;
+                if (directive.startsWith("cms", t1)) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "cms"));
+                    }
+                    t2 = directive.indexOf("file", t1 + 3);
+                    t5 = 4;
+                }
+
+                if (t2 > 0) {
+                    String sub = directive.substring(t2 + t5);
+                    char c1 = sub.charAt(t3);
+                    while ((c1 == ' ') || (c1 == '=') || (c1 == '"')) {
+                        c1 = sub.charAt(++t3);
+                    }
+                    t4 = t3;
+                    while (c1 != '"') {
+                        c1 = sub.charAt(++t4);
+                    }
+                    if (t4 > t3) {
+                        argument = sub.substring(t3, t4);
+                    }
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
+                    }
+                }
+
+                if (argument != null) {
+                    //  try to update the referenced file
+                    String jspname = updateJsp(argument, controller, includes);
+                    if (jspname != null) {
+                        directive = jspname;
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().getBundle().key(
+                                Messages.LOG_DIRECTIVE_CHANGED_3,
+                                DIRECTIVE_START,
+                                directive,
+                                DIRECTIVE_END));
+                        }
+                    }
+                    // cms directive was found
+                    buf.append(content.substring(p0, i1));
+                    buf.append(directive);
+                    p0 = i2 + elen;
+                    i1 = content.indexOf(DIRECTIVE_START, p0);
+                } else {
+                    // cms directive was not found
+                    buf.append(content.substring(p0, i1 + slen));
+                    buf.append(directive);
+                    p0 = i2;
+                    i1 = content.indexOf(DIRECTIVE_START, p0);
+                }
+            }
+        }
+        if (i2 > 0) {
+            // the content of the JSP was changed 
+            buf.append(content.substring(p0, content.length()));
+            content = buf.toString();
+        }
+        return content;
+    }
+
+    /**
+     * Parses the JSP content for the  <code>&lt;%page pageEncoding="..." %&gt;</code> tag
+     * and ensures that the JSP page encoding is set according to the OpenCms 
+     * "content-encoding" property value of the JSP.<p>
+     * 
+     * @param content the JSP content to parse
+     * @param encoding the encoding to use for the JSP
+     * @param isHardInclude indicated if this page is actually a "hard" include with <code>&lt;%@ include file="..." &gt;</code>
+     * @return the parsed JSP content
+     */
+    private static String parseJspEncoding(String content, String encoding, boolean isHardInclude) {
+
+        // check if a JSP directive occurs in the file
+        int i1 = content.indexOf(DIRECTIVE_START);
+        if (i1 < 0) {
+            // no directive occurs
+            if (isHardInclude) {
+                return content;
+            }
+        }
+
+        StringBuffer buf = new StringBuffer(content.length() + 64);
+        int p0 = 0, i2 = 0, slen = DIRECTIVE_START.length();
+        boolean found = false;
+
+        if (i1 < 0) {
+            // no directive found at all, append content to buffer
+            buf.append(content);
+        }
+
+        while (i1 >= 0) {
+            // parse the file and set/replace page encoding
+            i2 = content.indexOf(DIRECTIVE_END, i1 + slen);
+            if (i2 < 0) {
+                // wrong syntax (missing end directive) - let the JSP compiler produce the error message
+                return content;
+            } else if (i2 > i1) {
+                String directive = content.substring(i1 + slen, i2);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DIRECTIVE_DETECTED_3,
+                        DIRECTIVE_START,
+                        directive,
+                        DIRECTIVE_END));
+                }
+
+                int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
+                while (directive.charAt(t1) == ' ') {
+                    t1++;
+                }
+                String argument = null;
+                if (directive.startsWith("page", t1)) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));
+                    }
+                    t2 = directive.indexOf("pageEncoding", t1 + 4);
+                    t5 = 12;
+                    if (t2 > 0) {
+                        found = true;
+                    }
+                }
+
+                if (t2 > 0) {
+                    String sub = directive.substring(t2 + t5);
+                    char c1 = sub.charAt(t3);
+                    while ((c1 == ' ') || (c1 == '=') || (c1 == '"')) {
+                        c1 = sub.charAt(++t3);
+                    }
+                    t4 = t3;
+                    while (c1 != '"') {
+                        c1 = sub.charAt(++t4);
+                    }
+                    if (t4 > t3) {
+                        argument = sub.substring(t3, t4);
+                    }
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
+                    }
+                }
+
+                if (argument != null) {
+                    // a pageEncoding setting was found, changes have to be made
+                    String pre = directive.substring(0, t2 + t3 + t5);
+                    String suf = directive.substring(t2 + t3 + t5 + argument.length());
+                    // change the encoding
+                    directive = pre + encoding + suf;
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_DIRECTIVE_CHANGED_3,
+                            DIRECTIVE_START,
+                            directive,
+                            DIRECTIVE_END));
+                    }
+                }
+
+                buf.append(content.substring(p0, i1 + slen));
+                buf.append(directive);
+                p0 = i2;
+                i1 = content.indexOf(DIRECTIVE_START, p0);
+            }
+        }
+        if (i2 > 0) {
+            // the content of the JSP was changed 
+            buf.append(content.substring(p0, content.length()));
+        }
+        if (found) {
+            content = buf.toString();
+        } else if (!isHardInclude) {
+            // encoding setting was not found
+            // if this is not a "hard" include then add the encoding to the top of the page
+            // checking for the hard include is important to prevent errors with 
+            // multiple page encoding settings if a templete is composed from several hard included elements
+            // this is an issue in Tomcat 4.x but not 5.x
+            StringBuffer buf2 = new StringBuffer(buf.length() + 32);
+            buf2.append("<%@ page pageEncoding=\"");
+            buf2.append(encoding);
+            buf2.append("\" %>");
+            buf2.append(buf);
+            content = buf2.toString();
+        }
+        return content;
+    }
+
+    /**
+     * Parses the JSP content for includes and replaces all OpenCms VFS 
+     * path information with information for the real FS.<p>
+     * 
+     * @param content the JSP content to parse
+     * @param controller the current JSP controller
+     * @param includes a set of already parsed includes
+     * @return the parsed JSP content
+     */
+    private static String parseJspIncludes(String content, CmsFlexController controller, Set includes) {
+
+        // check if a JSP directive occurs in the file
+        int i1 = content.indexOf(DIRECTIVE_START);
+        if (i1 < 0) {
+            // no directive occurs
+            return content;
+        }
+
+        StringBuffer buf = new StringBuffer(content.length());
+        int p0 = 0, i2 = 0, slen = DIRECTIVE_START.length();
+
+        while (i1 >= 0) {
+            // parse the file and replace JSP filename references 
+            i2 = content.indexOf(DIRECTIVE_END, i1 + slen);
+            if (i2 < 0) {
+                // wrong syntax (missing end directive) - let the JSP compiler produce the error message
+                return content;
+            } else if (i2 > i1) {
+                String directive = content.substring(i1 + slen, i2);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DIRECTIVE_DETECTED_3,
+                        DIRECTIVE_START,
+                        directive,
+                        DIRECTIVE_END));
+                }
+
+                int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
+                while (directive.charAt(t1) == ' ') {
+                    t1++;
+                }
+                String argument = null;
+                if (directive.startsWith("include", t1)) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "include"));
+                    }
+                    t2 = directive.indexOf("file", t1 + 7);
+                    t5 = 6;
+                } else if (directive.startsWith("page", t1)) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));
+                    }
+                    t2 = directive.indexOf("errorPage", t1 + 4);
+                    t5 = 11;
+                }
+
+                if (t2 > 0) {
+                    String sub = directive.substring(t2 + t5);
+                    char c1 = sub.charAt(t3);
+                    while ((c1 == ' ') || (c1 == '=') || (c1 == '"')) {
+                        c1 = sub.charAt(++t3);
+                    }
+                    t4 = t3;
+                    while (c1 != '"') {
+                        c1 = sub.charAt(++t4);
+                    }
+                    if (t4 > t3) {
+                        argument = sub.substring(t3, t4);
+                    }
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
+                    }
+                }
+
+                if (argument != null) {
+                    // a file was found, changes have to be made
+                    String pre = directive.substring(0, t2 + t3 + t5);
+                    String suf = directive.substring(t2 + t3 + t5 + argument.length());
+                    // now try to update the referenced file 
+                    String jspname = updateJsp(argument, controller, includes);
+                    if (jspname != null) {
+                        // only change something in case no error had occured
+                        directive = pre + jspname + suf;
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().getBundle().key(
+                                Messages.LOG_DIRECTIVE_CHANGED_3,
+                                DIRECTIVE_START,
+                                directive,
+                                DIRECTIVE_END));
+                        }
+                    }
+                }
+
+                buf.append(content.substring(p0, i1 + slen));
+                buf.append(directive);
+                p0 = i2;
+                i1 = content.indexOf(DIRECTIVE_START, p0);
+            }
+        }
+        if (i2 > 0) {
+            // the content of the JSP was changed 
+            buf.append(content.substring(p0, content.length()));
+            content = buf.toString();
+        }
+        return content;
+    }
+
+    /**
+     * Returns the jsp resource identified by the given name, using the controllers cms context.<p>
+     * 
+     * @param controller the flex controller
+     * @param jspName the name of the jsp
+     * 
+     * @return an OpenCms resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private static CmsResource readJspResource(CmsFlexController controller, String jspName) throws CmsException {
+
+        // create an OpenCms user context that operates in the root site
+        CmsObject cms = OpenCms.initCmsObject(controller.getCmsObject());
+        // we only need to change the site, but not the project, 
+        // since the request has already the right project set 
+        cms.getRequestContext().setSiteRoot("");
+        // try to read the resource 
+        return cms.readResource(jspName);
+    }
+
+    /**
+     * Updates a JSP page in the "real" file system in case the VFS resource has changed.<p>
+     * 
+     * Also processes the <code>&lt;%@ cms %&gt;</code> tags before the JSP is written to the real FS.
+     * Also recursivly updates all files that are referenced by a <code>&lt;%@ cms %&gt;</code> tag 
+     * on this page to make sure the file actually exists in the real FS. 
+     * All <code>&lt;%@ include %&gt;</code> tags are parsed and the name in the tag is translated
+     * from the OpenCms VFS path to the path in the real FS. 
+     * The same is done for filenames in <code>&lt;%@ page errorPage=... %&gt;</code> tags.
+     * 
+     * @param resource the reqested JSP file resource in the VFS
+     * @param controller the controller for the JSP integration
+     * @param updates a Set containing all JSP pages that have been already updated
+     * @return the file name of the updated JSP in the "real" FS
+     * 
+     * @throws ServletException might be thrown in the process of including the JSP 
+     * @throws IOException might be thrown in the process of including the JSP 
+     * @throws CmsLoaderException if the resource type can not be read
+     */
+    private static String updateJsp(CmsResource resource, CmsFlexController controller, Set updates)
+    throws IOException, ServletException, CmsLoaderException {
+
+        String jspVfsName = resource.getRootPath();
+        String extension;
+        boolean isHardInclude;
+        int loaderId = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getLoaderId();
+        if ((loaderId == CmsJspLoader.RESOURCE_LOADER_ID) && (!jspVfsName.endsWith(JSP_EXTENSION))) {
+            // this is a true JSP resource that does not end with ".jsp"
+            extension = JSP_EXTENSION;
+            isHardInclude = false;
+        } else {
+            // not a JSP resource or already ends with ".jsp"
+            extension = "";
+            // if this is a JSP we don't treat it as hard include
+            isHardInclude = (loaderId != CmsJspLoader.RESOURCE_LOADER_ID);
+        }
+
+        String jspTargetName = CmsFileUtil.getRepositoryName(
+            m_jspWebAppRepository,
+            jspVfsName + extension,
+            controller.getCurrentRequest().isOnline());
+
+        // check if page was already updated
+        if (updates.contains(jspTargetName)) {
+            // no need to write the already included file to the real FS more then once
+            return jspTargetName;
+        }
+        updates.add(jspTargetName);
+
+        String jspPath = CmsFileUtil.getRepositoryName(
+            m_jspRepository,
+            jspVfsName + extension,
+            controller.getCurrentRequest().isOnline());
+
+        File d = new File(jspPath).getParentFile();
+        if ((d == null) || (d.exists() && !(d.isDirectory() && d.canRead()))) {
+            CmsMessageContainer message = Messages.get().container(Messages.LOG_ACCESS_DENIED_1, jspPath);
+            LOG.error(message.key());
+            // can not continue
+            throw new ServletException(message.key());
+        }
+
+        if (!d.exists()) {
+            // create directory structure
+            d.mkdirs();
+        }
+
+        // check if the JSP muse be updated
+        boolean mustUpdate = false;
+        File f = new File(jspPath);
+        if (!f.exists()) {
+            // file does not exist in real FS
+            mustUpdate = true;
+
+            // make sure the parent folder exists
+            File folder = f.getParentFile();
+            if (!folder.exists()) {
+                boolean success = folder.mkdirs();
+                if (!success) {
+                    LOG.error(org.opencms.db.Messages.get().getBundle().key(
+                        org.opencms.db.Messages.LOG_CREATE_FOLDER_FAILED_1,
+                        folder.getAbsolutePath()));
+                }
+            }
+        } else if (f.lastModified() <= resource.getDateLastModified()) {
+            // file in real FS is older then file in VFS
+            mustUpdate = true;
+        } else if (controller.getCurrentRequest().isDoRecompile()) {
+            // recompile is forced with parameter
+            mustUpdate = true;
+        }
+
+        if (mustUpdate) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRITING_JSP_1, jspTargetName));
+            }
+            byte[] contents;
+            String encoding;
+            try {
+                CmsObject cms = controller.getCmsObject();
+                contents = CmsFile.upgrade(resource, cms).getContents();
+                // check the "content-encoding" property for the JSP, use system default if not found on path
+                encoding = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
+                if (encoding == null) {
+                    encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                } else {
+                    encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
+                }
+            } catch (CmsException e) {
+                controller.setThrowable(e, jspVfsName);
+                throw new ServletException(
+                    Messages.get().getBundle().key(Messages.ERR_LOADER_JSP_ACCESS_1, jspVfsName),
+                    e);
+            }
+
+            try {
+                // parse the JSP and modify OpenCms critical directives
+                contents = parseJsp(contents, encoding, controller, updates, isHardInclude);
+                // write the parsed JSP content to the real FS
+                synchronized (CmsJspLoader.class) {
+                    // this must be done only one file at a time
+                    FileOutputStream fs = new FileOutputStream(f);
+                    fs.write(contents);
+                    fs.close();
+                }
+                contents = null;
+
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_UPDATED_JSP_2, jspTargetName, jspVfsName));
+                }
+            } catch (FileNotFoundException e) {
+                throw new ServletException(
+                    Messages.get().getBundle().key(Messages.ERR_LOADER_JSP_WRITE_1, f.getName()),
+                    e);
+            }
+        }
+
+        // update "last modified" and "expires" date on controller
+        controller.updateDates(f.lastModified(), CmsResource.DATE_EXPIRED_DEFAULT);
+
+        return jspTargetName;
+    }
+
+    /**
+     * Updates a JSP page in the "real" file system in case the VFS resource has changed based on the resource name.<p>
+     * 
+     * Generates a resource based on the provided name and calls {@link #updateJsp(CmsResource, CmsFlexController, Set)}.<p>
+     * 
+     * @param vfsName the name of the JSP file resource in the VFS
+     * @param controller the controller for the JSP integration
+     * @param updatedFiles a Set containing all JSP pages that have been already updated
+     * 
+     * @return the file name of the updated JSP in the "real" FS
+     */
+    private static String updateJsp(String vfsName, CmsFlexController controller, Set updatedFiles) {
+
+        String jspVfsName = CmsLinkManager.getAbsoluteUri(vfsName, controller.getCurrentRequest().getElementRootPath());
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_JSP_1, jspVfsName));
+        }
+        String jspRfsName;
+        try {
+            CmsResource includeResource = readJspResource(controller, jspVfsName);
+            // make sure the jsp referenced file is generated
+            jspRfsName = updateJsp(includeResource, controller, updatedFiles);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_NAME_REAL_FS_1, jspRfsName));
+            }
+        } catch (Exception e) {
+            jspRfsName = null;
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_ERR_UPDATE_1, jspVfsName), e);
+            }
+        }
+        return jspRfsName;
+    }
+
+    /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
@@ -198,7 +836,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         m_configuration.put(paramName, paramValue);
     }
 
-    /** Destroy this ResourceLoder, this is a NOOP so far.  */
+    /** 
+     * Destroy this ResourceLoder, this is a NOOP so far.  
+     */
     public void destroy() {
 
         // NOOP
@@ -239,7 +879,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             // remove temporary controller
             CmsFlexController.removeController(req);
         } finally {
-            if (oldController != null) {
+            if ((oldController != null) && (controller != null)) {
                 // update "date last modified"
                 oldController.updateDates(controller.getDateLastModified(), controller.getDateExpires());
                 // reset saved controller 
@@ -323,7 +963,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             m_clientCacheMaxAge = Long.parseLong(maxAge);
         }
 
-        // get the "error pages are commited or not" flag from the configuration
+        // get the "error pages are committed or not" flag from the configuration
         m_errorPagesAreNotCommited = config.getBoolean(PARAM_JSP_ERRORPAGE_COMMITTED, true);
 
         // output setup information
@@ -537,7 +1177,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                             // set previously saved error code
                             res.setStatus(errorCode.intValue());
                         }
-                        // proecess the headers
+                        // process the headers
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                         res.getOutputStream().write(result);
                         res.getOutputStream().flush();
@@ -577,7 +1217,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         CmsFlexController controller = null;
         if (top) {
-            // only check for existing contoller if this is the "top" request/response
+            // only check for existing controller if this is the "top" request/response
             controller = CmsFlexController.getController(req);
         }
         if (controller == null) {
@@ -593,567 +1233,5 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             CmsFlexController.setController(req, controller);
         }
         return controller;
-    }
-
-    /**
-     * Parses the JSP and modifies OpenCms critical directive information.<p>
-     * 
-     * @param byteContent the original JSP content
-     * @param encoding the encoding to use for the JSP
-     * @param controller the controller for the JSP integration
-     * @param includes a Set containing all JSP pages that have been already updated
-     * @param isHardInclude indicated if this page is actually a "hard" include with <code>&lt;%@ include file="..." &gt;</code>
-     * @return the modified JSP content
-     * @throws UnsupportedEncodingException
-     */
-    private byte[] parseJsp(
-        byte[] byteContent,
-        String encoding,
-        CmsFlexController controller,
-        Set includes,
-        boolean isHardInclude) {
-
-        String content;
-        // make sure encoding is set correctly
-        try {
-            content = new String(byteContent, encoding);
-        } catch (UnsupportedEncodingException e) {
-            // encoding property is not set correctly 
-            LOG.error(Messages.get().getBundle().key(
-                Messages.LOG_UNSUPPORTED_ENC_1,
-                controller.getCurrentRequest().getElementUri()), e);
-            try {
-                encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-                content = new String(byteContent, encoding);
-            } catch (UnsupportedEncodingException e2) {
-                // should not happen since default encoding is always a valid encoding (checked during system startup)
-                content = new String(byteContent);
-            }
-        }
-
-        // parse for special <%@cms file="..." %> tag
-        content = parseJspCmsTag(content, controller, includes);
-        // parse for included files in tags
-        content = parseJspIncludes(content, controller, includes);
-        // parse for <%@page pageEncoding="..." %> tag
-        content = parseJspEncoding(content, encoding, isHardInclude);
-        // convert the result to bytes and return it
-        try {
-            return content.getBytes(encoding);
-        } catch (UnsupportedEncodingException e) {
-            // should not happen since encoding was already checked
-            return content.getBytes();
-        }
-    }
-
-    /**
-     * Parses the JSP content for the special <code>&lt;%cms file="..." %&gt;</code> tag.<p>
-     * 
-     * @param content the JSP content to parse
-     * @param controller the current JSP controller
-     * @param includes a set of already parsed includes
-     * @return the parsed JSP content
-     */
-    private String parseJspCmsTag(String content, CmsFlexController controller, Set includes) {
-
-        // check if a JSP directive occurs in the file
-        int i1 = content.indexOf(DIRECTIVE_START);
-        if (i1 < 0) {
-            // no directive occurs
-            return content;
-        }
-
-        StringBuffer buf = new StringBuffer(content.length());
-        int p0 = 0, i2 = 0, slen = DIRECTIVE_START.length(), elen = DIRECTIVE_END.length();
-
-        while (i1 >= 0) {
-            // parse the file and replace JSP filename references 
-            i2 = content.indexOf(DIRECTIVE_END, i1 + slen);
-            if (i2 < 0) {
-                // wrong syntax (missing end directive) - let the JSP compiler produce the error message
-                return content;
-            } else if (i2 > i1) {
-                String directive = content.substring(i1 + slen, i2);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DIRECTIVE_DETECTED_3,
-                        DIRECTIVE_START,
-                        directive,
-                        DIRECTIVE_END));
-                }
-
-                int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
-                while (directive.charAt(t1) == ' ') {
-                    t1++;
-                }
-                String argument = null;
-                if (directive.startsWith("cms", t1)) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "cms"));
-                    }
-                    t2 = directive.indexOf("file", t1 + 3);
-                    t5 = 4;
-                }
-
-                if (t2 > 0) {
-                    String sub = directive.substring(t2 + t5);
-                    char c1 = sub.charAt(t3);
-                    while ((c1 == ' ') || (c1 == '=') || (c1 == '"')) {
-                        c1 = sub.charAt(++t3);
-                    }
-                    t4 = t3;
-                    while (c1 != '"') {
-                        c1 = sub.charAt(++t4);
-                    }
-                    if (t4 > t3) {
-                        argument = sub.substring(t3, t4);
-                    }
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
-                    }
-                }
-
-                if (argument != null) {
-                    //  try to update the referenced file
-                    String jspname = updateJsp(argument, controller, includes);
-                    if (jspname != null) {
-                        directive = jspname;
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
-                                Messages.LOG_DIRECTIVE_CHANGED_3,
-                                DIRECTIVE_START,
-                                directive,
-                                DIRECTIVE_END));
-                        }
-                    }
-                    // cms directive was found
-                    buf.append(content.substring(p0, i1));
-                    buf.append(directive);
-                    p0 = i2 + elen;
-                    i1 = content.indexOf(DIRECTIVE_START, p0);
-                } else {
-                    // cms directive was not found
-                    buf.append(content.substring(p0, i1 + slen));
-                    buf.append(directive);
-                    p0 = i2;
-                    i1 = content.indexOf(DIRECTIVE_START, p0);
-                }
-            }
-        }
-        if (i2 > 0) {
-            // the content of the JSP was changed 
-            buf.append(content.substring(p0, content.length()));
-            content = buf.toString();
-        }
-        return content;
-    }
-
-    /**
-     * Parses the JSP content for the  <code>&lt;%page pageEncoding="..." %&gt;</code> tag
-     * and ensures that the JSP page encoding is set according to the OpenCms 
-     * "content-encoding" property value of the JSP.<p>
-     * 
-     * @param content the JSP content to parse
-     * @param encoding the encoding to use for the JSP
-     * @param isHardInclude indicated if this page is actually a "hard" include with <code>&lt;%@ include file="..." &gt;</code>
-     * @return the parsed JSP content
-     */
-    private String parseJspEncoding(String content, String encoding, boolean isHardInclude) {
-
-        // check if a JSP directive occurs in the file
-        int i1 = content.indexOf(DIRECTIVE_START);
-        if (i1 < 0) {
-            // no directive occurs
-            if (isHardInclude) {
-                return content;
-            }
-        }
-
-        StringBuffer buf = new StringBuffer(content.length() + 64);
-        int p0 = 0, i2 = 0, slen = DIRECTIVE_START.length();
-        boolean found = false;
-
-        if (i1 < 0) {
-            // no directive found at all, append content to buffer
-            buf.append(content);
-        }
-
-        while (i1 >= 0) {
-            // parse the file and set/replace page encoding
-            i2 = content.indexOf(DIRECTIVE_END, i1 + slen);
-            if (i2 < 0) {
-                // wrong syntax (missing end directive) - let the JSP compiler produce the error message
-                return content;
-            } else if (i2 > i1) {
-                String directive = content.substring(i1 + slen, i2);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DIRECTIVE_DETECTED_3,
-                        DIRECTIVE_START,
-                        directive,
-                        DIRECTIVE_END));
-                }
-
-                int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
-                while (directive.charAt(t1) == ' ') {
-                    t1++;
-                }
-                String argument = null;
-                if (directive.startsWith("page", t1)) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));
-                    }
-                    t2 = directive.indexOf("pageEncoding", t1 + 4);
-                    t5 = 12;
-                    if (t2 > 0) {
-                        found = true;
-                    }
-                }
-
-                if (t2 > 0) {
-                    String sub = directive.substring(t2 + t5);
-                    char c1 = sub.charAt(t3);
-                    while ((c1 == ' ') || (c1 == '=') || (c1 == '"')) {
-                        c1 = sub.charAt(++t3);
-                    }
-                    t4 = t3;
-                    while (c1 != '"') {
-                        c1 = sub.charAt(++t4);
-                    }
-                    if (t4 > t3) {
-                        argument = sub.substring(t3, t4);
-                    }
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
-                    }
-                }
-
-                if (argument != null) {
-                    // a pageEncoding setting was found, changes have to be made
-                    String pre = directive.substring(0, t2 + t3 + t5);
-                    String suf = directive.substring(t2 + t3 + t5 + argument.length());
-                    // change the encoding
-                    directive = pre + encoding + suf;
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(
-                            Messages.LOG_DIRECTIVE_CHANGED_3,
-                            DIRECTIVE_START,
-                            directive,
-                            DIRECTIVE_END));
-                    }
-                }
-
-                buf.append(content.substring(p0, i1 + slen));
-                buf.append(directive);
-                p0 = i2;
-                i1 = content.indexOf(DIRECTIVE_START, p0);
-            }
-        }
-        if (i2 > 0) {
-            // the content of the JSP was changed 
-            buf.append(content.substring(p0, content.length()));
-        }
-        if (found) {
-            content = buf.toString();
-        } else if (!isHardInclude) {
-            // encoding setting was not found
-            // if this is not a "hard" include then add the encoding to the top of the page
-            // checking for the hard include is important to prevent errors with 
-            // multiple page encoding settings if a templete is composed from several hard included elements
-            // this is an issue in Tomcat 4.x but not 5.x
-            StringBuffer buf2 = new StringBuffer(buf.length() + 32);
-            buf2.append("<%@ page pageEncoding=\"");
-            buf2.append(encoding);
-            buf2.append("\" %>");
-            buf2.append(buf);
-            content = buf2.toString();
-        }
-        return content;
-    }
-
-    /**
-     * Parses the JSP content for includes and replaces all OpenCms VFS 
-     * path information with information for the real FS.<p>
-     * 
-     * @param content the JSP content to parse
-     * @param controller the current JSP controller
-     * @param includes a set of already parsed includes
-     * @return the parsed JSP content
-     */
-    private String parseJspIncludes(String content, CmsFlexController controller, Set includes) {
-
-        // check if a JSP directive occurs in the file
-        int i1 = content.indexOf(DIRECTIVE_START);
-        if (i1 < 0) {
-            // no directive occurs
-            return content;
-        }
-
-        StringBuffer buf = new StringBuffer(content.length());
-        int p0 = 0, i2 = 0, slen = DIRECTIVE_START.length();
-
-        while (i1 >= 0) {
-            // parse the file and replace JSP filename references 
-            i2 = content.indexOf(DIRECTIVE_END, i1 + slen);
-            if (i2 < 0) {
-                // wrong syntax (missing end directive) - let the JSP compiler produce the error message
-                return content;
-            } else if (i2 > i1) {
-                String directive = content.substring(i1 + slen, i2);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DIRECTIVE_DETECTED_3,
-                        DIRECTIVE_START,
-                        directive,
-                        DIRECTIVE_END));
-                }
-
-                int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
-                while (directive.charAt(t1) == ' ') {
-                    t1++;
-                }
-                String argument = null;
-                if (directive.startsWith("include", t1)) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "include"));
-                    }
-                    t2 = directive.indexOf("file", t1 + 7);
-                    t5 = 6;
-                } else if (directive.startsWith("page", t1)) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));
-                    }
-                    t2 = directive.indexOf("errorPage", t1 + 4);
-                    t5 = 11;
-                }
-
-                if (t2 > 0) {
-                    String sub = directive.substring(t2 + t5);
-                    char c1 = sub.charAt(t3);
-                    while ((c1 == ' ') || (c1 == '=') || (c1 == '"')) {
-                        c1 = sub.charAt(++t3);
-                    }
-                    t4 = t3;
-                    while (c1 != '"') {
-                        c1 = sub.charAt(++t4);
-                    }
-                    if (t4 > t3) {
-                        argument = sub.substring(t3, t4);
-                    }
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
-                    }
-                }
-
-                if (argument != null) {
-                    // a file was found, changes have to be made
-                    String pre = directive.substring(0, t2 + t3 + t5);
-                    String suf = directive.substring(t2 + t3 + t5 + argument.length());
-                    // now try to update the referenced file 
-                    String jspname = updateJsp(argument, controller, includes);
-                    if (jspname != null) {
-                        // only change something in case no error had occured
-                        directive = pre + jspname + suf;
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().getBundle().key(
-                                Messages.LOG_DIRECTIVE_CHANGED_3,
-                                DIRECTIVE_START,
-                                directive,
-                                DIRECTIVE_END));
-                        }
-                    }
-                }
-
-                buf.append(content.substring(p0, i1 + slen));
-                buf.append(directive);
-                p0 = i2;
-                i1 = content.indexOf(DIRECTIVE_START, p0);
-            }
-        }
-        if (i2 > 0) {
-            // the content of the JSP was changed 
-            buf.append(content.substring(p0, content.length()));
-            content = buf.toString();
-        }
-        return content;
-    }
-
-    /**
-     * Updates a JSP page in the "real" file system in case the VFS resource has changed.<p>
-     * 
-     * Also processes the <code>&lt;%@ cms %&gt;</code> tags before the JSP is written to the real FS.
-     * Also recursivly updates all files that are referenced by a <code>&lt;%@ cms %&gt;</code> tag 
-     * on this page to make sure the file actually exists in the real FS. 
-     * All <code>&lt;%@ include %&gt;</code> tags are parsed and the name in the tag is translated
-     * from the OpenCms VFS path to the path in the real FS. 
-     * The same is done for filenames in <code>&lt;%@ page errorPage=... %&gt;</code> tags.
-     * 
-     * @param resource the reqested JSP file resource in the VFS
-     * @param controller the controller for the JSP integration
-     * @param updates a Set containing all JSP pages that have been already updated
-     * @return the file name of the updated JSP in the "real" FS
-     * 
-     * @throws ServletException might be thrown in the process of including the JSP 
-     * @throws IOException might be thrown in the process of including the JSP 
-     * @throws CmsLoaderException if the resource type can not be read
-     */
-    private String updateJsp(CmsResource resource, CmsFlexController controller, Set updates)
-    throws IOException, ServletException, CmsLoaderException {
-
-        String jspVfsName = resource.getRootPath();
-        String extension;
-        boolean isHardInclude;
-        int loaderId = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getLoaderId();
-        if ((loaderId == CmsJspLoader.RESOURCE_LOADER_ID) && (!jspVfsName.endsWith(JSP_EXTENSION))) {
-            // this is a true JSP resource that does not end with ".jsp"
-            extension = JSP_EXTENSION;
-            isHardInclude = false;
-        } else {
-            // not a JSP resource or already ends with ".jsp"
-            extension = "";
-            // if this is a JSP we don't treat it as hard include
-            isHardInclude = (loaderId != CmsJspLoader.RESOURCE_LOADER_ID);
-        }
-
-        String jspTargetName = CmsFileUtil.getRepositoryName(
-            m_jspWebAppRepository,
-            jspVfsName + extension,
-            controller.getCurrentRequest().isOnline());
-
-        // check if page was already updated
-        if (updates.contains(jspTargetName)) {
-            // no need to write the already included file to the real FS more then once
-            return jspTargetName;
-        }
-        updates.add(jspTargetName);
-
-        String jspPath = CmsFileUtil.getRepositoryName(
-            m_jspRepository,
-            jspVfsName + extension,
-            controller.getCurrentRequest().isOnline());
-
-        File d = new File(jspPath).getParentFile();
-        if ((d == null) || (d.exists() && !(d.isDirectory() && d.canRead()))) {
-            CmsMessageContainer message = Messages.get().container(Messages.LOG_ACCESS_DENIED_1, jspPath);
-            LOG.error(message.key());
-            // can not continue
-            throw new ServletException(message.key());
-        }
-
-        if (!d.exists()) {
-            // create directory structure
-            d.mkdirs();
-        }
-
-        // check if the JSP muse be updated
-        boolean mustUpdate = false;
-        File f = new File(jspPath);
-        if (!f.exists()) {
-            // file does not exist in real FS
-            mustUpdate = true;
-            
-            // make sure the parent folder exists
-            File folder = f.getParentFile();
-            if (!folder.exists()) {
-                boolean success = folder.mkdirs();
-                if (!success) {
-                    LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                    		org.opencms.db.Messages.LOG_CREATE_FOLDER_FAILED_1, 
-                    		folder.getAbsolutePath()));
-                }
-            }
-        } else if (f.lastModified() <= resource.getDateLastModified()) {
-            // file in real FS is older then file in VFS
-            mustUpdate = true;
-        } else if (controller.getCurrentRequest().isDoRecompile()) {
-            // recompile is forced with parameter
-            mustUpdate = true;
-        }
-
-        if (mustUpdate) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRITING_JSP_1, jspTargetName));
-            }
-            byte[] contents;
-            String encoding;
-            try {
-                CmsObject cms = controller.getCmsObject();
-                contents = CmsFile.upgrade(resource, cms).getContents();
-                // check the "content-encoding" property for the JSP, use system default if not found on path
-                encoding = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
-                if (encoding == null) {
-                    encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-                } else {
-                    encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
-                }
-            } catch (CmsException e) {
-                controller.setThrowable(e, jspVfsName);
-                throw new ServletException(
-                    Messages.get().getBundle().key(Messages.ERR_LOADER_JSP_ACCESS_1, jspVfsName),
-                    e);
-            }
-
-            try {
-                // parse the JSP and modify OpenCms critical directives
-                contents = parseJsp(contents, encoding, controller, updates, isHardInclude);
-                // write the parsed JSP content to the real FS
-                synchronized (this) {
-                    // this must be done only one file at a time
-                    FileOutputStream fs = new FileOutputStream(f);
-                    fs.write(contents);
-                    fs.close();
-                }
-                contents = null;
-
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(Messages.LOG_UPDATED_JSP_2, jspTargetName, jspVfsName));
-                }
-            } catch (FileNotFoundException e) {
-                throw new ServletException(
-                    Messages.get().getBundle().key(Messages.ERR_LOADER_JSP_WRITE_1, f.getName()),
-                    e);
-            }
-        }
-
-        // update "last modified" and "expires" date on controller
-        controller.updateDates(f.lastModified(), CmsResource.DATE_EXPIRED_DEFAULT);
-
-        return jspTargetName;
-    }
-
-    /**
-     * Updates a JSP page in the "real" file system in case the VFS resource has changed based on the resource name.<p>
-     * 
-     * Gernates a resource based on the provided name and calls {@link #updateJsp(CmsResource, CmsFlexController, Set)}.<p>
-     * 
-     * @param vfsName the name of the JSP file resource in the VFS
-     * @param controller the controller for the JSP integration
-     * @param includes a Set containing all JSP pages that have been already included (i.e. updated)
-     * @return the file name of the updated JSP in the "real" FS
-     */
-    private String updateJsp(String vfsName, CmsFlexController controller, Set includes) {
-
-        String jspVfsName = CmsLinkManager.getAbsoluteUri(vfsName, controller.getCurrentRequest().getElementRootPath());
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_JSP_1, jspVfsName));
-        }
-        String jspRfsName = null;
-        try {
-            // create an OpenCms user context that operates in the root site
-            CmsObject cms = OpenCms.initCmsObject(controller.getCmsObject());
-            cms.getRequestContext().setSiteRoot("");
-            CmsResource includeResource = cms.readResource(jspVfsName);
-            // make sure the jsp referenced file is generated
-            jspRfsName = updateJsp(includeResource, controller, includes);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_NAME_REAL_FS_1, jspRfsName));
-            }
-        } catch (Exception e) {
-            jspRfsName = null;
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_ERR_UPDATE_1, jspVfsName), e);
-            }
-        }
-        return jspRfsName;
     }
 }
