@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2007/04/03 12:08:43 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2007/12/17 13:25:35 $
+ * Version: $Revision: 1.57.2.1 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * the authenticated users permissions. If the user is not identified, it is set to the default user, usually named "Guest".</li>
  * 
  * <li>The requested <code>{@link org.opencms.file.CmsResource}</code> is loaded into OpenCms and depending on its type 
- * (and the users persmissions to display or modify it), 
+ * (and the users permissions to display or modify it), 
  * it is send to one of the OpenCms <code>{@link org.opencms.loader.I_CmsResourceLoader}</code> implementations
  * do be processed.</li>
  * 
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.57.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -89,30 +89,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
     /** Name of the <code>DefaultWebApplication</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
     public static final String SERVLET_PARAM_DEFAULT_WEB_APPLICATION = "DefaultWebApplication";
 
-    /** 
-     * The name of the servlet initialization parameter <code>OnErrorExitWithoutException</code>
-     * in the <code>web.xml</code> OpenCms servlet configuration to control whether 
-     * to exit with an exception, or not, in the case of an error during initialization,
-     * this is important while the setup/update wizard is enabled.<p>
-     * The default value of 'false' should work for almost all servlet containers.
-     * But if using BEA WLS 9.x, you should set this parameter to 'true'.<p>
-     */
-    public static final String SERVLET_PARAM_ON_ERROR_EXIT_WITHOUT_EXCEPTION = "OnErrorExitWithoutException";
-
     /** Name of the <code>OpenCmsHome</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
     public static final String SERVLET_PARAM_OPEN_CMS_HOME = "OpenCmsHome";
 
     /** Name of the <code>OpenCmsServlet</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
     public static final String SERVLET_PARAM_OPEN_CMS_SERVLET = "OpenCmsServlet";
-
-    /** 
-     * The name of the servlet initialization parameter <code>RequestErrorPageAttribute</code>
-     * in the <code>web.xml</code> OpenCms servlet configuration to set an replacement 
-     * request attribute for the {@link HttpServletRequest#getPathInfo()} method, which 
-     * is just needed if this method is not properly implemented like in BEA WLS 9.x.<p>
-     * If using BEA WLS 9.x, you should set this parameter to 'weblogic.servlet.errorPage'.<p>
-     */
-    public static final String SERVLET_PARAM_REQUEST_ERROR_PAGE_ATTRIBUTE = "RequestErrorPageAttribute";
 
     /** Name of the <code>WebApplicationContext</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
     public static final String SERVLET_PARAM_WEB_APPLICATION_CONTEXT = "WebApplicationContext";
@@ -258,10 +239,11 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             if (Messages.ERR_CRITICAL_INIT_WIZARD_0.equals(e.getMessageContainer().getKey())) {
                 // if wizard is still enabled - allow retry of initialization (required for setup wizard)
                 // this means the servlet init() call must be terminated by an exception
-                if (!Boolean.valueOf(config.getInitParameter(SERVLET_PARAM_ON_ERROR_EXIT_WITHOUT_EXCEPTION)).booleanValue()) {
+                if (OpenCmsCore.getInstance().getSystemInfo().isFailedInitializationThrowsException()) {
                     throw new ServletException(e.getMessage());
                 } else {
-                    // this is needed since some servlet containers does like the servlet to throw exceptions, like BEA WLS 9.x
+                    // this is needed since some servlet containers does like the servlet to throw exceptions, 
+                    // like BEA WLS 9.x and Resin
                     LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_GENERIC_0), e);
                 }
             }
@@ -275,6 +257,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      * 
      * @param req the current request
      * @param res the current response 
+     * 
      * @throws ServletException
      * @throws ServletException in case an error occurs
      * @throws IOException in case an error occurs
@@ -298,6 +281,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
      * @param req the current request
      * @param res the current response
      * @param errorCode the error code to display
+     * 
      * @throws IOException if something goes wrong
      * @throws ServletException if something goes wrong
      */
