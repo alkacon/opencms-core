@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2006/10/26 12:25:35 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2007/12/17 13:38:40 $
+ * Version: $Revision: 1.37.2.1 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -65,7 +65,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.37.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,7 +193,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         ServletRequest req,
         ServletResponse res) throws JspException {
 
-        // the Flex controller provides access to the interal OpenCms structures
+        // the Flex controller provides access to the internal OpenCms structures
         CmsFlexController controller = CmsFlexController.getController(req);
 
         if (target == null) {
@@ -213,6 +213,8 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 paramMap,
                 req,
                 res);
+            // check if the target actually exists in the OpenCms VFS
+            controller.getCmsObject().readResource(target);
         } catch (CmsException e) {
             // store exception in controller and discontinue
             controller.setThrowable(e, target);
@@ -428,8 +430,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     if (prop != null) {
                         target = prop + getSuffix();
                     }
+                } catch (RuntimeException e) {
+                    // target must be null
+                    target = null;
                 } catch (Exception e) {
                     // target will be null
+                    e = null;
                 }
             } else if (m_attribute != null) {
                 // option 3: target is set in "attribute" parameter
@@ -438,8 +444,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                     if (attr != null) {
                         target = attr + getSuffix();
                     }
+                } catch (RuntimeException e) {
+                    // target must be null
+                    target = null;
                 } catch (Exception e) {
                     // target will be null
+                    e = null;
                 }
             } else {
                 // option 4: target might be set in body
@@ -458,7 +468,11 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             includeTagAction(pageContext, target, m_element, null, m_editable, m_cacheable, m_parameterMap, req, res);
 
             // must call release here manually to make sure m_parameterMap is cleared
-            release();
+            if (OpenCms.getSystemInfo().isTagIncludeReleaseAfterEndTag()) {
+                release();
+            } else {
+                m_parameterMap = null;
+            }
         }
 
         return EVAL_PAGE;

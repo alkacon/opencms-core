@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2006/04/28 15:20:52 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2007/12/17 13:38:40 $
+ * Version: $Revision: 1.49.2.1 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,7 @@ import java.util.Properties;
 /**
  * Provides access to system wide "read only" information.<p>
  * 
- * Regarding the naming conventions used, this comes straight from the Servlet Sepc v2.4:<p>
+ * Regarding the naming conventions used, this comes straight from the Servlet Spec v2.4:<p>
  *   
  * <i>SRV.3.1 Introduction to the ServletContext Interface<br>
  * [...] A ServletContext is rooted at a known path within a web server. For example
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.49.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,17 +75,35 @@ public class CmsSystemInfo {
     /** Static version number to use if version.properties can not be read. */
     private static final String DEFAULT_VERSION_NUMBER = "6.2.x";
 
-    /** The abolute path to the "opencms.properties" configuration file (in the "real" file system). */
+    /** 
+     * The replacement request attribute for the {@link javax.servlet.http.HttpServletRequest#getPathInfo()} method, 
+     * which is needed because this method is not properly implemented in BEA WLS 9.x.<p>
+     */
+    private static final String REQUEST_ERROR_PAGE_ATTRIBUTE_WEBLOGIC = "weblogic.servlet.errorPage";
+
+    /** Constant name to identify Resin servers. */
+    private static final String SERVLET_CONTAINER_RESIN = "Resin";
+
+    /** Constant name to identify BEA WebLogic servers. */
+    private static final String SERVLET_CONTAINER_WEBLOGIC = "WebLogic Server";
+
+    /** Constant name to identify IBM Websphere servers. */
+    private static final String SERVLET_CONTAINER_WEBSPHERE = "IBM WebSphere Application Server";
+
+    /** The absolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
 
     /** The web application context path. */
     private String m_contextPath;
 
-    /** Default encoding, can be overwritten in "opencms.properties". */
+    /** Default encoding, can be set in opencms-system.xml. */
     private String m_defaultEncoding;
 
     /** The default web application (usually "ROOT"). */
     private String m_defaultWebApplicationName;
+
+    /** If the servlet can throw an exception if initialization fails, for instance, Weblogic and Resin have problems with the exception. */
+    private boolean m_failedInitializationThrowsException = false;
 
     /** The HTTP basic authentication settings. */
     private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;
@@ -93,7 +111,7 @@ public class CmsSystemInfo {
     /** The settings for the internal OpenCms email service. */
     private CmsMailSettings m_mailSettings;
 
-    /** The project in which timestamps for the content notification are read. */
+    /** The project in which time stamps for the content notification are read. */
     private String m_notificationProject;
 
     /** The duration after which responsibles will be notified about out-dated content (in days). */
@@ -102,17 +120,32 @@ public class CmsSystemInfo {
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code>. */
     private String m_openCmsContext;
 
-    /** The abolute path to the "packages" folder (in the "real" file system). */
+    /** The absolute path to the "packages" folder (in the "real" file system). */
     private String m_packagesRfsPath;
+
+    /** If the flex response allows to flush the buffer, for instance, Websphere does not allow to set headers afterwards, so we have to prevent it. */
+    private boolean m_preventFlushResponse;
+
+    /** 
+     * The request error page attribute to use if {@link javax.servlet.http.HttpServletRequest#getPathInfo()}
+     * is not working properly, like in BEA WLS 9.x. 
+     */
+    private String m_requestErrorPageAttribute;
 
     /** The name of the OpenCms server. */
     private String m_serverName;
+
+    /** The name of the servlet container running OpenCms. */
+    private String m_servletContainerName;
 
     /** The servlet path for the OpenCms servlet. */
     private String m_servletPath;
 
     /** The startup time of this OpenCms instance. */
     private long m_startupTime;
+
+    /** If the include tag needs to release after ending, this has to be prevented when running with Resin, for example. */
+    private boolean m_tagIncludeReleaseAfterEndTag = true;
 
     /** The version identifier of this OpenCms installation, contains "OpenCms/" and the version number. */
     private String m_version;
@@ -142,7 +175,7 @@ public class CmsSystemInfo {
 
         // set startup time
         m_startupTime = System.currentTimeMillis();
-        // init version onformation
+        // init version information
         initVersion();
         // set default encoding (will be changed again later when properties have been read)
         m_defaultEncoding = DEFAULT_ENCODING.intern();
@@ -218,11 +251,11 @@ public class CmsSystemInfo {
      * is the default web application (usually "ROOT"), or "/opencms" if the web application 
      * is called "opencms".<p>
      * 
-     * <i>From the Java Servlet Sepcecification v2.4:</i><br>
+     * <i>From the Java Servlet Specification v2.4:</i><br>
      * <b>Context Path:</b> The path prefix associated with the ServletContext that this
      * servlet is a part of. If this context is the "default" context rooted at the base of
-     * the web server's URL namespace, this path will be an empty string. Otherwise,
-     * if the context is not rooted at the root of the server's namespace, the path starts
+     * the web server's URL name space, this path will be an empty string. Otherwise,
+     * if the context is not rooted at the root of the server's name space, the path starts
      * with a "/" character but does not end with a "/" character.<p>
      *  
      * @return the web application context path
@@ -238,8 +271,8 @@ public class CmsSystemInfo {
     /**
      * Return the OpenCms default character encoding.<p>
      * 
-     * The default is set in the "opencms.properties" file.
-     * If this is not set in "opencms.properties" the default 
+     * The default is set in the opencms-system.xml file.
+     * If this is not set in opencms-system.xml the default 
      * is "UTF-8".<p>
      * 
      * @return the default encoding, e.g. "UTF-8" or "ISO-8859-1"
@@ -270,12 +303,12 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the filename of the logfile (in the "real" file system).<p>
+     * Returns the filename of the log file (in the "real" file system).<p>
      * 
      * If the method returns <code>null</code>, this means that the log
      * file is not managed by OpenCms.<p>
      * 
-     * @return the filename of the logfile (in the "real" file system)
+     * @return the filename of the log file (in the "real" file system)
      */
     public String getLogFileRfsPath() {
 
@@ -293,9 +326,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the project in which timestamps for the content notification are read.<p>
+     * Returns the project in which time stamps for the content notification are read.<p>
      * 
-     * @return the project in which timestamps for the content notification are read
+     * @return the project in which time stamps for the content notification are read
      */
     public String getNotificationProject() {
 
@@ -328,9 +361,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the abolute path to the "packages" folder (in the "real" file system).<p>
+     * Returns the absolute path to the "packages" folder (in the "real" file system).<p>
      * 
-     * @return the abolute path to the "packages" folder
+     * @return the absolute path to the "packages" folder
      */
     public String getPackagesRfsPath() {
 
@@ -341,9 +374,20 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the time this OpenCms instance is running in miliseconds.<p>
+     * Returns the request error page attribute name to use if {@link javax.servlet.http.HttpServletRequest#getPathInfo()}
+     * is not working properly, like in BEA WLS 9.x.<p>
      * 
-     * @return the time this OpenCms instance is running in miliseconds
+     * @return the request error page attribute name
+     */
+    public String getRequestErrorPageAttribute() {
+
+        return m_requestErrorPageAttribute;
+    }
+
+    /**
+     * Returns the time this OpenCms instance is running in milliseconds.<p>
+     * 
+     * @return the time this OpenCms instance is running in milliseconds
      */
     public long getRuntime() {
 
@@ -355,8 +399,8 @@ public class CmsSystemInfo {
      * 
      * The server name is set in <code>opencms.properties</code>.
      * It is not related to any DNS name the server might also have.
-     * The server name is usefull e.g. in a cluster to distinguish different servers,
-     * or if you compare logfiles from multiple servers.<p>
+     * The server name is useful e.g. in a cluster to distinguish different servers,
+     * or if you compare log files from multiple servers.<p>
      * 
      * @return the OpenCms server name
      */
@@ -366,9 +410,19 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Returns the name of the servlet container running OpenCms.<p>
+     *
+     * @return the name of the servlet container running OpenCms
+     */
+    public String getServletContainerName() {
+
+        return m_servletContainerName;
+    }
+
+    /**
      * Returns the OpenCms servlet path, e.g. "/opencms".<p> 
      * 
-     * <i>From the Java Servlet Sepcecification v2.4:</i><br>
+     * <i>From the Java Servlet Specification v2.4:</i><br>
      * <b>Servlet Path:</b> The path section that directly corresponds to the mapping
      * which activated this request. This path starts with a?/? character except in the
      * case where the request is matched with the ?/*? pattern, in which case it is the
@@ -430,7 +484,7 @@ public class CmsSystemInfo {
     }
 
     /** 
-     * Returns the OpenCms web application name, e.g. "opencms" or "ROOT" (no leading or trainling "/").<p> 
+     * Returns the OpenCms web application name, e.g. "opencms" or "ROOT" (no leading or trailing "/").<p> 
      * 
      * The web application name is stored for informational purposes only.
      * If you want to construct an URI, use either {@link #getContextPath()} and 
@@ -467,6 +521,18 @@ public class CmsSystemInfo {
     }
 
     /**
+     * Checks if the servlet can throw an exception if initialization fails.<p>
+     * 
+     * Some servlet containers like BEA WLS or Resin does not like it.<p>
+     * 
+     * @return <code>true</code> if the servlet can throw an exception if initialization fails
+     */
+    public boolean isFailedInitializationThrowsException() {
+
+        return m_failedInitializationThrowsException;
+    }
+
+    /**
      * Returns if the VFS version history is enabled.<p> 
      * 
      * @return if the VFS version history is enabled
@@ -474,6 +540,30 @@ public class CmsSystemInfo {
     public boolean isVersionHistoryEnabled() {
 
         return m_versionHistoryEnabled;
+    }
+
+    /**
+     * Check if the flex response has to allow flushing the buffer.<p>
+     * 
+     * For instance, Websphere does not allow to set headers afterwards, so we have to prevent it.<p>
+     *
+     * @return <code>true</code> if the flex response has to allow flushing the buffer
+     */
+    public boolean isPreventFlushResponse() {
+
+        return m_preventFlushResponse;
+    }
+
+    /**
+     * Checks if the include tag needs to release after ending.<p>
+     * 
+     * Depends on how the servlet container generates code for tags, for instance, this has to be prevented with Resin.<p>
+     * 
+     * @return <code>true</code> if the include tag needs to release after ending
+     */
+    public boolean isTagIncludeReleaseAfterEndTag() {
+
+        return m_tagIncludeReleaseAfterEndTag;
     }
 
     /**
@@ -527,12 +617,40 @@ public class CmsSystemInfo {
      * @param servletMapping the OpenCms servlet mapping  (e.g. "/opencms/*")
      * @param webApplicationContext the name/path of the OpenCms web application context (optional, will be calculated form the path if null)
      * @param defaultWebApplication the default web application name (usually "ROOT")
+     * @param servletContainerName the name of the servlet container running OpenCms
      */
     protected void init(
         String webInfRfsPath,
         String servletMapping,
         String webApplicationContext,
-        String defaultWebApplication) {
+        String defaultWebApplication,
+        String servletContainerName) {
+
+        // init servlet container name
+        m_servletContainerName = "";
+        if (servletContainerName != null) {
+            // init servlet container dependent parameters
+            m_servletContainerName = servletContainerName;
+
+            // the include tag behavior
+            m_tagIncludeReleaseAfterEndTag = !(m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) > -1);
+
+            // the request error page attribute
+            m_requestErrorPageAttribute = null;
+            if (m_servletContainerName.indexOf(SERVLET_CONTAINER_WEBLOGIC) > -1) {
+                m_requestErrorPageAttribute = REQUEST_ERROR_PAGE_ATTRIBUTE_WEBLOGIC;
+            }
+
+            // the failed initialization behavior
+            m_failedInitializationThrowsException = true;
+            m_failedInitializationThrowsException &= (m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) < 0);
+            m_failedInitializationThrowsException &= (m_servletContainerName.indexOf(SERVLET_CONTAINER_WEBLOGIC) < 0);
+
+            // the flush flex response behavior
+            m_preventFlushResponse = false;
+            m_preventFlushResponse |= (m_servletContainerName.indexOf(SERVLET_CONTAINER_WEBSPHERE) > -1);
+            m_preventFlushResponse |= (m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) > -1);
+        }
 
         // init base path
         webInfRfsPath = webInfRfsPath.replace('\\', '/');
@@ -597,7 +715,7 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Sets the default encoding, called after the properties have been read.<p>
+     * Sets the default encoding, called after the configuration files have been read.<p>
      *  
      * @param encoding the default encoding to set
      */
@@ -634,8 +752,8 @@ public class CmsSystemInfo {
      * 
      * The server name is set in <code>opencms.properties</code>.
      * It is not related to any DNS name the server might also have.
-     * The server name is usefull e.g. in a cluster to distinguish different servers,
-     * or if you compare logfiles from multiple servers.<p>
+     * The server name is useful e.g. in a cluster to distinguish different servers,
+     * or if you compare log files from multiple servers.<p>
      *  
      * @param serverName the server name to set
      */
@@ -666,7 +784,7 @@ public class CmsSystemInfo {
             return;
         }
         m_versionNumber = props.getProperty("version.number", DEFAULT_VERSION_NUMBER);
-        // set OpenCms version identifier with propery values
+        // set OpenCms version identifier with property values
         m_version = "OpenCms/" + m_versionNumber;
     }
 }

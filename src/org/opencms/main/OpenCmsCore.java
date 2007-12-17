@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2007/04/03 12:08:43 $
- * Version: $Revision: 1.223 $
+ * Date   : $Date: 2007/12/17 13:38:40 $
+ * Version: $Revision: 1.223.2.1 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -134,7 +134,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.223 $ 
+ * @version $Revision: 1.223.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -194,12 +194,6 @@ public final class OpenCmsCore {
     /** The repository manager. */
     private CmsRepositoryManager m_repositoryManager;
 
-    /** 
-     * The request error page attribute name to use if {@link HttpServletRequest#getPathInfo()}
-     * is not working properly, like in BEA WLS 9.x. 
-     */
-    private String m_requestErrorPageAttribute;
-
     /** The configured request handlers that handle "special" requests, for example in the static export on demand. */
     private Map m_requestHandlers;
 
@@ -258,7 +252,7 @@ public final class OpenCmsCore {
     throws CmsInitException {
 
         synchronized (LOCK) {
-            if (m_instance != null && (m_instance.getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE)) {
+            if ((m_instance != null) && (m_instance.getRunLevel() > OpenCms.RUNLEVEL_0_OFFLINE)) {
                 throw new CmsInitException(Messages.get().container(Messages.ERR_ALREADY_INITIALIZED_0));
             }
             initMembers();
@@ -496,14 +490,18 @@ public final class OpenCmsCore {
     protected String getPathInfo(HttpServletRequest req) {
 
         String path = req.getPathInfo();
-        if ((path == null) && (m_requestErrorPageAttribute != null)) {
-            // this is needed since the HttpServletRequest#getPathInfo() 
-            path = (String)req.getAttribute(m_requestErrorPageAttribute);
-            if (path != null) {
-                int pos = path.indexOf("/", 1);
-                if (pos > 0) {
-                    // cut off the servlet name
-                    path = path.substring(pos);
+        if (path == null) {
+            // if the HttpServletRequest#getPathInfo() method does not work properly  
+            String requestErrorPageAttribute = getSystemInfo().getRequestErrorPageAttribute();
+            if (requestErrorPageAttribute != null) {
+                // use the proper page attribute
+                path = (String)req.getAttribute(requestErrorPageAttribute);
+                if (path != null) {
+                    int pos = path.indexOf("/", 1);
+                    if (pos > 0) {
+                        // cut off the servlet name
+                        path = path.substring(pos);
+                    }
                 }
             }
         }
@@ -751,7 +749,7 @@ public final class OpenCmsCore {
 
         String userName = contextInfo.getUserName();
 
-        if (adminCms == null || !adminCms.hasRole(CmsRole.ADMINISTRATOR)) {
+        if ((adminCms == null) || !adminCms.hasRole(CmsRole.ADMINISTRATOR)) {
             if (!userName.equals(getDefaultUsers().getUserGuest())
                 && !userName.equals(getDefaultUsers().getUserExport())) {
 
@@ -1099,8 +1097,16 @@ public final class OpenCmsCore {
         // this is needed in case an application server specific deployment descriptor is used to changed the webapp context
         String webApplicationContext = context.getInitParameter(OpenCmsServlet.SERVLET_PARAM_WEB_APPLICATION_CONTEXT);
 
+        // read the servlet container name
+        String servletContainerName = context.getServerInfo();
+
         // now initialize the system info with the path and mapping information
-        getSystemInfo().init(webInfPath, servletMapping, webApplicationContext, defaultWebApplication);
+        getSystemInfo().init(
+            webInfPath,
+            servletMapping,
+            webApplicationContext,
+            defaultWebApplication,
+            servletContainerName);
 
         // Collect the configurations 
         ExtendedProperties configuration = null;
@@ -1329,7 +1335,7 @@ public final class OpenCmsCore {
         }
 
         // file is still null and not found exception was thrown, so throw original exception
-        if (resource == null && tmpException != null) {
+        if ((resource == null) && (tmpException != null)) {
             throw tmpException;
         }
 
@@ -1352,10 +1358,6 @@ public final class OpenCmsCore {
         synchronized (LOCK) {
             // add the servlets request handler
             addRequestHandler(servlet);
-            // Sets the request error page attribute name to use if {@link HttpServletRequest#getPathInfo()}
-            // is not working properly, like in BEA WLS 9.x.
-            // please note that this init parameter is global and not servlet dependent!
-            m_requestErrorPageAttribute = servlet.getInitParameter(OpenCmsServlet.SERVLET_PARAM_REQUEST_ERROR_PAGE_ATTRIBUTE);
 
             // output the final 'startup is finished' message
             if (CmsLog.INIT.isInfoEnabled()) {
@@ -1761,8 +1763,8 @@ public final class OpenCmsCore {
 
         try {
             isNotGuest = isNotGuest
-                || (cms != null
-                    && cms.getRequestContext().currentUser() != null
+                || ((cms != null)
+                    && (cms.getRequestContext().currentUser() != null)
                     && (!OpenCms.getDefaultUsers().getUserGuest().equals(
                         cms.getRequestContext().currentUser().getName())) && ((cms.userInGroup(
                     cms.getRequestContext().currentUser().getName(),
@@ -1779,7 +1781,7 @@ public final class OpenCmsCore {
         if (canWrite) {
             res.setContentType("text/html");
             CmsRequestUtil.setNoCacheHeaders(res);
-            if (isNotGuest && cms != null && !cms.getRequestContext().currentProject().isOnlineProject()) {
+            if (isNotGuest && (cms != null) && !cms.getRequestContext().currentProject().isOnlineProject()) {
                 try {
                     res.setStatus(HttpServletResponse.SC_OK);
                     res.getWriter().print(createErrorBox(t, req, cms));
@@ -2066,8 +2068,8 @@ public final class OpenCmsCore {
 
         CmsHttpAuthenticationSettings httpAuthenticationSettings = getSystemInfo().getHttpAuthenticationSettings();
         String pathWithParams = CmsRequestUtil.encodeParamsWithUri(path, req);
-        if (propertyLoginForm != null
-            && propertyLoginForm != CmsProperty.getNullProperty()
+        if ((propertyLoginForm != null)
+            && (propertyLoginForm != CmsProperty.getNullProperty())
             && CmsStringUtil.isNotEmpty(propertyLoginForm.getValue())) {
             // login form property value was found            
             // build a redirect URL using the value of the property

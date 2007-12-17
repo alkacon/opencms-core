@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2006/03/28 13:10:02 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2007/12/17 13:38:40 $
+ * Version: $Revision: 1.48.6.1 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -61,7 +61,7 @@ import java.util.TreeMap;
 import org.apache.commons.collections.ExtendedProperties;
 
 /**
- * A commad line interface to access OpenCms functions which 
+ * A command line interface to access OpenCms functions which 
  * is used for the initial setup and also can be used to directly access the OpenCms
  * repository without the Workplace.<p>
  * 
@@ -75,12 +75,12 @@ import org.apache.commons.collections.ExtendedProperties;
  * as parameters can be called from the shell. Supported data types are:
  * <code>String, {@link org.opencms.util.CmsUUID}, boolean, int, long, double, float</code>.<p>
  *
- * If a method name is ambiguous, i.e. the method name with the same numer of parameter exist 
+ * If a method name is ambiguous, i.e. the method name with the same number of parameter exist 
  * in more then one of the command objects, the method is only executed on the first matching method object.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.48.6.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -133,13 +133,13 @@ public class CmsShell {
                 return false;
             }
 
-            // a match for the mehod name was found, now try to figure out if the parameters are ok 
+            // a match for the method name was found, now try to figure out if the parameters are ok 
             Method onlyStringMethod = null;
             Method foundMethod = null;
             Object[] params = null;
             Iterator i;
 
-            // first check if there is one method with only has String parameters, make this the fallback
+            // first check if there is one method with only has String parameters, make this the fall back
             i = possibleMethods.iterator();
             while (i.hasNext()) {
                 Method method = (Method)i.next();
@@ -237,7 +237,7 @@ public class CmsShell {
                 foundMethod = onlyStringMethod;
             }
 
-            if (params == null) {
+            if ((params == null) || (foundMethod == null)) {
                 // no match found at all
                 return false;
             }
@@ -288,6 +288,7 @@ public class CmsShell {
          * If no method name matches the given search String, the empty String is returned.<p>
          * 
          * @param searchString the String to search for, if null all methods are shown
+         * 
          * @return a signature overview of all methods containing the given search String
          */
         protected String getMethodHelp(String searchString) {
@@ -335,6 +336,7 @@ public class CmsShell {
          * 
          * @param methodName the name of the method
          * @param paramCount the parameter count of the method
+         * 
          * @return a method lookup String
          */
         private String buildMethodLookup(String methodName, int paramCount) {
@@ -348,7 +350,7 @@ public class CmsShell {
         }
 
         /**
-         * Initilizes the map of accessible methods.<p>
+         * Initializes the map of accessible methods.<p>
          */
         private void initShellMethods() {
 
@@ -462,7 +464,7 @@ public class CmsShell {
         try {
             // first initialize runlevel 1 
             m_opencms = OpenCmsCore.getInstance();
-            // Externalisation: get Locale: will be the System default since no CmsObject is up  before 
+            // Externalization: get Locale: will be the System default since no CmsObject is up  before 
             // runlevel 2
             Locale locale = getLocale();
             m_messages = Messages.get().getBundle(locale);
@@ -483,7 +485,7 @@ public class CmsShell {
             }
             System.out.println(Messages.get().getBundle(locale).key(Messages.GUI_SHELL_WEB_INF_PATH_1, webInfPath));
             // set the path to the WEB-INF folder (the 2nd and 3rd parameters are just reasonable dummies)
-            m_opencms.getSystemInfo().init(webInfPath, servletMapping, null, defaultWebAppName);
+            m_opencms.getSystemInfo().init(webInfPath, servletMapping, null, defaultWebAppName, null);
 
             // now read the configuration properties
             String propertyPath = m_opencms.getSystemInfo().getConfigurationFileRfsPath();
@@ -515,7 +517,7 @@ public class CmsShell {
 
             m_commandObjects = new ArrayList();
             if (m_additionaShellCommands != null) {
-                // get all shell callable methods from the the additionsl shell command object
+                // get all shell callable methods from the additional shell command object
                 m_commandObjects.add(new CmsCommandObject(m_additionaShellCommands));
             }
             // get all shell callable methods from the CmsShellCommands
@@ -612,7 +614,7 @@ public class CmsShell {
     }
 
     /**
-     * Private internal helper for localisation to the current user's locale 
+     * Private internal helper for localization to the current user's locale 
      * within OpenCms. <p>
      * 
      * @return the current user's <code>Locale</code>.
@@ -722,11 +724,11 @@ public class CmsShell {
     /**
      * Initializes the internal <code>CmsWorkplaceSettings</code> that contain (amongst other 
      * information) important information additional information about the current user 
-     * (an instance of {@link CmsUserSettings}). <p>
+     * (an instance of {@link CmsUserSettings}).<p>
      * 
      * This step is performed within the <code>CmsShell</code> constructor directly after 
      * switching to run-level 2 and obtaining the <code>CmsObject</code> for the guest user as 
-     * well as when invoking the CmsShell command <code>login</code>.
+     * well as when invoking the CmsShell command <code>login</code>.<p>
      * 
      * @return the user settings for the current user.
      */
@@ -826,7 +828,7 @@ public class CmsShell {
                     }
                     break;
                 }
-                if ((line != null) && line.trim().startsWith("#")) {
+                if (line.trim().startsWith("#")) {
                     System.out.println(line);
                     continue;
                 }
