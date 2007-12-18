@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/ComparatorInverter.java,v $
- * Date   : $Date: 2007/10/05 16:41:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/12/18 13:04:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,12 @@
 package org.opencms.file.collectors;
 
 import java.util.Comparator;
-import java.util.SortedSet;
 
 /**
  * Wrapper around a comparator that inverts comparison results which may e.g. be 
  * used to invert sort orders. <p>
  * 
- * This is used to create <code>{@link SortedSet}</code> instances that may 
+ * This is used to create <code>{@link java.util.SortedSet}</code> instances that may 
  * sort in different order (ascending vs. descending).<p>
  * 
  * <table border="1">
