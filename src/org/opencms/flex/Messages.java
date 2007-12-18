@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:10 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2007/12/18 12:11:35 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,11 +39,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Thomas Weckert 
  *   
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.flex.messages";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_COOKIE_0 = "ERR_ADD_COOKIE_0";
@@ -67,7 +70,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_FLEXREQUESTDISPATCHER_VFS_ACCESS_EXCEPTION_0 = "ERR_FLEXREQUESTDISPATCHER_VFS_ACCESS_EXCEPTION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_HEADER_IFMODIFIEDSINCE_FORMAT_3 = "ERR_HEADER_IFMODIFIEDSINCE_FORMAT_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_FLEXCACHE_CREATED_2 = "INIT_FLEXCACHE_CREATED_2";
+
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXCACHE_ADD_ENTRY_1 = "LOG_FLEXCACHE_ADD_ENTRY_1";
@@ -229,10 +238,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_FLEXRESPONSE_PARSE_ERROR_IN_CACHE_KEY_2 = "LOG_FLEXRESPONSE_PARSE_ERROR_IN_CACHE_KEY_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_FLEXRESPONSE_SENDREDIRECT_1 = "LOG_FLEXRESPONSE_SENDREDIRECT_1";
+    public static final String LOG_FLEXRESPONSE_REDIRECTWARNING_3 = "LOG_FLEXRESPONSE_REDIRECTWARNING_3";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_FLEXRESPONSE_REDIRECTWARNING_3 = "LOG_FLEXRESPONSE_REDIRECTWARNING_3";
+    public static final String LOG_FLEXRESPONSE_SENDREDIRECT_1 = "LOG_FLEXRESPONSE_SENDREDIRECT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXRESPONSE_SETTING_CONTENTTYPE_1 = "LOG_FLEXRESPONSE_SETTING_CONTENTTYPE_1";
@@ -248,12 +257,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1 = "LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1";
-
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.flex.messages";
-
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>

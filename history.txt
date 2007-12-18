@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/12/07 09:56:50 $
- * Version: $Revision: 1.952 $
+ * Date   : $Date: 2007/12/18 12:11:35 $
+ * Version: $Revision: 1.953 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ OpenCms 7.0.4 - xxx, 2008
 ! Added support for servlet container Resin 3
 ! Added support for servlet container Websphere 6
 - Improved support for servlet container Weblogic 9 (no servlet options needed anymore)
+* Fixed issue with http 500 error if clients send If-Modified-Since date header in wrong format. 
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation

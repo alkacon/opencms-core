@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2007/09/25 10:52:16 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2007/12/18 12:11:35 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -266,9 +266,24 @@ public class CmsFlexController {
     public static boolean isNotModifiedSince(HttpServletRequest req, long dateLastModified) {
 
         // check if the request contains a last modified header
-        long lastModifiedHeader = req.getDateHeader(CmsRequestUtil.HEADER_IF_MODIFIED_SINCE);
-        // if last modified header is set (> -1), compare it to the requested resource                           
-        return ((lastModifiedHeader > -1) && (((dateLastModified / 1000) * 1000) == lastModifiedHeader));
+        try {
+            long lastModifiedHeader = req.getDateHeader(CmsRequestUtil.HEADER_IF_MODIFIED_SINCE);
+            // if last modified header is set (> -1), compare it to the requested resource                           
+            return ((lastModifiedHeader > -1) && (((dateLastModified / 1000) * 1000) == lastModifiedHeader));
+        } catch (Exception ex) {
+            // some clients (e.g. User-Agent: BlackBerry7290/4.1.0 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/111)
+            // send an invalid "If-Modified-Since" header (e.g. in german locale) 
+            // which breaks with http://www.w3.org/Protocols/rfc2616/rfc2616-sec3.html
+            // this has to be caught because the subsequent request for the 500 error handler 
+            // would run into the same exception. 
+            LOG.warn(Messages.get().getBundle().key(
+                Messages.ERR_HEADER_IFMODIFIEDSINCE_FORMAT_3,
+                new Object[] {
+                    CmsRequestUtil.HEADER_IF_MODIFIED_SINCE,
+                    req.getHeader(CmsRequestUtil.HEADER_USER_AGENT),
+                    req.getHeader(CmsRequestUtil.HEADER_IF_MODIFIED_SINCE)}));
+        }
+        return false;
     }
 
     /**
