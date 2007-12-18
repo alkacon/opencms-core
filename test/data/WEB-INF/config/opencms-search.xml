@@ -129,6 +129,18 @@
 					<resourcetype>xmlpage</resourcetype>
 				</resourcetypes>
 			</documenttype>	
+			<documenttype>
+				<name>openoffice</name>
+				<class>org.opencms.search.documents.CmsDocumentOpenOffice</class>
+				<mimetypes>
+					<mimetype>application/vnd.oasis.opendocument.text</mimetype>
+					<mimetype>application/vnd.oasis.opendocument.spreadsheet</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>
 		</documenttypes>
 		<analyzers>
 			<analyzer>

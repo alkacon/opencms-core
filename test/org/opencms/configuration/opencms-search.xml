@@ -5,8 +5,8 @@
 	<search>
 		<directory>index</directory>
 		<timeout>60000</timeout>
-		<forceunlock>onlyfull</forceunlock>			
-		<excerpt>1024</excerpt>
+		<forceunlock>onlyfull</forceunlock>		
+		<excerpt>1024</excerpt>	
 		<extractionCacheMaxAge>672.0</extractionCacheMaxAge>
 		<highlighter>org.opencms.search.documents.CmsTermHighlighterHtml</highlighter>
 		<documenttypes>		
@@ -17,7 +17,7 @@
 				<resourcetypes>
 					<resourcetype>*</resourcetype>
 				</resourcetypes>
-			</documenttype>		
+			</documenttype>	
 			<documenttype>
 				<name>html</name>
 				<class>org.opencms.search.documents.CmsDocumentHtml</class>
@@ -89,6 +89,18 @@
 				</resourcetypes>
 			</documenttype>
 			<documenttype>
+				<name>rtf</name>
+				<class>org.opencms.search.documents.CmsDocumentRtf</class>
+				<mimetypes>
+					<mimetype>text/rtf</mimetype>
+					<mimetype>application/rtf</mimetype>
+				</mimetypes>
+				<resourcetypes>
+					<resourcetype>binary</resourcetype>
+					<resourcetype>plain</resourcetype>
+				</resourcetypes>
+			</documenttype>		
+			<documenttype>
 				<name>text</name>
 				<class>org.opencms.search.documents.CmsDocumentPlainText</class>
 				<mimetypes>
@@ -118,65 +130,57 @@
 				</resourcetypes>
 			</documenttype>	
 			<documenttype>
-				<name>rtf</name>
-				<class>org.opencms.search.documents.CmsDocumentRtf</class>
+				<name>openoffice</name>
+				<class>org.opencms.search.documents.CmsDocumentOpenOffice</class>
 				<mimetypes>
-					<mimetype>application/rtf</mimetype>
+					<mimetype>application/vnd.oasis.opendocument.text</mimetype>
+					<mimetype>application/vnd.oasis.opendocument.spreadsheet</mimetype>
 				</mimetypes>
 				<resourcetypes>
 					<resourcetype>binary</resourcetype>
 					<resourcetype>plain</resourcetype>
 				</resourcetypes>
-			</documenttype>					
+			</documenttype>
 		</documenttypes>
 		<analyzers>
 			<analyzer>
-                <class>org.apache.lucene.analysis.de.GermanAnalyzer</class>
-                <locale>de</locale>
-            </analyzer>
-            <analyzer>
-                <class>org.apache.lucene.analysis.standard.StandardAnalyzer</class>
-                <locale>en</locale>
-            </analyzer>
-            <analyzer>
+				<class>org.apache.lucene.analysis.de.GermanAnalyzer</class>
+				<locale>de</locale>
+			</analyzer>
+			<analyzer>
+				<class>org.apache.lucene.analysis.standard.StandardAnalyzer</class>
+				<locale>en</locale>
+			</analyzer>
+			<analyzer>
                 <class>org.apache.lucene.analysis.fr.FrenchAnalyzer</class>
                 <locale>fr</locale>
-            </analyzer>
-            <analyzer>
-                <class>org.apache.lucene.analysis.snowball.SnowballAnalyzer</class>
-                <stemmer>Italian</stemmer>
-                <locale>it</locale>
-            </analyzer>            
+			</analyzer>
+			<analyzer>
+				<class>org.apache.lucene.analysis.snowball.SnowballAnalyzer</class>
+				<stemmer>Italian</stemmer>
+				<locale>it</locale>
+			</analyzer>
 		</analyzers>
 		<indexes>
 			<index>
 				<name>Online project (VFS)</name>
-				<rebuild>auto</rebuild>
+				<rebuild>manual</rebuild>
 				<project>Online</project>
 				<locale>en</locale>			
-				<configuration>standard</configuration>
 				<sources>
 					<source>source1</source>
 				</sources>		
 			</index>
 			<index>
 				<name>Offline project (VFS)</name>
-				<rebuild>auto</rebuild>
+				<rebuild>manual</rebuild>
 				<project>Offline</project>
-				<locale>en</locale>			
+				<locale>en</locale>		
+				<configuration>standard</configuration>	
 				<sources>
 					<source>source1</source>
 				</sources>		
-			</index>	
-			<index>
-				<name>System folder</name>
-				<rebuild>auto</rebuild>
-				<project>Online</project>
-				<locale>en</locale>			
-				<sources>
-					<source>source2</source>
-				</sources>		
-			</index>	
+			</index>
 		</indexes>
 		<indexsources>				
 			<indexsource>
@@ -192,45 +196,27 @@
 	                <name>text</name>
 	                <name>pdf</name>
 	                <name>rtf</name>
+	                <name>html</name>
 	                <name>msword</name>
 	                <name>msexcel</name>
 	                <name>mspowerpoint</name>
 	                <name>image</name>
-	                <name>generic</name>				
+	                <name>generic</name>
 				</documenttypes-indexed>				
 			</indexsource>
-			<indexsource>
-				<name>source2</name>
-				<indexer class="org.opencms.search.CmsVfsIndexer" />
-				<resources>
-					<resource>/system/</resource>
-				</resources>		
-				<documenttypes-indexed>
-	                <name>xmlpage</name>
-	                <name>page</name>
-	                <name>text</name>
-	                <name>jsp</name>
-	                <name>generic</name>
-				</documenttypes-indexed>
-			</indexsource>	
-		</indexsources>		
+		</indexsources>	
 		<fieldconfigurations>
 			<fieldconfiguration>
-				<name>other</name>
-				<description>other</description>
+				<name>standard</name>
+				<description>The standard OpenCms 7.0 search index field configuration.</description>
 				<fields>
 					<field name="content" store="true" index="true" excerpt="true">
-						<mapping type="content" default="default content value" />
+						<mapping type="content" />
 					</field>	
-					<field name="content-1" store="true" index="false">
-						<mapping type="item">myElementName</mapping>
-						<mapping type="item">/my[1]/xpath[1]</mapping>
-						<mapping type="property-search">myProperty</mapping>
-					</field>							
 					<field name="title-key" store="true" index="untokenized" boost="0.0">
-						<mapping type="property" default="some title">Title</mapping>
+						<mapping type="property">Title</mapping>
 					</field>	
-					<field name="title" store="false" index="true" default="no title">
+					<field name="title" store="false" index="true">
 						<mapping type="property">Title</mapping>
 					</field>	
 					<field name="keywords" store="true" index="true">
@@ -243,35 +229,17 @@
 						<mapping type="property">Title</mapping>
 						<mapping type="property">Keywords</mapping>
 						<mapping type="property">Description</mapping>
-					</field>		
-				</fields>
-			</fieldconfiguration>
-			<fieldconfiguration>
-				<name>standard</name>
-				<description>The standard OpenCms 7.0 search index field configuration.</description>
-				<fields>
-					<field name="content" display="%(key.field.content)" store="true" index="true" excerpt="true">
-						<mapping type="content" />
 					</field>	
-					<field name="title-key" display="-" store="true" index="untokenized" boost="0.0">
-						<mapping type="property">Title</mapping>
+					<field name="special" store="true" index="true">	
+						<mapping type="item">special</mapping>
+						<mapping type="item">Teaser[1]</mapping>
+						<mapping type="item">Teaser[2]</mapping>
+						<mapping type="item">Teaser[3]</mapping>
+						<mapping type="property">NavText</mapping>
+						<mapping type="property-search">search.special</mapping>
 					</field>	
-					<field name="title" display="%(key.field.title)" store="false" index="true">
-						<mapping type="property">Title</mapping>
-					</field>	
-					<field name="keywords" display="%(key.field.keywords)" store="true" index="true">
-						<mapping type="property">Keywords</mapping>
-					</field>	
-					<field name="description" display="%(key.field.description)" store="true" index="true">
-						<mapping type="property">Description</mapping>
-					</field>					
-					<field name="meta" display="%(key.field.meta)" store="false" index="true">
-						<mapping type="property">Title</mapping>
-						<mapping type="property">Keywords</mapping>
-						<mapping type="property">Description</mapping>
-					</field>			
 				</fields>
 			</fieldconfiguration>			
-		</fieldconfigurations>		
+		</fieldconfigurations>			
 	</search>
 </opencms>
