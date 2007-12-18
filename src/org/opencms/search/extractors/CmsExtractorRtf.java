@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorRtf.java,v $
- * Date   : $Date: 2007/08/13 16:29:51 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2007/12/18 13:05:59 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,11 @@ import javax.swing.text.Document;
 import javax.swing.text.rtf.RTFEditorKit;
 
 /**
- * Extracts the text form a RTF  document.<p>
+ * Extracts the text from a RTF  document.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */

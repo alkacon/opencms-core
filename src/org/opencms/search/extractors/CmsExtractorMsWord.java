@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsWord.java,v $
- * Date   : $Date: 2007/08/13 16:29:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2007/12/18 13:05:59 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,11 +38,11 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.textmining.text.extraction.WordExtractor;
 
 /**
- * Extracts the text form an MS Word document.<p>
+ * Extracts the text from an MS Word document.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,7 +74,7 @@ public final class CmsExtractorMsWord extends A_CmsTextExtractorMsOfficeBase {
      */
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
-        // first extract the text using the text actraction libary
+        // first extract the text using the text abstraction libary
         WordExtractor wordExtractor = new WordExtractor();
         String rawContent = wordExtractor.extractText(getStreamCopy(in));
         rawContent = removeControlChars(rawContent);
