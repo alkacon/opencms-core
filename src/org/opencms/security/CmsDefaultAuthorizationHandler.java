@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultAuthorizationHandler.java,v $
- * Date   : $Date: 2007/08/13 16:29:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/12/19 13:33:11 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.4 
  */
@@ -63,9 +63,9 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
      */
     public CmsObject initCmsObject(HttpServletRequest request) {
 
-        // check if "basic" authentification data is provided
+        // check if "basic" authorization data is provided
         CmsObject cms = checkBasicAuthorization(request);
-        // basic authorization successfull?
+        // basic authorization successful?
         if (cms != null) {
             try {
                 // register the session into OpenCms and       
@@ -113,8 +113,8 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
             CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             // no user identified from the session and basic authentication is enabled
             String auth = req.getHeader(HEADER_AUTHORIZATION);
-            if (auth == null || !auth.toUpperCase().startsWith(AUTHORIZATION_BASIC_PREFIX)) {
-                // no authentification data is available
+            if ((auth == null) || !auth.toUpperCase().startsWith(AUTHORIZATION_BASIC_PREFIX)) {
+                // no authorization data is available
                 return cms;
             }
             // get encoded user and password, following after "BASIC "
@@ -131,12 +131,12 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
             }
             // authentication in the DB
             cms.loginUser(username, password);
-            
-            // authentification was successful create a session
+
+            // authorization was successful create a session
             req.getSession(true);
             return cms;
         } catch (CmsException e) {
-            // authentification failed
+            // authorization failed
             return null;
         }
     }
