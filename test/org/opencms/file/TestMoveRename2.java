@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename2.java,v $
- * Date   : $Date: 2007/09/07 12:02:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/12/19 13:11:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
+import java.util.Iterator;
 import java.util.Locale;
 
 import junit.extensions.TestSetup;
@@ -59,7 +60,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestMoveRename2 extends OpenCmsTestCase {
 
@@ -95,6 +96,7 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         suite.addTest(new TestMoveRename2("testPublishMovedDeletedFolderWithMovedResource"));
         suite.addTest(new TestMoveRename2("testMoveFolderWithPermissionCheck"));
         suite.addTest(new TestMoveRename2("testMoveFolderWithInvisibleResources"));
+        suite.addTest(new TestMoveRename2("testMoveBigFolder"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -110,6 +112,31 @@ public class TestMoveRename2 extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Tests to move a big folder.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMoveBigFolder() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to move a big folder");
+
+        // Creating paths
+        cms.getRequestContext().setSiteRoot("");
+        String src = "/sites/default/";
+        String dest = "/sites/newname/";
+        cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
+        cms.lockResource(src);
+        cms.moveResource(src, dest);
+
+        Iterator itResources = cms.readResources(dest, CmsResourceFilter.ALL, true).iterator();
+        while (itResources.hasNext()) {
+            CmsResource res = (CmsResource)itResources.next();
+            cms.readResource(res.getRootPath());
+        }
     }
 
     /**
