@@ -499,6 +499,15 @@
             <rtexprvalue>true</rtexprvalue>            
         </attribute>                         
     </tag>    
+    
+    <tag>
+        <description>
+            This tag can be used to write JSP code from a JSP to files in the static export.
+        </description>
+        <name>export</name>
+        <tag-class>org.opencms.jsp.CmsJspTagExport</tag-class>
+        <body-content>tagdependent</body-content>  
+    </tag>    
 
     <function>
         <description>
