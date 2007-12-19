@@ -127,24 +127,7 @@
 				</property>
 			</properties>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/admin</destination>

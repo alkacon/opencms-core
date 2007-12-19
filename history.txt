@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/12/19 16:54:00 $
- * Version: $Revision: 1.956 $
+ * Date   : $Date: 2007/12/19 16:57:49 $
+ * Version: $Revision: 1.957 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with the history list after an update with already deleted users 
 * Fixed issue with HTTP 500 error if clients send If-Modified-Since date header in wrong format 
 - Improved support for servlet container Weblogic 9 (no servlet options needed anymore)
+- Improved default permission settings
 * Fixed issue with role caching, ie. users could administrate OUs without having the required role
 ! Added new multi language static export feature
 ! Added option to organizational units to be hidden from the login form
