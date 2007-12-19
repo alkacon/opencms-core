@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaEngine.java,v $
- * Date   : $Date: 2007/08/13 16:29:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2007/12/19 16:51:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Management System
+ * the Open Source Content Mananagement System
  *
- * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2004 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -28,7 +28,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
 package org.opencms.frontend.templateone.form;
 
 import org.opencms.main.OpenCms;
@@ -37,19 +36,25 @@ import java.awt.image.ImageFilter;
 import java.util.Locale;
 
 import com.jhlabs.image.WaterFilter;
+import com.octo.captcha.CaptchaFactory;
 import com.octo.captcha.component.image.backgroundgenerator.BackgroundGenerator;
 import com.octo.captcha.component.image.backgroundgenerator.FileReaderRandomBackgroundGenerator;
 import com.octo.captcha.component.image.backgroundgenerator.UniColorBackgroundGenerator;
+import com.octo.captcha.component.image.color.ColorGenerator;
+import com.octo.captcha.component.image.color.SingleColorGenerator;
 import com.octo.captcha.component.image.deformation.ImageDeformation;
 import com.octo.captcha.component.image.deformation.ImageDeformationByFilters;
 import com.octo.captcha.component.image.fontgenerator.FontGenerator;
 import com.octo.captcha.component.image.fontgenerator.RandomFontGenerator;
-import com.octo.captcha.component.image.textpaster.BaffleRandomTextPaster;
+import com.octo.captcha.component.image.textpaster.DecoratedRandomTextPaster;
 import com.octo.captcha.component.image.textpaster.TextPaster;
+import com.octo.captcha.component.image.textpaster.textdecorator.BaffleTextDecorator;
+import com.octo.captcha.component.image.textpaster.textdecorator.TextDecorator;
 import com.octo.captcha.component.image.wordtoimage.DeformedComposedWordToImage;
 import com.octo.captcha.component.image.wordtoimage.WordToImage;
-import com.octo.captcha.component.wordgenerator.RandomWordGenerator;
-import com.octo.captcha.component.wordgenerator.WordGenerator;
+import com.octo.captcha.component.word.wordgenerator.RandomWordGenerator;
+import com.octo.captcha.component.word.wordgenerator.WordGenerator;
+import com.octo.captcha.engine.CaptchaEngineException;
 import com.octo.captcha.engine.image.ImageCaptchaEngine;
 import com.octo.captcha.image.ImageCaptcha;
 import com.octo.captcha.image.ImageCaptchaFactory;
@@ -63,7 +68,7 @@ import com.octo.captcha.image.gimpy.GimpyFactory;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsCaptchaEngine extends ImageCaptchaEngine {
 
@@ -136,13 +141,14 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
         // WordGenerator dictionary = new ComposeDictionaryWordGenerator(new
         // FileDictionnary("toddlist"));
         WordGenerator randomWords = new RandomWordGenerator(m_settings.getCharacterPool());
-
-        TextPaster paster = new BaffleRandomTextPaster(
-            new Integer(m_settings.getMinPhraseLength()),
-            new Integer(m_settings.getMaxPhraseLength()),
-            m_settings.getFontColor(),
+        // creates holes into image
+        BaffleTextDecorator textDecorator = new BaffleTextDecorator(
             m_settings.getHolesPerGlyph(),
-            m_settings.getBackgroundColor());
+            m_settings.getFontColor());
+        ColorGenerator colorGenerator = new SingleColorGenerator(m_settings.getFontColor());
+
+        TextPaster paster = new DecoratedRandomTextPaster(new Integer(m_settings.getMinPhraseLength()), new Integer(
+            m_settings.getMaxPhraseLength()), colorGenerator, new TextDecorator[] {textDecorator});
 
         BackgroundGenerator background;
         if (m_settings.isUseBackgroundImage()) {
@@ -167,6 +173,33 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
             postDeformation);
 
         m_factory = new GimpyFactory(randomWords, wordToImage);
+    }
+
+    /**
+     * Returns the hardcoded factory (array of length 1) that is used.
+     * <p>
+     * 
+     * @return the hardcoded factory (array of length 1) that is used
+     * 
+     * @see com.octo.captcha.engine.CaptchaEngine#getFactories()
+     */
+    public CaptchaFactory[] getFactories() {
+
+        return new CaptchaFactory[]{m_factory};
+    }
+
+    /**
+     * This does nothing. <p>
+     * 
+     * A hardcored factory for deformation is used. 
+     * <p>
+     * 
+     * @see com.octo.captcha.engine.CaptchaEngine#setFactories(com.octo.captcha.CaptchaFactory[])
+     */
+    public void setFactories(CaptchaFactory[] arg0) throws CaptchaEngineException {
+
+        // TODO Auto-generated method stub
+
     }
 
 }

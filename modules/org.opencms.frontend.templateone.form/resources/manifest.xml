@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains online form functionality for the OpenCms frontend template one.</p>
 <p>This module can easily be used to create online input forms.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.2</version>
+		<version>7.0.4</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -552,23 +552,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.templateone.form/lib/ehcache-1.0.jar</source>
-			<destination>system/modules/org.opencms.frontend.templateone.form/lib/ehcache-1.0.jar</destination>
-			<type>binary</type>
-			<uuidstructure>a418d692-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>3667e21b-f850-11d9-9e77-c7beef112ba5</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.frontend.templateone.form/lib/jcaptcha-all-1.0-RC2.0.1.jar</source>
-			<destination>system/modules/org.opencms.frontend.templateone.form/lib/jcaptcha-all-1.0-RC2.0.1.jar</destination>
+			<source>system/modules/org.opencms.frontend.templateone.form/lib/jcaptcha-all-1.0-RC6.jar</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/lib/jcaptcha-all-1.0-RC6.jar</destination>
 			<type>binary</type>
 			<uuidstructure>a41b4794-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>3677245e-f850-11d9-9e77-c7beef112ba5</uuidresource>
