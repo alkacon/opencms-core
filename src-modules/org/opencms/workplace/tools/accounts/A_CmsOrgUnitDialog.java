@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitDialog.java,v $
- * Date   : $Date: 2007/11/19 14:40:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2007/12/19 13:07:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6
  */
@@ -227,6 +227,6 @@ public abstract class A_CmsOrgUnitDialog extends CmsWidgetDialog {
      */
     protected boolean isNewOrgUnit() {
 
-        return getCurrentToolPath().equals("/accounts/orgunit/mgmt/new");
+        return getCurrentToolPath().endsWith("/orgunit/mgmt/new");
     }
 }

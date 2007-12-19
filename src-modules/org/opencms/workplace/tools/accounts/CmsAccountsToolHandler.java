@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2007/11/19 14:40:52 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2007/12/19 13:07:57 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceUserInfoManager;
@@ -55,62 +56,62 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
 
+    /** Visibility parameter value constant. */
+    protected static final String VISIBILITY_ALL = "all";
+
     /** Account manager file path constant. */
-    private static final String ACCMAN_FILE = "/system/workplace/admin/accounts/account_managers.jsp";
+    private static final String ACCMAN_FILE = "account_managers.jsp";
 
     /** Additional info file path constant. */
-    private static final String ADDINFO_FILE = "/system/workplace/admin/accounts/user_allinfo.jsp";
+    private static final String ADDINFO_FILE = "user_allinfo.jsp";
 
     /** Assign users file path constant. */
-    private static final String ASSIGN_FILE = "/system/workplace/admin/accounts/user_assign.jsp";
+    private static final String ASSIGN_FILE = "user_assign.jsp";
 
     /** Delete file path constant. */
-    private static final String DELETE_FILE = "/system/workplace/admin/accounts/unit_delete.jsp";
+    private static final String DELETE_FILE = "unit_delete.jsp";
 
     /** Edit file path constant. */
-    private static final String EDIT_FILE = "/system/workplace/admin/accounts/unit_edit.jsp";
+    private static final String EDIT_FILE = "unit_edit.jsp";
 
     /** Group users file path constant. */
-    private static final String GROUP_USERS_FILE = "/system/workplace/admin/accounts/group_users.jsp";
+    private static final String GROUP_USERS_FILE = "group_users.jsp";
 
     /** Edit group users file path constant. */
-    private static final String GROUPUSERS_FILE = "/system/workplace/admin/accounts/group_users.jsp";
+    private static final String GROUPUSERS_FILE = "group_users.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAccountsToolHandler.class);
 
     /** New file path constant. */
-    private static final String NEW_FILE = "/system/workplace/admin/accounts/unit_new.jsp";
+    private static final String NEW_FILE = "unit_new.jsp";
 
     /** Organizational unit roles file path constant. */
-    private static final String OUROLES_FILE = "/system/workplace/admin/accounts/roles_list.jsp";
+    private static final String OUROLES_FILE = "roles_list.jsp";
 
     /** Overview file path constant. */
-    private static final String OVERVIEW_FILE = "/system/workplace/admin/accounts/unit_overview.jsp";
+    private static final String OVERVIEW_FILE = "unit_overview.jsp";
 
     /** Visibility flag module parameter name. */
     private static final String PARAM_VISIBILITY_FLAG = "visibility";
 
     /** Parent file path constant. */
-    private static final String PARENT_FILE = "/system/workplace/admin/accounts/unit_parent.jsp";
+    private static final String PARENT_FILE = "unit_parent.jsp";
 
     /** Role users edit file path constant. */
-    private static final String ROLEUSERS_EDIT_FILE = "/system/workplace/admin/accounts/role_users.jsp";
+    private static final String ROLEUSERS_EDIT_FILE = "role_users.jsp";
 
     /** Switch user file path constant. */
-    private static final String SWITCHUSER_FILE = "/system/workplace/admin/accounts/user_switch.jsp";
+    private static final String SWITCHUSER_FILE = "user_switch.jsp";
 
     /** User roles file path constant. */
-    private static final String USERROLE_FILE = "/system/workplace/admin/accounts/user_role.jsp";
-
-    /** Visibility parameter value constant. */
-    private static final String VISIBILITY_ALL = "all";
+    private static final String USERROLE_FILE = "user_role.jsp";
 
     /** Visibility parameter value constant. */
     private static final String VISIBILITY_NONE = "none";
@@ -124,10 +125,10 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     public String getDisabledHelpText() {
 
         if (super.getDisabledHelpText().equals(DEFAULT_DISABLED_HELPTEXT)) {
-            if (getLink().equals(GROUPUSERS_FILE)) {
+            if (getLink().equals(getPath(GROUPUSERS_FILE))) {
                 return "${key." + Messages.GUI_VIRTUAL_GROUP_DISABLED_EDITION_HELP_0 + "}";
             }
-            if (getLink().equals(ROLEUSERS_EDIT_FILE)) {
+            if (getLink().equals(getPath(ROLEUSERS_EDIT_FILE))) {
                 return "${key." + Messages.GUI_ROLEUSERS_EDIT_DISABLED_HELP_0 + "}";
             }
             return "${key." + Messages.GUI_ORGUNIT_ADMIN_TOOL_DISABLED_DELETE_HELP_0 + "}";
@@ -140,8 +141,10 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
      */
     public boolean isEnabled(CmsWorkplace wp) {
 
-        if (getLink().equals(GROUPUSERS_FILE)) {
-            String groupId = wp.getJsp().getRequest().getParameter(A_CmsEditGroupDialog.PARAM_GROUPID);
+        if (getLink().equals(getPath(GROUPUSERS_FILE))) {
+            String groupId = CmsRequestUtil.getNotEmptyDecodedParameter(
+                wp.getJsp().getRequest(),
+                A_CmsEditGroupDialog.PARAM_GROUPID);
             try {
                 return !wp.getCms().readGroup(new CmsUUID(groupId)).isVirtual();
             } catch (Exception e) {
@@ -154,7 +157,9 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
         }
 
         if (getLink().equals(DELETE_FILE)) {
-            String ouFqn = wp.getJsp().getRequest().getParameter(A_CmsOrgUnitDialog.PARAM_OUFQN);
+            String ouFqn = CmsRequestUtil.getNotEmptyDecodedParameter(
+                wp.getJsp().getRequest(),
+                A_CmsOrgUnitDialog.PARAM_OUFQN);
             if (ouFqn == null) {
                 ouFqn = wp.getCms().getRequestContext().getOuFqn();
             }
@@ -180,8 +185,10 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             }
         }
 
-        if (getLink().equals(ROLEUSERS_EDIT_FILE)) {
-            String roleName = wp.getJsp().getRequest().getParameter(CmsRolesList.PARAM_ROLE);
+        if (getLink().equals(getPath(ROLEUSERS_EDIT_FILE))) {
+            String roleName = CmsRequestUtil.getNotEmptyDecodedParameter(
+                wp.getJsp().getRequest(),
+                CmsRolesList.PARAM_ROLE);
             if (!OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.valueOfGroupName(roleName))) {
                 return false;
             }
@@ -199,7 +206,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             return false;
         }
 
-        if (getLink().equals(ADDINFO_FILE)) {
+        if (getLink().equals(getPath(ADDINFO_FILE))) {
             CmsWorkplaceUserInfoManager manager = OpenCms.getWorkplaceManager().getUserInfoManager();
             if ((manager == null) || (manager.getBlocks() == null) || manager.getBlocks().isEmpty()) {
                 return false;
@@ -209,7 +216,9 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
         if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)) {
             return false;
         }
-        String ouFqn = wp.getJsp().getRequest().getParameter(A_CmsOrgUnitDialog.PARAM_OUFQN);
+        String ouFqn = CmsRequestUtil.getNotEmptyDecodedParameter(
+            wp.getJsp().getRequest(),
+            A_CmsOrgUnitDialog.PARAM_OUFQN);
         if (ouFqn == null) {
             ouFqn = cms.getRequestContext().getOuFqn();
         }
@@ -223,33 +232,39 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             }
         }
 
-        if (getLink().equals(OVERVIEW_FILE)) {
+        if (getLink().equals(getPath(OVERVIEW_FILE))) {
             if (parentOu != null) {
                 return !OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(parentOu));
             }
             return true;
-        } else if (getLink().equals(EDIT_FILE)) {
+        } else if (getLink().equals(getPath(EDIT_FILE))) {
             if (parentOu != null) {
                 return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
                     cms,
                     CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
+            } else {
+                return false;
             }
-        } else if (getLink().equals(NEW_FILE)) {
+        } else if (getLink().equals(getPath(NEW_FILE))) {
             if (m_webuserOu) {
                 return false;
             }
             return OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR);
-        } else if (getLink().equals(PARENT_FILE)) {
+        } else if (getLink().equals(getPath(PARENT_FILE))) {
             if (parentOu != null) {
                 return OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(parentOu));
+            } else {
+                return false;
             }
-        } else if (getLink().equals(DELETE_FILE)) {
+        } else if (getLink().equals(getPath(DELETE_FILE))) {
             if (parentOu != null) {
                 return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
                     cms,
                     CmsRole.ADMINISTRATOR.forOrgUnit(parentOu)));
+            } else {
+                return false;
             }
-        } else if (getLink().equals(ASSIGN_FILE)) {
+        } else if (getLink().equals(getPath(ASSIGN_FILE))) {
             try {
                 List orgUnits = OpenCms.getRoleManager().getOrgUnitsForRole(
                     cms,
@@ -265,12 +280,14 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
-        } else if (getLink().equals(OUROLES_FILE)) {
+        } else if (getLink().equals(getPath(OUROLES_FILE))) {
             return !m_webuserOu;
-        } else if (getLink().equals(SWITCHUSER_FILE)
-            || getLink().equals(USERROLE_FILE)
-            || getLink().equals(GROUP_USERS_FILE)) {
-            String userId = wp.getJsp().getRequest().getParameter(A_CmsEditUserDialog.PARAM_USERID);
+        } else if (getLink().equals(getPath(SWITCHUSER_FILE))
+            || getLink().equals(getPath(USERROLE_FILE))
+            || getLink().equals(getPath(GROUP_USERS_FILE))) {
+            String userId = CmsRequestUtil.getNotEmptyDecodedParameter(
+                wp.getJsp().getRequest(),
+                A_CmsEditUserDialog.PARAM_USERID);
             try {
                 return !wp.getCms().readUser(new CmsUUID(userId)).isWebuser();
             } catch (Exception e) {
@@ -279,10 +296,22 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }
-        } else if (getLink().equals(ACCMAN_FILE)) {
+        } else if (getLink().equals(getPath(ACCMAN_FILE))) {
             return m_webuserOu;
         }
         return true;
+    }
+
+    /**
+     * Returns the path to the jsp.<p>
+     * 
+     * @param jspName the jsp name
+     * 
+     * @return the full path
+     */
+    protected String getPath(String jspName) {
+
+        return "/system/workplace/admin/accounts/" + jspName;
     }
 
     /**
@@ -290,7 +319,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
      * 
      * @return the visibility flag module parameter value
      */
-    private String getVisibilityFlag() {
+    protected String getVisibilityFlag() {
 
         CmsModule module = OpenCms.getModuleManager().getModule(this.getClass().getPackage().getName());
         if (module == null) {

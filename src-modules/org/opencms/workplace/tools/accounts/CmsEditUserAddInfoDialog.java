@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserAddInfoDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/12/19 13:12:22 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6
  */
@@ -191,12 +191,15 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
         }
 
         if (errors.isEmpty()) {
-            if (getCurrentToolPath().equals("/accounts/orgunit/users/edit/addinfo/all")) {
+            if (getCurrentToolPath().endsWith("/orgunit/users/edit/addinfo/all")) {
                 // set closelink
                 Map argMap = new HashMap();
                 argMap.put(A_CmsEditUserDialog.PARAM_USERID, m_user.getId());
                 argMap.put("oufqn", m_user.getOuFqn());
-                setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/accounts/orgunit/users/edit/", argMap));
+                setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getCurrentToolPath().substring(
+                    0,
+                    getCurrentToolPath().indexOf("/orgunit/users/edit/addinfo/all"))
+                    + "/orgunit/users/edit/", argMap));
             }
         }
 

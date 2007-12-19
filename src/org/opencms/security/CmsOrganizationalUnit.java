@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrganizationalUnit.java,v $
- * Date   : $Date: 2007/11/19 14:40:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2007/12/19 13:09:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,17 +45,17 @@ import java.util.Locale;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.5.6 
  */
 public class CmsOrganizationalUnit {
 
-    /** The flag constant to mark the organizational units as containing only webusers. */
-    public static final int FLAG_WEBUSERS = 8;
-
     /** The flag constant to hide the organizational units from the login form. */
     public static final int FLAG_HIDE_LOGIN = 1;
+
+    /** The flag constant to mark the organizational units as containing only webusers. */
+    public static final int FLAG_WEBUSERS = 8;
 
     /** The character used to separate each level in a fully qualified name. */
     public static final String SEPARATOR = "/";
@@ -133,7 +133,10 @@ public class CmsOrganizationalUnit {
 
         String parentFqn = getParentFqn(fqn);
         if (parentFqn != null) {
-            return fqn.substring(parentFqn.length());
+            fqn = fqn.substring(parentFqn.length());
+        }
+        if ((fqn != null) && fqn.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
+            fqn = fqn.substring(CmsOrganizationalUnit.SEPARATOR.length());
         }
         return fqn;
     }
@@ -312,16 +315,6 @@ public class CmsOrganizationalUnit {
     }
 
     /**
-     * Checks if this organizational unit has the "webusers" flag set.<p>
-     * 
-     * @return <code>true</code> if this organizational unit has the "webusers" flag set
-     */
-    public boolean hasFlagWebuser() {
-
-        return hasFlag(FLAG_WEBUSERS);
-    }
-
-    /**
      * Checks if this organizational unit has the "hide from login form" flag set.<p>
      * 
      * @return <code>true</code> if this organizational unit has the "hide from login form" flag set
@@ -329,6 +322,16 @@ public class CmsOrganizationalUnit {
     public boolean hasFlagHideLogin() {
 
         return hasFlag(FLAG_HIDE_LOGIN);
+    }
+
+    /**
+     * Checks if this organizational unit has the "webusers" flag set.<p>
+     * 
+     * @return <code>true</code> if this organizational unit has the "webusers" flag set
+     */
+    public boolean hasFlagWebuser() {
+
+        return hasFlag(FLAG_WEBUSERS);
     }
 
     /**
@@ -366,14 +369,6 @@ public class CmsOrganizationalUnit {
     }
 
     /**
-     * Sets the "webusers" flag.<p>
-     */
-    public void setFlagWebusers() {
-
-        addFlag(FLAG_WEBUSERS);
-    }
-
-    /**
      * Sets this organizational unit flags to the specified value.<p>
      *
      * The organizational unit flags are used to store special information about the 
@@ -385,6 +380,14 @@ public class CmsOrganizationalUnit {
     public void setFlags(int value) {
 
         m_flags = value;
+    }
+
+    /**
+     * Sets the "webusers" flag.<p>
+     */
+    public void setFlagWebusers() {
+
+        addFlag(FLAG_WEBUSERS);
     }
 
     /**

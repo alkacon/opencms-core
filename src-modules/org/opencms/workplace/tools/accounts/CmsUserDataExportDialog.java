@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataExportDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/12/19 13:07:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.7.1
  */
@@ -110,7 +110,8 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
         // key CmsUser uuid, value CmsUser object
         Map exportUsers = new HashMap();
         try {
-            if ((getGroups() == null || getGroups().size() < 1) && (getRoles() == null || getRoles().size() < 1)) {
+            if (((getGroups() == null) || (getGroups().size() < 1))
+                && ((getRoles() == null) || (getRoles().size() < 1))) {
                 exportUsers = getExportAllUsers(exportUsers);
             } else {
                 exportUsers = getExportUsersFromGroups(exportUsers);
@@ -220,7 +221,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     public Map getExportAllUsers(Map exportUsers) throws CmsException {
 
         List users = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
-        if (users != null && users.size() > 0) {
+        if ((users != null) && (users.size() > 0)) {
             Iterator itUsers = users.iterator();
             while (itUsers.hasNext()) {
                 CmsUser user = (CmsUser)itUsers.next();
@@ -242,7 +243,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     public Map getExportUsersFromGroups(Map exportUsers) throws CmsException {
 
         List groups = getGroups();
-        if (groups != null && groups.size() > 0) {
+        if ((groups != null) && (groups.size() > 0)) {
             Iterator itGroups = groups.iterator();
             while (itGroups.hasNext()) {
                 List groupUsers = getCms().getUsersOfGroup((String)itGroups.next());
@@ -268,7 +269,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     public Map getExportUsersFromRoles(Map exportUsers) throws CmsException {
 
         List roles = getRoles();
-        if (roles != null && roles.size() > 0) {
+        if ((roles != null) && (roles.size() > 0)) {
             Iterator itRoles = roles.iterator();
             while (itRoles.hasNext()) {
                 List roleUsers = OpenCms.getRoleManager().getUsersOfRole(
@@ -299,8 +300,8 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
         StringBuffer result = new StringBuffer(256);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramExportfile)) {
             result.append("javascript:window.open(\"");
-            result.append(getJsp().link("/system/workplace/admin/accounts/imexport_user_data/dodownload.jsp?"));
-            result.append("servletUrl=");
+            result.append(getJsp().link(getDownloadPath()));
+            result.append("?servletUrl=");
             result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp"));
             result.append("&filePath=").append(getParamExportfile());
             result.append("\", \"download\", \"width=300,height=130,left=100,top=100,menubar=no,status=no,toolbar=no\");");
@@ -398,6 +399,16 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
             new CmsGroupWidget(null, null, getParamOufqn())));
         addWidget(new CmsWidgetDialogParameter(this, "roles", PAGES[0], new CmsSelectWidget(getSelectRoles())));
 
+    }
+
+    /**
+     * Returns the path to the download jsp.<p>
+     * 
+     * @return the path to the download jsp
+     */
+    protected String getDownloadPath() {
+
+        return "/system/workplace/admin/accounts/imexport_user_data/dodownload.jsp";
     }
 
     /**

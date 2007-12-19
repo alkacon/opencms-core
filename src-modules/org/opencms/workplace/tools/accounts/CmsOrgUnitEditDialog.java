@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitEditDialog.java,v $
- * Date   : $Date: 2007/11/19 14:40:52 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2007/12/19 13:07:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6
  */
@@ -212,8 +212,6 @@ public class CmsOrgUnitEditDialog extends A_CmsOrgUnitDialog {
         addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "parentOuDesc", PAGES[0], new CmsDisplayWidget()));
 
         if (isNewOrgUnit()) {
-            //            addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "parentOu", PAGES[0], new CmsOrgUnitWidget(
-            //                CmsRole.ADMINISTRATOR)));
             addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "nologin", PAGES[0], new CmsCheckboxWidget()));
             addWidget(new CmsWidgetDialogParameter(m_orgUnitBean, "webusers", PAGES[0], new CmsCheckboxWidget()));
         } else {

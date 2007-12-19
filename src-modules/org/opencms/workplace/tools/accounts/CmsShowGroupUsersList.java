@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowGroupUsersList.java,v $
- * Date   : $Date: 2007/08/13 16:29:46 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2007/12/19 13:12:22 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,7 +133,10 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
         params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
 
         if (getParamListAction().equals(LIST_ACTION_EDIT)) {
-            getToolManager().jspForwardTool(this, "/accounts/orgunit/users/edit/user", params);
+            getToolManager().jspForwardTool(
+                this,
+                getCurrentToolPath().substring(0, getCurrentToolPath().indexOf('/', 2)) + "/orgunit/users/edit/user",
+                params);
         } else {
             throwListUnsupportedActionException();
         }
