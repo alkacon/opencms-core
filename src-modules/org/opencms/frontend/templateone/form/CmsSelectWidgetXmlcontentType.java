@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2007/10/25 08:53:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2007/12/19 16:52:50 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,20 @@
 
 package org.opencms.frontend.templateone.form;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.commons.logging.Log;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -46,6 +60,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.I_CmsMacroResolver;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.widgets.I_CmsWidget;
@@ -55,27 +70,11 @@ import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.apache.commons.logging.Log;
-
 /**
  * 
- * A select widget that recursively collects all {@link org.opencms.xml.content.CmsXmlContent}
- * resources of a given type (name) under a given path and creates select options that contain the
- * xmlcontents field value specified by a name (xpath) as display String and the xmlcontents path
- * (given) as the value.
+ * A select widget that recursively collects all {@link org.opencms.xml.content.CmsXmlContent} resources of a given type
+ * (name) under a given path and creates select options that contain the xmlcontents field value specified by a name
+ * (xpath) as display String and the xmlcontents path (given) as the value.
  * <p>
  * 
  * The configuration String has to be of the following form: <br>
@@ -93,17 +92,16 @@ import org.apache.commons.logging.Log;
  * is a String containing valid OpenCms macros or xpath expression in the form:
  * 
  * <pre>
- * &quot;You are viewing: ${property.Title} &quot;
+ * &quot;You are viewing: %(property.Title) &quot;
  * </pre>
  * 
  * or
  * 
  * <pre>
- * &quot;${xpath.Firstname} ${xpath.Lastname}, Nocakla inc.&quot;
+ * &quot;%(xpath.Firstname) %(xpath.Lastname), Nocakla inc.&quot;
  * </pre>
  * 
- * in which the xpath macros will be replaced with
- * {@link org.opencms.xml.A_CmsXmlDocument#getValue(String, Locale)}
+ * in which the xpath macros will be replaced with {@link org.opencms.xml.A_CmsXmlDocument#getValue(String, Locale)}
  * 
  * <pre>
  *    &lt;vfspath&gt;
@@ -128,19 +126,18 @@ import org.apache.commons.logging.Log;
  * <h3>Please note</h3>
  * <p>
  * <ul>
- * <li>The widget will not offer xmlcontents that are in a different locale than the current page
- * that displays it. <br>
- * Only if the "matching" xmlcontent has defined a language node for the locale that is set on the
- * page for this widget and the xpath expression to display is not empty, the xmlcontent will be
- * selectable. </li>
- * <li>If sortMacro is missing the values will be sorted alphabetically by their resolved display
- * option (from the displayOptionMacro).</li>
+ * <li>The widget will not offer xmlcontents that are in a different locale than the current page that displays it.
+ * <br>
+ * Only if the "matching" xmlcontent has defined a language node for the locale that is set on the page for this widget
+ * and the xpath expression to display is not empty, the xmlcontent will be selectable. </li>
+ * <li>If sortMacro is missing the values will be sorted alphabetically by their resolved display option (from the
+ * displayOptionMacro).</li>
  * </ul>
  * </p>
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.1.3
  * 
@@ -148,13 +145,12 @@ import org.apache.commons.logging.Log;
 public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
 
     /**
-     * A {@link CmsSelectWidgetOption} that is bundled with a corresponding resource that may be
-     * selected.
+     * A {@link CmsSelectWidgetOption} that is bundled with a corresponding resource that may be selected.
      * <p>
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.9 $
+     * @version $Revision: 1.10 $
      * 
      * @since 6.1.6
      * 
@@ -165,11 +161,12 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
         private CmsResource m_resource;
 
         /**
-         * Creates a non-default select option with the resource to select, the resource's name as
-         * the display text and no help text.
+         * Creates a non-default select option with the resource to select, the resource's name as the display text and
+         * no help text.
          * <p>
          * 
-         * @param resource The resource of this selection.
+         * @param resource
+         *            The resource of this selection.
          * 
          */
         public CmsResourceSelectWidgetOption(CmsResource resource) {
@@ -179,13 +176,15 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
         }
 
         /**
-         * Creates a select option with the resource to select, the resource's name as the display
-         * text and no help text that is potentially the default selection (argument isDefault).
+         * Creates a select option with the resource to select, the resource's name as the display text and no help text
+         * that is potentially the default selection (argument isDefault).
          * <p>
          * 
-         * @param resource The resource of this selection.
+         * @param resource
+         *            The resource of this selection.
          * 
-         * @param isDefault true, if this option is the default option (preselected.
+         * @param isDefault
+         *            true, if this option is the default option (preselected.
          * 
          */
         public CmsResourceSelectWidgetOption(CmsResource resource, boolean isDefault) {
@@ -196,37 +195,45 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
 
         /**
          * 
-         * Creates a select option with the resource to select, the given optionText as the display
-         * text and no help text that is potentially the default selection (argument isDefault).
+         * Creates a select option with the resource to select, the given optionText as the display text and no help
+         * text that is potentially the default selection (argument isDefault).
          * <p>
          * 
-         * @param resource The resource of this selection.
+         * @param resource
+         *            The resource of this selection.
          * 
-         * @param isDefault true, if this option is the default option (preselected.
+         * @param isDefault
+         *            true, if this option is the default option (preselected.
          * 
-         * @param optionText the text to display for this option.
+         * @param optionText
+         *            the text to display for this option.
          */
-        public CmsResourceSelectWidgetOption(CmsResource resource, boolean isDefault, String optionText) {
+        public CmsResourceSelectWidgetOption(CmsResource resource, boolean isDefault,
+                String optionText) {
 
             this(resource, isDefault, optionText, null);
 
         }
 
         /**
-         * Creates a select option with the resource to select, the given optionText as the display
-         * text and the given help text that is potentially the default selection (argument
-         * isDefault).
+         * Creates a select option with the resource to select, the given optionText as the display text and the given
+         * help text that is potentially the default selection (argument isDefault).
          * <p>
          * 
-         * @param resource The resource of this selection.
+         * @param resource
+         *            The resource of this selection.
          * 
-         * @param isDefault true, if this option is the default option (preselected.
+         * @param isDefault
+         *            true, if this option is the default option (preselected.
          * 
-         * @param optionText the text to display for this option.
+         * @param optionText
+         *            the text to display for this option.
          * 
-         * @param helpText The help text to display.
+         * @param helpText
+         *            The help text to display.
          */
-        public CmsResourceSelectWidgetOption(CmsResource resource, boolean isDefault, String optionText, String helpText) {
+        public CmsResourceSelectWidgetOption(CmsResource resource, boolean isDefault,
+                String optionText, String helpText) {
 
             super(resource.getRootPath(), isDefault, optionText, helpText);
             m_resource = resource;
@@ -247,49 +254,54 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
     }
 
     /**
-     * Compares two {@link CmsSelectWidgetXmlcontentType.CmsResourceSelectWidgetOption} 
-     * instances by any resource related value that may be accessed via a 
-     * {@link CmsMacroResolver} (except message keys).<p>
+     * Compares two {@link CmsSelectWidgetXmlcontentType.CmsResourceSelectWidgetOption} instances by any resource
+     * related value that may be accessed via a {@link CmsMacroResolver} (except message keys).
+     * <p>
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.9 $
+     * @version $Revision: 1.10 $
      * 
      * @since 6.1.6
      * 
      */
-    private static final class CmsResourceSelectWidgetOptionComparator implements Comparator, Serializable {
+    private static final class CmsResourceSelectWidgetOptionComparator implements Comparator,
+            Serializable {
 
         /** Serial UID required for safe serialization. */
         private static final long serialVersionUID = -4078389792834878256L;
 
-        /** The {@link CmsMacroResolver} compatible macro to resolve for comparison.  */
+        /** The {@link CmsMacroResolver} compatible macro to resolve for comparison. */
         private String m_comparatorMacro;
 
-        /** To access resource related values with the {@link CmsMacroResolver} for comparison.  */
+        /** To access resource related values with the {@link CmsMacroResolver} for comparison. */
         private CmsObject m_macroCmsObjectInner;
 
         /** The {@link CmsMacroResolver} to use for macro resolvation for comparison. * */
         private CmsMacroResolver m_macroResolverInner;
 
         /**
-         * Creates a comparator that will resolve the {@link CmsResource} related values with the
-         * given macro expression.
+         * Creates a comparator that will resolve the {@link CmsResource} related values with the given macro
+         * expression.
          * <p>
          * 
-         * @param cms will be cloned and used for macro - resolvation.
+         * @param cms
+         *            will be cloned and used for macro - resolvation.
          * 
-         * @param comparatorMacro the macro to use to find the resource related strings to compare.
+         * @param comparatorMacro
+         *            the macro to use to find the resource related strings to compare.
          * 
-         * @throws CmsException if sth. goes wrong.
+         * @throws CmsException
+         *             if sth. goes wrong.
          * 
          * @see CmsMacroResolver
          */
         CmsResourceSelectWidgetOptionComparator(CmsObject cms, String comparatorMacro)
-        throws CmsException {
+                throws CmsException {
 
             if (CmsStringUtil.isEmpty(comparatorMacro)) {
-                m_comparatorMacro = "${opencms.filename}";
+                m_comparatorMacro = I_CmsMacroResolver.MACRO_DELIMITER + ""
+                        + I_CmsMacroResolver.MACRO_START + "opencms.filename)";
             } else {
                 m_comparatorMacro = comparatorMacro;
             }
@@ -314,7 +326,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             // fool the macro resolver:
             CmsRequestContext requestContext = m_macroCmsObjectInner.getRequestContext();
             requestContext.setUri(resource1.getRootPath());
-            // implant the resource name for macro "${opencms.filename}:
+            // implant the resource name for macro "%(opencms.filename):
             m_macroResolverInner.setResourceName(resource1.getName());
             sort1 = m_macroResolverInner.resolveMacros(m_comparatorMacro);
             requestContext.setUri(resource2.getRootPath());
@@ -326,8 +338,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
     }
 
     /**
-     * Configuration parameter for construction of the option display value by a macro containing
-     * xpath macros for the xmlcontent.
+     * Configuration parameter for construction of the option display value by a macro containing xpath macros for the
+     * xmlcontent.
      */
     public static final String CONFIGURATION_OPTION_DISPLAY_MACRO = "displayOptionMacro";
 
@@ -352,8 +364,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
     protected CmsMacroResolver m_macroResolver;
 
     /**
-     * The macro to search for the display String of the options in xmlcontent files found below the
-     * folder to search in.
+     * The macro to search for the display String of the options in xmlcontent files found below the folder to search
+     * in.
      */
     private String m_displayOptionMacro;
 
@@ -367,15 +379,13 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
     private int m_resourceTypeID;
 
     /**
-     * The macro that describes the {@link CmsResource} - related value to use for sorting of the
-     * select widget options.
+     * The macro that describes the {@link CmsResource} - related value to use for sorting of the select widget options.
      */
     private String m_sortMacro;
 
     /**
      * Creates an unconfigured widget that has to be configured by
-     * {@link org.opencms.widgets.A_CmsWidget#setConfiguration(String)} before any html output API
-     * call is triggered.
+     * {@link org.opencms.widgets.A_CmsWidget#setConfiguration(String)} before any html output API call is triggered.
      * <p>
      * 
      */
@@ -388,7 +398,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * Creates an instance with the given configuration.
      * <p>
      * 
-     * @param configuration see the class description for the format.
+     * @param configuration
+     *            see the class description for the format.
      */
     public CmsSelectWidgetXmlcontentType(String configuration) {
 
@@ -442,22 +453,25 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * Returns the list of configured select options, parsing the configuration String if required.
      * <p>
      * 
-     * @param cms the current users OpenCms context.
+     * @param cms
+     *            the current users OpenCms context.
      * 
-     * @param widgetDialog the dialog of this widget.
+     * @param widgetDialog
+     *            the dialog of this widget.
      * 
-     * @param param the widget parameter of this dialog.
+     * @param param
+     *            the widget parameter of this dialog.
      * 
      * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject,
      *      org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      * 
      * @return the list of configured select options.
      * 
-     * @throws CmsIllegalArgumentException if the "folder" property of the configuration does not
-     *             denote a folder within the VFS.
+     * @throws CmsIllegalArgumentException
+     *             if the "folder" property of the configuration does not denote a folder within the VFS.
      */
-    protected List parseSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
-    throws CmsIllegalArgumentException {
+    protected List parseSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog,
+            I_CmsWidgetParameter param) throws CmsIllegalArgumentException {
 
         Locale dialogContentLocale = ((I_CmsXmlContentValue)param).getLocale();
         Locale resourceLocale;
@@ -469,8 +483,9 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_SELECTWIDGET_INTERNAL_CONFIGURATION_2,
-                        new Object[] {getClass().getName(), getConfiguration()}));
+                            Messages.ERR_SELECTWIDGET_INTERNAL_CONFIGURATION_2, new Object[] {
+                                    getClass().getName(), getConfiguration()
+                            }));
                 }
                 return Collections.EMPTY_LIST;
 
@@ -495,12 +510,12 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
 
                 // build the set of sorted options
                 SortedSet sortOptions = new TreeSet(new CmsResourceSelectWidgetOptionComparator(
-                    m_macroCmsObject,
-                    m_sortMacro));
+                        m_macroCmsObject, m_sortMacro));
                 CmsSelectWidgetOption option;
                 List resources;
                 // collect all subresources of resource folder
-                CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(getResourceTypeID());
+                CmsResourceFilter filter = CmsResourceFilter.DEFAULT
+                        .addRequireType(getResourceTypeID());
                 CmsRequestContext context = cms.getRequestContext();
                 String oldSiteroot = context.getSiteRoot();
                 context.setSiteRoot("/");
@@ -509,10 +524,11 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 if (resources.size() == 0) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().getBundle().key(
-                            Messages.LOG_ERR_SELECTWIDGET_NO_RESOURCES_FOUND_3,
-                            configuration,
-                            m_resourceFolder.getRootPath(),
-                            OpenCms.getResourceManager().getResourceType(getResourceTypeID()).getTypeName()));
+                                Messages.LOG_ERR_SELECTWIDGET_NO_RESOURCES_FOUND_3,
+                                configuration,
+                                m_resourceFolder.getRootPath(),
+                                OpenCms.getResourceManager().getResourceType(getResourceTypeID())
+                                        .getTypeName()));
                     }
                 }
 
@@ -524,15 +540,13 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 while (itResources.hasNext()) {
 
                     resource = (CmsResource)itResources.next();
-                    // don't make resources selectable that have a different locale than the current editor language. 
+                    // don't make resources selectable that have a different locale than the current editor language.
                     // we read the locale node of the xmlcontent instance matching the resources
                     // locale property (or top level locale).
-                    resourceLocale = CmsLocaleManager.getLocale(cms.readPropertyObject(
-                        resource,
-                        CmsPropertyDefinition.PROPERTY_LOCALE,
-                        true).getValue());
+                    resourceLocale = CmsLocaleManager.getLocale(cms.readPropertyObject(resource,
+                            CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue());
 
-                    // Only show select options for resources that are in the same locale as the current 
+                    // Only show select options for resources that are in the same locale as the current
                     // editor locale (e.g. when switching to german, offer the german siblings)
                     if (dialogContentLocale.equals(resourceLocale)) {
                         // macro resolvation within hasFilterProperty will resolve values to the
@@ -542,7 +556,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                             // implant the uri to the special cms object for resolving macros from
                             // the collected xml contents:
                             m_macroCmsObject.getRequestContext().setUri(resource.getRootPath());
-                            // implant the resource for macro "${opencms.filename}"
+                            // implant the resource for macro "%(opencms.filename)"
                             m_macroResolver.setResourceName(resource.getName());
                             // implant the messages
                             m_macroResolver.setMessages(widgetDialog.getMessages());
@@ -550,11 +564,12 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                             // every resource collected here is ok:
                             displayName = m_macroResolver.resolveMacros(getDisplayOptionMacro());
                             // deal with a bug of the macro resolver: it will return "" if it gets
-                            // "${unknown.thing}":
+                            // "%(unknown.thing)":
                             if (CmsStringUtil.isEmptyOrWhitespaceOnly(displayName)) {
-                                // it was a "${xpath.field}" expression only and swallowed by macro
+                                // it was a "%(xpath.field)" expression only and swallowed by macro
                                 // resolver:
-                                displayName = resolveXpathMacros(cms, resource, getDisplayOptionMacro());
+                                displayName = resolveXpathMacros(cms, resource,
+                                        getDisplayOptionMacro());
                             } else {
                                 // there was more than one xpath macro: allow further replacements
                                 // within partly resolved macro:
@@ -570,7 +585,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                             if (!CmsStringUtil.isEmpty(displayName)) {
 
                                 // now everything required is there:
-                                option = new CmsResourceSelectWidgetOption(resource, false, displayName);
+                                option = new CmsResourceSelectWidgetOption(resource, false,
+                                        displayName);
                                 sortOptions.add(option);
                             }
                         }
@@ -581,9 +597,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
-                        Messages.ERR_SELECTWIDGET_CONFIGURATION_2,
-                        getClass(),
-                        configuration), e);
+                            Messages.ERR_SELECTWIDGET_CONFIGURATION_2, getClass(), configuration),
+                            e);
                 }
             }
 
@@ -649,17 +664,22 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * Only invoked if options were not parsed before in this instance.
      * <p>
      * 
-     * @param configuration the configuration (with resolved macros).
+     * @param configuration
+     *            the configuration (with resolved macros).
      * 
-     * @param cms needed to read the resource folder to use.
+     * @param cms
+     *            needed to read the resource folder to use.
      * 
-     * @param param allows to access the resource currently being rendered.
+     * @param param
+     *            allows to access the resource currently being rendered.
      * 
      * 
-     * @throws CmsIllegalArgumentException if the configuration is invalid.
+     * @throws CmsIllegalArgumentException
+     *             if the configuration is invalid.
      * 
      */
-    private void parseConfigurationInternal(String configuration, CmsObject cms, I_CmsWidgetParameter param) {
+    private void parseConfigurationInternal(String configuration, CmsObject cms,
+            I_CmsWidgetParameter param) {
 
         // prepare for macro resolvation of property value against the resource currently
         // rendered
@@ -679,21 +699,19 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             keyValue = CmsStringUtil.splitAsArray(mapping, '=');
             if (keyValue.length != 2) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_SELECTWIDGET_CONFIGURATION_KEYVALUE_LENGTH_1,
-                    mapping));
+                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEYVALUE_LENGTH_1, mapping));
             }
             key = keyValue[0].trim();
             value = keyValue[1].trim();
 
-            // implant the resource for macro "${opencms.filename}"
+            // implant the resource for macro "%(opencms.filename)"
             m_macroResolver.setResourceName(file.getName());
             // check key
             if (CONFIGURATION_OPTION_DISPLAY_MACRO.equals(key)) {
                 if (displayMacroFound) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2,
-                        key,
-                        configuration));
+                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2, key,
+                            configuration));
                 }
 
                 m_displayOptionMacro = value;
@@ -701,9 +719,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             } else if (CONFIGURATION_OPTION_SORT_MACRO.equals(key)) {
                 if (sortMacroFound) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2,
-                        key,
-                        configuration));
+                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2, key,
+                            configuration));
                 }
                 m_sortMacro = value;
                 sortMacroFound = true;
@@ -711,27 +728,27 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             } else if (CONFIGURATION_RESOURCETYPENAME.equals(key)) {
                 if (typeFound) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2,
-                        key,
-                        configuration));
+                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2, key,
+                            configuration));
                 }
                 // check if resource type name is OK
                 // if setResourceType will be implemented copy here and invoke that one
                 try {
-                    m_resourceTypeID = OpenCms.getResourceManager().getResourceType(value).getTypeId();
+                    m_resourceTypeID = OpenCms.getResourceManager().getResourceType(value)
+                            .getTypeId();
                 } catch (CmsLoaderException e) {
-                    throw new CmsIllegalArgumentException(org.opencms.file.Messages.get().container(
-                        org.opencms.file.Messages.ERR_UNKNOWN_RESOURCE_TYPE_1,
-                        value), e);
+                    throw new CmsIllegalArgumentException(
+                            org.opencms.file.Messages.get().container(
+                                    org.opencms.file.Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, value),
+                            e);
                 }
                 typeFound = true;
 
             } else if (CONFIGURATION_TOPFOLDER.equals(key)) {
                 if (folderFound) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2,
-                        key,
-                        configuration));
+                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2, key,
+                            configuration));
                 }
 
                 // allow collector path to contain macros relative to the current resource:
@@ -745,16 +762,14 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                     context.setSiteRoot(oldSiteRoot);
                     if (resource.isFile()) {
                         throw new CmsIllegalArgumentException(Messages.get().container(
-                            Messages.ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_NOFOLDER_2,
-                            value,
-                            configuration));
+                                Messages.ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_NOFOLDER_2, value,
+                                configuration));
                     }
                     m_resourceFolder = resource;
                 } catch (CmsException e) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_INVALID_2,
-                        value,
-                        configuration), e);
+                            Messages.ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_INVALID_2, value,
+                            configuration), e);
                 }
 
                 folderFound = true;
@@ -767,9 +782,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 } catch (CmsException e) {
 
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_UNKNOWN_2,
-                        key,
-                        getClass().getName()), e);
+                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_UNKNOWN_2, key,
+                            getClass().getName()), e);
                 }
                 if (propDef != null) {
                     // a valid property - value combination to filter resources for:
@@ -781,9 +795,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 } else {
 
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_UNKNOWN_2,
-                        key,
-                        getClass().getName()));
+                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_UNKNOWN_2, key,
+                            getClass().getName()));
                 }
             }
         }
@@ -791,48 +804,48 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
         // final check wether all has been set
         if (!displayMacroFound) {
             throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3,
-                CONFIGURATION_OPTION_DISPLAY_MACRO,
-                configuration,
-                getClass().getName()));
+                    Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3,
+                    CONFIGURATION_OPTION_DISPLAY_MACRO, configuration, getClass().getName()));
         }
         if (!folderFound) {
             throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3,
-                CONFIGURATION_TOPFOLDER,
-                configuration,
-                getClass().getName()));
+                    Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3, CONFIGURATION_TOPFOLDER,
+                    configuration, getClass().getName()));
         }
         if (!typeFound) {
             throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3,
-                CONFIGURATION_RESOURCETYPENAME,
-                configuration,
-                getClass().getName()));
+                    Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3,
+                    CONFIGURATION_RESOURCETYPENAME, configuration, getClass().getName()));
         }
     }
 
     /**
      * 
-     * Resolves xpath macros of the form <code>"${xpath.XPATHEXPRESSION}"</code> by the field
-     * value of the XML content denoted by the given resource.
+     * Resolves xpath macros of the form <code>"%(xpath.XPATHEXPRESSION)"</code> by the field value of the XML content
+     * denoted by the given resource.
      * <p>
      * 
      * File laoding and unmarshalling is only done if the given String contains xpath macros.
      * <p>
      * 
-     * @param cms to access values in the cmsobject
-     * @param resource the resource pointing to an xmlcontent containing the macro values to resolve
-     * @param value the unresolved macro string
+     * @param cms
+     *            to access values in the cmsobject
+     * @param resource
+     *            the resource pointing to an xmlcontent containing the macro values to resolve
+     * @param value
+     *            the unresolved macro string
      * 
      * @return a String with resolved xpath macros that have been read from the xmlcontent
      * 
-     * @throws CmsException if somehting goes wrong
+     * @throws CmsException
+     *             if somehting goes wrong
      */
-    private String resolveXpathMacros(CmsObject cms, CmsResource resource, String value) throws CmsException {
+    private String resolveXpathMacros(CmsObject cms, CmsResource resource, String value)
+            throws CmsException {
 
         StringBuffer result = new StringBuffer();
-        int startmacro = value.indexOf("${xpath.");
+        int startmacro = value.indexOf(I_CmsMacroResolver.MACRO_DELIMITER + ""
+                + I_CmsMacroResolver.MACRO_START + "xpath.");
         int stopmacro = 0;
         String xpath;
         if (startmacro != -1) {
@@ -841,13 +854,11 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
             // we read the locale node of the xmlcontent instance matching the resources
             // locale property (or top level locale).
-            Locale locale = CmsLocaleManager.getLocale(cms.readPropertyObject(
-                xmlcontent.getFile(),
-                CmsPropertyDefinition.PROPERTY_LOCALE,
-                true).getValue());
+            Locale locale = CmsLocaleManager.getLocale(cms.readPropertyObject(xmlcontent.getFile(),
+                    CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue());
 
             while (startmacro != -1) {
-                stopmacro = value.indexOf('}');
+                stopmacro = value.indexOf(I_CmsMacroResolver.MACRO_END);
                 if (stopmacro == 0) {
                     // TODO: complain about missing closing macro bracket!
                 }
@@ -866,25 +877,24 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 } catch (Exception ex) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().getBundle().key(
-                            Messages.LOG_ERR_SELECTWIDGET_XPATH_INVALID_4,
-                            new Object[] {
-                                xpath,
-                                locale.toString(),
-                                xmlcontent.getFile().getRootPath(),
-                                ex.getLocalizedMessage()}));
+                                Messages.LOG_ERR_SELECTWIDGET_XPATH_INVALID_4,
+                                new Object[] {
+                                        xpath, locale.toString(),
+                                        xmlcontent.getFile().getRootPath(),
+                                        ex.getLocalizedMessage()
+                                }));
                     }
                 }
                 // skip over the consumed String of value:
                 value = value.substring(stopmacro + 1);
 
                 // take a new start for macro:
-                startmacro = value.indexOf("${xpath.");
+                startmacro = value.indexOf(I_CmsMacroResolver.MACRO_DELIMITER + ""
+                        + I_CmsMacroResolver.MACRO_START + "xpath.");
             }
         }
         // append trailing value
         result.append(value);
         return result.toString();
-
     }
-
 }
