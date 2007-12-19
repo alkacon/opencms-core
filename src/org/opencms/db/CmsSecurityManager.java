@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/09/26 13:17:31 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2007/12/19 16:54:00 $
+ * Version: $Revision: 1.110 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2364,9 +2364,7 @@ public final class CmsSecurityManager {
     public boolean hasRole(CmsDbContext dbc, CmsUser user, CmsRole role) {
 
         // try to read from cache
-        String key = user.getId().toString()
-            + (dbc.currentProject().isOnlineProject() ? "+" : "-")
-            + role.getGroupName();
+        String key = user.getName().toString() + role.getGroupName() + role.getOuFqn();
         Boolean result = OpenCms.getMemoryMonitor().getCachedRole(key);
         if (result != null) {
             return result.booleanValue();
