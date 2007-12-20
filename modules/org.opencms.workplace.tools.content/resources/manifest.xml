@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the content of resources.</p>
 <p>Install this module if you want to modify file properties or content elements.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.3</version>
+		<version>7.0.4</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -157,7 +157,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsOfflineToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.content.CmsContentToolHandler]]></value>
 				</property>
 			</properties>
 			<relations/>
