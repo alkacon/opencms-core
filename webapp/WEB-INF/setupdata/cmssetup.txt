@@ -33,12 +33,14 @@ setSiteRoot "/"
 createFolder "/" "sites/"
 createFolder "/sites/" "default/"
 createFolder "/system/" "lost-found/"
+createFolder "/system/" "modules/"
 
 # Apply folder permissions
 chacc "/" "user" "ALL_OTHERS" "+v+r+i"
 chacc "/" "role" "ROOT_ADMIN" "+v+w+r+c+d+i"
 chacc "/system" "role" "WORKPLACE_USER" "+r+i"
 chacc "/system/lost-found" "role" "WORKPLACE_MANAGER" "+v+w+r+c+d+i"
+chacc "/system/modules" "role" "WORKPLACE_USER" "+v+r+i"
 chacc "/system/orgunits" "role" "ACCOUNT_MANAGER" "+v+w+r+c+d+i"
 
 chacc "/sites/default" "group" "Users" "+v+w+r+i"
