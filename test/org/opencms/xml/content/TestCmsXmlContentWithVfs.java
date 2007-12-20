@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2007/11/26 13:16:24 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2007/12/20 10:22:15 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -89,7 +89,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     private static final String SCHEMA_SYSTEM_ID_7 = "http://www.opencms.org/test7.xsd";
     private static final String SCHEMA_SYSTEM_ID_8 = "http://www.opencms.org/test8.xsd";
     private static final String SCHEMA_SYSTEM_ID_9 = "http://www.opencms.org/test9.xsd";
-
+    
     /**
      * Default JUnit constructor.<p>
      * 
@@ -765,6 +765,9 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         value = xmlcontent.getStringValue(cms, "Release", Locale.ENGLISH);
         assertEquals("1114525380000", value);
+
+        value = xmlcontent.getStringValue(cms, "Author", Locale.ENGLISH);
+        assertEquals("This is the Description", value);
     }
 
     /**

@@ -33,6 +33,7 @@
 				<default element="Title" value="Default title value"/>
 				<default element="Teaser" value="Default teaser value"/>
 				<default element="Release" value="1114525380000"/>
+				<default element="Author" value="%(property.Description)"/>
 			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  

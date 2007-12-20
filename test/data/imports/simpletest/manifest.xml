@@ -1838,6 +1838,10 @@
 					<value><![CDATA[Xmlcontent]]></value>
 				</property>
 				<property>
+					<name>Description</name>
+					<value><![CDATA[This is the Description]]></value>
+				</property>
+				<property>
 					<name>search.special</name>
 					<value><![CDATA[Cologne is a nice city]]></value>
 				</property>						

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2007/09/05 11:19:35 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2007/12/20 10:22:15 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,14 +143,19 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                 CmsResource.getParentFolder(resourcename)).get(0);
 
             String modelUri = (String)cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_MODEL);
+
+            // must set URI of OpenCms user context to parent folder of created resource, 
+            // in order to allow reading of properties for default values
+            CmsObject newCms = OpenCms.initCmsObject(cms);
+            newCms.getRequestContext().setUri(CmsResource.getParentFolder(resourcename));
             if (modelUri != null) {
                 // create the new content from the model file
-                newContent = CmsXmlContentFactory.createDocument(cms, locale, modelUri);
+                newContent = CmsXmlContentFactory.createDocument(newCms, locale, modelUri);
                 hasModelUri = true;
             } else {
                 // create the new content from the content definition
                 newContent = CmsXmlContentFactory.createDocument(
-                    cms,
+                    newCms,
                     locale,
                     OpenCms.getSystemInfo().getDefaultEncoding(),
                     contentDefinition);
