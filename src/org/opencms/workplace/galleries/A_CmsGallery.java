@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2007/08/13 16:30:12 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2007/12/20 10:22:55 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -833,10 +833,10 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     CmsResourceFilter filter;
                     if (resTypeId == -1) {
                         // filter all resources that are files
-                        filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireFile();
+                        filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireTimerange().addRequireFile();
                     } else {
                         // filter all resources of the required type
-                        filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(resTypeId);
+                        filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireTimerange().addRequireType(resTypeId);
                     }
                     m_galleryItems = getCms().readResources(getParamGalleryPath(), filter, false);
                 } catch (CmsException e) {
