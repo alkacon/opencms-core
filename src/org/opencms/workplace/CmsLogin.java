@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/12/20 13:32:34 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2007/12/20 14:46:08 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,7 +239,7 @@ public class CmsLogin extends CmsJspLoginBean {
             m_actionLogin = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_ACTION_LOGIN);
             m_oufqn = getRequest().getParameter(PARAM_OUFQN);
             if (m_oufqn == null) {
-                m_oufqn = (String)getRequest().getAttribute(PARAM_PREDEF_OUFQN);
+                m_oufqn = getPreDefOuFqn();
             }
             // try to get some info from a cookie
             getCookieData();
@@ -422,7 +422,7 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     public String getFormLink() {
 
-        if (getRequest().getAttribute(PARAM_PREDEF_OUFQN) == null) {
+        if (getPreDefOuFqn() == null) {
             return super.getFormLink();
         }
         return link("/system/login" + (String)getRequest().getAttribute(PARAM_PREDEF_OUFQN));
@@ -498,6 +498,21 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("}\n");
 
         html.append("</script>\n");
+    }
+
+    /**
+     * Appends the HTML form name/id code for the given id to the given html.<p>
+     * 
+     * @param html the html where to append the id to
+     * @param id the id to append
+     */
+    protected void appendId(StringBuffer html, String id) {
+
+        html.append(" name=\"");
+        html.append(id);
+        html.append("\" id=\"");
+        html.append(id);
+        html.append("\" ");
     }
 
     /**
@@ -789,8 +804,7 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("\">\n");
 
             if ((getOus().size() > 1)
-                && ((getRequest().getAttribute(PARAM_PREDEF_OUFQN) == null) || getRequest().getAttribute(
-                    PARAM_PREDEF_OUFQN).equals(CmsOrganizationalUnit.SEPARATOR))) {
+                && ((getPreDefOuFqn() == null) || getPreDefOuFqn().equals(CmsOrganizationalUnit.SEPARATOR))) {
                 // options
                 html.append("&nbsp;<input id='ouBtnId' class='loginbutton' type='button' value='");
                 html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_ORGUNIT_SELECT_ON_0));
@@ -849,28 +863,13 @@ public class CmsLogin extends CmsJspLoginBean {
     }
 
     /**
-     * Appends the HTML form name/id code for the given id to the given html.<p>
-     * 
-     * @param html the html where to append the id to
-     * @param id the id to append
-     */
-    private void appendId(StringBuffer html, String id) {
-
-        html.append(" name=\"");
-        html.append(id);
-        html.append("\" id=\"");
-        html.append(id);
-        html.append("\" ");
-    }
-
-    /**
      * Returns the cookie with the given name, if not cookie is found a new one is created.<p>
      * 
      * @param name the name of the cookie
      * 
      * @return the cookie
      */
-    private Cookie getCookie(String name) {
+    protected Cookie getCookie(String name) {
 
         Cookie[] cookies = getRequest().getCookies();
         for (int i = 0; (cookies != null) && (i < cookies.length); i++) {
@@ -886,12 +885,12 @@ public class CmsLogin extends CmsJspLoginBean {
      * 
      * @return a list of {@link CmsOrganizationalUnit} objects
      */
-    private List getOus() {
+    protected List getOus() {
 
         if (m_ous == null) {
             m_ous = new ArrayList();
             try {
-                if (getRequest().getAttribute(PARAM_PREDEF_OUFQN) == null) {
+                if (getPreDefOuFqn() == null) {
                     m_ous.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), ""));
                     m_ous.addAll(OpenCms.getOrgUnitManager().getOrganizationalUnits(getCmsObject(), "", true));
                     Iterator itOus = m_ous.iterator();
@@ -912,11 +911,30 @@ public class CmsLogin extends CmsJspLoginBean {
     }
 
     /**
+     * Returns the predefined organizational unit fqn.<p>
+     * 
+     * This is normally selected by url, and set by the {@link CmsWorkplaceLoginHandler}.<p>
+     * 
+     * @return the predefined organizational unit fqn
+     */
+    protected String getPreDefOuFqn() {
+
+        if (Boolean.valueOf(m_actionLogout).booleanValue() && (getRequest().getAttribute(PARAM_PREDEF_OUFQN) == null)) {
+            String oufqn = getCmsObject().getRequestContext().getOuFqn();
+            if (!oufqn.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
+                oufqn = CmsOrganizationalUnit.SEPARATOR + oufqn;
+            }
+            getRequest().setAttribute(CmsLogin.PARAM_PREDEF_OUFQN, oufqn);
+        }
+        return (String)getRequest().getAttribute(PARAM_PREDEF_OUFQN);
+    }
+
+    /**
      * Sets the cookie in the response.<p>
      * 
      * @param cookie the cookie to set
      */
-    private void setCookie(Cookie cookie) {
+    protected void setCookie(Cookie cookie) {
 
         // set the expiration date of the cookie to six months from today
         GregorianCalendar cal = new GregorianCalendar();
