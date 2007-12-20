@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2007/08/13 16:29:43 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2007/12/20 16:10:45 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,17 +32,22 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.explorer.CmsNewResource;
 import org.opencms.workplace.list.A_CmsListResourceTypeDialog;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListOrderEnum;
@@ -69,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -236,6 +241,28 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
         List ret = new ArrayList();
 
+        boolean limitedRestypes = false;
+        // check for presence of property limiting the new resource types to create
+        String availableResTypesProp = "";
+        List availableResTypes = new ArrayList();
+        try {
+            availableResTypesProp = getCms().readPropertyObject(
+                getParamResource(),
+                CmsPropertyDefinition.PROPERTY_RESTYPES_AVAILABLE,
+                true).getValue();
+        } catch (CmsException e) {
+
+            // ignore this exception, this is a minor issue
+        }
+        if (CmsStringUtil.isNotEmpty(availableResTypesProp) && !availableResTypesProp.equals(CmsNewResource.VALUE_DEFAULT) && !OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
+            limitedRestypes = true;
+            if (availableResTypesProp.indexOf(CmsNewResource.DELIM_PROPERTYVALUES) > -1) {
+                availableResTypes = CmsStringUtil.splitAsList(availableResTypesProp, CmsNewResource.DELIM_PROPERTYVALUES);
+            } else {
+                availableResTypes = CmsStringUtil.splitAsList(availableResTypesProp, CmsProperty.VALUE_LIST_DELIMITER);
+            }
+        }
+
         // get current Cms object
         CmsObject cms = getCms();
 
@@ -255,14 +282,21 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
             // only if settings is a real resourcetype
             boolean isResourceType;
+            I_CmsResourceType type = new CmsResourceTypePlain();
             try {
-                OpenCms.getResourceManager().getResourceType(settings.getName());
+                type = OpenCms.getResourceManager().getResourceType(settings.getName());
                 isResourceType = true;
             } catch (CmsLoaderException e) {
                 isResourceType = false;
             }
 
             if (isResourceType) {
+                // first check if types are limited
+                if (limitedRestypes && availableResTypes.indexOf(type.getTypeName()) == -1) {
+                    // this resource type is not in the list of available types
+                    continue;
+                }
+
                 int resTypeId = OpenCms.getResourceManager().getResourceType(settings.getName()).getTypeId();
                 // determine if this resTypeId is changeable by currentResTypeId
 
