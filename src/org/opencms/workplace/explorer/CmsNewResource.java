@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2007/11/20 10:49:11 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2007/12/20 14:28:17 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -505,7 +505,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     }
 
     /**
-     * Builds a button row with an optional "advanced", "next" and a "cancel" button.<p>
+     * Builds a button row with an optional "next", "advanced" and a "cancel" button.<p>
      * 
      * @param advancedAttrs optional attributes for the advanced button
      * @param nextAttrs optional attributes for the next button
@@ -515,9 +515,9 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     public String dialogButtonsAdvancedNextCancel(String advancedAttrs, String nextAttrs, String cancelAttrs) {
 
         if (m_limitedRestypes && OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
-            return dialogButtons(new int[] {BUTTON_ADVANCED, BUTTON_NEXT, BUTTON_CANCEL}, new String[] {
-                advancedAttrs,
+            return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_ADVANCED, BUTTON_CANCEL}, new String[] {
                 nextAttrs,
+                advancedAttrs,
                 cancelAttrs});
         } else {
             return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[] {nextAttrs, cancelAttrs});
