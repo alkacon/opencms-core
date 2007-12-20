@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2007/11/20 10:24:58 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2007/12/20 13:32:34 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -891,14 +891,18 @@ public class CmsLogin extends CmsJspLoginBean {
         if (m_ous == null) {
             m_ous = new ArrayList();
             try {
-                m_ous.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), ""));
-                m_ous.addAll(OpenCms.getOrgUnitManager().getOrganizationalUnits(getCmsObject(), "", true));
-                Iterator itOus = m_ous.iterator();
-                while (itOus.hasNext()) {
-                    CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
-                    if (ou.hasFlagHideLogin() || ou.hasFlagWebuser()) {
-                        itOus.remove();
+                if (getRequest().getAttribute(PARAM_PREDEF_OUFQN) == null) {
+                    m_ous.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), ""));
+                    m_ous.addAll(OpenCms.getOrgUnitManager().getOrganizationalUnits(getCmsObject(), "", true));
+                    Iterator itOus = m_ous.iterator();
+                    while (itOus.hasNext()) {
+                        CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
+                        if (ou.hasFlagHideLogin() || ou.hasFlagWebuser()) {
+                            itOus.remove();
+                        }
                     }
+                } else {
+                    m_ous.add(OpenCms.getOrgUnitManager().readOrganizationalUnit(getCmsObject(), m_oufqn));
                 }
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage(), e);
