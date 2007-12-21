@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2007/12/21 10:05:02 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2007/12/21 13:16:15 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,6 +85,9 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
     /** The dialog type.<p> */
     public static final String DIALOG_TYPE = "chtype";
+
+    /** Session attribute to store advanced mode. */
+    public static final String SESSION_ATTR_ADVANCED = "ocms_chtype_adv";
 
     /** Flag indicating if dialog is in advanced mode. */
     private boolean m_advancedMode;
@@ -288,9 +291,15 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
         List availableResTypes = new ArrayList();
         if (!m_advancedMode && m_limitedRestypes) {
             if (m_availableResTypes.indexOf(CmsNewResource.DELIM_PROPERTYVALUES) > -1) {
-                availableResTypes = CmsStringUtil.splitAsList(m_availableResTypes, CmsNewResource.DELIM_PROPERTYVALUES, true);
+                availableResTypes = CmsStringUtil.splitAsList(
+                    m_availableResTypes,
+                    CmsNewResource.DELIM_PROPERTYVALUES,
+                    true);
             } else {
-                availableResTypes = CmsStringUtil.splitAsList(m_availableResTypes, CmsProperty.VALUE_LIST_DELIMITER, true);
+                availableResTypes = CmsStringUtil.splitAsList(
+                    m_availableResTypes,
+                    CmsProperty.VALUE_LIST_DELIMITER,
+                    true);
             }
         }
 
@@ -388,17 +397,29 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
         if (DIALOG_OK.equals(getParamAction())) {
             // ok button pressed, change file type
             setAction(ACTION_OK);
+            getJsp().getRequest().getSession(true).removeAttribute(SESSION_ATTR_ADVANCED);
         } else if (DIALOG_LOCKS_CONFIRMED.equals(getParamAction())) {
             setAction(ACTION_LOCKS_CONFIRMED);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             // cancel button pressed
             setAction(ACTION_CANCEL);
+            getJsp().getRequest().getSession(true).removeAttribute(SESSION_ATTR_ADVANCED);
         } else {
             // build title for change file type dialog     
             setParamTitle(key(Messages.GUI_CHTYPE_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
 
-        if (!CmsNewResource.DIALOG_ADVANCED.equals(getParamAction())) {
+        // get session attribute storing if we are in advanced mode
+        String sessionAttr = (String)request.getSession(true).getAttribute(SESSION_ATTR_ADVANCED);
+        if (CmsNewResource.DIALOG_ADVANCED.equals(getParamAction()) || sessionAttr != null) {
+            // advanced mode to display all possible resource types
+            if (sessionAttr == null) {
+                // set attribute that we are in advanced mode
+                request.getSession(true).setAttribute(SESSION_ATTR_ADVANCED, "true");
+                setAction(ACTION_ADVANCED);
+            }
+            m_advancedMode = true;
+        } else {
             // check for presence of property limiting the new resource types to create
             String newResTypesProperty = "";
             try {
@@ -414,10 +435,6 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
                 m_limitedRestypes = true;
                 m_availableResTypes = newResTypesProperty;
             }
-        } else {
-            m_advancedMode = true;
-            setAction(ACTION_ADVANCED);
-
         }
     }
 
