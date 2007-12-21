@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagExport.java,v $
- * Date   : $Date: 2007/12/19 14:51:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2007/12/21 13:02:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author Alexander Kandzior
  *
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.4 
  */
@@ -59,7 +59,7 @@ public class CmsJspTagExport extends BodyTagSupport {
     private static final long serialVersionUID = 6326430271724241959L;
 
     /**
-     * @see javax.servlet.jsp.tagext.BodyTagSupport#doEndTag()
+     * @see javax.servlet.jsp.tagext.BodyTagSupport#doStartTag()
      */
     public int doStartTag() {
 
