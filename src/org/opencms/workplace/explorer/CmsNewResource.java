@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2007/12/20 14:28:17 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2007/12/21 10:07:52 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -890,9 +890,9 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             // available resource types limited, create list iterator of given limited types
             List newResTypes;
             if (m_availableResTypes.indexOf(DELIM_PROPERTYVALUES) > -1) {
-                newResTypes = CmsStringUtil.splitAsList(m_availableResTypes, DELIM_PROPERTYVALUES);
+                newResTypes = CmsStringUtil.splitAsList(m_availableResTypes, DELIM_PROPERTYVALUES, true);
             } else {
-                newResTypes = CmsStringUtil.splitAsList(m_availableResTypes, CmsProperty.VALUE_LIST_DELIMITER);
+                newResTypes = CmsStringUtil.splitAsList(m_availableResTypes, CmsProperty.VALUE_LIST_DELIMITER, true);
             }
             Iterator k = newResTypes.iterator();
             List settings = new ArrayList(newResTypes.size());
