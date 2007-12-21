@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2007/12/20 16:10:45 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2007/12/21 10:05:02 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,14 +74,26 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsChtype extends A_CmsListResourceTypeDialog {
 
+    /** Dialog action: show advanced list (for workplace VFS managers). */
+    public static final int ACTION_ADVANCED = 555;
+
     /** The dialog type.<p> */
     public static final String DIALOG_TYPE = "chtype";
+
+    /** Flag indicating if dialog is in advanced mode. */
+    private boolean m_advancedMode;
+
+    /** The available resource types as String, if set. */
+    private String m_availableResTypes;
+
+    /** Flag indicating if resource types to select are limited. */
+    private boolean m_limitedRestypes;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -146,6 +158,9 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
         if (getAction() == ACTION_OK) {
             actionChtype();
             return;
+        } else if (getAction() == ACTION_ADVANCED) {
+            refreshList();
+            return;
         }
 
         super.actionDialog();
@@ -160,7 +175,30 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
      */
     public String dialogButtons() {
 
-        return dialogButtonsOkCancel(" onclick=\"submitChtype(form);\"", null);
+        return dialogButtonsOkAdvancedCancel(
+            " onclick=\"submitChtype(form);\"",
+            " onclick=\"submitAdvanced(form);\"",
+            null);
+    }
+
+    /**
+     * Builds a button row with an optional "ok", "advanced" and a "cancel" button.<p>
+     * 
+     * @param okAttrs optional attributes for the ok button
+     * @param advancedAttrs optional attributes for the advanced button
+     * @param cancelAttrs optional attributes for the cancel button
+     * @return the button row 
+     */
+    public String dialogButtonsOkAdvancedCancel(String okAttrs, String advancedAttrs, String cancelAttrs) {
+
+        if (!m_advancedMode && m_limitedRestypes && OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
+            return dialogButtons(new int[] {BUTTON_OK, BUTTON_ADVANCED, BUTTON_CANCEL}, new String[] {
+                okAttrs,
+                advancedAttrs,
+                cancelAttrs});
+        } else {
+            return dialogButtonsOkCancel(okAttrs, cancelAttrs);
+        }
     }
 
     /**
@@ -224,6 +262,11 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
         result.append("<script type='text/javascript'>\n");
 
+        result.append("function submitAdvanced(theForm) {\n");
+        result.append("\ttheForm.action.value = \"" + CmsNewResource.DIALOG_ADVANCED + "\";\n");
+        result.append("\ttheForm.submit();\n");
+        result.append("}\n\n");
+
         result.append("function submitChtype(theForm) {\n");
         result.append("\ttheForm.action.value = \"" + DIALOG_OK + "\";\n");
         result.append("\ttheForm.submit();\n");
@@ -241,25 +284,13 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
         List ret = new ArrayList();
 
-        boolean limitedRestypes = false;
-        // check for presence of property limiting the new resource types to create
-        String availableResTypesProp = "";
+        // fill the list with available resource types if they are limited
         List availableResTypes = new ArrayList();
-        try {
-            availableResTypesProp = getCms().readPropertyObject(
-                getParamResource(),
-                CmsPropertyDefinition.PROPERTY_RESTYPES_AVAILABLE,
-                true).getValue();
-        } catch (CmsException e) {
-
-            // ignore this exception, this is a minor issue
-        }
-        if (CmsStringUtil.isNotEmpty(availableResTypesProp) && !availableResTypesProp.equals(CmsNewResource.VALUE_DEFAULT) && !OpenCms.getRoleManager().hasRole(getCms(), CmsRole.VFS_MANAGER)) {
-            limitedRestypes = true;
-            if (availableResTypesProp.indexOf(CmsNewResource.DELIM_PROPERTYVALUES) > -1) {
-                availableResTypes = CmsStringUtil.splitAsList(availableResTypesProp, CmsNewResource.DELIM_PROPERTYVALUES);
+        if (!m_advancedMode && m_limitedRestypes) {
+            if (m_availableResTypes.indexOf(CmsNewResource.DELIM_PROPERTYVALUES) > -1) {
+                availableResTypes = CmsStringUtil.splitAsList(m_availableResTypes, CmsNewResource.DELIM_PROPERTYVALUES, true);
             } else {
-                availableResTypes = CmsStringUtil.splitAsList(availableResTypesProp, CmsProperty.VALUE_LIST_DELIMITER);
+                availableResTypes = CmsStringUtil.splitAsList(m_availableResTypes, CmsProperty.VALUE_LIST_DELIMITER, true);
             }
         }
 
@@ -292,8 +323,8 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
 
             if (isResourceType) {
                 // first check if types are limited
-                if (limitedRestypes && availableResTypes.indexOf(type.getTypeName()) == -1) {
-                    // this resource type is not in the list of available types
+                if (!m_advancedMode && m_limitedRestypes && availableResTypes.indexOf(type.getTypeName()) == -1) {
+                    // this resource type is not in the list of available types, skip it
                     continue;
                 }
 
@@ -363,9 +394,30 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
             // cancel button pressed
             setAction(ACTION_CANCEL);
         } else {
-
             // build title for change file type dialog     
             setParamTitle(key(Messages.GUI_CHTYPE_1, new Object[] {CmsResource.getName(getParamResource())}));
+        }
+
+        if (!CmsNewResource.DIALOG_ADVANCED.equals(getParamAction())) {
+            // check for presence of property limiting the new resource types to create
+            String newResTypesProperty = "";
+            try {
+                newResTypesProperty = getCms().readPropertyObject(
+                    getParamResource(),
+                    CmsPropertyDefinition.PROPERTY_RESTYPES_AVAILABLE,
+                    true).getValue();
+            } catch (CmsException e) {
+                // ignore this exception, this is a minor issue
+            }
+            if (CmsStringUtil.isNotEmpty(newResTypesProperty)
+                && !newResTypesProperty.equals(CmsNewResource.VALUE_DEFAULT)) {
+                m_limitedRestypes = true;
+                m_availableResTypes = newResTypesProperty;
+            }
+        } else {
+            m_advancedMode = true;
+            setAction(ACTION_ADVANCED);
+
         }
     }
 
