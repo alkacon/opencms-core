@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/12/21 10:08:07 $
- * Version: $Revision: 1.960 $
+ * Date   : $Date: 2007/12/27 10:00:57 $
+ * Version: $Revision: 1.961 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ OpenCms 7.0.4 - xxx, 2008
 ! Added support for servlet container Websphere 6
 ! Added support for searching in OpenOffice documents (.odf,.ods) contributed by Dirk Oelkers
 ! Added new <cms:export> tag, which allows to write unprocessed JSP code to the static export 
+! Improved CmsTimeFrameCategoryCollector: category filtering may be turned off by leaving out category collector parameter. 
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation

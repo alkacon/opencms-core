@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsTimeFrameCategoryCollector.java,v $
- * Date   : $Date: 2007/11/05 08:45:14 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2007/12/27 10:00:57 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.file.collectors;
 
-import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -58,7 +57,7 @@ import java.util.List;
  * A collector that allows to collect resources within a time range based upon 
  * a configurable property that contains a time stamp.<p>
  * 
- * Additioinally a property may be specified that contains a comma separated 
+ * Additionally a property may be specified that contains a comma separated 
  * list of category Strings that have to match the specified list of categories 
  * to allow. <p>
  * 
@@ -139,7 +138,9 @@ import java.util.List;
  * <li>
  * <b>categories</b><br/>
  * The value defines a list of comma separated category Strings used to filter 
- * result candidates by. 
+ * result candidates by. If this parameter is missing completely no category 
+ * filtering will be done and also resources with empty category property will 
+ * be accepted. 
  * </li>
  * </ul>
  * <p>
@@ -148,7 +149,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.0.3
  *
@@ -214,7 +215,9 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
      * <li>
      * <b>categories</b><br/>
      * The value defines a list of comma separated category Strings used to filter 
-     * result candidates by. 
+     * result candidates by. If this parameter is missing completely no category 
+     * filtering will be done and also resources with empty category property will 
+     * be accepted. 
      * </li>
      * </ul>
      * <p>
@@ -249,7 +252,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         public static final String PARAM_KEY_TIMEFRAME_START = "timeStart";
 
         /** The List &lt;String&gt; containing the categories to allow. */
-        private List m_categories;
+        private List m_categories = Collections.EMPTY_LIST;
 
         /** The display count. */
         private int m_count;
@@ -575,8 +578,8 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
 
         // Step 1: Read from DB, even expired resources have to be read
         String foldername = CmsResource.getFolderPath(data.getFileName());
-        CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireType(data.getType()).addExcludeFlags(
-            CmsResource.FLAG_TEMPFILE).addExcludeState(CmsResourceState.STATE_DELETED);
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
+            CmsResource.FLAG_TEMPFILE);
         result = cms.readResources(foldername, filter, true);
 
         // Step 2: Time range filtering
@@ -600,30 +603,35 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
 
         // Step 3: Category filtering
         List categories = data.getCategories();
-        itResults = result.iterator();
-        String categoriesProperty = data.getPropertyCategories().getName();
-        List categoriesFound;
-        while (itResults.hasNext()) {
-            res = (CmsResource)itResults.next();
-            prop = cms.readPropertyObject(res, categoriesProperty, true);
-            if (prop.isNullProperty()) {
-                itResults.remove();
-            } else {
-                categoriesFound = CmsStringUtil.splitAsList(prop.getValue(), '|');
-
-                // filter: resource has to be at least in one category
-                Iterator itCategories = categories.iterator();
-                String category;
-                boolean contained = false;
-                while (itCategories.hasNext()) {
-                    category = (String)itCategories.next();
-                    if (categoriesFound.contains(category)) {
-                        contained = true;
-                        break;
-                    }
-                }
-                if (!contained) {
+        if (categories != null && !categories.isEmpty()) {
+            itResults = result.iterator();
+            String categoriesProperty = data.getPropertyCategories().getName();
+            List categoriesFound;
+            while (itResults.hasNext()) {
+                res = (CmsResource)itResults.next();
+                prop = cms.readPropertyObject(res, categoriesProperty, true);
+                if (prop.isNullProperty()) {
+                    // disallow contents with empty category property: 
                     itResults.remove();
+                    // accept contents with empty category property: 
+                    // continue;
+                } else {
+                    categoriesFound = CmsStringUtil.splitAsList(prop.getValue(), '|');
+
+                    // filter: resource has to be at least in one category
+                    Iterator itCategories = categories.iterator();
+                    String category;
+                    boolean contained = false;
+                    while (itCategories.hasNext()) {
+                        category = (String)itCategories.next();
+                        if (categoriesFound.contains(category)) {
+                            contained = true;
+                            break;
+                        }
+                    }
+                    if (!contained) {
+                        itResults.remove();
+                    }
                 }
             }
         }
