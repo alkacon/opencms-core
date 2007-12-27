@@ -179,8 +179,6 @@ function checkContext(linkUrl, add) {
 
 //-->
 </script>
-
-<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() %>editors/msdhtml/scripts/edithtml.js"></script>
 <script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() %>commons/tree.js"></script>
 <script type="text/javascript">
 <!--
