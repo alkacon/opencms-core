@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2007/12/21 10:07:52 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2008/01/02 09:35:38 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,11 +145,67 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /** Request parameter name for the new resource uri. */
     public static final String PARAM_NEWRESOURCEURI = "newresourceuri";
 
+    /** Session attribute to store advanced mode. */
+    public static final String SESSION_ATTR_ADVANCED = "ocms_newres_adv";
+
+    /** Session attribute to store current page. */
+    public static final String SESSION_ATTR_PAGE = "ocms_newres_page";
+
     /** The property value for available resource to reset behaviour to default dialog. */
     public static final String VALUE_DEFAULT = "default";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResource.class);
+
+    private String m_availableResTypes;
+
+    private boolean m_limitedRestypes;
+
+    private String m_page;
+
+    private String m_paramAppendSuffixHtml;
+
+    private String m_paramCurrentFolder;
+    private String m_paramDialogMode;
+    private String m_paramNewFormUri;
+    private String m_paramNewResourceEditProps;
+    private String m_paramNewResourceType;
+
+    private String m_paramNewResourceUri;
+
+    private String m_paramPage;
+
+    /** a boolean flag that indicates if the create resource operation was successfull or not. */
+    private boolean m_resourceCreated;
+
+    /**
+     * Public constructor with JSP action element.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     */
+    public CmsNewResource(CmsJspActionElement jsp) {
+
+        super(
+            jsp,
+            A_CmsListResourceTypeDialog.LIST_ID,
+            Messages.get().container(Messages.GUI_NEWRESOURCE_SELECT_TYPE_0),
+            null,
+            CmsListOrderEnum.ORDER_ASCENDING,
+            null);
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsNewResource(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
+    }
+
     /**
      * Returns the value for the Title property from the given resource name.<p>
      *
@@ -168,6 +224,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         }
         return title;
     }
+
     /**
      * A factory to return handlers to create new resources.<p>
      * 
@@ -249,6 +306,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         }
         return prop;
     }
+
     /**
      * Returns the properties to create automatically with the new VFS resource.<p>
      * 
@@ -288,54 +346,6 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             properties.add(createPropertyObject(CmsPropertyDefinition.PROPERTY_NAVPOS, String.valueOf(navPos)));
         }
         return properties;
-    }
-    private String m_availableResTypes;
-    private boolean m_limitedRestypes;
-    private String m_page;
-    private String m_paramAppendSuffixHtml;
-    private String m_paramCurrentFolder;
-
-    private String m_paramDialogMode;
-
-    private String m_paramNewFormUri;
-
-    private String m_paramNewResourceEditProps;
-
-    private String m_paramNewResourceType;
-
-    private String m_paramNewResourceUri;
-
-    private String m_paramPage;
-
-    /** a boolean flag that indicates if the create resource operation was successfull or not. */
-    private boolean m_resourceCreated;
-
-    /**
-     * Public constructor with JSP action element.<p>
-     * 
-     * @param jsp an initialized JSP action element
-     */
-    public CmsNewResource(CmsJspActionElement jsp) {
-
-        super(
-            jsp,
-            A_CmsListResourceTypeDialog.LIST_ID,
-            Messages.get().container(Messages.GUI_NEWRESOURCE_SELECT_TYPE_0),
-            null,
-            CmsListOrderEnum.ORDER_ASCENDING,
-            null);
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsNewResource(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
     }
 
     /**
@@ -475,6 +485,9 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         params.putAll(paramsAsParameterMap());
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_page)) {
             params.remove(PARAM_PAGE);
+        }
+        if (!params.containsKey(PARAM_PAGE)) {
+            clearSession();
         }
         sendForward(splitter.getPrefix(), params);
     }
@@ -796,6 +809,15 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     }
 
     /**
+     * Clears the session attributes storing the page and dialog mode.<p>
+     */
+    protected void clearSession() {
+
+        getJsp().getRequest().getSession(true).removeAttribute(SESSION_ATTR_ADVANCED);
+        getJsp().getRequest().getSession(true).removeAttribute(SESSION_ATTR_PAGE);
+    }
+
+    /**
      * Appends the full path to the new resource name given in the resource parameter.<p>
      * 
      * @return the full path of the new resource
@@ -1012,8 +1034,11 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         // build title for new resource dialog     
         setParamTitle(key(Messages.GUI_NEWRESOURCE_0));
 
+        String page = (String)request.getSession(true).getAttribute(SESSION_ATTR_PAGE);
+
         if (CmsStringUtil.isNotEmpty(getParamPage())) {
             m_page = getParamPage();
+            request.getSession(true).setAttribute(SESSION_ATTR_PAGE, m_page);
             setParamPage(null);
 
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamNewFormUri())
@@ -1025,14 +1050,19 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
             if ((DIALOG_NEWFORM.equals(getParamAction())) || (LIST_INDEPENDENT_ACTION.equals(getParamAction()))) {
                 setParamAction(null);
             }
+        } else if (page != null) {
+            m_page = page;
         }
 
         // set the action for the JSP switch 
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);
+            //clearSession();
         } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
             setAction(ACTION_SUBMITFORM);
+            clearSession();
         } else if (DIALOG_NEWFORM.equals(getParamAction())) {
+            clearSession();
 
             // set resource name if we are in new folder wizard mode
             setInitialResourceName();
@@ -1044,25 +1074,34 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
 
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
+            clearSession();
+        }
+
+        // get session attribute storing if we are in advanced mode
+        String advAttr = (String)request.getSession(true).getAttribute(SESSION_ATTR_ADVANCED);
+
+        if (DIALOG_ADVANCED.equals(getParamAction()) || advAttr != null) {
+            // advanced mode to display all possible resource types
+            if (advAttr == null) {
+                // set attribute that we are in advanced mode
+                request.getSession(true).setAttribute(SESSION_ATTR_ADVANCED, "true");
+            }
         } else {
 
-            if (!DIALOG_ADVANCED.equals(getParamAction()) && CmsStringUtil.isEmpty(m_page)) {
+            // check for presence of property limiting the new resource types to create
+            String newResTypesProperty = "";
+            try {
+                newResTypesProperty = getCms().readPropertyObject(
+                    getParamCurrentFolder(),
+                    CmsPropertyDefinition.PROPERTY_RESTYPES_AVAILABLE,
+                    true).getValue();
+            } catch (CmsException e) {
 
-                // check for presence of property limiting the new resource types to create
-                String newResTypesProperty = "";
-                try {
-                    newResTypesProperty = getCms().readPropertyObject(
-                        getParamCurrentFolder(),
-                        CmsPropertyDefinition.PROPERTY_RESTYPES_AVAILABLE,
-                        true).getValue();
-                } catch (CmsException e) {
-
-                    // ignore this exception, this is a minor issue
-                }
-                if (CmsStringUtil.isNotEmpty(newResTypesProperty) && !newResTypesProperty.equals(VALUE_DEFAULT)) {
-                    m_limitedRestypes = true;
-                    m_availableResTypes = newResTypesProperty;
-                }
+                // ignore this exception, this is a minor issue
+            }
+            if (CmsStringUtil.isNotEmpty(newResTypesProperty) && !newResTypesProperty.equals(VALUE_DEFAULT)) {
+                m_limitedRestypes = true;
+                m_availableResTypes = newResTypesProperty;
             }
         }
     }
