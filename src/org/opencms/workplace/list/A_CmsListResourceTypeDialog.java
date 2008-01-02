@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceTypeDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/01/02 09:03:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.7.2
  */
@@ -407,6 +407,12 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
             if (detailId.equals(LIST_DETAIL_DESCRIPTION)) {
                 // set description detail
                 try {
+                    try {
+                        int resTypeId = Integer.parseInt(resType);
+                        resType = OpenCms.getResourceManager().getResourceType(resTypeId).getTypeName();
+                    } catch (NumberFormatException e) {
+                        // ignore, resource type was already the type name
+                    }
                     // get settings for resource type
                     CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType);
                     if (set != null) {
