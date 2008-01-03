@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2007/11/19 12:55:08 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2008/01/03 16:50:50 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 6.0.0 
  */
@@ -78,7 +78,7 @@ public final class CmsRequestContext {
     /** File name translator. */
     private CmsResourceTranslator m_fileTranslator;
 
-    /** The locale for this request. */
+    /** The locale used by this request context. */
     private Locale m_locale;
 
     /** The fully qualified name of the organizational unit for this request. */
@@ -300,9 +300,16 @@ public final class CmsRequestContext {
     }
 
     /**
-     * Returns the name of the requested locale within this context.<p>
+     * Returns the locale used by this request context.<p>
      * 
-     * @return the name of the locale
+     * In normal operation, the request context locale is initialized using
+     * {@link org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(javax.servlet.http.HttpServletRequest, CmsUser, CmsProject, String)} 
+     * depending on the requested resource URI.<p>
+     * 
+     * @return the locale used by this request context
+     * 
+     * @see org.opencms.i18n.I_CmsLocaleHandler#getI18nInfo(javax.servlet.http.HttpServletRequest, CmsUser, CmsProject, String)
+     * @see org.opencms.i18n.CmsLocaleManager#getDefaultLocale(CmsObject, String)
      */
     public Locale getLocale() {
 
@@ -524,6 +531,18 @@ public final class CmsRequestContext {
     public void setEncoding(String encoding) {
 
         m_encoding = encoding;
+    }
+
+    /**
+     * Sets the locale used by this request context.<p>
+     * 
+     * @param locale the locale to set
+     * 
+     * @see #getLocale() for more information about how the locale is set in normal operation
+     */
+    public void setLocale(Locale locale) {
+
+        m_locale = locale;
     }
 
     /**

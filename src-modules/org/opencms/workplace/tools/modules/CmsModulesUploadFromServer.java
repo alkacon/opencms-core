@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2007/10/05 16:42:06 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/01/03 16:50:50 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,12 +78,12 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.24 $
+     * @version $Revision: 1.25 $
      * 
      * @since 7.0.3
      *
      */
-    private class ComparatorSelectWidgetOption implements Comparator {
+    protected class ComparatorSelectWidgetOption implements Comparator {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
