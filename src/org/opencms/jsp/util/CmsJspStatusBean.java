@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStatusBean.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/01/18 08:44:11 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ package org.opencms.jsp.util;
 
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
-import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
@@ -42,7 +41,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -59,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0
  */
@@ -329,12 +327,6 @@ public class CmsJspStatusBean extends CmsJspActionElement {
         String currentSiteRoot = getRequestContext().getSiteRoot();
         String currentUri = getRequestContext().getUri();
 
-        // set the Locale in the request parameter Map
-        if (parameterMap == null) {
-            parameterMap = new HashMap(1);
-        }
-        parameterMap.put(CmsLocaleManager.PARAMETER_LOCALE, getLocale().toString());
-
         try {
             // set site root and URI to display template part correct
             getRequestContext().setSiteRoot(getSiteRoot());
@@ -517,6 +509,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
             // no match found - use OpenCms default locale
             m_locale = OpenCms.getWorkplaceManager().getDefaultLocale();
         }
+        getCmsObject().getRequestContext().setLocale(m_locale);
 
         // store the site root of the request
         m_siteRoot = OpenCms.getSiteManager().matchRequest(req).getSiteRoot();
@@ -550,6 +543,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
     protected void setLocale(Locale locale) {
 
         m_locale = locale;
+        getCmsObject().getRequestContext().setLocale(m_locale);
     }
 
     /**
