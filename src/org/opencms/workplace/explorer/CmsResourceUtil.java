@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2007/12/20 14:52:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/01/22 15:28:42 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,13 +158,13 @@ public final class CmsResourceUtil {
         }
     }
 
-    /** Layoutstyle for resources after expire date. */
+    /** Layout style for resources after expire date. */
     public static final int LAYOUTSTYLE_AFTEREXPIRE = 2;
 
-    /** Layoutstyle for resources before release date. */
+    /** Layout style for resources before release date. */
     public static final int LAYOUTSTYLE_BEFORERELEASE = 1;
 
-    /** Layoutstyle for resources after release date and before expire date. */
+    /** Layout style for resources after release date and before expire date. */
     public static final int LAYOUTSTYLE_INRANGE = 0;
 
     /** Constant that signalizes that all path operations will be based on the current site. */

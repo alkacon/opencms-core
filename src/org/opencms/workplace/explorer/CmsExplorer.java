@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2007/08/13 16:29:41 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2008/01/22 15:28:29 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for building the main framesets of the OpenCms Workplace.<p> 
+ * Provides methods for building the main frame sets of the OpenCms Workplace.<p> 
  * 
  * The following files use this class:
  * <ul>
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -175,10 +175,10 @@ public class CmsExplorer extends CmsWorkplace {
         StringBuffer content = new StringBuffer(2048);
         content.append(getInitializationHeader());
 
-        // now get the entries for the filelist
+        // now get the entries for the file list
         List resources = getResources(getSettings().getExplorerResource());
 
-        // if a folder contains to much entrys we split them to pages of C_ENTRYS_PER_PAGE length
+        // if a folder contains to much entries we split them to pages of C_ENTRYS_PER_PAGE length
         int startat = 0;
         int stopat = resources.size();
         int selectedPage = 1;
@@ -200,7 +200,7 @@ public class CmsExplorer extends CmsWorkplace {
                 }
             }
         }
-        // now check which filelist colums we want to show
+        // now check which file list columns we want to show
         int preferences = getUserPreferences();
 
         boolean showTitle = (preferences & CmsUserSettings.FILELIST_TITLE) > 0;
@@ -266,7 +266,7 @@ public class CmsExplorer extends CmsWorkplace {
      * @param showDateReleased if the date of release should be shown 
      * @param showDateExpired if the date of expiration should be shown
      * 
-     * @return js code for intializing the explorer view
+     * @return js code for initializing the explorer view
      * 
      * @see #getInitializationHeader()
      * @see #getInitializationFooter(int, int)
@@ -315,7 +315,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\"\",");
         }
 
-        // position 4: navtext
+        // position 4: navigation text
         if (showNavText) {
             String navText = resUtil.getNavText();
             content.append("\"");
@@ -341,7 +341,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(resource.getState());
         content.append(",");
 
-        // position 9: layoutstyle
+        // position 9: layout style
         content.append(resUtil.getTimeWindowLayoutType());
         content.append(',');
 
@@ -450,7 +450,7 @@ public class CmsExplorer extends CmsWorkplace {
      * @param numberOfPages the number of pages
      * @param selectedPage the selected page to display
      * 
-     * @return js code for intializing the explorer view
+     * @return js code for initializing the explorer view
      * 
      * @see #getInitializationHeader()
      * @see #getInitializationEntry(CmsResourceUtil, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean)
@@ -491,7 +491,7 @@ public class CmsExplorer extends CmsWorkplace {
     /**
      * Generates the header of the initialization code.<p>
      * 
-     * @return js code for intializing the explorer view
+     * @return js code for initializing the explorer view
      * 
      * @see #getInitializationFooter(int, int)
      * @see #getInitializationEntry(CmsResourceUtil, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean, boolean)
@@ -538,7 +538,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append(CmsResourceTypePlain.getStaticTypeId());
         content.append(";\n");
 
-        // the autolock setting
+        // the auto lock setting
         content.append("top.autolock=");
         content.append(OpenCms.getWorkplaceManager().autoLockResources());
         content.append(";\n");
@@ -664,7 +664,7 @@ public class CmsExplorer extends CmsWorkplace {
             settings.setExplorerPage(page);
         }
         if (getSettings().getExplorerMode().equals(CmsExplorer.VIEW_EXPLORER)) {
-            // reset the startup URI, so that it is not displayed again on reload of the frameset
+            // reset the startup URI, so that it is not displayed again on reload of the frame set
             getSettings().setViewStartup(null);
         }
 
@@ -685,7 +685,7 @@ public class CmsExplorer extends CmsWorkplace {
             }
         }
 
-        // the flaturl 
+        // the flat url 
         settings.setExplorerFlaturl(request.getParameter(PARAMETER_FLATURL));
     }
 
@@ -711,7 +711,7 @@ public class CmsExplorer extends CmsWorkplace {
 
     /**
      * Returns a list resources that should be displayed in the 
-     * OpenCms Exlorer.<p>
+     * OpenCms Explorer.<p>
      * 
      * How the list is build depends on the current Workplace settings 
      * of the user.
@@ -759,7 +759,7 @@ public class CmsExplorer extends CmsWorkplace {
     /**
      * Sets the default preferences for the current user if those values are not available.<p>
      * 
-     * @return the int value of the default preferences
+     * @return the integer value of the default preferences
      */
     private int getUserPreferences() {
 
@@ -772,6 +772,7 @@ public class CmsExplorer extends CmsWorkplace {
      * 
      * @param cms the current cms context
      * @param resource the resource to check for
+     * 
      * @return true if the resource exists in the VFS
      */
     private boolean resourceExists(CmsObject cms, String resource) {
