@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2008/01/22 15:35:47 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2008/01/22 15:37:10 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 6.0.0 
  */
@@ -586,11 +586,11 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Checks if the tags needs to release after ending.<p>
+     * Checks if the tags need to release after ending.<p>
      * 
      * Depends on how the servlet container generates code for tags, for instance, this has to be prevented with Resin.<p>
      * 
-     * @return <code>true</code> if the tags needs to release after ending
+     * @return <code>true</code> if the tags need to release after ending
      */
     public boolean isTagsReleaseAfterEndTag() {
 
