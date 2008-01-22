@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2007/12/05 11:16:17 $
- * Version: $Revision: 1.603 $
+ * Date   : $Date: 2008/01/22 15:25:16 $
+ * Version: $Revision: 1.604 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -6590,7 +6590,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param dbc the current database context
      * @param rfsName the rfs name of the resource
      * 
-     * @return the paramter string of the requested resource
+     * @return the parameter string of the requested resource
      * 
      * @throws CmsException if something goes wrong
      */
