@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressWidget.java,v $
- * Date   : $Date: 2007/09/25 14:55:05 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/01/22 15:30:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.0.0
  */
@@ -683,22 +683,35 @@ public class CmsProgressWidget {
             }
         }
 
-        // start the thread
+        // create the thread
         Thread thread = new CmsProgressThread(list, getKey(), list.getLocale());
-        m_threads.put(getKey(), thread);
-        thread.start();
 
-        // clean up abandoned threads
-        Iterator iter = m_threads.entrySet().iterator();
-        while (iter.hasNext()) {
-            Map.Entry entry = (Map.Entry)iter.next();
+        Map threadsAbandoned = new HashMap();
+        Map threadsAlive = new HashMap();
+        synchronized (m_threads) {
 
-            CmsProgressThread value = (CmsProgressThread)entry.getValue();
-            if ((!thread.isAlive()) && (System.currentTimeMillis() - value.getFinishTime() > CLEANUP_PERIOD)) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROGRESS_CLEAN_UP_THREAD_1, getKey()));
+            // clean up abandoned threads
+            for (Iterator iter = m_threads.entrySet().iterator(); iter.hasNext();) {
+                Map.Entry entry = (Map.Entry)iter.next();
+                CmsProgressThread value = (CmsProgressThread)entry.getValue();
+
+                if ((!thread.isAlive()) && (System.currentTimeMillis() - value.getFinishTime() > CLEANUP_PERIOD)) {
+                    threadsAbandoned.put(entry.getKey(), entry.getValue());
+                } else {
+                    threadsAlive.put(entry.getKey(), entry.getValue());
                 }
-                m_threads.remove(entry.getKey());
+            }
+
+            // add and start new thread
+            threadsAlive.put(getKey(), thread);
+            thread.start();
+
+            m_threads = threadsAlive;
+        }
+
+        if (LOG.isDebugEnabled()) {
+            for (Iterator iter = threadsAbandoned.entrySet().iterator(); iter.hasNext();) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROGRESS_CLEAN_UP_THREAD_1, getKey()));
             }
         }
     }
