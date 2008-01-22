@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2006/09/22 15:17:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/01/22 15:41:46 $
+ * Version: $Revision: 1.4.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.2.1 $ 
  * 
  * @since 6.2.0 
  */
@@ -175,7 +175,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         if (scaler.isValid()) {
             // now append the scaler parameters
             imageLink += scaler.toRequestParam();
-        }        
+        }
         result.append(OpenCms.getLinkManager().substituteLink(cms, imageLink));
         result.append("\"");
 
@@ -284,8 +284,10 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
                 throw new javax.servlet.jsp.JspException(ex);
             }
         }
-        // need to release manually, JSP container may not call release as required (happens with Tomcat)
-        release();
+        if (OpenCms.getSystemInfo().isTagsReleaseAfterEndTag()) {
+            // need to release manually, JSP container may not call release as required (happens with Tomcat)
+            release();
+        }
         return EVAL_PAGE;
     }
 

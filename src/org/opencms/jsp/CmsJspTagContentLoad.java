@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2007/06/27 15:33:54 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2008/01/22 15:41:46 $
+ * Version: $Revision: 1.34.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.34.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -321,8 +321,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             // another loop is required
             return EVAL_BODY_AGAIN;
         }
-        // need to release manually, JSP container may not call release as required (happens with Tomcat)
-        release();
+        if (OpenCms.getSystemInfo().isTagsReleaseAfterEndTag()) {
+            // need to release manually, JSP container may not call release as required (happens with Tomcat)
+            release();
+        }
         // no more files are available, so skip the body and finish the loop
         return SKIP_BODY;
     }
@@ -332,8 +334,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
      */
     public int doEndTag() {
 
-        // need to release manually, JSP container may not call release as required (happens with Tomcat)
-        release();
+        if (OpenCms.getSystemInfo().isTagsReleaseAfterEndTag()) {
+            // need to release manually, JSP container may not call release as required (happens with Tomcat)
+            release();
+        }
         return EVAL_PAGE;
     }
 
@@ -754,7 +758,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
         // as no support for getting the historic version that has been cached by a CmsHistoryResourceHandler 
         // will come from there!
         m_content = CmsXmlContentFactory.unmarshal(m_cms, file, pageContext.getRequest());
-        
+
         // check if locale is available
         m_contentLocale = m_locale;
         if (!m_content.hasLocale(m_contentLocale)) {

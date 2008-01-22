@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2006/03/27 14:52:19 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2008/01/22 15:41:46 $
+ * Version: $Revision: 1.26.10.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
@@ -58,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.26.10.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,8 +151,10 @@ public class CmsJspTagContentShow extends TagSupport {
      */
     public int doEndTag() {
 
-        // need to release manually, JSP container may not call release as required (happens with Tomcat)
-        release();
+        if (OpenCms.getSystemInfo().isTagsReleaseAfterEndTag()) {
+            // need to release manually, JSP container may not call release as required (happens with Tomcat)
+            release();
+        }
         return EVAL_PAGE;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParse.java,v $
- * Date   : $Date: 2007/05/29 10:11:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/01/22 15:41:46 $
+ * Version: $Revision: 1.4.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.parse.A_CmsConfiguredHtmlParser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.PrintWriter;
@@ -60,7 +61,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.4.2.1 $
  * 
  * @since 6.1.3
  */
@@ -142,21 +143,22 @@ public class CmsJspTagParse extends BodyTagSupport {
                     getBodyContent().clear();
                     getBodyContent().print(content);
                     getBodyContent().writeOut(pageContext.getOut());
-                    // need to release manually, JSP container may not call release as required
-                    // (happens with Tomcat)
-                    release();
-
+                    if (OpenCms.getSystemInfo().isTagsReleaseAfterEndTag()) {
+                        // need to release manually, JSP container may not call release as required (happens with Tomcat)
+                        release();
+                    }
                 } catch (Exception ex) {
-                    release();
+                    if (OpenCms.getSystemInfo().isTagsReleaseAfterEndTag()) {
+                        // need to release manually, JSP container may not call release as required (happens with Tomcat)
+                        release();
+                    }
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, TAG_NAME), ex);
                     }
                     // this is severe
                     throw new JspException(ex);
                 }
-
             }
-
         }
         return EVAL_PAGE;
     }
@@ -291,9 +293,9 @@ public class CmsJspTagParse extends BodyTagSupport {
      *      tag should not correct missing closing tags.
      */
     public void setNoAutoCloseTags(String noAutoCloseTagList) {
-    
+
         m_noAutoCloseTags = CmsStringUtil.splitAsList(noAutoCloseTagList, ',');
-        
+
     }
 
     /**
