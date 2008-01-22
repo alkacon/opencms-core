@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2007/11/30 14:18:51 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2008/01/22 15:33:40 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,8 +156,8 @@ public class CmsSystemInfo {
     /** The startup time of this OpenCms instance. */
     private long m_startupTime;
 
-    /** If the include tag needs to release after ending, this has to be prevented when running with Resin, for example. */
-    private boolean m_tagIncludeReleaseAfterEndTag = true;
+    /** If the tags needs to release after ending, this has to be prevented when running with Resin, for example. */
+    private boolean m_tagsReleaseAfterEndTag = true;
 
     /** The version identifier of this OpenCms installation, contains "OpenCms/" and the version number. */
     private String m_version;
@@ -586,15 +586,15 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Checks if the include tag needs to release after ending.<p>
+     * Checks if the tags needs to release after ending.<p>
      * 
      * Depends on how the servlet container generates code for tags, for instance, this has to be prevented with Resin.<p>
      * 
-     * @return <code>true</code> if the include tag needs to release after ending
+     * @return <code>true</code> if the tags needs to release after ending
      */
-    public boolean isTagIncludeReleaseAfterEndTag() {
+    public boolean isTagsReleaseAfterEndTag() {
 
-        return m_tagIncludeReleaseAfterEndTag;
+        return m_tagsReleaseAfterEndTag;
     }
 
     /**
@@ -657,8 +657,8 @@ public class CmsSystemInfo {
             // init servlet container dependent parameters
             m_servletContainerName = servletContainerName;
 
-            // the include tag behavior
-            m_tagIncludeReleaseAfterEndTag = !(m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) > -1);
+            // the tags behavior
+            m_tagsReleaseAfterEndTag = !(m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) > -1);
 
             // the request error page attribute
             m_requestErrorPageAttribute = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParse.java,v $
- * Date   : $Date: 2007/08/13 16:29:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/01/22 15:33:40 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.parse.A_CmsConfiguredHtmlParser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.PrintWriter;
@@ -60,7 +61,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.1.3
  */
@@ -81,7 +82,7 @@ public class CmsJspTagParse extends BodyTagSupport {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -6541745426202242240L;
 
-    /** The visitor / parser classname to use. */
+    /** The visitor / parser class name to use. */
     private String m_configuredParserClassname;
 
     /** List of upper case tag name strings of tags that should not be auto-corrected if closing divs are missing. */
@@ -92,8 +93,10 @@ public class CmsJspTagParse extends BodyTagSupport {
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     * 
      * @return EVAL_PAGE
-     * @throws JspException in case soemthing goes wrong
+     * 
+     * @throws JspException in case something goes wrong
      */
     public int doEndTag() throws JspException {
 
@@ -117,7 +120,7 @@ public class CmsJspTagParse extends BodyTagSupport {
                 try {
                     // load
                     Class cl = Class.forName(m_configuredParserClassname);
-                    // instanciate
+                    // Instantiate
                     Object instance = cl.newInstance();
                     // cast
                     parser = (A_CmsConfiguredHtmlParser)instance;
@@ -142,12 +145,16 @@ public class CmsJspTagParse extends BodyTagSupport {
                     getBodyContent().clear();
                     getBodyContent().print(content);
                     getBodyContent().writeOut(pageContext.getOut());
-                    // need to release manually, JSP container may not call release as required
-                    // (happens with Tomcat)
-                    release();
+                    if (OpenCms.getSystemInfo().isTagsReleaseAfterEndTag()) {
+                        // need to release manually, JSP container may not call release as required (happens with Tomcat)
+                        release();
+                    }
 
                 } catch (Exception ex) {
-                    release();
+                    if (OpenCms.getSystemInfo().isTagsReleaseAfterEndTag()) {
+                        // need to release manually, JSP container may not call release as required (happens with Tomcat)
+                        release();
+                    }
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, TAG_NAME), ex);
                     }
@@ -167,7 +174,6 @@ public class CmsJspTagParse extends BodyTagSupport {
      * Returns a <code>String</code> that consists of the comma-separated upper case tag names for which this 
      * tag will not correct missing closing tags. <p>
      * 
-     * 
      * @return a String that consists of the comma-separated upper case tag names for which this 
      *      tag will not correct missing closing tags. 
      */
@@ -184,8 +190,7 @@ public class CmsJspTagParse extends BodyTagSupport {
     }
 
     /**
-     * Returns the param.
-     * <p>
+     * Returns the param.<p>
      * 
      * @return the param
      */
@@ -196,8 +201,7 @@ public class CmsJspTagParse extends BodyTagSupport {
 
     /**
      * Returns the fully qualified class name of the {@link A_CmsConfiguredHtmlParser} class to use
-     * for parsing.
-     * <p>
+     * for parsing.<p>
      * 
      * @return the parserrClass
      */
@@ -207,20 +211,15 @@ public class CmsJspTagParse extends BodyTagSupport {
     }
 
     /**
-     * Internal action method.
-     * <p>
+     * Internal action method.<p>
      * 
-     * Parses (and potentially transforms) a HTMl content block.
-     * <p>
+     * Parses (and potentially transforms) a HTMl content block.<p>
      * 
-     * @param content the content to be parsed / transformed.
+     * @param content the content to be parsed / transformed
+     * @param context needed for getting the encoding / the locale
+     * @param parser the visitor / parser to use
      * 
-     * @param context needed for getting the encoding / the locale.
-     * 
-     * @param parser the visitor / parser to use.
-     * 
-     * @return the transformed content.
-     * 
+     * @return the transformed content
      */
     public String parseTagAction(String content, PageContext context, A_CmsConfiguredHtmlParser parser) {
 
@@ -288,7 +287,7 @@ public class CmsJspTagParse extends BodyTagSupport {
      * tag should not correct missing closing tags.<p>
      * 
      * @param noAutoCloseTagList a <code>String</code> that consists of the comma-separated upper case tag names for which this 
-     *      tag should not correct missing closing tags.
+     *      tag should not correct missing closing tags
      */
     public void setNoAutoCloseTags(String noAutoCloseTagList) {
 
@@ -297,8 +296,7 @@ public class CmsJspTagParse extends BodyTagSupport {
     }
 
     /**
-     * Sets the param.
-     * <p>
+     * Sets the param.<p>
      * 
      * @param param the param to set
      */
@@ -309,11 +307,10 @@ public class CmsJspTagParse extends BodyTagSupport {
 
     /**
      * Sets the fully qualified class name of the {@link A_CmsConfiguredHtmlParser} class to use for
-     * parsing.
-     * <p>
+     * parsing.<p>
      * 
      * @param parserClass the fully qualified class name of the {@link A_CmsConfiguredHtmlParser}
-     *            class to use for parsing.
+     *            class to use for parsing
      */
     public void setParserClass(String parserClass) {
 
