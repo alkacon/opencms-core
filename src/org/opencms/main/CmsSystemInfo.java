@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2008/01/22 15:33:40 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2008/01/22 15:35:47 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,7 +156,7 @@ public class CmsSystemInfo {
     /** The startup time of this OpenCms instance. */
     private long m_startupTime;
 
-    /** If the tags needs to release after ending, this has to be prevented when running with Resin, for example. */
+    /** If the tags need to release after ending, this has to be prevented when running with Resin, for example. */
     private boolean m_tagsReleaseAfterEndTag = true;
 
     /** The version identifier of this OpenCms installation, contains "OpenCms/" and the version number. */
