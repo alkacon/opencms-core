@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2008/01/23 14:07:58 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -44,6 +45,7 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
@@ -79,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -420,7 +422,12 @@ public class CmsChacc extends CmsDialog {
             for (int k = 0; k < allEntries.size(); k++) {
                 CmsAccessControlEntry curEntry = (CmsAccessControlEntry)allEntries.get(k);
                 String curType = getEntryType(curEntry.getFlags(), false);
-                I_CmsPrincipal p = getCms().lookupPrincipal(curEntry.getPrincipal());
+                I_CmsPrincipal p;
+                try {
+                    p = CmsPrincipal.readPrincipalIncludingHistory(getCms(), curEntry.getPrincipal());
+                } catch (CmsException e) {
+                    p = null;
+                }
                 if (((p != null) && p.getName().equals(name) && curType.equals(type))) {
                     flags = curEntry.getFlags();
                     break;
@@ -600,10 +607,11 @@ public class CmsChacc extends CmsDialog {
                     while (entries.hasNext()) {
                         CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
                         if (ace.isResponsible()) {
-                            I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
-                            if (principal != null) {
-                                responsibles.put(principal, rootPath);
-                            } else {
+                            try {
+                                responsibles.put(
+                                    CmsPrincipal.readPrincipalIncludingHistory(cms, ace.getPrincipal()),
+                                    rootPath);
+                            } catch (CmsDbEntryNotFoundException e) {
                                 responsibles.put(ace.getPrincipal(), rootPath);
                             }
                         }
@@ -1398,18 +1406,24 @@ public class CmsChacc extends CmsDialog {
         StringBuffer result = new StringBuffer(8);
 
         // get name and type of the current entry
-        I_CmsPrincipal principal = getCms().lookupPrincipal(entry.getPrincipal());
+        I_CmsPrincipal principal;
+        try {
+            principal = CmsPrincipal.readPrincipalIncludingHistory(getCms(), entry.getPrincipal());
+        } catch (CmsException e) {
+            principal = null;
+        }
+
         String id = (principal != null) ? principal.getName() : entry.getPrincipal().toString();
         String name;
         String ou = null;
         int flags = 0;
-        if (principal instanceof CmsGroup) {
+        if ((principal != null) && principal.isGroup()) {
             name = key(org.opencms.security.Messages.GUI_ORGUNIT_DISPLAY_NAME_2, new Object[] {
                 ((CmsGroup)principal).getDescription(getLocale()),
                 principal.getSimpleName()});
             ou = CmsOrganizationalUnit.getParentFqn(id);
             flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
-        } else if (principal instanceof CmsUser) {
+        } else if ((principal != null) && principal.isUser()) {
             name = ((CmsUser)principal).getFullName();
             ou = CmsOrganizationalUnit.getParentFqn(id);
             flags = CmsAccessControlEntry.ACCESS_FLAGS_USER;
@@ -1732,7 +1746,12 @@ public class CmsChacc extends CmsDialog {
         String fileName = getParamResource();
         int flags = 0;
         try {
-            I_CmsPrincipal p = getCms().lookupPrincipal(id);
+            I_CmsPrincipal p;
+            try {
+                p = CmsPrincipal.readPrincipalIncludingHistory(getCms(), id);
+            } catch (CmsException e) {
+                p = null;
+            }
             if ((p != null) && p.isGroup()) {
                 flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
             } else if ((p != null) && p.isUser()) {

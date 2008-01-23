@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/01/03 16:50:50 $
- * Version: $Revision: 1.962 $
+ * Date   : $Date: 2008/01/23 14:07:58 $
+ * Version: $Revision: 1.963 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,8 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with HTTP 500 error if clients send If-Modified-Since date header in wrong format 
 * Fixed issue with login form direct access for hidden organizational units
 * Fixed issue with the lock icon when logged in an ou different from the root ou
+* Fixed issue with the disabled context menu item for direct publishing, showing a wrong message when not having enough permissions
+* Fixed issue with the permissions dialog showing right user/group names from the history if deleted
 - Improved support for servlet container Weblogic 9 (no servlet options needed anymore)
 - Improved default permission settings
 - Change type dialog now also considers resource type limitation settings as new resource dialog
