@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserTransferList.java,v $
- * Date   : $Date: 2007/08/13 16:29:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/01/23 14:19:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,6 +129,18 @@ public class CmsUserTransferList extends A_CmsListDialog {
     }
 
     /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsUserTransferList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
      * Protected constructor.<p>
      * 
      * @param listId the id of the specialized list
@@ -143,45 +155,6 @@ public class CmsUserTransferList extends A_CmsListDialog {
             LIST_COLUMN_NAME,
             CmsListOrderEnum.ORDER_ASCENDING,
             null);
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsUserTransferList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
-     */
-    protected String customHtmlStart() {
-
-        StringBuffer result = new StringBuffer(2048);
-        result.append(dialogBlockStart(Messages.get().container(Messages.GUI_USERS_TRANSFER_NOTICE_0).key(getLocale())));
-        result.append("\n");
-        if (getCurrentToolPath().indexOf("/edit/") < 0) {
-            result.append(key(Messages.GUI_USER_DEPENDENCIES_SELECTED_USERS_0));
-            result.append(":<br>\n");
-            List users = CmsStringUtil.splitAsList(getUserName(), CmsHtmlList.ITEM_SEPARATOR, true);
-            result.append("<ul>\n");
-            Iterator it = users.iterator();
-            while (it.hasNext()) {
-                String name = (String)it.next();
-                result.append("<li>");
-                result.append(name);
-                result.append("</li>\n");
-            }
-            result.append("</ul>\n");
-        }
-        result.append(key(Messages.GUI_USERS_TRANSFER_NOTICE_TEXT_0));
-        result.append(dialogBlockEnd());
-        return result.toString();
     }
 
     /**
@@ -249,6 +222,33 @@ public class CmsUserTransferList extends A_CmsListDialog {
     }
 
     /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
+     */
+    protected String customHtmlStart() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append(dialogBlockStart(Messages.get().container(Messages.GUI_USERS_TRANSFER_NOTICE_0).key(getLocale())));
+        result.append("\n");
+        if (getCurrentToolPath().indexOf("/edit/") < 0) {
+            result.append(key(Messages.GUI_USER_DEPENDENCIES_SELECTED_USERS_0));
+            result.append(":<br>\n");
+            List users = CmsStringUtil.splitAsList(getUserName(), CmsHtmlList.ITEM_SEPARATOR, true);
+            result.append("<ul>\n");
+            Iterator it = users.iterator();
+            while (it.hasNext()) {
+                String name = (String)it.next();
+                result.append("<li>");
+                result.append(name);
+                result.append("</li>\n");
+            }
+            result.append("</ul>\n");
+        }
+        result.append(key(Messages.GUI_USERS_TRANSFER_NOTICE_TEXT_0));
+        result.append(dialogBlockEnd());
+        return result.toString();
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
     protected void fillDetails(String detailId) {
@@ -313,10 +313,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
                 continue;
             }
             CmsListItem item = getList().newItem(user.getId().toString());
-            item.set(LIST_COLUMN_LOGIN, user.getName());
-            item.set(LIST_COLUMN_NAME, user.getFullName());
-            item.set(LIST_COLUMN_EMAIL, user.getEmail());
-            item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
+            setUserData(user, item);
             ret.add(item);
         }
         return ret;
@@ -331,10 +328,7 @@ public class CmsUserTransferList extends A_CmsListDialog {
      */
     protected List getUsers() throws CmsException {
 
-        return CmsPrincipal.filterCore(OpenCms.getOrgUnitManager().getUsers(
-            getCms(),
-            "",
-            true));
+        return CmsPrincipal.filterCore(OpenCms.getOrgUnitManager().getUsers(getCms(), "", true));
     }
 
     /**
@@ -403,20 +397,6 @@ public class CmsUserTransferList extends A_CmsListDialog {
     }
 
     /**
-     * Sets the icon actions for the transfer list.<p>
-     * 
-     * @param transferCol the column to set the action
-     */
-    protected void setTransferAction(CmsListColumnDefinition transferCol) {
-
-        CmsListDirectAction transferAction = new CmsListDirectAction(LIST_ACTION_TRANSFER);
-        transferAction.setName(Messages.get().container(Messages.GUI_USERS_TRANSFER_LIST_ACTION_TRANSFER_NAME_0));
-        transferAction.setHelpText(Messages.get().container(Messages.GUI_USERS_TRANSFER_LIST_ACTION_TRANSFER_HELP_0));
-        transferAction.setIconPath(PATH_BUTTONS + "user.png");
-        transferCol.addDirectAction(transferAction);
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
@@ -459,6 +439,34 @@ public class CmsUserTransferList extends A_CmsListDialog {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op
+    }
+
+    /**
+     * Sets the icon actions for the transfer list.<p>
+     * 
+     * @param transferCol the column to set the action
+     */
+    protected void setTransferAction(CmsListColumnDefinition transferCol) {
+
+        CmsListDirectAction transferAction = new CmsListDirectAction(LIST_ACTION_TRANSFER);
+        transferAction.setName(Messages.get().container(Messages.GUI_USERS_TRANSFER_LIST_ACTION_TRANSFER_NAME_0));
+        transferAction.setHelpText(Messages.get().container(Messages.GUI_USERS_TRANSFER_LIST_ACTION_TRANSFER_HELP_0));
+        transferAction.setIconPath(PATH_BUTTONS + "user.png");
+        transferCol.addDirectAction(transferAction);
+    }
+
+    /**
+     * Sets all needed data of the user into the list item object.<p>
+     * 
+     * @param user the user to set the data for
+     * @param item the list item object to set the data into
+     */
+    protected void setUserData(CmsUser user, CmsListItem item) {
+
+        item.set(LIST_COLUMN_LOGIN, user.getName());
+        item.set(LIST_COLUMN_NAME, user.getFullName());
+        item.set(LIST_COLUMN_EMAIL, user.getEmail());
+        item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
     }
 
     /**

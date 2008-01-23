@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersAllOrgUnitsList.java,v $
- * Date   : $Date: 2007/08/13 16:29:45 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/01/23 14:19:37 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPrincipal;
-import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
@@ -62,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  */
@@ -164,22 +163,6 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getListItems()
-     */
-    protected List getListItems() throws CmsException {
-
-        List listItems = super.getListItems();
-        Iterator itListItems = listItems.iterator();
-        while (itListItems.hasNext()) {
-            CmsListItem item = (CmsListItem)itListItems.next();
-            CmsUser user = getCms().readUser(new CmsUUID(item.getId()));
-            item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
-        }
-
-        return listItems;
-    }
-
-    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getUsers()
      */
     protected List getUsers() throws CmsException {
@@ -270,6 +253,15 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setUserData(org.opencms.file.CmsUser, org.opencms.workplace.list.CmsListItem)
+     */
+    protected void setUserData(CmsUser user, CmsListItem item) {
+
+        super.setUserData(user, item);
+        item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
     }
 
     /**

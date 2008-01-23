@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2007/10/09 15:46:10 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2008/01/23 14:19:37 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -269,14 +269,25 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         while (itUsers.hasNext()) {
             CmsUser user = (CmsUser)itUsers.next();
             CmsListItem item = getList().newItem(user.getId().toString());
-            item.set(LIST_COLUMN_LOGIN, user.getName());
-            item.set(LIST_COLUMN_NAME, user.getSimpleName());
-            item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
-            item.set(LIST_COLUMN_FULLNAME, user.getFullName());
+            setUserData(user, item);
             ret.add(item);
         }
 
         return ret;
+    }
+
+    /**
+     * Sets all needed data of the user into the list item object.<p>
+     * 
+     * @param user the user to set the data for
+     * @param item the list item object to set the data into
+     */
+    protected void setUserData(CmsUser user, CmsListItem item) {
+
+        item.set(LIST_COLUMN_LOGIN, user.getName());
+        item.set(LIST_COLUMN_NAME, user.getSimpleName());
+        item.set(LIST_COLUMN_ORGUNIT, CmsOrganizationalUnit.SEPARATOR + user.getOuFqn());
+        item.set(LIST_COLUMN_FULLNAME, user.getFullName());
     }
 
     /**

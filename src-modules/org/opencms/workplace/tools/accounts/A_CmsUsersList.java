@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUsersList.java,v $
- * Date   : $Date: 2007/11/19 14:40:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/01/23 14:19:37 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,6 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
-import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -73,7 +72,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,6 +122,9 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_LOGIN = "ci";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_ENABLED = "ceb";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_NAME = "cn";
@@ -408,11 +410,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         while (itUsers.hasNext()) {
             CmsUser user = (CmsUser)itUsers.next();
             CmsListItem item = getList().newItem(user.getId().toString());
-            item.set(LIST_COLUMN_LOGIN, user.getName());
-            item.set(LIST_COLUMN_DISPLAY, user.getSimpleName());
-            item.set(LIST_COLUMN_NAME, user.getFullName());
-            item.set(LIST_COLUMN_EMAIL, user.getEmail());
-            item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
+            setUserData(user, item);
             ret.add(item);
         }
         CmsListColumnDefinition colDef = getList().getMetadata().getColumnDefinition(LIST_COLUMN_ROLE);
@@ -530,15 +528,14 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
              */
             public boolean isVisible() {
 
-                if (getItem() != null) {
-                    String usrId = getItem().getId();
-                    try {
-                        return !getCms().readUser(new CmsUUID(usrId)).isEnabled();
-                    } catch (CmsException e) {
-                        return false;
-                    }
+                if (getItem() == null) {
+                    return super.isVisible();
                 }
-                return super.isVisible();
+                Boolean enabled = (Boolean)getItem().get(LIST_COLUMN_ENABLED);
+                if (enabled == null) {
+                    return super.isVisible();
+                }
+                return !enabled.booleanValue();
             }
         };
         actAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_NAME_0));
@@ -555,15 +552,14 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
              */
             public boolean isVisible() {
 
-                if (getItem() != null) {
-                    String usrId = getItem().getId();
-                    try {
-                        return getCms().readUser(new CmsUUID(usrId)).isEnabled();
-                    } catch (CmsException e) {
-                        return false;
-                    }
+                if (getItem() == null) {
+                    return super.isVisible();
                 }
-                return super.isVisible();
+                Boolean enabled = (Boolean)getItem().get(LIST_COLUMN_ENABLED);
+                if (enabled == null) {
+                    return super.isVisible();
+                }
+                return enabled.booleanValue();
             }
         };
         deactAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_NAME_0));
@@ -626,6 +622,12 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         lastLoginCol.setWidth("20%");
         lastLoginCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(lastLoginCol);
+
+        // add column for enabled/disable
+        CmsListColumnDefinition flagCol = new CmsListColumnDefinition(LIST_COLUMN_ENABLED);
+        flagCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_0));
+        flagCol.setVisible(false);
+        metadata.addColumn(flagCol);
     }
 
     /**
@@ -721,6 +723,22 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             Messages.GUI_USERS_LIST_MACTION_DEACTIVATE_CONF_0));
         deactivateUser.setIconPath(ICON_MULTI_DEACTIVATE);
         metadata.addMultiAction(deactivateUser);
+    }
+
+    /**
+     * Sets all needed data of the user into the list item object.<p>
+     * 
+     * @param user the user to set the data for
+     * @param item the list item object to set the data into
+     */
+    protected void setUserData(CmsUser user, CmsListItem item) {
+
+        item.set(LIST_COLUMN_LOGIN, user.getName());
+        item.set(LIST_COLUMN_DISPLAY, user.getSimpleName());
+        item.set(LIST_COLUMN_NAME, user.getFullName());
+        item.set(LIST_COLUMN_EMAIL, user.getEmail());
+        item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
+        item.set(LIST_COLUMN_ENABLED, new Boolean(user.isEnabled()));
     }
 
     /**
