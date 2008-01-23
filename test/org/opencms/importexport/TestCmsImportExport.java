@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2007/09/25 08:40:15 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2008/01/23 14:48:28 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
@@ -46,23 +47,25 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.lock.CmsLockFilter;
 import org.opencms.main.OpenCms;
-import org.opencms.report.CmsShellReport;
-import org.opencms.security.CmsDefaultPasswordHandler;
-import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.relations.I_CmsLinkParseable;
+import org.opencms.report.CmsShellReport;
+import org.opencms.security.CmsDefaultPasswordHandler;
+import org.opencms.security.I_CmsPasswordHandler;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -107,6 +110,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsImportExport.class.getName());
 
+        suite.addTest(new TestCmsImportExport("testImportSiblingIssue"));
+        suite.addTest(new TestCmsImportExport("testImportPermissionIssue"));
         suite.addTest(new TestCmsImportExport("testImportMovedFolder"));
         suite.addTest(new TestCmsImportExport("testImportWrongSite"));
         suite.addTest(new TestCmsImportExport("testSetup"));
@@ -123,6 +128,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         suite.addTest(new TestCmsImportExport("testImportMovedResource"));
         suite.addTest(new TestCmsImportExport("testImportChangedContent"));
         suite.addTest(new TestCmsImportExport("testImportRelations"));
+        suite.addTest(new TestCmsImportExport("testImportContentIssue"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -217,6 +223,117 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
 
             assertFilter(cms, filename1, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        } finally {
+            try {
+                if (zipExportFilename != null) {
+                    File file = new File(zipExportFilename);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+            } catch (Throwable t) {
+                // intentionally left blank
+            }
+        }
+    }
+
+    /**
+     * Tests the import of a resource overwriting a sibling with different type.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testImportContentIssue() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing the import of a resource overwriting a sibling with different type.");
+
+        String filename = "/newfileContentIssue.html";
+        String sibname = "/system/sib.jsp";
+        String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/testImportContentIssue.zip");
+
+        String site = cms.getRequestContext().getSiteRoot();
+        try {
+            // create file
+            cms.createResource(filename, CmsResourceTypeJsp.getStaticTypeId(), "hello jsp".getBytes(), null);
+            cms.unlockResource(filename);
+
+            // create sibling
+            cms.getRequestContext().setSiteRoot("/");
+            cms.createSibling(site + filename, sibname, null);
+            cms.unlockResource(sibname);
+
+            // publish the files
+            OpenCms.getPublishManager().publishResource(
+                cms,
+                sibname,
+                true,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            storeResources(cms, site + filename);
+            storeResources(cms, sibname);
+
+            // export the file
+            cms.getRequestContext().setSiteRoot(site);
+            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+            vfsExportHandler.setFileName(zipExportFilename);
+            List exportPaths = new ArrayList(1);
+            exportPaths.add(filename);
+            vfsExportHandler.setExportPaths(exportPaths);
+            vfsExportHandler.setIncludeSystem(false);
+            vfsExportHandler.setIncludeUnchanged(true);
+            vfsExportHandler.setExportUserdata(false);
+            OpenCms.getImportExportManager().exportData(
+                cms,
+                vfsExportHandler,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // delete file, keep sibling
+            cms.lockResource(filename);
+            cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            OpenCms.getPublishManager().publishResource(cms, filename);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            // create a new file instead
+            cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId(), "hello txt".getBytes(), null);
+
+            // publish the file
+            cms.unlockResource(filename);
+            OpenCms.getPublishManager().publishResource(cms, filename);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            // re-import the exported files
+            OpenCms.getImportExportManager().importData(
+                cms,
+                zipExportFilename,
+                "/",
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // publish the file
+            cms.unlockResource(filename);
+            OpenCms.getPublishManager().publishResource(
+                cms,
+                filename,
+                true,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            // assert
+            cms.getRequestContext().setSiteRoot("/");
+
+            OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter(
+                OpenCmsTestResourceFilter.FILTER_EQUAL);
+            filter.disableSiblingCountTest();
+            assertFilter(cms, cms.readResource(sibname), filter);
+            filter = new OpenCmsTestResourceConfigurableFilter(OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
+            filter.disableSiblingCountTest();
+            filter.disableDateCreatedTest();
+            filter.disableDateCreatedSecTest();
+            filter.disableResourceIdTest();
+            filter.disableStructureIdTest();
+            assertFilter(cms, cms.readResource(site + filename), filter);
         } finally {
             try {
                 if (zipExportFilename != null) {
@@ -751,6 +868,81 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             assertFalse(cms.existsResource(filename1));
             assertTrue(cms.existsResource(filename2));
+        } finally {
+            try {
+                if (zipExportFilename != null) {
+                    File file = new File(zipExportFilename);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+            } catch (Throwable t) {
+                // intentionally left blank
+            }
+        }
+    }
+
+    /**
+     * Tests the import of a resource with permissions.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testImportPermissionIssue() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing the import of a resource with permissions.");
+
+        String filename = "/index.html";
+        String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/testImportPermissionIssue.zip");
+
+        try {
+            // set permissions
+            cms.lockResource(filename);
+            cms.chacc(filename, I_CmsPrincipal.PRINCIPAL_USER, "test1", "+r-v");
+            cms.unlockResource(filename);
+
+            // export the file
+            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+            vfsExportHandler.setFileName(zipExportFilename);
+            List exportPaths = new ArrayList(1);
+            exportPaths.add(filename);
+            vfsExportHandler.setExportPaths(exportPaths);
+            vfsExportHandler.setIncludeSystem(false);
+            vfsExportHandler.setIncludeUnchanged(true);
+            vfsExportHandler.setExportUserdata(false);
+            OpenCms.getImportExportManager().exportData(
+                cms,
+                vfsExportHandler,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // change permissions
+            cms.lockResource(filename);
+            cms.chacc(filename, I_CmsPrincipal.PRINCIPAL_USER, "test1", "-r+v");
+            cms.chacc(filename, I_CmsPrincipal.PRINCIPAL_USER, "test2", "+r+w");
+            cms.unlockResource(filename);
+
+            // re-import the exported files
+            OpenCms.getImportExportManager().importData(
+                cms,
+                zipExportFilename,
+                "/",
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // publish the file
+            cms.unlockResource(filename);
+            OpenCms.getPublishManager().publishResource(
+                cms,
+                filename,
+                true,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            // ace in import wins
+            assertPermissionString(cms, filename, cms.readUser("test1"), "+r-v-i-l");
+            // ace that are not in the import are removed
+            assertPermissionString(cms, filename, cms.readUser("test2"), null);
         } finally {
             try {
                 if (zipExportFilename != null) {
@@ -1441,6 +1633,102 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             OpenCms.getPublishManager().waitWhileRunning();
 
             assertFilter(cms, cms.readResource(filename1), OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT_SIBLING);
+        } finally {
+            try {
+                if (zipExportFilename != null) {
+                    File file = new File(zipExportFilename);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+            } catch (Throwable t) {
+                // intentionally left blank
+            }
+        }
+    }
+
+    /**
+     * Tests the import of a (non-existing) sibling of a file in a different site.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testImportSiblingIssue() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing the import of a (non-existing) sibling of a file in a different site.");
+
+        String filename = "/newfileSiblingIssue.html";
+        String sibname = "/system/sibIssue.jsp";
+        String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/testImportSiblingIssue.zip");
+
+        String site = cms.getRequestContext().getSiteRoot();
+        try {
+            // create file
+            cms.createResource(filename, CmsResourceTypeJsp.getStaticTypeId(), "hello jsp".getBytes(), null);
+            cms.unlockResource(filename);
+
+            // create sibling
+            cms.getRequestContext().setSiteRoot("/");
+            cms.createSibling(site + filename, sibname, null);
+            cms.unlockResource(sibname);
+
+            // publish the files
+            OpenCms.getPublishManager().publishResource(
+                cms,
+                sibname,
+                true,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            storeResources(cms, site + filename);
+            storeResources(cms, sibname);
+
+            // export the sibling
+            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+            vfsExportHandler.setFileName(zipExportFilename);
+            List exportPaths = new ArrayList(1);
+            exportPaths.add(sibname);
+            vfsExportHandler.setExportPaths(exportPaths);
+            vfsExportHandler.setIncludeSystem(true);
+            vfsExportHandler.setIncludeUnchanged(true);
+            vfsExportHandler.setExportUserdata(false);
+            OpenCms.getImportExportManager().exportData(
+                cms,
+                vfsExportHandler,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // delete sibling, keep file
+            cms.lockResource(sibname);
+            cms.deleteResource(sibname, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            OpenCms.getPublishManager().publishResource(cms, sibname);
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            // re-import the exported sibling
+            OpenCms.getImportExportManager().importData(
+                cms,
+                zipExportFilename,
+                "/",
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            // publish the sibling
+            cms.unlockResource(sibname);
+            OpenCms.getPublishManager().publishResource(
+                cms,
+                sibname,
+                true,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+            OpenCms.getPublishManager().waitWhileRunning();
+
+            // assert
+            OpenCmsTestResourceConfigurableFilter filter = new OpenCmsTestResourceConfigurableFilter(
+                OpenCmsTestResourceFilter.FILTER_EQUAL);
+            filter.disableDateContentTest();
+            filter.disableDateLastModifiedSecTest();
+            filter.disableDateLastModifiedTest();
+            assertFilter(cms, cms.readResource(site + filename), filter);
+            assertFilter(cms, cms.readResource(sibname), OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
         } finally {
             try {
                 if (zipExportFilename != null) {
