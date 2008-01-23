@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2007/11/06 16:40:00 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2008/01/23 14:48:50 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.62 $ 
+ * @version $Revision: 1.63 $ 
  * 
  * @since 6.0.0 
  */
@@ -587,6 +587,68 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public void cacheXmlTemporaryEntity(String key, byte[] content) {
 
         m_xmlTemporaryEntityCache.put(key, content);
+    }
+
+    /**
+     * Clears the access control list cache when access control entries are changed.<p>
+     */
+    public void clearAccessControlListCache() {
+
+        flushACLs();
+        flushPermissions();
+        clearResourceCache();
+    }
+
+    /**
+     * Clears almost all internal caches.<p>
+     */
+    public void clearCache() {
+
+        clearPrincipalsCache();
+
+        flushProjects();
+        flushResources();
+        flushResourceLists();
+        flushProperties();
+        flushPropertyLists();
+        flushProjectResources();
+    }
+
+    /**
+     * Clears all internal principal-related caches.<p>
+     */
+    public void clearPrincipalsCache() {
+
+        flushUsers();
+        flushGroups();
+        flushOrgUnits();
+        flushUserGroups();
+        flushACLs();
+        flushPermissions();
+        flushRoles();
+        flushRoleLists();
+    }
+
+    /**
+     * Clears all the depending caches when a resource was changed.<p>
+     */
+    public void clearResourceCache() {
+
+        flushResources();
+        flushRoles();
+        flushRoleLists();
+        flushResourceLists();
+    }
+
+    /**
+     * Clears the user cache for the given user.<p>
+     * 
+     * @param user the user
+     */
+    public void clearUserCache(CmsUser user) {
+
+        uncacheUser(user);
+        flushResourceLists();
     }
 
     /**
@@ -1442,11 +1504,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
-     * Checks if some kind of persistency is required.<p>
+     * Checks if some kind of persistence is required.<p>
      * 
      * This could be overwritten in a distributed environment.<p>
      * 
-     * @return <code>true</code> if some kind of persistency is required
+     * @return <code>true</code> if some kind of persistence is required
      */
     public boolean requiresPersistency() {
 
@@ -1616,9 +1678,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the cache costs of a monitored object.<p>
-     * obj must be of type CmsLruCache 
+     * 
+     * <code>obj</code> must be of type {@link CmsLruCache}.<p>
      * 
      * @param obj the object
+     * 
      * @return the cache costs or "-"
      */
     private long getCosts(Object obj) {
@@ -1636,9 +1700,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /**
      * Returns the number of items within a monitored object.<p>
-     * obj must be of type CmsLruCache, CmsLruHashMap or Map
+     * 
+     * <code>obj</code> must be of type {@link CmsLruCache} or {@link Map}.<p>
      * 
      * @param obj the object
+     * 
      * @return the number of items or "-"
      */
     private String getItems(Object obj) {
@@ -1655,10 +1721,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /**
      * Returns the total size of key strings within a monitored map.<p>
      * 
-     * the keys must be of type String.<p>
+     * The keys must be of type {@link String}.<p>
      * 
      * @param map the map
      * @param depth the max recursion depth for calculation the size
+     * 
      * @return total size of key strings
      */
     private long getKeySize(Map map, int depth) {
@@ -1702,7 +1769,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /**
      * Returns the total size of key strings within a monitored object.<p>
      * 
-     * obj must be of type {@link Map}, the keys must be of type {@link String}.<p>
+     * <code>obj</code> must be of type {@link Map}, the keys must be of type {@link String}.<p>
      * 
      * @param obj the object
      * 
@@ -1720,7 +1787,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /**
      * Returns the max costs for all items within a monitored object.<p>
      * 
-     * obj must be of type {@link CmsLruCache} or {@link LRUMap}.<p>
+     * <code>obj</code> must be of type {@link CmsLruCache} or {@link LRUMap}.<p>
      * 
      * @param obj the object
      * 
@@ -2020,7 +2087,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             // if status is disabled, log no warn entry if warn interval has not passed
             return;
         } else if ((!warning) && (m_intervalLog <= 0)) {
-            // if log iterval is <= 0 status log is disabled
+            // if log interval is <= 0 status log is disabled
             return;
         }
 
@@ -2136,11 +2203,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
-     * Updatres the memory information of the memory monitor.<p> 
+     * Updates the memory information of the memory monitor.<p> 
      */
     private void updateStatus() {
 
         m_memoryCurrent.update();
         m_memoryAverage.calculateAverage(m_memoryCurrent);
     }
+
 }

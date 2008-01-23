@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2007/11/19 14:40:53 $
- * Version: $Revision: 1.118 $
+ * Date   : $Date: 2008/01/23 14:48:50 $
+ * Version: $Revision: 1.119 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.118 $
+ * @version $Revision: 1.119 $
  * 
  * @since 6.0.0 
  */
@@ -2291,7 +2291,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         // clear the internal caches
-        m_driverManager.clearAccessControlListCache();
+        OpenCms.getMemoryMonitor().clearAccessControlListCache();
         OpenCms.getMemoryMonitor().flushProperties();
         OpenCms.getMemoryMonitor().flushPropertyLists();
 
@@ -2399,7 +2399,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             filter);
 
         // flush all relevant caches
-        m_driverManager.clearAccessControlListCache();
+        OpenCms.getMemoryMonitor().clearAccessControlListCache();
         OpenCms.getMemoryMonitor().flushProperties();
         OpenCms.getMemoryMonitor().flushPropertyLists();
         OpenCms.getMemoryMonitor().flushProjectResources();
