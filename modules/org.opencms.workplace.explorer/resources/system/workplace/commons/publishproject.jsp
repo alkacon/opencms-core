@@ -4,6 +4,7 @@
 		org.opencms.workplace.CmsWorkplace,
 		org.opencms.workplace.commons.CmsPublishProject,
 		org.opencms.workplace.commons.CmsProgressWidget,
+		org.opencms.workplace.commons.CmsPublishResourcesList,
 		org.opencms.workplace.commons.Messages,
 		java.util.List,
 		java.util.ArrayList
@@ -162,8 +163,12 @@ function restartProgress() {
 	<table border="0" align="center" style="vertical-align:middle; height: 200px;">
 		<tr>
 			<td valign="middle">
-				<% wp.getProgress().startProgress(wp.getPublishResourcesList()); %>
-				<%= wp.getProgress().getWidget() %> 
+<%
+	CmsPublishResourcesList list = wp.getPublishResourcesList();
+    if (list != null) {
+	   wp.getProgress().startProgress(list); 
+ %><%= wp.getProgress().getWidget() %><% 
+    } %>
 			</td>
 		</tr>
 	</table>

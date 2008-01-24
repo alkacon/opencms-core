@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2007/09/25 09:26:26 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2008/01/24 09:32:26 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -761,6 +761,11 @@ public class CmsPublishProject extends CmsMultiDialog {
 
             // merge publish list with related resources if needed
             CmsPublishList publishList = getSettings().getPublishList();
+            if (publishList == null) { // this may happen if the user has not publish permissions (with multi selection)
+                // no publish permissions for the resource, set cancel action to close dialog
+                setAction(ACTION_CANCEL);
+                return;
+            }
             if (Boolean.valueOf(getParamRelatedresources()).booleanValue() && publishList.isDirectPublish()) {
                 try {
                     // try to find the publish list with related related resources in the progress thread
