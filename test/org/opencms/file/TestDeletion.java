@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2007/08/13 16:29:56 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/01/24 16:40:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsPermissionViolationException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -54,7 +55,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -86,6 +87,7 @@ public class TestDeletion extends OpenCmsTestCase {
         suite.addTest(new TestDeletion("testDeleteFolderWithUnvisibleResources"));
         suite.addTest(new TestDeletion("testDeleteFolderWithLockedSiblings"));
         suite.addTest(new TestDeletion("testDeleteFolderWithLockedResources"));
+        suite.addTest(new TestDeletion("testDeleteWithoutWritePermissions"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -298,6 +300,52 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         assertEquals(cms.readResource(folder + file, CmsResourceFilter.ALL).getState(), CmsResource.STATE_DELETED);
+    }
+
+    /**
+     * Tests to delete a folder with no write permission on a subresource.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testDeleteWithoutWritePermissions() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to delete a folder with no write permission on a subresource");
+
+        // Creating paths
+        String folder = "/folder1/";
+        String test = "subfolder11/";
+
+        List list = cms.readResources(folder, CmsResourceFilter.ALL, true);
+        int files = list.size();
+
+        // remove read permission for test2
+        cms.lockResource(folder);
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test2", "+r+w+v+i");
+        cms.chacc(folder + test, I_CmsPrincipal.PRINCIPAL_USER, "test2", "+r-w+v+i");
+        cms.unlockResource(folder);
+
+        // login as test2
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        cms.lockResource(folder);
+        // try delete the folder
+        try {
+            cms.deleteResource(folder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            fail("to delete a resource with no write permission on a subresource should fail");
+        } catch (CmsPermissionViolationException e) {
+            // ok
+        }
+
+        // login as Admin for testing
+        cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        assertEquals("there missing files after deletion try", files, cms.readResources(
+            folder,
+            CmsResourceFilter.ALL,
+            true).size());
     }
 
     /**

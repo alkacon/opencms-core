@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2007/12/19 16:54:00 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2008/01/24 16:40:20 $
+ * Version: $Revision: 1.111 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1391,6 +1391,23 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             checkSystemLocks(dbc, resource);
+
+            // check write permissions for subresources in case of deleting a folder
+            if (resource.isFolder()) {
+                dbc.getRequestContext().setAttribute(I_CmsVfsDriver.REQ_ATTR_CHECK_PERMISSIONS, Boolean.TRUE);
+                try {
+                    m_driverManager.getVfsDriver().removeFolder(dbc, dbc.currentProject(), resource);
+                } catch (CmsDataAccessException e) {
+                    // unwrap the permission violation exception
+                    if (e.getCause() instanceof CmsPermissionViolationException) {
+                        throw (CmsPermissionViolationException)e.getCause();
+                    } else {
+                        throw e;
+                    }
+                }
+                dbc.getRequestContext().removeAttribute(I_CmsVfsDriver.REQ_ATTR_CHECK_PERMISSIONS);
+            }
+
             deleteResource(dbc, resource, siblingMode);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_RESOURCE_1, context.getSitePath(resource)), e);
@@ -2968,7 +2985,25 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, source, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
             checkSystemLocks(dbc, source);
 
-            // no permissions are checked for subresources in case of moving a folder
+            // check write permissions for subresources in case of moving a folder
+            if (source.isFolder()) {
+                dbc.getRequestContext().setAttribute(I_CmsVfsDriver.REQ_ATTR_CHECK_PERMISSIONS, Boolean.TRUE);
+                try {
+                    m_driverManager.getVfsDriver().moveResource(
+                        dbc,
+                        dbc.currentProject().getUuid(),
+                        source,
+                        destination);
+                } catch (CmsDataAccessException e) {
+                    // unwrap the permission violation exception
+                    if (e.getCause() instanceof CmsPermissionViolationException) {
+                        throw (CmsPermissionViolationException)e.getCause();
+                    } else {
+                        throw e;
+                    }
+                }
+                dbc.getRequestContext().removeAttribute(I_CmsVfsDriver.REQ_ATTR_CHECK_PERMISSIONS);
+            }
             moveResource(dbc, source, destination);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -5631,7 +5666,7 @@ public final class CmsSecurityManager {
                 // ensure folder name end's with a /
                 destination = destination.concat("/");
             }
-            // collect all resources in the folder (including everything)
+            // collect all resources in the folder without checking permissions
             resources = m_driverManager.readChildResources(dbc, source, CmsResourceFilter.ALL, true, true, false);
         }
 

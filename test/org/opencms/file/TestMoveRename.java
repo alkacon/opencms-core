@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2008/01/24 16:40:20 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,8 @@ import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
+import java.util.List;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -55,7 +57,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
 
@@ -89,8 +91,10 @@ public class TestMoveRename extends OpenCmsTestCase {
         suite.addTest(new TestMoveRename("testMultipleMoveResource"));
         suite.addTest(new TestMoveRename("testMoveFolderToOwnSubfolder"));
         suite.addTest(new TestMoveRename("testOverwriteMovedResource"));
-        suite.addTest(new TestMoveRename("testMoveWithoutPermissions"));
+        suite.addTest(new TestMoveRename("testMoveTargetWithoutPermissions"));
         suite.addTest(new TestMoveRename("testMoveDeleted"));
+        suite.addTest(new TestMoveRename("testMoveSourceWithoutReadPermissions"));
+        suite.addTest(new TestMoveRename("testMoveSourceWithoutWritePermissions"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -282,34 +286,98 @@ public class TestMoveRename extends OpenCmsTestCase {
     }
 
     /**
-     * Tests to move a file into an as deleted marked folder.<p>
+     * Tests to move a folder with no read permission on a source subresource.<p>
      * 
      * @throws Exception if the test fails
      */
-    public void testMoveToDeletedFolder() throws Exception {
+    public void testMoveSourceWithoutReadPermissions() throws Exception {
 
         CmsObject cms = getCmsObject();
-        echo("Testing to move a file into an as deleted marked folder");
+        echo("Testing to move a folder with no read permission on a source subresource");
 
-        String deletedFolder = "/folder1/subfolder11/";
-        String file = "index.html";
+        // Creating paths
+        String source = "/folder1/";
+        String folder = "/mytestfolder4/";
+        String test = "subfolder11/";
+        String destinationFolder = "/mytestfolder5/";
 
-        cms.lockResource(deletedFolder);
-        cms.deleteResource(deletedFolder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.copyResource(source, folder);
+        cms.copyResource(source, folder + test);
 
-        cms.lockResource(file);
+        List list = cms.readResources(folder, CmsResourceFilter.ALL, true);
+        int files = list.size();
+
+        // remove read permission for test2, this should not be a problem when moving
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test2", "+r+w+v+i");
+        cms.chacc(folder + test, I_CmsPrincipal.PRINCIPAL_USER, "test2", "-r+w+v+i");
+        cms.unlockResource(folder);
+
+        // login as test2
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        cms.lockResource(folder);
+        // move the folder
+        cms.moveResource(folder, destinationFolder);
+
+        // login as Admin for testing
+        cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        assertEquals("there missing files after moving", files, cms.readResources(
+            destinationFolder,
+            CmsResourceFilter.ALL,
+            true).size());
+    }
+
+    /**
+     * Tests to move a folder with no write permission on a source subresource.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMoveSourceWithoutWritePermissions() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to move a folder with no write permission on a source subresource");
+
+        // Creating paths
+        String source = "/folder1/";
+        String folder = "/mytestfolder6/";
+        String test = "subfolder11/";
+        String destinationFolder = "/mytestfolder7/";
+
+        cms.copyResource(source, folder);
+        cms.copyResource(source, folder + test);
+
+        List list = cms.readResources(folder, CmsResourceFilter.ALL, true);
+        int files = list.size();
+
+        // remove read permission for test2
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test2", "+r+w+v+i");
+        cms.chacc(folder + test, I_CmsPrincipal.PRINCIPAL_USER, "test2", "+r-w+v+i");
+        cms.unlockResource(folder);
+
+        // login as test2
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        cms.lockResource(folder);
+        // try move the folder
         try {
-            // moving a file to a deleted folder must cause an exception
-            cms.moveResource(file, deletedFolder + "abc.html");
-            fail("moving a file to a deleted folder must cause an exception");
-        } catch (CmsVfsResourceNotFoundException e) {
+            cms.moveResource(folder, destinationFolder);
+            fail("to move a resource with no write permission on a source subresource should fail");
+        } catch (CmsPermissionViolationException e) {
             // ok
         }
 
-        // restore the starting state
-        cms.undoChanges(deletedFolder, CmsResource.UNDO_CONTENT_RECURSIVE);
-        cms.unlockResource(deletedFolder);
-        cms.unlockResource(file);
+        // login as Admin for testing
+        cms.loginUser("Admin", "admin");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        assertEquals(
+            "there missing files after moving",
+            files,
+            cms.readResources(folder, CmsResourceFilter.ALL, true).size());
     }
 
     /**
@@ -317,7 +385,7 @@ public class TestMoveRename extends OpenCmsTestCase {
      * 
      * @throws Exception if the test fails
      */
-    public void testMoveWithoutPermissions() throws Exception {
+    public void testMoveTargetWithoutPermissions() throws Exception {
 
         CmsObject cms = getCmsObject();
         echo("Testing to move a resource with no write permission on the destination folder");
@@ -355,6 +423,37 @@ public class TestMoveRename extends OpenCmsTestCase {
         } catch (CmsPermissionViolationException e) {
             // ok
         }
+    }
+
+    /**
+     * Tests to move a file into an as deleted marked folder.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMoveToDeletedFolder() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to move a file into an as deleted marked folder");
+
+        String deletedFolder = "/folder1/subfolder11/";
+        String file = "index.html";
+
+        cms.lockResource(deletedFolder);
+        cms.deleteResource(deletedFolder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        cms.lockResource(file);
+        try {
+            // moving a file to a deleted folder must cause an exception
+            cms.moveResource(file, deletedFolder + "abc.html");
+            fail("moving a file to a deleted folder must cause an exception");
+        } catch (CmsVfsResourceNotFoundException e) {
+            // ok
+        }
+
+        // restore the starting state
+        cms.undoChanges(deletedFolder, CmsResource.UNDO_CONTENT_RECURSIVE);
+        cms.unlockResource(deletedFolder);
+        cms.unlockResource(file);
     }
 
     /**

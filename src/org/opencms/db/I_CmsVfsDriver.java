@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2007/08/13 16:30:03 $
- * Version: $Revision: 1.118 $
+ * Date   : $Date: 2008/01/24 16:40:20 $
+ * Version: $Revision: 1.119 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.118 $
+ * @version $Revision: 1.119 $
  * 
  * @since 6.0.0 
  */
@@ -62,6 +62,9 @@ public interface I_CmsVfsDriver {
 
     /** The type ID to identify user driver implementations. */
     int DRIVER_TYPE_ID = 3;
+
+    /** The internal request attribute to indicate that the permissions have to be checked. */
+    String REQ_ATTR_CHECK_PERMISSIONS = "CHECK_PERMISSIONS";
 
     /**
      * Counts the number of siblings of a resource.<p>

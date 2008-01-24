@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2007/10/19 07:30:12 $
- * Version: $Revision: 1.271 $
+ * Date   : $Date: 2008/01/24 16:40:20 $
+ * Version: $Revision: 1.272 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -61,6 +62,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -87,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.271 $
+ * @version $Revision: 1.272 $
  * 
  * @since 6.0.0 
  */
@@ -1055,6 +1057,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      */
     public void moveResource(CmsDbContext dbc, CmsUUID projectId, CmsResource source, String destinationPath)
     throws CmsDataAccessException {
+
+        if ((dbc.getRequestContext() != null)
+            && (dbc.getRequestContext().getAttribute(REQ_ATTR_CHECK_PERMISSIONS) != null)) {
+            // only check write permissions
+            checkWritePermissionsInFolder(dbc, source);
+            return;
+        }
 
         // do not allow to move a resource into an as deleted marked folder
         CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
@@ -2267,7 +2276,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             if (siblingCount > 0) {
                 // update the link Count
                 stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_UPDATE_SIBLING_COUNT");
-                stmt.setInt(1, countSiblings(dbc, projectId, resource.getResourceId()));
+                stmt.setInt(1, siblingCount);
                 stmt.setString(2, resource.getResourceId().toString());
                 stmt.executeUpdate();
 
@@ -2315,6 +2324,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      */
     public void removeFolder(CmsDbContext dbc, CmsProject currentProject, CmsResource resource)
     throws CmsDataAccessException {
+
+        if ((dbc.getRequestContext() != null)
+            && (dbc.getRequestContext().getAttribute(REQ_ATTR_CHECK_PERMISSIONS) != null)) {
+            // only check write permissions
+            checkWritePermissionsInFolder(dbc, resource);
+            return;
+        }
 
         // check if the folder has any resources in it
         Iterator childResources = readChildResources(dbc, currentProject, resource, true, true).iterator();
@@ -2921,6 +2937,87 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         if (isPublishing) {
             internalUpdateVersions(dbc, resource);
+        }
+    }
+
+    /**
+     * Checks that the current user has write permissions for all subresources of the given folder.<p>
+     * 
+     * @param dbc the current database context
+     * @param folder the folder to check
+     * 
+     * @throws CmsDataAccessException if something goes wrong 
+     */
+    protected void checkWritePermissionsInFolder(CmsDbContext dbc, CmsResource folder) throws CmsDataAccessException {
+
+        ResultSet res = null;
+        PreparedStatement stmt = null;
+        Connection conn = null;
+
+        CmsUUID projectId = dbc.getRequestContext().currentProject().getUuid();
+
+        // first read all subresources with ACEs
+        List resources = new ArrayList();
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_WITH_ACE_1");
+            stmt.setString(1, folder.getRootPath() + "%");
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                resources.add(createResource(res, projectId));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        // check current user write permission for each of these resources
+        Iterator itResources = resources.iterator();
+        while (itResources.hasNext()) {
+            CmsResource resource = (CmsResource)itResources.next();
+            try {
+                m_driverManager.getSecurityManager().checkPermissions(
+                    dbc.getRequestContext(),
+                    resource,
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.ALL);
+            } catch (CmsException e) {
+                throw new CmsDataAccessException(e.getMessageContainer(), e);
+            }
+        }
+
+        // then check for possible jsp pages without permissions
+        CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireType(CmsResourceTypeJsp.getStaticTypeId());
+        itResources = readResourceTree(
+            dbc,
+            projectId,
+            folder.getRootPath(),
+            filter.getType(),
+            filter.getState(),
+            filter.getModifiedAfter(),
+            filter.getModifiedBefore(),
+            filter.getReleaseAfter(),
+            filter.getReleaseBefore(),
+            filter.getExpireAfter(),
+            filter.getExpireBefore(),
+            CmsDriverManager.READMODE_INCLUDE_TREE).iterator();
+        while (itResources.hasNext()) {
+            CmsResource resource = (CmsResource)itResources.next();
+            try {
+                m_driverManager.getSecurityManager().checkPermissions(
+                    dbc.getRequestContext(),
+                    resource,
+                    CmsPermissionSet.ACCESS_WRITE,
+                    false,
+                    CmsResourceFilter.ALL);
+            } catch (CmsException e) {
+                throw new CmsDataAccessException(e.getMessageContainer(), e);
+            }
         }
     }
 
