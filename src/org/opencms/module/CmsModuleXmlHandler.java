@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2007/08/13 16:30:05 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2008/01/25 13:51:57 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -262,7 +262,8 @@ public class CmsModuleXmlHandler {
     /**
      * Generates a detached XML element for a module.<p>
      * 
-     * @param module the module to genterate the XML element for
+     * @param module the module to generate the XML element for
+     * 
      * @return the detached XML element for the module
      */
     public static Element generateXml(CmsModule module) {
@@ -379,6 +380,7 @@ public class CmsModuleXmlHandler {
      * by converting the name to a valid class name.<p>
      * 
      * @param className the class name to make valid
+     * 
      * @return a valid Java class name from an invalid class name
      */
     public static String makeValidJavaClassName(String className) {
@@ -626,7 +628,7 @@ public class CmsModuleXmlHandler {
         // set the additional resource types;
         m_module.setResourceTypes(m_resourceTypes);
 
-        // set the additional explorertypes
+        // set the additional explorer types
         m_module.setExplorerTypes(m_explorerTypeSettings);
     }
 
