@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2008/01/25 14:01:20 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 
 /**
- * Holds the functionaility to import resources from the filesystem
+ * Holds the functionality to import resources from the file system
  * or a zip file into the OpenCms VFS.<p>
  *
  * @author Andreas Zahner 
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +106,10 @@ public class CmsImport {
      * 1 indicates an export file of OpenCms with a version before 5.0.0
      * 2 indicates an export file of OpenCms with a version before 5.1.2
      * 3 indicates an export file of OpenCms with a version before 5.1.6
-     * 4 indicates an export file of OpenCms with a version after 5.1.6
+     * 4 indicates an export file of OpenCms with a version before 6.3.0
+     * 5 indicates an export file of OpenCms with a version before 6.5.6
+     * 6 indicates an export file of OpenCms with a version before 7.0.4
+     * 7 indicates an export file of OpenCms with a version after 7.0.3
      */
     protected int m_importVersion;
 
@@ -155,6 +158,7 @@ public class CmsImport {
      *
      * @param parentElement the parent element
      * @param elementName the child element name
+     * 
      * @return the value of the child node, or null if something went wrong
      */
     public static String getChildElementTextValue(Element parentElement, String elementName) {
@@ -173,6 +177,7 @@ public class CmsImport {
      * Returns a list of files which are both in the import and in the virtual file system.<p>
      * 
      * @return a list of Strings, complete path of the files
+     * 
      * @throws CmsImportExportException if the import file could not be opened
      * @throws CmsXmlException if the manifest of the import could not be unmarshalled
      */
@@ -234,9 +239,10 @@ public class CmsImport {
     /**
      * Returns a list of resource names that are needed to create a project for this import.<p>
      * 
-     * It calls the method getConflictingFileNames if needed, to calculate these resources.
+     * It calls the method getConflictingFileNames if needed, to calculate these resources.<p>
      * 
      * @return a list of resource names that are needed to create a project for this import
+     * 
      * @throws CmsImportExportException if ZIP archive could not be closed
      */
     public List getResourcesForProject() throws CmsImportExportException {
@@ -269,7 +275,7 @@ public class CmsImport {
                     }
                 }
             } catch (StringIndexOutOfBoundsException exc) {
-                // this is a resource in root-folder: ignore the excpetion
+                // this is a resource in root-folder: ignore the exception
             }
         }
         closeImportFile();
@@ -351,6 +357,7 @@ public class CmsImport {
      * Returns a byte array containing the content of the file.<p>
      *
      * @param filename the name of the file to read
+     * 
      * @return a byte array containing the content of the file
      */
     protected byte[] getFileBytes(String filename) {
@@ -407,7 +414,7 @@ public class CmsImport {
     }
 
     /**
-     * Initalizes the import.<p>
+     * Initializes the import.<p>
      * 
      * @throws CmsImportExportException if the import file could not be opened
      * @throws CmsXmlException if the manifest of the import could not be unmarshalled
@@ -425,7 +432,7 @@ public class CmsImport {
             m_importVersion = Integer.parseInt(((Element)m_docXml.selectNodes("//" + CmsImportExportManager.N_VERSION).get(
                 0)).getTextTrim());
         } catch (Exception e) {
-            // ignore the exception, the export file has no version nummber (version 0)
+            // ignore the exception, the export file has no version number (version 0)
             // should never happen
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);

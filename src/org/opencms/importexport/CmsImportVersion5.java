@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion5.java,v $
- * Date   : $Date: 2007/12/20 16:49:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/01/25 13:58:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,11 +73,11 @@ import org.dom4j.Element;
  * Implementation of the OpenCms Import Interface ({@link org.opencms.importexport.I_CmsImport}) for 
  * the import version 5.<p>
  * 
- * This import format is used in OpenCms since 7 dev branch.<p>
+ * This import format is used in OpenCms since 6.3.0.<p>
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.3.0 
  * 
@@ -92,10 +92,10 @@ public class CmsImportVersion5 extends A_CmsImport {
     private static final Log LOG = CmsLog.getLog(CmsImportVersion5.class);
 
     /** Stores all relations defined in the import file to be created after all resources has been imported. */
-    private Map m_importedRelations;
+    protected Map m_importedRelations;
 
     /** Stores all resources of any type that implements the {@link I_CmsLinkParseable} interface. */
-    private List m_parseables;
+    protected List m_parseables;
 
     /**
      * Creates a new CmsImportVerion7 object.<p>
@@ -151,6 +151,35 @@ public class CmsImportVersion5 extends A_CmsImport {
         } finally {
             cleanUp();
         }
+    }
+
+    /**
+     * Convert a given time stamp from a String format to a long value.<p>
+     * 
+     * The time stamp is either the string representation of a long value (old export format)
+     * or a user-readable string format.
+     * 
+     * @param timestamp time stamp to convert
+     * 
+     * @return long value of the time stamp
+     */
+    protected long convertTimestamp(String timestamp) {
+
+        long value = 0;
+        // try to parse the time stamp string
+        // if it successes, its an old style long value
+        try {
+            value = Long.parseLong(timestamp);
+
+        } catch (NumberFormatException e) {
+            // the time stamp was in in a user-readable string format, create the long value form it
+            try {
+                value = CmsDateUtil.parseHeaderDate(timestamp);
+            } catch (ParseException pe) {
+                value = System.currentTimeMillis();
+            }
+        }
+        return value;
     }
 
     /**
@@ -266,115 +295,6 @@ public class CmsImportVersion5 extends A_CmsImport {
     }
 
     /**
-     * @see org.opencms.importexport.A_CmsImport#importUser(String, String, String, String, String, String, long, Map, List)
-     */
-    protected void importUser(
-        String name,
-        String flags,
-        String password,
-        String firstname,
-        String lastname,
-        String email,
-        long dateCreated,
-        Map userInfo,
-        List userGroups) throws CmsImportExportException {
-
-        boolean convert = false;
-
-        Map config = OpenCms.getPasswordHandler().getConfiguration();
-        if ((config != null) && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
-            convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)).booleanValue();
-        }
-
-        if (convert) {
-            password = convertDigestEncoding(password);
-        }
-
-        super.importUser(name, flags, password, firstname, lastname, email, dateCreated, userInfo, userGroups);
-    }
-
-    /**
-     * Rewrites all parseable files, to assure link check.<p>
-     */
-    protected void rewriteParseables() {
-
-        if (m_parseables.isEmpty()) {
-            return;
-        }
-
-        m_report.println(Messages.get().container(Messages.RPT_START_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
-
-        int i = 0;
-        Iterator it = m_parseables.iterator();
-        while (it.hasNext()) {
-            CmsResource res = (CmsResource)it.next();
-
-            m_report.print(org.opencms.report.Messages.get().container(
-                org.opencms.report.Messages.RPT_SUCCESSION_2,
-                String.valueOf(i + 1),
-                String.valueOf(m_parseables.size())), I_CmsReport.FORMAT_NOTE);
-
-            m_report.print(
-                Messages.get().container(Messages.RPT_PARSE_LINKS_FOR_1, m_cms.getSitePath(res)),
-                I_CmsReport.FORMAT_NOTE);
-            m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-
-            try {
-                // make sure the date last modified is kept...
-                CmsFile file = m_cms.readFile(res);
-                file.setDateLastModified(res.getDateLastModified());
-                m_cms.writeFile(file);
-
-                m_report.println(
-                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.FORMAT_OK);
-            } catch (Throwable e) {
-                m_report.addWarning(e);
-                m_report.println(
-                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
-                    I_CmsReport.FORMAT_ERROR);
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_REWRITING_1, res.getRootPath()));
-                }
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(e.getLocalizedMessage(), e);
-                }
-            }
-            i++;
-        }
-
-        m_report.println(Messages.get().container(Messages.RPT_END_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
-    }
-
-    /**
-     * Convert a given timestamp from a String format to a long value.<p>
-     * 
-     * The timestamp is either the string representation of a long value (old export format)
-     * or a user-readable string format.
-     * 
-     * @param timestamp timestamp to convert
-     * @return long value of the timestamp
-     */
-    private long convertTimestamp(String timestamp) {
-
-        long value = 0;
-        // try to parse the timestamp string
-        // if it successes, its an old style long value
-        try {
-            value = Long.parseLong(timestamp);
-
-        } catch (NumberFormatException e) {
-            // the timestamp was in in a user-readable string format, create the long value form it
-            try {
-                value = CmsDateUtil.parseHeaderDate(timestamp);
-            } catch (ParseException pe) {
-                value = System.currentTimeMillis();
-            }
-        }
-        return value;
-    }
-
-    /**
      * Imports a resource (file or folder) into the cms.<p>
      * 
      * @param source the path to the source-file
@@ -393,7 +313,7 @@ public class CmsImportVersion5 extends A_CmsImport {
      * 
      * @return imported resource
      */
-    private CmsResource importResource(
+    protected CmsResource importResource(
         String source,
         String destination,
         I_CmsResourceType type,
@@ -425,7 +345,7 @@ public class CmsImportVersion5 extends A_CmsImport {
             // get UUIDs for the user   
             CmsUUID newUserlastmodified;
             CmsUUID newUsercreated;
-            // check if user created and user lastmodified are valid users in this system.
+            // check if user created and user last modified are valid users in this system.
             // if not, use the current user
             try {
                 newUserlastmodified = m_cms.readUser(userlastmodified).getId();
@@ -504,12 +424,40 @@ public class CmsImportVersion5 extends A_CmsImport {
     }
 
     /**
+     * @see org.opencms.importexport.A_CmsImport#importUser(String, String, String, String, String, String, long, Map, List)
+     */
+    protected void importUser(
+        String name,
+        String flags,
+        String password,
+        String firstname,
+        String lastname,
+        String email,
+        long dateCreated,
+        Map userInfo,
+        List userGroups) throws CmsImportExportException {
+
+        boolean convert = false;
+
+        Map config = OpenCms.getPasswordHandler().getConfiguration();
+        if ((config != null) && config.containsKey(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)) {
+            convert = Boolean.valueOf((String)config.get(I_CmsPasswordHandler.CONVERT_DIGEST_ENCODING)).booleanValue();
+        }
+
+        if (convert) {
+            password = convertDigestEncoding(password);
+        }
+
+        super.importUser(name, flags, password, firstname, lastname, email, dateCreated, userInfo, userGroups);
+    }
+
+    /**
      * Reads all file nodes plus their meta-information (properties, ACL) 
      * from the <code>manifest.xml</code> and imports them as Cms resources to the VFS.<p>
      * 
      * @throws CmsImportExportException if something goes wrong
      */
-    private void readResourcesFromManifest() throws CmsImportExportException {
+    protected void readResourcesFromManifest() throws CmsImportExportException {
 
         String source = null, destination = null, uuidstructure = null, uuidresource = null, userlastmodified = null, usercreated = null, flags = null, timestamp = null;
         long datelastmodified = 0, datecreated = 0, datereleased = 0, dateexpired = 0;
@@ -798,5 +746,58 @@ public class CmsImportVersion5 extends A_CmsImport {
 
             throw new CmsImportExportException(message, e);
         }
+    }
+
+    /**
+     * Rewrites all parseable files, to assure link check.<p>
+     */
+    protected void rewriteParseables() {
+
+        if (m_parseables.isEmpty()) {
+            return;
+        }
+
+        m_report.println(Messages.get().container(Messages.RPT_START_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
+
+        int i = 0;
+        Iterator it = m_parseables.iterator();
+        while (it.hasNext()) {
+            CmsResource res = (CmsResource)it.next();
+
+            m_report.print(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_SUCCESSION_2,
+                String.valueOf(i + 1),
+                String.valueOf(m_parseables.size())), I_CmsReport.FORMAT_NOTE);
+
+            m_report.print(
+                Messages.get().container(Messages.RPT_PARSE_LINKS_FOR_1, m_cms.getSitePath(res)),
+                I_CmsReport.FORMAT_NOTE);
+            m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+
+            try {
+                // make sure the date last modified is kept...
+                CmsFile file = m_cms.readFile(res);
+                file.setDateLastModified(res.getDateLastModified());
+                m_cms.writeFile(file);
+
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                    I_CmsReport.FORMAT_OK);
+            } catch (Throwable e) {
+                m_report.addWarning(e);
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
+                    I_CmsReport.FORMAT_ERROR);
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_REWRITING_1, res.getRootPath()));
+                }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            }
+            i++;
+        }
+
+        m_report.println(Messages.get().container(Messages.RPT_END_PARSE_LINKS_0), I_CmsReport.FORMAT_HEADLINE);
     }
 }
