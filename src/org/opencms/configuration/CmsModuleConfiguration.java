@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsModuleConfiguration.java,v $
- * Date   : $Date: 2007/08/13 16:30:10 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2008/01/25 13:44:26 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,11 +47,11 @@ import org.apache.commons.digester.Digester;
 import org.dom4j.Element;
 
 /**
- * VFS master configuration class.<p>
+ * Modules configuration class.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0
  */
@@ -117,7 +117,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
             modules = m_modules;
         }
 
-        // generate modules node and subnodes
+        // generate modules node and sub nodes
         Element modulesNode = parent.addElement(N_MODULES);
 
         for (int i = 0; i < modules.size(); i++) {
