@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2008/01/25 14:20:51 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2008/01/25 16:58:58 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,6 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsDataTypeUtil;
@@ -94,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.90 $ 
+ * @version $Revision: 1.91 $ 
  * 
  * @since 6.0.0 
  */
@@ -338,7 +337,6 @@ public class CmsExport {
                 Element userGroupData = exportNode.addElement(CmsImportExportManager.N_USERGROUPDATA);
                 getSaxWriter().writeOpen(userGroupData);
 
-                exportOrgUnits(userGroupData);
                 exportGroups(userGroupData);
                 exportUsers(userGroupData);
 
@@ -1310,64 +1308,6 @@ public class CmsExport {
     }
 
     /**
-     * Exports one single organizational unit with all it's data.<p>
-     *
-     * @param parent the parent node to add the groups to
-     * @param orgunit the group to be exported
-     * 
-     * @throws SAXException if something goes wrong processing the manifest.xml
-     */
-    private void exportOrgUnit(Element parent, CmsOrganizationalUnit orgunit) throws SAXException {
-
-        Element e = parent.addElement(CmsImportExportManager.N_ORGUNITDATA);
-        e.addElement(CmsImportExportManager.N_NAME).addText(orgunit.getName());
-        e.addElement(CmsImportExportManager.N_DESCRIPTION).addCDATA(orgunit.getDescription());
-        e.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(orgunit.getFlags()));
-
-        // write the XML
-        digestElement(parent, e);
-    }
-
-    /**
-     * Exports all organizational units with all data.<p>
-     *
-     * @param parent the parent node to add the organizational units to
-     * 
-     * @throws CmsImportExportException if something goes wrong
-     * @throws SAXException if something goes wrong processing the manifest.xml
-     */
-    private void exportOrgUnits(Element parent) throws CmsImportExportException, SAXException {
-
-        try {
-            I_CmsReport report = getReport();
-            List allOUs = OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), "", true);
-            for (int i = 0, l = allOUs.size(); i < l; i++) {
-                CmsOrganizationalUnit ou = (CmsOrganizationalUnit)allOUs.get(i);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    String.valueOf(i + 1),
-                    String.valueOf(l)), I_CmsReport.FORMAT_NOTE);
-                report.print(Messages.get().container(Messages.RPT_EXPORT_ORGUNIT_0), I_CmsReport.FORMAT_NOTE);
-                report.print(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    ou.getName()));
-                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
-                exportOrgUnit(parent, ou);
-                report.println(
-                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.FORMAT_OK);
-            }
-        } catch (CmsImportExportException e) {
-            throw e;
-        } catch (CmsException e) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(e.getLocalizedMessage(), e);
-            }
-            throw new CmsImportExportException(e.getMessageContainer(), e);
-        }
-    }
-
-    /**
      * Exports one single user with all its data.<p>
      * 
      * @param parent the parent node to add the users to
@@ -1421,17 +1361,10 @@ public class CmsExport {
             }
 
             // append the node for groups of user
+            List userGroups = getCms().getGroupsOfUser(user.getName(), true);
             Element g = e.addElement(CmsImportExportManager.N_USERGROUPS);
-            List userGroups = getCms().getGroupsOfUser(user.getName(), true, true);
             for (int i = 0; i < userGroups.size(); i++) {
                 String groupName = ((CmsGroup)userGroups.get(i)).getName();
-                g.addElement(CmsImportExportManager.N_GROUPNAME).addElement(CmsImportExportManager.N_NAME).addText(
-                    groupName);
-            }
-            // append role groups
-            List roleGroups = OpenCms.getRoleManager().getRolesOfUser(getCms(), user.getName(), "", true, true, true);
-            for (int i = 0; i < roleGroups.size(); i++) {
-                String groupName = ((CmsRole)roleGroups.get(i)).getGroupName();
                 g.addElement(CmsImportExportManager.N_GROUPNAME).addElement(CmsImportExportManager.N_NAME).addText(
                     groupName);
             }
