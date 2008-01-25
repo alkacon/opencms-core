@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2007/09/10 13:09:29 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2008/01/25 14:20:51 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import org.opencms.relations.CmsRelationFilter;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsDataTypeUtil;
@@ -87,13 +88,13 @@ import org.xml.sax.SAXException;
  * Provides the functionality to export files from the OpenCms VFS to a ZIP file.<p>
  * 
  * The ZIP file written will contain a copy of all exported files with their contents.
- * It will also contain a <code>manifest.xml</code> file in wich all meta-information 
+ * It will also contain a <code>manifest.xml</code> file in which all meta-information 
  * about this files are stored, like permissions etc.<p>
  *
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.89 $ 
+ * @version $Revision: 1.90 $ 
  * 
  * @since 6.0.0 
  */
@@ -168,6 +169,7 @@ public class CmsExport {
      * @param resourcesToExport the paths of folders and files to export
      * @param includeSystem if true, the system folder is included
      * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * 
      * @throws CmsImportExportException if something goes wrong
      * @throws CmsRoleViolationException if the current user has not the required role
      */
@@ -189,10 +191,10 @@ public class CmsExport {
      * @param cms the cmsObject to work with
      * @param exportFile the file or folder to export to
      * @param resourcesToExport the paths of folders and files to export
-     * @param includeSystem if true, the system folder is included
+     * @param includeSystem if <code>true</code>, the system folder is included
      * @param includeUnchanged <code>true</code>, if unchanged files should be included
      * @param moduleElement module informations in a Node for module export
-     * @param exportUserdata if true, the user and grou pdata will also be exported
+     * @param exportUserdata if <code>true</code>, the user and group data will also be exported
      * @param contentAge export contents changed after this date/time
      * @param report to handle the log messages
      * 
@@ -230,10 +232,10 @@ public class CmsExport {
      * @param cms the cmsObject to work with
      * @param exportFile the file or folder to export to
      * @param resourcesToExport the paths of folders and files to export
-     * @param includeSystem if true, the system folder is included
+     * @param includeSystem if <code>true</code>, the system folder is included
      * @param includeUnchanged <code>true</code>, if unchanged files should be included
      * @param moduleElement module informations in a Node for module export
-     * @param exportUserdata if true, the user and grou pdata will also be exported
+     * @param exportUserdata if <code>true</code>, the user and group data will also be exported
      * @param contentAge export contents changed after this date/time
      * @param report to handle the log messages
      * @param recursive recursive flag
@@ -274,10 +276,10 @@ public class CmsExport {
      * @param cms the cmsObject to work with
      * @param exportFile the file or folder to export to
      * @param resourcesToExport the paths of folders and files to export
-     * @param includeSystem if true, the system folder is included
+     * @param includeSystem if <code>true</code>, the system folder is included
      * @param includeUnchanged <code>true</code>, if unchanged files should be included
      * @param moduleElement module informations in a Node for module export
-     * @param exportUserdata if true, the user and group data will also be exported
+     * @param exportUserdata if <code>true</code>, the user and group data will also be exported
      * @param contentAge export contents changed after this date/time
      * @param report to handle the log messages
      * @param recursive recursive flag
@@ -331,11 +333,12 @@ public class CmsExport {
 
             exportAllResources(exportNode, resourcesToExport);
 
-            // export userdata and groupdata if selected
+            // export user data and group data if selected
             if (m_exportUserdata) {
                 Element userGroupData = exportNode.addElement(CmsImportExportManager.N_USERGROUPDATA);
                 getSaxWriter().writeOpen(userGroupData);
 
+                exportOrgUnits(userGroupData);
                 exportGroups(userGroupData);
                 exportUsers(userGroupData);
 
@@ -373,8 +376,9 @@ public class CmsExport {
      * Exports the given folder and all child resources.<p>
      *
      * @param folderName to complete path to the resource to export
+     * 
      * @throws CmsImportExportException if something goes wrong
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws SAXException if something goes wrong processing the manifest.xml
      * @throws IOException if not all resources could be appended to the ZIP archive
      */
     protected void addChildResources(String folderName) throws CmsImportExportException, IOException, SAXException {
@@ -455,7 +459,8 @@ public class CmsExport {
      * Closes the export ZIP file and saves the XML document for the manifest.<p>
      * 
      * @param exportNode the export root node
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * 
+     * @throws SAXException if something goes wrong processing the manifest.xml
      * @throws IOException if something goes wrong while closing the export file
      */
     protected void closeExportFile(Element exportNode) throws IOException, SAXException {
@@ -499,7 +504,8 @@ public class CmsExport {
      * 
      * @param parent the parent element
      * @param output the output element 
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * 
+     * @throws SAXException if something goes wrong processing the manifest.xml
      */
     protected void digestElement(Element parent, Element output) throws SAXException {
 
@@ -512,8 +518,9 @@ public class CmsExport {
      * 
      * @param parent the parent node to add the resources to
      * @param resourcesToExport the list of resources to export
+     * 
      * @throws CmsImportExportException if something goes wrong
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws SAXException if something goes wrong processing the manifest.xml
      * @throws IOException if not all resources could be appended to the ZIP archive
      */
     protected void exportAllResources(Element parent, List resourcesToExport)
@@ -550,7 +557,7 @@ public class CmsExport {
         for (int i = 0; i < folderNames.size(); i++) {
             String path = (String)folderNames.get(i);
             if (m_recursive) {
-                // first add superfolders to the xml-config file
+                // first add super folders to the xml-config file
                 addParentFolders(path);
                 addChildResources(path);
             } else {
@@ -637,9 +644,9 @@ public class CmsExport {
     }
 
     /**
-     * Returns the report to write progess messages to.<p>
+     * Returns the report to write progress messages to.<p>
      * 
-     * @return the report to write progess messages to
+     * @return the report to write progress messages to
      */
     protected I_CmsReport getReport() {
 
@@ -657,9 +664,9 @@ public class CmsExport {
     }
 
     /**
-     * Returns the SAX baesed xml writer to write the XML output to.<p>
+     * Returns the SAX based xml writer to write the XML output to.<p>
      * 
-     * @return the SAX baesed xml writer to write the XML output to
+     * @return the SAX based xml writer to write the XML output to
      */
     protected SAXWriter getSaxWriter() {
 
@@ -670,6 +677,7 @@ public class CmsExport {
      * Checks if a property should be written to the export or not.<p>
      * 
      * @param property the property to check
+     * 
      * @return if true, the property is to be ignored, otherwise it should be exported
      */
     protected boolean isIgnoredProperty(CmsProperty property) {
@@ -685,7 +693,8 @@ public class CmsExport {
      * Opens the export ZIP file and initializes the internal XML document for the manifest.<p>
      * 
      * @return the node in the XML document where all files are appended to
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * 
+     * @throws SAXException if something goes wrong processing the manifest.xml
      * @throws IOException if something goes wrong while closing the export file
      */
     protected Element openExportFile() throws IOException, SAXException {
@@ -762,9 +771,9 @@ public class CmsExport {
     }
 
     /**
-     * Sets the report to write progess messages to.<p>
+     * Sets the report to write progress messages to.<p>
      * 
-     * @param report the report to write progess messages to
+     * @param report the report to write progress messages to
      */
     protected void setReport(I_CmsReport report) {
 
@@ -772,9 +781,9 @@ public class CmsExport {
     }
 
     /**
-     * Sets the SAX baesed xml writer to write the XML output to.<p>
+     * Sets the SAX based xml writer to write the XML output to.<p>
      * 
-     * @param saxWriter the SAX baesed xml writer to write the XML output to
+     * @param saxWriter the SAX based xml writer to write the XML output to
      */
     protected void setSaxWriter(SAXWriter saxWriter) {
 
@@ -788,7 +797,7 @@ public class CmsExport {
      * 
      * @throws CmsImportExportException if something goes wrong
      * @throws IOException if a file could not be exported
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws SAXException if something goes wrong processing the manifest.xml
      */
     private void addFiles(List fileNames) throws CmsImportExportException, IOException, SAXException {
 
@@ -828,11 +837,11 @@ public class CmsExport {
     }
 
     /**
-     * Exports all page body files that have not explicityl been added by the user.<p>
+     * Exports all page body files that have not been explicitly added by the user.<p>
      * 
      * @throws CmsImportExportException if something goes wrong
      * @throws IOException if a file could not be exported
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws SAXException if something goes wrong processing the manifest.xml
      */
     private void addPageBodyFiles() throws CmsImportExportException, IOException, SAXException {
 
@@ -848,7 +857,7 @@ public class CmsExport {
         while (i.hasNext()) {
             String filename = (String)i.next();
             // check if the site path is within the filename. If so, this export is
-            // started from the root site and the path to the bodies must be modifed
+            // started from the root site and the path to the bodies must be modified
             // this is not nice, but it works.
             if (filename.startsWith(CmsResource.VFS_FOLDER_SITES)) {
                 filename = filename.substring(CmsResource.VFS_FOLDER_SITES.length() + 1, filename.length());
@@ -867,8 +876,9 @@ public class CmsExport {
      * starting at the top, excluding the root folder.<p>
      * 
      * @param resourceName the name of a resource in the VFS
+     * 
      * @throws CmsImportExportException if something goes wrong
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws SAXException if something goes wrong processing the manifest.xml
      */
     private void addParentFolders(String resourceName) throws CmsImportExportException, SAXException {
 
@@ -966,6 +976,7 @@ public class CmsExport {
      * 
      * @param resource the resource to get the data from
      * @param source flag to show if the source information in the xml file must be written
+     * 
      * @throws CmsImportExportException if something goes wrong
      * @throws SAXException if something goes wrong processing the manifest.xml
      */
@@ -1168,8 +1179,9 @@ public class CmsExport {
      * Exports one single file with all its data and content.<p>
      *
      * @param file the file to be exported
+     * 
      * @throws CmsImportExportException if something goes wrong
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws SAXException if something goes wrong processing the manifest.xml
      * @throws CmsLoaderException if an "old style" XML page could be exported
      * @throws IOException if the ZIP entry for the file could be appended to the ZIP archive
      */
@@ -1223,8 +1235,9 @@ public class CmsExport {
      *
      * @param parent the parent node to add the groups to
      * @param group the group to be exported
+     * 
      * @throws CmsImportExportException if something goes wrong
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws SAXException if something goes wrong processing the manifest.xml
      */
     private void exportGroup(Element parent, CmsGroup group) throws CmsImportExportException, SAXException {
 
@@ -1261,8 +1274,9 @@ public class CmsExport {
      * Exports all groups with all data.<p>
      *
      * @param parent the parent node to add the groups to
+     * 
      * @throws CmsImportExportException if something goes wrong
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws SAXException if something goes wrong processing the manifest.xml
      */
     private void exportGroups(Element parent) throws CmsImportExportException, SAXException {
 
@@ -1296,12 +1310,71 @@ public class CmsExport {
     }
 
     /**
+     * Exports one single organizational unit with all it's data.<p>
+     *
+     * @param parent the parent node to add the groups to
+     * @param orgunit the group to be exported
+     * 
+     * @throws SAXException if something goes wrong processing the manifest.xml
+     */
+    private void exportOrgUnit(Element parent, CmsOrganizationalUnit orgunit) throws SAXException {
+
+        Element e = parent.addElement(CmsImportExportManager.N_ORGUNITDATA);
+        e.addElement(CmsImportExportManager.N_NAME).addText(orgunit.getName());
+        e.addElement(CmsImportExportManager.N_DESCRIPTION).addCDATA(orgunit.getDescription());
+        e.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(orgunit.getFlags()));
+
+        // write the XML
+        digestElement(parent, e);
+    }
+
+    /**
+     * Exports all organizational units with all data.<p>
+     *
+     * @param parent the parent node to add the organizational units to
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws SAXException if something goes wrong processing the manifest.xml
+     */
+    private void exportOrgUnits(Element parent) throws CmsImportExportException, SAXException {
+
+        try {
+            I_CmsReport report = getReport();
+            List allOUs = OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), "", true);
+            for (int i = 0, l = allOUs.size(); i < l; i++) {
+                CmsOrganizationalUnit ou = (CmsOrganizationalUnit)allOUs.get(i);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_SUCCESSION_2,
+                    String.valueOf(i + 1),
+                    String.valueOf(l)), I_CmsReport.FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_EXPORT_ORGUNIT_0), I_CmsReport.FORMAT_NOTE);
+                report.print(org.opencms.report.Messages.get().container(
+                    org.opencms.report.Messages.RPT_ARGUMENT_1,
+                    ou.getName()));
+                report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
+                exportOrgUnit(parent, ou);
+                report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                    I_CmsReport.FORMAT_OK);
+            }
+        } catch (CmsImportExportException e) {
+            throw e;
+        } catch (CmsException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+            throw new CmsImportExportException(e.getMessageContainer(), e);
+        }
+    }
+
+    /**
      * Exports one single user with all its data.<p>
      * 
      * @param parent the parent node to add the users to
      * @param user the user to be exported
+     * 
      * @throws CmsImportExportException if something goes wrong
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws SAXException if something goes wrong processing the manifest.xml
      */
     private void exportUser(Element parent, CmsUser user) throws CmsImportExportException, SAXException {
 
@@ -1348,10 +1421,17 @@ public class CmsExport {
             }
 
             // append the node for groups of user
-            List userGroups = getCms().getGroupsOfUser(user.getName(), true);
             Element g = e.addElement(CmsImportExportManager.N_USERGROUPS);
+            List userGroups = getCms().getGroupsOfUser(user.getName(), true, true);
             for (int i = 0; i < userGroups.size(); i++) {
                 String groupName = ((CmsGroup)userGroups.get(i)).getName();
+                g.addElement(CmsImportExportManager.N_GROUPNAME).addElement(CmsImportExportManager.N_NAME).addText(
+                    groupName);
+            }
+            // append role groups
+            List roleGroups = OpenCms.getRoleManager().getRolesOfUser(getCms(), user.getName(), "", true, true, true);
+            for (int i = 0; i < roleGroups.size(); i++) {
+                String groupName = ((CmsRole)roleGroups.get(i)).getGroupName();
                 g.addElement(CmsImportExportManager.N_GROUPNAME).addElement(CmsImportExportManager.N_NAME).addText(
                     groupName);
             }
@@ -1369,8 +1449,9 @@ public class CmsExport {
      * Exports all users with all data.<p>
      *
      * @param parent the parent node to add the users to
+     * 
      * @throws CmsImportExportException if something goes wrong
-     * @throws SAXException if something goes wrong procesing the manifest.xml
+     * @throws SAXException if something goes wrong processing the manifest.xml
      */
     private void exportUsers(Element parent) throws CmsImportExportException, SAXException {
 
@@ -1409,8 +1490,10 @@ public class CmsExport {
 
     /**
      * Checks if a resource is belongs to the correct project for exporting.<p>
+     * 
      * @param res the resource to check
-     * @return true if the resource can be exported, false otherwiese
+     * 
+     * @return <code>true</code>, if the resource can be exported, false otherwise
      */
     private boolean isInExportableProject(CmsResource res) {
 
@@ -1435,6 +1518,7 @@ public class CmsExport {
      * Cuts leading and trailing '/' from the given resource name.<p>
      * 
      * @param resourceName the absolute path of a resource
+     * 
      * @return the trimmed resource name
      */
     private String trimResourceName(String resourceName) {
