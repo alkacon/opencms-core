@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2007/08/13 16:30:05 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2008/01/25 13:43:33 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,7 +115,9 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
      * Reads a module object from an external file source.<p>
      * 
      * @param importResource the name of the input source
-     * @return the imported module 
+     * 
+     * @return the imported module
+     *  
      * @throws CmsConfigurationException if the module could not be imported
      */
     public static CmsModule readModuleFromImport(String importResource) throws CmsConfigurationException {
@@ -459,7 +461,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
      * 
      * @param cms must have been initialized with {@link CmsRole#DATABASE_MANAGER} permissions
      * @param importResource the name of the input source
-     * @param report the report to print the progess information to
+     * @param report the report to print the progress information to
      * 
      * @throws CmsSecurityException if no {@link CmsRole#DATABASE_MANAGER} permissions are available
      * @throws CmsConfigurationException if the module is already installed or the 
@@ -543,11 +545,11 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         //  add the imported module to the module manager
         OpenCms.getModuleManager().addModule(cms, importedModule);
 
-        // reinitialize the resource manager with additional module resourcetypes if nescessary
+        // reinitialize the resource manager with additional module resource types if necessary
         if (importedModule.getResourceTypes() != Collections.EMPTY_LIST) {
             OpenCms.getResourceManager().initialize(cms);
         }
-        // reinitialize the workplace manager with addititonal module explorertypes if nescessary
+        // reinitialize the workplace manager with additional module explorer types if necessary
         if (importedModule.getExplorerTypes() != Collections.EMPTY_LIST) {
             OpenCms.getWorkplaceManager().addExplorerTypeSettings(importedModule);
         }
