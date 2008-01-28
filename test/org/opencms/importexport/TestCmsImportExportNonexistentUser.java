@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExportNonexistentUser.java,v $
- * Date   : $Date: 2007/08/13 16:30:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2008/01/28 16:16:10 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Tests exporting/import VFS data with nonexistent users.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
@@ -61,36 +61,40 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
      * @param arg0 JUnit parameters
      */
     public TestCmsImportExportNonexistentUser(String arg0) {
+
         super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsImportExport.class.getName());
-                
+
         suite.addTest(new TestCmsImportExportNonexistentUser("testImportExportNonexistentUser"));
-        
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms("simpletest", "/sites/default/");
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
     }
-    
+
     /**
      * Tests exporting and import of VFS data with a nonexistent/deleted user.<p>
      * 
@@ -100,46 +104,47 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
      * @throws Exception if something goes wrong
      */
     public void testImportExportNonexistentUser() throws Exception {
-        
+
         String zipExportFilename = null;
         CmsObject cms = getCmsObject();
         String storedSiteRoot = null;
-        
+
         try {
             String username = "tempuser";
             String password = "password";
             String filename = "/dummy1.txt";
             String contentStr = "This is a comment. I love comments.";
-            zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testImportExportNonexistentUser.zip");
+            zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+                "packages/testImportExportNonexistentUser.zip");
             byte[] content = contentStr.getBytes();
             CmsProject offlineProject = cms.getRequestContext().currentProject();
-            
+
             // create a temporary user for this test case
             cms.createUser(username, password, "Temporary user for import/export test case", null);
             // add this user to the project managers user group
             cms.addUserToGroup(username, OpenCms.getDefaultUsers().getGroupProjectmanagers());
-            
+
             // switch to the temporary user, offline project and default site
             cms.loginUser(username, password);
-            
+
             storedSiteRoot = cms.getRequestContext().getSiteRoot();
             cms.getRequestContext().setSiteRoot("/sites/default/");
             cms.getRequestContext().setCurrentProject(offlineProject);
-            
+
             // create a dummy plain text file by the temporary user
             cms.createResource(filename, CmsResourceTypePlain.getStaticTypeId(), content, null);
             // publish the dummy plain text file
             cms.unlockResource(filename);
             OpenCms.getPublishManager().publishResource(cms, filename);
             OpenCms.getPublishManager().waitWhileRunning();
-            
+
             // switch back to the Admin user, offline project and default site
-            cms.loginUser("Admin", "admin");  
+            cms.loginUser("Admin", "admin");
             cms.getRequestContext().setSiteRoot("/sites/default/");
-            cms.getRequestContext().setCurrentProject(offlineProject);            
+            cms.getRequestContext().setCurrentProject(offlineProject);
             // delete the temporary user
             cms.deleteUser(username);
-            
+
             // export the dummy plain text file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
             vfsExportHandler.setFileName(zipExportFilename);
@@ -149,8 +154,11 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             vfsExportHandler.setIncludeSystem(false);
             vfsExportHandler.setIncludeUnchanged(true);
             vfsExportHandler.setExportUserdata(false);
-            OpenCms.getImportExportManager().exportData(cms, vfsExportHandler, new CmsShellReport(cms.getRequestContext().getLocale()));
-            
+            OpenCms.getImportExportManager().exportData(
+                cms,
+                vfsExportHandler,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
             // delete the dummy plain text file
             cms.lockResource(filename);
             cms.deleteResource(filename, CmsResource.DELETE_REMOVE_SIBLINGS);
@@ -158,17 +166,21 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             cms.unlockResource(filename);
             OpenCms.getPublishManager().publishResource(cms, filename);
             OpenCms.getPublishManager().waitWhileRunning();
-            
+
             // re-import the exported dummy plain text file
-            OpenCms.getImportExportManager().importData(cms, zipExportFilename, "/", new CmsShellReport(cms.getRequestContext().getLocale()));
+            OpenCms.getImportExportManager().importData(
+                cms,
+                zipExportFilename,
+                "/",
+                new CmsShellReport(cms.getRequestContext().getLocale()));
         } catch (Exception e) {
             fail(e.toString());
         } finally {
-            deleteFile(zipExportFilename);            
+            deleteFile(zipExportFilename);
             if (storedSiteRoot != null) {
                 cms.getRequestContext().setSiteRoot(storedSiteRoot);
             }
         }
     }
-    
+
 }
