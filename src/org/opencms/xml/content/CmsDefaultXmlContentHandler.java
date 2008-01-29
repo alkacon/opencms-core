@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2007/11/23 09:33:17 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2008/01/29 11:54:58 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 6.0.0 
  */
@@ -510,6 +510,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     initPreview(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_RESOURCEBUNDLE)) {
                     initResourceBundle(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_SEARCHSETTINGS)) {
+                    initSearchSettings(element, contentDefinition);
                 }
             }
         }
