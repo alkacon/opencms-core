@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2007/09/05 11:19:35 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2008/01/29 11:36:46 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -916,7 +916,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
         // get settings for resource type
         CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
-        if (CmsStringUtil.isNotEmpty(settings.getReference())) {
+        if (!settings.hasEditOptions() && CmsStringUtil.isNotEmpty(settings.getReference())) {
             // refers to another resource type, get settings of referred type
             settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(settings.getReference());
         }
