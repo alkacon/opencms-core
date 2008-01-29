@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2007/08/13 16:29:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/01/29 14:35:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
@@ -51,12 +52,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Provides a list dialog for resources.<p> 
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,6 +142,9 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
     /** Explorer list JSP path. */
     public static final String PATH_EXPLORER_LIST = PATH_DIALOGS + "list-explorer.jsp";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(A_CmsListExplorerDialog.class);
 
     /** Column visibility flags container. */
     private Map m_colVisibilities;
@@ -232,8 +238,14 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     public CmsResourceUtil getResourceUtil() {
 
         if (m_resourceUtil == null) {
-            m_resourceUtil = new CmsResourceUtil(getCms());
-            m_resourceUtil.setReferenceProject(getProject());
+            try {
+                m_resourceUtil = new CmsResourceUtil(OpenCms.initCmsObject(getCms()));
+                m_resourceUtil.setReferenceProject(getProject());
+            } catch (CmsException ex) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(ex.getLocalizedMessage(), ex);
+                }
+            }
         }
         return m_resourceUtil;
     }
