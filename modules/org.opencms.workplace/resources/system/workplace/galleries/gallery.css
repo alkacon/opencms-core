@@ -18,4 +18,9 @@ a:hover.fn { text-decoration: underline; color: #000088; }
 		
 td.list { white-space: nowrap; padding-left: 2px; }
 		
-td.headline { padding: 1px; white-space: nowrap; background-color:ThreeDFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; }
+td.headline { padding: 1px; white-space: nowrap; background-color: ThreeDFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; }
+
+table.gallerybuttonbar { align: left; width:100%; background-color: ThreeDFace; margin: 0; border-right: 1px solid ThreeDShadow; }
+
+body.galleryhead { background-color: ThreeDFace; margin: 0; padding: 2px; }
+body.gallerypreview { background-color: ThreeDFace; }

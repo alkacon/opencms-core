@@ -10,6 +10,10 @@
 	A_CmsGallery wp = A_CmsGallery.createInstance(cms);
 
  %><%= wp.htmlStart(null) %>
+
+<style type="text/css">
+<%@ include file="gallery.css" %>
+</style>
  
 <%@ include file="gallery.js" %>
 

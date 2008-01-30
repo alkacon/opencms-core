@@ -10,6 +10,10 @@
 	
  %><%= wp.htmlStart(null) %>
 
+<style type="text/css">
+<%@ include file="gallery.css" %>
+</style>
+
 <script type="text/javascript">
 <!--
 	var previewUri = null;
@@ -48,7 +52,7 @@
 
 </head>
 
-<body onload="<%=wp.getBodyOnload()%>" style="background-color: ThreeDFace; margin: 0; padding: 2px;">
+<body onload="<%=wp.getBodyOnload()%>" class="galleryhead">
 
 <form name="main" action="<%= cms.link("gallery_fs_head.jsp") %>" target="gallery_fs" method="post" class="nomargin">
 <input type="hidden" name="<%= A_CmsGallery.PARAM_DIALOGMODE %>" value="<%= wp.getParamDialogMode() %>">

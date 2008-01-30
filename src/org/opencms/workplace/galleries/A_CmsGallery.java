@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2007/12/20 10:22:55 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2008/01/30 13:21:41 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -386,7 +386,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     }
                     String title = CmsEncoder.escapeXml(getPropertyValue(res, CmsPropertyDefinition.PROPERTY_TITLE));
                     buttonBar.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" ");
-                    buttonBar.append("style=\"align: left; width:100%; background-color: ThreeDFace; margin: 0; border-right: 1px solid ThreeDShadow\">");
+                    buttonBar.append("class=\"gallerybuttonbar\">");
                     buttonBar.append("<tr align=\"left\">");
                     buttonBar.append(buttonBarStartTab(0, 0));
                     // apply button
@@ -1032,7 +1032,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public String getPreviewBodyStyle() {
 
-        return " class=\"dialog\" style=\"background-color: ThreeDFace;\" unselectable=\"on\"";
+        return " class=\"dialog gallerypreview\" unselectable=\"on\"";
     }
 
     /**

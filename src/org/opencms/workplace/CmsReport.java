@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2007/08/13 16:30:06 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2008/01/30 13:21:41 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace;
 
+import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -52,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,23 +114,35 @@ public class CmsReport extends CmsMultiDialog {
     /**
      * Returns the style sheets for the report.<p>
      * 
+     * @param cms the current users context
      * @return the style sheets for the report
      */
-    public static String generateCssStyle() {
+    public static String generateCssStyle(CmsObject cms) {
 
         StringBuffer result = new StringBuffer(128);
         result.append("<style type='text/css'>\n");
-        result.append("body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: #000000; background-color:#ffffff; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; }\n");
-        result.append("div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: #000000; white-space: nowrap; }\n");
-        result.append("span.head  { color: #000099; font-weight: bold; }\n");
-        result.append("span.note  { color: #666666; }\n");
-        result.append("span.ok    { color: #009900; }\n");
-        result.append("span.warn  { color: #990000; padding-left: 40px; }\n");
-        result.append("span.err   { color: #990000; font-weight: bold; padding-left: 40px; }\n");
-        result.append("span.throw { color: #990000; font-weight: bold; }\n");
-        result.append("span.link1 { color: #666666; }\n");
-        result.append("span.link2 { color: #666666; padding-left: 40px; }\n");
-        result.append("span.link2 { color: #990000; }\n");
+        String contents = "";
+        try {
+            contents = new String(cms.readFile(CmsWorkplace.VFS_PATH_COMMONS + "style/report.css").getContents(), OpenCms.getSystemInfo().getDefaultEncoding());
+        } catch (Exception e) {
+            // ignore
+        }
+        if (CmsStringUtil.isEmpty(contents)) {
+            // css file not found, create default styles
+            result.append("body       { box-sizing: border-box; -moz-box-sizing: border-box; padding: 2px; margin: 0; color: WindowText; background-color: Window; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; }\n");
+            result.append("div.main   { box-sizing: border-box; -moz-box-sizing: border-box; color: WindowText; white-space: nowrap; }\n");
+            result.append("span.head  { color: #000099; font-weight: bold; }\n");
+            result.append("span.note  { color: #666666; }\n");
+            result.append("span.ok    { color: #009900; }\n");
+            result.append("span.warn  { color: #990000; padding-left: 40px; }\n");
+            result.append("span.err   { color: #990000; font-weight: bold; padding-left: 40px; }\n");
+            result.append("span.throw { color: #990000; font-weight: bold; }\n");
+            result.append("span.link1 { color: #666666; }\n");
+            result.append("span.link2 { color: #666666; padding-left: 40px; }\n");
+            result.append("span.link2 { color: #990000; }\n");
+        } else {
+            result.append(contents);
+        }
         result.append("</style>\n");
         return result.toString();
     }
@@ -165,18 +178,19 @@ public class CmsReport extends CmsMultiDialog {
     /**
      * Generates the header for the extended report view.<p>
      * 
+     * @param cms the current users context
      * @param encoding the encoding string
      * 
      * @return html code
      */
-    public static String generatePageStartExtended(String encoding) {
+    public static String generatePageStartExtended(CmsObject cms, String encoding) {
 
         StringBuffer result = new StringBuffer(128);
         result.append("<html>\n<head>\n");
         result.append("<meta HTTP-EQUIV='Content-Type' CONTENT='text/html; charset=");
         result.append(encoding);
         result.append("'>\n");
-        result.append(generateCssStyle());
+        result.append(generateCssStyle(cms));
         result.append("</head>\n");
         result.append("<body style='overflow: auto;'>\n");
         result.append("<div class='main'>\n");
@@ -200,7 +214,7 @@ public class CmsReport extends CmsMultiDialog {
         result.append("<link rel='stylesheet' type='text/css' href='");
         result.append(wp.getStyleUri("workplace.css"));
         result.append("'>\n");
-        result.append(generateCssStyle());
+        result.append(generateCssStyle(wp.getCms()));
         result.append("</head>\n");
         result.append("<body style='background-color:Menu;'>\n");
         result.append("<div style='vertical-align:middle; height: 100%;'>\n");

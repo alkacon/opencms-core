@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace base files.</p>
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.3</version>
+		<version>7.0.4</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -751,6 +751,21 @@
 					<value><![CDATA[true]]></value>
 				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/style/report.css</source>
+			<destination>system/workplace/commons/style/report.css</destination>
+			<type>plain</type>
+			<uuidstructure>e47aec9d-cf1b-11dc-be14-7d41ffdab5ea</uuidstructure>
+			<uuidresource>e47aec9e-cf1b-11dc-be14-7d41ffdab5ea</uuidresource>
+			<datelastmodified>Wed, 30 Jan 2008 11:37:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 30 Jan 2008 10:12:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
