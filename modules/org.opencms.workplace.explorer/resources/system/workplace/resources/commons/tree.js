@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/tree.js,v $
- * Date   : $Date: 2007/08/13 16:30:19 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/01/31 11:00:31 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,8 +59,8 @@ var treeHeadHtml2 =
 	+ "//-->\n"
 	+ "</script>\n"
 	+ "<style type=\"text/css\">\n"
-	+ "body  { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 2px 0px 0px 2px; margin: 0px; backgound-color: #ffffff; }\n"
-	+ "p, td { vertical-align: bottom; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; white-space: nowrap; color: #000000; }\n"
+	+ "body  { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 2px 0px 0px 2px; margin: 0px; background-color: Window; }\n"
+	+ "p, td { vertical-align: bottom; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; white-space: nowrap; color: WindowText; }\n"
 	+ "a     { vertical-align: bottom; text-decoration: none; cursor: pointer; }\n"
 	+ "a.ig  { vertical-align: bottom; text-decoration: none; color: #888888; }\n"
 	+ "a.igi { vertical-align: bottom; text-decoration: underline; color: #000088; }\n"
