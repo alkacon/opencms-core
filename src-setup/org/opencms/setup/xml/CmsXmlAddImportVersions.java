@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddImportVersions.java,v $
- * Date   : $Date: 2008/02/01 09:42:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/02/01 09:49:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.9.2
  */
@@ -88,6 +88,11 @@ public class CmsXmlAddImportVersions extends A_CmsSetupXmlUpdate {
                     document,
                     xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
                     "org.opencms.importexport.CmsImportVersion6");
+            } else if (xpath.equals(getXPathsToUpdate().get(2))) {
+                CmsSetupXmlHelper.setValue(
+                    document,
+                    xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
+                    "org.opencms.importexport.CmsImportVersion7");
             }
             return true;
         }
@@ -126,6 +131,7 @@ public class CmsXmlAddImportVersions extends A_CmsSetupXmlUpdate {
             m_xpaths = new ArrayList();
             m_xpaths.add(xp.toString() + "org.opencms.importexport.CmsImportVersion5']");
             m_xpaths.add(xp.toString() + "org.opencms.importexport.CmsImportVersion6']");
+            m_xpaths.add(xp.toString() + "org.opencms.importexport.CmsImportVersion7']");
         }
         return m_xpaths;
     }
