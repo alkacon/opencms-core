@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Messages.java,v $
- * Date   : $Date: 2007/10/19 08:43:59 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2008/02/01 09:41:26 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,12 +39,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_FILE_EXPORT_0 = "ERR_ACTION_FILE_EXPORT_0";
 
@@ -98,6 +98,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0 = "GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DATABASE_EXPORT_TYPES_BLOCK_0 = "GUI_DATABASE_EXPORT_TYPES_BLOCK_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DATABASE_IMPORT_BLOCK_0 = "GUI_DATABASE_IMPORT_BLOCK_0";
@@ -283,6 +286,14 @@ public final class Messages extends A_CmsMessageBundle {
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
+     * Hides the public constructor for this utility class.<p>
+     */
+    private Messages() {
+
+        // hide the constructor
+    }
+
+    /**
      * Returns an instance of this localized message accessor.<p>
      * 
      * @return an instance of this localized message accessor
@@ -290,14 +301,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
-    }
-
-    /**
-     * Hides the public constructor for this utility class.<p>
-     */
-    private Messages() {
-
-        // hide the constructor
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesListReplaceReport.java,v $
- * Date   : $Date: 2007/08/13 16:29:53 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/02/01 09:41:26 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,7 +110,7 @@ public class CmsModulesListReplaceReport extends A_CmsListReport {
         String importpath = OpenCms.getSystemInfo().getPackagesRfsPath();
         importpath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(importpath + "modules/" + module);
 
-        I_CmsReportThread replaceThread = new CmsModuleReplaceThread(getCms(), modulename, importpath, false);
+        I_CmsReportThread replaceThread = new CmsModuleReplaceThread(getCms(), modulename, importpath);
 
         return replaceThread;
     }

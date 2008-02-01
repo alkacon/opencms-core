@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromServer.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2008/02/01 09:41:26 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.database;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
+import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,8 +73,11 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
 
-    /** Import file request parameter. */
+    /** Import file request parameter name. */
     public static final String PARAM_IMPORTFILE = "importFile";
+
+    /** Keep permissions request parameter name. */
+    public static final String PARAM_KEEPPERMISSIONS = "keepPermissions";
 
     /** The import JSP report workplace URI. */
     protected static final String IMPORT_ACTION_REPORT = PATH_WORKPLACE + "admin/database/reports/import.jsp";
@@ -81,11 +85,14 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /** Name of the manifest file used in upload files. */
     private static final String FILE_MANIFEST = "manifest.xml";
 
-    /** Name of the subfolder containing the OpenCms module packages. */
+    /** Name of the sub-folder containing the OpenCms module packages. */
     private static final String FOLDER_MODULES = "modules";
 
-    /** The import file name stored by the selectbox widget. */
+    /** The import file name stored by the select box widget. */
     private String m_importFile;
+
+    /** The keep permissions flag stored by the check box widget. */
+    private String m_keepPermissions;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -151,6 +158,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
         Map params = new HashMap();
         params.put(PARAM_FILE, getImportFile());
+        params.put(PARAM_KEEPPERMISSIONS, getKeepPermissions());
         // set style to display report in correct layout
         params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
         // set close link to get back to overview after finishing the import
@@ -172,6 +180,16 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the keepPermissions parameter.<p>
+     *
+     * @return the keepPermissions parameter
+     */
+    public String getKeepPermissions() {
+
+        return m_keepPermissions;
+    }
+
+    /**
      * Sets the importFile parameter.<p>
      *
      * @param importFile the importFile parameter
@@ -179,6 +197,16 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     public void setImportFile(String importFile) {
 
         m_importFile = importFile;
+    }
+
+    /**
+     * Sets the keepPermissions parameter.<p>
+     *
+     * @param keepPermissions the keepPermissions parameter
+     */
+    public void setKeepPermissions(String keepPermissions) {
+
+        m_keepPermissions = keepPermissions;
     }
 
     /**
@@ -200,7 +228,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
         if (dialog.equals(PAGES[0])) {
             result.append(dialogBlockStart(key("label.block.importFileFromServer")));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 0));
+            result.append(createDialogRowsHtml(0, getFilesFromServer().isEmpty() ? 0 : 1));
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -218,13 +246,15 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
         // get available files from server
         List files = getFilesFromServer();
-        
+
         if (files.isEmpty()) {
             // no import files available, display message
-            addWidget(new CmsWidgetDialogParameter(this, PARAM_IMPORTFILE, PAGES[0], new CmsDisplayWidget(key(Messages.GUI_IMPORTSERVER_NO_DB_EXPORTS_0))));
+            addWidget(new CmsWidgetDialogParameter(this, PARAM_IMPORTFILE, PAGES[0], new CmsDisplayWidget(
+                key(Messages.GUI_IMPORTSERVER_NO_DB_EXPORTS_0))));
         } else {
             // add the file select box widget
             addWidget(new CmsWidgetDialogParameter(this, PARAM_IMPORTFILE, PAGES[0], new CmsSelectWidget(files)));
+            addWidget(new CmsWidgetDialogParameter(this, PARAM_KEEPPERMISSIONS, PAGES[0], new CmsCheckboxWidget()));
         }
     }
 

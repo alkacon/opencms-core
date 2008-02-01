@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportDialog.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2008/02/01 09:41:26 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.workplace.tools.database;
 
-import org.opencms.importexport.CmsVfsImportExportHandler;
+import org.opencms.importexport.CmsExportParameters;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,8 +77,8 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
     /** The import JSP report workplace URI. */
     protected static final String EXPORT_ACTION_REPORT = PATH_WORKPLACE + "admin/database/reports/export.jsp";
 
-    /** The export handler object that is edited on this dialog. */
-    private CmsVfsImportExportHandler m_exportHandler;
+    /** The export parameters object that is edited on this dialog. */
+    private CmsExportParameters m_exportParams;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -110,9 +110,9 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
         List errors = new ArrayList();
         // create absolute RFS path and store it in dialog object
         String exportFileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + m_exportHandler.getFileName());
-        m_exportHandler.setFileName(exportFileName);
-        setDialogObject(m_exportHandler);
+            OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + m_exportParams.getPath());
+        m_exportParams.setPath(exportFileName);
+        setDialogObject(m_exportParams);
         Map params = new HashMap();
         // set the name of this class to get dialog object in report
         params.put(CmsDatabaseExportReport.PARAM_CLASSNAME, this.getClass().getName());
@@ -144,14 +144,19 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
         result.append(createDialogRowsHtml(0, 0));
         result.append(createWidgetBlockEnd());
 
+        // create export data type block
+        result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_TYPES_BLOCK_0)));
+        result.append(createDialogRowsHtml(1, 3));
+        result.append(createWidgetBlockEnd());
+
         // create export settings block
         result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0)));
-        result.append(createDialogRowsHtml(1, 6));
+        result.append(createDialogRowsHtml(4, 8));
         result.append(createWidgetBlockEnd());
 
         // create export resource(s) block
         result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_RESOURCES_BLOCK_0)));
-        result.append(createDialogRowsHtml(7, 7));
+        result.append(createDialogRowsHtml(9, 9));
         result.append(createWidgetBlockEnd());
 
         // close table
@@ -171,29 +176,37 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
         List exportFiles = getComboExportFiles();
         if (exportFiles.isEmpty()) {
             // no export files available, display text input field
-            addWidget(new CmsWidgetDialogParameter(m_exportHandler, "fileName", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_exportParams, "path", PAGES[0], new CmsInputWidget()));
         } else {
             // one or more export files present, create combo widget
-            addWidget(new CmsWidgetDialogParameter(m_exportHandler, "fileName", PAGES[0], new CmsComboWidget(
-                exportFiles)));
+            addWidget(new CmsWidgetDialogParameter(m_exportParams, "path", PAGES[0], new CmsComboWidget(exportFiles)));
         }
 
-        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "includeUnchanged", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "exportUserdata", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "includeSystem", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_exportParams, "exportResourceData", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_exportParams, "exportAccountData", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_exportParams, "exportProjectData", PAGES[0], new CmsCheckboxWidget()));
+
         addWidget(new CmsWidgetDialogParameter(
-            m_exportHandler,
+            m_exportParams,
+            "includeUnchangedResources",
+            PAGES[0],
+            new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_exportParams, "includeSystemFolder", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(
+            m_exportParams,
             "contentAge",
             "0",
             PAGES[0],
             new CmsCalendarWidget(),
             0,
             1));
-        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "recursive", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "projectOnly", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "exportPaths", "/", PAGES[0], new CmsVfsFileWidget(
+        addWidget(new CmsWidgetDialogParameter(m_exportParams, "recursive", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_exportParams, "inProject", PAGES[0], new CmsCheckboxWidget()));
+
+        addWidget(new CmsWidgetDialogParameter(m_exportParams, "resources", "/", PAGES[0], new CmsVfsFileWidget(
             false,
             getCms().getRequestContext().getSiteRoot()), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));
+
     }
 
     /**
@@ -231,25 +244,25 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
         Object o;
 
         if (CmsStringUtil.isEmpty(getParamAction())) {
-            o = new CmsVfsImportExportHandler();
+            o = new CmsExportParameters();
         } else {
             // this is not the initial call, get the job object from session
             o = getDialogObject();
         }
 
-        if (!(o instanceof CmsVfsImportExportHandler)) {
-            // create a new export handler object
-            m_exportHandler = new CmsVfsImportExportHandler();
+        if (!(o instanceof CmsExportParameters)) {
+            // create a new export parameters object
+            m_exportParams = new CmsExportParameters();
         } else {
-            // reuse export handler object stored in session
-            m_exportHandler = (CmsVfsImportExportHandler)o;
+            // reuse export parameters object stored in session
+            m_exportParams = (CmsExportParameters)o;
         }
 
-        if (CmsStringUtil.isEmpty(getParamAction()) && m_exportHandler.getExportPaths().size() < 1) {
+        if (CmsStringUtil.isEmpty(getParamAction()) && (m_exportParams.getResources().size() < 1)) {
             // on initial call, at least on resource input field has to be present
             List initialPaths = new ArrayList(1);
             initialPaths.add("/");
-            m_exportHandler.setExportPaths(initialPaths);
+            m_exportParams.setResources(initialPaths);
         }
     }
 
@@ -272,7 +285,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
         // initialize parameters and dialog actions in super implementation
         super.initWorkplaceRequestValues(settings, request);
 
-        // save the current state of the export handler (may be changed because of the widget values)
-        setDialogObject(m_exportHandler);
+        // save the current state of the export parameters (may be changed because of the widget values)
+        setDialogObject(m_exportParams);
     }
 }

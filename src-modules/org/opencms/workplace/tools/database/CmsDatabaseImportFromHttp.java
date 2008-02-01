@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromHttp.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/02/01 09:41:26 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,6 +61,12 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
 
     /** The dialog URI. */
     public static final String DIALOG_URI = PATH_WORKPLACE + "admin/database/importhttp.jsp";
+
+    /** Keep permissions request parameter name. */
+    public static final String PARAM_KEEPPERMISSIONS = "keepPermissions";
+
+    /** The keep permissions flag stored by the check box widget. */
+    private String m_keepPermissions;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -98,6 +104,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
         }
         Map params = new HashMap();
         params.put(PARAM_FILE, getParamImportfile());
+        params.put(PARAM_KEEPPERMISSIONS, getParamKeeppermissions());
         // set style to display report in correct layout
         params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
         // set close link to get back to overview after finishing the import
@@ -123,11 +130,31 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     }
 
     /**
+     * Returns the keepPermissions parameter.<p>
+     *
+     * @return the keepPermissions parameter
+     */
+    public String getParamKeeppermissions() {
+
+        return m_keepPermissions;
+    }
+
+    /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getStarttext()
      */
     public String getStarttext() {
 
         return key(Messages.GUI_DATABASE_IMPORT_BLOCK_0);
+    }
+
+    /**
+     * Sets the keepPermissions parameter.<p>
+     *
+     * @param keepPermissions the keepPermissions parameter
+     */
+    public void setParamKeeppermissions(String keepPermissions) {
+
+        m_keepPermissions = keepPermissions;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportReport.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/02/01 09:41:26 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools.database;
 
+import org.opencms.importexport.CmsExportParameters;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.report.I_CmsReportThread;
@@ -48,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,14 +94,14 @@ public class CmsDatabaseExportReport extends A_CmsListReport {
     }
 
     /** 
-     * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
     public I_CmsReportThread initializeThread() {
 
-        CmsVfsImportExportHandler vfsExportHandler = (CmsVfsImportExportHandler)((Map)getSettings().getDialogObject()).get(getParamClassname());
-
-        I_CmsReportThread exportThread = new CmsExportThread(getCms(), vfsExportHandler, false);
+        CmsExportParameters params = (CmsExportParameters)((Map)getSettings().getDialogObject()).get(getParamClassname());
+        CmsVfsImportExportHandler handler = new CmsVfsImportExportHandler();
+        handler.setExportParams(params);
+        I_CmsReportThread exportThread = new CmsExportThread(getCms(), handler, false);
 
         return exportThread;
     }

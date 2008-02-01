@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/A_CmsImportFromHttp.java,v $
- * Date   : $Date: 2007/08/13 16:29:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/02/01 09:41:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Andreas Zahner 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,8 +106,8 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
     /**
      * Performs the import operation after "OK" has been pressed.<p>
      * 
-     * @throws IOException in case of errros forwarding to the required result page
-     * @throws ServletException in case of errros forwarding to the required result page
+     * @throws IOException in case of errors forwarding to the required result page
+     * @throws ServletException in case of errors forwarding to the required result page
      */
     public abstract void actionCommit() throws IOException, ServletException;
 
@@ -115,8 +115,8 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 
      * @throws JspException if dialog actions fail
-     * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
-     * @throws ServletException in case of errros forwarding to the required result page
+     * @throws IOException if writing to the JSP out fails, or in case of errors forwarding to the required result page
+     * @throws ServletException in case of errors forwarding to the required result page
      */
     public void displayDialog() throws IOException, JspException, ServletException {
 
@@ -147,13 +147,15 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
 
     /**
      * Gets the return uri for this dialog.<p>
+     * 
      * @return return uri for this dialog
      */
     public abstract String getDialogReturnUri();
 
     /**
-     * Gets the localized import message text for the imput form.<p>
-     * @return localized import message text  for the imput form
+     * Gets the localized import message text for the input form.<p>
+     * 
+     * @return localized import message text  for the input form
      */
     public abstract String getImportMessage();
 
@@ -168,8 +170,9 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
     }
 
     /**
-     * Gets the localized starttext for the imput form.<p>
-     * @return localized starttext for the imput form
+     * Gets the localized start text for the input form.<p>
+     * 
+     * @return localized start text for the input form
      */
     public abstract String getStarttext();
 
@@ -184,10 +187,21 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
     }
 
     /**
-     * Gets a database importfile from the client and copys it to the server.<p>
+     * Appends html code for the additional parameters.<p>
+     * 
+     * @param result the html code of this page
+     */
+    protected void appendAdditionalParameters(StringBuffer result) {
+
+        // do nothing
+    }
+
+    /**
+     * Gets a database import file from the client and copies it to the server.<p>
      *
      * @param destination the destination of the file on the server
-     * @return the name of the file or null if something went wrong when importing the file.
+     * 
+     * @return the name of the file or null if something went wrong when importing the file
      * 
      * @throws CmsIllegalArgumentException if the specified file name is invalid
      * @throws CmsRfsException if generating folders or files on the server fails
@@ -210,7 +224,7 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
 
         String fileName = null;
 
-        if (fi != null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
+        if ((fi != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(fi.getName())) {
             // file name has been specified, upload the file
             fileName = fi.getName();
             byte[] content = fi.get();
@@ -312,6 +326,7 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
         result.append(PARAM_IMPORTFILE);
         result.append("\" class=\"maxwidth\" accept=\"application/zip\">");
         result.append("</td>\n</tr>");
+        appendAdditionalParameters(result);
         result.append("</table>\n");
         result.append(dialogBlockEnd());
 

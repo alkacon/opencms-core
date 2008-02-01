@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportReport.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/02/01 09:41:26 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,11 +46,14 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDatabaseImportReport extends A_CmsListReport {
+
+    /** The keep permissions flag. */
+    private String m_keepPermissions;
 
     /** Request parameter for the file name to import. */
     private String m_paramFile;
@@ -78,6 +81,16 @@ public class CmsDatabaseImportReport extends A_CmsListReport {
     }
 
     /**
+     * Returns the keepPermissions parameter.<p>
+     *
+     * @return the keepPermissions parameter
+     */
+    public String getKeepPermissions() {
+
+        return m_keepPermissions;
+    }
+
+    /**
      * Returns the request parameter value for the file name to import.<p>
      * 
      * @return the request parameter value for the file name to import
@@ -94,10 +107,21 @@ public class CmsDatabaseImportReport extends A_CmsListReport {
     public I_CmsReportThread initializeThread() {
 
         String importFile = OpenCms.getSystemInfo().getPackagesRfsPath() + getParamFile();
+        boolean keepPermissions = Boolean.valueOf(getKeepPermissions()).booleanValue();
 
-        I_CmsReportThread importThread = new CmsDatabaseImportThread(getCms(), importFile, false);
+        I_CmsReportThread importThread = new CmsDatabaseImportThread(getCms(), importFile, keepPermissions);
 
         return importThread;
+    }
+
+    /**
+     * Sets the keepPermissions parameter.<p>
+     *
+     * @param keepPermissions the keepPermissions parameter
+     */
+    public void setKeepPermissions(String keepPermissions) {
+
+        m_keepPermissions = keepPermissions;
     }
 
     /** 
