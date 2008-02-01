@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.workplace.explorer.*" %><%	
+<%@ page import="java.util.*,org.opencms.workplace.explorer.*" %><%	
 
 	// initialize the workplace class
 	CmsNewResourceUpload wp = new CmsNewResourceUpload(pageContext, request, response);
@@ -18,8 +18,18 @@ case CmsNewResourceUpload.ACTION_APPLET:
 <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;<br>&nbsp;</td></tr>
 <tr><td align="center" valign="middle">
-
-<%= wp.createAppletCode() %>
+<%
+// setting the colors for the applet content JSP.
+Map colors = new HashMap();
+colors.put("bgColor", "#C0C0C0");
+colors.put("outerBorderRightBottom", "#333333");
+colors.put("outerBorderLeftTop", "#C0C0C0");
+colors.put("innerBorderRightBottom", "#777777");
+colors.put("innerBorderLeftTop", "#F0F0F0");
+colors.put("colorText", "#000000");
+colors.put("progessBar", "#E10050");
+wp.setAppletWindowColors(colors);
+%><%= wp.createAppletCode() %>
 
 </td></tr>
 </table>
