@@ -1,6 +1,29 @@
 <!--
 # PLEASE NOTE - PLEASE NOTE - PLEASE NOTE - PLEASE NOTE
 # 
+# The following nodes describe the import version 7.
+#
+# The import file will only be validated if the xml validation import parameter is set as
+# well as the xml validation export parameter is set when the data was exported. 
+-->
+
+<!ELEMENT export (info, accounts?, files?, projects?)>
+
+<!ELEMENT info (creator, 
+				opencms_version, 
+				createdate, 
+				infoproject, 
+				export_version)>
+				
+<!ELEMENT creator (#PCDATA)>
+<!ELEMENT opencms_version (#PCDATA)>
+<!ELEMENT createdate (#PCDATA)>
+<!ELEMENT infoproject (#PCDATA)>
+<!ELEMENT export_version (#PCDATA)>
+
+<!--
+# PLEASE NOTE - PLEASE NOTE - PLEASE NOTE - PLEASE NOTE
+# 
 # The following nodes describe the resources import version 7.
 -->
 
@@ -9,7 +32,7 @@
 				destination, 
 				type, 
 				uuidstructure, 
-				uuidresource, 
+				uuidresource?, 
 				datelastmodified, 
 				userlastmodified, 
 				datecreated, 
@@ -38,7 +61,7 @@
 <!ELEMENT property (name, value)>
 <!ATTLIST property type (individual|shared) "individual">
 <!ELEMENT name (#PCDATA)>
-<!ELEMENT value (#CDATA)>
+<!ELEMENT value (#PCDATA)>
 
 <!ELEMENT relations (relation*)>
 <!ELEMENT relation (id, path, type)>
@@ -67,9 +90,7 @@
 				   groups,
 				   users)>
 
-<!ELEMENT name (#PCDATA)>
 <!ELEMENT description (#PCDATA)>
-<!ELEMENT flags (#PCDATA)>
 
 <!ELEMENT resources (resource+)>
 <!ELEMENT resource (#PCDATA)>
@@ -89,14 +110,13 @@
                 userinfo, 
                 userroles, 
                 usergroups)>
-<!ELEMENT password (#CDATA)>
+<!ELEMENT password (#PCDATA)>
 <!ELEMENT firstname (#PCDATA)>
 <!ELEMENT lastname (#PCDATA)>
 <!ELEMENT email (#PCDATA)>
-<!ELEMENT datecreated (#PCDATA)>
 
 <!ELEMENT userinfo (entry*)>
-<!ELEMENT entry (#CDATA)>
+<!ELEMENT entry (#PCDATA)>
 <!ATTLIST entry name CDATA #REQUIRED>
 <!ATTLIST entry type CDATA #REQUIRED>
 
@@ -116,14 +136,9 @@
 <!ELEMENT projects (project+)>
 <!ELEMENT project (name, 
 				description, 
-				managersgroup, 
 				usersgroup, 
+				managersgroup, 
 				resources)>
 
-<!ELEMENT name (#PCDATA)>
-<!ELEMENT description (#PCDATA)>
 <!ELEMENT managersgroup (#PCDATA)>
 <!ELEMENT usersgroup (#PCDATA)>
-
-<!ELEMENT resources (resource*)>
-<!ELEMENT resource (#PCDATA)>

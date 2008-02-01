@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2008/02/01 09:37:43 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2008/02/01 17:06:41 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.87 $ 
+ * @version $Revision: 1.88 $ 
  * 
  * @since 6.0.0 
  * 
@@ -353,7 +353,8 @@ public abstract class A_CmsImport implements I_CmsImport {
             // read the xml-config file
             Document docXml = CmsXmlUtils.unmarshalHelper(
                 helper.getFileBytes(CmsImportExportManager.EXPORT_MANIFEST),
-                null);
+                null,
+                false);
 
             return getVersion() == Integer.parseInt(((Element)docXml.selectNodes(
                 "//" + CmsImportExportManager.N_VERSION).get(0)).getTextTrim());

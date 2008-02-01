@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2008/02/01 09:37:43 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2008/02/01 17:06:40 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.importexport;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
@@ -95,7 +96,7 @@ import org.xml.sax.SAXException;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.92 $ 
+ * @version $Revision: 1.93 $ 
  * 
  * @since 6.0.0 
  */
@@ -597,11 +598,17 @@ public class CmsExport {
     throws CmsImportExportException, SAXException {
 
         try {
+            // only write <source> if resource is a file
+            String fileName = trimResourceName(getCms().getSitePath(resource));
+            if (fileName.startsWith("system/orgunits")) {
+                // it is not allowed to export organizational unit resources
+                // export the organizational units instead
+                return;
+            }
+
             // define the file node
             Element fileElement = m_resourceNode.addElement(CmsImportVersion7.N_FILE);
 
-            // only write <source> if resource is a file
-            String fileName = trimResourceName(getCms().getSitePath(resource));
             if (resource.isFile()) {
                 if (source) {
                     fileElement.addElement(CmsImportVersion7.N_SOURCE).addText(fileName);
@@ -1310,19 +1317,19 @@ public class CmsExport {
                 }
             }
 
-            // append the node for groups of user
-            Element userGroups = e.addElement(CmsImportVersion7.N_USERGROUPS);
-            List groups = getCms().getGroupsOfUser(user.getName(), true, true);
-            for (int i = 0; i < groups.size(); i++) {
-                String groupName = ((CmsGroup)groups.get(i)).getName();
-                userGroups.addElement(CmsImportVersion7.N_USERGROUP).addText(groupName);
-            }
             // append node for roles of user
             Element userRoles = e.addElement(CmsImportVersion7.N_USERROLES);
             List roles = OpenCms.getRoleManager().getRolesOfUser(getCms(), user.getName(), "", true, true, true);
             for (int i = 0; i < roles.size(); i++) {
                 String roleName = ((CmsRole)roles.get(i)).getFqn();
                 userRoles.addElement(CmsImportVersion7.N_USERROLE).addText(roleName);
+            }
+            // append the node for groups of user
+            Element userGroups = e.addElement(CmsImportVersion7.N_USERGROUPS);
+            List groups = getCms().getGroupsOfUser(user.getName(), true, true);
+            for (int i = 0; i < groups.size(); i++) {
+                String groupName = ((CmsGroup)groups.get(i)).getName();
+                userGroups.addElement(CmsImportVersion7.N_USERGROUP).addText(groupName);
             }
             // write the XML
             digestElement(parent, e);
@@ -1512,6 +1519,13 @@ public class CmsExport {
         // start the document
         saxHandler.startDocument();
 
+        // set the doctype if needed
+        if (m_parameters.isXmlValidation()) {
+            saxHandler.startDTD(getExportNodeName(), null, CmsConfigurationManager.DEFAULT_DTD_PREFIX
+                + CmsImportVersion7.DTD_FILENAME);
+            saxHandler.endDTD();
+        }
+
         // the node in the XML document where the file entries are appended to        
         String exportNodeName = getExportNodeName();
         // add main export node to XML document
@@ -1523,7 +1537,7 @@ public class CmsExport {
         info.addElement(CmsImportExportManager.N_CREATOR).addText(getCms().getRequestContext().currentUser().getName());
         info.addElement(CmsImportExportManager.N_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionNumber());
         info.addElement(CmsImportExportManager.N_DATE).addText(CmsDateUtil.getHeaderDate(System.currentTimeMillis()));
-        info.addElement(CmsImportExportManager.N_PROJECT).addText(
+        info.addElement(CmsImportExportManager.N_INFO_PROJECT).addText(
             getCms().getRequestContext().currentProject().getName());
         info.addElement(CmsImportExportManager.N_VERSION).addText(CmsImportExportManager.EXPORT_VERSION);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2008/02/01 09:37:43 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2008/02/01 17:06:40 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  * 
@@ -211,8 +211,8 @@ public class CmsImportExportManager {
      * @deprecated Use the appropriate tag from latest import class instead*/
     public static final String N_PASSWORD = A_CmsImport.N_PASSWORD;
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "project" node, appears in the manifest info header. */
-    public static final String N_PROJECT = "project";
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "infoproject" node, appears in the manifest info header. */
+    public static final String N_INFO_PROJECT = "infoproject";
 
     /** Tag in the {@link #EXPORT_MANIFEST} for the "properties" node, starts the list of properties of a VFS resource. 
      * @deprecated Use the appropriate tag from latest import class instead*/
@@ -553,11 +553,14 @@ public class CmsImportExportManager {
         try {
             helper.openFile();
             stream = helper.getFileStream(CmsImportExportManager.EXPORT_MANIFEST);
-            manifest = new SAXReader().read(stream);
+            SAXReader reader = new SAXReader(false);
+            reader.setValidation(false);
+            reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            manifest = reader.read(stream);
         } catch (Throwable e) {
             throw new CmsImportExportException(Messages.get().container(
                 Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1,
-                EXPORT_MANIFEST));
+                EXPORT_MANIFEST), e);
         } finally {
             try {
                 if (stream != null) {

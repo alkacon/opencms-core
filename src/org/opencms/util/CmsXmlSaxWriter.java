@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2007/08/13 16:29:56 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2008/02/01 17:06:41 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -346,9 +346,22 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ext.LexicalHandler#startDTD(java.lang.String, java.lang.String, java.lang.String)
      */
-    public void startDTD(String name, String publicId, String systemId) {
+    public void startDTD(String name, String publicId, String systemId) throws SAXException {
 
-        // NOOP
+        write("<!DOCTYPE ");
+        write(name);
+        if (publicId != null) {
+            write(" PUBLIC \"");
+            write(publicId);
+            write("\"");
+        }
+        if (systemId != null) {
+            write(" SYSTEM \"");
+            write(systemId);
+            write("\"");
+        }
+        write(">");
+        writeNewLine();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportHelper.java,v $
- * Date   : $Date: 2008/02/01 09:37:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/02/01 17:06:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,12 @@
 
 package org.opencms.importexport;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.xml.CmsXmlEntityResolver;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -52,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.4 
  */
@@ -78,6 +80,35 @@ public class CmsImportHelper {
     public CmsImportHelper(CmsImportParameters parameters) {
 
         m_params = parameters;
+    }
+
+    /**
+     * Adds a new DTD system id prefix mapping for internal resolution 
+     * of external URLs.<p>
+     * 
+     * @param dtdSystemLocation the internal system location of the DTD file, e.g. <code>org/opencms/configuration/</code>
+     * @param dtdFilename the name of the DTD file, e.g. <code>opencms-configuration.dtd</code>
+     * @param dtdUrlPrefix the external system id prefix of the DTD file, e.g. <code>http://www.opencms.org/dtd/6.0/</code>
+     * 
+     * @see org.opencms.configuration.I_CmsXmlConfiguration
+     */
+    public void cacheDtdSystemId(String dtdSystemLocation, String dtdFilename, String dtdUrlPrefix) {
+
+        if (dtdSystemLocation != null) {
+            try {
+                String file = CmsFileUtil.readFile(dtdSystemLocation + dtdFilename, CmsEncoder.ENCODING_UTF_8);
+                CmsXmlEntityResolver.cacheSystemId(dtdUrlPrefix + dtdFilename, file.getBytes(CmsEncoder.ENCODING_UTF_8));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(org.opencms.configuration.Messages.get().getBundle().key(
+                        org.opencms.configuration.Messages.LOG_CACHE_DTD_SYSTEM_ID_1,
+                        new Object[] {dtdUrlPrefix + dtdFilename + " --> " + dtdSystemLocation + dtdFilename}));
+                }
+            } catch (IOException e) {
+                LOG.error(org.opencms.configuration.Messages.get().getBundle().key(
+                    org.opencms.configuration.Messages.LOG_CACHE_DTD_SYSTEM_ID_FAILURE_1,
+                    new Object[] {dtdSystemLocation + dtdFilename}), e);
+            }
+        }
     }
 
     /**
@@ -222,6 +253,22 @@ public class CmsImportHelper {
     public File getFolder() {
 
         return m_folder;
+    }
+
+    /**
+     * Returns the class system location.<p>
+     * 
+     * i.e: <code>org/opencms/importexport</code><p>
+     * 
+     * @param clazz the class to get the location for
+     *
+     * @return the class system location
+     */
+    public String getLocation(Class clazz) {
+
+        String filename = clazz.getName().replace('.', '/');
+        int pos = filename.lastIndexOf('/') + 1;
+        return (pos > 0 ? filename.substring(0, pos) : "");
     }
 
     /**

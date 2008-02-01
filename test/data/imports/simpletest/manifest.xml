@@ -5,7 +5,7 @@
 		<creator>Admin</creator>
 		<opencms_version>7.0.3</opencms_version>
 		<createdate>Thu, 31 Jan 2008 18:05:13 GMT</createdate>
-		<project>Offline</project>
+		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<accounts>
@@ -74,12 +74,12 @@
 							<entry name="USER_ADDRESS" type="java.lang.String"/>
 							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[%(key.GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0)]]></entry>
 						</userinfo>
-						<usergroups>
-							<usergroup>Administrators</usergroup>
-						</usergroups>
 						<userroles>
 							<userrole>ROOT_ADMIN</userrole>
 						</userroles>
+						<usergroups>
+							<usergroup>Administrators</usergroup>
+						</usergroups>
 					</user>
 					<user>
 						<name>Export</name>
@@ -93,10 +93,10 @@
 							<entry name="USER_ADDRESS" type="java.lang.String"/>
 							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[%(key.GUI_DEFAULTUSER_ROOT_EXPORT_DESCRIPTION_0)]]></entry>
 						</userinfo>
+						<userroles/>
 						<usergroups>
 							<usergroup>Guests</usergroup>
 						</usergroups>
-						<userroles/>
 					</user>
 					<user>
 						<name>Guest</name>
@@ -110,10 +110,10 @@
 							<entry name="USER_ADDRESS" type="java.lang.String"/>
 							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[%(key.GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0)]]></entry>
 						</userinfo>
+						<userroles/>
 						<usergroups>
 							<usergroup>Guests</usergroup>
 						</usergroups>
-						<userroles/>
 					</user>
 					<user>
 						<name>test1</name>
@@ -129,13 +129,13 @@
 							<entry name="USER_TOWN" type="java.lang.String"><![CDATA[test1]]></entry>
 							<entry name="USER_ZIPCODE" type="java.lang.String"><![CDATA[test1]]></entry>
 						</userinfo>
+						<userroles>
+							<userrole>WORKPLACE_USER</userrole>
+						</userroles>
 						<usergroups>
 							<usergroup>group1</usergroup>
 							<usergroup>Users</usergroup>
 						</usergroups>
-						<userroles>
-							<userrole>WORKPLACE_USER</userrole>
-						</userroles>
 					</user>
 					<user>
 						<name>test2</name>
@@ -151,13 +151,13 @@
 							<entry name="USER_TOWN" type="java.lang.String"><![CDATA[test2]]></entry>
 							<entry name="USER_ZIPCODE" type="java.lang.String"><![CDATA[test2]]></entry>
 						</userinfo>
+						<userroles>
+							<userrole>WORKPLACE_USER</userrole>
+						</userroles>
 						<usergroups>
 							<usergroup>group2</usergroup>
 							<usergroup>Users</usergroup>
 						</usergroups>
-						<userroles>
-							<userrole>WORKPLACE_USER</userrole>
-						</userroles>
 					</user>
 				</users>
 			</orgunit>

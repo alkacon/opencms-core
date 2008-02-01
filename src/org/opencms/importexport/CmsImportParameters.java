@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportParameters.java,v $
- * Date   : $Date: 2008/02/01 09:37:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/02/01 17:06:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,12 @@
 
 package org.opencms.importexport;
 
-
 /**
  * Import parameters.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.4 
  */
@@ -51,6 +50,9 @@ public class CmsImportParameters {
 
     /** The file path, could be a folder or a zip file. */
     private String m_path;
+
+    /** If set, the manifest.xml file will be validated during the import. */
+    private boolean m_xmlValidation;
 
     /**
      * Constructor.<p>
@@ -98,6 +100,16 @@ public class CmsImportParameters {
     }
 
     /**
+     * Checks if the manifest.xml file will be validated during the import.<p>
+     *
+     * @return the xml validation flag
+     */
+    public boolean isXmlValidation() {
+
+        return m_xmlValidation;
+    }
+
+    /**
      * Sets the path in the OpenCms VFS to import into.<p>
      *
      * @param importPath the import path to set
@@ -126,5 +138,15 @@ public class CmsImportParameters {
     public void setPath(String path) {
 
         m_path = path;
+    }
+
+    /**
+     * Sets the xml validation flag. If set, the manifest.xml file will be validated during the import.<p>
+     *
+     * @param xmlValidation the xml validation flag to set
+     */
+    public void setXmlValidation(boolean xmlValidation) {
+
+        m_xmlValidation = xmlValidation;
     }
 }

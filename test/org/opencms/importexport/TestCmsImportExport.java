@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2008/02/01 09:43:17 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/02/01 17:07:23 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -110,6 +110,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCmsImportExport.class.getName());
 
+        suite.addTest(new TestCmsImportExport("testImportValidation"));
         suite.addTest(new TestCmsImportExport("testImportSiblingIssue"));
         suite.addTest(new TestCmsImportExport("testImportPermissionIssue"));
         suite.addTest(new TestCmsImportExport("testImportMovedFolder"));
@@ -1826,6 +1827,69 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             filter.disableDateLastModifiedTest();
             assertFilter(cms, cms.readResource(site + filename), filter);
             assertFilter(cms, cms.readResource(sibname), OpenCmsTestResourceFilter.FILTER_IMPORTEXPORT);
+        } finally {
+            try {
+                if (zipExportFilename != null) {
+                    File file = new File(zipExportFilename);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+            } catch (Throwable t) {
+                // intentionally left blank
+            }
+        }
+    }
+
+    /**
+     * Tests the import xml validation.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void testImportValidation() throws Exception {
+
+        CmsObject cms = getCmsObject();
+
+        echo("Testing the import xml validation.");
+
+        String zipExportFilename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+            "packages/testImportValidation.zip");
+
+        try {
+            cms.getRequestContext().setSiteRoot("/");
+
+            // export the whole system
+            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+            List exportPaths = new ArrayList(1);
+            exportPaths.add("/");
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                true,
+                true,
+                exportPaths,
+                true,
+                true,
+                0,
+                true,
+                false);
+            params.setXmlValidation(true);
+            vfsExportHandler.setExportParams(params);
+            OpenCms.getImportExportManager().exportData(
+                cms,
+                vfsExportHandler,
+                new CmsShellReport(cms.getRequestContext().getLocale()));
+
+            CmsImportParameters impar = new CmsImportParameters(zipExportFilename, "/", true);
+            impar.setXmlValidation(true);
+            // re-import the exported files
+            OpenCms.getImportExportManager().importData(
+                cms,
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                impar);
+
+            cms.unlockProject(cms.getRequestContext().currentProject().getUuid());
         } finally {
             try {
                 if (zipExportFilename != null) {

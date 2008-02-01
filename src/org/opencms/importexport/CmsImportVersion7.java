@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion7.java,v $
- * Date   : $Date: 2008/02/01 09:37:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/02/01 17:06:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.importexport;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
@@ -63,6 +64,7 @@ import org.opencms.util.CmsDataTypeUtil;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlErrorHandler;
 
 import java.io.File;
@@ -88,7 +90,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.4
  */
@@ -1294,7 +1296,8 @@ public class CmsImportVersion7 implements I_CmsImport {
         // instantiate Digester and enable XML validation
         Digester digester = new Digester();
         digester.setUseContextClassLoader(true);
-        digester.setValidating(false);
+        digester.setValidating(m_parameters.isXmlValidation());
+        digester.setEntityResolver(new CmsXmlEntityResolver(null));
         digester.setRuleNamespaceURI(null);
         digester.setErrorHandler(new CmsXmlErrorHandler(CmsImportExportManager.EXPORT_MANIFEST));
 
@@ -1307,6 +1310,7 @@ public class CmsImportVersion7 implements I_CmsImport {
         m_helper = new CmsImportHelper(m_parameters);
         try {
             m_helper.openFile();
+            m_helper.cacheDtdSystemId(DTD_LOCATION, DTD_FILENAME, CmsConfigurationManager.DEFAULT_DTD_PREFIX);
             // start the parsing process
             stream = m_helper.getFileStream(CmsImportExportManager.EXPORT_MANIFEST);
             digester.parse(stream);
@@ -2115,6 +2119,12 @@ public class CmsImportVersion7 implements I_CmsImport {
         m_totalFiles++;
     }
 
+    /** The location of the OpenCms configuration DTD if the default prefix is the system ID. */
+    public static final String DTD_LOCATION = "org/opencms/importexport/";
+
+    /** The name of the DTD for this import version. */
+    public static final String DTD_FILENAME = "opencms-import7.dtd";
+
     /**
      * @see org.opencms.importexport.I_CmsImport#matches(org.opencms.importexport.CmsImportParameters)
      */
@@ -2129,7 +2139,8 @@ public class CmsImportVersion7 implements I_CmsImport {
         // instantiate Digester and enable XML validation
         Digester digester = new Digester();
         digester.setUseContextClassLoader(true);
-        digester.setValidating(false);
+        digester.setValidating(m_parameters.isXmlValidation());
+        digester.setEntityResolver(new CmsXmlEntityResolver(null));
         digester.setRuleNamespaceURI(null);
         digester.setErrorHandler(new CmsXmlErrorHandler(CmsImportExportManager.EXPORT_MANIFEST));
 
@@ -2140,6 +2151,7 @@ public class CmsImportVersion7 implements I_CmsImport {
 
         InputStream stream = null;
         m_helper = new CmsImportHelper(m_parameters);
+        m_helper.cacheDtdSystemId(DTD_LOCATION, DTD_FILENAME, CmsConfigurationManager.DEFAULT_DTD_PREFIX);
         try {
             m_helper.openFile();
             // start the parsing process

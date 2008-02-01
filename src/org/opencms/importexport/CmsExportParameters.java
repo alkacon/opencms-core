@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExportParameters.java,v $
- * Date   : $Date: 2008/02/01 09:37:42 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/02/01 17:06:40 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.4 
  */
@@ -82,6 +82,9 @@ public class CmsExportParameters {
 
     /** The resources to export.*/
     private List m_resources;
+
+    /** If set, the manifest.xml file will be generated with dtd info. */
+    private boolean m_xmlValidation;
 
     /**
      * Constructor.<p>
@@ -246,6 +249,16 @@ public class CmsExportParameters {
     }
 
     /**
+     * Checks if the manifest.xml file will be generated with dtd info.<p>
+     *
+     * @return the xml validation flag
+     */
+    public boolean isXmlValidation() {
+
+        return m_xmlValidation;
+    }
+
+    /**
      * Sets the content Age.<p>
      *
      * @param contentAge the content Age to set
@@ -364,5 +377,15 @@ public class CmsExportParameters {
     public void setResources(List resources) {
 
         m_resources = resources;
+    }
+
+    /**
+     * Sets the xml validation flag. If set, the manifest.xml file will be generated with dtd info.<p>
+     *
+     * @param xmlValidation the xml validation flag to set
+     */
+    public void setXmlValidation(boolean xmlValidation) {
+
+        m_xmlValidation = xmlValidation;
     }
 }

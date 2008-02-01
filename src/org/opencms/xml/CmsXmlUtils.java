@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2007/08/13 16:30:14 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/02/01 17:06:41 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -405,32 +405,6 @@ public final class CmsXmlUtils {
     }
 
     /**
-     * Removes the last Xpath element from the path.<p>
-     * 
-     * If the provided path does not contain a "/" character, 
-     * it is returned unchanged.<p>
-     * 
-     * <p>Examples:<br> 
-     * <code>title</code> is left untouched<br>
-     * <code>title[1]</code> is left untouched<br>
-     * <code>title/subtitle</code> becomes <code>title</code><br>
-     * <code>title[1]/subtitle[1]</code> becomes <code>title[1]</code><p>
-     * 
-     * @param path the Xpath to remove the last element from
-     * 
-     * @return the path with the last element removed
-     */
-    public static String removeLastXpathElement(String path) {
-
-        int pos = path.lastIndexOf('/');
-        if (pos < 0) {
-            return path;
-        }
-
-        return path.substring(0, pos);
-    }
-
-    /**
      * Removes the last complex Xpath element from the path.<p>
      * 
      * The same as {@link #removeLastXpathElement(String)} both it works with more complex xpaths.
@@ -467,6 +441,32 @@ public final class CmsXmlUtils {
             return removeLastComplexXpathElement(parentPath.substring(0, p));
         }
         return parentPath;
+    }
+
+    /**
+     * Removes the last Xpath element from the path.<p>
+     * 
+     * If the provided path does not contain a "/" character, 
+     * it is returned unchanged.<p>
+     * 
+     * <p>Examples:<br> 
+     * <code>title</code> is left untouched<br>
+     * <code>title[1]</code> is left untouched<br>
+     * <code>title/subtitle</code> becomes <code>title</code><br>
+     * <code>title[1]/subtitle[1]</code> becomes <code>title[1]</code><p>
+     * 
+     * @param path the Xpath to remove the last element from
+     * 
+     * @return the path with the last element removed
+     */
+    public static String removeLastXpathElement(String path) {
+
+        int pos = path.lastIndexOf('/');
+        if (pos < 0) {
+            return path;
+        }
+
+        return path.substring(0, pos);
     }
 
     /**
@@ -558,12 +558,15 @@ public final class CmsXmlUtils {
     /**
      * Helper to unmarshal (read) xml contents from a byte array into a document.<p>
      * 
-     * Using this method ensures that the OpenCms XML entitiy resolver is used.<p>
+     * Using this method ensures that the OpenCms XML entity resolver is used.<p>
      * 
      * @param xmlData the XML data in a byte array
-     * @param resolver the XML entitiy resolver to use
+     * @param resolver the XML entity resolver to use
+     * 
      * @return the base object initialized with the unmarshalled XML document
+     * 
      * @throws CmsXmlException if something goes wrong
+     * 
      * @see CmsXmlUtils#unmarshalHelper(InputSource, EntityResolver)
      */
     public static Document unmarshalHelper(byte[] xmlData, EntityResolver resolver) throws CmsXmlException {
@@ -572,21 +575,68 @@ public final class CmsXmlUtils {
     }
 
     /**
+     * Helper to unmarshal (read) xml contents from a byte array into a document.<p>
+     * 
+     * Using this method ensures that the OpenCms XML entity resolver is used.<p>
+     * 
+     * @param xmlData the XML data in a byte array
+     * @param resolver the XML entity resolver to use
+     * @param validate if the reader should try to validate the xml code
+     * 
+     * @return the base object initialized with the unmarshalled XML document
+     * 
+     * @throws CmsXmlException if something goes wrong
+     * 
+     * @see CmsXmlUtils#unmarshalHelper(InputSource, EntityResolver)
+     */
+    public static Document unmarshalHelper(byte[] xmlData, EntityResolver resolver, boolean validate)
+    throws CmsXmlException {
+
+        return CmsXmlUtils.unmarshalHelper(new InputSource(new ByteArrayInputStream(xmlData)), resolver, validate);
+    }
+
+    /**
      * Helper to unmarshal (read) xml contents from an input source into a document.<p>
      * 
-     * Using this method ensures that the OpenCms XML entitiy resolver is used.<p>
+     * Using this method ensures that the OpenCms XML entity resolver is used.<p>
      * 
-     * Important: The encoding provided will NOT be used uring unmarshalling,
+     * Important: The encoding provided will NOT be used during unmarshalling,
      * the XML parser will do this on the base of the information in the source String.
      * The encoding is used for initializing the created instance of the document,
      * which means it will be used when marshalling the document again later.<p>
      *  
      * @param source the XML input source to use
-     * @param resolver the XML entitiy resolver to use
+     * @param resolver the XML entity resolver to use
+     * 
      * @return the unmarshalled XML document
+     * 
      * @throws CmsXmlException if something goes wrong
      */
     public static Document unmarshalHelper(InputSource source, EntityResolver resolver) throws CmsXmlException {
+
+        return unmarshalHelper(source, resolver, false);
+    }
+
+    /**
+     * Helper to unmarshal (read) xml contents from an input source into a document.<p>
+     * 
+     * Using this method ensures that the OpenCms XML entity resolver is used.<p>
+     * 
+     * Important: The encoding provided will NOT be used during unmarshalling,
+     * the XML parser will do this on the base of the information in the source String.
+     * The encoding is used for initializing the created instance of the document,
+     * which means it will be used when marshalling the document again later.<p>
+     *  
+     * @param source the XML input source to use
+     * @param resolver the XML entity resolver to use
+     * @param validate if the reader should try to validate the xml code
+     * 
+     * @return the unmarshalled XML document
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    public static Document unmarshalHelper(InputSource source, EntityResolver resolver, boolean validate)
+    throws CmsXmlException {
 
         try {
             SAXReader reader = new SAXReader();
@@ -595,8 +645,14 @@ public final class CmsXmlUtils {
             }
             reader.setMergeAdjacentText(true);
             reader.setStripWhitespaceText(true);
+            if (!validate) {
+                reader.setValidation(false);
+                reader.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+            }
             return reader.read(source);
         } catch (DocumentException e) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_UNMARSHALLING_XML_DOC_0), e);
+        } catch (SAXException e) {
             throw new CmsXmlException(Messages.get().container(Messages.ERR_UNMARSHALLING_XML_DOC_0), e);
         }
     }
@@ -629,6 +685,24 @@ public final class CmsXmlUtils {
     public static void validateXmlStructure(byte[] xmlData, EntityResolver resolver) throws CmsXmlException {
 
         validateXmlStructure(new ByteArrayInputStream(xmlData), resolver);
+    }
+
+    /**
+     * Validates the structure of a XML document with the DTD or XML schema used 
+     * by the document.<p>
+     * 
+     * @param document a XML document that should be validated
+     * @param encoding the encoding to use when marshalling the XML document (required)
+     * @param resolver the XML entitiy resolver to use
+     * 
+     * @throws CmsXmlException if the validation fails
+     */
+    public static void validateXmlStructure(Document document, String encoding, EntityResolver resolver)
+    throws CmsXmlException {
+
+        // generate bytes from document
+        byte[] xmlData = ((ByteArrayOutputStream)marshal(document, new ByteArrayOutputStream(512), encoding)).toByteArray();
+        validateXmlStructure(xmlData, resolver);
     }
 
     /**
@@ -720,23 +794,5 @@ public final class CmsXmlUtils {
             // generate String from XML for display of document in error message
             throw new CmsXmlException(Messages.get().container(Messages.ERR_XML_VALIDATION_1, out.toString()));
         }
-    }
-
-    /**
-     * Validates the structure of a XML document with the DTD or XML schema used 
-     * by the document.<p>
-     * 
-     * @param document a XML document that should be validated
-     * @param encoding the encoding to use when marshalling the XML document (required)
-     * @param resolver the XML entitiy resolver to use
-     * 
-     * @throws CmsXmlException if the validation fails
-     */
-    public static void validateXmlStructure(Document document, String encoding, EntityResolver resolver)
-    throws CmsXmlException {
-
-        // generate bytes from document
-        byte[] xmlData = ((ByteArrayOutputStream)marshal(document, new ByteArrayOutputStream(512), encoding)).toByteArray();
-        validateXmlStructure(xmlData, resolver);
     }
 }
