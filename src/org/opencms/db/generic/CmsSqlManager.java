@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2007/08/13 16:30:15 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2008/02/01 09:35:24 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.67 $
+ * @version $Revision: 1.68 $
  * 
  * @since 6.0.0 
  */
@@ -141,7 +141,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager {
     }
 
     /**
-     * Attemts to close the connection, statement and result set after a statement has been executed.<p>
+     * Attempts to close the connection, statement and result set after a statement has been executed.<p>
      * 
      * @param dbc the current database context
      * @param con the JDBC connection
