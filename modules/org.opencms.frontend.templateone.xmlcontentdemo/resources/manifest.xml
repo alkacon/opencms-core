@@ -6,7 +6,7 @@
 		<opencms_version>7.0.2</opencms_version>
 		<createdate>Mon, 10 Sep 2007 11:13:47 GMT</createdate>
 		<project>Offline</project>
-		<export_version>6</export_version>
+		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.frontend.templateone.xmlcontentdemo</name>
