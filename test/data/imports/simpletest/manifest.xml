@@ -3,11 +3,166 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.5.3</opencms_version>
-		<createdate>Wed, 27 Sep 2006 15:13:25 GMT</createdate>
+		<opencms_version>7.0.3</opencms_version>
+		<createdate>Thu, 31 Jan 2008 18:05:13 GMT</createdate>
 		<project>Offline</project>
-		<export_version>5</export_version>
+		<export_version>7</export_version>
 	</info>
+	<accounts>
+		<orgunits>
+			<orgunit>
+				<name/>
+				<description><![CDATA[%(key.GUI_ORGUNIT_ROOT_DESCRIPTION_0)]]></description>
+				<flags>0</flags>
+				<resources>
+					<resource>/</resource>
+				</resources>
+				<groups>
+					<group>
+						<name>Administrators</name>
+						<description><![CDATA[%(key.GUI_DEFAULTGROUP_ROOT_ADMINS_DESCRIPTION_0)]]></description>
+						<flags>1026</flags>
+						<parentgroup/>
+					</group>
+					<group>
+						<name>Guests</name>
+						<description><![CDATA[%(key.GUI_DEFAULTGROUP_ROOT_GUESTS_DESCRIPTION_0)]]></description>
+						<flags>0</flags>
+						<parentgroup/>
+					</group>
+					<group>
+						<name>Projectmanagers</name>
+						<description><![CDATA[%(key.GUI_DEFAULTGROUP_ROOT_PROJMANS_DESCRIPTION_0)]]></description>
+						<flags>9222</flags>
+						<parentgroup>Users</parentgroup>
+					</group>
+					<group>
+						<name>Users</name>
+						<description><![CDATA[%(key.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0)]]></description>
+						<flags>17412</flags>
+						<parentgroup/>
+					</group>
+					<group>
+						<name>group1</name>
+						<description><![CDATA[group1]]></description>
+						<flags>4</flags>
+						<parentgroup/>
+					</group>
+					<group>
+						<name>group2</name>
+						<description><![CDATA[group2]]></description>
+						<flags>6</flags>
+						<parentgroup/>
+					</group>
+					<group>
+						<name>group3</name>
+						<description><![CDATA[group3]]></description>
+						<flags>6</flags>
+						<parentgroup/>
+					</group>
+				</groups>
+				<users>
+					<user>
+						<name>Admin</name>
+						<password><![CDATA[SVNNdktYcFhwYWREaVVvT1NvQWZ3dz09]]></password>
+						<firstname/>
+						<lastname/>
+						<email/>
+						<flags>0</flags>
+						<datecreated>1201796213690</datecreated>
+						<userinfo>
+							<entry name="USER_ADDRESS" type="java.lang.String"/>
+							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[%(key.GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0)]]></entry>
+						</userinfo>
+						<usergroups>
+							<usergroup>Administrators</usergroup>
+						</usergroups>
+						<userroles>
+							<userrole>ROOT_ADMIN</userrole>
+						</userroles>
+					</user>
+					<user>
+						<name>Export</name>
+						<password><![CDATA[d24yOTRPSFgvQUZuQ0RLanJSeWZMQT09]]></password>
+						<firstname/>
+						<lastname/>
+						<email/>
+						<flags>0</flags>
+						<datecreated>1201796213721</datecreated>
+						<userinfo>
+							<entry name="USER_ADDRESS" type="java.lang.String"/>
+							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[%(key.GUI_DEFAULTUSER_ROOT_EXPORT_DESCRIPTION_0)]]></entry>
+						</userinfo>
+						<usergroups>
+							<usergroup>Guests</usergroup>
+						</usergroups>
+						<userroles/>
+					</user>
+					<user>
+						<name>Guest</name>
+						<password><![CDATA[MUIyTTJZOEFzZ1RwZ0FtWTdQaENmZz09]]></password>
+						<firstname/>
+						<lastname/>
+						<email/>
+						<flags>0</flags>
+						<datecreated>1201796213674</datecreated>
+						<userinfo>
+							<entry name="USER_ADDRESS" type="java.lang.String"/>
+							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[%(key.GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0)]]></entry>
+						</userinfo>
+						<usergroups>
+							<usergroup>Guests</usergroup>
+						</usergroups>
+						<userroles/>
+					</user>
+					<user>
+						<name>test1</name>
+						<password><![CDATA[V2hCZWk1MUE0VEtYZ05ZdW9pWmRpZz09]]></password>
+						<firstname>test1</firstname>
+						<lastname>test1</lastname>
+						<email>test1</email>
+						<flags>0</flags>
+						<datecreated>1201802655761</datecreated>
+						<userinfo>
+							<entry name="USER_ADDRESS" type="java.lang.String"><![CDATA[test1]]></entry>
+							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[test1]]></entry>
+							<entry name="USER_TOWN" type="java.lang.String"><![CDATA[test1]]></entry>
+							<entry name="USER_ZIPCODE" type="java.lang.String"><![CDATA[test1]]></entry>
+						</userinfo>
+						<usergroups>
+							<usergroup>group1</usergroup>
+							<usergroup>Users</usergroup>
+						</usergroups>
+						<userroles>
+							<userrole>WORKPLACE_USER</userrole>
+						</userroles>
+					</user>
+					<user>
+						<name>test2</name>
+						<password><![CDATA[clFJMGdwSUZ1UU14bHJxQmozcUhLdz09]]></password>
+						<firstname>test2</firstname>
+						<lastname>test2</lastname>
+						<email>test2</email>
+						<flags>0</flags>
+						<datecreated>1201802655949</datecreated>
+						<userinfo>
+							<entry name="USER_ADDRESS" type="java.lang.String"><![CDATA[test2]]></entry>
+							<entry name="USER_DESCRIPTION" type="java.lang.String"><![CDATA[test2]]></entry>
+							<entry name="USER_TOWN" type="java.lang.String"><![CDATA[test2]]></entry>
+							<entry name="USER_ZIPCODE" type="java.lang.String"><![CDATA[test2]]></entry>
+						</userinfo>
+						<usergroups>
+							<usergroup>group2</usergroup>
+							<usergroup>Users</usergroup>
+						</usergroups>
+						<userroles>
+							<userrole>WORKPLACE_USER</userrole>
+						</userroles>
+					</user>
+				</users>
+			</orgunit>
+		</orgunits>
+	</accounts>
 	<files>
 		<file>
 			<source>index.html</source>
@@ -26,10 +181,6 @@
 					<value><![CDATA[Description of the index page]]></value>
 				</property>
 				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
@@ -37,7 +188,12 @@
 					<name>Title</name>
 					<value><![CDATA[Index page]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -63,6 +219,7 @@
 					<value><![CDATA[Folder1]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -86,6 +243,7 @@
 					<value><![CDATA[w:116,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -109,6 +267,7 @@
 					<value><![CDATA[w:109,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -124,30 +283,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[Description of the index page]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Index]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Index page]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -163,30 +323,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page1 in folder1]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page1]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword page1]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page1]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -202,30 +363,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page2 in folder1]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page2]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword page2]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page2]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -241,30 +403,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[4.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page3 in folder1]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page3]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword page3]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page3]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page3]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -280,34 +443,35 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[5.0]]></value>
-				</property>
-				<property>
-					<name>secure</name>
-					<value><![CDATA[true]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page4 in folder1]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page4]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword page4]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page4]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page4]]></value>
 				</property>
+				<property>
+					<name>secure</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -333,6 +497,7 @@
 					<value><![CDATA[Subfolder11]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -348,30 +513,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is the index page of subfolder11]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Index]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword1, Keyword2]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[The index page in subfolder 11]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -387,30 +553,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page1 in subfolder11]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page1]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page1 in A]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -426,30 +593,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page2 in subfolder11]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page2]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Key1, Key2, Key3]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page2 in A]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -475,6 +643,7 @@
 					<value><![CDATA[SubSubFolder111]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -498,6 +667,7 @@
 					<value><![CDATA[w:50,h:49]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -513,18 +683,19 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
+					<name>Title</name>
+					<value><![CDATA[This is a JSP]]></value>
 				</property>
 				<property>
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[This is a JSP]]></value>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -544,6 +715,7 @@
 					<value><![CDATA[Link to OpenCms.org]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -563,6 +735,7 @@
 					<value><![CDATA[This is a binary file]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -582,12 +755,13 @@
 					<value><![CDATA[This is a Textfile]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>folder1/subfolder11/subsubfolder111/xml.xml</source>
 			<destination>folder1/subfolder11/subsubfolder111/xml.xml</destination>
-			<type>XMLTemplate</type>
+			<type>plain</type>
 			<uuidstructure>82bb15e0-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>c589e3bf-b3aa-11d8-b3e3-514d35713fed</uuidresource>
 			<datelastmodified>Tue, 01 Jun 2004 09:05:42 GMT</datelastmodified>
@@ -601,6 +775,7 @@
 					<value><![CDATA[This is a XML file]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -626,6 +801,7 @@
 					<value><![CDATA[Subfolder12]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -641,30 +817,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is the index in subfolder12]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Index]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Key1, Key2, Key3, Key4]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Indexpage E]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -679,30 +856,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.5]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page1 in subfolder12]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page1]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page1]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -718,30 +896,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page2 in subfolder12]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page2]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page2]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -767,6 +946,7 @@
 					<value><![CDATA[Subsubfolder121]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -782,18 +962,19 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>NavText</name>
+					<value><![CDATA[Not a picture of Cologne]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Image1]]></value>
 				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Not a picture of Cologne]]></value>
-				</property>				
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:116,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -809,30 +990,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is the indext page in folder subsub121]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Index]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Key1, Key2, Key3, Key4, Key5]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Indexpage]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -848,30 +1030,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2.5]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page1 in subsubfolder121]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page1]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page1]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -897,6 +1080,7 @@
 					<value><![CDATA[Folder2]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -920,6 +1104,7 @@
 					<value><![CDATA[w:116,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -943,6 +1128,7 @@
 					<value><![CDATA[w:109,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -958,44 +1144,45 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is the index page in folder2]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Index]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Key1, Key2]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Indexpage D]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>36</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
 				<accessentry>
 					<uuidprincipal>USER.test2</uuidprincipal>
 					<flags>16</flags>
 					<permissionset>
 						<allowed>31</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
 						<denied>0</denied>
 					</permissionset>
 				</accessentry>
@@ -1014,31 +1201,40 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page1 in folder2]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page1]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword page1]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page1]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test2</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>29</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
 				<accessentry>
 					<uuidprincipal>GROUP.Guests</uuidprincipal>
 					<flags>36</flags>
@@ -1052,14 +1248,6 @@
 					<flags>36</flags>
 					<permissionset>
 						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>USER.test2</uuidprincipal>
-					<flags>16</flags>
-					<permissionset>
-						<allowed>29</allowed>
 						<denied>0</denied>
 					</permissionset>
 				</accessentry>
@@ -1078,30 +1266,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page2 in folder2]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page2]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword page2]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page2]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1127,6 +1316,7 @@
 					<value><![CDATA[Subfolder21]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1150,6 +1340,7 @@
 					<value><![CDATA[w:116,h:32]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1164,44 +1355,45 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is the index page in subfolder21]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Index]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Key1, Key2]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Indexpage A]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>36</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
 				<accessentry>
 					<uuidprincipal>USER.test2</uuidprincipal>
 					<flags>16</flags>
 					<permissionset>
 						<allowed>31</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
 						<denied>0</denied>
 					</permissionset>
 				</accessentry>
@@ -1219,31 +1411,40 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page1 in subfolder21]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page1]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword page1]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page1]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>USER.test2</uuidprincipal>
+					<flags>16</flags>
+					<permissionset>
+						<allowed>29</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
 				<accessentry>
 					<uuidprincipal>GROUP.Guests</uuidprincipal>
 					<flags>36</flags>
@@ -1257,14 +1458,6 @@
 					<flags>36</flags>
 					<permissionset>
 						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>USER.test2</uuidprincipal>
-					<flags>16</flags>
-					<permissionset>
-						<allowed>29</allowed>
 						<denied>0</denied>
 					</permissionset>
 				</accessentry>
@@ -1293,6 +1486,7 @@
 					<value><![CDATA[Subsubfolder211]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1308,18 +1502,19 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
+					<name>Title</name>
+					<value><![CDATA[Jsp1]]></value>
 				</property>
 				<property>
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[Jsp1]]></value>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1335,22 +1530,23 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
+					<name>Title</name>
+					<value><![CDATA[Jsp2]]></value>
 				</property>
 				<property>
 					<name>cache</name>
 					<value><![CDATA[timeout=5]]></value>
 				</property>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[Jsp2]]></value>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1376,6 +1572,7 @@
 					<value><![CDATA[Subfolder22]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1391,30 +1588,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is the index page in subfolder22]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Index]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Key1, Key2]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Indexpage C]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1429,30 +1627,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page1 in subfolder22]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page1]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page1]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1467,30 +1666,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[3.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page2 in subfolder22]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page2]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Key1, Key2, Key3]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page2]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page2]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1506,30 +1706,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[4.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page3 in subfolder22]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page3]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Key1, Key2, Key3]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page3]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page3]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1555,20 +1756,21 @@
 					<value><![CDATA[Subsubfolder121]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>31</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
 				<accessentry>
 					<uuidprincipal>USER.test1</uuidprincipal>
 					<flags>22</flags>
 					<permissionset>
 						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>31</allowed>
 						<denied>0</denied>
 					</permissionset>
 				</accessentry>
@@ -1587,30 +1789,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is the indext page in folder subsub221]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Index]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Key1, Key2, Key3, Key4, Key5]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Index]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Indexpage]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1625,14 +1828,6 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-				<property>
 					<name>NavPos</name>
 					<value><![CDATA[5]]></value>
 				</property>
@@ -1644,7 +1839,16 @@
 					<name>Title</name>
 					<value><![CDATA[Jsp1]]></value>
 				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1660,30 +1864,31 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[2.5]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is page1 in subsubfolder221]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Page1]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
 				</property>
 				<property>
 					<name>Keywords</name>
 					<value><![CDATA[Keyword1, Keyword2, Keyword3]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.5]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Page1]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Page1]]></value>
 				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/empty]]></value>
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1701,6 +1906,7 @@
 					<value><![CDATA[A folder with different resource types]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1723,6 +1929,7 @@
 					<value><![CDATA[w:50,h:49]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1737,18 +1944,19 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
+					<name>Title</name>
+					<value><![CDATA[This is a JSP]]></value>
 				</property>
 				<property>
 					<name>content-encoding</name>
 					<value><![CDATA[ISO-8859-1]]></value>
 				</property>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[This is a JSP]]></value>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1767,6 +1975,7 @@
 					<value><![CDATA[Link to OpenCms.org]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1785,6 +1994,7 @@
 					<value><![CDATA[This is a binary file]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1803,11 +2013,12 @@
 					<value><![CDATA[Alkacon OpenCms in the Title]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>types/xml.xml</destination>
-			<type>XMLTemplate</type>
+			<type>plain</type>
 			<uuidstructure>8474376d-4e3a-11db-9016-5bf59c6009b3</uuidstructure>
 			<uuidresource>c589e3bf-b3aa-11d8-b3e3-514d35713fed</uuidresource>
 			<datelastmodified>Tue, 01 Jun 2004 09:05:42 GMT</datelastmodified>
@@ -1821,6 +2032,7 @@
 					<value><![CDATA[This is a XML file]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1834,18 +2046,19 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>Title</name>
-					<value><![CDATA[Xmlcontent]]></value>
-				</property>
-				<property>
 					<name>Description</name>
 					<value><![CDATA[This is the Description]]></value>
 				</property>
 				<property>
+					<name>Title</name>
+					<value><![CDATA[Xmlcontent]]></value>
+				</property>
+				<property>
 					<name>search.special</name>
 					<value><![CDATA[Cologne is a nice city]]></value>
-				</property>						
+				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1865,6 +2078,7 @@
 					<value><![CDATA[XSD for articles]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1881,9 +2095,10 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Sample Article 1]]></value>
+					<value><![CDATA[Sample article 1  (>>SearchEgg1<<)]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1903,6 +2118,7 @@
 					<value><![CDATA[This is the article 2 sample]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1919,9 +2135,10 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Nice sample Article 3]]></value>
+					<value><![CDATA[Nice sample article 3]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1941,67 +2158,8 @@
 					<value><![CDATA[This is article number 4]]></value>
 				</property>
 			</properties>
+			<relations/>
 			<accesscontrol/>
 		</file>
 	</files>
-	<usergroupdata>
-		<groupdata>
-			<name>group1</name>
-			<description><![CDATA[group1]]></description>
-			<flags>4</flags>
-			<parentgroup/>
-		</groupdata>
-		<groupdata>
-			<name>group2</name>
-			<description><![CDATA[group2]]></description>
-			<flags>6</flags>
-			<parentgroup/>
-		</groupdata>
-		<groupdata>
-			<name>group3</name>
-			<description><![CDATA[group3]]></description>
-			<flags>6</flags>
-			<parentgroup/>
-		</groupdata>
-		<userdata>
-			<name>test1</name>
-			<password><![CDATA[V2hCZWk1MUE0VEtYZ05ZdW9pWmRpZz09]]></password>
-			<description><![CDATA[test1]]></description>
-			<firstname>test1</firstname>
-			<lastname>test1</lastname>
-			<email>test1</email>
-			<flags>0</flags>
-			<address><![CDATA[test1]]></address>
-			<type>0</type>
-			<userinfo>/~userinfo/test1.dat</userinfo>
-			<usergroups>
-				<groupname>
-					<name>Users</name>
-				</groupname>
-				<groupname>
-					<name>group1</name>
-				</groupname>
-			</usergroups>
-		</userdata>
-		<userdata>
-			<name>test2</name>
-			<password><![CDATA[clFJMGdwSUZ1UU14bHJxQmozcUhLdz09]]></password>
-			<description><![CDATA[test2]]></description>
-			<firstname>test2</firstname>
-			<lastname>test2</lastname>
-			<email>test2</email>
-			<flags>0</flags>
-			<address><![CDATA[test2]]></address>
-			<type>0</type>
-			<userinfo>/~userinfo/test2.dat</userinfo>
-			<usergroups>
-				<groupname>
-					<name>Users</name>
-				</groupname>
-				<groupname>
-					<name>group2</name>
-				</groupname>
-			</usergroups>
-		</userdata>
-	</usergroupdata>
 </export>

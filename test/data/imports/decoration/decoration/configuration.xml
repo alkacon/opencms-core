@@ -10,7 +10,12 @@
       <posttext><![CDATA[</abbr>]]></posttext>
       <pretextfirst><![CDATA[<abbr title="${decoration}" lang="${locale}">]]></pretextfirst>
       <posttextfirst><![CDATA[</abbr>]]></posttextfirst>
-      <filename>/decoration/decorations_en.csv</filename>
+      <filename>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/decoration/decorations_en.csv]]></target>
+          <uuid>7079fe6d-d026-11dc-8fa3-d55d0ba2b9d3</uuid>
+        </link>
+      </filename>
     </decoration>
   </DecorationConfiguration>
 </DecorationConfigurations>
