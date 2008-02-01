@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2007/11/13 14:33:39 $
- * Version: $Revision: 1.249 $
+ * Date   : $Date: 2008/02/01 09:36:46 $
+ * Version: $Revision: 1.250 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.249 $
+ * @version $Revision: 1.250 $
  * 
  * @since 6.0.0 
  */
@@ -1136,7 +1136,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     // update version numbers
                     m_driverManager.getVfsDriver().publishVersions(dbc, offlineFolder, true);
                 } catch (CmsVfsResourceAlreadyExistsException e) {
-                    if (LOG.isWarnEnabled()) {
+                    if (!offlineFolder.getRootPath().equals("/")
+                        && !offlineFolder.getRootPath().equals("/system/")
+                        && LOG.isWarnEnabled()) {
                         LOG.warn(Messages.get().getBundle().key(
                             Messages.LOG_WARN_FOLDER_WRONG_STATE_CN_1,
                             offlineFolder.getRootPath()));

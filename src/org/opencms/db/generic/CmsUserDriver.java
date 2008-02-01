@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2008/01/23 14:48:50 $
- * Version: $Revision: 1.119 $
+ * Date   : $Date: 2008/02/01 09:36:46 $
+ * Version: $Revision: 1.120 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.119 $
+ * @version $Revision: 1.120 $
  * 
  * @since 6.0.0 
  */
@@ -1228,10 +1228,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 CmsMessageContainer message = org.opencms.db.Messages.get().container(
                     org.opencms.db.Messages.ERR_UNKNOWN_GROUP_1,
                     groupFqn);
-                if (LOG.isWarnEnabled()) {
-                    // this may happen while deleting an orgunit and its roles
-                    LOG.warn(message.key());
-                } else if (LOG.isDebugEnabled()) {
+                if (LOG.isDebugEnabled()) {
                     LOG.debug(message.key(), new Exception());
                 }
                 throw new CmsDbEntryNotFoundException(message);
@@ -1421,8 +1418,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             } else {
-                res.close();
-                res = null;
                 CmsMessageContainer message = org.opencms.db.Messages.get().container(
                     org.opencms.db.Messages.ERR_UNKNOWN_USER_1,
                     userFqn);
