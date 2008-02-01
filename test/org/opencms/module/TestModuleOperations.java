@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2007/09/12 14:54:30 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/02/01 09:43:17 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeUnknown;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.importexport.CmsImportParameters;
 import org.opencms.loader.CmsDumpLoader;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
@@ -61,7 +62,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -288,9 +289,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
         try {
             OpenCms.getImportExportManager().importData(
                 cms,
-                moduleFile,
-                null,
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(moduleFile, "/", true));
         } catch (CmsException e) {
             // any other CmsException means test failure
             caughtException = true;
@@ -361,9 +361,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
         // now try the import again, this time it must work
         OpenCms.getImportExportManager().importData(
             cms,
-            moduleFile,
-            null,
-            new CmsShellReport(cms.getRequestContext().getLocale()));
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            new CmsImportParameters(moduleFile, "/", true));
 
         module = OpenCms.getModuleManager().getModule(moduleName);
         // check the module data
@@ -520,9 +519,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
         // now import the module again
         OpenCms.getImportExportManager().importData(
             cms,
-            moduleFile,
-            null,
-            new CmsShellReport(cms.getRequestContext().getLocale()));
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            new CmsImportParameters(moduleFile, "/", true));
 
         // basic check if the module was imported correctly
         if (!OpenCms.getModuleManager().hasModule(moduleName)) {
@@ -559,9 +557,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
             "packages/" + moduleName + ".zip");
         OpenCms.getImportExportManager().importData(
             cms,
-            moduleFile,
-            null,
-            new CmsShellReport(cms.getRequestContext().getLocale()));
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            new CmsImportParameters(moduleFile, "/", true));
 
         // basic check if the module was imported correctly
         if (!OpenCms.getModuleManager().hasModule(moduleName)) {
@@ -603,9 +600,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
         try {
             OpenCms.getImportExportManager().importData(
                 cms,
-                moduleFile,
-                null,
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(moduleFile, "/", true));
         } catch (CmsConfigurationException e) {
             // this is the expected exception - the module should not have been imported
         }
@@ -624,9 +620,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
         try {
             OpenCms.getImportExportManager().importData(
                 cms,
-                moduleFile,
-                null,
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(moduleFile, "/", true));
         } catch (CmsConfigurationException e) {
             // this is the expected exception - the module should not have been imported
         }
@@ -658,9 +653,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
         // now import the module first time - this must work
         OpenCms.getImportExportManager().importData(
             cms,
-            moduleFile,
-            null,
-            new CmsShellReport(cms.getRequestContext().getLocale()));
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            new CmsImportParameters(moduleFile, "/", true));
 
         // basic check if the module was imported correctly
         if (!OpenCms.getModuleManager().hasModule(moduleName)) {
@@ -684,9 +678,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
         // now import the module again second time
         OpenCms.getImportExportManager().importData(
             cms,
-            moduleFile,
-            null,
-            new CmsShellReport(cms.getRequestContext().getLocale()));
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            new CmsImportParameters(moduleFile, "/", true));
 
         // basic check if the module was imported correctly again
         if (!OpenCms.getModuleManager().hasModule(moduleName)) {
@@ -714,9 +707,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
             OpenCmsTestLogAppender.setBreakOnError(false);
             OpenCms.getImportExportManager().importData(
                 cms,
-                moduleFile,
-                null,
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(moduleFile, "/", true));
         } finally {
             OpenCmsTestLogAppender.setBreakOnError(true);
         }
@@ -765,9 +757,8 @@ public class TestModuleOperations extends OpenCmsTestCase {
             "packages/" + moduleName + ".zip");
         OpenCms.getImportExportManager().importData(
             cms,
-            moduleFile,
-            null,
-            new CmsShellReport(cms.getRequestContext().getLocale()));
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            new CmsImportParameters(moduleFile, "/", true));
 
         // basic check if the module was imported correctly
         if (!OpenCms.getModuleManager().hasModule(moduleName)) {

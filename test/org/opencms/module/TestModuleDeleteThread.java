@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleDeleteThread.java,v $
- * Date   : $Date: 2007/08/13 16:30:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/02/01 09:43:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * @author Olaf Watteroth
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestModuleDeleteThread extends OpenCmsTestCase {
 
@@ -147,7 +147,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
         moduleDeleteList = new ArrayList();
         moduleDeleteList.add(moduleName);
         // create a single Thread to delete the module
-        CmsModuleDeleteThread thread1 = new CmsModuleDeleteThread(cms, moduleDeleteList, false, false);
+        CmsModuleDeleteThread thread1 = new CmsModuleDeleteThread(cms, moduleDeleteList, false);
 
         // start the threads
         thread1.start();
@@ -186,8 +186,8 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
         moduleDeleteList = new ArrayList();
         moduleDeleteList.add(moduleName);
         echo("Created a new module again and try to delete it - this time with two threads at once");
-        CmsModuleDeleteThread thread_parallel_1 = new CmsModuleDeleteThread(cms, moduleDeleteList, false, false);
-        CmsModuleDeleteThread thread_parallel_2 = new CmsModuleDeleteThread(cms, moduleDeleteList, false, false);
+        CmsModuleDeleteThread thread_parallel_1 = new CmsModuleDeleteThread(cms, moduleDeleteList, false);
+        CmsModuleDeleteThread thread_parallel_2 = new CmsModuleDeleteThread(cms, moduleDeleteList, false);
 
         // start the threads
         thread_parallel_1.start();
@@ -263,7 +263,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
         module.add(moduleName);
 
         // Create a single Thread to delete the module
-        CmsModuleDeleteThread thread1 = new CmsModuleDeleteThread(cms, module, false, false);
+        CmsModuleDeleteThread thread1 = new CmsModuleDeleteThread(cms, module, false);
 
         // Start the threads
         thread1.start();
@@ -329,7 +329,11 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
         assertEquals(4, module1.getResources().size());
 
         echo("Now try to delete it *the normal way*");
-        OpenCms.getModuleManager().deleteModule(cms, moduleName, false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getModuleManager().deleteModule(
+            cms,
+            moduleName,
+            false,
+            new CmsShellReport(cms.getRequestContext().getLocale()));
 
         module1 = OpenCms.getModuleManager().getModule(moduleName);
         // now it should be null

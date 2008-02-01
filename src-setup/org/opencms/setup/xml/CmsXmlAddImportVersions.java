@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddImportVersions.java,v $
- * Date   : $Date: 2007/11/06 14:48:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/02/01 09:42:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,6 @@ package org.opencms.setup.xml;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsImportExportConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
-import org.opencms.importexport.CmsImportVersion5;
-import org.opencms.importexport.CmsImportVersion6;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +46,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.9.2
  */
@@ -84,12 +82,12 @@ public class CmsXmlAddImportVersions extends A_CmsSetupXmlUpdate {
                 CmsSetupXmlHelper.setValue(
                     document,
                     xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                    CmsImportVersion5.class.getName());
+                    "org.opencms.importexport.CmsImportVersion5");
             } else if (xpath.equals(getXPathsToUpdate().get(1))) {
                 CmsSetupXmlHelper.setValue(
                     document,
                     xpath + "/@" + I_CmsXmlConfiguration.A_CLASS,
-                    CmsImportVersion6.class.getName());
+                    "org.opencms.importexport.CmsImportVersion6");
             }
             return true;
         }
@@ -126,8 +124,8 @@ public class CmsXmlAddImportVersions extends A_CmsSetupXmlUpdate {
             xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
             xp.append("='");
             m_xpaths = new ArrayList();
-            m_xpaths.add(xp.toString() + CmsImportVersion5.class.getName() + "']");
-            m_xpaths.add(xp.toString() + CmsImportVersion6.class.getName() + "']");
+            m_xpaths.add(xp.toString() + "org.opencms.importexport.CmsImportVersion5']");
+            m_xpaths.add(xp.toString() + "org.opencms.importexport.CmsImportVersion6']");
         }
         return m_xpaths;
     }

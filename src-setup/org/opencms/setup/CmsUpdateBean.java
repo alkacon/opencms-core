@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsUpdateBean.java,v $
- * Date   : $Date: 2007/09/27 14:56:25 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/02/01 09:42:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
@@ -74,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -861,7 +862,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * 
      * @throws Exception if something goes wrong
      * 
-     * @see org.opencms.importexport.CmsImportExportManager#importData(org.opencms.file.CmsObject, String, String, org.opencms.report.I_CmsReport)
+     * @see org.opencms.importexport.CmsImportExportManager#importData(org.opencms.file.CmsObject, I_CmsReport, org.opencms.importexport.CmsImportParameters)
      */
     protected void updateModule(String moduleName, String importFile, I_CmsReport report) throws Exception {
 
@@ -873,7 +874,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         if (OpenCms.getModuleManager().getModule(moduleName) != null) {
             OpenCms.getModuleManager().deleteModule(m_cms, moduleName, true, report);
         }
-        OpenCms.getImportExportManager().importData(m_cms, fileName, null, report);
+        OpenCms.getImportExportManager().importData(m_cms, report, new CmsImportParameters(fileName, "/", true));
         report.println(
             Messages.get().container(Messages.RPT_END_UPDATE_MODULE_1, moduleName),
             I_CmsReport.FORMAT_HEADLINE);

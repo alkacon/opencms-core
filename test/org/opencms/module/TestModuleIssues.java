@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleIssues.java,v $
- * Date   : $Date: 2007/09/12 14:54:30 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2008/02/01 09:43:17 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.importexport.CmsImportParameters;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -55,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TestModuleIssues extends OpenCmsTestCase {
 
@@ -125,9 +126,8 @@ public class TestModuleIssues extends OpenCmsTestCase {
             "packages/" + moduleName + ".zip");
         OpenCms.getImportExportManager().importData(
             cms,
-            moduleFile,
-            null,
-            new CmsShellReport(cms.getRequestContext().getLocale()));
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            new CmsImportParameters(moduleFile, "/", true));
 
         // basic check if the module was imported correctly
         if (!OpenCms.getModuleManager().hasModule(moduleName)) {

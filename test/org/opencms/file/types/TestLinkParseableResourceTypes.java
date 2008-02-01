@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestLinkParseableResourceTypes.java,v $
- * Date   : $Date: 2007/09/12 08:43:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/02/01 09:43:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.TestLinkValidation;
+import org.opencms.importexport.CmsExportParameters;
+import org.opencms.importexport.CmsImportParameters;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -62,7 +64,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
 
@@ -488,14 +490,23 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
             assertEquals(relations.size(), 1);
 
             // export the file
-            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(targetName);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
+
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -510,9 +521,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
             // re-import the exported file
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             relations = cms.getRelationsForResource(targetName, CmsRelationFilter.TARGETS);
             assertEquals(relations.size(), 1);
@@ -556,14 +566,23 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
             assertTrue(relations.isEmpty());
 
             // export the file
-            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(sourceName);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
+
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -578,9 +597,8 @@ public class TestLinkParseableResourceTypes extends OpenCmsTestCase {
             // re-import the exported file
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             relations = cms.getRelationsForResource(sourceName, CmsRelationFilter.TARGETS);
             assertTrue(relations.isEmpty());

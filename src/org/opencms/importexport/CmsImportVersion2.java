@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2007/08/23 10:12:14 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2008/02/01 09:37:43 $
+ * Version: $Revision: 1.117 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -81,13 +82,18 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.116 $ 
+ * @version $Revision: 1.117 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.importexport.A_CmsImport
+ * 
+ * @deprecated this import class is no longer in use and should only be used to import old export files
  */
 public class CmsImportVersion2 extends A_CmsImport {
+
+    /** Parameter for content body folder. */
+    public static final String VFS_PATH_BODIES = "/system/bodies/";
 
     /** The runtime property name for old webapp names. */
     private static final String COMPATIBILITY_WEBAPPNAMES = "compatibility.support.webAppNames";
@@ -157,24 +163,16 @@ public class CmsImportVersion2 extends A_CmsImport {
     }
 
     /**
-     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
+     * @see org.opencms.importexport.I_CmsImport#importData(CmsObject, I_CmsReport, CmsImportParameters)
      */
-    public void importResources(
-        CmsObject cms,
-        String importPath,
-        I_CmsReport report,
-        File importResource,
-        ZipFile importZip,
-        Document docXml) throws CmsImportExportException {
+    public void importData(CmsObject cms, I_CmsReport report, CmsImportParameters params)
+    throws CmsImportExportException, CmsXmlException {
 
         // initialize the import
         initialize();
         m_cms = cms;
-        m_importPath = importPath;
+        m_importPath = params.getDestinationPath();
         m_report = report;
-        m_importResource = importResource;
-        m_importZip = importZip;
-        m_docXml = docXml;
 
         m_folderStorage = new ArrayList();
         m_pageStorage = new ArrayList();
@@ -190,17 +188,54 @@ public class CmsImportVersion2 extends A_CmsImport {
                 m_linkPropertyStorage);
         }
 
+        CmsImportHelper helper = new CmsImportHelper(params);
         try {
+            helper.openFile();
+            m_importResource = helper.getFolder();
+            m_importZip = helper.getZipFile();
+            m_docXml = CmsXmlUtils.unmarshalHelper(helper.getFileBytes(CmsImportExportManager.EXPORT_MANIFEST), null);
             // first import the user information
-            if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)) {
+            if (OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ACCOUNT_MANAGER)) {
                 importGroups();
                 importUsers();
             }
             // now import the VFS resources
             importAllResources();
             convertPointerToSiblings();
+        } catch (IOException e) {
+            CmsMessageContainer msg = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1,
+                CmsImportExportManager.EXPORT_MANIFEST);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(msg.key(), e);
+            }
+            throw new CmsImportExportException(msg, e);
         } finally {
+            helper.closeFile();
             cleanUp();
+        }
+    }
+
+    /**
+     * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
+     * 
+     * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
+     */
+    public void importResources(
+        CmsObject cms,
+        String importPath,
+        I_CmsReport report,
+        File importResource,
+        ZipFile importZip,
+        Document docXml) throws CmsImportExportException {
+
+        CmsImportParameters params = new CmsImportParameters(importResource != null ? importResource.getAbsolutePath()
+        : importZip.getName(), importPath, true);
+
+        try {
+            importData(cms, report, params);
+        } catch (CmsXmlException e) {
+            throw new CmsImportExportException(e.getMessageContainer(), e);
         }
     }
 
@@ -248,8 +283,8 @@ public class CmsImportVersion2 extends A_CmsImport {
                 m_pageStorage.add(destination);
             } else if ("folder".equals(resType)) {
                 // check if the imported resource is a folder. Folders created in the /system/bodies/ folder
-                if (destination.startsWith(CmsCompatibleCheck.VFS_PATH_BODIES.substring(1))) {
-                    // must be remove since we do not use body files anymore.
+                if (destination.startsWith(VFS_PATH_BODIES.substring(1))) {
+                    // must be removed since we do not use body files anymore.
                     m_folderStorage.add(destination);
                 }
             }
@@ -453,7 +488,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
         try {
             // get all file-nodes
-            fileNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_FILE);
+            fileNodes = m_docXml.selectNodes("//" + A_CmsImport.N_FILE);
             int importSize = fileNodes.size();
 
             // walk through all files in manifest
@@ -466,10 +501,10 @@ public class CmsImportVersion2 extends A_CmsImport {
                 currentElement = (Element)fileNodes.get(i);
 
                 // get all information for a file-import
-                source = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_SOURCE);
-                destination = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESTINATION);
+                source = getChildElementTextValue(currentElement, A_CmsImport.N_SOURCE);
+                destination = getChildElementTextValue(currentElement, A_CmsImport.N_DESTINATION);
 
-                resourceTypeName = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
+                resourceTypeName = getChildElementTextValue(currentElement, A_CmsImport.N_TYPE);
                 if (RESOURCE_TYPE_NEWPAGE_NAME.equals(resourceTypeName)) {
                     resourceTypeId = RESOURCE_TYPE_NEWPAGE_ID;
                 } else if (RESOURCE_TYPE_LEGACY_PAGE_NAME.equals(resourceTypeName)) {
@@ -484,10 +519,10 @@ public class CmsImportVersion2 extends A_CmsImport {
                     resourceTypeId = type.getTypeId();
                 }
 
-                uuid = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_UUIDSTRUCTURE);
-                uuidresource = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_UUIDRESOURCE);
+                uuid = getChildElementTextValue(currentElement, A_CmsImport.N_UUIDSTRUCTURE);
+                uuidresource = getChildElementTextValue(currentElement, A_CmsImport.N_UUIDRESOURCE);
 
-                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_LASTMODIFIED);
+                timestamp = getChildElementTextValue(currentElement, A_CmsImport.N_LASTMODIFIED);
                 if (timestamp != null) {
                     lastmodified = Long.parseLong(timestamp);
                 } else {
@@ -548,21 +583,19 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                         List aceList = new ArrayList();
                         // write all imported access control entries for this file
-                        acentryNodes = currentElement.selectNodes("*/" + CmsImportExportManager.N_ACCESSCONTROL_ENTRY);
+                        acentryNodes = currentElement.selectNodes("*/" + A_CmsImport.N_ACCESSCONTROL_ENTRY);
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.size(); j++) {
                             currentEntry = (Element)acentryNodes.get(j);
                             // get the data of the access control entry
-                            String id = CmsImport.getChildElementTextValue(currentEntry, CmsImportExportManager.N_ID);
-                            String acflags = CmsImport.getChildElementTextValue(
+                            String id = getChildElementTextValue(currentEntry, A_CmsImport.N_ID);
+                            String acflags = getChildElementTextValue(currentEntry, A_CmsImport.N_FLAGS);
+                            String allowed = getChildElementTextValue(
                                 currentEntry,
-                                CmsImportExportManager.N_FLAGS);
-                            String allowed = CmsImport.getChildElementTextValue(
+                                A_CmsImport.N_ACCESSCONTROL_ALLOWEDPERMISSIONS);
+                            String denied = getChildElementTextValue(
                                 currentEntry,
-                                CmsImportExportManager.N_ACCESSCONTROL_ALLOWEDPERMISSIONS);
-                            String denied = CmsImport.getChildElementTextValue(
-                                currentEntry,
-                                CmsImportExportManager.N_ACCESSCONTROL_DENIEDPERMISSIONS);
+                                A_CmsImport.N_ACCESSCONTROL_DENIEDPERMISSIONS);
 
                             // add the entry to the list
                             aceList.add(getImportAccessControlEntry(res, id, allowed, denied, acflags));

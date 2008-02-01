@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExportNonexistentUser.java,v $
- * Date   : $Date: 2008/01/28 16:16:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2008/02/01 09:43:17 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Tests exporting/import VFS data with nonexistent users.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
@@ -146,14 +146,23 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             cms.deleteUser(username);
 
             // export the dummy plain text file
-            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
+
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -170,9 +179,8 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             // re-import the exported dummy plain text file
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
         } catch (Exception e) {
             fail(e.toString());
         } finally {

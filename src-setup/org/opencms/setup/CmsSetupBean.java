@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2007/11/23 09:37:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/02/01 09:42:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.importexport.CmsImportParameters;
 import org.opencms.loader.CmsImageLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -110,7 +111,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1960,17 +1961,18 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * creating a temporary project for this.<p>
      * 
      * @param importFile the name of the import module located in the default module directory
+     * 
      * @throws Exception if something goes wrong
-     * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, String, String, org.opencms.report.I_CmsReport)
+     * 
+     * @see org.opencms.importexport.CmsImportExportManager#importData(CmsObject, org.opencms.report.I_CmsReport, CmsImportParameters)
      */
     protected void importModuleFromDefault(String importFile) throws Exception {
 
         String fileName = getModuleFolder() + importFile;
         OpenCms.getImportExportManager().importData(
             m_cms,
-            fileName,
-            null,
-            new CmsShellReport(m_cms.getRequestContext().getLocale()));
+            new CmsShellReport(m_cms.getRequestContext().getLocale()),
+            new CmsImportParameters(fileName, "/", true));
     }
 
     /** 

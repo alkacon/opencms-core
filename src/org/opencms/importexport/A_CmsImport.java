@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2008/02/01 09:37:43 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.CmsXmlUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -77,20 +78,177 @@ import org.dom4j.Element;
 /**
  * Collection of common used methods for implementing OpenCms Import classes.<p>
  * 
- * This class does not implement a real OpenCms import, real import implmentation should be 
+ * This class does not implement a real OpenCms import, real import implementation should be 
  * inherited form this class.<p>
  *
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.86 $ 
+ * @version $Revision: 1.87 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.importexport.I_CmsImport
+ * 
+ * @deprecated the import is done starting with {@link CmsImportVersion7} with the digester
  */
-
 public abstract class A_CmsImport implements I_CmsImport {
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "userinfo/entry@name" attribute, contains the additional user info entry name. */
+    public static final String A_NAME = "name";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "userinfo/entry@type" attribute, contains the additional user info entry data type name. */
+    public static final String A_TYPE = "type";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "access" node. */
+    public static final String N_ACCESS = "access";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "allowed" node, to identify allowed user permissions. */
+    public static final String N_ACCESSCONTROL_ALLOWEDPERMISSIONS = "allowed";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "denied" node, to identify denied user permissions. */
+    public static final String N_ACCESSCONTROL_DENIEDPERMISSIONS = "denied";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "accesscontrol" node, to identify access control entries. */
+    public static final String N_ACCESSCONTROL_ENTRIES = "accesscontrol";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "accessentry" node, to identify a single access control entry. */
+    public static final String N_ACCESSCONTROL_ENTRY = "accessentry";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "permissionset" node, to identify a permission set. */
+    public static final String N_ACCESSCONTROL_PERMISSIONSET = "permissionset";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "uuidprincipal" node, to identify a principal UUID. */
+    public static final String N_ACCESSCONTROL_PRINCIPAL = "uuidprincipal";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "datecreated" node, contains the date created VFS file attribute. */
+    public static final String N_DATECREATED = "datecreated";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "dateexpired" node, contains the expiration date VFS file attribute. */
+    public static final String N_DATEEXPIRED = "dateexpired";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "datelastmodified" node, contains the date last modified VFS file attribute. */
+    public static final String N_DATELASTMODIFIED = "datelastmodified";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "datereleased" node, contains the release date VFS file attribute. */
+    public static final String N_DATERELEASED = "datereleased";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "defaultgroup" node, for backward compatibility with OpenCms 5.x. */
+    public static final String N_DEFAULTGROUP = "defaultgroup";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "description" node, contains a users description test. */
+    public static final String N_DESCRIPTION = "description";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "destination" node, contains target VFS file name. */
+    public static final String N_DESTINATION = "destination";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "email" node, contains a users email. */
+    public static final String N_EMAIL = "email";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "file" node, container node for all VFS resources. */
+    public static final String N_FILE = "file";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "firstname" node, contains a users first name. */
+    public static final String N_FIRSTNAME = "firstname";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "flags" node, contains the flags of a VFS resource. */
+    public static final String N_FLAGS = "flags";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "groupdata" node, contains a users group data. */
+    public static final String N_GROUPDATA = "groupdata";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "groupname" node, contains a groups name. */
+    public static final String N_GROUPNAME = "groupname";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "id" node, only required for backward compatibility with import version 2. */
+    public static final String N_ID = "id";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "lastmodified" node, only required for backward compatibility with import version 2. */
+    public static final String N_LASTMODIFIED = "lastmodified";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "lastname" node, contains a users last name. */
+    public static final String N_LASTNAME = "lastname";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "name" node, contains a users login name. */
+    public static final String N_NAME = "name";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "orgunitdatas" node, starts the organizational unit data. */
+    public static final String N_ORGUNITDATA = "orgunitdata";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "parentgroup" node, contains a groups parent group name. */
+    public static final String N_PARENTGROUP = "parentgroup";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "password" node, contains a users encrypted password. */
+    public static final String N_PASSWORD = "password";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "properties" node, starts the list of properties of a VFS resource. */
+    public static final String N_PROPERTIES = "properties";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "property" node, starts a property for a VFS resource. */
+    public static final String N_PROPERTY = "property";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "type" property attribute, contains a property type. */
+    public static final String N_PROPERTY_ATTRIB_TYPE = "type";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "shared" property type attribute value. */
+    public static final String N_PROPERTY_ATTRIB_TYPE_SHARED = "shared";
+
+    /** Tag in the [@link #EXPORT_MANIFEST} for the "relation" node, starts a relation for a VFS resource. */
+    public static final String N_RELATION = "relation";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "id" relation attribute, contains the structure id of the target resource of the relation. */
+    public static final String N_RELATION_ATTRIBUTE_ID = "id";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "path" relation attribute, contains the path to the target resource of the relation. */
+    public static final String N_RELATION_ATTRIBUTE_PATH = "path";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "type" relation attribute, contains the type of relation. */
+    public static final String N_RELATION_ATTRIBUTE_TYPE = "type";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "relations" node, starts the list of relations of a VFS resources. */
+    public static final String N_RELATIONS = "relations";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "source" node, contains the source path of a VFS resource in the import zip (or folder). */
+    public static final String N_SOURCE = "source";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "address" node, contains a users address. */
+    public static final String N_TAG_ADDRESS = "address";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "type" node, the resource type name of a VFS resource. */
+    public static final String N_TYPE = "type";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "user" node, starts the user data. */
+    public static final String N_USER = "user";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "usercreated" node, contains the name of the user who created the VFS resource. */
+    public static final String N_USERCREATED = "usercreated";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "userdata" node, starts the list of users. */
+    public static final String N_USERDATA = "userdata";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "usergroupdatas" node, starts the users group data. */
+    public static final String N_USERGROUPDATA = "usergroupdata";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "usergroups" node, starts the users group data. */
+    public static final String N_USERGROUPS = "usergroups";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "userinfo" node, contains the additional user info. */
+    public static final String N_USERINFO = "userinfo";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "userinfo/entry" node, contains the additional user info entry value. */
+    public static final String N_USERINFO_ENTRY = "entry";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "userlastmodified" node, contains the name of the user who last modified the VFS resource. */
+    public static final String N_USERLASTMODIFIED = "userlastmodified";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "uuidresource" node, contains a the resource UUID of a VFS resource. */
+    public static final String N_UUIDRESOURCE = "uuidresource";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "uuidstructure" node, only required for backward compatibility with import version 2. */
+    public static final String N_UUIDSTRUCTURE = "uuidstructure";
+
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "value" node, contains the value of a property. */
+    public static final String N_VALUE = "value";
 
     /** The name of the legacy resource type "page". */
     public static final String RESOURCE_TYPE_LEGACY_PAGE_NAME = "page";
@@ -161,6 +319,63 @@ public abstract class A_CmsImport implements I_CmsImport {
         }
 
         return new String(Base64.encodeBase64(data));
+    }
+
+    /**
+     * Returns the value of a child element with a specified name for a given parent element.<p>
+     *
+     * @param parentElement the parent element
+     * @param elementName the child element name
+     * 
+     * @return the value of the child node, or null if something went wrong
+     */
+    public String getChildElementTextValue(Element parentElement, String elementName) {
+
+        try {
+            // get the first child element matching the specified name
+            Element childElement = (Element)parentElement.selectNodes("./" + elementName).get(0);
+            // return the value of the child element
+            return childElement.getTextTrim();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * @see org.opencms.importexport.I_CmsImport#matches(org.opencms.importexport.CmsImportParameters)
+     */
+    public boolean matches(CmsImportParameters parameters) throws CmsImportExportException {
+
+        // try to read the export version number
+        CmsImportHelper helper = new CmsImportHelper(parameters);
+        try {
+            helper.openFile();
+            // read the xml-config file
+            Document docXml = CmsXmlUtils.unmarshalHelper(
+                helper.getFileBytes(CmsImportExportManager.EXPORT_MANIFEST),
+                null);
+
+            return getVersion() == Integer.parseInt(((Element)docXml.selectNodes(
+                "//" + CmsImportExportManager.N_VERSION).get(0)).getTextTrim());
+        } catch (IOException e) {
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_OPENING_ZIP_ARCHIVE_1,
+                parameters.getPath());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message.key(), e);
+            }
+
+            throw new CmsImportExportException(message, e);
+        } catch (Exception e) {
+            // ignore the exception, the export file has no version number (version 0)
+            // should never happen
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        } finally {
+            helper.closeFile();
+        }
+        return false;
     }
 
     /**
@@ -422,7 +637,7 @@ public abstract class A_CmsImport implements I_CmsImport {
     }
 
     /**
-     * Writes alread imported access control entries for a given resource.
+     * Writes already imported access control entries for a given resource.<p>
      * 
      * @param resource the resource assigned to the access control entries
      * @param aceList the access control entries to create
@@ -472,10 +687,10 @@ public abstract class A_CmsImport implements I_CmsImport {
             if (CmsStringUtil.isNotEmpty(parentgroupName) && (parentGroup == null)) {
                 // cannot create group, put on stack and try to create later
                 Map groupData = new HashMap();
-                groupData.put(CmsImportExportManager.N_NAME, name);
-                groupData.put(CmsImportExportManager.N_DESCRIPTION, description);
-                groupData.put(CmsImportExportManager.N_FLAGS, flags);
-                groupData.put(CmsImportExportManager.N_PARENTGROUP, parentgroupName);
+                groupData.put(A_CmsImport.N_NAME, name);
+                groupData.put(A_CmsImport.N_DESCRIPTION, description);
+                groupData.put(A_CmsImport.N_FLAGS, flags);
+                groupData.put(A_CmsImport.N_PARENTGROUP, parentgroupName);
                 m_groupsToCreate.push(groupData);
             } else {
                 try {
@@ -520,15 +735,15 @@ public abstract class A_CmsImport implements I_CmsImport {
         String name, description, flags, parentgroup;
         try {
             // getAll group nodes
-            groupNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_GROUPDATA);
+            groupNodes = m_docXml.selectNodes("//" + A_CmsImport.N_GROUPDATA);
             // walk through all groups in manifest
             for (int i = 0; i < groupNodes.size(); i++) {
                 currentElement = (Element)groupNodes.get(i);
-                name = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_NAME);
+                name = getChildElementTextValue(currentElement, A_CmsImport.N_NAME);
                 name = OpenCms.getImportExportManager().translateGroup(name);
-                description = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESCRIPTION);
-                flags = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_FLAGS);
-                parentgroup = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_PARENTGROUP);
+                description = getChildElementTextValue(currentElement, A_CmsImport.N_DESCRIPTION);
+                flags = getChildElementTextValue(currentElement, A_CmsImport.N_FLAGS);
+                parentgroup = getChildElementTextValue(currentElement, A_CmsImport.N_PARENTGROUP);
                 if ((parentgroup != null) && (parentgroup.length() > 0)) {
                     parentgroup = OpenCms.getImportExportManager().translateGroup(parentgroup);
                 }
@@ -543,10 +758,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                 m_groupsToCreate = new Stack();
                 while (tempStack.size() > 0) {
                     Map groupdata = (HashMap)tempStack.pop();
-                    name = (String)groupdata.get(CmsImportExportManager.N_NAME);
-                    description = (String)groupdata.get(CmsImportExportManager.N_DESCRIPTION);
-                    flags = (String)groupdata.get(CmsImportExportManager.N_FLAGS);
-                    parentgroup = (String)groupdata.get(CmsImportExportManager.N_PARENTGROUP);
+                    name = (String)groupdata.get(A_CmsImport.N_NAME);
+                    description = (String)groupdata.get(A_CmsImport.N_DESCRIPTION);
+                    flags = (String)groupdata.get(A_CmsImport.N_FLAGS);
+                    parentgroup = (String)groupdata.get(A_CmsImport.N_PARENTGROUP);
                     // try to import the group
                     importGroup(name, description, flags, parentgroup);
                 }
@@ -670,24 +885,24 @@ public abstract class A_CmsImport implements I_CmsImport {
         //getImportResource();
         try {
             // getAll user nodes
-            userNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_USERDATA);
+            userNodes = m_docXml.selectNodes("//" + A_CmsImport.N_USERDATA);
             // walk threw all groups in manifest
             for (int i = 0; i < userNodes.size(); i++) {
                 currentElement = (Element)userNodes.get(i);
-                name = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_NAME);
+                name = getChildElementTextValue(currentElement, A_CmsImport.N_NAME);
                 name = OpenCms.getImportExportManager().translateUser(name);
                 // decode passwords using base 64 decoder
-                pwd = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_PASSWORD);
+                pwd = getChildElementTextValue(currentElement, A_CmsImport.N_PASSWORD);
                 password = new String(Base64.decodeBase64(pwd.trim().getBytes()));
-                description = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESCRIPTION);
-                flags = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_FLAGS);
-                firstname = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_FIRSTNAME);
-                lastname = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_LASTNAME);
-                email = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_EMAIL);
-                address = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TAG_ADDRESS);
-                defaultGroup = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DEFAULTGROUP);
+                description = getChildElementTextValue(currentElement, A_CmsImport.N_DESCRIPTION);
+                flags = getChildElementTextValue(currentElement, A_CmsImport.N_FLAGS);
+                firstname = getChildElementTextValue(currentElement, A_CmsImport.N_FIRSTNAME);
+                lastname = getChildElementTextValue(currentElement, A_CmsImport.N_LASTNAME);
+                email = getChildElementTextValue(currentElement, A_CmsImport.N_EMAIL);
+                address = getChildElementTextValue(currentElement, A_CmsImport.N_TAG_ADDRESS);
+                defaultGroup = getChildElementTextValue(currentElement, A_CmsImport.N_DEFAULTGROUP);
                 // get the userinfo and put it into the additional info map
-                infoNode = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_USERINFO);
+                infoNode = getChildElementTextValue(currentElement, A_CmsImport.N_USERINFO);
                 try {
                     // read the userinfo from the dat-file
                     byte[] value = getFileBytes(infoNode);
@@ -704,11 +919,11 @@ public abstract class A_CmsImport implements I_CmsImport {
                 }
 
                 // get the groups of the user and put them into the list
-                groupNodes = currentElement.selectNodes("*/" + CmsImportExportManager.N_GROUPNAME);
+                groupNodes = currentElement.selectNodes("*/" + A_CmsImport.N_GROUPNAME);
                 userGroups = new ArrayList();
                 for (int j = 0; j < groupNodes.size(); j++) {
                     currentGroup = (Element)groupNodes.get(j);
-                    String userInGroup = CmsImport.getChildElementTextValue(currentGroup, CmsImportExportManager.N_NAME);
+                    String userInGroup = getChildElementTextValue(currentGroup, A_CmsImport.N_NAME);
                     userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);
                     userGroups.add(userInGroup);
                 }
@@ -753,7 +968,7 @@ public abstract class A_CmsImport implements I_CmsImport {
      * Reads all properties below a specified parent element from the <code>manifest.xml</code>.<p>
      * 
      * @param parentElement the current file node
-     * @param ignoredPropertyKeys a list of properies to be ignored
+     * @param ignoredPropertyKeys a list of properties to be ignored
      * 
      * @return a list with all properties
      */
@@ -763,9 +978,9 @@ public abstract class A_CmsImport implements I_CmsImport {
         Map properties = new HashMap();
         CmsProperty property = null;
         List propertyElements = parentElement.selectNodes("./"
-            + CmsImportExportManager.N_PROPERTIES
+            + A_CmsImport.N_PROPERTIES
             + "/"
-            + CmsImportExportManager.N_PROPERTY);
+            + A_CmsImport.N_PROPERTY);
         Element propertyElement = null;
         String key = null, value = null;
         Attribute attrib = null;
@@ -773,7 +988,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         // iterate over all property elements
         for (int i = 0, n = propertyElements.size(); i < n; i++) {
             propertyElement = (Element)propertyElements.get(i);
-            key = CmsImport.getChildElementTextValue(propertyElement, CmsImportExportManager.N_NAME);
+            key = getChildElementTextValue(propertyElement, A_CmsImport.N_NAME);
 
             if ((key == null) || ignoredPropertyKeys.contains(key)) {
                 // continue if the current property (key) should be ignored or is null
@@ -789,13 +1004,13 @@ public abstract class A_CmsImport implements I_CmsImport {
                 properties.put(key, property);
             }
 
-            value = CmsImport.getChildElementTextValue(propertyElement, CmsImportExportManager.N_VALUE);
+            value = getChildElementTextValue(propertyElement, A_CmsImport.N_VALUE);
             if (value == null) {
                 value = "";
             }
 
-            attrib = propertyElement.attribute(CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE);
-            if ((attrib != null) && attrib.getValue().equals(CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE_SHARED)) {
+            attrib = propertyElement.attribute(A_CmsImport.N_PROPERTY_ATTRIB_TYPE);
+            if ((attrib != null) && attrib.getValue().equals(A_CmsImport.N_PROPERTY_ATTRIB_TYPE_SHARED)) {
                 // it is a shared/resource property value
                 property.setResourceValue(value);
             } else {
@@ -806,5 +1021,4 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         return new ArrayList(properties.values());
     }
-
 }

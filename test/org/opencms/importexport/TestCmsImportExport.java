@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2008/01/23 14:48:28 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/02/01 09:43:17 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -174,13 +174,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename1);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -206,9 +214,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             // publish the file
             cms.unlockResource(filename1);
@@ -278,13 +285,22 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // export the file
             cms.getRequestContext().setSiteRoot(site);
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
+
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -307,9 +323,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             // publish the file
             cms.unlockResource(filename);
@@ -393,14 +408,22 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the files
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename1);
             exportPaths.add(filename2);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -425,9 +448,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(
                 CmsResourceTypeXmlPage.getStaticTypeId());
@@ -509,14 +531,22 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
         // export the files
         CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-        vfsExportHandler.setFileName(zipExportFilename);
         List exportPaths = new ArrayList(1);
         exportPaths.add(filename1);
         exportPaths.add(filename2);
-        vfsExportHandler.setExportPaths(exportPaths);
-        vfsExportHandler.setIncludeSystem(false);
-        vfsExportHandler.setIncludeUnchanged(true);
-        vfsExportHandler.setExportUserdata(false);
+        CmsExportParameters params = new CmsExportParameters(
+            zipExportFilename,
+            null,
+            true,
+            false,
+            false,
+            exportPaths,
+            false,
+            true,
+            0,
+            true,
+            false);
+        vfsExportHandler.setExportParams(params);
         OpenCms.getImportExportManager().exportData(
             cms,
             vfsExportHandler,
@@ -537,9 +567,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(OpenCmsTestCase.ARTICLE_TYPEID);
             I_CmsLinkParseable validatable = (I_CmsLinkParseable)type;
@@ -587,13 +616,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         try {
             // export the folder
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -602,9 +639,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported folder
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
         } finally {
             try {
@@ -650,13 +686,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the dummy plain text file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -673,9 +717,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported dummy plain text file
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             // publish the file
             cms.unlockResource(filename);
@@ -728,13 +771,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the folder
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(foldername);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -766,9 +817,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // this should not work since the system has files with the same ids
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             assertTrue(cms.existsResource(folder2));
             assertTrue(cms.existsResource(folder2 + filename));
@@ -827,13 +877,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename1);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -862,9 +920,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             assertFalse(cms.existsResource(filename1));
             assertTrue(cms.existsResource(filename2));
@@ -905,13 +962,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -926,9 +991,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", false));
 
             // publish the file
             cms.unlockResource(filename);
@@ -986,13 +1050,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename1);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -1028,9 +1100,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported file
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             // publish the imported file
             cms.unlockResource(filename1);
@@ -1086,13 +1157,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename1);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -1127,9 +1206,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // try to re-import the exported files, should fail
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             // publish the file
             cms.unlockResource(filename1);
@@ -1192,13 +1270,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -1220,9 +1306,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             // now check the imported relation
             relations = cms.getRelationsForResource(filename, CmsRelationFilter.TARGETS.filterNotDefinedInContent());
@@ -1285,9 +1370,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport01.zip");
         OpenCms.getImportExportManager().importData(
             cms,
-            importFile,
-            "/",
-            new CmsShellReport(cms.getRequestContext().getLocale()));
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            new CmsImportParameters(importFile, "/", true));
 
         // check the results of the import
         CmsXmlPage page;
@@ -1445,9 +1529,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport02.zip");
         OpenCms.getImportExportManager().importData(
             cms,
-            importFile,
-            "/",
-            new CmsShellReport(cms.getRequestContext().getLocale()));
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            new CmsImportParameters(importFile, "/", true));
 
         // now switch to "mysite"
         cms.getRequestContext().setSiteRoot("/sites/mysite/");
@@ -1585,13 +1668,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(filename1);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -1623,9 +1714,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             // publish the file
             cms.unlockResource(filename1);
@@ -1687,13 +1777,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the sibling
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(sibname);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(true);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                true,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -1708,9 +1806,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported sibling
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             // publish the sibling
             cms.unlockResource(sibname);
@@ -1771,13 +1868,21 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
             // export the file
             CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
-            vfsExportHandler.setFileName(zipExportFilename);
             List exportPaths = new ArrayList(1);
             exportPaths.add(site + filename);
-            vfsExportHandler.setExportPaths(exportPaths);
-            vfsExportHandler.setIncludeSystem(false);
-            vfsExportHandler.setIncludeUnchanged(true);
-            vfsExportHandler.setExportUserdata(false);
+            CmsExportParameters params = new CmsExportParameters(
+                zipExportFilename,
+                null,
+                true,
+                false,
+                false,
+                exportPaths,
+                false,
+                true,
+                0,
+                true,
+                false);
+            vfsExportHandler.setExportParams(params);
             OpenCms.getImportExportManager().exportData(
                 cms,
                 vfsExportHandler,
@@ -1789,9 +1894,8 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // re-import the exported files
             OpenCms.getImportExportManager().importData(
                 cms,
-                zipExportFilename,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(zipExportFilename, "/", true));
 
             // now check 
             cms.getRequestContext().setSiteRoot("");

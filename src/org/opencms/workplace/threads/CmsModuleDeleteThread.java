@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsModuleDeleteThread.java,v $
- * Date   : $Date: 2007/08/13 16:30:04 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2008/02/01 09:41:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,18 +70,13 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
      * @param cms the current cms context
      * @param moduleNames the name of the module
      * @param replaceMode the replace mode
-     * @param old flag for report mode
      */
-    public CmsModuleDeleteThread(CmsObject cms, List moduleNames, boolean replaceMode, boolean old) {
+    public CmsModuleDeleteThread(CmsObject cms, List moduleNames, boolean replaceMode) {
 
         super(cms, Messages.get().getBundle().key(Messages.GUI_DELETE_MODULE_THREAD_NAME_1, moduleNames));
         m_moduleNames = moduleNames;
         m_replaceMode = replaceMode;
-        if (old) {
-            initOldHtmlReport(cms.getRequestContext().getLocale());
-        } else {
-            initHtmlReport(cms.getRequestContext().getLocale());
-        }
+        initHtmlReport(cms.getRequestContext().getLocale());
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_DELETE_THREAD_CONSTRUCTED_0));
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/I_CmsImportExportHandler.java,v $
- * Date   : $Date: 2007/08/13 16:30:10 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2008/02/01 09:37:43 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.dom4j.Document;
  * implementation's setter methods to arrange which data should be exported. To write the export,
  * call {@link org.opencms.importexport.CmsImportExportManager#exportData(CmsObject, I_CmsImportExportHandler, I_CmsReport)}.<p>
  * 
- * To import data, call {@link org.opencms.importexport.CmsImportExportManager#importData(CmsObject, String, String, I_CmsReport)}.
+ * To import data, call {@link org.opencms.importexport.CmsImportExportManager#importData(CmsObject, I_CmsReport, CmsImportParameters)}.
  * You don't have to worry about the contents of an imported a ZIP archive - 
  * the import/export manager finds the right import/export handler implementation 
  * to import the data. You can assign null to the importPath argument in case of a Cms module import.<p>
@@ -57,7 +57,7 @@ import org.dom4j.Document;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,9 +68,10 @@ public interface I_CmsImportExportHandler {
      * 
      * @param cms the current OpenCms context object
      * @param report a Cms report to print log messages
+     * 
      * @throws CmsImportExportException if operation was not successful  
      * @throws CmsRoleViolationException if the current user has not the required role 
-     * @throws CmsConfigurationException if a specified module to be exproted does not exist
+     * @throws CmsConfigurationException if a specified module to be exported does not exist
      */
     void exportData(CmsObject cms, I_CmsReport report)
     throws CmsConfigurationException, CmsImportExportException, CmsRoleViolationException;
@@ -84,10 +85,31 @@ public interface I_CmsImportExportHandler {
     String getDescription();
 
     /**
+     * Returns the import parameters.<p>
+     * 
+     * @return the import parameters
+     */
+    CmsImportParameters getImportParameters();
+
+    /**
      * Imports the data into the Cms.<p>
      * 
      * @param cms the current OpenCms context object
-     * @param importFile the name (absolute path) of the resource (zipfile or folder) to be imported
+     * @param report a Cms report to print log messages
+     * 
+     * @throws CmsImportExportException if operation was not successful 
+     * @throws CmsRoleViolationException if the current user has not the required role 
+     * @throws CmsXmlException if the manifest of the import could not be unmarshalled
+     * @throws CmsException in case of errors accessing the VFS
+     */
+    void importData(CmsObject cms, I_CmsReport report)
+    throws CmsXmlException, CmsImportExportException, CmsRoleViolationException, CmsException;
+
+    /**
+     * Imports the data into the Cms.<p>
+     * 
+     * @param cms the current OpenCms context object
+     * @param importFile the name (absolute path) of the resource (zip file or folder) to be imported
      * @param importPath the name (absolute path) of the destination folder in the Cms (if required)
      * @param report a Cms report to print log messages
      * 
@@ -95,6 +117,8 @@ public interface I_CmsImportExportHandler {
      * @throws CmsRoleViolationException if the current user has not the required role 
      * @throws CmsXmlException if the manifest of the import could not be unmarshalled
      * @throws CmsException in case of errors accessing the VFS
+     * 
+     * @deprecated use {@link #importData(CmsObject, I_CmsReport)} instead
      */
     void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report)
     throws CmsXmlException, CmsImportExportException, CmsRoleViolationException, CmsException;
@@ -116,4 +140,10 @@ public interface I_CmsImportExportHandler {
      */
     void setDescription(String description);
 
+    /**
+     * Sets the import parameters.<p>
+     * 
+     * @param parameters the import parameters to set
+     */
+    void setImportParameters(CmsImportParameters parameters);
 }

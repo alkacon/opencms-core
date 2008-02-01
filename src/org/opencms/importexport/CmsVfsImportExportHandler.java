@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/02/01 09:37:42 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.module.CmsModuleXmlHandler;
 import org.opencms.report.I_CmsReport;
@@ -39,7 +40,6 @@ import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.dom4j.Document;
@@ -50,31 +50,37 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
-    /** Timestamp to limit the resources to be exported by date.<p> */
+    /** The description of this import/export handler. */
     private long m_contentAge;
 
     /** The description of this import/export handler.<p> */
     private String m_description;
 
-    /** The VFS paths to be exported.<p> */
+    /** The export parameters. */
+    private CmsExportParameters m_exportParams;
+
+    /** The VFS paths to be exported. */
     private List m_exportPaths;
 
-    /** Boolean flag to decide whether user/group data should be exported or not.<p> */
+    /** The name of the export file in the real file system. */
     private boolean m_exportUserdata;
 
     /** The name of the export file in the real file system.<p> */
     private String m_fileName;
 
-    /** Boolean flag to decide whether VFS resources under /system/ should be exported or not.<p> */
+    /** The import parameters. */
+    private CmsImportParameters m_importParams;
+
+    /** Boolean flag to decide whether VFS resources under /system/ should be exported or not. */
     private boolean m_includeSystem;
 
-    /** Boolean flag to decide whether unchanged resources should be exported or not.<p> */
+    /** Boolean flag to decide whether unchanged resources should be exported or not. */
     private boolean m_includeUnchanged;
 
     /** Boolean flag to indicate that only the resources of the current project should be exported. */
@@ -90,11 +96,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
         super();
         m_description = Messages.get().getBundle().key(Messages.GUI_CMSIMPORTHANDLER_DEFAULT_DESC_0);
-        m_includeSystem = false;
-        m_includeUnchanged = true;
-        m_exportUserdata = true;
-        m_exportPaths = Collections.EMPTY_LIST;
-        m_recursive = true;
     }
 
     /**
@@ -103,19 +104,24 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public void exportData(CmsObject cms, I_CmsReport report)
     throws CmsImportExportException, CmsRoleViolationException {
 
+        CmsExportParameters parameters = getExportParams();
+        if (parameters == null) {
+            parameters = new CmsExportParameters(
+                getFileName(),
+                null,
+                true,
+                isExportUserdata(),
+                false,
+                getExportPaths(),
+                isIncludeSystem(),
+                isIncludeUnchanged(),
+                getContentAge(),
+                isRecursive(),
+                isProjectOnly());
+        }
+
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
-        new CmsExport(
-            cms,
-            getFileName(),
-            getExportPaths(),
-            isIncludeSystem(),
-            isIncludeUnchanged(),
-            null,
-            isExportUserdata(),
-            getContentAge(),
-            report,
-            isRecursive(),
-            isProjectOnly());
+        new CmsExport(cms, report).exportData(parameters);
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_END_0), I_CmsReport.FORMAT_HEADLINE);
     }
 
@@ -125,6 +131,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Only resources that have been modified after this date will be exported.<p>
      * 
      * @return the timestamp to limit the resources to be exported by date
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public long getContentAge() {
 
@@ -140,9 +148,21 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     }
 
     /**
+     * Returns the export parameters.<p>
+     *
+     * @return the export parameters
+     */
+    public CmsExportParameters getExportParams() {
+
+        return m_exportParams;
+    }
+
+    /**
      * Returns the list with VFS paths to be exported.<p>
      * 
      * @return the list with VFS paths to be exported
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public List getExportPaths() {
 
@@ -153,6 +173,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Returns the name of the export file in the real file system.<p>
      * 
      * @return the name of the export file in the real file system
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public String getFileName() {
 
@@ -160,21 +182,50 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     }
 
     /**
-     * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
+     * Returns the import parameters.<p>
+     *
+     * @return the import parameters
      */
-    public synchronized void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report)
+    public CmsImportParameters getImportParameters() {
+
+        return m_importParams;
+    }
+
+    /**
+     * @see org.opencms.importexport.I_CmsImportExportHandler#importData(CmsObject, I_CmsReport)
+     */
+    public synchronized void importData(CmsObject cms, I_CmsReport report)
     throws CmsImportExportException, CmsXmlException, CmsRoleViolationException {
 
         report.println(Messages.get().container(Messages.RPT_IMPORT_DB_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
-        CmsImport vfsImport = new CmsImport(cms, importFile, importPath, report);
-        vfsImport.importResources();
+
+        CmsImport vfsImport = new CmsImport(cms, report);
+        vfsImport.importData(getImportParameters());
+
         report.println(Messages.get().container(Messages.RPT_IMPORT_DB_END_0), I_CmsReport.FORMAT_HEADLINE);
+    }
+
+    /**
+     * @see org.opencms.importexport.I_CmsImportExportHandler#importData(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.report.I_CmsReport)
+     * 
+     * @deprecated use {@link #importData(CmsObject, I_CmsReport)} instead
+     */
+    public void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report)
+    throws CmsXmlException, CmsImportExportException, CmsRoleViolationException, CmsException {
+
+        CmsImportParameters parameters = new CmsImportParameters(importFile, importPath, true);
+
+        setImportParameters(parameters);
+
+        importData(cms, report);
     }
 
     /**
      * Returns the boolean flag to decide whether user/group data should be exported or not.<p>
      * 
      * @return true, if user/group data should be exported
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public boolean isExportUserdata() {
 
@@ -185,6 +236,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Returns the boolean flag to decide whether VFS resources under /system/ should be exported or not.<p>
      * 
      * @return true, if VFS resources under /system/ should not be exported
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public boolean isIncludeSystem() {
 
@@ -195,6 +248,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Returns the boolean flag to decide whether unchanged resources should be exported or not.<p>
      * 
      * @return true, if unchanged resources should not be exported
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public boolean isIncludeUnchanged() {
 
@@ -205,6 +260,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Returns the projectOnly.<p>
      *
      * @return the projectOnly
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public boolean isProjectOnly() {
 
@@ -215,6 +272,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Returns the recursive flag.<p>
      *
      * @return the recursive flag
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public boolean isRecursive() {
 
@@ -227,13 +286,11 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public boolean matches(Document manifest) {
 
         Element rootElement = manifest.getRootElement();
-
         boolean hasModuleNode = (rootElement.selectNodes(
             "./" + CmsModuleXmlHandler.N_MODULE + "/" + CmsModuleXmlHandler.N_NAME).size() > 0);
-        boolean hasFileNodes = (rootElement.selectNodes("./" + "files").size() == 1);
-        boolean hasUserData = (rootElement.selectNodes("./" + CmsImportExportManager.N_USERGROUPDATA).size() == 1);
+        boolean hasInfoNode = (rootElement.selectNodes("./" + CmsImportExportManager.N_INFO).size() == 1);
 
-        return (!hasModuleNode && (hasFileNodes || hasUserData));
+        return (!hasModuleNode && hasInfoNode);
     }
 
     /**
@@ -242,6 +299,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Only resources that have been modified after this date will be exported.<p>
      * 
      * @param contentAge the timestamp to limit the resources to be exported by date
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public void setContentAge(long contentAge) {
 
@@ -261,9 +320,21 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     }
 
     /**
+     * Sets the export parameters.<p>
+     *
+     * @param exportParams the parameters to set
+     */
+    public void setExportParams(CmsExportParameters exportParams) {
+
+        m_exportParams = exportParams;
+    }
+
+    /**
      * Sets the list with VFS paths to be exported.<p>
      * 
      * @param exportPaths the list with VFS paths to be exported
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public void setExportPaths(List exportPaths) {
 
@@ -274,6 +345,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Sets the boolean flag to decide whether user/group data should be exported or not.<p>
      * 
      * @param exportUserdata true, if user/group data should not be exported
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public void setExportUserdata(boolean exportUserdata) {
 
@@ -284,6 +357,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Sets the name of the export file in the real file system.<p>
      * 
      * @param fileName the name of the export file in the real file system
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public void setFileName(String fileName) {
 
@@ -294,9 +369,21 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     }
 
     /**
+     * Sets the import parameters.<p>
+     *
+     * @param importParams the parameters to set
+     */
+    public void setImportParameters(CmsImportParameters importParams) {
+
+        m_importParams = importParams;
+    }
+
+    /**
      * Sets the boolean flag to decide whether VFS resources under /system/ should be exported or not.<p>
      * 
      * @param excludeSystem true, if VFS resources under /system/ should not be exported
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public void setIncludeSystem(boolean excludeSystem) {
 
@@ -307,6 +394,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Sets the boolean flag to decide whether unchanged resources should be exported or not.<p>
      * 
      * @param excludeUnchanged true, if unchanged resources should not be exported
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public void setIncludeUnchanged(boolean excludeUnchanged) {
 
@@ -317,6 +406,8 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Sets the projectOnly.<p>
      *
      * @param projectOnly the projectOnly to set
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public void setProjectOnly(boolean projectOnly) {
 
@@ -327,24 +418,11 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      * Sets the recursive flag.<p>
      *
      * @param recursive the recursive flag to set
+     * 
+     * @deprecated use {@link #setExportParams(CmsExportParameters)} instead
      */
     public void setRecursive(boolean recursive) {
 
         m_recursive = recursive;
-    }
-
-    /**
-     * @see java.lang.Object#finalize()
-     */
-    protected void finalize() throws Throwable {
-
-        try {
-            if (m_exportPaths != null) {
-                m_exportPaths.clear();
-            }
-        } catch (Throwable t) {
-            // noop
-        }
-        super.finalize();
     }
 }

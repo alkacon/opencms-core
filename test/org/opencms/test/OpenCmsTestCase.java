@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2007/11/26 13:16:24 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2008/02/01 09:43:17 $
+ * Version: $Revision: 1.102 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.file.history.CmsHistoryFile;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.importexport.CmsImportParameters;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
@@ -98,7 +99,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.101 $
+ * @version $Revision: 1.102 $
  * 
  * @since 6.0.0
  */
@@ -878,9 +879,11 @@ public class OpenCmsTestCase extends TestCase {
 
         OpenCms.getImportExportManager().importData(
             cms,
-            getTestDataPath(File.separator + "imports" + File.separator + importFile),
-            targetPath,
-            new CmsShellReport(cms.getRequestContext().getLocale()));
+            new CmsShellReport(cms.getRequestContext().getLocale()),
+            new CmsImportParameters(
+                getTestDataPath(File.separator + "imports" + File.separator + importFile),
+                targetPath,
+                true));
     }
 
     /**

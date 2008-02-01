@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2008/02/01 09:37:43 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,6 +99,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORTEXPORT_ERROR_IMPORTING_GROUPS_0 = "ERR_IMPORTEXPORT_ERROR_IMPORTING_GROUPS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMPORTEXPORT_ERROR_IMPORTING_ORGUNITS_0 = "ERR_IMPORTEXPORT_ERROR_IMPORTING_ORGUNITS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMPORTEXPORT_ERROR_IMPORTING_PROJECTS_0 = "ERR_IMPORTEXPORT_ERROR_IMPORTING_PROJECTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCE_1 = "ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCE_1";
@@ -197,6 +203,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1 = "LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMPORTEXPORT_ERROR_IMPORTING_RELATION_1 = "LOG_IMPORTEXPORT_ERROR_IMPORTING_RELATION_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTEXPORT_ERROR_ON_TEST_IMMUTABLE_1 = "LOG_IMPORTEXPORT_ERROR_ON_TEST_IMMUTABLE_1";
 
     /** Message constant for key in the resource bundle. */
@@ -293,6 +302,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_EXPORT_GROUP_0 = "RPT_EXPORT_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORT_ORGUNIT_0 = "RPT_EXPORT_ORGUNIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_EXPORT_PROJECT_0 = "RPT_EXPORT_PROJECT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORT_USER_0 = "RPT_EXPORT_USER_0";
 
     /** Message constant for key in the resource bundle. */
@@ -309,6 +324,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMPORT_GROUP_0 = "RPT_IMPORT_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORT_ORGUNIT_0 = "RPT_IMPORT_ORGUNIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMPORT_PROJECT_0 = "RPT_IMPORT_PROJECT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMPORT_USER_0 = "RPT_IMPORT_USER_0";
@@ -351,6 +372,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_USER_COULDNT_BE_ADDED_TO_GROUP_2 = "RPT_USER_COULDNT_BE_ADDED_TO_GROUP_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_USER_COULDNT_BE_ADDED_TO_ROLE_2 = "RPT_USER_COULDNT_BE_ADDED_TO_ROLE_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.importexport.messages";

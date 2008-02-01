@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2007/08/23 10:12:14 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2008/02/01 09:37:42 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,8 +48,11 @@ import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,11 +76,13 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.91 $ 
+ * @version $Revision: 1.92 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.importexport.A_CmsImport
+ * 
+ * @deprecated this import class is no longer in use and should only be used to import old export files
  */
 public class CmsImportVersion4 extends A_CmsImport {
 
@@ -109,6 +114,8 @@ public class CmsImportVersion4 extends A_CmsImport {
 
     /**
      * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
+     * 
+     * @deprecated use {@link #importData(CmsObject, I_CmsReport, CmsImportParameters)} instead
      */
     public void importResources(
         CmsObject cms,
@@ -118,21 +125,40 @@ public class CmsImportVersion4 extends A_CmsImport {
         ZipFile importZip,
         Document docXml) throws CmsImportExportException {
 
-        // initialize the import       
+        CmsImportParameters params = new CmsImportParameters(importResource != null ? importResource.getAbsolutePath()
+        : importZip.getName(), importPath, true);
+
+        try {
+            importData(cms, report, params);
+        } catch (CmsXmlException e) {
+            throw new CmsImportExportException(e.getMessageContainer(), e);
+        }
+    }
+
+    /**
+     * @see org.opencms.importexport.I_CmsImport#importData(CmsObject, I_CmsReport, CmsImportParameters)
+     */
+    public void importData(CmsObject cms, I_CmsReport report, CmsImportParameters params)
+    throws CmsImportExportException, CmsXmlException {
+
+        // initialize the import
         initialize();
         m_cms = cms;
-        m_importPath = importPath;
+        m_importPath = params.getDestinationPath();
         m_report = report;
-        m_importResource = importResource;
-        m_importZip = importZip;
-        m_docXml = docXml;
+
         m_linkStorage = new HashMap();
         m_linkPropertyStorage = new HashMap();
         m_parseables = new ArrayList();
 
+        CmsImportHelper helper = new CmsImportHelper(params);
         try {
+            helper.openFile();
+            m_importResource = helper.getFolder();
+            m_importZip = helper.getZipFile();
+            m_docXml = CmsXmlUtils.unmarshalHelper(helper.getFileBytes(CmsImportExportManager.EXPORT_MANIFEST), null);
             // first import the user information
-            if (OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)) {
+            if (OpenCms.getRoleManager().hasRole(m_cms, CmsRole.ACCOUNT_MANAGER)) {
                 importGroups();
                 importUsers();
             }
@@ -140,7 +166,16 @@ public class CmsImportVersion4 extends A_CmsImport {
             readResourcesFromManifest();
             convertPointerToSiblings();
             rewriteParseables();
+        } catch (IOException ioe) {
+            CmsMessageContainer msg = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1,
+                CmsImportExportManager.EXPORT_MANIFEST);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(msg.key(), ioe);
+            }
+            throw new CmsImportExportException(msg, ioe);
         } finally {
+            helper.closeFile();
             cleanUp();
         }
     }
@@ -406,7 +441,7 @@ public class CmsImportVersion4 extends A_CmsImport {
 
         try {
             // get all file-nodes
-            fileNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_FILE);
+            fileNodes = m_docXml.selectNodes("//" + A_CmsImport.N_FILE);
             int importSize = fileNodes.size();
 
             // walk through all files in manifest
@@ -418,13 +453,13 @@ public class CmsImportVersion4 extends A_CmsImport {
                 currentElement = (Element)fileNodes.get(i);
 
                 // <source>
-                source = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_SOURCE);
+                source = getChildElementTextValue(currentElement, A_CmsImport.N_SOURCE);
                 // <destination>
 
-                destination = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DESTINATION);
+                destination = getChildElementTextValue(currentElement, A_CmsImport.N_DESTINATION);
 
                 // <type>
-                String typeName = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
+                String typeName = getChildElementTextValue(currentElement, A_CmsImport.N_TYPE);
                 I_CmsResourceType type;
                 try {
                     type = OpenCms.getResourceManager().getResourceType(typeName);
@@ -435,17 +470,13 @@ public class CmsImportVersion4 extends A_CmsImport {
 
                 if (!type.isFolder()) {
                     // <uuidresource>
-                    uuidresource = CmsImport.getChildElementTextValue(
-                        currentElement,
-                        CmsImportExportManager.N_UUIDRESOURCE);
+                    uuidresource = getChildElementTextValue(currentElement, A_CmsImport.N_UUIDRESOURCE);
                 } else {
                     uuidresource = null;
                 }
 
                 // <datelastmodified>
-                timestamp = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DATELASTMODIFIED);
+                timestamp = getChildElementTextValue(currentElement, A_CmsImport.N_DATELASTMODIFIED);
                 if (timestamp != null) {
                     datelastmodified = convertTimestamp(timestamp);
                 } else {
@@ -453,13 +484,11 @@ public class CmsImportVersion4 extends A_CmsImport {
                 }
 
                 // <userlastmodified>
-                userlastmodified = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_USERLASTMODIFIED);
+                userlastmodified = getChildElementTextValue(currentElement, A_CmsImport.N_USERLASTMODIFIED);
                 userlastmodified = OpenCms.getImportExportManager().translateUser(userlastmodified);
 
                 // <datecreated>
-                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DATECREATED);
+                timestamp = getChildElementTextValue(currentElement, A_CmsImport.N_DATECREATED);
                 if (timestamp != null) {
                     datecreated = convertTimestamp(timestamp);
                 } else {
@@ -467,11 +496,11 @@ public class CmsImportVersion4 extends A_CmsImport {
                 }
 
                 // <usercreated>
-                usercreated = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_USERCREATED);
+                usercreated = getChildElementTextValue(currentElement, A_CmsImport.N_USERCREATED);
                 usercreated = OpenCms.getImportExportManager().translateUser(usercreated);
 
                 // <datereleased>
-                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DATERELEASED);
+                timestamp = getChildElementTextValue(currentElement, A_CmsImport.N_DATERELEASED);
                 if (timestamp != null) {
                     datereleased = convertTimestamp(timestamp);
                 } else {
@@ -479,7 +508,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 }
 
                 // <dateexpired>
-                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DATEEXPIRED);
+                timestamp = getChildElementTextValue(currentElement, A_CmsImport.N_DATEEXPIRED);
                 if (timestamp != null) {
                     dateexpired = convertTimestamp(timestamp);
                 } else {
@@ -487,7 +516,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 }
 
                 // <flags>              
-                flags = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_FLAGS);
+                flags = getChildElementTextValue(currentElement, A_CmsImport.N_FLAGS);
 
                 // apply name translation and import path         
                 String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
@@ -533,16 +562,14 @@ public class CmsImportVersion4 extends A_CmsImport {
                         List aceList = new ArrayList();
 
                         // write all imported access control entries for this file
-                        acentryNodes = currentElement.selectNodes("*/" + CmsImportExportManager.N_ACCESSCONTROL_ENTRY);
+                        acentryNodes = currentElement.selectNodes("*/" + A_CmsImport.N_ACCESSCONTROL_ENTRY);
 
                         // collect all access control entries
                         for (int j = 0; j < acentryNodes.size(); j++) {
                             currentEntry = (Element)acentryNodes.get(j);
 
                             // get the data of the access control entry
-                            String id = CmsImport.getChildElementTextValue(
-                                currentEntry,
-                                CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL);
+                            String id = getChildElementTextValue(currentEntry, A_CmsImport.N_ACCESSCONTROL_PRINCIPAL);
                             String principalId = new CmsUUID().toString();
                             String principal = id.substring(id.indexOf('.') + 1, id.length());
 
@@ -555,21 +582,19 @@ public class CmsImportVersion4 extends A_CmsImport {
                                     principalId = m_cms.readUser(principal).getId().toString();
                                 }
 
-                                String acflags = CmsImport.getChildElementTextValue(
-                                    currentEntry,
-                                    CmsImportExportManager.N_FLAGS);
+                                String acflags = getChildElementTextValue(currentEntry, A_CmsImport.N_FLAGS);
 
                                 String allowed = ((Element)currentEntry.selectNodes(
                                     "./"
-                                        + CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET
+                                        + A_CmsImport.N_ACCESSCONTROL_PERMISSIONSET
                                         + "/"
-                                        + CmsImportExportManager.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0)).getTextTrim();
+                                        + A_CmsImport.N_ACCESSCONTROL_ALLOWEDPERMISSIONS).get(0)).getTextTrim();
 
                                 String denied = ((Element)currentEntry.selectNodes(
                                     "./"
-                                        + CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET
+                                        + A_CmsImport.N_ACCESSCONTROL_PERMISSIONSET
                                         + "/"
-                                        + CmsImportExportManager.N_ACCESSCONTROL_DENIEDPERMISSIONS).get(0)).getTextTrim();
+                                        + A_CmsImport.N_ACCESSCONTROL_DENIEDPERMISSIONS).get(0)).getTextTrim();
 
                                 // add the entry to the list
                                 aceList.add(getImportAccessControlEntry(res, principalId, allowed, denied, acflags));

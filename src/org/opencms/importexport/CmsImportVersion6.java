@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion6.java,v $
- * Date   : $Date: 2007/08/13 16:30:11 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/02/01 09:37:43 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,11 +55,13 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.5.6 
  * 
  * @see org.opencms.importexport.A_CmsImport
+ * 
+ * @deprecated this import class is no longer in use and should only be used to import old export files
  */
 public class CmsImportVersion6 extends CmsImportVersion5 {
 
@@ -94,46 +96,42 @@ public class CmsImportVersion6 extends CmsImportVersion5 {
 
         try {
             // getAll user nodes
-            List userNodes = m_docXml.selectNodes("//" + CmsImportExportManager.N_USERDATA);
+            List userNodes = m_docXml.selectNodes("//" + A_CmsImport.N_USERDATA);
             // walk threw all groups in manifest
             for (int i = 0; i < userNodes.size(); i++) {
                 Element currentElement = (Element)userNodes.get(i);
 
-                String name = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_NAME);
+                String name = getChildElementTextValue(currentElement, A_CmsImport.N_NAME);
                 name = OpenCms.getImportExportManager().translateUser(name);
 
                 // decode passwords using base 64 decoder
-                String pwd = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_PASSWORD);
+                String pwd = getChildElementTextValue(currentElement, A_CmsImport.N_PASSWORD);
                 String password = new String(Base64.decodeBase64(pwd.trim().getBytes()));
 
-                String flags = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_FLAGS);
-                String firstname = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_FIRSTNAME);
-                String lastname = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_LASTNAME);
-                String email = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_EMAIL);
-                long dateCreated = Long.parseLong(CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DATECREATED));
+                String flags = getChildElementTextValue(currentElement, A_CmsImport.N_FLAGS);
+                String firstname = getChildElementTextValue(currentElement, A_CmsImport.N_FIRSTNAME);
+                String lastname = getChildElementTextValue(currentElement, A_CmsImport.N_LASTNAME);
+                String email = getChildElementTextValue(currentElement, A_CmsImport.N_EMAIL);
+                long dateCreated = Long.parseLong(getChildElementTextValue(currentElement, A_CmsImport.N_DATECREATED));
 
                 // get the userinfo and put it into the additional info map
                 Map userInfo = new HashMap();
                 Iterator itInfoNodes = currentElement.selectNodes(
-                    "./" + CmsImportExportManager.N_USERINFO + "/" + CmsImportExportManager.N_USERINFO_ENTRY).iterator();
+                    "./" + A_CmsImport.N_USERINFO + "/" + A_CmsImport.N_USERINFO_ENTRY).iterator();
                 while (itInfoNodes.hasNext()) {
                     Element infoEntryNode = (Element)itInfoNodes.next();
-                    String key = infoEntryNode.attributeValue(CmsImportExportManager.A_NAME);
-                    String type = infoEntryNode.attributeValue(CmsImportExportManager.A_TYPE);
+                    String key = infoEntryNode.attributeValue(A_CmsImport.A_NAME);
+                    String type = infoEntryNode.attributeValue(A_CmsImport.A_TYPE);
                     String value = infoEntryNode.getTextTrim();
                     userInfo.put(key, CmsDataTypeUtil.dataImport(value, type));
                 }
 
                 // get the groups of the user and put them into the list
-                List groupNodes = currentElement.selectNodes("*/" + CmsImportExportManager.N_GROUPNAME);
+                List groupNodes = currentElement.selectNodes("*/" + A_CmsImport.N_GROUPNAME);
                 List userGroups = new ArrayList();
                 for (int j = 0; j < groupNodes.size(); j++) {
                     Element currentGroup = (Element)groupNodes.get(j);
-                    String userInGroup = CmsImport.getChildElementTextValue(currentGroup, CmsImportExportManager.N_NAME);
+                    String userInGroup = getChildElementTextValue(currentGroup, A_CmsImport.N_NAME);
                     userInGroup = OpenCms.getImportExportManager().translateGroup(userInGroup);
                     userGroups.add(userInGroup);
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsDatabaseImportThread.java,v $
- * Date   : $Date: 2007/08/13 16:30:04 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/02/01 09:41:43 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.threads;
 
 import org.opencms.file.CmsObject;
+import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
@@ -44,7 +45,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,24 +54,25 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDatabaseImportThread.class);
 
+    /** The import file name. */
     private String m_importFile;
+
+    /** The keep permissions flag. */
+    private boolean m_keepPermissions;
 
     /**
      * Imports an OpenCms export file into the VFS.<p>
      * 
      * @param cms the current OpenCms context object
      * @param importFile the file to import
-     * @param old flag for report mode
+     * @param keepPermissions if set, the permissions set on existing resources will not be modified
      */
-    public CmsDatabaseImportThread(CmsObject cms, String importFile, boolean old) {
+    public CmsDatabaseImportThread(CmsObject cms, String importFile, boolean keepPermissions) {
 
         super(cms, Messages.get().getBundle().key(Messages.GUI_DB_IMPORT_THREAD_NAME_1, importFile));
         m_importFile = importFile;
-        if (old) {
-            initOldHtmlReport(cms.getRequestContext().getLocale());
-        } else {
-            initHtmlReport(cms.getRequestContext().getLocale());
-        }
+        m_keepPermissions = keepPermissions;
+        initHtmlReport(cms.getRequestContext().getLocale());
     }
 
     /**
@@ -86,8 +88,10 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
      */
     public void run() {
 
+        CmsImportParameters parameters = new CmsImportParameters(m_importFile, "/", m_keepPermissions);
+
         try {
-            OpenCms.getImportExportManager().importData(getCms(), m_importFile, "/", getReport());
+            OpenCms.getImportExportManager().importData(getCms(), getReport(), parameters);
         } catch (Throwable e) {
             getReport().println(e);
             if (LOG.isErrorEnabled()) {

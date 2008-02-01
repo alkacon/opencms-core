@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2008/02/01 09:43:17 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.importexport.CmsImportParameters;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
@@ -65,7 +66,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -366,9 +367,8 @@ public class TestSiblings extends OpenCmsTestCase {
             String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport01.zip");
             OpenCms.getImportExportManager().importData(
                 cms,
-                importFile,
-                "/",
-                new CmsShellReport(cms.getRequestContext().getLocale()));
+                new CmsShellReport(cms.getRequestContext().getLocale()),
+                new CmsImportParameters(importFile, "/", true));
 
             // clean up for the next test
             cms.getRequestContext().setSiteRoot("/");

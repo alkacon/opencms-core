@@ -1,0 +1,253 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportHelper.java,v $
+ * Date   : $Date: 2008/02/01 09:37:43 $
+ * Version: $Revision: 1.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Management System
+ *
+ * Copyright (C) 2006 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.importexport;
+
+import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
+
+import org.apache.commons.logging.Log;
+
+/**
+ * Import helper.<p>
+ * 
+ * @author Michael Moossen
+ * 
+ * @version $Revision: 1.1 $ 
+ * 
+ * @since 7.0.4 
+ */
+public class CmsImportHelper {
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsImport.class);
+
+    /** The folder, or <code>null</code> if a zip file.*/
+    private File m_folder;
+
+    /** The import parameters to use. */
+    private CmsImportParameters m_params;
+
+    /** The zip file, or <code>null</code> if a folder.*/
+    private ZipFile m_zipFile;
+
+    /**
+     * Constructor.<p>
+     * 
+     * @param parameters the import parameters to use
+     */
+    public CmsImportHelper(CmsImportParameters parameters) {
+
+        m_params = parameters;
+    }
+
+    /**
+     * Closes the zip file.<p>
+     */
+    public void closeFile() {
+
+        if (getZipFile() != null) {
+            try {
+                getZipFile().close();
+            } catch (IOException e) {
+                CmsMessageContainer message = Messages.get().container(
+                    Messages.ERR_IMPORTEXPORT_ERROR_CLOSING_ZIP_ARCHIVE_1,
+                    getZipFile().getName());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(message.key(), e);
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns a byte array containing the content of the file.<p>
+     *
+     * @param filename the name of the file to read, relative to the folder or zip file
+     * 
+     * @return a byte array containing the content of the file
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     */
+    public byte[] getFileBytes(String filename) throws CmsImportExportException {
+
+        try {
+            // is this a zip-file?
+            if (getZipFile() != null) {
+                // yes
+                ZipEntry entry = getZipFile().getEntry(filename);
+                // path to file might be relative, too
+                if ((entry == null) && filename.startsWith("/")) {
+                    entry = m_zipFile.getEntry(filename.substring(1));
+                }
+                if (entry == null) {
+                    throw new ZipException(Messages.get().getBundle().key(
+                        Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1,
+                        filename));
+                }
+
+                InputStream stream = getZipFile().getInputStream(entry);
+                int size = new Long(entry.getSize()).intValue();
+                return CmsFileUtil.readFully(stream, size);
+            } else {
+                // no - use directory
+                File file = new File(getFolder(), filename);
+                return CmsFileUtil.readFile(file);
+            }
+        } catch (FileNotFoundException fnfe) {
+            CmsMessageContainer msg = Messages.get().container(Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1, filename);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(msg.key(), fnfe);
+            }
+            throw new CmsImportExportException(msg, fnfe);
+        } catch (IOException ioe) {
+            CmsMessageContainer msg = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1, filename);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(msg.key(), ioe);
+            }
+            throw new CmsImportExportException(msg, ioe);
+        }
+    }
+
+    /**
+     * Returns the name of the import file, without zip extension.<p>
+     * 
+     * @return the name of the import file, without zip extension
+     */
+    public String getFileName() {
+
+        String fileName = m_params.getPath().replace('\\', '/');
+        String zipName = fileName.substring(fileName.lastIndexOf('/') + 1);
+        String result;
+
+        if (zipName.toLowerCase().endsWith(".zip")) {
+            result = zipName.substring(0, zipName.lastIndexOf('.'));
+            int pos = result.lastIndexOf('_');
+            if (pos > 0) {
+                result = result.substring(0, pos);
+            }
+        } else {
+            result = zipName;
+        }
+        return result;
+    }
+
+    /**
+     * Returns a stream for the content of the file.<p>
+     *
+     * @param fileName the name of the file to stream, relative to the folder or zip file
+     * 
+     * @return an input stream for the content of the file, remember to close it after using
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     */
+    public InputStream getFileStream(String fileName) throws CmsImportExportException {
+
+        try {
+            InputStream stream = null;
+            // is this a zip-file?
+            if (getZipFile() != null) {
+                // yes
+                ZipEntry entry = getZipFile().getEntry(fileName);
+                // path to file might be relative, too
+                if ((entry == null) && fileName.startsWith("/")) {
+                    entry = getZipFile().getEntry(fileName.substring(1));
+                }
+                if (entry == null) {
+                    throw new ZipException(Messages.get().getBundle().key(
+                        Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1,
+                        fileName));
+                }
+
+                stream = getZipFile().getInputStream(entry);
+            } else {
+                // no - use directory
+                File file = new File(getFolder(), CmsImportExportManager.EXPORT_MANIFEST);
+                stream = new FileInputStream(file);
+            }
+            return stream;
+        } catch (Exception ioe) {
+            CmsMessageContainer msg = Messages.get().container(Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1, fileName);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(msg.key(), ioe);
+            }
+            throw new CmsImportExportException(msg, ioe);
+        }
+    }
+
+    /**
+     * Returns the RFS folder to import from.<p>
+     *
+     * @return the RFS folder to import from
+     */
+    public File getFolder() {
+
+        return m_folder;
+    }
+
+    /**
+     * Returns the RFS zip file to import from.<p>
+     *
+     * @return the RFS zip file to import from
+     */
+    public ZipFile getZipFile() {
+
+        return m_zipFile;
+    }
+
+    /**
+     * Opens the import file.<p>
+     * 
+     * @throws IOException if the file could not be opened
+     */
+    public void openFile() throws IOException {
+
+        // get the import resource
+        m_folder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(m_params.getPath()));
+
+        // if it is a file it must be a zip-file
+        if (m_folder.isFile()) {
+            m_zipFile = new ZipFile(m_params.getPath());
+            m_folder = null;
+        }
+    }
+}

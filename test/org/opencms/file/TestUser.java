@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUser.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/02/01 09:43:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.file;
 
 import org.opencms.importexport.CmsExport;
+import org.opencms.importexport.CmsExportParameters;
+import org.opencms.importexport.CmsImportParameters;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
@@ -52,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestUser extends OpenCmsTestCase {
 
@@ -134,14 +136,27 @@ public class TestUser extends OpenCmsTestCase {
         try {
             // export
             CmsUser before = cms.readUser("test");
-            new CmsExport(cms, exportFileName, Collections.EMPTY_LIST, false, false, null, true, 0, new CmsShellReport(
-                Locale.ENGLISH), false, false);
+            new CmsExport(cms, new CmsShellReport(Locale.ENGLISH)).exportData(new CmsExportParameters(
+                exportFileName,
+                null,
+                false,
+                true,
+                false,
+                Collections.EMPTY_LIST,
+                false,
+                false,
+                0,
+                false,
+                false));
 
             // delete
             cms.deleteUser("test");
 
             // import
-            OpenCms.getImportExportManager().importData(cms, exportFileName, null, new CmsShellReport(Locale.ENGLISH));
+            OpenCms.getImportExportManager().importData(
+                cms,
+                new CmsShellReport(Locale.ENGLISH),
+                new CmsImportParameters(exportFileName, "/", true));
             CmsUser after = cms.readUser("test");
 
             // compare
@@ -165,13 +180,13 @@ public class TestUser extends OpenCmsTestCase {
         map.put("one", new Integer(1));
         map.put("two", new Long(2));
         map.put("true", Boolean.TRUE);
-        
+
         CmsUser user = cms.createUser("test", "test", "test", null);
         user.setAdditionalInfo("map", map);
         user.setAdditionalInfo("int", new Integer(2));
         user.setAdditionalInfo("boolean", Boolean.TRUE);
         user.setAdditionalInfo("double", new Double(45.23));
-        
+
         cms.writeUser(user);
         user = cms.readUser("test");
         map = (Map)user.getAdditionalInfo("map");

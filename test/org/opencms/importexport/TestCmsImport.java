@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImport.java,v $
- * Date   : $Date: 2007/08/13 16:30:18 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/02/01 09:43:17 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import junit.framework.TestCase;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0
  */
@@ -59,6 +59,8 @@ public class TestCmsImport extends TestCase {
      * Runs a test for the conversion of the digest encoding.<p>
      * 
      * @throws Throwable if something goes wrong
+     * 
+     * @deprecated old import version 4 issue
      */
     public void testConvertDigestEncoding() throws Throwable {
 
@@ -88,6 +90,8 @@ public class TestCmsImport extends TestCase {
 
     /**
      * Runs a test for the import of content.<p>  
+     * 
+     * @deprecated old import version 2 issue
      */
     public void testSetDirectories() {
 
@@ -143,7 +147,6 @@ public class TestCmsImport extends TestCase {
 
         content = CmsImportVersion2.setDirectories(content, rules);
 
-        System.out.println(content);
         assertEquals(content, result);
     }
 }
