@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2008/01/22 15:37:10 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2008/02/01 10:39:38 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +106,7 @@ public class CmsSystemInfo {
     private String m_defaultWebApplicationName;
 
     /** If the servlet can throw an exception if initialization fails, for instance, Weblogic and Resin have problems with the exception. */
-    private boolean m_failedInitializationThrowsException = false;
+    private boolean m_failedInitializationThrowsException = true;
 
     /** Indicates if the version history is enabled. */
     private boolean m_historyEnabled;
