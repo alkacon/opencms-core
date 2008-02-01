@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsColorpickerWidget.java,v $
- * Date   : $Date: 2007/08/13 16:30:05 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/02/01 16:31:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,7 +117,8 @@ public class CmsColorpickerWidget extends A_CmsWidget {
         result.append(id);
         result.append("\" value=\"");
         result.append(colorValue);
-        result.append("\" maxlength=\"7\" onkeyup=\"previewColor('");
+        // 19 chars for "InactiveCaptionText"
+        result.append("\" maxlength=\"19\" onkeyup=\"previewColor('");
         result.append(id);
         result.append("');\"");
         result.append(" style=\"background-color: ");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlColorValue.java,v $
- * Date   : $Date: 2007/08/13 16:29:50 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/02/01 16:31:14 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,7 +53,7 @@ public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
     public static final String TYPE_NAME = "OpenCmsColor";
 
     /** The validation rule used for this schema type. */
-    public static final String TYPE_RULE = "#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?";
+    public static final String TYPE_RULE = "(#([a-f]|[A-F]|[0-9]){3}(([a-f]|[A-F]|[0-9]){3})?)|ActiveBorder|ActiveCaption|ActiveCaptionText|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoBackground|InfoText|MenuText|Menu|ScrollBar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText";
 
     /** Pre-compiled regular expression pattern for this rule. */
     private static final Pattern TYPE_PATTERN = Pattern.compile(TYPE_RULE);
