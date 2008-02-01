@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2007/08/13 16:30:03 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2008/02/01 17:05:30 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * 
  * @since 6.0.0 
  */
@@ -185,7 +185,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param userid the id of the user that is to be added to the group
      * @param groupid the id of the group
      * 
-     * @throws CmsDataAccessException if operation was not succesfull
+     * @throws CmsDataAccessException if operation was not successful
      */
     void createUserInGroup(CmsDbContext dbc, CmsUUID userid, CmsUUID groupid) throws CmsDataAccessException;
 
@@ -197,6 +197,8 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param resource the id of the resource to delete the ACEs from
      * 
      * @throws CmsDataAccessException if something goes wrong
+     * 
+     * @deprecated use {@link #removeAccessControlEntries(CmsDbContext, CmsProject, CmsUUID)} instead
      */
     void deleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource)
     throws CmsDataAccessException;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2007/09/10 13:11:03 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/02/01 17:05:48 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,9 +62,6 @@ public class CmsAccessControlEntry {
 
     /** Flag to indicate the principal type 'all others'. */
     public static final int ACCESS_FLAGS_ALLOTHERS = 128;
-
-    /** Flag to indicate that an access control entry is currently deleted. */
-    public static final int ACCESS_FLAGS_DELETED = 1;
 
     /** Flag to indicate the principal type group. */
     public static final int ACCESS_FLAGS_GROUP = 32;

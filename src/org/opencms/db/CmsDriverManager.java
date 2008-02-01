@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/02/01 10:19:53 $
- * Version: $Revision: 1.606 $
+ * Date   : $Date: 2008/02/01 17:05:30 $
+ * Version: $Revision: 1.607 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2761,9 +2761,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             if (removeAce) {
                 // remove the access control entries
                 m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
-            } else {
-                // mark access control entries as deleted
-                m_userDriver.deleteAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
             }
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2008/02/01 09:36:46 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2008/02/01 17:05:30 $
+ * Version: $Revision: 1.121 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -100,7 +100,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.120 $
+ * @version $Revision: 1.121 $
  * 
  * @since 6.0.0 
  */
@@ -526,29 +526,13 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
     /**
      * @see org.opencms.db.I_CmsUserDriver#deleteAccessControlEntries(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     * 
+     * @deprecated use {@link #removeAccessControlEntries(CmsDbContext, CmsProject, CmsUUID)} instead
      */
     public void deleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource)
     throws CmsDataAccessException {
 
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_SET_FLAGS_ALL_2");
-
-            stmt.setInt(1, CmsAccessControlEntry.ACCESS_FLAGS_DELETED);
-            stmt.setString(2, resource.toString());
-
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
+        removeAccessControlEntries(dbc, project, resource);
     }
 
     /**
@@ -1016,9 +1000,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             while (res.next()) {
                 CmsAccessControlEntry ace = internalCreateAce(res, onlineId);
-                if ((ace.getFlags() & CmsAccessControlEntry.ACCESS_FLAGS_DELETED) == 0) {
-                    m_driverManager.getUserDriver().writeAccessControlEntry(dbc, onlineProject, ace);
-                }
+                m_driverManager.getUserDriver().writeAccessControlEntry(dbc, onlineProject, ace);
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
@@ -1052,9 +1034,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // create new CmsAccessControlEntry and add to list
             while (res.next()) {
                 CmsAccessControlEntry ace = internalCreateAce(res);
-                if ((ace.getFlags() & CmsAccessControlEntry.ACCESS_FLAGS_DELETED) > 0) {
-                    continue;
-                }
                 if (inheritedOnly && !ace.isInheriting()) {
                     continue;
                 }

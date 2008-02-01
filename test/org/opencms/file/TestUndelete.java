@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndelete.java,v $
- * Date   : $Date: 2007/08/13 16:29:56 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/02/01 17:07:05 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,8 @@
 package org.opencms.file;
 
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSetCustom;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -48,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  *  
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class TestUndelete extends OpenCmsTestCase {
 
@@ -77,6 +79,7 @@ public class TestUndelete extends OpenCmsTestCase {
         suite.addTest(new TestUndelete("testUndeleteFile"));
         suite.addTest(new TestUndelete("testUndeleteFileWrong"));
         suite.addTest(new TestUndelete("testUndeleteSibling"));
+        suite.addTest(new TestUndelete("testUndeleteWithACE"));
         suite.addTest(new TestUndelete("testUndeleteFolder"));
         suite.addTest(new TestUndelete("testUndeleteFolderWrong"));
         suite.addTest(new TestUndelete("testUndeleteFolderRecursive"));
@@ -234,6 +237,43 @@ public class TestUndelete extends OpenCmsTestCase {
         cms.unlockResource(resourceName);
 
         undeleteFile(this, cms, resourceName);
+    }
+
+    /**
+     * Test the undelete method on a file.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testUndeleteWithACE() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing undelete on file");
+
+        String resourceName = "/index.html";
+
+        // set some permissions
+        cms.lockResource(resourceName);
+        cms.chacc(resourceName, I_CmsPrincipal.PRINCIPAL_GROUP, "group2", "+r-w");
+
+        storeResources(cms, resourceName);
+
+        cms.deleteResource(resourceName, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        long timestamp = System.currentTimeMillis();
+        cms.undeleteResource(resourceName, false);
+
+        // now evaluate the result
+        assertFilter(cms, resourceName, OpenCmsTestResourceFilter.FILTER_TOUCH);
+        // project must be current project
+        assertProject(cms, resourceName, cms.getRequestContext().currentProject());
+        // state must be "changed"
+        assertState(cms, resourceName, CmsResource.STATE_CHANGED);
+        // date last modified must be the date set in the undelete operation
+        assertDateLastModifiedAfter(cms, resourceName, timestamp);
+        // the user last modified must be the current user
+        assertUserLastModified(cms, resourceName, cms.getRequestContext().currentUser());
+        // test the acl
+        assertAcl(cms, resourceName, cms.readGroup("group2").getId(), new CmsPermissionSetCustom("+r-w"));
     }
 
     /**
