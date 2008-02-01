@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishReport.java,v $
- * Date   : $Date: 2007/09/13 08:54:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/02/01 09:38:37 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,11 +46,11 @@ import java.util.Locale;
 /**
  * Report class used for the publish operations.<p>
  * 
- * It stores nothing. It just prints everthing to a temporary file.<p>
+ * It stores nothing. It just prints everything to a temporary file.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.5 
  */
@@ -129,7 +129,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     public void addError(Object obj) {
 
-        if (!m_busy && m_report != null) {
+        if (!m_busy && (m_report != null)) {
             m_report.addError(obj);
         }
         m_busy = true;
@@ -142,7 +142,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     public void addWarning(Object obj) {
 
-        if (!m_busy && m_report != null) {
+        if (!m_busy && (m_report != null)) {
             m_report.addWarning(obj);
         }
         m_busy = true;
@@ -198,7 +198,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     public void print(CmsMessageContainer container) {
 
-        if (!m_busy && m_report != null) {
+        if (!m_busy && (m_report != null)) {
             m_report.print(container);
         }
         m_busy = true;
@@ -211,7 +211,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     public void print(CmsMessageContainer container, int format) {
 
-        if (!m_busy && m_report != null) {
+        if (!m_busy && (m_report != null)) {
             m_report.print(container, format);
         }
         m_busy = true;
@@ -224,7 +224,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     public synchronized void println() {
 
-        if (!m_busy && m_report != null) {
+        if (!m_busy && (m_report != null)) {
             m_report.println();
         }
         m_busy = true;
@@ -237,7 +237,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     public void println(CmsMessageContainer container) {
 
-        if (!m_busy && m_report != null) {
+        if (!m_busy && (m_report != null)) {
             m_report.println(container);
         }
         m_busy = true;
@@ -250,7 +250,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     public void println(CmsMessageContainer container, int format) {
 
-        if (!m_busy && m_report != null) {
+        if (!m_busy && (m_report != null)) {
             m_report.println(container, format);
         }
         m_busy = true;
@@ -263,7 +263,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     public synchronized void println(Throwable t) {
 
-        if (!m_busy && m_report != null) {
+        if (!m_busy && (m_report != null)) {
             m_report.println(t);
         }
         m_busy = true;
@@ -276,7 +276,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     public void printMessageWithParam(CmsMessageContainer container, Object param) {
 
-        if (!m_busy && m_report != null) {
+        if (!m_busy && (m_report != null)) {
             m_report.printMessageWithParam(container, param);
         }
         m_busy = true;
@@ -289,7 +289,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     public void printMessageWithParam(int m, int n, CmsMessageContainer container, Object param) {
 
-        if (!m_busy && m_report != null) {
+        if (!m_busy && (m_report != null)) {
             m_report.printMessageWithParam(m, n, container, param);
         }
         m_busy = true;
@@ -302,7 +302,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
      */
     public void resetRuntime() {
 
-        if (!m_busy && m_report != null) {
+        if (!m_busy && (m_report != null)) {
             m_report.resetRuntime();
         }
         m_busy = true;
