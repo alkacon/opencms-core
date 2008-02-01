@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2007/11/26 10:30:55 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2008/02/01 09:38:03 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 6.0.0 
  * 
@@ -242,7 +242,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 if (OpenCmsCore.getInstance().getSystemInfo().isFailedInitializationThrowsException()) {
                     throw new ServletException(e.getMessage());
                 } else {
-                    // this is needed since some servlet containers does like the servlet to throw exceptions, 
+                    // this is needed since some servlet containers does not like the servlet to throw exceptions, 
                     // like BEA WLS 9.x and Resin
                     LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_GENERIC_0), e);
                 }
