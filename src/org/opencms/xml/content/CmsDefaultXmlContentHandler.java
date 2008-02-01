@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2008/01/29 11:54:58 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2008/02/01 09:40:06 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -83,7 +84,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * 
  * @since 6.0.0 
  */
@@ -701,6 +702,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                         continue;
                     }
 
+                    // make sure the file is locked
+                    CmsLock lock = rootCms.getLock(filename);
+                    if (lock.isUnlocked()) {
+                        rootCms.lockResource(filename);
+                    } else if (!lock.isExclusiveOwnedBy(rootCms.getRequestContext().currentUser())) {
+                        rootCms.changeLock(filename);
+                    }
+
                     // get the string value of the current node
                     String stringValue = value.getStringValue(rootCms);
                     if (mapping.startsWith(MAPTO_PROPERTY_LIST) && (value.getIndex() == 0)) {
@@ -828,6 +837,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     }
                 }
             }
+        }
+        // make sure the original is locked
+        CmsLock lock = rootCms.getLock(file);
+        if (lock.isUnlocked()) {
+            rootCms.lockResource(file.getRootPath());
+        } else if (!lock.isExclusiveOwnedBy(rootCms.getRequestContext().currentUser())) {
+            rootCms.changeLock(file.getRootPath());
         }
     }
 
