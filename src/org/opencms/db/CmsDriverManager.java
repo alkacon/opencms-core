@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/01/23 14:48:50 $
- * Version: $Revision: 1.605 $
+ * Date   : $Date: 2008/02/01 10:19:53 $
+ * Version: $Revision: 1.606 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3911,13 +3911,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns all relations for the given resource mathing the given filter.<p> 
+     * Returns all relations for the given resource matching the given filter.<p> 
      * 
      * @param dbc the current db context
      * @param resource the resource to retrieve the relations for
      * @param filter the filter to match the relation 
      * 
-     * @return all {@link CmsRelation} objects for the given resource mathing the given filter
+     * @return all {@link CmsRelation} objects for the given resource matching the given filter
      * 
      * @throws CmsException if something goes wrong
      * 
