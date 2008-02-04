@@ -78,6 +78,14 @@
 						<denied>0</denied>
 					</permissionset>
 				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
 			</accesscontrol>
 		</file>
 		<file>
@@ -96,7 +104,16 @@
 				</property>
 			</properties>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/workplace/views/demos</destination>

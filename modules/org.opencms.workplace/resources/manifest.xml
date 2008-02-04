@@ -348,9 +348,9 @@
 				</accessentry>
 				<accessentry>
 					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>514</flags>
+					<flags>518</flags>
 					<permissionset>
-						<allowed>1</allowed>
+						<allowed>5</allowed>
 						<denied>0</denied>
 					</permissionset>
 				</accessentry>

@@ -151,6 +151,14 @@
 						<denied>0</denied>
 					</permissionset>
 				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
 			</accesscontrol>
 		</file>
 		<file>
