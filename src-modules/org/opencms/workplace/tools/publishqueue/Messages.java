@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/Messages.java,v $
- * Date   : $Date: 2007/09/06 12:23:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/02/04 13:43:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,49 +39,49 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.5 
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_FILE_ARG_ACCESS_1 = "ERR_FILE_ARG_ACCESS_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LIST_DATE_FORMAT_WITH_SECONDS_1 = "GUI_LIST_DATE_FORMAT_WITH_SECONDS_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_ACTION_VIEW_HELP_0 = "GUI_PERSONALQUEUE_ACTION_VIEW_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_ACTION_VIEW_NAME_0 = "GUI_PERSONALQUEUE_ACTION_VIEW_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_COLS_ID_0 = "GUI_PERSONALQUEUE_COLS_ID_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_COLS_PROJECT_0 = "GUI_PERSONALQUEUE_COLS_PROJECT_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_COLS_RESCOUNT_0 = "GUI_PERSONALQUEUE_COLS_RESCOUNT_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_COLS_STARTPUBLISHING_0 = "GUI_PERSONALQUEUE_COLS_STARTPUBLISHING_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_COLS_STATE_0 = "GUI_PERSONALQUEUE_COLS_STATE_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_COLS_STOPPUBLISHING_0 = "GUI_PERSONALQUEUE_COLS_STOPPUBLISHING_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_COLS_USER_0 = "GUI_PERSONALQUEUE_COLS_USER_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_COLS_VIEW_0 = "GUI_PERSONALQUEUE_COLS_VIEW_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PERSONALQUEUE_LIST_NAME_0 = "GUI_PERSONALQUEUE_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -90,97 +90,97 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_JOB_FINISHED_WITH_WARNS_2 = "GUI_PUBLISH_JOB_FINISHED_WITH_WARNS_2";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_QUEUE_0 = "GUI_PUBLISH_QUEUE_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_REPORT_VIEW_TITLE_3 = "GUI_PUBLISH_REPORT_VIEW_TITLE_3";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_ACTION_CANCEL_CONF_0 = "GUI_PUBLISHQUEUE_ACTION_CANCEL_CONF_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_ACTION_CANCEL_HELP_0 = "GUI_PUBLISHQUEUE_ACTION_CANCEL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_ACTION_CANCEL_NAME_0 = "GUI_PUBLISHQUEUE_ACTION_CANCEL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_ACTION_VIEW_HELP_0 = "GUI_PUBLISHQUEUE_ACTION_VIEW_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_ACTION_VIEW_NAME_0 = "GUI_PUBLISHQUEUE_ACTION_VIEW_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_ADMIN_TOOL_GROUP_0 = "GUI_PUBLISHQUEUE_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_ADMIN_TOOL_HELP_0 = "GUI_PUBLISHQUEUE_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_ADMIN_TOOL_NAME_0 = "GUI_PUBLISHQUEUE_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_ADMIN_TOOL_SHORT_NAME_0 = "GUI_PUBLISHQUEUE_ADMIN_TOOL_SHORT_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_COLS_CANCEL_0 = "GUI_PUBLISHQUEUE_COLS_CANCEL_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_COLS_INQUEUETIME_0 = "GUI_PUBLISHQUEUE_COLS_INQUEUETIME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_COLS_NUMBER_0 = "GUI_PUBLISHQUEUE_COLS_NUMBER_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_COLS_PROJECT_0 = "GUI_PUBLISHQUEUE_COLS_PROJECT_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_COLS_RESCOUNT_0 = "GUI_PUBLISHQUEUE_COLS_RESCOUNT_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_COLS_STATE_0 = "GUI_PUBLISHQUEUE_COLS_STATE_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_COLS_USER_0 = "GUI_PUBLISHQUEUE_COLS_USER_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_HELP_0 = "GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_NAME_0 = "GUI_PUBLISHQUEUE_DETAIL_HIDE_RESOURCES_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_DETAIL_LABEL_RESOURCES_0 = "GUI_PUBLISHQUEUE_DETAIL_LABEL_RESOURCES_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_HELP_0 = "GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_NAME_0 = "GUI_PUBLISHQUEUE_DETAIL_SHOW_RESOURCES_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_LIST_NAME_0 = "GUI_PUBLISHQUEUE_LIST_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_LIVE_ADMIN_TOOL_GROUP_0 = "GUI_PUBLISHQUEUE_LIVE_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_LIVE_ADMIN_TOOL_HELP_0 = "GUI_PUBLISHQUEUE_LIVE_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_LIVE_ADMIN_TOOL_NAME_0 = "GUI_PUBLISHQUEUE_LIVE_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_GROUP_0 = "GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_HELP_0 = "GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_NAME_0 = "GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_NAVBARNAME_0 = "GUI_PUBLISHQUEUE_VIEW_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Name of the used resource bundle. */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/02/04 13:43:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,316 +39,316 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_PROJECT_1 = "ERR_DELETE_PROJECT_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_SELECTED_PROJECTS_0 = "ERR_DELETE_SELECTED_PROJECTS_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_EDIT_FILES_0 = "ERR_EDIT_FILES_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_EDIT_PROJECT_0 = "ERR_EDIT_PROJECT_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_EDIT_PUBLISH_0 = "ERR_EDIT_PUBLISH_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCK_PROJECT_1 = "ERR_LOCK_PROJECT_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCK_SELECTED_PROJECTS_0 = "ERR_LOCK_SELECTED_PROJECTS_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_PROJECT_1 = "ERR_UNLOCK_PROJECT_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_SELECTED_PROJECTS_0 = "ERR_UNLOCK_SELECTED_PROJECTS_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_ADMIN_TOOL_GROUP_0 = "GUI_EDITPROJECT_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_ADMIN_TOOL_HELP_0 = "GUI_EDITPROJECT_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_ADMIN_TOOL_NAME_0 = "GUI_EDITPROJECT_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITPROJECT_ADMIN_TOOL_NAVBARNAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_DELETE_ADMIN_TOOL_GROUP_0 = "GUI_EDITPROJECT_DELETE_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_DELETE_ADMIN_TOOL_HELP_0 = "GUI_EDITPROJECT_DELETE_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_DELETE_ADMIN_TOOL_NAME_0 = "GUI_EDITPROJECT_DELETE_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_FILES_ADMIN_TOOL_GROUP_0 = "GUI_EDITPROJECT_FILES_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_FILES_ADMIN_TOOL_HELP_0 = "GUI_EDITPROJECT_FILES_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_FILES_ADMIN_TOOL_NAME_0 = "GUI_EDITPROJECT_FILES_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_FILES_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITPROJECT_FILES_ADMIN_TOOL_NAVBARNAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_PUBLISH_ADMIN_TOOL_GROUP_0 = "GUI_EDITPROJECT_PUBLISH_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_PUBLISH_ADMIN_TOOL_HELP_0 = "GUI_EDITPROJECT_PUBLISH_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_PUBLISH_ADMIN_TOOL_NAME_0 = "GUI_EDITPROJECT_PUBLISH_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITPROJECT_PUBLISH_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITPROJECT_PUBLISH_ADMIN_TOOL_NAVBARNAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWPROJECT_ADMIN_TOOL_GROUP_0 = "GUI_NEWPROJECT_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWPROJECT_ADMIN_TOOL_HELP_0 = "GUI_NEWPROJECT_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWPROJECT_ADMIN_TOOL_NAME_0 = "GUI_NEWPROJECT_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_EDITOR_LABEL_CONTENT_BLOCK_0 = "GUI_PROJECT_EDITOR_LABEL_CONTENT_BLOCK_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_EDITOR_LABEL_IDENTIFICATION_BLOCK_0 = "GUI_PROJECT_EDITOR_LABEL_IDENTIFICATION_BLOCK_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_FILES_FILTER_ACTION_HELP_0 = "GUI_PROJECT_FILES_FILTER_ACTION_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_FILES_FILTER_ACTION_NAME_0 = "GUI_PROJECT_FILES_FILTER_ACTION_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_FILES_LIST_NAME_0 = "GUI_PROJECT_FILES_LIST_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_HISTORY_ADMIN_TOOL_GROUP_0 = "GUI_PROJECT_HISTORY_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_HISTORY_ADMIN_TOOL_HELP_0 = "GUI_PROJECT_HISTORY_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_HISTORY_ADMIN_TOOL_NAME_0 = "GUI_PROJECT_HISTORY_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_SETTINGS_ADMIN_TOOL_GROUP_0 = "GUI_PROJECT_SETTINGS_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_SETTINGS_ADMIN_TOOL_HELP_0 = "GUI_PROJECT_SETTINGS_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_SETTINGS_ADMIN_TOOL_NAME_0 = "GUI_PROJECT_SETTINGS_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTHISTORY_LIST_NAME_0 = "GUI_PROJECTHISTORY_LIST_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_ADMIN_TOOL_GROUP_0 = "GUI_PROJECTS_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_ADMIN_TOOL_HELP_0 = "GUI_PROJECTS_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_ADMIN_TOOL_NAME_0 = "GUI_PROJECTS_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_DETAIL_HIDE_RESOURCES_HELP_0 = "GUI_PROJECTS_DETAIL_HIDE_RESOURCES_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_DETAIL_HIDE_RESOURCES_NAME_0 = "GUI_PROJECTS_DETAIL_HIDE_RESOURCES_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_DETAIL_RESOURCES_NAME_0 = "GUI_PROJECTS_DETAIL_RESOURCES_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_DETAIL_SHOW_RESOURCES_HELP_0 = "GUI_PROJECTS_DETAIL_SHOW_RESOURCES_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_DETAIL_SHOW_RESOURCES_NAME_0 = "GUI_PROJECTS_DETAIL_SHOW_RESOURCES_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_DELETE_CONF_0 = "GUI_PROJECTS_LIST_ACTION_DELETE_CONF_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_DELETE_HELP_0 = "GUI_PROJECTS_LIST_ACTION_DELETE_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_DELETE_NAME_0 = "GUI_PROJECTS_LIST_ACTION_DELETE_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_EDIT_HELP_0 = "GUI_PROJECTS_LIST_ACTION_EDIT_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_EDIT_NAME_0 = "GUI_PROJECTS_LIST_ACTION_EDIT_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_FILES_HELP_0 = "GUI_PROJECTS_LIST_ACTION_FILES_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_FILES_NAME_0 = "GUI_PROJECTS_LIST_ACTION_FILES_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_ICON_HELP_0 = "GUI_PROJECTS_LIST_ACTION_ICON_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_ICON_NAME_0 = "GUI_PROJECTS_LIST_ACTION_ICON_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_LOCK_CONF_0 = "GUI_PROJECTS_LIST_ACTION_LOCK_CONF_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_LOCK_HELP_0 = "GUI_PROJECTS_LIST_ACTION_LOCK_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_LOCK_NAME_0 = "GUI_PROJECTS_LIST_ACTION_LOCK_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_CONF_0 = "GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_CONF_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_HELP_0 = "GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_NAME_0 = "GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_CONF_0 = "GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_CONF_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_HELP_0 = "GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_NAME_0 = "GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_UNLOCK_CONF_0 = "GUI_PROJECTS_LIST_ACTION_UNLOCK_CONF_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_UNLOCK_HELP_0 = "GUI_PROJECTS_LIST_ACTION_UNLOCK_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_ACTION_UNLOCK_NAME_0 = "GUI_PROJECTS_LIST_ACTION_UNLOCK_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_CREATION_0 = "GUI_PROJECTS_LIST_COLS_CREATION_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_DELETE_0 = "GUI_PROJECTS_LIST_COLS_DELETE_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_DELETE_HELP_0 = "GUI_PROJECTS_LIST_COLS_DELETE_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_DESCRIPTION_0 = "GUI_PROJECTS_LIST_COLS_DESCRIPTION_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_EDIT_0 = "GUI_PROJECTS_LIST_COLS_EDIT_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_EDIT_HELP_0 = "GUI_PROJECTS_LIST_COLS_EDIT_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_FILES_0 = "GUI_PROJECTS_LIST_COLS_FILES_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_FILES_HELP_0 = "GUI_PROJECTS_LIST_COLS_FILES_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_ICON_0 = "GUI_PROJECTS_LIST_COLS_ICON_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_ICON_HELP_0 = "GUI_PROJECTS_LIST_COLS_ICON_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_LOCK_0 = "GUI_PROJECTS_LIST_COLS_LOCK_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_LOCK_HELP_0 = "GUI_PROJECTS_LIST_COLS_LOCK_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_MANAGER_0 = "GUI_PROJECTS_LIST_COLS_MANAGER_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_NAME_0 = "GUI_PROJECTS_LIST_COLS_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_ORGUNIT_0 = "GUI_PROJECTS_LIST_COLS_ORGUNIT_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_OWNER_0 = "GUI_PROJECTS_LIST_COLS_OWNER_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_PUBLISH_0 = "GUI_PROJECTS_LIST_COLS_PUBLISH_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_PUBLISH_HELP_0 = "GUI_PROJECTS_LIST_COLS_PUBLISH_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_PUBLISHED_BY_0 = "GUI_PROJECTS_LIST_COLS_PUBLISHED_BY_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_PUBLISHED_DATE_0 = "GUI_PROJECTS_LIST_COLS_PUBLISHED_DATE_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_USER_0 = "GUI_PROJECTS_LIST_COLS_USER_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_DEFACTION_EDIT_HELP_0 = "GUI_PROJECTS_LIST_DEFACTION_EDIT_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_DEFACTION_EDIT_NAME_0 = "GUI_PROJECTS_LIST_DEFACTION_EDIT_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_MACTION_DELETE_CONF_0 = "GUI_PROJECTS_LIST_MACTION_DELETE_CONF_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_MACTION_DELETE_HELP_0 = "GUI_PROJECTS_LIST_MACTION_DELETE_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_MACTION_DELETE_NAME_0 = "GUI_PROJECTS_LIST_MACTION_DELETE_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_MACTION_UNLOCK_CONF_0 = "GUI_PROJECTS_LIST_MACTION_UNLOCK_CONF_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_MACTION_UNLOCK_HELP_0 = "GUI_PROJECTS_LIST_MACTION_UNLOCK_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_MACTION_UNLOCK_NAME_0 = "GUI_PROJECTS_LIST_MACTION_UNLOCK_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_NAME_0 = "GUI_PROJECTS_LIST_NAME_0";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEWPROJECT_ADMIN_TOOL_GROUP_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_GROUP_0";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEWPROJECT_ADMIN_TOOL_HELP_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_HELP_0";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEWPROJECT_ADMIN_TOOL_NAME_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_NAME_0";
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_VIEWPROJECT_ADMIN_TOOL_NAVBARNAME_0 = "GUI_VIEWPROJECT_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Name of the used resource bundle. */

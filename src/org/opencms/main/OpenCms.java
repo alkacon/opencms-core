@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2007/08/29 13:30:26 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2008/02/04 13:46:57 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.64 $ 
+ * @version $Revision: 1.65 $ 
  * 
  * @since 6.0.0 
  */
@@ -619,7 +619,7 @@ public final class OpenCms {
      * that was found and returned.<p>
      * 
      * Implementing and configuring an <code>{@link I_CmsResourceInit}</code> handler 
-     * allows to customize the process of default resouce selection.<p>
+     * allows to customize the process of default resource selection.<p>
      *
      * @param cms the current users OpenCms context
      * @param resourceName the path of the requested resource in the OpenCms VFS

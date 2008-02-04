@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/Messages.java,v $
- * Date   : $Date: 2007/08/22 11:11:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/02/04 13:43:11 $
+ * Version: $Revision: 1.2 $
  *
  * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -36,13 +36,13 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.2.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_XML_SET_VALUE_2 = "ERR_XML_SET_VALUE_2";
 
     /** Name of the used resource bundle. */

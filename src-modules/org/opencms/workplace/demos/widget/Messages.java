@@ -43,85 +43,85 @@ import org.opencms.i18n.I_CmsMessageBundle;
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0 = "GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_1_HELP_0 = "GUI_WIDGETDEMO_1_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_1_NAME_0 = "GUI_WIDGETDEMO_1_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_2_HELP_0 = "GUI_WIDGETDEMO_2_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_2_NAME_0 = "GUI_WIDGETDEMO_2_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_3_HELP_0 = "GUI_WIDGETDEMO_3_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_3_NAME_0 = "GUI_WIDGETDEMO_3_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_4_HELP_0 = "GUI_WIDGETDEMO_4_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_4_NAME_0 = "GUI_WIDGETDEMO_4_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_5_HELP_0 = "GUI_WIDGETDEMO_5_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_5_NAME_0 = "GUI_WIDGETDEMO_5_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_6_HELP_0 = "GUI_WIDGETDEMO_6_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_6_NAME_0 = "GUI_WIDGETDEMO_6_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_7_HELP_0 = "GUI_WIDGETDEMO_7_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_7_NAME_0 = "GUI_WIDGETDEMO_7_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_8_HELP_0 = "GUI_WIDGETDEMO_8_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_8_NAME_0 = "GUI_WIDGETDEMO_8_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_9_HELP_0 = "GUI_WIDGETDEMO_9_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_9_NAME_0 = "GUI_WIDGETDEMO_9_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_ADVANCED_GROUP_0 = "GUI_WIDGETDEMO_ADVANCED_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_BASIC_GROUP_0 = "GUI_WIDGETDEMO_BASIC_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_DEMOHELP_1 = "GUI_WIDGETDEMO_DEMOHELP_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_DEMOHELP_VAL2_0 = "GUI_WIDGETDEMO_DEMOHELP_VAL2_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_DEMOVALUE_1 = "GUI_WIDGETDEMO_DEMOVALUE_1";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_TOOL_GROUP_0 = "GUI_WIDGETDEMO_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_TOOL_HELP_0 = "GUI_WIDGETDEMO_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_TOOL_NAME_0 = "GUI_WIDGETDEMO_TOOL_NAME_0";
 
     /** Name of the used resource bundle. */

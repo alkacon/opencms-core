@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:19 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/02/04 13:43:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,7 +69,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_COLS_STATUS_0 = "GUI_COMPARE_COLS_STATUS_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_COLS_TYPE_0 = "GUI_COMPARE_COLS_TYPE_0";
 
     /** Message constant for key in the resource bundle. */

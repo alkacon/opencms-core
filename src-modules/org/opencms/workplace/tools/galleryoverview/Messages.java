@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/galleryoverview/Messages.java,v $
- * Date   : $Date: 2007/08/13 16:30:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/02/04 13:43:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,64 +39,64 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
     
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_ADMIN_TOOL_GROUP_0 = "GUI_GALLERIES_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_ADMIN_TOOL_HELP_0 = "GUI_GALLERIES_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_ADMIN_TOOL_NAME_0 = "GUI_GALLERIES_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_GROUP_0 = "GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_HELP_0 = "GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_NAME_0 = "GUI_GALLERIES_DOWNLOAD_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_HTML_ADMIN_TOOL_GROUP_0 = "GUI_GALLERIES_HTML_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_HTML_ADMIN_TOOL_HELP_0 = "GUI_GALLERIES_HTML_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_HTML_ADMIN_TOOL_NAME_0 = "GUI_GALLERIES_HTML_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_TABLE_ADMIN_TOOL_GROUP_0 = "GUI_GALLERIES_TABLE_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_TABLE_ADMIN_TOOL_HELP_0 = "GUI_GALLERIES_TABLE_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_TABLE_ADMIN_TOOL_NAME_0 = "GUI_GALLERIES_TABLE_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_IMAGE_ADMIN_TOOL_GROUP_0 = "GUI_GALLERIES_IMAGE_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_IMAGE_ADMIN_TOOL_HELP_0 = "GUI_GALLERIES_IMAGE_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_IMAGE_ADMIN_TOOL_NAME_0 = "GUI_GALLERIES_IMAGE_ADMIN_TOOL_NAME_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_LINK_ADMIN_TOOL_GROUP_0 = "GUI_GALLERIES_LINK_ADMIN_TOOL_GROUP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_LINK_ADMIN_TOOL_HELP_0 = "GUI_GALLERIES_LINK_ADMIN_TOOL_HELP_0";
 
-    /** Message contant for key in the resource bundle. */
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERIES_LINK_ADMIN_TOOL_NAME_0 = "GUI_GALLERIES_LINK_ADMIN_TOOL_NAME_0";
 
 
