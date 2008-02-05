@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2008/02/01 09:39:12 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2008/02/05 10:02:17 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -442,6 +443,11 @@ public final class CmsRole {
     public CmsRole forOrgUnit(String ouFqn) {
 
         CmsRole newRole = new CmsRole(this);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouFqn)) {
+            if (!ouFqn.endsWith(CmsOrganizationalUnit.SEPARATOR)) {
+                ouFqn += CmsOrganizationalUnit.SEPARATOR;
+            }
+        }
         newRole.m_ouFqn = ouFqn;
         return newRole;
     }
