@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrgUnitManager.java,v $
- * Date   : $Date: 2007/11/19 14:40:53 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/02/06 15:00:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.6
  */
@@ -114,9 +114,9 @@ public class CmsOrgUnitManager {
     /**
      * Deletes an organizational unit.<p>
      *
-     * Only organizational units that contain no suborganizational unit can be deleted.<p>
+     * Only organizational units that contain no sub units can be deleted.<p>
      * 
-     * The organizational unit can not be delete if it is used in the reuqest context, 
+     * The organizational unit can not be delete if it is used in the request context, 
      * or if the current user belongs to it.<p>
      * 
      * All users and groups in the given organizational unit will be deleted.<p>
