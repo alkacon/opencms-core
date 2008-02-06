@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion7.java,v $
- * Date   : $Date: 2008/02/01 17:06:40 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/02/06 08:33:43 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.4
  */
@@ -1271,9 +1271,6 @@ public class CmsImportVersion7 implements I_CmsImport {
         }
         // if the resource was imported add the access control entries if available
         try {
-            if (checkImmutable(m_resource.getRootPath())) {
-                return;
-            }
             getCms().importAccessControlEntries(m_resource, m_aces);
         } catch (CmsException exc) {
             getReport().println(
