@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/02/01 17:05:30 $
- * Version: $Revision: 1.607 $
+ * Date   : $Date: 2008/02/08 14:45:34 $
+ * Version: $Revision: 1.608 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3340,7 +3340,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // the result set
         Set projects = new HashSet();
 
-        if (m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.PROJECT_MANAGER.forOrgUnit(""))) {
+        if (m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.PROJECT_MANAGER)) {
             // user is allowed to access all existing projects for the ous he has the project_manager role
             Iterator itOus = getOrgUnitsForRole(dbc, CmsRole.PROJECT_MANAGER, true).iterator();
             while (itOus.hasNext()) {
@@ -3366,7 +3366,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         Iterator itProjects = projects.iterator();
         while (itProjects.hasNext()) {
             CmsProject project = (CmsProject)itProjects.next();
-            if (project.isHidden()) {
+            if (project.isHidden() || !project.getOuFqn().startsWith(dbc.currentUser().getOuFqn())) {
                 // remove hidden projects
                 itProjects.remove();
                 continue;
