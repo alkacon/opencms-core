@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckProperty.java,v $
- * Date   : $Date: 2007/08/13 16:30:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/02/12 11:42:59 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 
 /**
- * This implementation of the I_CmsContentCheck interface implments a check for 
+ * This implementation of the I_CmsContentCheck interface implements a check for 
  * resource properties.<p>
  * 
  * The following items can be configured and checked:
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.2
  */
@@ -321,7 +321,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
             //String value = configuration.getValue(xpath + "[" + i + "]/" + XPATH_VALUE, m_locale).getStringValue(m_cms);
 
             // store them in the CmsContentCheckProperetyObject obejct for fürther processing
-            CmsContentCheckProperetyObject propObject = new CmsContentCheckProperetyObject();
+            CmsContentCheckPropertyObject propObject = new CmsContentCheckPropertyObject();
 
             if (CmsStringUtil.isNotEmpty(propertyname)) {
                 propObject.setPropertyname(propertyname);
@@ -386,7 +386,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
         //loop through all property tests
         for (int i = 0; i < properties.size(); i++) {
             try {
-                CmsContentCheckProperetyObject propObject = (CmsContentCheckProperetyObject)properties.get(i);
+                CmsContentCheckPropertyObject propObject = (CmsContentCheckPropertyObject)properties.get(i);
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().getBundle().key(
@@ -395,9 +395,9 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
                 }
 
                 // check if this test must be done for thies kind of resource
-                if ((propObject.getType().equals(CmsContentCheckProperetyObject.TYPE_BOTH))
-                    || ((propObject.getType().equals(CmsContentCheckProperetyObject.TYPE_FILE) && (testResource.getResource().isFile())))
-                    || ((propObject.getType().equals(CmsContentCheckProperetyObject.TYPE_FOLDER) && (testResource.getResource().isFolder())))
+                if ((propObject.getType().equals(CmsContentCheckPropertyObject.TYPE_BOTH))
+                    || ((propObject.getType().equals(CmsContentCheckPropertyObject.TYPE_FILE) && (testResource.getResource().isFile())))
+                    || ((propObject.getType().equals(CmsContentCheckPropertyObject.TYPE_FOLDER) && (testResource.getResource().isFolder())))
 
                 ) {
 

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/Attic/CmsContentCheckProperetyObject.java,v $
- * Date   : $Date: 2007/08/13 16:30:13 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckPropertyObject.java,v $
+ * Date   : $Date: 2008/02/12 11:42:59 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,11 @@ import java.util.List;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 6.1.2 
  */
-public class CmsContentCheckProperetyObject {
+public class CmsContentCheckPropertyObject {
 
     /** Constant for type file or folder.*/
     public static final String TYPE_BOTH = "both";
@@ -76,7 +76,7 @@ public class CmsContentCheckProperetyObject {
     /** 
      * Constructor, creates a new empty CmsContentCheckProperetyObject.<p>     *
      */
-    public CmsContentCheckProperetyObject() {
+    public CmsContentCheckPropertyObject() {
 
         m_propertyname = null;
         m_type = TYPE_BOTH;

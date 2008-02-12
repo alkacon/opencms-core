@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/I_CmsContentCheck.java,v $
- * Date   : $Date: 2007/08/13 16:30:13 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/02/12 11:42:59 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,15 +39,14 @@ import java.util.List;
 /**
  * This interface defines an OpenCms content check. A content check will  
  * test the content of the properties of all resources inside of OpenCms if they 
- * follow the rules which are defined inside the test implemnting this interface.<p> 
+ * follow the rules which are defined inside the test implementing this interface.<p> 
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.2 
  */
-
 public interface I_CmsContentCheck {
 
     /** Parameter name for widgets. */
