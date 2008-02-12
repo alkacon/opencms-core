@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/02/01 17:11:44 $
- * Version: $Revision: 1.967 $
+ * Date   : $Date: 2008/02/12 11:43:58 $
+ * Version: $Revision: 1.968 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with deleting a folder containing resources you do not have write permissions for 
 * Fixed issue with role caching, ie. users could administrate OUs without having the required role
 * Fixed issue with ACEs missing after undelete
+* Fixed issue with displaying the content check settings in the admin view
 - Improved support for servlet container Weblogic 9 (no servlet options needed anymore)
 - Improved default permission settings
 - Change type dialog now also considers resource type limitation settings as new resource dialog
