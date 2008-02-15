@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2007/08/13 16:29:57 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2008/02/15 10:41:03 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -211,7 +211,7 @@ public interface I_CmsXmlContentHandler {
     /**
      * Prepares the given XML content to be used after it was read from the OpenCms VFS.<p>
      * 
-     * This method is alway called after any content is unmarshalled.
+     * This method is always called after any content is unmarshalled.
      * It can be used to perform customized actions on the given XML content.<p>  
      * 
      * @param cms the current OpenCms user context
@@ -224,7 +224,7 @@ public interface I_CmsXmlContentHandler {
     /**
      * Prepares the given XML content to be written to the OpenCms VFS.<p>
      * 
-     * This method is alway called before any content gets written.
+     * This method is always called before any content gets written.
      * It can be used to perform XML validation, pretty - printing 
      * or customized actions on the given XML content.<p>  
      * 
