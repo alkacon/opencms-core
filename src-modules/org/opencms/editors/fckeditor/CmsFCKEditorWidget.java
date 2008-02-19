@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2007/08/13 16:29:51 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/02/19 11:55:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,9 @@ import org.opencms.widgets.I_CmsWidgetDialog;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditor;
+import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.workplace.galleries.A_CmsGallery;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,7 +60,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.1.7
  */
@@ -323,12 +325,38 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
         result.append("editor.BasePath = \"").append(CmsWorkplace.getSkinUri()).append("editors/fckeditor/\";\n");
 
         // set CSS style sheet for current editor widget if configured
+        boolean cssConfigured = false;
+        String cssPath = "";
         if (getHtmlWidgetOption().useCss()) {
-            result.append("editor.Config[\"EditorAreaCSS\"] = \"");
-            result.append(OpenCms.getLinkManager().substituteLink(cms, getHtmlWidgetOption().getCssPath()));
-            result.append("\";\n");
+            cssPath = getHtmlWidgetOption().getCssPath();
             // set the css path to null (the created config String passed to JS will not include this path then)
             getHtmlWidgetOption().setCssPath(null);
+            cssConfigured = true;
+        } else if (OpenCms.getWorkplaceManager().getEditorCssHandlers().size() > 0) {
+            Iterator i = OpenCms.getWorkplaceManager().getEditorCssHandlers().iterator();
+            try {
+                // cast param to I_CmsXmlContentValue
+                I_CmsXmlContentValue contentValue = (I_CmsXmlContentValue)param;
+                // now extract the absolute path of the edited resource
+                String editedResource = cms.getSitePath(contentValue.getDocument().getFile());
+                while (i.hasNext()) {
+                    I_CmsEditorCssHandler handler = (I_CmsEditorCssHandler)i.next();
+                    if (handler.matches(cms, editedResource)) {
+                        cssPath = handler.getUriStyleSheet(cms, editedResource);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cssPath)) {
+                            cssConfigured = true;
+                        }
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                // ignore, CSS could not be set
+            }
+        }
+        if (cssConfigured) {
+            result.append("editor.Config[\"EditorAreaCSS\"] = \"");
+            result.append(OpenCms.getLinkManager().substituteLink(cms, cssPath));
+            result.append("\";\n");
         }
 
         // set styles XML for current editor widget if configured
