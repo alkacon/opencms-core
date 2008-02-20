@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2007/12/19 13:07:57 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/02/20 09:02:12 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -282,9 +282,24 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             }
         } else if (getLink().equals(getPath(OUROLES_FILE))) {
             return !m_webuserOu;
-        } else if (getLink().equals(getPath(SWITCHUSER_FILE))
-            || getLink().equals(getPath(USERROLE_FILE))
-            || getLink().equals(getPath(GROUP_USERS_FILE))) {
+        } else if (getLink().equals(getPath(SWITCHUSER_FILE))) {
+            boolean visible = OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN);
+            CmsUUID userId = new CmsUUID(CmsRequestUtil.getNotEmptyDecodedParameter(
+                wp.getJsp().getRequest(),
+                A_CmsEditUserDialog.PARAM_USERID));
+            try {
+                visible &= OpenCms.getRoleManager().hasRole(
+                    wp.getCms(),
+                    wp.getCms().readUser(userId).getName(),
+                    CmsRole.WORKPLACE_USER);
+            } catch (CmsException e) {
+                // should never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            return visible;
+        } else if (getLink().equals(getPath(USERROLE_FILE)) || getLink().equals(getPath(GROUP_USERS_FILE))) {
             String userId = CmsRequestUtil.getNotEmptyDecodedParameter(
                 wp.getJsp().getRequest(),
                 A_CmsEditUserDialog.PARAM_USERID);
