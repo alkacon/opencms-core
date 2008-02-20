@@ -576,5 +576,17 @@
         <function-signature>
             java.lang.String trimToSize(java.lang.String, int)
         </function-signature>
-    </function>     
+    </function>
+    
+    <function>
+        <description>
+            Allows conversion of String values to CmsUUIDs.
+            Can also handle byte[] that are CmsUUIDs, or CmsUUID itself.
+        </description>
+        <name>convertUUID</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            org.opencms.util.CmsUUID convertUUID(java.lang.Object)
+        </function-signature>
+    </function>
 </taglib>

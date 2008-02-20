@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2007/09/05 11:19:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/02/20 15:55:32 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  * 
@@ -222,6 +222,32 @@ public final class CmsJspElFunctions {
             result = cms.readResource(String.valueOf(input));
         }
         return result;
+    }
+
+    /**
+     * Returns a CmsUUID created from an Object.<p>
+     * 
+     * <ul>
+     * <li>The Object is first checked if it is a {@link CmsUUID} already, if so it is casted and returned. 
+     * <li>If not, the input is transformed to a byte[] and a new {@link CmsUUID} is created with this byte[].
+     * <li>Otherwise the input is casted to a String and a new {@link CmsUUID} is created with this String.
+     * </ul>
+     * 
+     * @param input the Object to create a CmsUUID from 
+     * 
+     * @return a CmsUUID created from the given Object
+     */
+    public static CmsUUID convertUUID(Object input) {
+
+        CmsUUID uuid;
+        if (input instanceof CmsUUID) {
+            uuid = (CmsUUID)input;
+        } else if (input instanceof byte[]) {
+            uuid = new CmsUUID((byte[])input);
+        } else {
+            uuid = new CmsUUID(String.valueOf(input));
+        }
+        return uuid;
     }
 
     /**
