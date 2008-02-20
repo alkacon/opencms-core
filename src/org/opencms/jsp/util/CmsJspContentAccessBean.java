@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessBean.java,v $
- * Date   : $Date: 2007/09/05 11:19:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/02/20 15:36:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.2
  * 
@@ -133,6 +133,23 @@ public class CmsJspContentAccessBean {
         public Object transform(Object input) {
 
             return Boolean.valueOf(getRawContent().hasValue(String.valueOf(input), m_selectedLocale));
+        }
+    }
+
+    /**
+     * Provides a Map which lets the user access the list of element names from the selected locale in an XML content, 
+     * the input is assumed to be a String that represents a Locale.<p>
+     */
+    public class CmsLocaleNamesTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            Locale locale = CmsLocaleManager.getLocale(String.valueOf(input));
+
+            return getRawContent().getNames(locale);
         }
     }
 
@@ -263,6 +280,9 @@ public class CmsJspContentAccessBean {
 
     /** The selected locale for accessing entries from the XML content. */
     private Locale m_locale;
+
+    /** The lazy initialized with the locale names. */
+    private Map m_localeNames;
 
     /** The lazy initialized with the locale value. */
     private Map m_localeValue;
@@ -463,6 +483,33 @@ public class CmsJspContentAccessBean {
     }
 
     /**
+     * Returns a lazy initialized Map that provides a List with all available elements paths (Strings) 
+     * used in this document in the selected locale.<p>
+     * 
+     * The provided Map key is assumed to be a String that represents the Locale.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     &lt;c:forEach items="${content.localeNames['de']}" var="elem"&gt;
+     *         &lt;c:out value="${elem}" /&gt;
+     *     &lt;/c:forEach&gt;  
+     * &lt;/cms:contentload&gt;</pre>
+     *  
+     * @return a lazy initialized Map that provides a Map that provides 
+     *      values from the XML content in the selected locale
+     * 
+     * @see #getNames()
+     */
+    public Map getLocaleNames() {
+
+        if (m_localeNames == null) {
+            m_localeNames = LazyMap.decorate(new HashMap(), new CmsLocaleNamesTransformer());
+        }
+        return m_localeNames;
+    }
+
+    /**
      * Returns a lazy initialized Map that provides a Map that provides 
      * values from the XML content in the selected locale.<p>
      * 
@@ -514,6 +561,27 @@ public class CmsJspContentAccessBean {
             m_localeValueList = LazyMap.decorate(new HashMap(), new CmsLocaleValueListTransformer());
         }
         return m_localeValueList;
+    }
+
+    /**
+     * Returns a list with all available elements paths (Strings) used in this document
+     * in the current locale.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     &lt;c:forEach items="${content.names}" var="elem"&gt;
+     *         &lt;c:out value="${elem}" /&gt;
+     *     &lt;/c:forEach&gt;
+     * &lt;/cms:contentload&gt;</pre>
+     *  
+     * @return a list with all available elements paths (Strings) used in this document in the current locale
+     * 
+     * @see #getLocaleNames()
+     */
+    public List getNames() {
+
+        return (List)getLocaleNames().get(m_locale);
     }
 
     /**
