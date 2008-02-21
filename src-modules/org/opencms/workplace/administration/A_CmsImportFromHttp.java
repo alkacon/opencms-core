@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/A_CmsImportFromHttp.java,v $
- * Date   : $Date: 2008/02/01 09:41:26 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/02/21 13:48:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Andreas Zahner 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -187,13 +187,14 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
     }
 
     /**
-     * Appends html code for the additional parameters.<p>
+     * Html code for the additional parameters.<p>
      * 
-     * @param result the html code of this page
+     * @return html code 
      */
-    protected void appendAdditionalParameters(StringBuffer result) {
+    protected String getAdditionalParameters() {
 
         // do nothing
+        return "";
     }
 
     /**
@@ -326,7 +327,7 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
         result.append(PARAM_IMPORTFILE);
         result.append("\" class=\"maxwidth\" accept=\"application/zip\">");
         result.append("</td>\n</tr>");
-        appendAdditionalParameters(result);
+        result.append(getAdditionalParameters());
         result.append("</table>\n");
         result.append(dialogBlockEnd());
 
