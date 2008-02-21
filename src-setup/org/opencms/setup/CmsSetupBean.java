@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2008/02/01 09:42:16 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/02/21 13:47:37 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsImportParameters;
 import org.opencms.loader.CmsImageLoader;
 import org.opencms.main.CmsLog;
@@ -51,7 +52,6 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsShell;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.I_CmsShellCommands;
-import org.opencms.main.Messages;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsServlet;
 import org.opencms.module.CmsModule;
@@ -65,15 +65,19 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
 import org.opencms.xml.CmsXmlException;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -86,6 +90,8 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
@@ -93,6 +99,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.logging.Log;
 
 /**
  * A java bean as a controller for the OpenCms setup wizard.<p>
@@ -111,17 +118,20 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSetupBean implements I_CmsShellCommands {
 
-    /** DB provider constant for db2. */
-    public static final String DB2_PROVIDER = "db2";
-
     /** DB provider constant for as400. */
     public static final String AS400_PROVIDER = "as400";
+
+    /** The name of the components properties file. */
+    public static final String COMPONENTS_PROPERTIES = "components.properties";
+
+    /** DB provider constant for db2. */
+    public static final String DB2_PROVIDER = "db2";
 
     /** Folder constant name.<p> */
     public static final String FOLDER_BACKUP = "backup" + File.separatorChar;
@@ -159,6 +169,30 @@ public class CmsSetupBean implements I_CmsShellCommands {
     /** DB provider constant for postgresql. */
     public static final String POSTGRESQL_PROVIDER = "postgresql";
 
+    /** The default component position, is missing. */
+    protected static final int DEFAULT_POSITION = 9999;
+
+    /** Properties file key constant prefix. */
+    protected static final String PROPKEY_COMPONENT = "component.";
+
+    /** Properties file key constant. */
+    protected static final String PROPKEY_COMPONENTS = "components";
+
+    /** Properties file key constant post fix. */
+    protected static final String PROPKEY_DEPENDENCIES = ".dependencies";
+
+    /** Properties file key constant post fix. */
+    protected static final String PROPKEY_DESCRIPTION = ".description";
+
+    /** Properties file key constant post fix. */
+    protected static final String PROPKEY_MODULES = ".modules";
+
+    /** Properties file key constant post fix. */
+    protected static final String PROPKEY_NAME = ".name";
+
+    /** Properties file key constant post fix. */
+    protected static final String PROPKEY_POSITION = ".position";
+
     /** Required files per database server setup. */
     static final String[] REQUIRED_DB_SETUP_FILES = {
         "step_4_database_setup.jsp",
@@ -167,6 +201,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
         "create_tables.sql",
         "drop_db.sql",
         "drop_tables.sql"};
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSetupBean.class);
 
     /** Contains HTML fragments for the output in the JSP pages of the setup wizard. */
     private static Properties m_htmlProps;
@@ -205,6 +242,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** The absolute path to the home directory of the OpenCms webapp. */
     protected String m_webAppRfsPath;
+
+    /** Contains all defined components. */
+    private CmsIdentifiableObjectContainer m_components;
 
     /** The absolute path to the config sub directory of the OpenCms web application. */
     private String m_configRfsPath;
@@ -283,6 +323,49 @@ public class CmsSetupBean implements I_CmsShellCommands {
         } else {
             copyFile(filename, originalFilename);
         }
+    }
+
+    /**
+     * Returns a map of dependencies.<p>
+     * 
+     * The component dependencies are get from the setup and module components.properties files found.<p>
+     * 
+     * @return a Map of component ids as keys and a list of dependency names as values
+     */
+    public Map buildDepsForAllComponents() {
+
+        Map ret = new HashMap();
+
+        Iterator itComponents = m_components.elementList().iterator();
+        while (itComponents.hasNext()) {
+            CmsSetupComponent component = (CmsSetupComponent)itComponents.next();
+
+            // if component a depends on component b, and component c depends also on component b:
+            // build a map with a list containing "a" and "c" keyed by "b" to get a 
+            // list of components depending on component "b"...
+            Iterator itDeps = component.getDependencies().iterator();
+            while (itDeps.hasNext()) {
+                String dependency = (String)itDeps.next();
+
+                // get the list of dependent modules
+                List componentDependencies = (List)ret.get(dependency);
+                if (componentDependencies == null) {
+                    // build a new list if "b" has no dependent modules yet
+                    componentDependencies = new ArrayList();
+                    ret.put(dependency, componentDependencies);
+                }
+                // add "a" as a module depending on "b"
+                componentDependencies.add(component.getId());
+            }
+        }
+        itComponents = m_components.elementList().iterator();
+        while (itComponents.hasNext()) {
+            CmsSetupComponent component = (CmsSetupComponent)itComponents.next();
+            if (ret.get(component.getId()) == null) {
+                ret.put(component.getId(), new ArrayList());
+            }
+        }
+        return ret;
     }
 
     /**
@@ -404,8 +487,10 @@ public class CmsSetupBean implements I_CmsShellCommands {
             m_availableModules = new HashMap();
             m_moduleDependencies = new HashMap();
             m_moduleFilenames = new HashMap();
+            m_components = new CmsIdentifiableObjectContainer(true, true);
 
             try {
+                addComponentsFromPath(m_webAppRfsPath + FOLDER_SETUP);
                 Map modules = CmsModuleManager.getAllModulesFromPath(getModuleFolder());
                 Iterator itMods = modules.entrySet().iterator();
                 while (itMods.hasNext()) {
@@ -414,10 +499,12 @@ public class CmsSetupBean implements I_CmsShellCommands {
                     // put the module information into a map keyed by the module packages names
                     m_availableModules.put(module.getName(), module);
                     m_moduleFilenames.put(module.getName(), entry.getValue());
+                    addComponentsFromPath(getModuleFolder() + entry.getValue());
                 }
             } catch (CmsConfigurationException e) {
                 throw new CmsRuntimeException(e.getMessageContainer());
             }
+            initializeComponents(new HashSet(m_availableModules.keySet()));
         }
         return m_availableModules;
     }
@@ -484,7 +571,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public String getDatabaseName(String databaseKey) {
 
-        return (String)((Map)getDatabaseProperties().get(databaseKey)).get(databaseKey + ".name");
+        return (String)((Map)getDatabaseProperties().get(databaseKey)).get(databaseKey + PROPKEY_NAME);
     }
 
     /** 
@@ -1012,6 +1099,22 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
+     * Returns the html code for component selection.<p>
+     * 
+     * @return html code
+     */
+    public String htmlComponents() {
+
+        StringBuffer html = new StringBuffer(1024);
+        Iterator itComponents = m_components.elementList().iterator();
+        while (itComponents.hasNext()) {
+            CmsSetupComponent component = (CmsSetupComponent)itComponents.next();
+            html.append(htmlComponent(component));
+        }
+        return html.toString();
+    }
+
+    /**
      * Returns html code for the module descriptions in help ballons.<p>
      * 
      * @return html code
@@ -1214,6 +1317,89 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public boolean isInitialized() {
 
         return m_extProperties != null;
+    }
+
+    /**
+     * Returns js code with array definition for the available component dependencies.<p> 
+     * 
+     * @return js code
+     */
+    public String jsComponentDependencies() {
+
+        List components = m_components.elementList();
+        Map componentDependencies = buildDepsForAllComponents();
+
+        StringBuffer jsCode = new StringBuffer(1024);
+        jsCode.append("\t// an array holding the dependent components for the n-th component\n");
+        jsCode.append("\tvar componentDependencies = new Array(");
+        jsCode.append(components.size());
+        jsCode.append(");\n");
+        for (int i = 0; i < components.size(); i++) {
+            CmsSetupComponent component = (CmsSetupComponent)components.get(i);
+            List dependencies = (List)componentDependencies.get(component.getId());
+            jsCode.append("\tcomponentDependencies[" + i + "] = new Array(");
+            if (dependencies != null) {
+                for (int j = 0; j < dependencies.size(); j++) {
+                    jsCode.append("\"" + dependencies.get(j) + "\"");
+                    if (j < dependencies.size() - 1) {
+                        jsCode.append(", ");
+                    }
+                }
+            }
+            jsCode.append(");\n");
+        }
+        jsCode.append("\n\n");
+        return jsCode.toString();
+    }
+
+    /**
+     * Returns js code with array definition for the component modules.<p> 
+     * 
+     * @return js code
+     */
+    public String jsComponentModules() {
+
+        List components = m_components.elementList();
+
+        StringBuffer jsCode = new StringBuffer(1024);
+        jsCode.append("\t// an array holding the components modules\n");
+        jsCode.append("\tvar componentModules = new Array(");
+        jsCode.append(components.size());
+        jsCode.append(");\n");
+        for (int i = 0; i < components.size(); i++) {
+            CmsSetupComponent component = (CmsSetupComponent)components.get(i);
+            jsCode.append("\tcomponentModules[" + i + "] = \"");
+            List modules = getComponentModules(component);
+            for (int j = 0; j < modules.size(); j++) {
+                jsCode.append(modules.get(j));
+                if (j < modules.size() - 1) {
+                    jsCode.append("|");
+                }
+            }
+            jsCode.append("\";\n");
+        }
+        jsCode.append("\n\n");
+        return jsCode.toString();
+    }
+
+    /**
+     * Returns js code with array definition for the available components names.<p> 
+     * 
+     * @return js code
+     */
+    public String jsComponentNames() {
+
+        StringBuffer jsCode = new StringBuffer(1024);
+        jsCode.append("\t// an array from 1...n holding the component names\n");
+        jsCode.append("\tvar componentNames = new Array(");
+        jsCode.append(m_components.elementList().size());
+        jsCode.append(");\n");
+        for (int i = 0; i < m_components.elementList().size(); i++) {
+            CmsSetupComponent component = (CmsSetupComponent)m_components.elementList().get(i);
+            jsCode.append("\tcomponentNames[" + i + "] = \"" + component.getId() + "\";\n");
+        }
+        jsCode.append("\n\n");
+        return jsCode.toString();
     }
 
     /**
@@ -1855,7 +2041,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         System.out.println();
         System.out.println("Starting Workplace import and database setup for OpenCms!");
 
-        String[] copy = Messages.COPYRIGHT_BY_ALKACON;
+        String[] copy = org.opencms.main.Messages.COPYRIGHT_BY_ALKACON;
         for (int i = copy.length - 1; i >= 0; i--) {
             System.out.println(copy[i]);
         }
@@ -1912,6 +2098,116 @@ public class CmsSetupBean implements I_CmsShellCommands {
         return result;
     }
 
+    /**
+     * Reads all components from the given location, a folder or a zip file.<p>
+     * 
+     * @param fileName the location to read the components from
+     * 
+     * @throws CmsConfigurationException if something goes wrong 
+     */
+    protected void addComponentsFromPath(String fileName) throws CmsConfigurationException {
+
+        ExtendedProperties configuration;
+        try {
+            configuration = getComponentsProperties(fileName);
+        } catch (FileNotFoundException e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+            return;
+        }
+
+        Iterator it = Arrays.asList(configuration.getStringArray(PROPKEY_COMPONENTS)).iterator();
+        while (it.hasNext()) {
+            String component = (String)it.next();
+            CmsSetupComponent componentBean = new CmsSetupComponent();
+            componentBean.setId(component);
+            componentBean.setName(configuration.getString(PROPKEY_COMPONENT + component + PROPKEY_NAME));
+            componentBean.setDescription(configuration.getString(PROPKEY_COMPONENT + component + PROPKEY_DESCRIPTION));
+            componentBean.setModulesRegex(configuration.getString(PROPKEY_COMPONENT + component + PROPKEY_MODULES));
+            componentBean.setDependencies(Arrays.asList(configuration.getStringArray(PROPKEY_COMPONENT
+                + component
+                + PROPKEY_DEPENDENCIES)));
+            componentBean.setPosition(configuration.getInteger(
+                PROPKEY_COMPONENT + component + PROPKEY_POSITION,
+                DEFAULT_POSITION));
+            m_components.addIdentifiableObject(componentBean.getId(), componentBean, componentBean.getPosition());
+        }
+    }
+
+    /**
+     * Reads all properties from the components.properties file at the given location, a folder or a zip file.<p>
+     * 
+     * @param location the location to read the properties from
+     * 
+     * @return the read properties 
+     * 
+     * @throws FileNotFoundException if the properties file could not be found 
+     * @throws CmsConfigurationException if the something else goes wrong
+     */
+    protected ExtendedProperties getComponentsProperties(String location)
+    throws FileNotFoundException, CmsConfigurationException {
+
+        InputStream stream = null;
+        ZipFile zipFile = null;
+        try {
+            // try to interpret the fileName as a folder
+            File folder = new File(location);
+
+            // if it is a file it must be a zip-file
+            if (folder.isFile()) {
+                zipFile = new ZipFile(location);
+                ZipEntry entry = zipFile.getEntry(COMPONENTS_PROPERTIES);
+                // path to file might be relative, too
+                if ((entry == null) && location.startsWith("/")) {
+                    entry = zipFile.getEntry(location.substring(1));
+                }
+                if (entry == null) {
+                    throw new FileNotFoundException(org.opencms.importexport.Messages.get().getBundle().key(
+                        org.opencms.importexport.Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1,
+                        location + "/" + COMPONENTS_PROPERTIES));
+                }
+
+                stream = zipFile.getInputStream(entry);
+            } else {
+                // it is a folder
+                File file = new File(folder, COMPONENTS_PROPERTIES);
+                stream = new FileInputStream(file);
+            }
+            return CmsPropertyUtils.loadProperties(stream);
+        } catch (Throwable ioe) {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
+            if (zipFile != null) {
+                try {
+                    zipFile.close();
+                } catch (IOException e) {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
+            if (ioe instanceof FileNotFoundException) {
+                throw (FileNotFoundException)ioe;
+            }
+
+            CmsMessageContainer msg = org.opencms.importexport.Messages.get().container(
+                org.opencms.importexport.Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1,
+                location + "/" + COMPONENTS_PROPERTIES);
+            if (LOG.isErrorEnabled()) {
+                LOG.error(msg.key(), ioe);
+            }
+            throw new CmsConfigurationException(msg, ioe);
+        }
+    }
+
     /** 
      * Returns the value for a given key from the extended properties.
      * 
@@ -1922,6 +2218,38 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
         Object value = m_extProperties.get(key);
         return (value != null) ? value.toString() : "";
+    }
+
+    /**
+     * Returns html for the given component to fill the selection list.<p>
+     * 
+     * @param component the component to generate the code for
+     * 
+     * @return html code
+     */
+    protected String htmlComponent(CmsSetupComponent component) {
+
+        StringBuffer html = new StringBuffer(256);
+        html.append("\t<tr>\n");
+        html.append("\t\t<td>\n");
+        html.append("\t\t\t<input type='checkbox' name='availableComponents' value='");
+        html.append(component.getId());
+        html.append("' checked='checked' onClick=\"checkComponentDependencies('");
+        html.append(component.getId());
+        html.append("');\">\n");
+        html.append("\t\t</td>\n");
+        html.append("\t\t<td style='width: 100%; '>\n\t\t\t");
+        html.append(component.getName());
+        html.append("\n\t\t</td>\n");
+        html.append("\t</tr>\n");
+        html.append("\t<tr>\n");
+        html.append("\t\t<td>&nbsp;</td>\n");
+        html.append("\t\t<td style='vertical-align: top; width: 100%; padding-bottom: 8px; font-style: italic;'>\n\t\t\t");
+        html.append(component.getDescription());
+        html.append("\n\t\t</td>\n");
+        html.append("\t</tr>\n");
+
+        return html.toString();
     }
 
     /**
@@ -1939,7 +2267,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
         html.append("\t\t<td style='vertical-align: top;'>\n");
         html.append("\t\t\t<input type='checkbox' name='availableModules' value='");
         html.append(module.getName());
-        html.append("' checked='checked' onClick=\"checkDependencies('");
+        html.append("' checked='checked' onClick=\"checkModuleDependencies('");
         html.append(module.getName());
         html.append("');\">\n");
         html.append("\t\t</td>\n");
@@ -1973,6 +2301,79 @@ public class CmsSetupBean implements I_CmsShellCommands {
             m_cms,
             new CmsShellReport(m_cms.getRequestContext().getLocale()),
             new CmsImportParameters(fileName, "/", true));
+    }
+
+    /**
+     * Initializes and validates the read components.<p>
+     * 
+     * @param modules a modifiable list of the modules to be imported
+     */
+    protected void initializeComponents(Collection modules) {
+
+        Iterator itGroups = new ArrayList(m_components.elementList()).iterator();
+        while (itGroups.hasNext()) {
+            CmsSetupComponent component = (CmsSetupComponent)itGroups.next();
+            String errMsg = "";
+            String warnMsg = "";
+            // check name
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(component.getName())) {
+                errMsg += Messages.get().container(Messages.ERR_COMPONENT_NAME_EMPTY_1, component.getId()).key();
+                errMsg += "\n";
+            }
+            // check description
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(component.getName())) {
+                warnMsg += Messages.get().container(Messages.LOG_WARN_COMPONENT_DESC_EMPTY_1, component.getId()).key();
+                warnMsg += "\n";
+            }
+            // check position
+            if (component.getPosition() == DEFAULT_POSITION) {
+                warnMsg += Messages.get().container(Messages.LOG_WARN_COMPONENT_POS_EMPTY_1, component.getId()).key();
+                warnMsg += "\n";
+            }
+            // check dependencies
+            Iterator itDeps = component.getDependencies().iterator();
+            while (itDeps.hasNext()) {
+                String dependency = (String)itDeps.next();
+                if (m_components.getObject(dependency) == null) {
+                    errMsg += Messages.get().container(
+                        Messages.LOG_WARN_COMPONENT_DEPENDENCY_BROKEN_2,
+                        component.getId(),
+                        dependency).key();
+                    errMsg += "\n";
+                }
+            }
+            // check modules match
+            boolean match = false;
+            Iterator itModules = modules.iterator();
+            while (itModules.hasNext()) {
+                String module = (String)itModules.next();
+                if (component.match(module)) {
+                    match = true;
+                    itModules.remove();
+                }
+            }
+            if (!match) {
+                errMsg += Messages.get().container(Messages.ERR_COMPONENT_MODULES_EMPTY_1, component.getId()).key();
+                errMsg += "\n";
+            }
+
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(errMsg)) {
+                m_components.removeObject(component.getId());
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(errMsg);
+                }
+            }
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(warnMsg)) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(warnMsg);
+                }
+            }
+        }
+        if (!modules.isEmpty()) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().container(Messages.LOG_WARN_MODULES_LEFT_1, modules.toString()));
+            }
+        }
     }
 
     /** 
@@ -2095,6 +2496,26 @@ public class CmsSetupBean implements I_CmsShellCommands {
             buf.append("\t" + values[i] + ((i < values.length - 1) ? ",\\\n" : ""));
         }
         return buf.toString();
+    }
+
+    /**
+     * Returns a list of matching modules for the given component.<p>
+     * 
+     * @param component the component to get the modules for 
+     * 
+     * @return a list of matching module names
+     */
+    private List getComponentModules(CmsSetupComponent component) {
+
+        List modules = new ArrayList();
+        Iterator itModules = m_availableModules.keySet().iterator();
+        while (itModules.hasNext()) {
+            String moduleName = (String)itModules.next();
+            if (component.match(moduleName)) {
+                modules.add(moduleName);
+            }
+        }
+        return modules;
     }
 
     /**

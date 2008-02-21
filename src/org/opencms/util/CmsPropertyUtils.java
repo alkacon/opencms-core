@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPropertyUtils.java,v $
- * Date   : $Date: 2007/08/13 16:29:56 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/02/21 13:47:37 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,7 +47,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,14 +58,35 @@ public final class CmsPropertyUtils {
      */
     private CmsPropertyUtils() {
 
-        // noop
+        // prevent instantiation
     }
 
     /**
-     * Loads an extended property file and performs escaping/unescaping of "," and "=" entries.<p> 
+     * Loads an extended property file and performs unescaping of "," and "=" entries.<p> 
      * 
-     * @param file the file tp read the properties from
+     * @param stream the input stream to read the properties from
+     * 
      * @return the initialized extended properties
+     * 
+     * @throws IOException in case of IO errors 
+     */
+    public static ExtendedProperties loadProperties(InputStream stream) throws IOException {
+
+        ExtendedProperties properties = new ExtendedProperties();
+        properties.load(stream);
+
+        unescapeProperties(properties);
+
+        return properties;
+    }
+
+    /**
+     * Loads an extended property file and performs unescaping of "," and "=" entries.<p> 
+     * 
+     * @param file the file to read the properties from
+     * 
+     * @return the initialized extended properties
+     * 
      * @throws IOException in case of IO errors 
      */
     public static ExtendedProperties loadProperties(String file) throws IOException {
@@ -87,6 +109,18 @@ public final class CmsPropertyUtils {
             }
             throw e;
         }
+
+        unescapeProperties(properties);
+
+        return properties;
+    }
+
+    /**
+     * Unescapes the given properties, unescaping "," and "=" entries.<p>
+     * 
+     * @param properties the properties to adjust
+     */
+    public static void unescapeProperties(ExtendedProperties properties) {
 
         for (Iterator i = properties.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry)i.next();
@@ -112,7 +146,5 @@ public final class CmsPropertyUtils {
                 properties.put(key, value[0]);
             }
         }
-
-        return properties;
     }
 }

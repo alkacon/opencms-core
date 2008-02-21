@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/Messages.java,v $
- * Date   : $Date: 2007/08/22 11:11:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/02/21 13:47:37 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COMPONENT_MODULES_EMPTY_1 = "ERR_COMPONENT_MODULES_EMPTY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_COMPONENT_NAME_EMPTY_1 = "ERR_COMPONENT_NAME_EMPTY_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DB_CONNECT_1 = "ERR_DB_CONNECT_1";
@@ -78,6 +84,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WELCOME_UPDATE_0 = "INIT_WELCOME_UPDATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_COMPONENT_DEPENDENCY_BROKEN_2 = "LOG_WARN_COMPONENT_DEPENDENCY_BROKEN_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_COMPONENT_DESC_EMPTY_1 = "LOG_WARN_COMPONENT_DESC_EMPTY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_COMPONENT_POS_EMPTY_1 = "LOG_WARN_COMPONENT_POS_EMPTY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_MODULES_LEFT_1 = "LOG_WARN_MODULES_LEFT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_BEGIN_DELETE_JARS_0 = "RPT_BEGIN_DELETE_JARS_0";
