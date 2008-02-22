@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/02/21 13:47:37 $
- * Version: $Revision: 1.970 $
+ * Date   : $Date: 2008/02/22 09:55:05 $
+ * Version: $Revision: 1.971 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -65,6 +65,7 @@ OpenCms 7.0.4 - xxx, 2008
 ! Added support to import/export user roles, organizational units and projects 
 ! OpenCmsColor and the color picker widget now work with CSS 2 system colors 
 ! Added new module group selection dialog to the Setup Wizard
+! Added new resource type parameter to automatically set the 'internal' flag 
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2007/09/07 11:10:29 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2008/02/22 09:55:05 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,25 +66,28 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsResourceType implements I_CmsResourceType {
 
-    /** Macro for the folder path of the current resouce. */
+    /** Configuration key for the (optional) internal flag. */
+    public static final String CONFIGURATION_INTERNAL = "resource.flag.internal";
+
+    /** Macro for the folder path of the current resource. */
     public static final String MACRO_RESOURCE_FOLDER_PATH = "resource.folder.path";
 
-    /** Macro for the name of the current resouce. */
+    /** Macro for the name of the current resource. */
     public static final String MACRO_RESOURCE_NAME = "resource.name";
 
-    /** Macro for the parent folder path of the current resouce. */
+    /** Macro for the parent folder path of the current resource. */
     public static final String MACRO_RESOURCE_PARENT_PATH = "resource.parent.path";
 
-    /** Macro for the root path of the current resouce. */
+    /** Macro for the root path of the current resource. */
     public static final String MACRO_RESOURCE_ROOT_PATH = "resource.root.path";
 
-    /** Macro for the site path of the current resouce. */
+    /** Macro for the site path of the current resource. */
     public static final String MACRO_RESOURCE_SITE_PATH = "resource.site.path";
 
     /** The log object for this class. */
@@ -114,6 +117,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** The configured name of this resource type. */
     protected String m_typeName;
 
+    /** The optional internal parameter value. */
+    private Boolean m_internal;
+
     /**
      * Default constructor, used to initialize some member variables.<p>
      */
@@ -130,7 +136,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        // noop
+        if (CONFIGURATION_INTERNAL.equalsIgnoreCase(paramName)) {
+            m_internal = Boolean.valueOf(paramValue.trim());
+        }
     }
 
     /**
@@ -279,7 +287,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         byte[] content,
         List properties) throws CmsException {
 
-        // initialize a macroresolver with the current user OpenCms context
+        // initialize a macro resolver with the current user OpenCms context
         CmsMacroResolver resolver = getMacroResolver(cms, resourcename);
 
         // add the predefined property values from the XML configuration to the resource
@@ -291,6 +299,10 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             getTypeId(),
             content,
             newProperties);
+
+        if ((m_internal != null) && m_internal.booleanValue()) {
+            securityManager.chflags(cms.getRequestContext(), result, result.getFlags() ^ CmsResource.FLAG_INTERNAL);
+        }
 
         // process the (optional) copy resources from the configuration
         processCopyResources(cms, resourcename, resolver);
@@ -338,8 +350,8 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * Returns <code>true</code>, if this resource type is equal to the given Object.<p>
      * 
      * Please note: A resource type is identified by it's id {@link #getTypeId()} and it's name {@link #getTypeName()}.
-     * Two resource types are considered equal, if either their id or ther name is equal.
-     * This is to prevent issues in the configuration with multiple occurences of the same name or id.<p> 
+     * Two resource types are considered equal, if either their id or their name is equal.
+     * This is to prevent issues in the configuration with multiple occurrences of the same name or id.<p> 
      * 
      * @param obj the Object to compare this resource type with
      * 
@@ -486,7 +498,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public final void initConfiguration() {
 
-        // final since subclassed should NOT implement this, but rather the version with 3 String parameters (see below)
+        // final since subclasses should NOT implement this, but rather the version with 3 String parameters (see below)
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIGURATION_1, this));
         }
@@ -543,7 +555,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             m_className = className;
         }
 
-        // check type id, type name and classs name
+        // check type id, type name and class name
         if ((getTypeName() == null)
             || (getClassName() == null)
             || ((getTypeId() < 0) && (!m_typeName.equals(CmsResourceTypeUnknownFile.getStaticTypeName())) && (!m_typeName.equals(CmsResourceTypeUnknownFolder.getStaticTypeName())))) {
