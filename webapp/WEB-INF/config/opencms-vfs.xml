@@ -84,6 +84,7 @@
 				<collector class="org.opencms.file.collectors.CmsDefaultResourceCollector" order="110" />
 				<collector class="org.opencms.file.collectors.CmsDateResourceCollector" order="120" />
 				<collector class="org.opencms.file.collectors.CmsTimeFrameCategoryCollector" order="130" />
+				<collector class="org.opencms.file.collectors.CmsCategoryResourceCollector" order="140" />
 			</collectors>		
 			<mimetypes>
 			    <mimetype extension=".ez" type="application/andrew-inset" />
