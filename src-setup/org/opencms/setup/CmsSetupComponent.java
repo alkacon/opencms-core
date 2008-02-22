@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupComponent.java,v $
- * Date   : $Date: 2008/02/21 13:47:37 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/02/22 08:53:44 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,12 +40,13 @@ import java.util.regex.Pattern;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.4
  */
 public class CmsSetupComponent {
 
+    private boolean m_checked;
     private List m_dependencies;
     private String m_description;
     private String m_id;
@@ -114,6 +115,16 @@ public class CmsSetupComponent {
     }
 
     /**
+     * Checks if checked by default.<p>
+     *
+     * @return if checked by default
+     */
+    public boolean isChecked() {
+
+        return m_checked;
+    }
+
+    /**
      * Matches the module regular expression against the given module name 
      * 
      * @param module the module name to match
@@ -123,6 +134,16 @@ public class CmsSetupComponent {
     public boolean match(String module) {
 
         return m_modulesRegex.matcher(module).matches();
+    }
+
+    /**
+     * Sets if checked by default.<p>
+     *
+     * @param checked the checked flag to set
+     */
+    public void setChecked(boolean checked) {
+
+        m_checked = checked;
     }
 
     /**

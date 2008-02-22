@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2008/02/21 13:47:37 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/02/22 08:53:44 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -118,7 +118,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,6 +171,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
     /** The default component position, is missing. */
     protected static final int DEFAULT_POSITION = 9999;
+
+    /** Properties file key constant post fix. */
+    protected static final String PROPKEY_CHECKED = ".checked";
 
     /** Properties file key constant prefix. */
     protected static final String PROPKEY_COMPONENT = "component.";
@@ -2119,18 +2122,19 @@ public class CmsSetupBean implements I_CmsShellCommands {
 
         Iterator it = Arrays.asList(configuration.getStringArray(PROPKEY_COMPONENTS)).iterator();
         while (it.hasNext()) {
-            String component = (String)it.next();
+            String componentId = (String)it.next();
             CmsSetupComponent componentBean = new CmsSetupComponent();
-            componentBean.setId(component);
-            componentBean.setName(configuration.getString(PROPKEY_COMPONENT + component + PROPKEY_NAME));
-            componentBean.setDescription(configuration.getString(PROPKEY_COMPONENT + component + PROPKEY_DESCRIPTION));
-            componentBean.setModulesRegex(configuration.getString(PROPKEY_COMPONENT + component + PROPKEY_MODULES));
+            componentBean.setId(componentId);
+            componentBean.setName(configuration.getString(PROPKEY_COMPONENT + componentId + PROPKEY_NAME));
+            componentBean.setDescription(configuration.getString(PROPKEY_COMPONENT + componentId + PROPKEY_DESCRIPTION));
+            componentBean.setModulesRegex(configuration.getString(PROPKEY_COMPONENT + componentId + PROPKEY_MODULES));
             componentBean.setDependencies(Arrays.asList(configuration.getStringArray(PROPKEY_COMPONENT
-                + component
+                + componentId
                 + PROPKEY_DEPENDENCIES)));
             componentBean.setPosition(configuration.getInteger(
-                PROPKEY_COMPONENT + component + PROPKEY_POSITION,
+                PROPKEY_COMPONENT + componentId + PROPKEY_POSITION,
                 DEFAULT_POSITION));
+            componentBean.setChecked(configuration.getBoolean(PROPKEY_COMPONENT + componentId + PROPKEY_CHECKED, false));
             m_components.addIdentifiableObject(componentBean.getId(), componentBean, componentBean.getPosition());
         }
     }
@@ -2234,7 +2238,11 @@ public class CmsSetupBean implements I_CmsShellCommands {
         html.append("\t\t<td>\n");
         html.append("\t\t\t<input type='checkbox' name='availableComponents' value='");
         html.append(component.getId());
-        html.append("' checked='checked' onClick=\"checkComponentDependencies('");
+        html.append("'");
+        if (component.isChecked()) {
+            html.append(" checked='checked'");
+        }
+        html.append(" onClick=\"checkComponentDependencies('");
         html.append(component.getId());
         html.append("');\">\n");
         html.append("\t\t</td>\n");
