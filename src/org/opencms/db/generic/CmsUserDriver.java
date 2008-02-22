@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2008/02/01 17:05:30 $
- * Version: $Revision: 1.121 $
+ * Date   : $Date: 2008/02/22 09:56:36 $
+ * Version: $Revision: 1.122 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -100,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.121 $
+ * @version $Revision: 1.122 $
  * 
  * @since 6.0.0 
  */
@@ -839,7 +840,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             Iterator itPaths = internalResourcesForOrgUnit(dbc, ouResource).iterator();
             while (itPaths.hasNext()) {
                 String path = (String)itPaths.next();
-                result.add(m_driverManager.readResource(dbc, path, CmsResourceFilter.ALL));
+                try {
+                    result.add(m_driverManager.readResource(dbc, path, CmsResourceFilter.ALL));
+                } catch (CmsVfsResourceNotFoundException e) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
