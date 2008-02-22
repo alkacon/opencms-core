@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2007/08/13 16:30:07 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2008/02/22 09:53:51 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,13 +50,13 @@ import java.util.List;
  * 
  * Ensures that some required file properties are attached to new JSPs.<p>
  * 
- * The value for the encoding properies of a new JSP usually is the
+ * The value for the encoding properties of a new JSP usually is the
  * system default encoding, but this can be overwritten by 
  * a configuration parameters set in <code>opencms-vfs.xml</code>.<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
