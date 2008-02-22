@@ -87,7 +87,7 @@ function Ok()
 			aCells[i].removeAttribute( 'width', 0 ) ;
 
 		if ( GetE('selWordWrap').value == 'false' )
-			aCells[i].noWrap = true ;
+			SetAttribute( aCells[i], 'noWrap', 'nowrap' ) ;  
 		else
 			aCells[i].removeAttribute( 'noWrap' ) ;
 

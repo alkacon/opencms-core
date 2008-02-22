@@ -49,7 +49,7 @@ function Ok()
 	if ( oEditor.FCKBrowserInfo.IsIE )
 		oEditor.FCKUndo.SaveUndoStep() ;
 
-	FCK.SetHTML( document.getElementById('txtSource').value, false ) ;
+	FCK.SetData( document.getElementById('txtSource').value, false ) ;
 
 	return true ;
 }

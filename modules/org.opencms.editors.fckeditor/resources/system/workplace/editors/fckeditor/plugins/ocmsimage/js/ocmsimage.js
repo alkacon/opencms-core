@@ -373,14 +373,14 @@ function Ok()
 			if ( oLink ) {	
 				// remove an existent link and create it newly, because otherwise the "onclick" attribute does not vanish in Mozilla
 				FCK.ExecuteNamedCommand( 'Unlink' ) ;
-				oLink = oEditor.FCK.CreateLink( sLnkUrl ) ;
+				oLink = oEditor.FCK.CreateLink( sLnkUrl )[0] ;
 			}
 			else			// Creating a new link.
 			{
 				if ( !bHasImage )
 					oEditor.FCKSelection.SelectNode( oImage ) ;
 
-				oLink = oEditor.FCK.CreateLink( sLnkUrl ) ;	
+				oLink = oEditor.FCK.CreateLink( sLnkUrl )[0] ;	
 
 				if ( !bHasImage )
 				{

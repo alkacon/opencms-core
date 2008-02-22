@@ -59,11 +59,14 @@ window.onload = function()
 	}
 
 	window.parent.SetOkButton( true ) ;
+	window.parent.SetAutoSize( true ) ;
 }
 
 
 function Ok()
 {
+	oEditor.FCKUndo.SaveUndoStep() ;
+	
 	if ( !oActiveEl )
 	{
 		oActiveEl = FCK.EditorDocument.createElement( 'INPUT' ) ;
@@ -79,7 +82,7 @@ function Ok()
 	{
 		oFakeImage	= oEditor.FCKDocumentProcessor_CreateFakeImage( 'FCK__InputHidden', oActiveEl ) ;
 		oFakeImage.setAttribute( '_fckinputhidden', 'true', 0 ) ;
-		oFakeImage	= FCK.InsertElementAndGetIt( oFakeImage ) ;
+		oFakeImage	= FCK.InsertElement( oFakeImage ) ;
 	}
 	else
 		oEditor.FCKUndo.SaveUndoStep() ;

@@ -188,10 +188,10 @@ function createLink(linkInformation) {
     	// link present, manipulate it
         FCK.Selection.SelectNode(a);
         //a.href= linkInformation["href"];
-	a = FCK.CreateLink(linkInformation["href"]);
+		a = FCK.CreateLink(linkInformation["href"])[0];
     } else {
     	// new link, create it
-        a = FCK.CreateLink(linkInformation["href"]);
+        a = FCK.CreateLink(linkInformation["href"])[0];
         
     }
     
@@ -200,12 +200,12 @@ function createLink(linkInformation) {
 	} else {
 		a.removeAttribute("target");
 	}
-    
+
     if (linkInformation["title"] != null && linkInformation["title"] != "") {
     	a.title = linkInformation["title"];
     } else {
 		a.removeAttribute("title");
-	}
+    }
 	
 	if (USE_LINKSTYLEINPUTS) {
 		if (linkInformation["class"] != "") {

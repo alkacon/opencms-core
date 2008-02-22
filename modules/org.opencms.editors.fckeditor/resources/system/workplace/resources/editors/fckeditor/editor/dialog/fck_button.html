@@ -53,15 +53,18 @@ window.onload = function()
 		oActiveEl = null ;
 
 	window.parent.SetOkButton( true ) ;
+	window.parent.SetAutoSize( true ) ;
 }
 
 function Ok()
 {
+	oEditor.FCKUndo.SaveUndoStep() ;
+	
 	if ( !oActiveEl )
 	{
 		oActiveEl = oEditor.FCK.EditorDocument.createElement( 'INPUT' ) ;
 		oActiveEl.type = GetE('txtType').value ;
-		oActiveEl = oEditor.FCK.InsertElementAndGetIt( oActiveEl ) ;
+		oActiveEl = oEditor.FCK.InsertElement( oActiveEl ) ;
 	}
 
 	oActiveEl.name = GetE('txtName').value ;

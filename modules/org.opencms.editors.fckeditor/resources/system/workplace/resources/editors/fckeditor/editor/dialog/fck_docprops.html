@@ -282,7 +282,7 @@ function Ok()
 		if ( sCharSet.length == 0 )
 			sCharSet = 'utf-8' ;
 
-		FCK.XmlDeclaration = '<?xml version="1.0" encoding="' + sCharSet + '"?>' ;
+		FCK.XmlDeclaration = '<' + '?xml version="1.0" encoding="' + sCharSet + '"?>' ;
 
 		SetAttribute( oHTML, 'xmlns', 'http://www.w3.org/1999/xhtml' ) ;
 	}

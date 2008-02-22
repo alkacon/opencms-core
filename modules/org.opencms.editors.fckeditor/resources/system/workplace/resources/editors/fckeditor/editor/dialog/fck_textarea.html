@@ -51,14 +51,16 @@ window.onload = function()
 		oActiveEl = null ;
 
 	window.parent.SetOkButton( true ) ;
+	window.parent.SetAutoSize( true ) ;
 }
 
 function Ok()
 {
+	oEditor.FCKUndo.SaveUndoStep() ;
+	
 	if ( !oActiveEl )
 	{
-		oActiveEl = oEditor.FCK.EditorDocument.createElement( 'TEXTAREA' ) ;
-		oActiveEl = oEditor.FCK.InsertElementAndGetIt( oActiveEl ) ;
+		oActiveEl = oEditor.FCK.InsertElement( 'textarea' ) ;
 	}
 
 	oActiveEl.name = GetE('txtName').value ;
@@ -70,7 +72,7 @@ function Ok()
 
 		</script>
 	</head>
-	<body style='OVERFLOW: hidden' scroll='no'>
+	<body style="overflow: hidden">
 		<table height="100%" width="100%">
 			<tr>
 				<td align="center">

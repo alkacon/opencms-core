@@ -60,10 +60,11 @@ window.onload = function()
 	if ( oActiveEl )
 	{
 		if ( oActiveEl.getAttribute('type') )
-			oActiveSel.value = oActiveEl.getAttribute('type').toLowerCase() ;
+			oActiveSel.value = oActiveEl.getAttribute('type') ;
 	}
 
 	window.parent.SetOkButton( true ) ;
+	window.parent.SetAutoSize( true ) ;
 }
 
 function Ok()

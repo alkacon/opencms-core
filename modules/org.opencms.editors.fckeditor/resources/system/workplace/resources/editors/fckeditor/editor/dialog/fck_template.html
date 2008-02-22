@@ -191,7 +191,7 @@ function SelectTemplate( index )
 	oEditor.FCKUndo.SaveUndoStep() ;
 
 	if ( GetE('xChkReplaceAll').checked )
-		FCK.SetHTML( FCK._Templates[index].Html ) ;
+		FCK.SetData( FCK._Templates[index].Html ) ;
 	else
 		FCK.InsertHtml( FCK._Templates[index].Html ) ;
 

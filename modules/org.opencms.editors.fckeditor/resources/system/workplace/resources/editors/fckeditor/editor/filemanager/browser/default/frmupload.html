@@ -23,6 +23,7 @@
 -->
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
+		<title>File Upload</title>
 		<link href="browser.css" type="text/css" rel="stylesheet" />
 		<script type="text/javascript" src="js/common.js"></script>
 		<script type="text/javascript">
@@ -56,7 +57,7 @@ function OnUploadCompleted( errorNumber, data )
 	// Reset the Upload Worker Frame.
 	window.parent.frames['frmUploadWorker'].location = 'javascript:void(0)' ;
 
-	// Reset the upload form (On IE we must do a little trick to avout problems).
+	// Reset the upload form (On IE we must do a little trick to avoid problems).
 	if ( document.all )
 		document.getElementById('NewFile').outerHTML = '<input id="NewFile" name="NewFile" style="WIDTH: 100%" type="file">' ;
 	else

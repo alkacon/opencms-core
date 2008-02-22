@@ -51,7 +51,7 @@ function OnSpellerControlsLoad( controlsWindow )
 function oSpeller_OnFinished( numberOCorrections )
 {
 	if ( numberOCorrections > 0 )
-		oEditor.FCK.SetHTML( document.getElementById('txtHtml').value ) ;
+		oEditor.FCK.SetData( document.getElementById('txtHtml').value ) ;
 	window.parent.Cancel() ;
 }
 

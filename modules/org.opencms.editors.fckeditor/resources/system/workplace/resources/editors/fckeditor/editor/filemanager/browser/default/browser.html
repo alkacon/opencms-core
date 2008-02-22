@@ -68,6 +68,9 @@ oConnector.SendCommand = function( command, params, callBackFunction )
 
 	if ( params ) sUrl += '&' + params ;
 
+	// Add a random salt to avoid getting a cached version of the command execution
+	sUrl += '&uuid=' + new Date().getTime() ;
+
 	var oXML = new FCKXml() ;
 
 	if ( callBackFunction )
@@ -134,6 +137,12 @@ oIcons.GetIcon = function( fileName )
 	else
 		return 'default.icon' ;
 }
+
+function OnUploadCompleted( errorNumber, fileUrl, fileName, customMsg )
+{
+	window.frames['frmUpload'].OnUploadCompleted( errorNumber, fileName ) ;
+}
+
 		</script>
 	</head>
 	<frameset cols="150,*" class="Frame" framespacing="3" bordercolor="#f1f1e3" frameborder="1">
