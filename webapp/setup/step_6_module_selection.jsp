@@ -204,7 +204,7 @@ Alkacon OpenCms Setup Wizard - Module selection
 <tr>
 	<td valign="top">
 	
-<%= Bean.getHtmlPart("C_BLOCK_START", "Groups available for installation") %>
+<%= Bean.getHtmlPart("C_BLOCK_START", "Module groups available for installation") %>
 
 	<div style="width:96%; height: 300px; overflow: auto;">
     <table border="0" cellpadding="1" cellspacing="0">
@@ -215,7 +215,7 @@ Alkacon OpenCms Setup Wizard - Module selection
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
 
 </td>
-</tr><tr><td align='right'><a href="javascript:switchView()">Advanced module selection</a></td></tr>
+</tr><tr><td align='right'><a href="javascript:switchView()">Individual module selection</a></td></tr>
 </table>
 <table id="modulesView" style='display:none;' border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
 <tr>
@@ -232,7 +232,7 @@ Alkacon OpenCms Setup Wizard - Module selection
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
 
 </td>
-</tr><tr><td align='right'><a href="javascript:switchView()">Simple group selection</a></td></tr>
+</tr><tr><td align='right'><a href="javascript:switchView()">Module group selection</a></td></tr>
 </table>
 
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
