@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2007/08/13 16:29:47 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2008/02/22 16:58:02 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -938,7 +938,6 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                     }
                     result.append(" <a class=\"mI\" href=\"");
                     result.append(link);
-                    result.append("\"");
                     result.append("\" target=\"");
                     result.append(target);
                     result.append("\"");
