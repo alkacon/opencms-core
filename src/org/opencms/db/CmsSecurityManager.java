@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2008/01/24 16:40:20 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2008/02/25 09:50:47 $
+ * Version: $Revision: 1.112 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -241,7 +241,8 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(groupname)));
+            CmsRole role = CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(username));
+            checkRoleForUserModification(dbc, username, role);
             m_driverManager.addUserToGroup(
                 dbc,
                 CmsOrganizationalUnit.removeLeadingSeparator(username),
@@ -4422,7 +4423,8 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(groupname)));
+            CmsRole role = CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(groupname));
+            checkRoleForUserModification(dbc, username, role);
             m_driverManager.removeUserFromGroup(
                 dbc,
                 CmsOrganizationalUnit.removeLeadingSeparator(username),
@@ -4726,7 +4728,8 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(username)));
+            CmsRole role = CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(username));
+            checkRoleForUserModification(dbc, username, role);
             m_driverManager.setPassword(dbc, CmsOrganizationalUnit.removeLeadingSeparator(username), newPassword);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_SET_PASSWORD_1, username), e);
@@ -5325,10 +5328,8 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            if (!context.currentUser().equals(user)) {
-                // a user is allowed to write his own data (e.g. for "change preferences")
-                checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName())));
-            }
+            CmsRole role = CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName()));
+            checkRoleForUserModification(dbc, user.getName(), role);
             m_driverManager.writeUser(dbc, user);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_WRITE_USER_1, user.getName()), e);
@@ -5409,6 +5410,33 @@ public final class CmsSecurityManager {
                 Messages.ERR_PERM_NOTLOCKED_2,
                 context.getSitePath(resource),
                 context.currentUser().getName()));
+        }
+    }
+
+    /**
+     * Checks that the current user has enough permissions to modify the given user.<p>
+     * 
+     * @param dbc the database context
+     * @param username the name of the user to modify
+     * @param role the needed role
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     * @throws CmsRoleViolationException if the user has not the needed permissions
+     */
+    protected void checkRoleForUserModification(CmsDbContext dbc, String username, CmsRole role)
+    throws CmsDataAccessException, CmsRoleViolationException {
+
+        CmsUser user = m_driverManager.readUser(dbc, CmsOrganizationalUnit.removeLeadingSeparator(username));
+        // a user is allowed to write his own data
+        if (!dbc.currentUser().equals(user)) {
+            // check if the user to be modified is root admin
+            if (hasRole(dbc, user, CmsRole.ROOT_ADMIN)) {
+                // check the user that is going to do the modification is root admin
+                checkRole(dbc, CmsRole.ROOT_ADMIN);
+            } else {
+                // check the user that is going to do the modification has the given role
+                checkRole(dbc, role);
+            }
         }
     }
 
@@ -5501,7 +5529,8 @@ public final class CmsSecurityManager {
         }
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkRole(dbc, CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName())));
+            CmsRole role = CmsRole.ACCOUNT_MANAGER.forOrgUnit(getParentOrganizationalUnit(user.getName()));
+            checkRoleForUserModification(dbc, user.getName(), role);
             // this is needed because 
             // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
             // expects an offline project, if not data will become inconsistent

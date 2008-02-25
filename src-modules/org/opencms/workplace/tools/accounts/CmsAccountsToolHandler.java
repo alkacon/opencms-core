@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2008/02/20 09:02:12 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2008/02/25 09:50:47 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -56,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,8 +69,8 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /** Account manager file path constant. */
     private static final String ACCMAN_FILE = "account_managers.jsp";
 
-    /** Additional info file path constant. */
-    private static final String ADDINFO_FILE = "user_allinfo.jsp";
+    /** All additional info file path constant. */
+    private static final String ALLINFO_FILE = "user_allinfo.jsp";
 
     /** Assign users file path constant. */
     private static final String ASSIGN_FILE = "user_assign.jsp";
@@ -77,8 +78,8 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /** Delete file path constant. */
     private static final String DELETE_FILE = "unit_delete.jsp";
 
-    /** Edit file path constant. */
-    private static final String EDIT_FILE = "unit_edit.jsp";
+    /** Organizational unit edit file path constant. */
+    private static final String OU_EDIT_FILE = "unit_edit.jsp";
 
     /** Group users file path constant. */
     private static final String GROUP_USERS_FILE = "group_users.jsp";
@@ -192,6 +193,25 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             if (!OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.valueOfGroupName(roleName))) {
                 return false;
             }
+        } else if (getPath().indexOf("/users/edit/") > -1) {
+            // check if the current user is the root administrator
+            if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN)) {
+                return true;
+            }
+            // check if the user to change is root administrator 
+            CmsUUID userId = new CmsUUID(CmsRequestUtil.getNotEmptyDecodedParameter(
+                wp.getJsp().getRequest(),
+                A_CmsEditUserDialog.PARAM_USERID));
+            try {
+                CmsUser user = wp.getCms().readUser(userId);
+                return (!OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ROOT_ADMIN));
+            } catch (CmsException e) {
+                // should never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            return false;
         }
 
         return true;
@@ -206,16 +226,18 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             return false;
         }
 
-        if (getLink().equals(getPath(ADDINFO_FILE))) {
+        if (getLink().equals(getPath(ALLINFO_FILE))) {
             CmsWorkplaceUserInfoManager manager = OpenCms.getWorkplaceManager().getUserInfoManager();
             if ((manager == null) || (manager.getBlocks() == null) || manager.getBlocks().isEmpty()) {
                 return false;
             }
         }
+
         CmsObject cms = wp.getCms();
         if (!OpenCms.getRoleManager().hasRole(cms, CmsRole.ACCOUNT_MANAGER)) {
             return false;
         }
+
         String ouFqn = CmsRequestUtil.getNotEmptyDecodedParameter(
             wp.getJsp().getRequest(),
             A_CmsOrgUnitDialog.PARAM_OUFQN);
@@ -237,7 +259,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                 return !OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR.forOrgUnit(parentOu));
             }
             return true;
-        } else if (getLink().equals(getPath(EDIT_FILE))) {
+        } else if (getLink().equals(getPath(OU_EDIT_FILE))) {
             if (parentOu != null) {
                 return (OpenCms.getRoleManager().hasRole(cms, CmsRole.ADMINISTRATOR) && OpenCms.getRoleManager().hasRole(
                     cms,
@@ -299,6 +321,25 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
                 }
             }
             return visible;
+        } else if (getPath().indexOf("/users/edit/") > -1) {
+            // check if the current user is the root administrator
+            if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN)) {
+                return true;
+            }
+            // check if the user to change is root administrator 
+            CmsUUID userId = new CmsUUID(CmsRequestUtil.getNotEmptyDecodedParameter(
+                wp.getJsp().getRequest(),
+                A_CmsEditUserDialog.PARAM_USERID));
+            try {
+                CmsUser user = wp.getCms().readUser(userId);
+                return (!OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ROOT_ADMIN));
+            } catch (CmsException e) {
+                // should never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
+            }
+            return false;
         } else if (getLink().equals(getPath(USERROLE_FILE)) || getLink().equals(getPath(GROUP_USERS_FILE))) {
             String userId = CmsRequestUtil.getNotEmptyDecodedParameter(
                 wp.getJsp().getRequest(),
