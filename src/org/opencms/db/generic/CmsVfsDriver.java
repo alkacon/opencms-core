@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2008/01/24 16:40:20 $
- * Version: $Revision: 1.272 $
+ * Date   : $Date: 2008/02/25 10:48:24 $
+ * Version: $Revision: 1.273 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.272 $
+ * @version $Revision: 1.273 $
  * 
  * @since 6.0.0 
  */
@@ -963,7 +963,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
                 for (int i = 0; i < params.size(); i++) {
-                    stmt.setString(i + 1, (String)params.get(i));
+                    if (params.get(i) instanceof Integer) {
+                        stmt.setInt(i + 1, ((Integer)params.get(i)).intValue());
+                    } else {
+                        stmt.setString(i + 1, (String)params.get(i));
+                    }
                 }
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -977,7 +981,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
                 for (int i = 0; i < params.size(); i++) {
-                    stmt.setString(i + 1, (String)params.get(i));
+                    if (params.get(i) instanceof Integer) {
+                        stmt.setInt(i + 1, ((Integer)params.get(i)).intValue());
+                    } else {
+                        stmt.setString(i + 1, (String)params.get(i));
+                    }
                 }
                 stmt.executeUpdate();
                 m_sqlManager.closeAll(dbc, null, stmt, null);
@@ -1783,7 +1791,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
                 for (int i = 0; i < params.size(); i++) {
-                    stmt.setString(i + 1, (String)params.get(i));
+                    if (params.get(i) instanceof Integer) {
+                        stmt.setInt(i + 1, ((Integer)params.get(i)).intValue());
+                    } else {
+                        stmt.setString(i + 1, (String)params.get(i));
+                    }
                 }
                 res = stmt.executeQuery();
                 while (res.next()) {
@@ -1804,7 +1816,11 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
                 for (int i = 0; i < params.size(); i++) {
-                    stmt.setString(i + 1, (String)params.get(i));
+                    if (params.get(i) instanceof Integer) {
+                        stmt.setInt(i + 1, ((Integer)params.get(i)).intValue());
+                    } else {
+                        stmt.setString(i + 1, (String)params.get(i));
+                    }
                 }
                 res = stmt.executeQuery();
                 while (res.next()) {
@@ -2142,7 +2158,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt = m_sqlManager.getPreparedStatementForSql(conn, queryBuf.toString());
 
             for (int i = 0; i < params.size(); i++) {
-                stmt.setString(i + 1, (String)params.get(i));
+                if (params.get(i) instanceof Integer) {
+                    stmt.setInt(i + 1, ((Integer)params.get(i)).intValue());
+                } else if (params.get(i) instanceof Long) {
+                    stmt.setLong(i + 1, ((Long)params.get(i)).longValue());
+                } else {
+                    stmt.setString(i + 1, (String)params.get(i));
+                }
             }
 
             res = stmt.executeQuery();
@@ -3419,7 +3441,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_EXPIRED_AFTER"));
             conditions.append(END_CONDITION);
-            params.add(String.valueOf(startTime));
+            params.add(Long.valueOf(startTime));
         }
 
         if (endTime > 0L) {
@@ -3427,7 +3449,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_EXPIRED_BEFORE"));
             conditions.append(END_CONDITION);
-            params.add(String.valueOf(endTime));
+            params.add(Long.valueOf(endTime));
         }
     }
 
@@ -3588,7 +3610,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             while (it.hasNext()) {
                 CmsRelationType type = (CmsRelationType)it.next();
                 conditions.append("?");
-                params.add(String.valueOf(type.getId()));
+                params.add(Integer.valueOf(type.getId()));
                 if (it.hasNext()) {
                     conditions.append(", ");
                 }
@@ -3620,7 +3642,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_RELEASED_AFTER"));
             conditions.append(END_CONDITION);
-            params.add(String.valueOf(startTime));
+            params.add(Long.valueOf(startTime));
         }
 
         if (endTime > 0L) {
@@ -3628,7 +3650,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_RELEASED_BEFORE"));
             conditions.append(END_CONDITION);
-            params.add(String.valueOf(endTime));
+            params.add(Long.valueOf(endTime));
         }
     }
 
@@ -3680,8 +3702,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             }
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_STATE"));
             conditions.append(END_CONDITION);
-            params.add(state.toString());
-            params.add(state.toString());
+            params.add(Integer.valueOf(state.getState()));
+            params.add(Integer.valueOf(state.getState()));
         }
     }
 
@@ -3706,7 +3728,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_AFTER"));
             conditions.append(END_CONDITION);
-            params.add(String.valueOf(startTime));
+            params.add(Long.valueOf(startTime));
         }
 
         if (endTime > 0L) {
@@ -3714,7 +3736,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_BEFORE"));
             conditions.append(END_CONDITION);
-            params.add(String.valueOf(endTime));
+            params.add(Long.valueOf(endTime));
         }
     }
 
@@ -3735,13 +3757,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 conditions.append(BEGIN_EXCLUDE_CONDITION);
                 conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
                 conditions.append(END_CONDITION);
-                params.add(String.valueOf(type));
+                params.add(Integer.valueOf(type));
             } else {
                 //otherwise add condition to match against given type if necessary
                 conditions.append(BEGIN_INCLUDE_CONDITION);
                 conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
                 conditions.append(END_CONDITION);
-                params.add(String.valueOf(type));
+                params.add(Integer.valueOf(type));
             }
         }
     }
