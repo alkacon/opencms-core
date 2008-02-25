@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/02/25 13:46:34 $
- * Version: $Revision: 1.976 $
+ * Date   : $Date: 2008/02/25 13:50:34 $
+ * Version: $Revision: 1.977 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with role check not working if an organizational unit resource was deleted
 * Fixed issue with account manager being able to modify root administrator account
 * Fixed issue with some parameters of sql queries passed to JDBC with the wrong type
+* Fixed issue with PostgreSQL driver with version 8.3. Thanks to Ivan Codarin and Georgi Naplatanov
 - Improved support for servlet container Weblogic 9 (no servlet options needed anymore)
 - Improved default permission settings
 - Change type dialog now also considers resource type limitation settings as new resource dialog
