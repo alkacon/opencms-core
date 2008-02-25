@@ -1,0 +1,119 @@
+/*
+ * Main Styles for Direct Edit with JQuery 
+ */
+
+@charset "UTF-8";
+@media all
+{
+	/************************************************************************************** HOVER EFFECT */
+	div.directedit-highlight-bottom {
+	    background:transparent url(img/ocms_de_b.gif) repeat scroll 0%;
+	    overflow:hidden;
+	}
+	
+	div.directedit-highlight-top {
+	    background:transparent url(img/ocms_de_t.gif) repeat scroll 0%;
+	    overflow:hidden;
+	}
+	
+	div.directedit-highlight-left {
+		background:transparent url(img/ocms_de_l.gif) repeat scroll 0%;
+		overflow:hidden;
+	}
+	
+	div.directedit-highlight-right {
+		background:transparent url(img/ocms_de_r.gif) repeat scroll 0%;
+		overflow:hidden;
+	}
+	
+	div.directedit-highlight {
+	    height:2px;
+	    position:absolute;
+	    width:2px;
+	    z-index:999;
+	}
+	
+	div.directedit-highlight-all {
+		position:absolute;
+		background: #b31b34; 
+		z-index: 99;
+	}
+	
+	/************************************************************************************** BUTTONS */
+	div.ocms_de_bt {
+		visibility: hidden;
+		position: absolute;
+		z-index: 100;
+		
+	}
+	
+	div.ocms_de_norm {
+		width: 100%;
+		padding-top: 1px;
+		padding-bottom: 1px;
+	}
+	
+	div.ocms_de_selected{
+		/*background-color: InfoBackground;*/
+	}
+	
+	form.ocms_nomargin {
+		visibility: hidden;
+		display: none;
+		position: absolute;
+		padding: 0; 
+		margin: 0; 
+	}
+	
+	/************************************************************************************** EDIT */
+	.ocms_de_edit {
+		background: url(img/ocms_de_edit_i.png) center right no-repeat;
+		height: 20px;
+		width: 20px;
+		display: block;
+		float: left;
+	}
+	
+	.ocms_de_edit_disabled {
+		background: url(img/ocms_de_edit_d.png) center right no-repeat;
+	}
+	
+	.ocms_de_edit_hover{
+		background: url(img/ocms_de_edit_a.png) center right no-repeat;
+	}
+	
+	/************************************************************************************** DELETE */
+	.ocms_de_delete {
+		background: url(img/ocms_de_delete_i.png) center right no-repeat;
+		height: 20px;
+		width: 20px;
+		display: block;
+		float: left;
+	}
+	
+	.ocms_de_delete_disabled {
+		background: url(img/ocms_de_delete_d.png) center right no-repeat;
+	}
+	
+	.ocms_de_delete_hover{
+		background: url(img/ocms_de_delete_a.png) center right no-repeat;
+	}
+	
+	/************************************************************************************** NEW */
+	.ocms_de_new {
+		background: url(img/ocms_de_new_i.png) center right no-repeat;
+		height: 20px;
+		width: 20px;
+		display: block;
+		float: right;
+	}
+	
+	.ocms_de_new_disabled {
+		background: url(img/ocms_de_new_d.png) center right no-repeat;
+	}
+	
+	.ocms_de_new_hover{
+		background: url(img/ocms_de_new_a.png) center right no-repeat;
+	}	
+	
+}
