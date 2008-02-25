@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/02/08 14:45:34 $
- * Version: $Revision: 1.608 $
+ * Date   : $Date: 2008/02/25 11:18:18 $
+ * Version: $Revision: 1.609 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -755,10 +755,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String newValue,
         boolean recursive) throws CmsVfsException, CmsException {
 
+        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
         // collect the resources to look up
         List resources = new ArrayList();
         if (recursive) {
-            resources = readResourcesWithProperty(dbc, resource, propertyDefinition, null);
+            resources = readResourcesWithProperty(dbc, resource, propertyDefinition, null, filter);
         } else {
             resources.add(resource);
         }
@@ -776,7 +777,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List changedResources = new ArrayList(resources.size());
         // create permission set and filter to check each resource
         CmsPermissionSet perm = CmsPermissionSet.ACCESS_WRITE;
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
         for (int i = 0; i < resources.size(); i++) {
             // loop through found resources and check property values
             CmsResource res = (CmsResource)resources.get(i);
@@ -6447,26 +6447,34 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param folder the folder to get the resources with the property from
      * @param propertyDefinition the name of the property (definition) to check for
      * @param value the string to search in the value of the property
+     * @param filter the resource filter to apply to the result set
      * 
      * @return a list of all <code>{@link CmsResource}</code> objects 
      *          that have a value set for the specified property.
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readResourcesWithProperty(CmsDbContext dbc, CmsResource folder, String propertyDefinition, String value)
-    throws CmsException {
+    public List readResourcesWithProperty(
+        CmsDbContext dbc,
+        CmsResource folder,
+        String propertyDefinition,
+        String value,
+        CmsResourceFilter filter) throws CmsException {
 
         String cacheKey;
         if (value == null) {
-            cacheKey = getCacheKey(
-                new String[] {dbc.currentUser().getName(), folder.getRootPath(), propertyDefinition},
-                dbc.currentProject());
+            cacheKey = getCacheKey(new String[] {
+                dbc.currentUser().getName(),
+                folder.getRootPath(),
+                propertyDefinition,
+                filter.getCacheId()}, dbc.currentProject());
         } else {
             cacheKey = getCacheKey(new String[] {
                 dbc.currentUser().getName(),
                 folder.getRootPath(),
                 propertyDefinition,
-                value}, dbc.currentProject());
+                value,
+                filter.getCacheId()}, dbc.currentProject());
         }
         List resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
         if (resourceList == null) {
@@ -6480,11 +6488,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 folder.getRootPath(),
                 value);
             // apply permission filter
-            resourceList = filterPermissions(dbc, resourceList, CmsResourceFilter.ALL);
+            resourceList = filterPermissions(dbc, resourceList, filter);
             // store the result in the resourceList cache
             OpenCms.getMemoryMonitor().cacheResourceList(cacheKey, resourceList);
         }
-        return resourceList;
+        // we must always apply the result filter and update the context dates
+        return updateContextDates(dbc, resourceList, filter);
     }
 
     /**
@@ -6567,7 +6576,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // important: there is no permission check done on the returned list of siblings
         // this is because of possible issues with the "publish all siblings" option,
         // moreover the user has read permission for the content through
-        // the selected sibling anyway        
+        // the selected sibling anyway
         return updateContextDates(dbc, siblings, filter);
     }
 

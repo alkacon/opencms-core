@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2007/11/12 13:57:07 $
- * Version: $Revision: 1.156 $
+ * Date   : $Date: 2008/02/25 11:18:18 $
+ * Version: $Revision: 1.157 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.156 $
+ * @version $Revision: 1.157 $
  * 
  * @since 6.0.0 
  */
@@ -3534,6 +3534,8 @@ public final class CmsObject {
      * Reads all resources that have a value set for the specified property.<p>
      * 
      * Both individual and shared properties of a resource are checked.<p>
+     * 
+     * Will use the {@link CmsResourceFilter#ALL} resource filter.<p>
      *
      * @param propertyDefinition the name of the property to check for
      * 
@@ -3551,6 +3553,8 @@ public final class CmsObject {
      * Reads all resources that have a value set for the specified property in the given path.<p>
      * 
      * Both individual and shared properties of a resource are checked.<p>
+     * 
+     * Will use the {@link CmsResourceFilter#ALL} resource filter.<p>
      *
      * @param path the folder to get the resources with the property from
      * @param propertyDefinition the name of the property to check for
@@ -3574,6 +3578,8 @@ public final class CmsObject {
      * If the <code>value</code> parameter is <code>null</code>, all resources having the
      * given property set are returned.<p>
      * 
+     * Will use the {@link CmsResourceFilter#ALL} resource filter.<p>
+     * 
      * @param path the folder to get the resources with the property from
      * @param propertyDefinition the name of the property to check for
      * @param value the string to search in the value of the property
@@ -3586,7 +3592,40 @@ public final class CmsObject {
     public List readResourcesWithProperty(String path, String propertyDefinition, String value) throws CmsException {
 
         CmsResource resource = readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
-        return m_securityManager.readResourcesWithProperty(m_context, resource, propertyDefinition, value);
+        return m_securityManager.readResourcesWithProperty(
+            m_context,
+            resource,
+            propertyDefinition,
+            value,
+            CmsResourceFilter.ALL);
+    }
+
+    /**
+     * Reads all resources that have a value (containing the specified value) set 
+     * for the specified property in the given path.<p>
+     * 
+     * Both individual and shared properties of a resource are checked.<p>
+     *
+     * If the <code>value</code> parameter is <code>null</code>, all resources having the
+     * given property set are returned.<p>
+     * 
+     * Will use the given resource filter.<p>
+     * 
+     * @param path the folder to get the resources with the property from
+     * @param propertyDefinition the name of the property to check for
+     * @param value the string to search in the value of the property
+     * @param filter the resource filter to apply to the result set
+     * 
+     * @return all <code>{@link CmsResource}</code> objects 
+     *          that have a value set for the specified property in the given path.
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readResourcesWithProperty(String path, String propertyDefinition, String value, CmsResourceFilter filter)
+    throws CmsException {
+
+        CmsResource resource = readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
+        return m_securityManager.readResourcesWithProperty(m_context, resource, propertyDefinition, value, filter);
     }
 
     /**
@@ -3762,6 +3801,7 @@ public final class CmsObject {
      */
     public void removeResourceFromProject(String resourcename) throws CmsException {
 
+        // TODO: this should be also possible if the resource has been deleted
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource).removeResourceFromProject(this, m_securityManager, resource);
     }

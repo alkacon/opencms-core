@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2008/02/25 09:50:47 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2008/02/25 11:18:18 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -4083,6 +4083,7 @@ public final class CmsSecurityManager {
      * @param folder the folder to get the resources with the property from
      * @param propertyDefinition the name of the property (definition) to check for
      * @param value the string to search in the value of the property
+     * @param filter the resource filter to apply to the result set
      * 
      * @return a list of all <code>{@link CmsResource}</code> objects 
      *          that have a value set for the specified property.
@@ -4093,12 +4094,13 @@ public final class CmsSecurityManager {
         CmsRequestContext context,
         CmsResource folder,
         String propertyDefinition,
-        String value) throws CmsException {
+        String value,
+        CmsResourceFilter filter) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.readResourcesWithProperty(dbc, folder, propertyDefinition, value);
+            result = m_driverManager.readResourcesWithProperty(dbc, folder, propertyDefinition, value, filter);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_RESOURCES_FOR_PROP_VALUE_3,
