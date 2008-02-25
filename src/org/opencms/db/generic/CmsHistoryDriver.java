@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2007/11/05 13:49:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/02/25 11:19:04 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.9.1
  */
@@ -477,7 +477,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                         // skip not interesting versions
                         continue;
                     }
-                    I_CmsHistoryResource newHistRes = internalMergeResource(dbc, histRes, res, 0);
+                    I_CmsHistoryResource newHistRes = internalMergeResource(histRes, res, 0);
                     // add interesting versions, in the right order
                     result.add(0, newHistRes);
                     lastHistRes = newHistRes;
@@ -507,7 +507,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                             // skip not interesting versions
                             continue;
                         }
-                        I_CmsHistoryResource newHistRes = internalMergeResource(dbc, histRes2, res, 0);
+                        I_CmsHistoryResource newHistRes = internalMergeResource(histRes2, res, 0);
                         // add interesting versions, in the right order
                         result.add(pos, newHistRes);
                         lastHistRes = newHistRes;
@@ -530,7 +530,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
                     I_CmsHistoryResource lastHistRes = histRes;
                     while (res.next()) {
-                        I_CmsHistoryResource newHistRes = internalMergeResource(dbc, histRes, res, offset);
+                        I_CmsHistoryResource newHistRes = internalMergeResource(histRes, res, offset);
                         if (newHistRes.getResourceVersion() != lastHistRes.getResourceVersion()) {
                             // only add interesting versions
                             if (offset == 1) {
@@ -1739,7 +1739,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
      * Merges an historical entry for a sibling, based on the structure data from the given historical resource
      * and result set for the resource entry.<p>
      * 
-     * @param dbc the current database context 
      * @param histRes the original historical entry
      * @param res the result set of the resource entry
      * @param versionOffset the offset for the structure version
@@ -1748,11 +1747,8 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
      * 
      * @throws SQLException if something goes wrong
      */
-    protected I_CmsHistoryResource internalMergeResource(
-        CmsDbContext dbc,
-        I_CmsHistoryResource histRes,
-        ResultSet res,
-        int versionOffset) throws SQLException {
+    protected I_CmsHistoryResource internalMergeResource(I_CmsHistoryResource histRes, ResultSet res, int versionOffset)
+    throws SQLException {
 
         int resourceVersion = res.getInt(m_sqlManager.readQuery("C_RESOURCES_VERSION"));
         int structureVersion = histRes.getStructureVersion() - versionOffset;
