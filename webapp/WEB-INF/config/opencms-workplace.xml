@@ -27,7 +27,7 @@
     <editorpreconditions>
     	<editorprecondition name="xmlcontent" class="org.opencms.workplace.editors.CmsPreEditorActionDefinitionXmlContent" />
     </editorpreconditions>
-    <directeditprovider class="org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider" />
+    <directeditprovider class="org.opencms.workplace.editors.directedit.CmsDirectEditJQueryProvider" />
     <exportpoints>
       <exportpoint uri="/system/workplace/resources/" destination="resources/"/>
     </exportpoints>

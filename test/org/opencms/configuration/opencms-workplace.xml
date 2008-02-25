@@ -764,6 +764,7 @@
         <explorer-generaloptions>
           <buttonstyle>textimage</buttonstyle>
           <entries>50</entries>
+          <entryoptions>10,15,20,50</entryoptions>
         </explorer-generaloptions>
         <explorer-displayoptions>
           <show-title>true</show-title>
