@@ -1,8 +1,12 @@
+<%@page session="false" import="org.opencms.jsp.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%
+	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+	pageContext.setAttribute("cms", cms);
+%>
 
-<c:set var="locale"><cms:property name="locale" file="search" default="en" /></c:set>
+<c:set var="locale" value="${cms.requestContext.locale}" />
 <fmt:setLocale value="${locale}" />
 
 <div class="box ${param.schema}">

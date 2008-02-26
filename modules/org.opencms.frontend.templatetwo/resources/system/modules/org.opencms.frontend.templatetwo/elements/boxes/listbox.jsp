@@ -24,7 +24,7 @@
 	pageContext.setAttribute("cms", cms);
 %>
 
-<c:set var="locale"><cms:property name="locale" file="search" default="en" /></c:set>
+<c:set var="locale" value="${cms.requestContext.locale}" />
 <fmt:setLocale value="${locale}" />
 
 <div class="box ${param.schema}">
