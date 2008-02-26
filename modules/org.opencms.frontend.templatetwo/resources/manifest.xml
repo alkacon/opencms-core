@@ -1365,21 +1365,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.templatetwo/schemas/article.xsd</source>
-			<destination>system/modules/org.opencms.frontend.templatetwo/schemas/article.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>3cf97cea-d59c-11dc-8cca-3bdd2ea0b1ac</uuidstructure>
-			<uuidresource>3cf97ceb-d59c-11dc-8cca-3bdd2ea0b1ac</uuidresource>
-			<datelastmodified>Mon, 11 Feb 2008 16:10:19 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 07 Feb 2008 16:46:32 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/modules/org.opencms.frontend.templatetwo/schemas/boxelement.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templatetwo/schemas/boxelement.xsd</destination>
 			<type>plain</type>
