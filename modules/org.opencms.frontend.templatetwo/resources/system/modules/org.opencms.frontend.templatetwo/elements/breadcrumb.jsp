@@ -3,6 +3,14 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><% 
 
+    // This element defines breadcrumb navigation.
+    //
+	// It uses the CmsTemplateMenu class to provide some auxiliary methods
+	// in order to prevent the use of scriplet code in this jsp.
+	// For details on the CmsTemplateMenu class, see the source code which can
+	// be found at the followinf VFS location:
+	// /system/modules/org.opencms.frontend.templatetwo/java_src/CmsTemplateMenu.java
+
 	CmsTemplateMenu cms = new CmsTemplateMenu(pageContext, request, response);
 	pageContext.setAttribute("cms", cms);
 	pageContext.setAttribute("navList", cms.getNavigation().getNavigationBreadCrumb(1, true));

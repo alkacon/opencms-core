@@ -2,6 +2,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
+
+	// The main template JSP of TemplateTwo. 
+	// This template is highly configurable in style and layout. The configuration
+	// is done in several configuration files of the types "ttstyle", "ttconfig",
+	// "ttoptions" and "ttpreset". Those configuration files are managed by the
+	// class CmsTemplateLayout.
+	//
+	// For details on the CmsTemplateLayout class, see the source code which can
+	// be found at the following VFS location:
+	// /system/modules/org.opencms.frontend.templatetwo/java_src/CmsTemplateLayout.java
+
+
 	CmsTemplateLayout cms = new CmsTemplateLayout(pageContext, request, response);
 	pageContext.setAttribute("cms", cms);
 %>

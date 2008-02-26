@@ -3,6 +3,23 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%
 
+	// This element creates the output for a list box.
+	// A list box is a generic container which to create a list of xmlcontents
+	// of any kind.
+	// This container is configured by an xml configuration file defining the
+	// collector to get the contents from the VFS and the mapping of the content
+	// fields to be displayed.
+	//
+	// To prevent to put scriplet code in the JSP istself, all the logic of 
+	// this process is encapsulated in the classes CmsListBox, CmsListBoxEntry and
+	// CmsListBoxContentMapping
+	//
+	// For details on this those classes, see the source code which can
+	// be found at the following VFS locations:
+	// /system/modules/org.opencms.frontend.templatetwo/java_src/CmsListBox.java
+	// /system/modules/org.opencms.frontend.templatetwo/java_src/CmsListBoxEntry.java
+	// /system/modules/org.opencms.frontend.templatetwo/java_src/CmsListBoxContentMapping.java
+
 	CmsListBox cms = new CmsListBox(pageContext, request, response);
 	pageContext.setAttribute("cms", cms);
 %>

@@ -3,6 +3,18 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%
 
+    // This element defines the a top level navigation element which can be
+	// selected in the style configuration file.
+	//
+	// Single navigation enties of the first navigation level are shown as
+	// text only.
+	//
+	// It uses the CmsTemplateMenu class to provide some auxiliary methods
+	// in order to prevent the use of scriplet code in this jsp.
+	// For details on the CmsTemplateMenu class, see the source code which can
+	// be found at the following VFS location:
+	// /system/modules/org.opencms.frontend.templatetwo/java_src/CmsTemplateMenu.java
+
 	CmsTemplateMenu cms = new CmsTemplateMenu(pageContext, request, response);
 	cms.setElements(cms.getNavigation().getNavigationForFolder("/"));
 	pageContext.setAttribute("cms", cms);
