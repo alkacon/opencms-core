@@ -1,0 +1,97 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="Styles" type="OpenCmsStyles"/>
+	
+	<xsd:complexType name="OpenCmsStyles">
+		<xsd:sequence>
+			<xsd:element name="Style" type="OpenCmsStyle" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsStyle">
+		<xsd:sequence>
+			<xsd:element name="window.width" type="OpenCmsString" />
+			<xsd:element name="window.background" type="OpenCmsColor" />
+			<xsd:element name="window.background.image" type="OpenCmsVfsFile" />
+			<xsd:element name="page.background" type="OpenCmsColor" />
+			<xsd:element name="page.font.color" type="OpenCmsColor" />
+			<xsd:element name="header.color" type="OpenCmsColor" />
+			<xsd:element name="header.background" type="OpenCmsColor" />
+			<xsd:element name="header.background.image" type="OpenCmsVfsFile" />
+			<xsd:element name="breadcrumb.divider" type="OpenCmsString" />
+			<xsd:element name="footer.color" type="OpenCmsColor" />
+			<xsd:element name="footer.background" type="OpenCmsColor" />
+			<xsd:element name="footer.background.image" type="OpenCmsVfsFile" />
+			<xsd:element name="footer.divider" type="OpenCmsString" />
+			<xsd:element name="font.family" type="OpenCmsString" />
+			<xsd:element name="link.color" type="OpenCmsColor" />
+			<xsd:element name="link.hover.color" type="OpenCmsColor" />
+			<xsd:element name="column.divider.left" type="OpenCmsString" />
+			<xsd:element name="column.divider.right" type="OpenCmsString" />
+			<xsd:element name="schema1.box.background" type="OpenCmsColor" />
+			<xsd:element name="schema1.box.header.background" type="OpenCmsColor" />
+			<xsd:element name="schema1.box.header.color" type="OpenCmsColor" />
+			<xsd:element name="schema2.box.background" type="OpenCmsColor" />
+			<xsd:element name="schema2.box.header.background" type="OpenCmsColor" />
+			<xsd:element name="schema2.box.header.color" type="OpenCmsColor" />
+			<xsd:element name="schema3.box.background" type="OpenCmsColor" />
+			<xsd:element name="schema3.box.header.background" type="OpenCmsColor" />
+			<xsd:element name="schema3.box.header.color" type="OpenCmsColor" />
+			<xsd:element name="nav.main" type="OpenCmsString" />
+			<xsd:element name="nav.main.background" type="OpenCmsColor" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="nav.main.hover.background" type="OpenCmsColor" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="nav.main.active.background" type="OpenCmsColor" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="nav.left.hover.background" type="OpenCmsColor" />
+			<xsd:element name="nav.left.hover.color" type="OpenCmsColor" />
+			<xsd:element name="nav.left.active.background" type="OpenCmsColor" />
+			<xsd:element name="nav.left.active.color" type="OpenCmsColor" />
+			<xsd:element name="css.file" type="OpenCmsVfsFile" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templatetwo.workplace"/>
+			<mappings/>
+			<layouts>
+				<layout element="nav.main" widget="SelectorWidget" configuration="value='/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_slidingdoors.jsp' option='${key.menu.main.slidingdoors}' | value='/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_skeleton.jsp' option='${key.menu.main.skeleton}' | value='/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_dolphin.jsp' option='${key.menu.main.dolphin}' | value='/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_style2.jsp' option='${key.menu.main.style2}' "/>
+			</layouts>
+			<validationrules/>
+			<defaults>
+				<default element="window.width" value="80em" />
+				<default element="window.background" value="#4d87c7" />
+				<default element="window.background.image" value="/system/modules/org.opencms.frontend.templatetwo/resources/images/bg_blue.gif" />
+				<default element="page.background" value="#FFFFFF" />
+				<default element="page.font.color" value="#444444" />
+				<default element="header.color" value="#444444" />
+				<default element="header.background" value="#FFFFFF" />
+				<default element="header.background.image" value="" />
+				<default element="breadcrumb.divider" value="1px solid" />
+				<default element="footer.color" value="#444444" />
+				<default element="footer.background" value="#CCCCCC" />
+				<default element="footer.divider" value="1px solid" />
+				<default element="font.family" value="'Trebuchet MS', Verdana, Helvetica, Arial, sans-serif" />
+				<default element="link.color" value="#900900" />
+				<default element="link.hover.color" value="#900900" />
+				<default element="schema1.box.background" value="#e1e1e1" />
+				<default element="schema1.box.header.background" value="#25438D" />
+				<default element="schema1.box.header.color" value="#ffffff" />
+				<default element="schema2.box.background" value="#e1e1e1" />
+				<default element="schema2.box.header.background" value="#AA0114" />
+				<default element="schema2.box.header.color" value="#ffffff" />
+				<default element="schema3.box.background" value="#e1e1e1" />
+				<default element="schema3.box.header.background" value="#2C6700" />
+				<default element="schema3.box.header.color" value="#ffffff" />
+				<default element="nav.main" value="/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_slidingdoors.jsp" />
+				<default element="nav.left.hover.background" value="#477DBE" />
+				<default element="nav.left.hover.color" value="#fff" />
+				<default element="nav.left.active.background" value="#aabaab" />
+				<default element="nav.left.active.color" value="#444444" />
+			</defaults>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

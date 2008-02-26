@@ -1,0 +1,34 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="Presets" type="OpenCmsPresets"/>
+	
+	<xsd:complexType name="OpenCmsPresets">
+		<xsd:sequence>
+			<xsd:element name="Preset" type="OpenCmsPreset" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsPreset">
+		<xsd:sequence>
+			<xsd:element name="column.left.visible" type="OpenCmsBoolean" />
+			<xsd:element name="column.left.width" type="OpenCmsString" />
+			<xsd:element name="column.right.visible" type="OpenCmsBoolean" />
+			<xsd:element name="column.right.width" type="OpenCmsString" />
+			<xsd:element name="nav.left.visible" type="OpenCmsBoolean" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templatetwo.workplace"/>
+			<mappings/>
+			<layouts/>
+			<validationrules/>
+			<defaults/>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

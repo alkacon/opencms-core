@@ -1,0 +1,35 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="BoxElements" type="OpenCmsBoxElements"/>
+	
+	<xsd:complexType name="OpenCmsBoxElements">
+		<xsd:sequence>
+			<xsd:element name="BoxElement" type="OpenCmsBoxElement" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsBoxElement">
+		<xsd:sequence>
+			<xsd:element name="File" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="Orientation" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+			<xsd:element name="ColorSchema" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templatetwo.workplace"/>
+			<mappings/>
+			<layouts>
+				<layout element="Orientation" widget="SelectorWidget" configuration="value='left' option='${key.box.orientation.left}' | value='right' option='${key.box.orientation.right}' | value='center' option='${key.box.orientation.center}' "/>
+				<layout element="ColorSchema" widget="SelectorWidget" configuration="value='box_schema1' option='${key.box.schema.schema1}' | value='box_schema2' option='${key.box.schema.schema2}' | value='box_schema3' option='${key.box.schema.schema3}' "/>
+			</layouts>
+			<validationrules/>
+			<defaults/>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

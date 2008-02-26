@@ -1,0 +1,7 @@
+/* ^^^^^^^^ BELOW IS THE CODE FOR THE MENU ^^^^^^^^^^ */
+#nav_main{position:relative;display:block;height:24px;font-size:11px;font-weight:bold;background:#C0C7CC url(../../images/gradient.png) repeat-x top left;}
+#nav_main ul{margin:0;padding:0;list-style-type:none;width:auto;}
+#nav_main ul li{display:block;float:left;margin:0 1px 0 0;}
+#nav_main ul li a{display:block;float:left;color:#000;text-decoration:none;padding:4px 20px 0 20px;height:20px;}
+#nav_main ul li a:hover,#styletwo ul li a.current{color:#fff;}
+/* ^^^^^^^^ ABOVE IS THE CODE FOR THE MENU ^^^^^^^^^^ */

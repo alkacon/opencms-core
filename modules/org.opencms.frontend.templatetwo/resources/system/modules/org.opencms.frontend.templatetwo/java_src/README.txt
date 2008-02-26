@@ -1,0 +1,5 @@
+For a better understanding the source code of the classes used by the
+jsp pages in the template two module are provided in this folder. 
+
+Please note that changes at these classes have no effect, since they
+will not be used.

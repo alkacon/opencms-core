@@ -1,0 +1,414 @@
+<%@page session="false" import="org.opencms.frontend.templatetwo.*"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
+	CmsTemplateLayout cms = new CmsTemplateLayout(pageContext, request, response);
+	pageContext.setAttribute("cms", cms);
+%>
+@charset "UTF-8";
+
+<c:if test="${!empty cms.styleValue['css.file']}">
+	@import url(<cms:link>${cms.styleValue['css.file']}</cms:link>);
+</c:if>
+
+@media all
+{
+  /**
+   * ------------------------------------------------------------------
+   * Basic Settings
+   * ------------------------------------------------------------------
+   */
+
+  * { margin: 0px; padding: 0px; }
+
+  html * { font-size: 100.01% }
+
+  textarea, pre, tt, code {
+	font-family:"Courier New", Courier, monospace;  	
+  }
+
+  body {
+    padding: 10px 0;
+    font-family: <c:out value="${cms.styleValue['font.family']}" default="'Lucida Grande','Trebuchet MS',Verdana,Helvetica,sans-serif" escapeXml="false"/>;
+    font-size: 75.00%; 
+    height: 1%;
+    color: <c:out value="${cms.styleValue['page.font.color']}" default="#444444" />;
+  }
+
+  h1, h2, h3, h4, h5, h6 { font-weight:bold; margin: 0 0 0.25em 0; }
+  h1 { font-size: 200% }                        /* 24px */
+  h2 { font-size: 166.67% }                     /* 20px */
+  h3 { font-size: 150% }                        /* 18px */
+  h4 { font-size: 133.33% }                     /* 16px */
+  h5 { font-size: 116.67% }                     /* 14px */
+  h6 { font-size: 116.67%; font-style:italic }  /* 14px */
+
+  p { line-height: 1.5em; }
+
+  ul, ol, dl { line-height: 1.5em; margin: 0 0 1em 1em }
+  li { margin-left: 1.5em; line-height: 1.5em }
+
+  dt { font-weight: bold }
+  dd { margin: 0 0 1em 2em }
+
+  cite, blockquote { font-style:italic }
+  blockquote { margin: 0 0 1em 1.5em }
+
+  strong,b { font-weight: bold }
+  em,i { font-style:italic }
+
+  pre, code { font-family: monospace; font-size: 1.1em; }
+
+  acronym, abbr {
+    letter-spacing: .07em;
+    border-bottom: .1em dashed #c00;
+    cursor: help;
+  }
+
+  a {
+  	color: <c:out value="${cms.styleValue['link.color']}" default="#900" />; 
+  	text-decoration: none;
+  }
+  a:focus,
+  a:hover,
+  a:active {
+  	color: <c:out value="${cms.styleValue['link.hover.color']}" default="#900" />;
+  	text-decoration:underline;
+  }
+  
+  a img {
+  	text-decoration: none;
+  	border: none;
+  }
+  
+  /**
+   * ------------------------------------------------------------------
+   * Column Layout
+   * ------------------------------------------------------------------
+   */
+
+  body { 
+    background: <c:out value="${cms.styleValue['window.background']}" default="#4d87c7" /> url("<cms:link><c:out value="${cms.styleValue['window.background.image']}" default="../images/bg_blue.gif" /></cms:link>") repeat-x top left fixed; 
+  }
+    
+  #window {
+  	width: <c:out value="${cms.styleValue['window.width']}" default="80em" />;
+    margin: 0pt auto;
+  	text-align: left;
+  }
+
+  #page {
+    background: <c:out value="${cms.styleValue['page.background']}" default="#FFFFFF" />;
+    padding: 10px;
+  }
+
+  #header {
+  	background: <c:out value="${cms.styleValue['header.background']}" default="#FFFFFF" /> <c:if test="${!empty cms.styleValue['header.background.image']}">url("<cms:link><c:out value="${cms.styleValue['header.background.image']}" /></cms:link>") top left</c:if>;
+  	color: <c:out value="${cms.styleValue['header.color']}" default="#444444" />;
+    position: relative;
+    padding: 45px 0px 1em 0px;
+  }
+  
+  #topnav {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+  
+  #topnav a {
+  	color: <c:out value="${cms.styleValue['page.font.color']}" default="#444444" />;
+  }
+
+  #breadcrumb {
+    padding: 5px 0px 5px 20px;
+    border-bottom: <c:out value="${cms.styleValue['breadcrumb.divider']}" default="1px solid" />;
+    position: relative;
+    height: 1%;
+  }
+  
+  #breadcrumb a {
+  	color: <c:out value="${cms.styleValue['page.font.color']}" default="#444444" />;
+  }
+
+  #main {
+    padding: 10px 0;
+  }
+
+  #col1 {
+    <c:if test="${cms.presetValue['column.left.visible'] != 'true'}">
+	  	display: none;
+	</c:if>
+	width: <c:out value="${cms.presetValue['column.left.width']}" default="20em" />;
+    float: left;
+  }
+
+  #col1_content {
+    position: relative;
+    padding: 10px 10px 10px 0px;
+  }
+  
+  #col2 {
+    width: auto;
+    <c:if test="${cms.presetValue['column.left.visible'] == 'true'}">
+    	margin-left: <c:out value="${cms.presetValue['column.left.width']}" default="20em" />;
+    </c:if>
+    <c:if test="${cms.presetValue['column.right.visible'] == 'true'}">
+    	margin-right: <c:out value="${cms.presetValue['column.right.width']}" default="20em" />;
+    </c:if>
+    
+    border-left: <c:out value="${cms.styleValue['column.divider.left']}" default="" />; 
+    border-right: <c:out value="${cms.styleValue['column.divider.right']}" default="" />; 
+    /* border-left: 2px #ddd dotted;
+    border-left: 18em #efefef solid; */
+  }
+
+  #col2_content {
+    position: relative;
+    padding: 10px;
+  }
+  
+  #col3 {
+    <c:if test="${cms.presetValue['column.right.visible'] != 'true'}">
+	  	display: none;
+	</c:if>
+	width: <c:out value="${cms.presetValue['column.right.width']}" default="20em" />;
+    float: right;
+  }
+
+  #col3_content {
+    position: relative;
+    padding: 10px 0px 10px 10px;
+  }
+  
+  #footer {
+  	background: <c:out value="${cms.styleValue['footer.background']}" default="#cccccc" /> <c:if test="${!empty cms.styleValue['footer.background.image']}">url("<cms:link><c:out value="${cms.styleValue['footer.background.image']}" /></cms:link>") top left</c:if>;
+    color: <c:out value="${cms.styleValue['footer.color']}" default="#444444" />;
+    padding: 10px;
+    margin-top: 10px;
+    border-top: <c:out value="${cms.styleValue['footer.divider']}" default="1px solid" />;
+  }
+  
+  #header, #nav_main, #main, #footer, #breadcrumb { clear:both; }
+
+  .clearfix:after { 
+    content: "."; 
+    display: block; 
+    height: 0; 
+    clear: both; 
+    visibility: hidden; 
+  } 
+
+  .clearfix { display: block; }
+  
+  .clear {
+	clear: both;
+  }
+
+  /**
+   * ------------------------------------------------------------------
+   * Accessible
+   * ------------------------------------------------------------------
+   */
+   
+  .skip {
+    position: absolute;
+    left: 0px;
+    top: -500px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  /**
+   * ------------------------------------------------------------------
+   * Search Page
+   * ------------------------------------------------------------------
+   */
+   
+   #searchForm {
+     margin-bottom: 10px;
+   }
+   
+   .search_result {
+     margin-bottom: 10px;
+   }
+  
+   .pagination {
+     text-align: center;
+   }
+   
+  /**
+   * ------------------------------------------------------------------
+   * Box Layout
+   * ------------------------------------------------------------------
+   */
+   
+   .box {
+   	 background: #e1e1e1;
+     margin-bottom: 15px;
+     border-bottom:1px solid #7B7F7E;
+     border-left:1px solid #7B7F7E;
+     border-right:1px solid #7B7F7E;
+   }
+   
+   .box h4 {
+   	 background: #25438D url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: #fff;
+   	 font-size: 1.1em;
+   	 width: auto;
+   	 margin: -1px;
+   	 padding: 5px;
+   	 line-height: 16px;
+   }
+   
+   .box_schema1 {
+   	 background: <c:out value="${cms.styleValue['schema1.box.background']}" default="#e1e1e1" />;   
+   }
+
+   .box_schema2 {
+   	 background: <c:out value="${cms.styleValue['schema2.box.background']}" default="#e1e1e1" />;   
+   }
+
+   .box_schema3 {
+   	 background: <c:out value="${cms.styleValue['schema3.box.background']}" default="#e1e1e1" />;   
+   }
+   
+   .box_schema1 h4 {
+   	 background: <c:out value="${cms.styleValue['schema1.box.header.background']}" default="#25438D" /> url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: <c:out value="${cms.styleValue['schema1.box.header.color']}" default="#fff" />;
+   }
+
+   .box_schema2 h4 {
+   	 background: <c:out value="${cms.styleValue['schema2.box.header.background']}" default="#AA0114" /> url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: <c:out value="${cms.styleValue['schema2.box.header.color']}" default="#fff" />;
+   }
+
+   .box_schema3 h4 {
+   	 background: <c:out value="${cms.styleValue['schema3.box.header.background']}" default="#2C6700" /> url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: <c:out value="${cms.styleValue['schema3.box.header.color']}" default="#fff" />;
+   }
+   
+   .boxbody {
+     padding: 10px;
+     font-size: 0.9em;
+   }
+   
+   .boxbody_listentry {
+     margin-bottom: 5px;
+     overflow:hidden;
+   }
+   
+   .boxbody_listentry div.left img {
+   	 margin-right: 5px;
+   }
+
+   .boxbody_listentry div.right img {
+   	 margin-left: 5px;
+   }
+   
+   form div.boxform {
+     display: block;
+     margin: 5px 0px 0px;
+     padding: 1px 3px;
+   }
+  
+   form div.boxform label {
+     display: block;
+     float: left;
+     padding-right: 5px;
+     text-align: right;
+     width: 6em;
+   }
+ 
+   .left {
+     float: left;
+   }
+   
+   .right {
+     float: right;
+   }
+   
+   /**
+   * ------------------------------------------------------------------
+   * Navigation Menu adjustments
+   * ------------------------------------------------------------------
+   */
+   
+   #nav_left li a {
+     color: <c:out value="${cms.styleValue['page.font.color']}" default="#444444" />;
+   }
+   
+   #nav_left li a:hover, #nav_left li a:focus, #nav_left li a:active {
+     background: <c:out value="${cms.styleValue['nav.left.hover.background']}" default="#69C" />;
+     color: <c:out value="${cms.styleValue['nav.left.hover.color']}" default="#fff" />;
+   }
+   
+   #nav_left a.current {
+     background-color: <c:out value="${cms.styleValue['nav.left.active.background']}" default="#aab" />;
+     color: <c:out value="${cms.styleValue['nav.left.active.color']}" default="#444444" />;
+   }
+
+   <c:if test="${!empty cms.styleValue['nav.main.background']}">
+     #nav_main {
+       background: <c:out value="${cms.styleValue['nav.main.background']}" default="#C0C7CC" /> url(../images/gradient.png) repeat-x top left;
+     }
+   </c:if>
+   
+   <c:if test="${!empty cms.styleValue['nav.main.hover.background']}">
+     #nav_main a:hover {
+       background: <c:out value="${cms.styleValue['nav.main.hover.background']}" default="#212E3F" /> url(../images/gradient.png) repeat-x top left;
+     }
+   </c:if>
+   
+   <c:if test="${!empty cms.styleValue['nav.main.active.background']}">
+     #nav_main a.current {
+       color: #fff;
+       background: <c:out value="${cms.styleValue['nav.main.active.background']}" default="#212E3F" /> url(../images/gradient.png) repeat-x top left;
+     }
+   </c:if>
+
+   /**
+   * ------------------------------------------------------------------
+   * Editor adjustments
+   * ------------------------------------------------------------------
+   */
+   <c:choose>
+   	 <c:when test="${param.type == 'textbox' || param.type == 'listbox'}">
+	 	body { 
+	      background: <c:out value="${cms.styleValue['schema1.box.background']}" default="#e1e1e1" />;
+	      padding: 10px;
+	      text-align: left;
+	      font-size: 0.9em;
+	    }   	 	
+   	 </c:when>
+     <c:when test="${!empty param.type}">
+	 	body { 
+	      background: <c:out value="${cms.styleValue['page.background']}" default="#FFFFFF" />;
+	      padding: 10px;
+	      text-align: left;
+	    }
+	 </c:when>
+   </c:choose>
+   
+}
+
+@media print
+{
+   /**
+   * ------------------------------------------------------------------
+   * Print Layout
+   * ------------------------------------------------------------------
+   */
+   
+  body, #window, #page, #main { margin:0; padding: 0; border: 0; }
+  #window, #page {width: 100% !important; min-width:0; max-width: none}
+  #header { height: auto; }
+  #footer { display: none; }
+
+  #topnav, #nav_main, #breadcrumb { display: none; }
+
+  #col1 { display:none; }
+  #col3 { display:none; }
+  
+  #col2, #col2_content { width: 100%; margin:0; padding: 0; border:0; }
+}

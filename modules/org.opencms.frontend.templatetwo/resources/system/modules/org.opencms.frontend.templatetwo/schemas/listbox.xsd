@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/listbox-mappings.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/link.xsd"/>
+		
+	<xsd:element name="ListBoxes" type="OpenCmsListBoxes"/>
+	
+	<xsd:complexType name="OpenCmsListBoxes">
+		<xsd:sequence>
+			<xsd:element name="ListBox" type="OpenCmsListBox" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsListBox">
+		<xsd:sequence>
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="Text" type="OpenCmsHtml" minOccurs="0" />
+			<xsd:element name="Image" type="OpenCmsVfsFile" minOccurs="0" />
+			<xsd:element name="AdditionalLink" type="OpenCmsPageLink" minOccurs="0" />
+			<xsd:element name="Links" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="10" />
+			<xsd:element name="Collector" type="OpenCmsString" default="allInFolder" />
+			<xsd:element name="Parameter" type="OpenCmsString" />
+			<xsd:element name="More" type="OpenCmsString" />
+			<xsd:element name="PositionAuthor" type="OpenCmsString" />
+			<xsd:element name="PositionDate" type="OpenCmsString" />
+			<xsd:element name="PositionImage" type="OpenCmsString" />
+			<xsd:element name="Mapping" type="OpenCmsListBoxMapping" minOccurs="0" maxOccurs="6" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templatetwo.workplace"/>
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+			</mappings>			
+			<layouts>
+				<layout element="Text" widget="HtmlWidget" configuration="height:100px,imagegallery,downloadgallery,linkgallery,link,anchor,table" />
+				<layout element="Collector" widget="org.opencms.frontend.templatetwo.CmsCollectorSelectWidget" />
+				<layout element="Parameter" widget="VfsFileWidget" />
+				<layout element="PositionAuthor" widget="SelectorWidget" configuration="Top|Bottom" />
+				<layout element="PositionDate" widget="SelectorWidget" configuration="Top|Bottom" />
+				<layout element="PositionImage" widget="SelectorWidget" configuration="Top|Left|Right|Bottom" />
+			</layouts>
+		</xsd:appinfo>
+	</xsd:annotation>  
+</xsd:schema>

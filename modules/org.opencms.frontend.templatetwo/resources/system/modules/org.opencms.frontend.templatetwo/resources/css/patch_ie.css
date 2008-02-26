@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+@media all
+{
+	* html #col3 { height: 1%; }
+    * html #col1 { margin-right: -3px; }
+    * html #col2 { margin-left: -3px; }
+  
+	#nav_main {
+		background-image: none;
+	}
+	
+	#nav_main a.gradient {
+		background-image: none;
+	}
+	
+	#nav_main a.gradient:hover {
+		background-image: none;
+	}
+	
+	.box_schema1 h4 {
+		background-image: none;
+	}
+	
+	.box_schema2 h4 {
+	 	background-image: none;
+	}
+	
+	.box_schema3 h4 {
+	 	background-image: none;
+	}
+}
