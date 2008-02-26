@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2007/09/05 11:19:35 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2008/02/26 16:00:17 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -78,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -181,6 +182,9 @@ public class CmsResourceManager {
             return (I_CmsResourceType)m_resourceTypeNameMap.get(typeName);
         }
     }
+
+    /** The path to the default template. */
+    public static final String DEFAULT_TEMPLATE = CmsWorkplace.VFS_PATH_COMMONS + "template/default.jsp";
 
     /** The MIME type <code>"text/html"</code>. */
     public static final String MIMETYPE_HTML = "text/html";
@@ -825,11 +829,23 @@ public class CmsResourceManager {
         String templateProp = cms.readPropertyObject(resource, templateProperty, true).getValue();
 
         if (templateProp == null) {
-            // no template property defined, this is a must for facade loaders
-            throw new CmsLoaderException(Messages.get().container(
-                Messages.ERR_NONDEF_PROP_2,
-                templateProperty,
-                cms.getSitePath(resource)));
+
+            // use default template, if template is not set
+            templateProp = DEFAULT_TEMPLATE;
+
+            if (!cms.existsResource(templateProp, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                // no template property defined, this is a must for facade loaders
+                throw new CmsLoaderException(Messages.get().container(
+                    Messages.ERR_NONDEF_PROP_2,
+                    templateProperty,
+                    cms.getSitePath(resource)));
+            }
+        } else if (!cms.existsResource(templateProp, CmsResourceFilter.IGNORE_EXPIRATION)) {
+
+            // use default template, if template does not exist
+            if (cms.existsResource(DEFAULT_TEMPLATE, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                templateProp = DEFAULT_TEMPLATE;
+            }
         }
 
         CmsResource template = cms.readFile(templateProp, CmsResourceFilter.IGNORE_EXPIRATION);

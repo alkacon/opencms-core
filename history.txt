@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/02/26 09:15:43 $
- * Version: $Revision: 1.980 $
+ * Date   : $Date: 2008/02/26 16:00:17 $
+ * Version: $Revision: 1.981 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -74,6 +74,7 @@ OpenCms 7.0.4 - xxx, 2008
 ! Added new module group selection dialog to the Setup Wizard
 ! Added new resource type parameter to automatically set the 'internal' flag 
 ! Added new direct edit provider with better position of the buttons using the JQuery Library
+! Added default template which is used if the template was not configured correctly for a resource
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation
