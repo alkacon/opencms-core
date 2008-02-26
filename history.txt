@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/02/25 14:39:28 $
- * Version: $Revision: 1.978 $
+ * Date   : $Date: 2008/02/26 09:14:17 $
+ * Version: $Revision: 1.979 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -56,6 +56,7 @@ OpenCms 7.0.4 - xxx, 2008
 - Change type dialog now also considers resource type limitation settings as new resource dialog
 - New designed import/export API, using Apache Digester instead of SAX
 - Updated Postgresql JDBC driver (postgresql-8.3-603.jdbc3.jar)
+- Updated JTidy library (jtidy-8-svn-206-05-21b.jar)
 ! Added new multi language static export feature
 ! Added option to organizational units to be hidden from the login form
 ! Added 'webusers' only organizational units 
