@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.982 $
+ * Date   : $Date: 2008/02/27 14:36:55 $
+ * Version: $Revision: 1.983 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,61 +20,63 @@ Legend:
 - General comment
 
 OpenCms 7.0.4 - xxx, 2008
-* Fixed issue with static export not correctly deleting exported jsp pages
-* Fixed issue with deleting ACEs from siblings when deleting one
-* Fixed issue with search result excerpts highlighting path terms
-* Fixed issue with 'switch user' across OUs
-* Fixed issue with cached roles after creating a new organizational unit
-* Fixed issue with NPE in the login form
-* Fixed issue with publish locks when publishing a file and a parent folder in separate publish jobs
-* Fixed issue with the creation flag of the explorer type permissions
-* Fixed issue with XML content attribute mapping when siblings involved
-* Fixed issue with XML content model file selection of expired model files
-* Fixed issue with direct edit button HTML not XHTML compliant
-* Fixed issue with broken history dialog when setting an unlimited number of versions 
-* Fixed issue with blank pages while including/forwarding
-* Fixed issue with synchronizing an expired or not yet released resource
-* Fixed issue with editing preview when the user has not the visible permission set
-* Fixed issue with the history list after an update with already deleted users 
-* Fixed issue with HTTP 500 error if clients send If-Modified-Since date header in wrong format 
-* Fixed issue with login form direct access for hidden organizational units
-* Fixed issue with the lock icon when logged in an ou different from the root ou
-* Fixed issue with the disabled context menu item for direct publishing, showing a wrong message when not having enough permissions
-* Fixed issue with the permissions dialog showing right user/group names from the history if deleted
-* Fixed issue with moving a folder containing resources you do not have write permissions for 
-* Fixed issue with deleting a folder containing resources you do not have write permissions for 
-* Fixed issue with role caching, ie. users could administrate OUs without having the required role
-* Fixed issue with ACEs missing after undelete
-* Fixed issue with displaying the content check settings in the admin view
-* Fixed issue with account manager being able to become root administrator
-* Fixed issue with role check not working if an organizational unit resource was deleted
-* Fixed issue with account manager being able to modify root administrator account
-* Fixed issue with some parameters of sql queries passed to JDBC with the wrong type
-* Fixed issue with PostgreSQL driver with version 8.3. Thanks to Ivan Codarin and Georgi Naplatanov
-- Improved support for servlet container Weblogic 9 (no servlet options needed anymore)
-- Improved default permission settings
-- Change type dialog now also considers resource type limitation settings as new resource dialog
-- New designed import/export API, using Apache Digester instead of SAX
-- Updated Postgresql JDBC driver (postgresql-8.3-603.jdbc3.jar)
-- Updated JTidy library (jtidy-8-svn-206-05-21b.jar)
-- Updated FCKeditor to version 2.5.1
-! Added new multi language static export feature
-! Added option to organizational units to be hidden from the login form
+! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 
+! Added "default template" which is used by default if no template is found for a resource
+! Added new JQuery based direct edit provider with much improved positioning of the DE buttons
+! Added better highlighting of selected content to new JQuery direct edit provider
+! Added new <cms:export> tag, which allows to write unprocessed JSP code to the static export 
+! Added support to import/export user roles, organizational units and projects 
 ! Added 'webusers' only organizational units 
+! Added support for full text searching in OpenOffice documents (.odf,.ods), contributed by Dirk Oelkers
+! Added option to organizational units to be hidden from the login form
+! Added new resource type parameter to automatically set the 'internal' flag 
+! Added new module group selection dialog to the Setup Wizard
+! Added support for resource type limitation settings from "New" dialog to the "Change type" dialog 
+! Added option to CmsTimeFrameCategoryCollector, category filter may be turned off by leaving out collector parameter 
+! Added new version of the import/export API, using Apache Digester instead of SAX
 ! Added #getStringValue() method to CmsJspContentAccessValueWrapper for better support of 'empty' EL operator 
+! Added method #setLocale(Locale locale) to org.opencms.file.CmsRequestContext
+! Added new multi language static export feature
 ! Added database support for AS400
 ! Added support for servlet container Resin 3
 ! Added support for servlet container Websphere 6
-! Added support for searching in OpenOffice documents (.odf,.ods) contributed by Dirk Oelkers
-! Added new <cms:export> tag, which allows to write unprocessed JSP code to the static export 
-! Added method #setLocale(Locale locale) to org.opencms.file.CmsRequestContext
-! Improved CmsTimeFrameCategoryCollector: category filtering may be turned off by leaving out category collector parameter. 
-! Added support to import/export user roles, organizational units and projects 
-! OpenCmsColor and the color picker widget now work with CSS 2 system colors 
-! Added new module group selection dialog to the Setup Wizard
-! Added new resource type parameter to automatically set the 'internal' flag 
-! Added new direct edit provider with better position of the buttons using the JQuery Library
-! Added default template which is used if the template was not configured correctly for a resource
+- Improved support for servlet container BEA Weblogic 9 (no special servlet options needed anymore)
+- Improved default permission settings
+- Updated FCKeditor to version 2.5.1
+- Updated Postgresql JDBC driver to postgresql-8.3-603.jdbc3.jar
+- Updated JTidy library to jtidy-8-svn-206-05-21b.jar, thanks to Christian Steinert for the patch
+* Fixed issue with an account manager being able to become an administrator
+* Fixed issue with an account manager being able to modify an administrator account
+* Fixed issue with static export not correctly deleting exported jsp pages
+* Fixed issue with ACEs from all siblings being deleted if only one siblings was deleted
+* Fixed issue with ACEs not being restored when undeleting a resource
+* Fixed issue with search result excerpts highlighting path terms
+* Fixed issue with 'switch user' now working across OUs
+* Fixed issue with role caching after creating a new organizational unit
+* Fixed issue with role caching where users could administer OUs without having the required role
+* Fixed issue with possible NPE in the login form
+* Fixed issue with publish locks when publishing a file and a parent folder in separate publish jobs
+* Fixed issue with the creation flag of the explorer type permissions being broken
+* Fixed issue with XML content attribute mapping when siblings are involved
+* Fixed issue with XML content model file selection of expired model files
+* Fixed issue with direct edit button HTML not being valid XHTML
+* Fixed issue with the history dialog when setting an unlimited number of historic versions 
+* Fixed issue with the history dialog not displaying the names of deleted users
+* Fixed issue with the permissions dialog not displaying the names of deleted users or groups
+* Fixed issue with blank pages appearing for JSP while including/forwarding in Tomcat
+* Fixed issue with synchronizing an expired or not yet released resource
+* Fixed issue with editor preview when the user does not have the visible permission
+* Fixed issue with HTTP 500 error if clients send the "If-Modified-Since" date header in a wrong format 
+* Fixed issue with login form direct access URL still being available for hidden OUs
+* Fixed issue with the lock icon when logged in an OU different from the root OU
+* Fixed issue with the disabled context menu item for direct publishing showing a wrong message related to permissions
+* Fixed issue with moving a folder containing resources the user does not have write permissions for 
+* Fixed issue with deleting a folder containing resources you do not have write permissions for 
+* Fixed issue with displaying the settings from the "Content check" tool in the admin view 
+* Fixed issue with role check not working if an organizational unit resource was deleted
+* Fixed issue with some parameters of SQL queries passed to JDBC with the wrong type
+* Fixed issue with OpenCmsColor widget not working with CSS 2 system colors names 
+* Fixed issue with PostgreSQL driver with version 8.3, thanks to Ivan Codarin and Georgi Naplatanov
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation
