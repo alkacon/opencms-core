@@ -1643,7 +1643,7 @@
 				</property>
 				<property>
 					<name>template-elements</name>
-					<value><![CDATA[body*|Body,rightcol|Right Column]]></value>
+					<value><![CDATA[body*|Body Element,body2|Bottom Element]]></value>
 				</property>
 			</properties>
 			<relations/>

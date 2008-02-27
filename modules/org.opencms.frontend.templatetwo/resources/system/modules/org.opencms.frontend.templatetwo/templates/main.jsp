@@ -110,21 +110,14 @@
 					<c:catch>
 						<c:set var="page" value="${cms:vfs(pageContext).readXml[cms:vfs(pageContext).context.uri]}" />
 					</c:catch>
-					<c:choose>
-						<c:when test="${page.hasValue['rightcol']}" >
-							<!-- include the right column of xml pages if available -->
-							<cms:include element="rightcol" editable="true"/>
-						</c:when>
-						<c:otherwise>
-							<!-- include the boxes on the right side -->
-							<c:if test="${cms.presetValue['column.right.visible'] == 'true'}">
-								<cms:include file="%(link.weak:../elements/boxes.jsp)">
-									<cms:param name="orientation" value="right" />
-									<cms:param name="config" value="${cms.configPath}" />
-								</cms:include>
-							</c:if>
-						</c:otherwise>
-					</c:choose>
+					
+					<!-- include the boxes on the right side -->
+					<c:if test="${cms.presetValue['column.right.visible'] == 'true'}">
+						<cms:include file="%(link.weak:../elements/boxes.jsp)">
+							<cms:param name="orientation" value="right" />
+							<cms:param name="config" value="${cms.configPath}" />
+						</cms:include>
+					</c:if>
                </div>
             </div>
             <!-- end: right column -->
@@ -139,6 +132,10 @@
 	<cms:include element="body" editable="true"/>
 </cms:template>
 <cms:template element="foot">
+					<!-- include the second body from an xml page, if available -->
+					<c:if test="${page.hasValue['body2']}">
+						<cms:include element="body2" editable="true"/>
+					</c:if>
 					<!-- include the boxes in the center -->
 	                <cms:include file="%(link.weak:../elements/boxes.jsp)">
 	                	<cms:param name="orientation" value="center" />
