@@ -229,7 +229,14 @@
      margin-bottom: 10px;
    }
    
-   .search_result {
+   .search_text {
+   	margin-bottom: 10px;
+   }
+   .search_noresult {
+     margin-bottom: 10px;
+   }
+   
+   .search_result, .search_error {
      margin-bottom: 10px;
    }
   

@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.0.4</opencms_version>
-		<createdate>Tue, 26 Feb 2008 11:47:42 GMT</createdate>
+		<createdate>Wed, 27 Feb 2008 10:28:03 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -36,6 +36,7 @@
 			<resource uri="/system/workplace/resources/filetypes/tt_textbox.png"/>
 			<resource uri="/system/workplace/resources/filetypes/tt_menu.png"/>
 			<resource uri="/system/workplace/resources/filetypes/tt_linkbox.png"/>
+			<resource uri="/system/workplace/resources/filetypes/tt_search.png"/>
 		</resources>
 		<parameters/>
 		<resourcetypes>
@@ -59,6 +60,15 @@
 			</type>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ttlinkbox" id="76">
 				<param name="schema">/system/modules/org.opencms.frontend.templatetwo/schemas/linkbox.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ttsearch" id="77">
+				<properties>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templatetwo/pages/search.jsp]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.frontend.templatetwo/schemas/search.xsd</param>
 			</type>
 		</resourcetypes>
 		<explorertypes>
@@ -103,6 +113,12 @@
 			</explorertype>
 			<explorertype name="ttlinkbox" key="fileicon.ttlinkbox" icon="tt_linkbox.png" reference="xmlcontent">
 				<newresource page="templatetwo" uri="newresource_xmlcontent.jsp?newresourcetype=ttlinkbox" order="150" autosetnavigation="false" autosettitle="false" info="desc.ttlinkbox"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="ttsearch" key="fileicon.ttsearch" icon="tt_search.png" reference="xmlcontent">
+				<newresource page="templatetwo" uri="newresource_xmlcontent.jsp?newresourcetype=ttsearch" order="144" autosetnavigation="false" autosettitle="false" info="desc.ttsearch"/>
 				<accesscontrol>
 					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
 				</accesscontrol>
@@ -1565,6 +1581,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo/schemas/search.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo/schemas/search.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>3af3d62e-e474-11dc-a90a-cb44ba2a6032</uuidstructure>
+			<uuidresource>3af3d62f-e474-11dc-a90a-cb44ba2a6032</uuidresource>
+			<datelastmodified>Wed, 27 Feb 2008 09:24:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 14:07:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema for the Template Two Search Page]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templatetwo/schemas/style.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templatetwo/schemas/style.xsd</destination>
 			<type>plain</type>
@@ -1905,6 +1941,30 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[tt_preset]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/tt_search.png</source>
+			<destination>system/workplace/resources/filetypes/tt_search.png</destination>
+			<type>image</type>
+			<uuidstructure>045df91e-e51a-11dc-a2e9-cb44ba2a6032</uuidstructure>
+			<uuidresource>045df91f-e51a-11dc-a2e9-cb44ba2a6032</uuidresource>
+			<datelastmodified>Wed, 27 Feb 2008 09:54:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 27 Feb 2008 09:54:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[tt_search]]></value>
 				</property>
 				<property type="shared">
 					<name>image.size</name>

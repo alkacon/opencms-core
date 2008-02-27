@@ -7,32 +7,59 @@
 %>
 <cms:include property="template" element="head" />
 
-<c:set var="locale"><cms:property name="locale" file="search" default="en" /></c:set>
+<c:set var="locale" value="${cms.requestContext.locale}"/>
 <fmt:setLocale value="${locale}" />
 <fmt:bundle basename="org.opencms.frontend.templatetwo.frontend">
+
+<cms:contentload collector="singleFile" param="%(opencms.uri)" editable="manual">
+<cms:contentaccess var="content" />
 
 <jsp:useBean id="search" class="org.opencms.search.CmsSearch" scope="request">
 	<jsp:setProperty name="search" property="*"/>
 	<% 
 		search.init(cms.getCmsObject());
 		search.setIndex(cms.property("search.index", "search"));
+		search.setMatchesPerPage(5);
 	%>
 </jsp:useBean>
 
-<form id="searchForm" name="searchForm" action="<cms:link>${cms.cmsObject.requestContext.uri}</cms:link>" method="post">
-	    <input type="hidden" name="action" value="search" />
-		<input type="hidden" name="searchPage" value="1" />
-	    
-	    <input type="text" name="query" value="${search.query}" />
-	    <input type="submit" name="submit" value="<fmt:message key="search.button" />" />
-</form>
+<c:if test="${!content.value['Text'].isEmptyOrWhitespaceOnly}">
+	<div class="search_text">
+		<c:out value="${content.value['Text']}" escapeXml="false"/>
+	</div>
+</c:if>
 
 <c:if test="${param.action != null}">
-	<c:set var="result" value="${search.searchResult}"/>
+	<c:catch var="searchError">
+		<c:set var="result" value="${search.searchResult}"/>
+	</c:catch>
 </c:if>
-    
-<c:if test="${param.action != null && empty result}">
+
+<c:if test="${empty searchError}">
+	<form id="searchForm" name="searchForm" action="<cms:link>${cms.cmsObject.requestContext.uri}</cms:link>" method="post">
+		    <input type="hidden" name="action" value="search" />
+			<input type="hidden" name="searchPage" value="1" />
+		    <input type="text" name="query" value="${search.query}" />
+		    <input type="submit" name="submit" value="<fmt:message key="search.button" />" />
+	</form>
+</c:if>
+
+<c:if test="${param.action != null && empty result && empty searchError}">
 	<!-- No Results -->
+	<c:if test="${!content.value['NoResult'].isEmptyOrWhitespaceOnly}">
+		<div class="search_noresult">
+			<c:out value="${content.value['NoResult']}" escapeXml="false"/>
+		</div>
+	</c:if>
+</c:if>
+
+<c:if test="${param.action != null && !empty searchError}">
+	<!-- Error occurred -->
+	<c:if test="${!content.value['Error'].isEmptyOrWhitespaceOnly}">
+		<div class="search_error">
+			<c:out value="${content.value['Error']}" escapeXml="false"/>
+		</div>
+	</c:if>
 </c:if>
 
 <c:if test="${param.action != null && !empty result}">
@@ -81,5 +108,6 @@
 	<!-- END: Pagination -->
 </c:if>
 
+</cms:contentload>
 </fmt:bundle>
 <cms:include property="template" element="foot" />
