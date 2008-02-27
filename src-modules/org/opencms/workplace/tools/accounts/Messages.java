@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2007/11/19 14:40:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2008/02/27 12:05:25 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -39,8 +39,8 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */

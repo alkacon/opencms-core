@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templatetwo/CmsListBoxContentMapping.java,v $
- * Date   : $Date: 2008/02/26 13:00:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/02/27 12:05:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -58,7 +58,7 @@ import java.util.Set;
  * @author Alexander Kandzior 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.4
  */

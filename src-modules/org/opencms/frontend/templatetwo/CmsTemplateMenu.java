@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templatetwo/CmsTemplateMenu.java,v $
- * Date   : $Date: 2008/02/26 13:00:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/02/27 12:05:30 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
- * the Open Source Content Mananagement System
+ * the Open Source Content Management System
  *
- * Copyright (C) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -56,7 +56,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.4
  */
@@ -175,7 +175,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
 
                     // check if the default file for the uri matches the resource name
                     String path = CmsJspNavBuilder.getDefaultFile(getCmsObject(), elem.getResourceName());
-                    if (path == null || uriElem.isInNavigation()) {
+                    if ((path == null) || ((uriElem != null) && uriElem.isInNavigation())) {
                         path = elem.getResourceName();
                     }
 
@@ -185,7 +185,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
 
                     // check if uri is in NOT in the navigation and so a parent folder will be marked as current
                     CmsJspNavElement navElem = uriElem;
-                    while (navElem != null && !navElem.isInNavigation()) {
+                    while ((navElem != null) && !navElem.isInNavigation()) {
 
                         String parentPath = CmsResource.getParentFolder(navElem.getResourceName());
                         if (parentPath == null) {
@@ -200,8 +200,7 @@ public class CmsTemplateMenu extends CmsJspActionElement {
                         }
                     }
 
-                    if (navElem != null && !uriElem.isInNavigation()) {
-
+                    if ((navElem != null) && (uriElem != null) && !uriElem.isInNavigation()) {
                         return new Boolean(elem.equals(navElem));
                     }
 

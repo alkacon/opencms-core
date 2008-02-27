@@ -1,11 +1,11 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templatetwo/CmsCollectorSelectWidget.java,v $
- * Date   : $Date: 2008/02/26 13:00:41 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/02/27 12:05:30 $
+ * Version: $Revision: 1.2 $
  *
  * This file is part of the Alkacon OpenCms Add-On Module Package
  *
- * Copyright (c) 2007 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * The Alkacon OpenCms Add-On Module Package is free software: 
  * you can redistribute it and/or modify
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  */
 public class CmsCollectorSelectWidget extends CmsSelectWidget {
 

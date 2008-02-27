@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReport.java,v $
- * Date   : $Date: 2007/08/13 16:30:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/02/27 12:05:40 $
+ * Version: $Revision: 1.10 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -9,7 +9,7 @@
  * modules of the Alkacon OpenCms Software library published by
  * Alkacon Software GmbH, unless otherwise noted.
  *
- * Copyright (c) 2002 - 2007 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
