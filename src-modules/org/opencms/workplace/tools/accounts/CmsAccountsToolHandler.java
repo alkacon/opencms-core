@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2008/02/27 12:05:26 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/02/27 14:44:57 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,13 +198,21 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN)) {
                 return true;
             }
-            // check if the user to change is root administrator 
             CmsUUID userId = new CmsUUID(CmsRequestUtil.getNotEmptyDecodedParameter(
                 wp.getJsp().getRequest(),
                 A_CmsEditUserDialog.PARAM_USERID));
             try {
                 CmsUser user = wp.getCms().readUser(userId);
-                return (!OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ROOT_ADMIN));
+                // check if the user to change is root administrator 
+                if (OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ROOT_ADMIN)) {
+                    return false;
+                }
+                // check if the current user is an administrator
+                if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ADMINISTRATOR)) {
+                    return true;
+                }
+                // check if the user to change is an administrator 
+                return !OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ADMINISTRATOR);
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
@@ -326,13 +334,21 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN)) {
                 return true;
             }
-            // check if the user to change is root administrator 
             CmsUUID userId = new CmsUUID(CmsRequestUtil.getNotEmptyDecodedParameter(
                 wp.getJsp().getRequest(),
                 A_CmsEditUserDialog.PARAM_USERID));
             try {
                 CmsUser user = wp.getCms().readUser(userId);
-                return (!OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ROOT_ADMIN));
+                // check if the user to change is root administrator 
+                if (OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ROOT_ADMIN)) {
+                    return false;
+                }
+                // check if the current user is an administrator
+                if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ADMINISTRATOR)) {
+                    return true;
+                }
+                // check if the user to change is an administrator 
+                return !OpenCms.getRoleManager().hasRole(wp.getCms(), user.getName(), CmsRole.ADMINISTRATOR);
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {

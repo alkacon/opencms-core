@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.114 $
+ * Date   : $Date: 2008/02/27 14:44:57 $
+ * Version: $Revision: 1.115 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -5435,6 +5435,10 @@ public final class CmsSecurityManager {
             if (hasRole(dbc, user, CmsRole.ROOT_ADMIN)) {
                 // check the user that is going to do the modification is root admin
                 checkRole(dbc, CmsRole.ROOT_ADMIN);
+                // check if the user to be modified is administrator
+            } else if (hasRole(dbc, user, CmsRole.ADMINISTRATOR)) {
+                // check the user that is going to do the modification is administrator
+                checkRole(dbc, CmsRole.ADMINISTRATOR);
             } else {
                 // check the user that is going to do the modification has the given role
                 checkRole(dbc, role);
