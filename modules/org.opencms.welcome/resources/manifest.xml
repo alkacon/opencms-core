@@ -825,52 +825,7 @@ It will also remove the "default" template.</p>
 			<relations/>
 			<accesscontrol/>
 		</file>
-		<file>
-			<destination>system/modules/org.opencms.welcome/templates</destination>
-			<type>folder</type>
-			<uuidstructure>f1a855ff-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.welcome/templates/empty</source>
-			<destination>system/modules/org.opencms.welcome/templates/empty</destination>
-			<type>jsp</type>
-			<uuidstructure>f1aac700-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>a6fa79f4-5e05-11d8-865d-ad3adbb53365</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Empty template]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/resources/welcome.css]]></value>
-				</property>
-				<property>
-					<name>template-elements</name>
-					<value><![CDATA[body*|Body]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
+	    <file>
 			<destination>index.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>f1b1cbec-11b7-11db-91cd-fdbae480bac9</uuidstructure>
