@@ -58,7 +58,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[notes_7.0.3.html]]></value>
+					<value><![CDATA[notes_7.0.4.html]]></value>
 				</property>
 				<property>
 					<name>export</name>
