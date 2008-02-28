@@ -843,6 +843,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/commons/template</destination>
+			<type>folder</type>
+			<uuidstructure>b7febc98-e47a-11dc-8d1e-3bdd2ea0b1ac</uuidstructure>
+			<datelastmodified>Tue, 26 Feb 2008 14:54:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 14:54:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/template/default.jsp</source>
 			<destination>system/workplace/commons/template/default.jsp</destination>
 			<type>jsp</type>
