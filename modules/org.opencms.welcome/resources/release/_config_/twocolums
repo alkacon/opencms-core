@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Presets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/preset.xsd">
+  <Preset language="de">
+    <column.left.visible>true</column.left.visible>
+    <column.left.width><![CDATA[18em]]></column.left.width>
+    <column.right.visible>false</column.right.visible>
+    <column.right.width><![CDATA[18em]]></column.right.width>
+    <nav.left.visible>true</nav.left.visible>
+  </Preset>
+  <Preset language="en">
+    <column.left.visible>true</column.left.visible>
+    <column.left.width><![CDATA[20em]]></column.left.width>
+    <column.right.visible>false</column.right.visible>
+    <column.right.width><![CDATA[18em]]></column.right.width>
+    <nav.left.visible>true</nav.left.visible>
+  </Preset>
+</Presets>

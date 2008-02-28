@@ -17,8 +17,6 @@
 <cms:info property="os.version" /> 
 (<cms:info property="os.arch" />)</span></p>
 
-<cms:include file="/system/modules/org.opencms.welcome/elements/checklibs.jsp" />
-
 <p>As you may have guessed by now, this is the default OpenCms home page. 
 It can <i>not</i> be found on the local file system ;-) but in the OpenCms
 <i>virtual file system</i> or VFS, which is served from the connected database.
@@ -29,7 +27,7 @@ You can access the VFS though the OpenCms workplace.</p>
 <a href="#" onclick="window.open('<cms:link>/system/login/</cms:link>');return false;"><cms:link>/system/login/</cms:link></a></p>
 
 
-<table align="right" cellpadding="0" cellspacing="0"><tr><td class="note">
+<table align="right" cellpadding="0" cellspacing="5"><tr><td class="note">
 
 You are currently identified as:<br>
 User: <tt><cms:user property="name" /></tt><br>
@@ -40,7 +38,9 @@ Description: <tt><cms:user property="description" /></tt>
 <p>Use the following account information for the first login:<br>&nbsp;<br>
 
 Username: <tt>Admin</tt><br>
-Password: <tt>admin</tt></p>
+Password: <tt>admin</tt>
+<br>&nbsp;<br>
+</p>
 
 
 <p><b>Important:</b> You should change this default password immediately,
@@ -60,6 +60,10 @@ Check the <a href="<cms:link>/release/mailinglist.html</cms:link>">mailing list<
 </p>
 
 <p>Thank you for using OpenCms!</p>
+
+<!-- Login element starts here --><%--
+--%><cms:include file="/system/modules/org.opencms.welcome/elements/login_element.jsp" /><%--
+--%><!-- Login element ends here -->
 
 <cms:include property="template" element="foot" />
 

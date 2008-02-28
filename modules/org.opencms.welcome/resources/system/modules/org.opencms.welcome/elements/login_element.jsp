@@ -31,7 +31,7 @@ if (! cms.isLoggedIn() && ! hideLoginForm) {
 %>
 <form action="<%= cms.getFormLink() %>" method="POST">
 
-<table border="0" cellpadding="2" cellspacing="0">
+<table class="loginbox" border="0" cellpadding="2" cellspacing="0">
 <tr><td colspan="2"><%= message %></td><tr>
 <tr><td>Username:</td><td><input name="username" size="25" value="<%= username!=null?username:"" %>"></td></tr>
 <tr><td>Password:</td><td><input name="password" size="25" type="password"></td></tr>
@@ -47,7 +47,7 @@ if (! cms.isLoggedIn() && ! hideLoginForm) {
 %>
 <form action="<%= cms.getFormLink() %>" method="POST">
 
-<table border="0" cellpadding="2" cellspacing="0">
+<table class="loginbox" border="0" cellpadding="2" cellspacing="0">
 <tr><td>You are logged in as: <%= cms.getUserName() %></tr>
 <tr><td><input type="submit" value="Logout"><input type="hidden" name="action" value="logout"></td></tr>
 </table>
