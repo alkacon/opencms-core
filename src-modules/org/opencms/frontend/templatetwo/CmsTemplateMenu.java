@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templatetwo/CmsTemplateMenu.java,v $
- * Date   : $Date: 2008/02/27 12:05:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/02/28 16:33:31 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.4
  */
@@ -263,6 +263,9 @@ public class CmsTemplateMenu extends CmsJspActionElement {
      */
     public int getTopLevel() {
 
+        if ((m_elements == null) || m_elements.isEmpty()) {
+            return 0;
+        }
         CmsJspNavElement elem = (CmsJspNavElement)m_elements.get(0);
         if (elem == null) {
             return 0;
