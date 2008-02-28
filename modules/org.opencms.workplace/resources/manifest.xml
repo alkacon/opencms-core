@@ -75,6 +75,7 @@
 			<resource uri="/system/workplace/resources/commons/login.png"/>
 			<resource uri="/system/workplace/resources/commons/login_logo.png"/>
 			<resource uri="/system/workplace/resources/commons/ok.png"/>
+			<resource uri="/system/workplace/resources/commons/template_bg.gif"/>
 			<resource uri="/system/workplace/resources/commons/wait.gif"/>
 			<resource uri="/system/workplace/resources/commons/warning.png"/>
 			<resource uri="/system/workplace/resources/commons/workplace.png"/>
@@ -2854,6 +2855,30 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/commons/template_bg.gif</source>
+			<destination>system/workplace/resources/commons/template_bg.gif</destination>
+			<type>image</type>
+			<uuidstructure>9fafeb18-dfd0-11dc-8a78-3bdd2ea0b1ac</uuidstructure>
+			<uuidresource>9fafeb19-dfd0-11dc-8a78-3bdd2ea0b1ac</uuidresource>
+			<datelastmodified>Wed, 20 Feb 2008 16:32:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Feb 2008 16:26:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[bg]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:15,h:600]]></value>
 				</property>
 			</properties>
 			<relations/>
