@@ -58,6 +58,9 @@
 			<mappings/>
 			<layouts>
 				<layout element="nav.main" widget="SelectorWidget" configuration="value='/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_slidingdoors.jsp' option='${key.menu.main.slidingdoors}' | value='/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_skeleton.jsp' option='${key.menu.main.skeleton}' | value='/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_dolphin.jsp' option='${key.menu.main.dolphin}' | value='/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_style2.jsp' option='${key.menu.main.style2}' "/>
+				<layout element="window.background.image" widget="ImageGalleryWidget"/>
+				<layout element="header.background.image" widget="ImageGalleryWidget"/>				
+				<layout element="footer.background.image" widget="ImageGalleryWidget"/>		
 			</layouts>
 			<validationrules/>
 			<defaults>
