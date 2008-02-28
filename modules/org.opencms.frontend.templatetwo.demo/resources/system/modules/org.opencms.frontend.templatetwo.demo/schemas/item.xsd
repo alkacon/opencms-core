@@ -1,0 +1,50 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/config.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/attachment.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/image.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/extendedlink.xsd"/>
+		
+	<xsd:element name="Items" type="OpenCmsItems"/>
+	
+	<xsd:complexType name="OpenCmsItems">
+		<xsd:sequence>
+			<xsd:element name="Item" type="OpenCmsItem" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsItem">
+		<xsd:sequence>
+			<xsd:element name="Name" type="OpenCmsString" />
+			<xsd:element name="Category" type="OpenCmsString" />
+			<xsd:element name="ShortDescription" type="OpenCmsHtml" minOccurs="0" />
+			<xsd:element name="LongDescription" type="OpenCmsHtml" />
+			<xsd:element name="Source" type="OpenCmsHtml" minOccurs="0" />
+			<xsd:element name="Images" type="OpenCmsImage" minOccurs="0" maxOccurs="5"/>
+			<xsd:element name="Attachments" type="OpenCmsAttachment" minOccurs="0" maxOccurs="5"/>			
+			<xsd:element name="Links" type="OpenCmsExtendedLink" minOccurs="0" maxOccurs="5"/>
+			<xsd:element name="Config" type="OpenCmsConfig" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<preview uri="${previewtempfile}" />
+			<mappings>
+				<mapping element="Name" mapto="property:Title" />
+			</mappings>
+			<layouts>
+				<layout element="Category" widget="CategoryWidget" configuration="category=wurstsorten|keyprefix=itemcategory" />
+				<layout element="ShortDescription" widget="HtmlWidget" configuration="height:100px,link"/>
+				<layout element="LongDescription" widget="HtmlWidget" configuration="link,source"/>
+				<layout element="Source" widget="HtmlWidget" configuration="height:50px,link"/>
+			</layouts>
+			<validationrules/>
+			<defaults>
+			</defaults>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

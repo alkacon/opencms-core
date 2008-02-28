@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TemplateOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/options.xsd">
+  <TemplateOption language="de">
+    <TopNav name="TopNav0">
+      <links>
+        <link name="link3" internal="false" type="A">
+          <target><![CDATA[/opencms/opencms/demo_de/_config_/goto]]></target>
+          <query><![CDATA[uri=/demo_de/kontakt.html&module=Alkacon OAMP demo content (com.alkacon.opencms.oampdemo)]]></query>
+        </link>
+        <link name="link2" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_de/extra/]]></target>
+          <uuid>5c93c7ba-e070-11dc-bd1b-9f7a6a6ce285</uuid>
+        </link>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_en/index.html]]></target>
+          <uuid>9b18e429-e448-11dc-add5-9f7a6a6ce285</uuid>
+        </link>
+        <link name="link4" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_de/extra/extranet/]]></target>
+          <uuid>52f4ade2-dfd4-11dc-ae2d-9f7a6a6ce285</uuid>
+        </link>
+        <link name="link1" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_en/view/sausageparade.html]]></target>
+          <uuid>8c111e73-e479-11dc-abe7-51cb880fd12a</uuid>
+        </link>
+      </links>
+      <content><![CDATA[<p align="right"><a title="English Version" target="_self" href="%(link0)">English</a> | <a title="Sausage parade" target="_self" href="%(link1)">Wurstparade</a> | <a target="_self" href="%(link2)">Extranet</a> | <a title="Kontakt" target="_self" href="%(link3)">Kontakt</a><a title="Intern" target="_self" href="%(link4)"><br />
+</a></p>]]></content>
+    </TopNav>
+    <Header name="Header0">
+      <links>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_de/]]></target>
+          <uuid>668311f8-da40-11dc-91a2-9f7a6a6ce285</uuid>
+        </link>
+        <link name="link1" internal="true" type="IMG">
+          <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/resources/images/logo_head_de.png]]></target>
+          <uuid>2be91674-e38a-11dc-a72c-9f7a6a6ce285</uuid>
+        </link>
+      </links>
+      <content><![CDATA[<p><a href="%(link0)"><img width="940" height="60" border="0" alt="logo_head_de" src="%(link1)" /></a></p>]]></content>
+    </Header>
+    <Footer name="Footer0">
+      <links>
+        <link name="link0" internal="false" type="A">
+          <target><![CDATA[http://www.opencms.org/]]></target>
+        </link>
+        <link name="link1" internal="false" type="A">
+          <target><![CDATA[http://www.alkacon.com]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<div>
+<p>Built with&nbsp;  <a href="%(link0)">OpenCms - The Open Source Cms</a>, provided by <a title="Alkacon Software GmbH" target="_self" href="%(link1)">Alkacon Software GmbH - The OpenCms Experts</a></p>
+</div>]]></content>
+    </Footer>
+  </TemplateOption>
+  <TemplateOption language="en">
+    <TopNav name="TopNav0">
+      <links>
+        <link name="link3" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_de/extra/extranet/]]></target>
+          <uuid>52f4ade2-dfd4-11dc-ae2d-9f7a6a6ce285</uuid>
+        </link>
+        <link name="link2" internal="false" type="A">
+          <target><![CDATA[/opencms/opencms/demo/_config_/goto]]></target>
+          <query><![CDATA[uri=/demo/oamp/formgenerator/contact.html&module=Alkacon OpenCms Add-On Module Package Webform (com.alkacon.opencms.formgenerator)]]></query>
+        </link>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_de/imblick/wurstparade.html]]></target>
+          <uuid>56f19ee2-dee3-11dc-b46f-9f7a6a6ce285</uuid>
+        </link>
+        <link name="link1" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_de/extra/]]></target>
+          <uuid>5c93c7ba-e070-11dc-bd1b-9f7a6a6ce285</uuid>
+        </link>
+      </links>
+      <content><![CDATA[<p align="right"><a href="%(link0)" target="_self" title="Wurstparade">Wurstparade</a> | <a href="%(link1)" target="_self"><span style="text-decoration: underline;">Extranet</span></a> | <a title="Kontakt" target="_self" href="%(link2)">Kontakt</a> | <a href="%(link3)" target="_self" title="Intern"><br />
+</a></p>]]></content>
+    </TopNav>
+    <Header name="Header0">
+      <links>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_de/]]></target>
+          <uuid>668311f8-da40-11dc-91a2-9f7a6a6ce285</uuid>
+        </link>
+        <link name="link1" internal="true" type="IMG">
+          <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/resources/images/logo_head_en.png]]></target>
+          <uuid>2bf2b368-e38a-11dc-a72c-9f7a6a6ce285</uuid>
+        </link>
+      </links>
+      <content><![CDATA[<a href="%(link0)"><img width="940" height="60" border="0" alt="logo_head_en" src="%(link1)" /></a>]]></content>
+    </Header>
+    <Footer name="Footer0">
+      <links>
+        <link name="link0" internal="false" type="A">
+          <target><![CDATA[http://www.opencms.org/]]></target>
+        </link>
+        <link name="link1" internal="false" type="A">
+          <target><![CDATA[http://www.alkacon.com]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<div>
+<p>Built with&nbsp;  <a href="%(link0)">OpenCms - The Open Source Cms</a>, provided by <a href="%(link1)" target="_self" title="Alkacon Software GmbH">Alkacon Software GmbH - The OpenCms Experts</a></p>
+</div>]]></content>
+    </Footer>
+  </TemplateOption>
+</TemplateOptions>

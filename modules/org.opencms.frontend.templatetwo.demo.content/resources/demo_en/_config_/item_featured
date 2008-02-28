@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[Die Wurstparade]]></Title>
+    <Content name="Content0">
+      <links>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_de/imblick/wurstparade.html]]></target>
+          <uuid>56f19ee2-dee3-11dc-b46f-9f7a6a6ce285</uuid>
+        </link>
+      </links>
+      <content><![CDATA[<p>Besuchen Sie unsere große <a title="Wurstparade" target="_self" href="%(link0)">Wurstparade </a>!</p>
+<p>&nbsp;</p>]]></content>
+    </Content>
+    <JspFile>
+      <link type="WEAK">
+        <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/elements/featureditem.jsp]]></target>
+        <uuid>6330f924-e451-11dc-add5-9f7a6a6ce285</uuid>
+      </link>
+    </JspFile>
+  </TextBox>
+  <TextBox language="en">
+    <Title><![CDATA[The sausage parade]]></Title>
+    <Content name="Content0">
+      <links>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_en/view/wurstparade.html]]></target>
+          <uuid>8c111e73-e479-11dc-abe7-51cb880fd12a</uuid>
+        </link>
+      </links>
+      <content><![CDATA[<p>Visit our large <a href="%(link0)" target="_self" title="Sausage parade">sausage parade</a>!</p>
+<p>&nbsp;</p>]]></content>
+    </Content>
+    <JspFile>
+      <link type="WEAK">
+        <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/elements/featureditem.jsp]]></target>
+        <uuid>6330f924-e451-11dc-add5-9f7a6a6ce285</uuid>
+        <query><![CDATA[path=/demo_en/dictionary/]]></query>
+      </link>
+    </JspFile>
+  </TextBox>
+</TextBoxes>

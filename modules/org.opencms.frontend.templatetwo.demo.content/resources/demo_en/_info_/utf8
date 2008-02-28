@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[UTF-8 Demo]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Auf dieser Seite wird die Verwendung von Zeichen aus anderen Sprachräumen demonstriert.</p>]]></content>
+    </Content>
+  </TextBox>
+  <TextBox language="en">
+    <Title><![CDATA[UTF-8 Demo]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>This page shows how characters from different character sets can be used - OpenCms supports this by UTF-8 enconding.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

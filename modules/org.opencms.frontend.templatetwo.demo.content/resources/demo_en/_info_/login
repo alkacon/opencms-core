@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[Anmeldung]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Über die Login-Seite oder die Login-Box können Sie anmelden, um auf den geschützten Bereich zugreifen zu können.</p>
+<p>Verwenden Sie hierzu:</p>
+<ul>
+    <li>User: <strong>Test</strong></li>
+    <li>Kennwort: <strong>test</strong></li>
+</ul>]]></content>
+    </Content>
+  </TextBox>
+  <TextBox language="en">
+    <Title><![CDATA[Login]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Via the login page or the login box, you can enter your credentials in order to access the protected section (extranet).</p>
+<p>Use as credentials:</p>
+<ul>
+    <li>User: <strong>Test</strong></li>
+    <li>Password: <strong>test</strong></li>
+</ul>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

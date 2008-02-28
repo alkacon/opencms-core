@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Articles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd">
+  <Article language="de">
+    <Title><![CDATA[Einleitung]]></Title>
+    <Paragraphs>
+      <Text name="Text0">
+        <links>
+          <link name="link0" internal="true" type="A">
+            <target><![CDATA[/sites/default/demo_de/index.html]]></target>
+            <uuid>ac046b97-e156-11dc-a180-9f7a6a6ce285</uuid>
+          </link>
+          <link name="link1" internal="true" type="A">
+            <target><![CDATA[/sites/default/demo_en/index.html]]></target>
+            <uuid>9b18e429-e448-11dc-add5-9f7a6a6ce285</uuid>
+          </link>
+        </links>
+        <content><![CDATA[<p align="left">Mit diesen Demoseiten werden verschiedene Funktionen von OpenCms auf Basis des OpenCms &quot;Template Two&quot; exemplarisch erläutert.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Template Two ist ein konfigurierbares Template, das es ermöglicht, auch eigene Websites unter Verwendung dieses Templates relativ einfach zu erstellen und anhand der Konfigurationeinstellungen (hier im Verzeichnis  <em>_config_</em>) den jeweiligen Erfordernissen anzupassen.</p>
+<p>&nbsp;</p>
+<p>Auf jeder Seite finden Sie in der&nbsp; linken Spalte eine&nbsp; Box mit roter Titelzeile,&nbsp; in der die Seitenelemente kurz erklärt werden. Zum besseren Verständnis sollten Sie sich nicht nur diese Seiten anschauen, sondern sie auch in der OpenCms Workplace im Editor öffnen.</p>
+<p>&nbsp;</p>
+<p>Beachten Sie hierbei auch, daß in einigen Spezialfällen auch so genannte &quot;Properties&quot; herangezogen werden, insbesondere um Standardeinstellungen zu definieren. Die Properties können über das Kontextmenü jeder Ressource bearbeitet werden; ist kein Wert direkt gesetzt, so wird er u.U. entlang der Verezeichnishierarchie eingelesen.</p>
+<p>&nbsp;</p>
+<ul>
+    <li>Zur <a title="Demo (Deutsch)" target="_self" href="%(link0)">Startseite der Demo in Deutsch</a></li>
+    <li>Zur  <a title="Demo (Englisch)" target="_self" href="%(link1)">Startseite der Demo in Englisch</a></li>
+</ul>]]></content>
+      </Text>
+    </Paragraphs>
+    <Config>
+      <Preset><![CDATA[/demo_en/_config_/layout/threecolumns]]></Preset>
+      <Element>
+        <File>
+          <link type="WEAK">
+            <target><![CDATA[/sites/default/demo_en/_info_/intro]]></target>
+            <uuid>03cffbd8-e479-11dc-abe7-51cb880fd12a</uuid>
+          </link>
+        </File>
+        <Orientation><![CDATA[right]]></Orientation>
+        <ColorSchema><![CDATA[box_schema2]]></ColorSchema>
+      </Element>
+    </Config>
+  </Article>
+  <Article language="en">
+    <Title><![CDATA[Introduction]]></Title>
+    <Paragraphs>
+      <Text name="Text0">
+        <links>
+          <link name="link0" internal="true" type="A">
+            <target><![CDATA[/sites/default/demo_de/index.html]]></target>
+            <uuid>ac046b97-e156-11dc-a180-9f7a6a6ce285</uuid>
+          </link>
+          <link name="link1" internal="true" type="A">
+            <target><![CDATA[/sites/default/demo_en/index.html]]></target>
+            <uuid>9b18e429-e448-11dc-add5-9f7a6a6ce285</uuid>
+          </link>
+        </links>
+        <content><![CDATA[<p align="left">These demo pages are used to&nbsp; show&nbsp; various features of OpenCms using pages based on the OpenCms template&nbsp; &quot;Template Two&quot; as an example.&nbsp;</p>
+<p align="left">&nbsp;</p>
+<p align="left">Template Two is a configurable template intended to be used as a starting point for developing your own web site with OpenCms. By modifying the configuration settings (in the <i>_config_/layout</i> directory), you can adapt it to your own requirements.</p>
+<p align="left">&nbsp;</p>
+<p>At each page in the left column, you will find a red box used for explaining the elements of the page. In order to understand you should not only look at the pages, but open them with th eeditor in the OpenCms workplace.</p>
+<p>&nbsp;</p>
+<p>Please keep in mind, that in some special cases, there are additional settings available using OpenCms &quot;properties&quot;, especially for setting default values. These properties can be edited via the contextual menu of each resource - if there is not value set at the reosurce, immediately, the value is serached along the folder hierarchie.</p>
+<p>&nbsp;</p>
+<ul>
+    <li>To the <a title="Demo (german)" target="_self" href="%(link0)">Startpage of the german demo</a>.</li>
+    <li>To&nbsp; the <a title="Demo (english)" target="_self" href="%(link1)">Startpage of the english demo</a>.</li>
+</ul>]]></content>
+      </Text>
+    </Paragraphs>
+    <Config>
+      <Preset><![CDATA[/demo_en/_config_/layout/threecolumns]]></Preset>
+      <Element>
+        <File>
+          <link type="WEAK">
+            <target><![CDATA[/sites/default/demo_en/_info_/intro]]></target>
+            <uuid>03cffbd8-e479-11dc-abe7-51cb880fd12a</uuid>
+          </link>
+        </File>
+        <Orientation><![CDATA[right]]></Orientation>
+        <ColorSchema><![CDATA[box_schema2]]></ColorSchema>
+      </Element>
+    </Config>
+  </Article>
+</Articles>

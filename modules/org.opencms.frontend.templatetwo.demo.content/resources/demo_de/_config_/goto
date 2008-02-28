@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Articles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd">
+  <Article language="de">
+    <Title><![CDATA[Feature nicht installiert]]></Title>
+    <Paragraphs>
+      <Text name="Text0">
+        <links/>
+        <content><![CDATA[<p>Ein zur Darstellung dieser Seite benötigtes Feature ist derzeit nicht installiert.</p>
+<p>&nbsp;</p>
+<p>Bitte installieren Sie das nachfolgend genannte Modul, um diese Seite nutzen zu können:</p>
+<p>&nbsp;</p>]]></content>
+      </Text>
+    </Paragraphs>
+  </Article>
+</Articles>

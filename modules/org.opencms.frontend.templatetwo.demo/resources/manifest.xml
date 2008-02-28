@@ -1,0 +1,1061 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>7.0.4</opencms_version>
+		<createdate>Thu, 28 Feb 2008 10:45:10 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.frontend.templatetwo.demo</name>
+		<nicename><![CDATA[OpenCms 7 Template Two demo site]]></nicename>
+		<class/>
+		<description/>
+		<version>7.0.4</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="org.opencms.frontend.templatetwo" version="0"/>
+		</dependencies>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.frontend.templatetwo.demo/classes/" destination="WEB-INF/classes/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/modules/org.opencms.frontend.templatetwo.demo/"/>
+			<resource uri="/system/workplace/resources/filetypes/tt_article.png"/>
+			<resource uri="/system/workplace/resources/filetypes/tt_event.png"/>
+			<resource uri="/system/workplace/resources/filetypes/tt_item.png"/>
+			<resource uri="/system/workplace/resources/filetypes/tt_job.png"/>
+			<resource uri="/system/workplace/resources/filetypes/tt_news.png"/>
+		</resources>
+		<parameters/>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ttarticle" id="120">
+				<properties>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/article.jsp]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ttnews" id="121">
+				<properties>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/news.jsp]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.frontend.templatetwo.demo/schemas/news.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ttitem" id="122">
+				<properties>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/item.jsp]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.frontend.templatetwo.demo/schemas/item.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ttevent" id="123">
+				<properties>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.frontend.templatetwo.demo/schemas/event.xsd</param>
+			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ttjob" id="124">
+				<properties>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/job.jsp]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.frontend.templatetwo.demo/schemas/job.xsd</param>
+			</type>
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="ttarticle" key="fileicon.ttarticle" icon="tt_article.png" reference="xmlcontent">
+				<newresource page="templatetwo" uri="newresource_xmlcontent.jsp?newresourcetype=ttarticle" order="140" autosetnavigation="false" autosettitle="false" info="desc.ttarticle"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="ttnews" key="fileicon.ttnews" icon="tt_news.png" reference="xmlcontent">
+				<newresource page="templatetwo" uri="newresource_xmlcontent.jsp?newresourcetype=ttnews" order="140" autosetnavigation="false" autosettitle="false" info="desc.ttnews"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="ttitem" key="fileicon.ttitem" icon="tt_item.png" reference="xmlcontent">
+				<newresource page="templatetwo" uri="newresource_xmlcontent.jsp?newresourcetype=ttitem" order="140" autosetnavigation="false" autosettitle="false" info="desc.ttitem"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="ttevent" key="fileicon.ttevent" icon="tt_event.png" reference="xmlcontent">
+				<newresource page="templatetwo" uri="newresource_xmlcontent.jsp?newresourcetype=ttevent" order="140" autosetnavigation="false" autosettitle="false" info="desc.ttevent"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="ttjob" key="fileicon.ttjob" icon="tt_job.png" reference="xmlcontent">
+				<newresource page="templatetwo" uri="newresource_xmlcontent.jsp?newresourcetype=ttjob" order="140" autosetnavigation="false" autosettitle="false" info="desc.ttjob"/>
+				<accesscontrol>
+					<accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+		</explorertypes>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>421fb7a7-e455-11dc-a220-51cb880fd12a</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 10:26:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>42e0e400-e455-11dc-a220-51cb880fd12a</uuidstructure>
+			<datelastmodified>Tue, 26 Feb 2008 10:26:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 10:26:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo</destination>
+			<type>folder</type>
+			<uuidstructure>02c28da4-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Wed, 13 Feb 2008 15:19:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:19:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/classes</destination>
+			<type>folder</type>
+			<uuidstructure>02c9b998-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Wed, 13 Feb 2008 15:19:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:19:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/classes/org</destination>
+			<type>folder</type>
+			<uuidstructure>02d0e58a-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Wed, 13 Feb 2008 15:19:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:19:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms</destination>
+			<type>folder</type>
+			<uuidstructure>02d3568c-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Wed, 13 Feb 2008 15:19:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:19:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms/frontend</destination>
+			<type>folder</type>
+			<uuidstructure>02d8117e-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Wed, 13 Feb 2008 15:19:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:19:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms/frontend/templatetwo</destination>
+			<type>folder</type>
+			<uuidstructure>02dccc70-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Wed, 13 Feb 2008 15:19:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:19:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms/frontend/templatetwo/demo</destination>
+			<type>folder</type>
+			<uuidstructure>02e18762-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Wed, 13 Feb 2008 15:19:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:19:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms/frontend/templatetwo/demo/messages.properties</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms/frontend/templatetwo/demo/messages.properties</destination>
+			<type>plain</type>
+			<uuidstructure>59215087-e47e-11dc-abe7-51cb880fd12a</uuidstructure>
+			<uuidresource>59215088-e47e-11dc-abe7-51cb880fd12a</uuidresource>
+			<datelastmodified>Tue, 26 Feb 2008 15:28:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 15:20:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms/frontend/templatetwo/demo/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>68ca9a89-e47f-11dc-b921-51cb880fd12a</uuidstructure>
+			<uuidresource>59215088-e47e-11dc-abe7-51cb880fd12a</uuidresource>
+			<datelastmodified>Tue, 26 Feb 2008 15:28:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 15:20:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms/frontend/templatetwo/demo/messages_en.properties</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms/frontend/templatetwo/demo/messages_en.properties</destination>
+			<type>plain</type>
+			<uuidstructure>7023b50a-e47f-11dc-b921-51cb880fd12a</uuidstructure>
+			<uuidresource>7023b50b-e47f-11dc-b921-51cb880fd12a</uuidresource>
+			<datelastmodified>Tue, 26 Feb 2008 15:28:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 15:28:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms/frontend/templatetwo/demo/workplace.properties</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms/frontend/templatetwo/demo/workplace.properties</destination>
+			<type>plain</type>
+			<uuidstructure>d767420b-de3a-11dc-8bc5-9f7a6a6ce285</uuidstructure>
+			<uuidresource>d767420c-de3a-11dc-8bc5-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 14:38:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 16:02:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/classes/org/opencms/frontend/templatetwo/demo/workplace_en.properties</destination>
+			<type>plain</type>
+			<uuidstructure>84d1675c-e3af-11dc-a4c8-9f7a6a6ce285</uuidstructure>
+			<uuidresource>d767420c-de3a-11dc-8bc5-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 14:38:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 16:02:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/elements</destination>
+			<type>folder</type>
+			<uuidstructure>02c4fea6-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Wed, 13 Feb 2008 15:19:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:19:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/elements/featureditem.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/elements/featureditem.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>6330f924-e451-11dc-add5-9f7a6a6ce285</uuidstructure>
+			<uuidresource>6330f925-e451-11dc-add5-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Tue, 26 Feb 2008 16:37:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Feb 2008 09:58:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/elements/imagesources.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/elements/imagesources.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>3ebb5afd-decd-11dc-8ab2-9f7a6a6ce285</uuidstructure>
+			<uuidresource>3ebb5afe-decd-11dc-8ab2-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Tue, 19 Feb 2008 11:44:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Feb 2008 09:30:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/elements/login.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/elements/login.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>d37ff040-deeb-11dc-b46f-9f7a6a6ce285</uuidstructure>
+			<uuidresource>d37ff041-deeb-11dc-b46f-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Tue, 26 Feb 2008 16:24:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Feb 2008 13:08:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/pages</destination>
+			<type>folder</type>
+			<uuidstructure>30e131b8-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Wed, 13 Feb 2008 15:20:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:20:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/pages/article.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/pages/article.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>3d48da7a-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<uuidresource>3d48da7b-da47-11dc-b345-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 15:42:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:20:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>dc3b38d1-df92-11dc-b0b0-9f7a6a6ce285</uuidstructure>
+			<uuidresource>dc3b38d2-df92-11dc-b0b0-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 15:08:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Feb 2008 09:04:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/pages/goto.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/pages/goto.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>ad8ffcb2-dfc8-11dc-af5d-9f7a6a6ce285</uuidstructure>
+			<uuidresource>ad8ffcb3-dfc8-11dc-af5d-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Tue, 26 Feb 2008 10:59:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Feb 2008 15:29:51 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/pages/item.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/pages/item.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>45786c37-db18-11dc-8264-9f7a6a6ce285</uuidstructure>
+			<uuidresource>45786c38-db18-11dc-8264-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Wed, 20 Feb 2008 14:57:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Feb 2008 16:17:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/pages/news.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/pages/news.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>120e94e4-da4b-11dc-82a7-9f7a6a6ce285</uuidstructure>
+			<uuidresource>120e94e5-da4b-11dc-82a7-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 15:48:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:48:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/pages/switch.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/pages/switch.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>de528dd4-e390-11dc-a72c-9f7a6a6ce285</uuidstructure>
+			<uuidresource>de528dd5-e390-11dc-a72c-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Tue, 26 Feb 2008 14:34:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 11:00:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/resources</destination>
+			<type>folder</type>
+			<uuidstructure>79d07f6b-dbab-11dc-997c-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Fri, 15 Feb 2008 09:50:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 09:50:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/resources/css</destination>
+			<type>folder</type>
+			<uuidstructure>8ef120cf-dbab-11dc-997c-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Fri, 15 Feb 2008 09:51:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 09:51:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/resources/css/style.css</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/resources/css/style.css</destination>
+			<type>plain</type>
+			<uuidstructure>8310825d-dbab-11dc-997c-9f7a6a6ce285</uuidstructure>
+			<uuidresource>8310825e-dbab-11dc-997c-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Thu, 28 Feb 2008 10:19:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Feb 2008 09:50:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/resources/images</destination>
+			<type>imagegallery</type>
+			<uuidstructure>b681d875-e394-11dc-a72c-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Mon, 25 Feb 2008 11:27:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 11:27:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/resources/images/bg_foot.png</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/resources/images/bg_foot.png</destination>
+			<type>image</type>
+			<uuidstructure>2bc2f0cc-e38a-11dc-a72c-9f7a6a6ce285</uuidstructure>
+			<uuidresource>2bc2f0cd-e38a-11dc-a72c-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 10:12:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 10:12:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[bg_foot]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:40,h:40]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/resources/images/bg_head.png</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/resources/images/bg_head.png</destination>
+			<type>image</type>
+			<uuidstructure>2bdfa090-e38a-11dc-a72c-9f7a6a6ce285</uuidstructure>
+			<uuidresource>2bdfa091-e38a-11dc-a72c-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 10:12:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 10:12:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[bg_head]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:40,h:120]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/resources/images/logo_head_de.png</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/resources/images/logo_head_de.png</destination>
+			<type>image</type>
+			<uuidstructure>2be91674-e38a-11dc-a72c-9f7a6a6ce285</uuidstructure>
+			<uuidresource>2be91675-e38a-11dc-a72c-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 10:12:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 10:12:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[logo_head_de]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:940,h:60]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/resources/images/logo_head_en.png</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/resources/images/logo_head_en.png</destination>
+			<type>image</type>
+			<uuidstructure>2bf2b368-e38a-11dc-a72c-9f7a6a6ce285</uuidstructure>
+			<uuidresource>2bf2b369-e38a-11dc-a72c-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 10:12:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 10:12:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[logo_head_en]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:940,h:60]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/resources/license</destination>
+			<type>folder</type>
+			<uuidstructure>aa1c8a10-de02-11dc-afee-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Mon, 18 Feb 2008 09:19:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 09:19:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/resources/license/fdl.txt</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/resources/license/fdl.txt</destination>
+			<type>plain</type>
+			<uuidstructure>411eae72-de03-11dc-afee-9f7a6a6ce285</uuidstructure>
+			<uuidresource>411eae73-de03-11dc-afee-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 18 Feb 2008 09:27:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Feb 2008 09:24:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[GNU Free Documentation License]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>1350aea4-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Wed, 13 Feb 2008 15:19:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:19:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>210ceae6-da47-11dc-b345-9f7a6a6ce285</uuidstructure>
+			<uuidresource>210ceae7-da47-11dc-b345-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 16:50:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:19:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/event.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/event.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>65241ead-df91-11dc-b0b0-9f7a6a6ce285</uuidstructure>
+			<uuidresource>65241eae-df91-11dc-b0b0-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 16:43:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Feb 2008 08:54:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/item.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/item.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>ab8517e5-db13-11dc-8686-9f7a6a6ce285</uuidstructure>
+			<uuidresource>ab8517e6-db13-11dc-8686-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Tue, 26 Feb 2008 13:34:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 14 Feb 2008 15:44:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/news.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/news.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>f2029cdf-da48-11dc-85fe-9f7a6a6ce285</uuidstructure>
+			<uuidresource>f2029ce0-da48-11dc-85fe-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 15:45:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:32:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested</destination>
+			<type>folder</type>
+			<uuidstructure>3c467421-da49-11dc-85fe-9f7a6a6ce285</uuidstructure>
+			<datelastmodified>Wed, 13 Feb 2008 15:34:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:34:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/attachment.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/attachment.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>43bf99c3-da49-11dc-85fe-9f7a6a6ce285</uuidstructure>
+			<uuidresource>43bf99c4-da49-11dc-85fe-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Wed, 13 Feb 2008 15:35:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:35:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/availability.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/availability.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>51d3f08e-e07d-11dc-bd1b-9f7a6a6ce285</uuidstructure>
+			<uuidresource>51d3f08f-e07d-11dc-bd1b-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Thu, 21 Feb 2008 13:12:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 21 Feb 2008 13:02:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/eventdates.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/eventdates.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>75dc405f-df92-11dc-b0b0-9f7a6a6ce285</uuidstructure>
+			<uuidresource>75dc4060-df92-11dc-b0b0-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Wed, 20 Feb 2008 09:02:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Feb 2008 09:01:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/extendedlink.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/extendedlink.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>88d94477-da49-11dc-85fe-9f7a6a6ce285</uuidstructure>
+			<uuidresource>88d94478-da49-11dc-85fe-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Wed, 13 Feb 2008 16:06:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:37:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/image.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/image.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>62aee985-da49-11dc-85fe-9f7a6a6ce285</uuidstructure>
+			<uuidresource>62aee986-da49-11dc-85fe-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Wed, 13 Feb 2008 15:36:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 15:36:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/paragraph.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/paragraph.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>1d82a79f-da51-11dc-82a7-9f7a6a6ce285</uuidstructure>
+			<uuidresource>1d82a7a0-da51-11dc-82a7-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 15:25:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Feb 2008 16:31:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes</destination>
+			<type>folder</type>
+			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/tt_article.png</source>
+			<destination>system/workplace/resources/filetypes/tt_article.png</destination>
+			<type>image</type>
+			<uuidstructure>43a6958c-e37d-11dc-bc35-9f7a6a6ce285</uuidstructure>
+			<uuidresource>43a6958d-e37d-11dc-bc35-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 08:40:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 08:40:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/tt_event.png</source>
+			<destination>system/workplace/resources/filetypes/tt_event.png</destination>
+			<type>image</type>
+			<uuidstructure>43b03280-e37d-11dc-bc35-9f7a6a6ce285</uuidstructure>
+			<uuidresource>43b03281-e37d-11dc-bc35-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 08:40:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 08:40:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/tt_item.png</source>
+			<destination>system/workplace/resources/filetypes/tt_item.png</destination>
+			<type>image</type>
+			<uuidstructure>43b75e74-e37d-11dc-bc35-9f7a6a6ce285</uuidstructure>
+			<uuidresource>43b75e75-e37d-11dc-bc35-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 08:40:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 08:40:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/tt_job.png</source>
+			<destination>system/workplace/resources/filetypes/tt_job.png</destination>
+			<type>image</type>
+			<uuidstructure>43be8a68-e37d-11dc-bc35-9f7a6a6ce285</uuidstructure>
+			<uuidresource>43be8a69-e37d-11dc-bc35-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 08:40:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 08:40:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/tt_news.png</source>
+			<destination>system/workplace/resources/filetypes/tt_news.png</destination>
+			<type>image</type>
+			<uuidstructure>43c58f4c-e37d-11dc-bc35-9f7a6a6ce285</uuidstructure>
+			<uuidresource>43c58f4d-e37d-11dc-bc35-9f7a6a6ce285</uuidresource>
+			<datelastmodified>Mon, 25 Feb 2008 08:40:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 25 Feb 2008 08:40:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>

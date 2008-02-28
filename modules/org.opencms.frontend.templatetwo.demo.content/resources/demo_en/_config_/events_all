@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ListBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/listbox.xsd">
+  <ListBox language="de">
+    <Title><![CDATA[Alle Veranstaltungen im Überblick]]></Title>
+    <Links>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/demo_de/aktuell/events/]]></target>
+        <uuid>ecb00564-df92-11dc-b0b0-9f7a6a6ce285</uuid>
+      </link>
+    </Links>
+    <Collector><![CDATA[allInFolderPriorityDateDesc]]></Collector>
+    <Parameter><![CDATA[%(link1)event_%(number).html|ttevent]]></Parameter>
+    <More/>
+    <PositionAuthor><![CDATA[Top]]></PositionAuthor>
+    <PositionDate><![CDATA[Top]]></PositionDate>
+    <PositionImage><![CDATA[Left]]></PositionImage>
+    <Mapping>
+      <Field><![CDATA[Title]]></Field>
+      <XmlNode><![CDATA[Title]]></XmlNode>
+    </Mapping>
+    <Mapping>
+      <Field><![CDATA[Text]]></Field>
+      <XmlNode><![CDATA[Paragraph/Text]]></XmlNode>
+      <MaxLength><![CDATA[500]]></MaxLength>
+    </Mapping>
+    <Mapping>
+      <Field><![CDATA[Image]]></Field>
+      <XmlNode><![CDATA[Paragraph/Image/Image]]></XmlNode>
+    </Mapping>
+  </ListBox>
+  <ListBox language="en">
+    <Title><![CDATA[All events]]></Title>
+    <Links>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/demo_en/newsandevents/events/]]></target>
+        <uuid>897e699b-e44d-11dc-add5-9f7a6a6ce285</uuid>
+      </link>
+    </Links>
+    <Collector><![CDATA[allInFolderPriorityDateDesc]]></Collector>
+    <Parameter><![CDATA[%(link1)event_%(number).html|ttevent]]></Parameter>
+    <More/>
+    <PositionAuthor><![CDATA[Top]]></PositionAuthor>
+    <PositionDate><![CDATA[Top]]></PositionDate>
+    <PositionImage><![CDATA[Left]]></PositionImage>
+    <Mapping>
+      <Field><![CDATA[Title]]></Field>
+      <XmlNode><![CDATA[Title]]></XmlNode>
+    </Mapping>
+    <Mapping>
+      <Field><![CDATA[Text]]></Field>
+      <XmlNode><![CDATA[Paragraph/Text]]></XmlNode>
+      <MaxLength><![CDATA[500]]></MaxLength>
+    </Mapping>
+    <Mapping>
+      <Field><![CDATA[Image]]></Field>
+      <XmlNode><![CDATA[Paragraph/Image/Image]]></XmlNode>
+    </Mapping>
+  </ListBox>
+</ListBoxes>

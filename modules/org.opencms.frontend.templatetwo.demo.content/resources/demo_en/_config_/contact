@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[Bei Fragen: fragen !]]></Title>
+    <Content name="Content0">
+      <links>
+        <link name="link0" internal="false" type="A">
+          <target><![CDATA[/opencms/opencms/demo_de/_config_/goto]]></target>
+          <query><![CDATA[uri=/demo_de/kontact.html&module=Alkacon OpenCms Add-On Module Package Webform (com.alkacon.opencms.formgenerator)]]></query>
+        </link>
+      </links>
+      <content><![CDATA[<p>Sie haben spezielle Fragen, Anregungen oder Wünsche ?</p>
+<p>Dann schreiben Sie uns doch&nbsp; !</p>
+<p>&nbsp;</p>
+<p><a title="Kontaktformular" target="_self" href="%(link0)">Zum Kontaktformular</a></p>]]></content>
+    </Content>
+  </TextBox>
+  <TextBox language="en">
+    <Title><![CDATA[Any Questions ?]]></Title>
+    <Content name="Content0">
+      <links>
+        <link name="link0" internal="false" type="A">
+          <target><![CDATA[/opencms/opencms/demo_en/_config_/goto]]></target>
+          <query><![CDATA[uri=/demo_en/contact.html&module=Alkacon OpenCms Add-On Module Package Webform (com.alkacon.opencms.formgenerator)]]></query>
+        </link>
+      </links>
+      <content><![CDATA[<p>You have further questions, suggestions or wishes ?</p>
+<p>To contact us, use our <a href="%(link0)" target="_self" title="Contact form">contact form</a>!</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

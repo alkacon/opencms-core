@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<LinkBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/linkbox.xsd">
+  <LinkBox language="de">
+    <Title><![CDATA[Beliebte Artikel]]></Title>
+    <Links>
+      <Title><![CDATA[Die große Wurstparade]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_de/imblick/wurstparade.html]]></target>
+          <uuid>56f19ee2-dee3-11dc-b46f-9f7a6a6ce285</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[Erfreuen Sie sich am Anblick einer leckeren Wurst!]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[Herstellungsverfahren]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_de/imblick/verfahren/index.html]]></target>
+          <uuid>382914e3-e521-11dc-8457-51cb880fd12a</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[Herstellungsverfahren im Überblick]]></Description>
+    </Links>
+  </LinkBox>
+  <LinkBox language="en">
+    <Title><![CDATA[Popular articles]]></Title>
+    <Links>
+      <Title><![CDATA[The large sausage parade]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_en/view/sausageparade.html]]></target>
+          <uuid>8c111e73-e479-11dc-abe7-51cb880fd12a</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[Get hungry by looking at a tasty piece of sausage!]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[Sausage making]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_en/view/procedure/en/index.html]]></target>
+          <uuid>bb9aface-e52c-11dc-8457-51cb880fd12a</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[An overview about sausage making]]></Description>
+    </Links>
+  </LinkBox>
+</LinkBoxes>

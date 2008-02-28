@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[Anmelden]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Hier können Sie sich mit Ihrem Benutzernamen und Kennwort anmelden:</p>]]></content>
+    </Content>
+    <JspFile>
+      <link type="WEAK">
+        <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/elements/login.jsp]]></target>
+        <uuid>d37ff040-deeb-11dc-b46f-9f7a6a6ce285</uuid>
+      </link>
+    </JspFile>
+  </TextBox>
+  <TextBox language="en">
+    <Title><![CDATA[Login]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Please enter your credentials:</p>]]></content>
+    </Content>
+    <JspFile>
+      <link type="WEAK">
+        <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/elements/login.jsp]]></target>
+        <uuid>d37ff040-deeb-11dc-b46f-9f7a6a6ce285</uuid>
+        <query><![CDATA[path=/demo_en/extra/login.html]]></query>
+      </link>
+    </JspFile>
+  </TextBox>
+</TextBoxes>

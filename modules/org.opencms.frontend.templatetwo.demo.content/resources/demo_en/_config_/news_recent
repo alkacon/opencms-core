@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ListBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/listbox.xsd">
+  <ListBox language="en">
+    <Title><![CDATA[Recent news]]></Title>
+    <Links>
+      <link type="WEAK">
+        <target><![CDATA[/sites/default/demo_en/newsandevents/news/]]></target>
+        <uuid>78bf9bb8-e44d-11dc-add5-9f7a6a6ce285</uuid>
+      </link>
+    </Links>
+    <Collector><![CDATA[allInFolderPriorityDateDesc]]></Collector>
+    <Parameter><![CDATA[%(link1)news_%(number).html|ttnews|2]]></Parameter>
+    <More/>
+    <PositionAuthor><![CDATA[Top]]></PositionAuthor>
+    <PositionDate><![CDATA[Top]]></PositionDate>
+    <PositionImage><![CDATA[Top]]></PositionImage>
+    <Mapping>
+      <Field><![CDATA[Title]]></Field>
+      <XmlNode><![CDATA[Title]]></XmlNode>
+    </Mapping>
+    <Mapping>
+      <Field><![CDATA[Text]]></Field>
+      <XmlNode><![CDATA[Teaser]]></XmlNode>
+      <MaxLength><![CDATA[150]]></MaxLength>
+    </Mapping>
+    <Mapping>
+      <Field><![CDATA[Date]]></Field>
+      <XmlNode><![CDATA[Date]]></XmlNode>
+    </Mapping>
+  </ListBox>
+</ListBoxes>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[JSP-generierte Box]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Auf dieser Seite wurde zur Ausgabe der Bildnachweise eine JSP eingebunden, die die komplette Box selbst darstellt und&nbsp; darin alle im Verzeichnis vorhandenen Bilder mit ihren&nbsp; Beschreibungen ausgibt.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

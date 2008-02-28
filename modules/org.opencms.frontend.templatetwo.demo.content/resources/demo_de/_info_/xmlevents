@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[XML-basierte Events]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p align="left">In diesem Bereich finden Sie ein Beispiel zur Verwendung von XML-basierten Events (Veranstaltungsinformationen).</p>
+<p align="left">&nbsp;</p>
+<p align="left">Diese können über die &quot;Direct Edit&quot;-Buttons neu angelegt und bearbeitet werden. Die Listboxen stellen alle verfügbaren und die beiden neuesten Events dar.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

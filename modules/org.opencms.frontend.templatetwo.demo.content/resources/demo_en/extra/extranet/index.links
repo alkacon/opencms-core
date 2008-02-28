@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<LinkBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/linkbox.xsd">
+  <LinkBox language="de">
+    <Title><![CDATA[Artikel im Extranet]]></Title>
+    <Links>
+      <Title><![CDATA[Rezepte: Bigos]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_de/extra/extranet/bigos.html]]></target>
+          <uuid>9cfa6a2b-e3a8-11dc-a72c-9f7a6a6ce285</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[Ein leckeres Rezept mit Wurst!]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[Die Wurst global: UTF-8]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_de/extra/extranet/utf-8.html]]></target>
+          <uuid>d2fbd218-e3b0-11dc-956d-9f7a6a6ce285</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[Wurstseiten backen mit UTF-8]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[Alkacon OpenCms CeBIT Special]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_de/extra/extranet/dokumente/cebit_special_de.pdf]]></target>
+          <uuid>15d98b12-e543-11dc-8457-51cb880fd12a</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[Wir möchten Sie als Besucher der CeBIT 2008 auf verschiedene aktuelle Veranstaltungen und Aktionen zu OpenCms und den Produkten und
+Dienstleistungen von Alkacon Software hinweisen.]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[OpenCms Services von Alkacon Software]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_de/extra/extranet/dokumente/alkacon_opencms_services_de.pdf]]></target>
+          <uuid>15c4073f-e543-11dc-8457-51cb880fd12a</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[OpenCms ist Open Source Software mit professionellem Support – ohne Kompromisse in Qualität und Verfügbarkeit von Schulungsmöglichkeiten
+oder Beratungsoptionen. Wir von Alkacon Software stellen uns täglich den Anforderungen unserer Kunden und realisieren mit OpenCms auch anspruchsvollste
+und zeitkritische Projekte.]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[OpenCms Days 2008]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_de/extra/extranet/dokumente/opencms-days.pdf]]></target>
+          <uuid>15eee7d5-e543-11dc-8457-51cb880fd12a</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[For the first time, OpenCms users and developers gather for a 2 day conference and expo. Meet and mingle with OpenCms experts such as core developers, experienced consultants, independent CMS analysts, executive decision makers and other OpenCms users.]]></Description>
+    </Links>
+  </LinkBox>
+  <LinkBox language="en">
+    <Title><![CDATA[Available documents in the extranet]]></Title>
+    <Links>
+      <Title><![CDATA[Recipes: Bigos]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_en/extra/extranet/bigos.html]]></target>
+          <uuid>2b3eb85f-e54f-11dc-8457-51cb880fd12a</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[A tasty recipe with sausage]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[Wurst globally: UTF-8]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_en/extra/extranet/utf-8.html]]></target>
+          <uuid>6713f36a-e54f-11dc-8457-51cb880fd12a</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[Bake sausage pages with UTF-8 encoding]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[Alkacon OpenCms CeBIT Special]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_de/extra/extranet/dokumente/cebit_special_de.pdf]]></target>
+          <uuid>15d98b12-e543-11dc-8457-51cb880fd12a</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[As visitor of CeBIT 2008, we would like to inform you about several events and activities around OpenCms and the products and services of Alkacon Software (document in german).]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[OpenCms Services von Alkacon Software]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_en/extra/extranet/documents/alkacon_opencms_services_en.pdf]]></target>
+          <uuid>eecc421b-e545-11dc-8457-51cb880fd12a</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[OpenCms means open source software with professional support, without compromise when it comes to quality and availability of training courses or
+development services. When it comes to OpenCms projects, Alkacon Software constantly delivers solutions to the most demanding customers on
+time and on budget.]]></Description>
+    </Links>
+    <Links>
+      <Title><![CDATA[OpenCms Days 2008]]></Title>
+      <Link>
+        <link internal="true" type="WEAK">
+          <target><![CDATA[/sites/default/demo_en/extra/extranet/documents/opencms-days.pdf]]></target>
+          <uuid>eed5df0f-e545-11dc-8457-51cb880fd12a</uuid>
+        </link>
+      </Link>
+      <Description><![CDATA[For the first time, OpenCms users and developers gather for a 2 day conference and expo. Meet and mingle with OpenCms experts such as core developers, experienced consultants, independent CMS analysts, executive decision makers and other OpenCms users.]]></Description>
+    </Links>
+  </LinkBox>
+</LinkBoxes>

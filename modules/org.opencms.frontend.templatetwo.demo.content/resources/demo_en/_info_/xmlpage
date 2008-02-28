@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[XML Page]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Neben den frei definierbaren strukturierten XML Contents steht mit der XML Page ein weiterer Seitentyp für Inhalte bereit, die in einer unstrukturierten Form vorliegen.</p>
+<p>&nbsp;</p>
+<p>Derartige Inhalte lassen sich mit diesem Typ einfach in einem WYSIWYG-Editor direkt bearbeiten.</p>]]></content>
+    </Content>
+  </TextBox>
+  <TextBox language="en">
+    <Title><![CDATA[XML pages]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Besides structured XML contents, OpenCms supports with XML pages a page type for editing unstructured contents utilizing a WHSIWYG (What you see is what you get) editor.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

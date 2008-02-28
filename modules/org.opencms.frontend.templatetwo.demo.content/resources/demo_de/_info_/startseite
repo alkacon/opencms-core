@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[Startseite]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Als Startseite wird ein strukturierter Inhalt für Artikel verwendet. Mit solchen selbst definierbaren Typen können Inhalte in strukturierter Form erfasst und dargestellt werden.</p>
+<p>&nbsp;</p>
+<p>Über eine Teilstruktur dieses Inhalts wird festgelegt, welche zusätzlichen Seitenelemente (&quot;Boxen&quot;) rechts, links und in der Seitenmitte angezeigt werden.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

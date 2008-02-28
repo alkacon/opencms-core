@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[Direct edit]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Bereits vorhandene News können in einem strukturierten Editor über den &quot;Direct Edit&quot;-Button nachträglich bearbeitet oder neu erstellt werden.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

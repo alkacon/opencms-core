@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ListBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/listbox.xsd">
+  <ListBox language="de">
+    <Title><![CDATA[Alle Artikel]]></Title>
+    <Collector><![CDATA[allKeyValuePairFiltered]]></Collector>
+    <Parameter><![CDATA[resource=/demo/|resourceType=xmlcontent|categoryTypes=articles/|subTree=true|sortBy=date|sortAsc=true]]></Parameter>
+    <More><![CDATA[Weiter]]></More>
+    <PositionAuthor><![CDATA[Top]]></PositionAuthor>
+    <PositionDate><![CDATA[Top]]></PositionDate>
+    <PositionImage><![CDATA[Top]]></PositionImage>
+    <Mapping>
+      <Field><![CDATA[Title]]></Field>
+      <XmlNode><![CDATA[Paragraph[1]/Headline]]></XmlNode>
+    </Mapping>
+    <Mapping>
+      <Field><![CDATA[Text]]></Field>
+      <XmlNode><![CDATA[Paragraph[1]/Text]]></XmlNode>
+    </Mapping>
+  </ListBox>
+</ListBoxes>

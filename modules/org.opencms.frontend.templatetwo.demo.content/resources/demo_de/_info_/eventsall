@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[Event-Überblick]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>Die Box auf dieser Seite zeigt alle verfügbaren Events an.</p>
+<p>&nbsp;</p>
+<p>Dabei wurde hier für die Listbox ein &quot;Collector&quot; verwendet, der die Events erst nach Priorität, dann nach Datum anordnet</p>]]></content>
+    </Content>
+  </TextBox>
+  <TextBox language="en">
+    <Title><![CDATA[All Events]]></Title>
+    <Content name="Content0">
+      <links/>
+      <content><![CDATA[<p>The box in the center of this page shows all available events.</p>
+<p>&nbsp;</p>
+<p>It utilizes a &quot;collector&quot; sorting all events after priority first, then after date.</p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

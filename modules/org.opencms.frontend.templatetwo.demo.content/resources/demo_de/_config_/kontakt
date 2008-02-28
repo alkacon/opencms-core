@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[Bei Fragen: fragen !]]></Title>
+    <Content name="Content0">
+      <links>
+        <link name="link0" internal="false" type="A">
+          <target><![CDATA[/opencms/opencms/demo_de/_config_/goto]]></target>
+          <query><![CDATA[uri=/demo_de/kontakt.html&module=Alkacon OAMP demo content (com.alkacon.opencms.oampdemo)]]></query>
+        </link>
+      </links>
+      <content><![CDATA[<p>Sie haben spezielle Fragen, Anregungen oder Wünsche ?</p>
+<p>Dann schreiben Sie uns doch&nbsp; !</p>
+<p>&nbsp;</p>
+<p><a href="%(link0)" target="_self" title="Kontaktformular">Zum Kontaktformular</a></p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>
