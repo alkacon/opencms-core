@@ -32,17 +32,17 @@
 	<c:forEach items="${cms.stylesheets}" var="cssFile">
 		<link href="<cms:link>${cssFile}</cms:link>" rel="stylesheet" type="text/css"/>		
 	</c:forEach>
-	
+		
+	<link href="<cms:link>../resources/css/style.css?preset=${cms.presetPath}&amp;style=${cms.stylePath}</cms:link>" rel="stylesheet" type="text/css"/>
+	<!--[if lte IE 6]>
+		<link href="<cms:link>%(link.weak:../resources/css/patch_ie.css)</cms:link>" rel="stylesheet" type="text/css"/>
+    <![endif]-->
+
 	<!-- insert individual stylesheet -->
 	<c:set var="stylesheet"><cms:property name="stylesheet" file="search"/></c:set>
 	<c:if test="${!empty stylesheet}">
 		<link href="<cms:link>${stylesheet}</cms:link>" rel="stylesheet" type="text/css"/>
 	</c:if>
-	
-	<link href="<cms:link>../resources/css/style.css?preset=${cms.presetPath}&amp;style=${cms.stylePath}</cms:link>" rel="stylesheet" type="text/css"/>
-	<!--[if lte IE 6]>
-		<link href="<cms:link>%(link.weak:../resources/css/patch_ie.css)</cms:link>" rel="stylesheet" type="text/css"/>
-    <![endif]-->
 
 	<cms:editable/>
 </head>
