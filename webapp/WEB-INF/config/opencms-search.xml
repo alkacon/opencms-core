@@ -175,7 +175,7 @@
 		</analyzers>
 		<indexes>
 			<index>
-				<name>Online project (VFS)</name>
+				<name>Online project EN (VFS)</name>
 				<rebuild>auto</rebuild>
 				<project>Online</project>
 				<locale>en</locale>			
@@ -184,14 +184,14 @@
 				</sources>		
 			</index>
 			<index>
-				<name>Offline project (VFS)</name>
+				<name>Online project DE (VFS)</name>
 				<rebuild>auto</rebuild>
-				<project>Offline</project>
-				<locale>en</locale>			
+				<project>Online</project>
+				<locale>de</locale>			
 				<sources>
 					<source>source1</source>
 				</sources>		
-			</index>	
+			</index>
 			<index>
 				<name>German online help</name>
 				<rebuild>auto</rebuild>
@@ -207,7 +207,7 @@
 				<name>source1</name>
 				<indexer class="org.opencms.search.CmsVfsIndexer" />
 				<resources>
-					<resource>/sites/default/</resource>
+					<resource>/sites/</resource>
 				</resources>
 				<documenttypes-indexed>
 	                <name>xmlpage</name>
