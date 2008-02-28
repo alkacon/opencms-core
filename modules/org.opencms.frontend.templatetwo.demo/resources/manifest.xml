@@ -580,7 +580,12 @@
 			<datecreated>Mon, 25 Feb 2008 11:27:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Template images Template Two Demo]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol>
 				<accessentry>
