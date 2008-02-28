@@ -766,7 +766,7 @@
           <restrictexplorerview>false</restrictexplorerview>
         </workplace-startupsettings>
         <workplace-search>
-        	<searchindex-name>Offline project (VFS)</searchindex-name>
+        	<searchindex-name>Online project EN (VFS)</searchindex-name>
         	<searchview-style>explorer</searchview-style>
         </workplace-search>
       </workplace-preferences>
