@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.0.4</opencms_version>
-		<createdate>Thu, 28 Feb 2008 14:50:09 GMT</createdate>
+		<createdate>Thu, 28 Feb 2008 15:14:57 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -14,7 +14,7 @@
 		<group>Template Two</group>
 		<class/>
 		<description><![CDATA[This module contains contents for the Template Two Demo Site.]]></description>
-		<version>7.0.4</version>
+		<version>7.0.8</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -3407,7 +3407,7 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 			<type>tttextbox</type>
 			<uuidstructure>d0938201-e48a-11dc-be5b-51cb880fd12a</uuidstructure>
 			<uuidresource>d0938202-e48a-11dc-be5b-51cb880fd12a</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 14:39:13 GMT</datelastmodified>
+			<datelastmodified>Thu, 28 Feb 2008 15:07:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 16:49:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3427,7 +3427,7 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 			<type>ttlistbox</type>
 			<uuidstructure>8f90bc1e-e461-11dc-abe7-51cb880fd12a</uuidstructure>
 			<uuidresource>8f90bc1f-e461-11dc-abe7-51cb880fd12a</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 14:39:13 GMT</datelastmodified>
+			<datelastmodified>Thu, 28 Feb 2008 15:08:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 11:54:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3447,7 +3447,7 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 			<type>ttlistbox</type>
 			<uuidstructure>8f9eecf1-e461-11dc-abe7-51cb880fd12a</uuidstructure>
 			<uuidresource>8f9eecf2-e461-11dc-abe7-51cb880fd12a</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 14:39:14 GMT</datelastmodified>
+			<datelastmodified>Thu, 28 Feb 2008 15:08:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 11:54:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3491,7 +3491,7 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 			<type>tttextbox</type>
 			<uuidstructure>10c8b7a2-e46d-11dc-abe7-51cb880fd12a</uuidstructure>
 			<uuidresource>10c8b7a3-e46d-11dc-abe7-51cb880fd12a</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 14:39:14 GMT</datelastmodified>
+			<datelastmodified>Thu, 28 Feb 2008 15:09:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 13:16:39 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3511,7 +3511,7 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 			<type>ttlistbox</type>
 			<uuidstructure>ec165cb3-e474-11dc-abe7-51cb880fd12a</uuidstructure>
 			<uuidresource>ec165cb4-e474-11dc-abe7-51cb880fd12a</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 14:39:15 GMT</datelastmodified>
+			<datelastmodified>Thu, 28 Feb 2008 15:09:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 14:12:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3531,7 +3531,7 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 			<type>ttlistbox</type>
 			<uuidstructure>ec0593d0-e474-11dc-abe7-51cb880fd12a</uuidstructure>
 			<uuidresource>ec0593d1-e474-11dc-abe7-51cb880fd12a</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 14:39:15 GMT</datelastmodified>
+			<datelastmodified>Thu, 28 Feb 2008 15:10:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 14:12:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3551,7 +3551,7 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 			<type>ttlistbox</type>
 			<uuidstructure>ec1d88a6-e474-11dc-abe7-51cb880fd12a</uuidstructure>
 			<uuidresource>ec1d88a7-e474-11dc-abe7-51cb880fd12a</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 14:39:15 GMT</datelastmodified>
+			<datelastmodified>Thu, 28 Feb 2008 15:10:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 14:12:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3571,7 +3571,7 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 			<type>tttextbox</type>
 			<uuidstructure>184eff53-e47c-11dc-abe7-51cb880fd12a</uuidstructure>
 			<uuidresource>184eff54-e47c-11dc-abe7-51cb880fd12a</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 14:39:15 GMT</datelastmodified>
+			<datelastmodified>Thu, 28 Feb 2008 15:10:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 15:04:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3591,7 +3591,7 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 			<type>ttlistbox</type>
 			<uuidstructure>8faad3d4-e461-11dc-abe7-51cb880fd12a</uuidstructure>
 			<uuidresource>8faad3d5-e461-11dc-abe7-51cb880fd12a</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 14:39:15 GMT</datelastmodified>
+			<datelastmodified>Thu, 28 Feb 2008 15:10:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 26 Feb 2008 11:54:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -4622,7 +4622,7 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 			<type>ttarticle</type>
 			<uuidstructure>6713f36a-e54f-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>6713f36b-e54f-11dc-8457-51cb880fd12a</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 14:39:20 GMT</datelastmodified>
+			<datelastmodified>Thu, 28 Feb 2008 15:02:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Feb 2008 16:16:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>

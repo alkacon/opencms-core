@@ -10,13 +10,4 @@
 <p>Dabei wurde hier für die Listbox ein &quot;Collector&quot; verwendet, der die Events erst nach Priorität, dann nach Datum anordnet</p>]]></content>
     </Content>
   </TextBox>
-  <TextBox language="en">
-    <Title><![CDATA[All Events]]></Title>
-    <Content name="Content0">
-      <links/>
-      <content><![CDATA[<p>The box in the center of this page shows all available events.</p>
-<p>&nbsp;</p>
-<p>It utilizes a &quot;collector&quot; sorting all events after priority first, then after date.</p>]]></content>
-    </Content>
-  </TextBox>
 </TextBoxes>
