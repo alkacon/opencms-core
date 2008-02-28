@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2008/02/27 12:05:21 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2008/02/28 17:20:09 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.site.CmsSite;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -579,6 +580,11 @@ public class CmsTree extends CmsWorkplace {
         setProjectAware(Boolean.valueOf(request.getParameter(PARAM_PROJECTAWARE)).booleanValue());
         boolean rootloaded = Boolean.valueOf(request.getParameter(PARAM_ROOTLOADED)).booleanValue();
         String resource = request.getParameter(PARAM_RESOURCE);
+        
+        if (!getCms().existsResource(resource)) {
+            resource = null; 
+        }       
+        
         setTreeType(request.getParameter(PARAM_TYPE));
         String treeSite = request.getParameter(PARAM_TREESITE);
         computeSiteSelector(request);
@@ -593,6 +599,7 @@ public class CmsTree extends CmsWorkplace {
 
         String lastknown = request.getParameter(PARAM_LASTKNOWN);
         // both "resource" and "lastknown" must be folders
+                
         if (resource != null) {
             resource = CmsResource.getFolderPath(resource);
         }
@@ -806,7 +813,7 @@ public class CmsTree extends CmsWorkplace {
 
         StringBuffer result = new StringBuffer(1024);
         result.append("/*\n");
-        result.append(t.getMessage());
+        result.append(CmsStringUtil.escapeHtml(t.getMessage()));
         result.append("\n*/\n");
         result.append("function init() {\n");
         result.append("}\n");
