@@ -23,6 +23,7 @@
     <breadcrumb.divider><![CDATA[1px solid #B31B34]]></breadcrumb.divider>
     <footer.color>#444444</footer.color>
     <footer.background>#D6DADF</footer.background>
+    <footer.background.image/>
     <footer.divider><![CDATA[1px solid #B31B34]]></footer.divider>
     <font.family><![CDATA[Verdana, Helvetica, Arial, sans-serif]]></font.family>
     <link.color>#B31B34</link.color>

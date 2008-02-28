@@ -17,16 +17,15 @@
           <uuid>9b18e429-e448-11dc-add5-9f7a6a6ce285</uuid>
         </link>
         <link name="link4" internal="true" type="A">
-          <target><![CDATA[/sites/default/demo_de/extra/extranet/]]></target>
-          <uuid>52f4ade2-dfd4-11dc-ae2d-9f7a6a6ce285</uuid>
+          <target><![CDATA[/sites/default/demo_de/suche.html]]></target>
+          <uuid>0b4b4a5a-e609-11dc-9761-fdaca0868585</uuid>
         </link>
         <link name="link1" internal="true" type="A">
-          <target><![CDATA[/sites/default/demo_en/view/sausageparade.html]]></target>
-          <uuid>8c111e73-e479-11dc-abe7-51cb880fd12a</uuid>
+          <target><![CDATA[/sites/default/demo_de/imblick/wurstparade.html]]></target>
+          <uuid>56f19ee2-dee3-11dc-b46f-9f7a6a6ce285</uuid>
         </link>
       </links>
-      <content><![CDATA[<p align="right"><a title="English Version" target="_self" href="%(link0)">English</a> | <a title="Sausage parade" target="_self" href="%(link1)">Wurstparade</a> | <a target="_self" href="%(link2)">Extranet</a> | <a title="Kontakt" target="_self" href="%(link3)">Kontakt</a><a title="Intern" target="_self" href="%(link4)"><br />
-</a></p>]]></content>
+      <content><![CDATA[<p align="right"><a title="English Version" target="_self" href="%(link0)">English</a> |  <a href="%(link1)" target="_self" title="Wurstparade">Wurstparade</a> |  <a target="_self" href="%(link2)">Extranet</a> |  <a title="Kontakt" target="_self" href="%(link3)">Kontakt</a> |  <a title="Suche" target="_self" href="%(link4)">Suche</a></p>]]></content>
     </TopNav>
     <Header name="Header0">
       <links>
@@ -39,7 +38,7 @@
           <uuid>2be91674-e38a-11dc-a72c-9f7a6a6ce285</uuid>
         </link>
       </links>
-      <content><![CDATA[<p><a href="%(link0)"><img width="940" height="60" border="0" alt="logo_head_de" src="%(link1)" /></a></p>]]></content>
+      <content><![CDATA[<p><a href="%(link0)"><img width="940" height="60" border="0" src="%(link1)" alt="logo_head_de" /></a></p>]]></content>
     </Header>
     <Footer name="Footer0">
       <links>
@@ -51,7 +50,7 @@
         </link>
       </links>
       <content><![CDATA[<div>
-<p>Built with&nbsp;  <a href="%(link0)">OpenCms - The Open Source Cms</a>, provided by <a title="Alkacon Software GmbH" target="_self" href="%(link1)">Alkacon Software GmbH - The OpenCms Experts</a></p>
+<p>Built with&nbsp;  <a href="%(link0)">OpenCms - The Open Source Cms</a>, provided by <a href="%(link1)" target="_self" title="Alkacon Software GmbH">Alkacon Software GmbH - The OpenCms Experts</a></p>
 </div>]]></content>
     </Footer>
   </TemplateOption>

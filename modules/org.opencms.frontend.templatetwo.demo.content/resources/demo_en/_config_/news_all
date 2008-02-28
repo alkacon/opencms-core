@@ -33,7 +33,7 @@
     <Title><![CDATA[All News]]></Title>
     <Links>
       <link type="WEAK">
-        <target><![CDATA[/sites/default/demo_en/newsandevents/news/]]></target>
+        <target><![CDATA[/sites/default/demo_en/today/news/]]></target>
         <uuid>78bf9bb8-e44d-11dc-add5-9f7a6a6ce285</uuid>
       </link>
     </Links>

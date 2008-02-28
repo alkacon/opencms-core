@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.0.4</opencms_version>
-		<createdate>Thu, 28 Feb 2008 10:45:10 GMT</createdate>
+		<createdate>Thu, 28 Feb 2008 14:49:57 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -119,10 +119,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>421fb7a7-e455-11dc-a220-51cb880fd12a</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>beda29d0-e5fc-11dc-9761-fdaca0868585</uuidstructure>
+			<datelastmodified>Thu, 28 Feb 2008 12:57:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 26 Feb 2008 10:26:14 GMT</datecreated>
+			<datecreated>Thu, 28 Feb 2008 12:57:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -141,10 +141,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>42e0e400-e455-11dc-a220-51cb880fd12a</uuidstructure>
-			<datelastmodified>Tue, 26 Feb 2008 10:26:15 GMT</datelastmodified>
+			<uuidstructure>bf8cff49-e5fc-11dc-9761-fdaca0868585</uuidstructure>
+			<datelastmodified>Thu, 28 Feb 2008 12:57:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 26 Feb 2008 10:26:15 GMT</datecreated>
+			<datecreated>Thu, 28 Feb 2008 12:57:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -582,7 +582,16 @@
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<source>system/modules/org.opencms.frontend.templatetwo.demo/resources/images/bg_foot.png</source>
@@ -913,24 +922,7 @@
 				</property>
 			</properties>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources</destination>

@@ -25,7 +25,7 @@
     <Content name="Content0">
       <links>
         <link name="link0" internal="true" type="A">
-          <target><![CDATA[/sites/default/demo_en/view/wurstparade.html]]></target>
+          <target><![CDATA[/sites/default/demo_en/view/sausageparade.html]]></target>
           <uuid>8c111e73-e479-11dc-abe7-51cb880fd12a</uuid>
         </link>
       </links>

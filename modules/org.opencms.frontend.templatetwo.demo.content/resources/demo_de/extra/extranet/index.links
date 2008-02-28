@@ -24,17 +24,6 @@
       <Description><![CDATA[Wurstseiten backen mit UTF-8]]></Description>
     </Links>
     <Links>
-      <Title><![CDATA[Alkacon OpenCms CeBIT Special]]></Title>
-      <Link>
-        <link internal="true" type="WEAK">
-          <target><![CDATA[/sites/default/demo_de/extra/extranet/dokumente/cebit_special_de.pdf]]></target>
-          <uuid>15d98b12-e543-11dc-8457-51cb880fd12a</uuid>
-        </link>
-      </Link>
-      <Description><![CDATA[Wir möchten Sie als Besucher der CeBIT 2008 auf verschiedene aktuelle Veranstaltungen und Aktionen zu OpenCms und den Produkten und
-Dienstleistungen von Alkacon Software hinweisen.]]></Description>
-    </Links>
-    <Links>
       <Title><![CDATA[OpenCms Services von Alkacon Software]]></Title>
       <Link>
         <link internal="true" type="WEAK">
