@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
-  <TextBox language="de">
-    <Title><![CDATA[Navigationsboxen]]></Title>
-    <Content name="Content0">
-      <links/>
-      <content><![CDATA[<p>In diesem Bereich wird demonstriert, wie sich mit der Content Relation Engine über Listboxen mit einem entsprechenden Collector lokale Navigationen erzeugen lassen.</p>
-<p>&nbsp;</p>
-<p>Alle Inhalte wurden dabei einer Kategorie zugeordnet, auf den einzelnen Seiten wird dann in der unteren Box auf die anderen Inhalte dieser Kategorie verlinkt.</p>]]></content>
-    </Content>
-  </TextBox>
   <TextBox language="en">
     <Title><![CDATA[Navigation boxes]]></Title>
     <Content name="Content0">

@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
-  <TextBox language="de">
-    <Title><![CDATA[Linkboxen]]></Title>
-    <Content name="Content0">
-      <links/>
-      <content><![CDATA[<p>Mittels XML Contents lassen sich auch Verweislisten definieren.</p>
-<p>&nbsp;</p>
-<p>Während die Linkbox automatisch Inhalte nach bestimmten Kriterien darstellt, erfolgt dies mit einer Listbox durch einen Eintrag, so dass hier stets die volle Kontroll über den Inhalt besteht.</p>]]></content>
-    </Content>
-  </TextBox>
   <TextBox language="en">
     <Title><![CDATA[Linkbox]]></Title>
     <Content name="Content0">

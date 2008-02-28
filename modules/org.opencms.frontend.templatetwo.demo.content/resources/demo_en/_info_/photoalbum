@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
-  <TextBox language="de">
-    <Title><![CDATA[Photoalbum]]></Title>
-    <Content name="Content0">
-      <links/>
-      <content><![CDATA[<p>Diese Seiten wurden unter Verwendung des &quot;Photoalbums&quot; gebaut.</p>
-<p>&nbsp;</p>
-<p>In einem Photoalbum können Bilder auf Übersichtsseiten dargestellt und durch Anklicken dann einzeln betrachtet werden.</p>
-<p>&nbsp;</p>
-<p>Zusätzlich wurde für diese Seite ein anderes Layout verwendet - die rechte Spalte wurde hierbei deaktiviert.</p>]]></content>
-    </Content>
-  </TextBox>
   <TextBox language="en">
     <Title><![CDATA[Photoalbum]]></Title>
     <Content name="Content0">

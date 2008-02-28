@@ -1,17 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
-  <TextBox language="de">
-    <Title><![CDATA[XML-basierte Contents]]></Title>
-    <Content name="Content0">
-      <links/>
-      <content><![CDATA[<p>In diesem Bereich finden Sie mit News und EVents weitere Beispiele zur Verwendung von strukturierten Inhalten.</p>
-<p>&nbsp;</p>
-<p>Die Inhalte können in verschieden Listboxen dargestellt werden, wobei Auswahl und Sortierung über einen so genannten &quot;Collector&quot; erfolgt. Hier auf der Seite werden beispielsweise jeweils nur die beiden aktuellsten News bzw. Events angezeigt.</p>
-<p>&nbsp;</p>
-<p>Über die &quot;Direct Edit&quot;-Buttons rechts in den Boxen können vorhandene Inhalte direkt bearbeitet bzw. neue Inhalte vom Typ News oder Event angelegt werden.</p>]]></content>
-    </Content>
-  </TextBox>
   <TextBox language="en">
     <Title><![CDATA[XML based contents]]></Title>
     <Content name="Content0">

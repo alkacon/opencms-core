@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
-  <TextBox language="de">
-    <Title><![CDATA[Info-Box]]></Title>
-    <Content name="Content0">
-      <links/>
-      <content><![CDATA[<p>Auf jeder Seite finden Sie in der&nbsp; linken Spalte eine&nbsp; Box mit roter Titelzeile,&nbsp; in der die Seitenelemente kurz erklärt werden.</p>]]></content>
-    </Content>
-  </TextBox>
   <TextBox language="en">
     <Title><![CDATA[Infobox]]></Title>
     <Content name="Content0">

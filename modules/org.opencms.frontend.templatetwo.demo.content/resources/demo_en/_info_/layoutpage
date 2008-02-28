@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
-  <TextBox language="de">
-    <Title><![CDATA[Komplexe Layoutpage]]></Title>
-    <Content name="Content0">
-      <links/>
-      <content><![CDATA[<p>Auf dieser Seite wird anhand einer Seite des Typs &quot;Layoutpage&quot; gezeigt, wie sich auch komplexe Layouts mit XML contents realisieren lassen:</p>
-<p>&nbsp;</p>
-<p>Anhand der Daten im XML content kann die Seite ein- oder zweispaltig dargestellt werden; Bilder in den Absätzen lassen sich an verschiedenen Stellen platzieren.</p>]]></content>
-    </Content>
-  </TextBox>
   <TextBox language="en">
     <Title><![CDATA[Complex Layoutpage]]></Title>
     <Content name="Content0">
