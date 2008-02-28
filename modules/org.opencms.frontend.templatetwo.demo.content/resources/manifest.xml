@@ -14,7 +14,7 @@
 		<group>Template Two</group>
 		<class/>
 		<description><![CDATA[This module contains contents for the Template Two Demo Site.]]></description>
-		<version>7.0.8</version>
+		<version>7.0.4</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -30,8 +30,6 @@
 		<resources>
 			<resource uri="/demo_de/"/>
 			<resource uri="/demo_en/"/>
-			<resource uri="/system/categories/articles/"/>
-			<resource uri="/system/categories/news/"/>
 			<resource uri="/system/categories/wurstsorten/"/>
 		</resources>
 		<parameters/>
