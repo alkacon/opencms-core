@@ -893,7 +893,12 @@
 			<datecreated>Thu, 07 Feb 2008 16:46:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Template images Template Two]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol>
 				<accessentry>

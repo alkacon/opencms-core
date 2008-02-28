@@ -37,15 +37,18 @@
 
   h1, h2, h3, h4, h5, h6 { font-weight:bold; margin: 0 0 0.25em 0; }
   h1 { font-size: 200% }											/* 24px */
-  h2 { font-size: 166.67%; 	margin-top: 0.25em}						/* 20px */
-  h3 { font-size: 150%; 	margin-top: 0.25em}						/* 18px */
-  h4 { font-size: 133.33%; 	margin-top: 0.25em}                    	/* 16px */
-  h5 { font-size: 116.67%; 	margin-top: 0.25em}                    	/* 14px */
-  h6 { font-size: 116.67%; 	font-style:italic; margin-top: 0.25em }	/* 14px */
+  h2 { font-size: 166.67%; 	margin-top: 0.5em}						/* 20px */
+  h3 { font-size: 150%; 	margin-top: 0.45em}						/* 18px */
+  h4 { font-size: 133.33%; 	margin-top: 0.8em}                    	/* 16px */
+  h5 { font-size: 116.67%; 	margin-top: 0.8em}                    	/* 14px */
+  h6 { font-size: 116.67%; 	font-style:italic; margin-top: 0.8em }	/* 14px */
 
-  p { line-height: 1.5em; }
+  p { 
+  	line-height: 1.5em;
+  	margin-top:0.4em;
+  }
 
-  ul, ol, dl { line-height: 1.5em; margin: 0 0 1em 1em }
+  ul, ol, dl { line-height: 1.5em; margin: 1em 0 1em 1em }
   li { margin-left: 1.5em; line-height: 1.5em }
 
   dt { font-weight: bold }
@@ -57,7 +60,11 @@
   strong,b { font-weight: bold }
   em,i { font-style:italic }
 
-  pre, code { font-family: monospace; font-size: 1.1em; }
+  pre, code { 
+  font-family: monospace; 
+  font-size: 1.2em; 
+  padding: 5px;
+  }
 
   acronym, abbr {
     letter-spacing: .07em;
