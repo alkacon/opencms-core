@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2008/02/28 10:39:04 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.88 $ 
+ * @version $Revision: 1.89 $ 
  * 
  * @since 6.0.0 
  */
@@ -332,6 +332,35 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 editorCssHandlerClassName), e);
         }
     }
+    
+    /**
+     * Adds an editor CSS handler class at the first position of the list of handlers.<p>
+     * 
+     * @param editorCssHandlerClassName full class name of the css handler class
+     */
+    public void addEditorCssHandlerToHead(String editorCssHandlerClassName) {
+
+        try {
+            I_CmsEditorCssHandler editorCssHandler = (I_CmsEditorCssHandler)Class.forName(editorCssHandlerClassName).newInstance();
+            
+            List editorCssHandlers = new ArrayList();
+            editorCssHandlers.add(editorCssHandler);
+            editorCssHandlers.addAll(m_editorCssHandlers);
+            
+            m_editorCssHandlers = editorCssHandlers;
+            
+            if (CmsLog.INIT.isInfoEnabled()) {
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_EDITOR_CSSHANDLER_CLASS_1,
+                    editorCssHandlerClassName));
+            }
+        } catch (Exception e) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_INVALID_EDITOR_CSSHANDLER_1,
+                editorCssHandlerClassName), e);
+        }
+    }
+    
 
     /** 
      * Adds an explorer type setting object to the list of type settings.<p>
@@ -350,6 +379,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
     }
 
+    
     /** 
      * Adds the list of explorer type settings from the given module.<p>
      * 
