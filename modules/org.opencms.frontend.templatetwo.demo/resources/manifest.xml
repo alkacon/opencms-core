@@ -11,6 +11,7 @@
 	<module>
 		<name>org.opencms.frontend.templatetwo.demo</name>
 		<nicename><![CDATA[OpenCms 7 Template Two demo site]]></nicename>
+		<group>Template Two</group>
 		<class/>
 		<description/>
 		<version>7.0.4</version>

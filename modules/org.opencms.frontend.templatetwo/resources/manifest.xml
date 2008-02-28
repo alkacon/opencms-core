@@ -11,6 +11,7 @@
 	<module>
 		<name>org.opencms.frontend.templatetwo</name>
 		<nicename><![CDATA[OpenCms 7 Template Two frontend]]></nicename>
+		<group>Template Two</group>
 		<class>org.opencms.frontend.templatetwo.CmsTemplateModuleAction</class>
 		<description/>
 		<version>7.0.4</version>
