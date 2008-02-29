@@ -1,7 +1,4 @@
 
-#header {
-	padding-top: 15px;
-}
 
 table {
 	margin-top:15px;
@@ -9,34 +6,13 @@ table {
 	background-color:#CCCCCC;
 }
 
-p {
-	margin-top: 5px;
-}
-
-h2, h3, h4 {
-	margin-top: 10px; 
-}
-
-
 .small {
 	font-size:10px;
 }
 
 .high {
-	background-color: #D6DADF;
+	background-color: #FFCCCC;
 	border: 1px solid #445;
 	margin:20px 0pt;
-}
-
-table.loginbox{
-	border: none;
-	background-color: #FFF;
-}
-
-table.loginbox td{
-	padding-bottom: 6px;
-}
-
-a.gradient {
-	color: #FFF;
+	padding:5px;
 }

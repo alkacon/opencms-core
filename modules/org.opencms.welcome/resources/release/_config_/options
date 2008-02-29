@@ -4,13 +4,13 @@
   <TemplateOption language="de">
     <TopNav name="TopNav0">
       <links>
-        <link name="link3" internal="true" type="A">
-          <target><![CDATA[/sites/default/demo_de/extra/extranet/]]></target>
-          <uuid>52f4ade2-dfd4-11dc-ae2d-9f7a6a6ce285</uuid>
-        </link>
         <link name="link2" internal="false" type="A">
           <target><![CDATA[/opencms/opencms/demo_de/_config_/goto]]></target>
           <query><![CDATA[uri=/demo_de/contact.html&module=Alkacon OpenCms Add-On Module Package Webform (com.alkacon.opencms.formgenerator)]]></query>
+        </link>
+        <link name="link3" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_de/extra/extranet/]]></target>
+          <uuid>52f4ade2-dfd4-11dc-ae2d-9f7a6a6ce285</uuid>
         </link>
         <link name="link0" internal="true" type="A">
           <target><![CDATA[/sites/default/demo_de/imblick/wurstparade.html]]></target>
@@ -54,12 +54,22 @@
   <TemplateOption language="en">
     <Header name="Header0">
       <links>
-        <link name="link0" internal="true" type="IMG">
-          <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/top_image.png]]></target>
-          <uuid>f1a12a06-11b7-11db-91cd-fdbae480bac9</uuid>
+        <link name="link2" internal="false" type="A">
+          <target><![CDATA[http://www.opencms.org]]></target>
+        </link>
+        <link name="link3" internal="true" type="IMG">
+          <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/logo_opencms_png24.png]]></target>
+          <uuid>ec860cee-e612-11dc-a594-c3eec68d3370</uuid>
+        </link>
+        <link name="link0" internal="false" type="A">
+          <target><![CDATA[http://www.alkacon.com]]></target>
+        </link>
+        <link name="link1" internal="true" type="IMG">
+          <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/logo_alkacon_png24.png]]></target>
+          <uuid>ec7ee0fa-e612-11dc-a594-c3eec68d3370</uuid>
         </link>
       </links>
-      <content><![CDATA[<h1 style="text-align: center;"><img width="250" height="63" border="0" src="%(link0)" alt="logo_opencms_large.png" /></h1>]]></content>
+      <content><![CDATA[<div style="padding: 10px 15px 5px; height: 65px; text-align: center;"><span style="float: left;"> <a href="%(link0)"><img alt="Alkacon Software" title="Go to the Alkacon Software website" src="%(link1)" /></a> </span> <span style="float: right;"> <a href="%(link2)"><img alt="Logo OpenCms" title="Go to the OpenCms website" src="%(link3)" /></a> </span><span>Hier steht was schönes... </span></div>]]></content>
     </Header>
     <Footer name="Footer0">
       <links>
@@ -70,9 +80,7 @@
           <target><![CDATA[http://www.alkacon.com]]></target>
         </link>
       </links>
-      <content><![CDATA[<div>
-<p>Built with&nbsp;  <a href="%(link0)">OpenCms - The Open Source Cms</a>, provided by <a href="%(link1)" target="_self" title="Alkacon Software GmbH">Alkacon Software GmbH - The OpenCms Experts</a></p>
-</div>]]></content>
+      <content><![CDATA[<div style="padding: 2px 0px 0px; height: 20px; text-align: center;">Build with <a href="%(link0)" title="Go to the OpenCms website">OpenCms - The Open Source CMS</a>, provided by <a title="Go to the Alkacon Software website" href="%(link1)">Alkacon Software - The OpenCms Experts</a></div>]]></content>
     </Footer>
   </TemplateOption>
 </TemplateOptions>

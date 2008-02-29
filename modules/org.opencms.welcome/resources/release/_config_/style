@@ -53,30 +53,30 @@
   </Style>
   <Style language="en">
     <window.width><![CDATA[80em]]></window.width>
-    <window.background>#ECEDEE</window.background>
+    <window.background>#EEE</window.background>
     <window.background.image>
       <link type="WEAK">
-        <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/bg.gif]]></target>
-        <uuid>490f2c8a-e5d8-11dc-838d-31960a76c470</uuid>
+        <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/bg_welcome_png24.png]]></target>
+        <uuid>fa5f2e0f-e617-11dc-a594-c3eec68d3370</uuid>
       </link>
     </window.background.image>
     <page.background>#FFFFFF</page.background>
     <page.font.color>#444444</page.font.color>
     <header.color>#444444</header.color>
-    <header.background>#FFFFFF</header.background>
+    <header.background>#FFF</header.background>
     <header.background.image>
       <link type="WEAK">
-        <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/bg_head.png]]></target>
-        <uuid>492bb541-e5d8-11dc-838d-31960a76c470</uuid>
+        <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/bg_head_welcome_png24.png]]></target>
+        <uuid>ec45a886-e612-11dc-a594-c3eec68d3370</uuid>
       </link>
     </header.background.image>
     <breadcrumb.divider><![CDATA[1px solid #B31B34]]></breadcrumb.divider>
     <footer.color>#444444</footer.color>
-    <footer.background>#D6DADF</footer.background>
+    <footer.background>#DDD</footer.background>
     <footer.background.image>
       <link type="WEAK">
-        <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/bg_foot.png]]></target>
-        <uuid>49223f5d-e5d8-11dc-838d-31960a76c470</uuid>
+        <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/bg_foot_welcome_png24.png]]></target>
+        <uuid>fa6ff5f3-e617-11dc-a594-c3eec68d3370</uuid>
       </link>
     </footer.background.image>
     <footer.divider><![CDATA[1px solid #B31B34]]></footer.divider>
@@ -95,10 +95,10 @@
     <schema3.box.header.background>#003082</schema3.box.header.background>
     <schema3.box.header.color>#FFFFFF</schema3.box.header.color>
     <nav.main><![CDATA[/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_style2.jsp]]></nav.main>
-    <nav.main.background>#1B468F</nav.main.background>
+    <nav.main.background>#003082</nav.main.background>
     <nav.main.hover.background>#B31B34</nav.main.hover.background>
     <nav.main.active.background>#B31B34</nav.main.active.background>
-    <nav.left.hover.background>#D6DADF</nav.left.hover.background>
+    <nav.left.hover.background>#DDD</nav.left.hover.background>
     <nav.left.hover.color>#444444</nav.left.hover.color>
     <nav.left.active.background>#B31B34</nav.left.active.background>
     <nav.left.active.color>#FFFFFF</nav.left.active.color>
