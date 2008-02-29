@@ -7,10 +7,6 @@
 %>
 @charset "UTF-8";
 
-<c:if test="${!empty cms.styleValue['css.file']}">
-	@import url(<cms:link>${cms.styleValue['css.file']}</cms:link>);
-</c:if>
-
 @media all
 {
   /**
@@ -106,7 +102,7 @@
 
   #page {
     background: <c:out value="${cms.styleValue['page.background']}" default="#FFFFFF" />;
-    padding: 10px;
+    padding: <c:out value="${cms.styleValue['page.padding']}" default="10px" />;
   }
 
   #header {
@@ -366,10 +362,22 @@
        background: <c:out value="${cms.styleValue['nav.main.background']}" default="#C0C7CC" /> url(../images/gradient.png) repeat-x top left;
      }
    </c:if>
+
+   <c:if test="${!empty cms.styleValue['nav.main.color']}">
+     #nav_main a {
+       color: <c:out value="${cms.styleValue['nav.main.color']}" default="#000" />;
+     }
+   </c:if>
    
    <c:if test="${!empty cms.styleValue['nav.main.hover.background']}">
      #nav_main a:hover {
        background: <c:out value="${cms.styleValue['nav.main.hover.background']}" default="#212E3F" /> url(../images/gradient.png) repeat-x top left;
+     }
+   </c:if>
+
+   <c:if test="${!empty cms.styleValue['nav.main.hover.color']}">
+     #nav_main a:hover {
+       color: <c:out value="${cms.styleValue['nav.main.hover.color']}" default="#fff" />;
      }
    </c:if>
    
@@ -377,6 +385,12 @@
      #nav_main a.current {
        color: #fff;
        background: <c:out value="${cms.styleValue['nav.main.active.background']}" default="#212E3F" /> url(../images/gradient.png) repeat-x top left;
+     }
+   </c:if>
+
+   <c:if test="${!empty cms.styleValue['nav.main.active.color']}">
+     #nav_main a.current {
+       color: <c:out value="${cms.styleValue['nav.main.active.color']}" default="#212E3F" />;
      }
    </c:if>
 
@@ -425,3 +439,8 @@
   
   #col2, #col2_content { width: 100%; margin:0; padding: 0; border:0; }
 }
+
+<%-- Import additional css file --%>
+<c:if test="${!empty cms.styleValue['css.file']}">
+	@import url(<cms:link>${cms.styleValue['css.file']}</cms:link>);
+</c:if>

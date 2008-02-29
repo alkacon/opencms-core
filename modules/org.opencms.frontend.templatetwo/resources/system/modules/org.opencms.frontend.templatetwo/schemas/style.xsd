@@ -17,6 +17,7 @@
 			<xsd:element name="window.background.image" type="OpenCmsVfsFile" />
 			<xsd:element name="page.background" type="OpenCmsColor" />
 			<xsd:element name="page.font.color" type="OpenCmsColor" />
+			<xsd:element name="page.padding" type="OpenCmsString" />
 			<xsd:element name="header.color" type="OpenCmsColor" />
 			<xsd:element name="header.background" type="OpenCmsColor" />
 			<xsd:element name="header.background.image" type="OpenCmsVfsFile" />
@@ -41,8 +42,11 @@
 			<xsd:element name="schema3.box.header.color" type="OpenCmsColor" />
 			<xsd:element name="nav.main" type="OpenCmsString" />
 			<xsd:element name="nav.main.background" type="OpenCmsColor" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="nav.main.color" type="OpenCmsColor" minOccurs="0" maxOccurs="1"/>
 			<xsd:element name="nav.main.hover.background" type="OpenCmsColor" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="nav.main.hover.color" type="OpenCmsColor" minOccurs="0" maxOccurs="1"/>
 			<xsd:element name="nav.main.active.background" type="OpenCmsColor" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="nav.main.active.color" type="OpenCmsColor" minOccurs="0" maxOccurs="1"/>
 			<xsd:element name="nav.left.hover.background" type="OpenCmsColor" />
 			<xsd:element name="nav.left.hover.color" type="OpenCmsColor" />
 			<xsd:element name="nav.left.active.background" type="OpenCmsColor" />
@@ -69,6 +73,7 @@
 				<default element="window.background.image" value="/system/modules/org.opencms.frontend.templatetwo/resources/images/bg_blue.gif" />
 				<default element="page.background" value="#FFFFFF" />
 				<default element="page.font.color" value="#444444" />
+				<default element="page.padding" value="10px" />
 				<default element="header.color" value="#444444" />
 				<default element="header.background" value="#FFFFFF" />
 				<default element="header.background.image" value="" />
