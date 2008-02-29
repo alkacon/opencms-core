@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/02/27 14:36:55 $
- * Version: $Revision: 1.983 $
+ * Date   : $Date: 2008/02/29 07:56:00 $
+ * Version: $Revision: 1.984 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -77,6 +77,7 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with some parameters of SQL queries passed to JDBC with the wrong type
 * Fixed issue with OpenCmsColor widget not working with CSS 2 system colors names 
 * Fixed issue with PostgreSQL driver with version 8.3, thanks to Ivan Codarin and Georgi Naplatanov
+* Fixed security issue 27986 reported by Security Focus.
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation
