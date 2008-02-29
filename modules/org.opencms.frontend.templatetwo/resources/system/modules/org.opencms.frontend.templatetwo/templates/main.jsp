@@ -60,7 +60,7 @@
 		    		</c:if>
 		    	</div>
 		    	<c:if test="${!cms.options.value['Header'].isEmptyOrWhitespaceOnly}">
-		    		<c:out value="${cms.options.value['Header']}" escapeXml="false" />
+		    		<c:out value="${cms.options.value['Header'].resolveMacros}" escapeXml="false" />
 		    	</c:if>
 			</div>
 			<!-- end: header -->
@@ -151,7 +151,7 @@
 		<!-- begin: #footer -->
 		<div id="footer">
 			<c:if test="${!cms.options.value['Footer'].isEmptyOrWhitespaceOnly}">
-		    	<c:out value="${cms.options.value['Footer']}" escapeXml="false" />
+		    	<c:out value="${cms.options.value['Footer'].resolveMacros}" escapeXml="false" />
 		    </c:if>
 		</div>
 		<!-- end: #footer -->
