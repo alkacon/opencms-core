@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/util/TestCmsJspContentAccessBean.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/02/29 09:20:29 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.2
  */
@@ -108,6 +108,8 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
 
         // first read the XML content 
         CmsFile file = cms.readFile("/xmlcontent/article_0002.html");
+        // need to set URI for macro resolver to work
+        cms.getRequestContext().setUri("/xmlcontent/article_0002.html");
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, file);
 
         // new create the content access bean
@@ -149,9 +151,12 @@ public class TestCmsJspContentAccessBean extends OpenCmsTestCase {
         Map localeValues = bean.getLocaleValueList();
         Map deValues = (Map)localeValues.get("de");
         assertEquals(3, ((List)deValues.get("Teaser")).size());
+
+        // check macro resolving of the Title property
         assertEquals(
-            "Das ist der Teaser 3 im zweiten Beispielartikel.",
-            String.valueOf(((List)deValues.get("Teaser")).get(2)));
+            "This is the article 2 sample",
+            String.valueOf(((CmsJspContentAccessValueWrapper)((List)deValues.get("Teaser")).get(2)).getResolveMacros()));
+
         enValues = (Map)localeValues.get("en");
         assertEquals(2, ((List)enValues.get("Teaser")).size());
         assertEquals("This is teaser 2 in sample article 2.", String.valueOf(((List)enValues.get("Teaser")).get(1)));

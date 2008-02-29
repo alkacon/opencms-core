@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2008/02/27 12:05:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/02/29 09:20:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.jsp.util;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.util.CmsConstantMap;
+import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -56,7 +57,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.0.2
  * 
@@ -140,6 +141,9 @@ public final class CmsJspContentAccessValueWrapper {
     /** The lazy initialized Map that checks if a value is available. */
     private Map m_hasValue;
 
+    /** The macro resolver used to resolve macros for this value. */
+    private CmsMacroResolver m_macroResolver;
+
     /** The lazy initialized value Map. */
     private Map m_value;
 
@@ -153,7 +157,29 @@ public final class CmsJspContentAccessValueWrapper {
      */
     private CmsJspContentAccessValueWrapper() {
 
-        this(null, null);
+        // cast needed to avoid compiler confusion with constructors
+        this((CmsObject)null, (I_CmsXmlContentValue)null);
+    }
+
+    /**
+     * Private constructor, use factory method to create instances.<p>
+     * 
+     * Used to create a copy with macro resolving enabled.<p>
+     * 
+     * @param base the wrapper base
+     * @param macroResolver the macro resolver to use 
+     * 
+     * @see #createWrapper(CmsObject, I_CmsXmlContentValue)
+     */
+    private CmsJspContentAccessValueWrapper(CmsJspContentAccessValueWrapper base, CmsMacroResolver macroResolver) {
+
+        m_cms = base.m_cms;
+        m_contentValue = base.m_contentValue;
+        m_hashCode = base.m_hashCode;
+        m_hasValue = base.m_hasValue;
+        m_macroResolver = macroResolver;
+        m_value = base.m_value;
+        m_valueList = base.m_valueList;
     }
 
     /**
@@ -387,6 +413,50 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
+     * Turn on macro resolving for the wrapped value.<p> 
+     * 
+     * Macro resolving is turned off by default. 
+     * When turned on, a macro resolver is initialized with 
+     * the current OpenCms user context and the URI of the current resource. 
+     * This means known macros contained in the wrapped value will be resolved when the output String is generated. 
+     * For example, a <code>%(property.Title)</code> in the value would be replaced with the 
+     * value of the title property. Macros that can not be resolved will be kept.<p>
+     * 
+     * Usage example on a JSP with the JSTL:<pre>
+     * &lt;cms:contentload ... &gt;
+     *     &lt;cms:contentaccess var="content" /&gt;
+     *     The text with macros resolved: ${content.value['Text'].resolveMacros}
+     * &lt;/cms:contentload&gt;</pre>
+     * 
+     * @return a value wrapper with macro resolving turned on
+     * 
+     * @see CmsMacroResolver
+     */
+    public CmsJspContentAccessValueWrapper getResolveMacros() {
+
+        if (m_macroResolver == null) {
+            CmsMacroResolver macroResolver = CmsMacroResolver.newInstance();
+            macroResolver.setCmsObject(m_cms);
+            macroResolver.setKeepEmptyMacros(true);
+            return new CmsJspContentAccessValueWrapper(this, macroResolver);
+        }
+        // macro resolving is already turned on
+        return this;
+    }
+
+    /**
+     * Short form of {@link #getResolveMacros()}.<p>
+     * 
+     * @return a value wrapper with macro resolving turned on
+     * 
+     * @see #getResolveMacros()
+     */
+    public CmsJspContentAccessValueWrapper getResolve() {
+
+        return getResolveMacros();
+    }
+
+    /**
      * Returns the String value of the wrapped content value.<p>
      * 
      * Note that this will return the empty String <code>""</code> when {@link #getExists()} returns <code>false</code><p>.
@@ -511,7 +581,14 @@ public final class CmsJspContentAccessValueWrapper {
         }
         if (m_contentValue.isSimpleType()) {
             // return values for simple type
-            return m_contentValue.getStringValue(m_cms);
+            String value = m_contentValue.getStringValue(m_cms);
+            if (m_macroResolver == null) {
+                // no macro resolving
+                return value;
+            } else {
+                // resolve macros first
+                return m_macroResolver.resolveMacros(value);
+            }
         } else {
             // nested types should not be called this way by the user
             return "";

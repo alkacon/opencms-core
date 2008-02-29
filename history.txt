@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/02/29 07:56:00 $
- * Version: $Revision: 1.984 $
+ * Date   : $Date: 2008/02/29 09:20:29 $
+ * Version: $Revision: 1.985 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,8 @@ OpenCms 7.0.4 - xxx, 2008
 ! Added support for resource type limitation settings from "New" dialog to the "Change type" dialog 
 ! Added option to CmsTimeFrameCategoryCollector, category filter may be turned off by leaving out collector parameter 
 ! Added new version of the import/export API, using Apache Digester instead of SAX
-! Added #getStringValue() method to CmsJspContentAccessValueWrapper for better support of 'empty' EL operator 
+! Added #getStringValue() method to CmsJspContentAccessValueWrapper for better support of 'empty' EL operator
+! Added option to resolve macros in XML contents read with the EL using the .resolveMacros method
 ! Added method #setLocale(Locale locale) to org.opencms.file.CmsRequestContext
 ! Added new multi language static export feature
 ! Added database support for AS400
@@ -45,6 +46,7 @@ OpenCms 7.0.4 - xxx, 2008
 - Updated FCKeditor to version 2.5.1
 - Updated Postgresql JDBC driver to postgresql-8.3-603.jdbc3.jar
 - Updated JTidy library to jtidy-8-svn-206-05-21b.jar, thanks to Christian Steinert for the patch
+* Fixed security issue 27986 reported by Security Focus
 * Fixed issue with an account manager being able to become an administrator
 * Fixed issue with an account manager being able to modify an administrator account
 * Fixed issue with static export not correctly deleting exported jsp pages
@@ -77,7 +79,6 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with some parameters of SQL queries passed to JDBC with the wrong type
 * Fixed issue with OpenCmsColor widget not working with CSS 2 system colors names 
 * Fixed issue with PostgreSQL driver with version 8.3, thanks to Ivan Codarin and Georgi Naplatanov
-* Fixed security issue 27986 reported by Security Focus.
 
 OpenCms 7.0.3 - November 7, 2007
 * Fixed issue #1266: Improved robustness of default workplace tool handler implementation
