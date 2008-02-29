@@ -2,6 +2,10 @@
 
 @media all {
 
+	#header {
+		padding-top: 35px;
+	}
+	
 	div.view-article h3,
 	div.view-event h3,
 	div.view-item h3 {
