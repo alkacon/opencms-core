@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2008/02/27 12:05:35 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2008/02/29 10:39:59 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
@@ -52,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  */
 public class TestCopy extends OpenCmsTestCase {
 
@@ -85,6 +86,7 @@ public class TestCopy extends OpenCmsTestCase {
         suite.addTest(new TestCopy("testCopyOverwriteDeletedFile"));
         suite.addTest(new TestCopy("testCopyOverwriteLockedDeletedFile"));
         suite.addTest(new TestCopy("testCopyFolderWithLockedSibling"));
+        suite.addTest(new TestCopy("testCopyCategories"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -100,6 +102,44 @@ public class TestCopy extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Tests the copy of a resource with assigned categories.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testCopyCategories() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing copy of a resource with assigned categories");
+
+        cms.getRequestContext().setSiteRoot("");
+        cms.createResource("/system/categories/", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        cms.createResource("/system/categories/test/", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+
+        String resname = "testCopyCategories.txt";
+        String category = "test";
+        cms.createResource(resname, CmsResourceTypePlain.getStaticTypeId());
+        CmsCategoryService.getInstance().addResourceToCategory(cms, resname, category);
+
+        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true).contains(
+            cms.readResource(resname)));
+        assertTrue(CmsCategoryService.getInstance().readResourceCategories(cms, resname).contains(
+            CmsCategoryService.getInstance().readCategory(cms, category)));
+
+        String copyname = "testCopyCategories2.txt";
+        cms.copyResource(resname, copyname);
+
+        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true).contains(
+            cms.readResource(resname)));
+        assertTrue(CmsCategoryService.getInstance().readResourceCategories(cms, resname).contains(
+            CmsCategoryService.getInstance().readCategory(cms, category)));
+
+        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true).contains(
+            cms.readResource(copyname)));
+        assertTrue(CmsCategoryService.getInstance().readResourceCategories(cms, copyname).contains(
+            CmsCategoryService.getInstance().readCategory(cms, category)));
     }
 
     /**

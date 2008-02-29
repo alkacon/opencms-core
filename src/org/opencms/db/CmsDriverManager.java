@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.610 $
+ * Date   : $Date: 2008/02/29 10:39:59 $
+ * Version: $Revision: 1.611 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1010,7 +1010,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         if (copyAsSibling) {
             // create a sibling of the source file at the destination  
-            createSibling(dbc, source, destination, properties);
+            CmsResource resource = createSibling(dbc, source, destination, properties);
+            // copy relations
+            Iterator itRelations = getRelationsForResource(
+                dbc,
+                source,
+                CmsRelationFilter.TARGETS.filterNotDefinedInContent()).iterator();
+            while (itRelations.hasNext()) {
+                CmsRelation relation = (CmsRelation)itRelations.next();
+                CmsResource target = null;
+                try {
+                    target = readResource(dbc, relation.getTargetId(), CmsResourceFilter.ALL);
+                } catch (CmsVfsResourceNotFoundException e) {
+                    try {
+                        target = readResource(dbc, relation.getTargetPath(), CmsResourceFilter.ALL);
+                    } catch (CmsVfsResourceNotFoundException e1) {
+                        // ignore this broken relation
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(e1.getLocalizedMessage(), e1);
+                        }
+                        continue;
+                    }
+                }
+                addRelationToResource(dbc, resource, target, relation.getType(), true);
+            }
             // after the sibling is created the copy operation is finished
             return;
         }
@@ -1086,6 +1109,29 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // create the resource
         newResource = createResource(dbc, destination, newResource, content, properties, false);
+        // copy relations
+        Iterator itRelations = getRelationsForResource(
+            dbc,
+            source,
+            CmsRelationFilter.TARGETS.filterNotDefinedInContent()).iterator();
+        while (itRelations.hasNext()) {
+            CmsRelation relation = (CmsRelation)itRelations.next();
+            CmsResource target = null;
+            try {
+                target = readResource(dbc, relation.getTargetId(), CmsResourceFilter.ALL);
+            } catch (CmsVfsResourceNotFoundException e) {
+                try {
+                    target = readResource(dbc, relation.getTargetPath(), CmsResourceFilter.ALL);
+                } catch (CmsVfsResourceNotFoundException e1) {
+                    // ignore this broken relation
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(e1.getLocalizedMessage(), e1);
+                    }
+                    continue;
+                }
+            }
+            addRelationToResource(dbc, newResource, target, relation.getType(), true);
+        }
 
         // copy the access control entries to the created resource
         copyAccessControlEntries(dbc, source, newResource, false);

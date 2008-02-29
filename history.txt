@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/02/29 09:20:29 $
- * Version: $Revision: 1.985 $
+ * Date   : $Date: 2008/02/29 10:39:59 $
+ * Version: $Revision: 1.986 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ OpenCms 7.0.4 - xxx, 2008
 * Fixed issue with ACEs not being restored when undeleting a resource
 * Fixed issue with search result excerpts highlighting path terms
 * Fixed issue with 'switch user' now working across OUs
+* Fixed issue with relations not being copied when copying a resource
 * Fixed issue with role caching after creating a new organizational unit
 * Fixed issue with role caching where users could administer OUs without having the required role
 * Fixed issue with possible NPE in the login form
