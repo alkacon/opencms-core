@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2008/02/29 08:50:42 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/02/29 10:35:00 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,7 +158,15 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     public static final String KEY_VALIDATION_VALUE = "validation.value";
 
     /** Identified for "magic" parameter commands. */
-    static final String[] VALUE_NAMES_ARRAY = {"uri", "filename", "folder", "default.encoding", "remoteaddress"};
+    static final String[] VALUE_NAMES_ARRAY = {"uri", // 0
+        "filename", // 1  
+        "folder", // 2 
+        "default.encoding", // 3  
+        "remoteaddress", // 4
+        "webapp", // 5
+        "webbasepath", // 6 
+        "version" // 7 
+    };
 
     /** The "magic" commands wrapped in a List. */
     public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAMES_ARRAY));
@@ -574,8 +582,20 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         value = OpenCms.getSystemInfo().getDefaultEncoding();
                         break;
                     case 4:
-                        // remote address
+                        // remoteaddress
                         value = m_cms.getRequestContext().getRemoteAddress();
+                        break;
+                    case 5:
+                        // webapp
+                        value = OpenCms.getSystemInfo().getWebApplicationName();
+                        break;
+                    case 6:
+                        // webbasepath
+                        value = OpenCms.getSystemInfo().getWebApplicationRfsPath();
+                        break;
+                    case 7:
+                        // version
+                        value = OpenCms.getSystemInfo().getVersionNumber();
                         break;
                     default:
                         // return the key "as is"
