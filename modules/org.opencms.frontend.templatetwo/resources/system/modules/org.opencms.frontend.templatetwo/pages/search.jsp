@@ -1,7 +1,8 @@
 <%@page session="false" import="org.opencms.jsp.*"%>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%><%
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	pageContext.setAttribute("cms", cms);
 %>
@@ -20,6 +21,8 @@
 		search.init(cms.getCmsObject());
 		search.setIndex(cms.property("search.index", "search"));
 		search.setMatchesPerPage(5);
+		String[] search_root=new String[]{cms.property("search.root", null, "/")};
+		search.setSearchRoots(search_root);
 	%>
 </jsp:useBean>
 
@@ -74,37 +77,39 @@
 	<!-- END: Result List -->
 	
 	<!-- START: Pagination -->
-	<div class="pagination">
-		<c:choose>
-			<c:when test="${!empty search.previousUrl}">
-				<a href="<cms:link><c:out value='${search.previousUrl}'/></cms:link>"><fmt:message key="search.previous" /></a>
-			</c:when>
-			<c:otherwise>
-				<fmt:message key="search.previous" />
-			</c:otherwise>
-		</c:choose>
-		
-		<c:forEach var="navPage" items="${search.pageLinks}" varStatus="status">		
+	<c:if test="${fn:length(search.pageLinks)>0}">
+		<div class="pagination">
 			<c:choose>
-				<c:when test="${search.searchPage == navPage.key}">
-					<b><c:out value="${navPage.key}" /></b>
+				<c:when test="${!empty search.previousUrl}">
+					<a href="<cms:link><c:out value='${search.previousUrl}'/></cms:link>"><fmt:message key="search.previous" /></a>
 				</c:when>
 				<c:otherwise>
-					<a href="<cms:link><c:out value="${navPage.value}" /></cms:link>"><c:out value="${navPage.key}" /></a>
+					<fmt:message key="search.previous" />
 				</c:otherwise>
 			</c:choose>
-			<c:if test="${!status.last}">| </c:if>
-		</c:forEach>
-		
-		<c:choose>
-			<c:when test="${!empty search.nextUrl}">
-				<a href="<cms:link><c:out value='${search.nextUrl}'/></cms:link>"><fmt:message key="search.next" /></a>
-			</c:when>
-			<c:otherwise>
-				<fmt:message key="search.next" />
-			</c:otherwise>
-		</c:choose>
-	</div>
+			
+			<c:forEach var="navPage" items="${search.pageLinks}" varStatus="status">		
+				<c:choose>
+					<c:when test="${search.searchPage == navPage.key}">
+						<b><c:out value="${navPage.key}" /></b>
+					</c:when>
+					<c:otherwise>
+						<a href="<cms:link><c:out value="${navPage.value}" /></cms:link>"><c:out value="${navPage.key}" /></a>
+					</c:otherwise>
+				</c:choose>
+				<c:if test="${!status.last}">| </c:if>
+			</c:forEach>
+			
+			<c:choose>
+				<c:when test="${!empty search.nextUrl}">
+					<a href="<cms:link><c:out value='${search.nextUrl}'/></cms:link>"><fmt:message key="search.next" /></a>
+				</c:when>
+				<c:otherwise>
+					<fmt:message key="search.next" />
+				</c:otherwise>
+			</c:choose>
+		</div>
+	</c:if>
 	<!-- END: Pagination -->
 </c:if>
 

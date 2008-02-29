@@ -169,6 +169,10 @@
 					<name>search.index</name>
 					<value><![CDATA[Online project DE (VFS)]]></value>
 				</property>
+				<property>
+					<name>search.root</name>
+					<value><![CDATA[/demo_de/]]></value>
+				</property>
 				<property type="shared">
 					<name>template-elements</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo/pages/search.jsp]]></value>
@@ -3380,6 +3384,10 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 				<property>
 					<name>search.index</name>
 					<value><![CDATA[Online project EN (VFS)]]></value>
+				</property>
+				<property>
+					<name>search.root</name>
+					<value><![CDATA[/demo_en/]]></value>
 				</property>
 				<property type="shared">
 					<name>template-elements</name>
