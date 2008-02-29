@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2008/02/29 08:50:42 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +106,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** Key used to specify the last name of the current user as macro value. */
     public static final String KEY_CURRENT_USER_LASTNAME = "currentuser.lastname";
 
-    /** Key used to specify the username of the current user as macro value. */
+    /** Key used to specify the user name of the current user as macro value. */
     public static final String KEY_CURRENT_USER_NAME = "currentuser.name";
 
     /** Key used to specify the street of the current user as macro value. */
@@ -124,25 +124,25 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** The prefix indicating that the key represents a page context object. */
     public static final String KEY_PAGE_CONTEXT = "pageContext.";
 
-    /** Key used to specifiy the project id as macro value. */
+    /** Key used to specify the project id as macro value. */
     public static final String KEY_PROJECT_ID = "projectid";
 
-    /** The prefix indicating that the key represents a Cms property to be read on the current request URI. */
+    /** The prefix indicating that the key represents a property to be read on the current request URI. */
     public static final String KEY_PROPERTY = "property.";
 
-    /** The prefix indicating that the key represents a Cms property to be read on the current element. */
+    /** The prefix indicating that the key represents a property to be read on the current element. */
     public static final String KEY_PROPERTY_ELEMENT = "elementProperty.";
 
     /** Key used to specify the request encoding as macro value. */
     public static final String KEY_REQUEST_ENCODING = "request.encoding";
 
-    /** Key used to specify the folder of the request uri as macro value. */
+    /** Key used to specify the folder of the request URI as macro value. */
     public static final String KEY_REQUEST_FOLDER = "request.folder";
 
     /** Key user to specify the request locale as macro value. */
     public static final String KEY_REQUEST_LOCALE = "request.locale";
 
-    /** The prefix indicating that the key represents a Http request parameter. */
+    /** The prefix indicating that the key represents a HTTP request parameter. */
     public static final String KEY_REQUEST_PARAM = "param.";
 
     /** Key used to specify the request uri as macro value. */
@@ -154,7 +154,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** Key used to specify the validation regex as macro value. */
     public static final String KEY_VALIDATION_REGEX = "validation.regex";
 
-    /** Key used to specifiy the validation value as macro value. */
+    /** Key used to specify the validation value as macro value. */
     public static final String KEY_VALIDATION_VALUE = "validation.value";
 
     /** Identified for "magic" parameter commands. */
@@ -307,7 +307,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      * 
      * If a macro is found that can not be mapped to a value by the given macro resolver,
      * <code>{@link I_CmsMacroResolver#isKeepEmptyMacros()}</code> controls if the macro is replaced by
-     * an empty String, or is left untoched in the input.<p>
+     * an empty String, or is left untouched in the input.<p>
      * 
      * @param input the input in which to resolve the macros
      * @param resolver the macro resolver to use
@@ -403,7 +403,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 // no macro start char after the "$" or "%"
                 e = p;
             }
-            // adpot macro style for next delimiter found
+            // set macro style for next delimiter found
             if (np == pn) {
                 ds = I_CmsMacroResolver.MACRO_START;
                 de = I_CmsMacroResolver.MACRO_END;
@@ -477,7 +477,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 // the key is a request parameter  
                 macro = macro.substring(CmsMacroResolver.KEY_REQUEST_PARAM.length());
                 String result = m_jspPageContext.getRequest().getParameter(macro);
-                if (result == null && macro.equals(KEY_PROJECT_ID)) {
+                if ((result == null) && macro.equals(KEY_PROJECT_ID)) {
                     result = m_cms.getRequestContext().currentProject().getUuid().toString();
                 }
                 return result;
@@ -574,7 +574,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                         value = OpenCms.getSystemInfo().getDefaultEncoding();
                         break;
                     case 4:
-                        // remoteaddress
+                        // remote address
                         value = m_cms.getRequestContext().getRemoteAddress();
                         break;
                     default:
@@ -667,7 +667,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 return m_cms.getRequestContext().currentUser().getCity();
             }
 
-            if (CmsMacroResolver.KEY_CURRENT_USER_LASTLOGIN.equals(macro) && m_messages != null) {
+            if (CmsMacroResolver.KEY_CURRENT_USER_LASTLOGIN.equals(macro) && (m_messages != null)) {
                 // the key is the current users last login timestamp
                 return m_messages.getDateTime(m_cms.getRequestContext().currentUser().getLastlogin());
             }
@@ -786,7 +786,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      * Controls of macros that can't be resolved are left unchanged in the input,
      * or are replaced with an empty String.<p>
      * 
-     * @param keepEmptyMacros the replacemanet flag to use
+     * @param keepEmptyMacros the replacement flag to use
      * 
      * @return this instance of the macro resolver
      * 
