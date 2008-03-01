@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2008/02/29 10:39:59 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2008/03/01 11:23:17 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class TestCopy extends OpenCmsTestCase {
 
@@ -87,6 +87,7 @@ public class TestCopy extends OpenCmsTestCase {
         suite.addTest(new TestCopy("testCopyOverwriteLockedDeletedFile"));
         suite.addTest(new TestCopy("testCopyFolderWithLockedSibling"));
         suite.addTest(new TestCopy("testCopyCategories"));
+        suite.addTest(new TestCopy("testCopySiblings"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -445,6 +446,44 @@ public class TestCopy extends OpenCmsTestCase {
         } catch (Exception e) {
             // ok
         }
+    }
+
+    /**
+     * Tests the copy of siblings.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testCopySiblings() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing copy of siblings");
+
+        String folder = "copySiblings/";
+        String res1 = folder + "sib1.txt";
+        String res2 = folder + "sib2.txt";
+        String folder2 = "copySiblings2/";
+        byte[] content = "hello world".getBytes();
+
+        cms.createResource(folder, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(res1, CmsResourceTypePlain.getStaticTypeId(), content, null);
+        cms.createSibling(res1, res2, null);
+
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.copyResource(folder, folder2, CmsResource.COPY_PRESERVE_SIBLING);
+        OpenCms.getPublishManager().publishResource(cms, folder2);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.lockResource(folder);
+        cms.deleteResource(folder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        String sib1 = folder2 + "sib1.txt";
+        String sib2 = folder2 + "sib2.txt";
+        assertContent(cms, sib1, content);
+        assertContent(cms, sib2, content);
     }
 
     /**
