@@ -217,7 +217,7 @@ Alkacon OpenCms Setup Wizard - Module selection
 </td>
 </tr><tr><td align='right'><a href="javascript:switchView()">Individual module selection</a></td></tr>
 </table>
-<table id="modulesView" style='display:none;' border="0" cellpadding="5" cellspacing="0" style="width: 100%; height: 100%;">
+<table id="modulesView" style='width: 100%; height: 100%; display:none;' border="0" cellpadding="5" cellspacing="0" >
 <tr>
 	<td valign="top">
 	
