@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2008/02/27 12:05:35 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2008/03/01 14:40:26 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -274,7 +274,9 @@ public final class CmsRequestUtil {
             if (values instanceof String[]) {
                 result.put(key, values);
             } else {
-                result.put(key, new String[] {values.toString()});
+                if (values != null) {
+                    result.put(key, new String[] {values.toString()});
+                }
             }
         }
         return result;
