@@ -5,14 +5,7 @@
     <Title><![CDATA[Info-Box]]></Title>
     <Content name="Content0">
       <links/>
-      <content><![CDATA[<p>Auf jeder Seite finden Sie Boxen mit roter Titelzeile (meist in der&nbsp; linken Spalte),&nbsp; in der die Seitenelemente kurz erklärt werden.</p>]]></content>
-    </Content>
-  </TextBox>
-  <TextBox language="en">
-    <Title><![CDATA[Infobox]]></Title>
-    <Content name="Content0">
-      <links/>
-      <content><![CDATA[<p>At each page, you will find a red box used to explain the page elements.</p>]]></content>
+      <content><![CDATA[<p>Auf jeder Seite dieser Demo finden Sie eine oder mehrere rote Kästen wie diesen hier, in welchen die OpenCms Funktionen, die auf der Seite verwendet wurden, beschrieben werden.</p>]]></content>
     </Content>
   </TextBox>
 </TextBoxes>

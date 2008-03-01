@@ -15,7 +15,11 @@
    * ------------------------------------------------------------------
    */
 
-  * { margin: 0px; padding: 0px; }
+  * { 
+  	margin: 0px; 
+  	padding: 0px; 
+  	font-family: <c:out value="${cms.styleValue['font.family']}" default="'Lucida Grande','Trebuchet MS',Verdana,Helvetica,sans-serif" escapeXml="false"/>;
+  }
 
   html * { font-size: 100.01% }
 
@@ -31,7 +35,7 @@
     color: <c:out value="${cms.styleValue['page.font.color']}" default="#444444" />;
   }
 
-  h1, h2, h3, h4, h5, h6 { font-weight:bold; margin: 0 0 0.25em 0; }
+  h1, h2, h3, h4, h5, h6 { font-weight:bold; margin: 0 0 0.20em 0; }
   h1 { font-size: 200% }											/* 24px */
   h2 { font-size: 166.67%; 	margin-top: 0.5em}						/* 20px */
   h3 { font-size: 150%; 	margin-top: 0.45em}						/* 18px */
@@ -40,8 +44,9 @@
   h6 { font-size: 116.67%; 	font-style:italic; margin-top: 0.8em }	/* 14px */
 
   p { 
-  	line-height: 1.5em;
-  	margin-top:0.4em;
+  	line-height: 1.4em;
+  	margin-top: 0.3em;
+  	margin-bottom: 0.3em;
   }
 
   ul, ol, dl { line-height: 1.5em; margin: 1em 0 1em 1em }
@@ -53,13 +58,14 @@
   cite, blockquote { font-style:italic }
   blockquote { margin: 0 0 1em 1.5em }
 
-  strong,b { font-weight: bold }
-  em,i { font-style:italic }
+  strong, b { font-weight: bold }
+  em, i { font-style: italic }
 
   pre, code { 
-  font-family: monospace; 
-  font-size: 1.2em; 
-  padding: 5px;
+  	font-family: monospace; 
+  	font-size: 1.4em; 
+  	margin-top: 0.3em;
+  	margin-bottom: 0.3em;
   }
 
   acronym, abbr {

@@ -37,7 +37,7 @@
 			<label for="password"><fmt:message key="login.label.password" />:</label>
 			<input type="password" name="password">
 		</div>
-		<div class="boxform" align="center">
+		<div class="boxform" style="text-align:center;">
 			<input type="hidden" name="action" value="login" />
 			<input type="hidden" name="requestedResource" value="${param.requestedResource}" />
 			<input type="submit" value="<fmt:message key="login.label.login" />"/>
@@ -50,7 +50,7 @@
 		<div class="boxform">
 			<cms:user property="firstname"/>&nbsp;<cms:user property="lastname"/> (<cms:user property="name" />)
 		</div>
-		<div class="boxform" align="center">
+		<div class="boxform" style="text-align:center;">
 			<input type="hidden" name="action" value="logoff" />
 			<input type="hidden" name="requestedResource" value="${cms:vfs(pageContext).requestContext.uri}" />
 			<input type="submit" value="<fmt:message key="login.label.logoff" />"/>

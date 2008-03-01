@@ -19,21 +19,21 @@
 		<c:choose>
 			<%-- Text Boxes --%>
 			<c:when test="${type == 72}">
-				<cms:include file="%(link.weak:boxes/textbox.jsp)">
+				<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/boxes/textbox.jsp:52db3537-d890-11dc-8ec1-3bdd2ea0b1ac)">
 					<cms:param name="file" value="${element.value['File']}" />
 					<cms:param name="schema" value="${element.value['ColorSchema']}" />
 				</cms:include>
 			</c:when>
 			<%-- List Boxes --%>
 			<c:when test="${type == 73}">
-				<cms:include file="%(link.weak:boxes/listbox.jsp)">
+				<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/boxes/listbox.jsp:cd31e53a-da20-11dc-b10e-3bdd2ea0b1ac)">
 					<cms:param name="file" value="${element.value['File']}" />
 					<cms:param name="schema" value="${element.value['ColorSchema']}" />
 				</cms:include>
 			</c:when>
 			<%-- Link Boxes --%>
 			<c:when test="${type == 76}">
-				<cms:include file="%(link.weak:boxes/linkbox.jsp)">
+				<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/boxes/linkbox.jsp:5b09eab1-e3be-11dc-82b1-3bdd2ea0b1ac)">
 					<cms:param name="file" value="${element.value['File']}" />
 					<cms:param name="schema" value="${element.value['ColorSchema']}" />
 				</cms:include>

@@ -13,7 +13,7 @@
 
 	<xsd:complexType name="OpenCmsConfig">
 		<xsd:sequence>
-			<xsd:element name="Preset" type="OpenCmsString" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="Preset" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="1"/>
 			<xsd:element name="Element" type="OpenCmsBoxElement" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>

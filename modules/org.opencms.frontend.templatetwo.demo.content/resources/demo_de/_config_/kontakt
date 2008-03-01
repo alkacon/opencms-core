@@ -5,15 +5,16 @@
     <Title><![CDATA[Bei Fragen: fragen !]]></Title>
     <Content name="Content0">
       <links>
-        <link name="link0" internal="false" type="A">
-          <target><![CDATA[/opencms/opencms/demo_de/_config_/goto]]></target>
-          <query><![CDATA[uri=/demo_de/kontakt.html&module=Alkacon OAMP demo content (com.alkacon.opencms.oampdemo)]]></query>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_de/_config_/goto]]></target>
+          <uuid>753ef49b-dfca-11dc-af5d-9f7a6a6ce285</uuid>
+          <query><![CDATA[uri=/demo_de/oamp/webform/kontakt.html&module=oamp.demo]]></query>
         </link>
       </links>
       <content><![CDATA[<p>Sie haben spezielle Fragen, Anregungen oder Wünsche ?</p>
 <p>Dann schreiben Sie uns doch&nbsp; !</p>
 <p>&nbsp;</p>
-<p><a href="%(link0)" target="_self" title="Kontaktformular">Zum Kontaktformular</a></p>]]></content>
+<p><a href="%(link0)" title="Kontaktformular">Zum Kontaktformular</a></p>]]></content>
     </Content>
   </TextBox>
 </TextBoxes>

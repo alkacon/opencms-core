@@ -2,7 +2,7 @@
 
 <Articles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd">
   <Article language="de">
-    <Title><![CDATA[Einleitung]]></Title>
+    <Title><![CDATA[Willkommen zur OpenCms Demo]]></Title>
     <Paragraphs>
       <Text name="Text0">
         <links>
@@ -15,23 +15,27 @@
             <uuid>9b18e429-e448-11dc-add5-9f7a6a6ce285</uuid>
           </link>
         </links>
-        <content><![CDATA[<p align="left">Mit diesen Demoseiten &quot;rund um die Wurst&quot; werden verschiedene Funktionen von OpenCms auf Basis des OpenCms &quot;Template Two&quot; exemplarisch erläutert.&nbsp;</p>
+        <content><![CDATA[<p style="text-align: left;">In dieser Demo werden verschiedene Funktionen von OpenCms 7 erläutert. Das Thema der Demo ist die &quot;wunderbare Welt der Wurst&quot;(*).</p>
+<p style="text-align: left;">&nbsp;</p>
+<p>Auf jeder Seite dieser Demo finden Sie neben den Beispielinhalten am Rand <b>rote Kästen</b>, in der die OpenCms Funktionen erläutert werden, welche auf der Seite verwendet werden.</p>
 <p>&nbsp;</p>
-<p>Template Two ist ein konfigurierbares Template, das es ermöglicht, auch eigene Websites unter Verwendung dieses Templates relativ einfach zu erstellen und anhand der Konfigurationeinstellungen (hier im Verzeichnis  <em>_config_</em>) den jeweiligen Erfordernissen anzupassen.</p>
+<p>Das hier verwendete <b>&quot;Template Two&quot; ist ein konfigurierbares Template</b>, das es ermöglicht eigene Websites einfach zu erstellen. Das Aussehen der Webseiten kann anhand der Konfigurationseinstellungen (im Verzeichnis  <em>_config_</em>) leicht angepasst werden.</p>
 <p>&nbsp;</p>
-<p>Auf jeder Seite finden Sie in der&nbsp; linken Spalte eine&nbsp; Box mit roter Titelzeile,&nbsp; in der die Seitenelemente kurz erklärt werden. Zum besseren Verständnis sollten Sie sich nicht nur diese Seiten anschauen, sondern sie auch in der OpenCms Workplace im Editor öffnen.</p>
-<p>&nbsp;</p>
-<p>Beachten Sie hierbei auch, daß in einigen Spezialfällen auch so genannte &quot;Properties&quot; herangezogen werden, insbesondere um Standardeinstellungen zu definieren. Die Properties können über das Kontextmenü jeder Ressource bearbeitet werden; ist kein Wert direkt gesetzt, so wird er u.U. entlang der Verezeichnishierarchie eingelesen.</p>
-<p>&nbsp;</p>
+<p>Wir wünschen Ihnen viel Spaß bei der Erkundung der Möglichkeiten von OpenCms in der wundervollen &quot;Welt der Wurst&quot;.</p>
 <ul>
-    <li>Zur <a title="Demo (Deutsch)" target="_self" href="%(link0)">Startseite der Demo in Deutsch</a></li>
-    <li>Zur  <a title="Demo (Englisch)" target="_self" href="%(link1)">Startseite der Demo in Englisch</a></li>
+    <li>Zur <a title="Demo (Deutsch)" href="%(link0)">Startseite der Demo in Deutsch</a></li>
+    <li>Zur  <a title="Demo (Englisch)" href="%(link1)">Startseite der Demo in Englisch</a></li>
 </ul>
-<p>&nbsp;</p>]]></content>
+<p><i>(*) Hinweis: Kein Tier wurde bei der Erstellung dieser Demo verletzt.</i></p>]]></content>
       </Text>
     </Paragraphs>
     <Config>
-      <Preset><![CDATA[/demo_de/_config_/layout/threecolumns]]></Preset>
+      <Preset>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/demo_de/_config_/layout/threecolumns]]></target>
+          <uuid>7b9ec38e-de34-11dc-a943-9f7a6a6ce285</uuid>
+        </link>
+      </Preset>
       <Element>
         <File>
           <link type="WEAK">
@@ -40,6 +44,16 @@
           </link>
         </File>
         <Orientation><![CDATA[right]]></Orientation>
+        <ColorSchema><![CDATA[box_schema2]]></ColorSchema>
+      </Element>
+      <Element>
+        <File>
+          <link type="WEAK">
+            <target><![CDATA[/sites/default/demo_de/_info_/workplace]]></target>
+            <uuid>e4180077-e6cb-11dc-8dfb-d3bbbb60c354</uuid>
+          </link>
+        </File>
+        <Orientation><![CDATA[left]]></Orientation>
         <ColorSchema><![CDATA[box_schema2]]></ColorSchema>
       </Element>
     </Config>
@@ -74,7 +88,12 @@
       </Text>
     </Paragraphs>
     <Config>
-      <Preset><![CDATA[/demo_de/_config_/layout/threecolumns]]></Preset>
+      <Preset>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/demo_de/_config_/layout/threecolumns]]></target>
+          <uuid>7b9ec38e-de34-11dc-a943-9f7a6a6ce285</uuid>
+        </link>
+      </Preset>
       <Element>
         <File>
           <link type="WEAK">

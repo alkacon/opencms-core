@@ -5,7 +5,7 @@
     <Title><![CDATA[Infobox]]></Title>
     <Content name="Content0">
       <links/>
-      <content><![CDATA[<p>At each page, you will find a red box used to explain the page elements.</p>]]></content>
+      <content><![CDATA[<p>At each page of this demo, you will find red boxes like this one used to explain the OpenCms functions used to create the page.</p>]]></content>
     </Content>
   </TextBox>
 </TextBoxes>

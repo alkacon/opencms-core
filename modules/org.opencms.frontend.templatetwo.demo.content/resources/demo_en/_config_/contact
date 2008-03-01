@@ -5,13 +5,14 @@
     <Title><![CDATA[Any Questions ?]]></Title>
     <Content name="Content0">
       <links>
-        <link name="link0" internal="false" type="A">
-          <target><![CDATA[/opencms/opencms/demo_en/_config_/goto]]></target>
-          <query><![CDATA[uri=/demo_en/contact.html&module=Alkacon OpenCms Add-On Module Package Webform (com.alkacon.opencms.formgenerator)]]></query>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_en/_config_/goto]]></target>
+          <uuid>12e8c034-e48c-11dc-be5b-51cb880fd12a</uuid>
+          <query><![CDATA[uri=/demo_en/oamp/webform/contact.html&module=oamp.demo]]></query>
         </link>
       </links>
       <content><![CDATA[<p>You have further questions, suggestions or wishes ?</p>
-<p>To contact us, use our <a href="%(link0)" target="_self" title="Contact form">contact form</a>!</p>]]></content>
+<p>To contact us, use our <a title="Contact form" href="%(link0)">contact form</a>!</p>]]></content>
     </Content>
   </TextBox>
 </TextBoxes>

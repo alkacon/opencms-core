@@ -17,8 +17,8 @@
 				<c:set var="imagetitle">${cms:vfs(pageContext).property[image]['Title']}</c:set>
 				<c:set var="imagefolder"><%= CmsResource.getFolderPath((String)pageContext.getAttribute("image")) %></c:set>
 				<div class="image">
-					<a href="<cms:link>${file}</cms:link>" border="0">
-						<cms:img scaleType="1" width="185">
+					<a href="<cms:link>${file}</cms:link>">
+						<cms:img scaleType="1" width="185" alt="${imagetitle}">
 							<cms:param name="src">${image}</cms:param> 
 						</cms:img>
 					</a>

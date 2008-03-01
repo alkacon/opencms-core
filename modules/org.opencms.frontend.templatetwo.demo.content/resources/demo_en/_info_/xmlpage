@@ -5,7 +5,7 @@
     <Title><![CDATA[XML pages]]></Title>
     <Content name="Content0">
       <links/>
-      <content><![CDATA[<p>Besides structured XML contents, OpenCms supports with XML pages a page type for editing unstructured contents utilizing a WHSIWYG (What you see is what you get) editor.</p>]]></content>
+      <content><![CDATA[<p>Besides structured XML contents, OpenCms supports with XML pages a page type for editing unstructured contents utilizing a WYSIWYG (What you see is what you get) editor.</p>]]></content>
     </Content>
   </TextBox>
 </TextBoxes>

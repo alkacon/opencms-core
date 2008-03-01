@@ -27,7 +27,6 @@
 			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>
 			<layouts>
 				<layout element="Text" widget="HtmlWidget" configuration="height:500px,link,formatselect,source"/>
-				<layout element="Image" widget="ImageGalleryWidget" />			
 			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  

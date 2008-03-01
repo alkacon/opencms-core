@@ -11,7 +11,7 @@
 
 	<xsd:complexType name="OpenCmsImage">
 		<xsd:sequence>
-			<xsd:element name="Image" type="OpenCmsVfsFile" />
+			<xsd:element name="Image" type="OpenCmsVfsFile" minOccurs="0" />
 			<xsd:element name="Description" type="OpenCmsString" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>

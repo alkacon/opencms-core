@@ -12,7 +12,7 @@
 	<c:set var="imagetitle">${cms:vfs(pageContext).property[image]['Title']}</c:set>
 	<c:set var="imagefolder"><%= CmsResource.getFolderPath((String)pageContext.getAttribute("image")) %></c:set>
 	<div class="image">
-		<cms:img scaleType="1" width="200">
+		<cms:img scaleType="1" width="200" alt="${imagetitle}">
 			<cms:param name="src">${image}</cms:param> 
 		</cms:img>
 		<div class="description">
@@ -22,8 +22,8 @@
 	</div>
 	</cms:contentloop>
 
-	<p><i><cms:contentshow element="ShortDescription" /></i></p><br/>
-	<p><cms:contentshow element="LongDescription" /></p>
+	<div style="font-style:italic"><cms:contentshow element="ShortDescription" /></div><br/>
+	<cms:contentshow element="LongDescription" />
 </div>
 
 <cms:contentcheck ifexists="Source">

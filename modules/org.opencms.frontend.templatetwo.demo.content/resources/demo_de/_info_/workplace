@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
+  <TextBox language="de">
+    <Title><![CDATA[OpenCms Workplace]]></Title>
+    <Content name="Content0">
+      <links>
+        <link name="link0" internal="true" type="A">
+          <target><![CDATA[/system/login/index.html]]></target>
+          <uuid>824a34ef-11b7-11db-91cd-fdbae480bac9</uuid>
+        </link>
+      </links>
+      <content><![CDATA[<p>Die <b>OpenCms Workplace</b> ermöglicht den Zugriff auf das Dateisystem von OpenCms. Dort können Sie Seiten anlegen, ändern oder löschen, sowie die Struktur der Webseite ändern.</p>
+<p>Über folgenden Link gelangen Sie zur OpenCms Workplace:</p>
+<p><a href="%(link0)">/system/login</a></p>]]></content>
+    </Content>
+  </TextBox>
+</TextBoxes>

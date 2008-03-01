@@ -10,7 +10,7 @@
           <uuid>56f19ee2-dee3-11dc-b46f-9f7a6a6ce285</uuid>
         </link>
       </links>
-      <content><![CDATA[<p>Besuchen Sie unsere große <a href="%(link0)" target="_self" title="Wurstparade">Wurstparade </a>!</p>
+      <content><![CDATA[<p>Besuchen Sie unsere große <a href="%(link0)" title="Wurstparade">Wurstparade </a>!</p>
 <p>&nbsp;</p>]]></content>
     </Content>
     <JspFile>

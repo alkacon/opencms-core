@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.0.4</opencms_version>
-		<createdate>Wed, 27 Feb 2008 10:28:03 GMT</createdate>
+		<createdate>Sat, 01 Mar 2008 14:03:26 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -130,10 +130,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>f8a56ce7-d2fa-11dc-a365-3bdd2ea0b1ac</uuidstructure>
-			<datelastmodified>Mon, 04 Feb 2008 08:27:07 GMT</datelastmodified>
+			<uuidstructure>721910c3-e6b0-11dc-8289-d3bbbb60c354</uuidstructure>
+			<datelastmodified>Fri, 29 Feb 2008 10:24:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 04 Feb 2008 08:27:07 GMT</datecreated>
+			<datecreated>Fri, 29 Feb 2008 10:24:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -152,10 +152,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>f92f5da0-d2fa-11dc-a365-3bdd2ea0b1ac</uuidstructure>
-			<datelastmodified>Mon, 04 Feb 2008 08:27:07 GMT</datelastmodified>
+			<uuidstructure>7257a09c-e6b0-11dc-8289-d3bbbb60c354</uuidstructure>
+			<datelastmodified>Fri, 29 Feb 2008 10:24:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 04 Feb 2008 08:27:07 GMT</datecreated>
+			<datecreated>Fri, 29 Feb 2008 10:24:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -285,7 +285,7 @@
 			<type>plain</type>
 			<uuidstructure>c7751681-de0e-11dc-901c-3bdd2ea0b1ac</uuidstructure>
 			<uuidresource>c7751682-de0e-11dc-901c-3bdd2ea0b1ac</uuidresource>
-			<datelastmodified>Mon, 25 Feb 2008 16:47:55 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 11:51:12 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 18 Feb 2008 10:46:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -300,7 +300,7 @@
 			<type>plain</type>
 			<uuidstructure>1a3d5cf7-df02-11dc-b0c2-3bdd2ea0b1ac</uuidstructure>
 			<uuidresource>1a3d5cf8-df02-11dc-b0c2-3bdd2ea0b1ac</uuidresource>
-			<datelastmodified>Mon, 25 Feb 2008 16:47:55 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 11:50:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 19 Feb 2008 15:48:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -314,7 +314,7 @@
 			<type>plain</type>
 			<uuidstructure>d720e211-e089-11dc-b6f2-3bdd2ea0b1ac</uuidstructure>
 			<uuidresource>c7751682-de0e-11dc-901c-3bdd2ea0b1ac</uuidresource>
-			<datelastmodified>Mon, 25 Feb 2008 16:47:55 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 11:51:12 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 18 Feb 2008 10:46:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -416,8 +416,8 @@
 			<type>jsp</type>
 			<uuidstructure>5b09eab1-e3be-11dc-82b1-3bdd2ea0b1ac</uuidstructure>
 			<uuidresource>5b09eab2-e3be-11dc-82b1-3bdd2ea0b1ac</uuidresource>
-			<datelastmodified>Tue, 26 Feb 2008 11:12:30 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 14:39:53 GMT</datelastmodified>
+			<userlastmodified>bonrad</userlastmodified>
 			<datecreated>Mon, 25 Feb 2008 16:26:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -425,6 +425,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Linkbox]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[params=(schema,file)]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -783,7 +787,7 @@
 			</properties>
 			<relations/>
 			<accesscontrol/>
-		</file>		
+		</file>
 		<file>
 			<source>system/modules/org.opencms.frontend.templatetwo/pages/search.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templatetwo/pages/search.jsp</destination>
@@ -851,8 +855,8 @@
 			<type>plain</type>
 			<uuidstructure>8ffaafcc-e131-11dc-bbcd-3bdd2ea0b1ac</uuidstructure>
 			<uuidresource>8ffaafcd-e131-11dc-bbcd-3bdd2ea0b1ac</uuidresource>
-			<datelastmodified>Fri, 22 Feb 2008 16:58:42 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Sat, 01 Mar 2008 09:25:08 GMT</datelastmodified>
+			<userlastmodified>andreas</userlastmodified>
 			<datecreated>Fri, 22 Feb 2008 10:33:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -866,8 +870,8 @@
 			<type>jsp</type>
 			<uuidstructure>22026e14-d64e-11dc-be57-3bdd2ea0b1ac</uuidstructure>
 			<uuidresource>22026e15-d64e-11dc-be57-3bdd2ea0b1ac</uuidresource>
-			<datelastmodified>Tue, 26 Feb 2008 09:17:24 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 15:00:30 GMT</datelastmodified>
+			<userlastmodified>bonrad</userlastmodified>
 			<datecreated>Fri, 08 Feb 2008 13:59:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -1441,8 +1445,8 @@
 			<type>plain</type>
 			<uuidstructure>caca8b0f-e071-11dc-90dc-3bdd2ea0b1ac</uuidstructure>
 			<uuidresource>caca8b10-e071-11dc-90dc-3bdd2ea0b1ac</uuidresource>
-			<datelastmodified>Mon, 25 Feb 2008 16:49:13 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 13:59:56 GMT</datelastmodified>
+			<userlastmodified>bonrad</userlastmodified>
 			<datecreated>Thu, 21 Feb 2008 11:40:25 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -1641,8 +1645,8 @@
 			<type>plain</type>
 			<uuidstructure>5319289a-d890-11dc-8ec1-3bdd2ea0b1ac</uuidstructure>
 			<uuidresource>5319289b-d890-11dc-8ec1-3bdd2ea0b1ac</uuidresource>
-			<datelastmodified>Tue, 19 Feb 2008 09:22:23 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 18:17:17 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
 			<datecreated>Mon, 11 Feb 2008 10:58:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -1674,7 +1678,7 @@
 			<type>jsp</type>
 			<uuidstructure>3f3a9396-d59c-11dc-8cca-3bdd2ea0b1ac</uuidstructure>
 			<uuidresource>3f3a9397-d59c-11dc-8cca-3bdd2ea0b1ac</uuidresource>
-			<datelastmodified>Tue, 26 Feb 2008 11:12:31 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 11:21:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 07 Feb 2008 16:46:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1728,7 +1732,7 @@
 			<type>jsp</type>
 			<uuidstructure>82aff8a2-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
 			<uuidresource>2ec39dda-a50d-11d9-b4c9-b7aef4fd014d</uuidresource>
-			<datelastmodified>Wed, 20 Feb 2008 09:54:04 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1751,7 +1755,7 @@
 			<type>jsp</type>
 			<uuidstructure>82bf3ae6-366c-11db-ab2a-8b2c5a4caf8d</uuidstructure>
 			<uuidresource>2ec39dda-a50d-11d9-b4c9-b7aef4fd014d</uuidresource>
-			<datelastmodified>Wed, 20 Feb 2008 09:54:04 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1793,24 +1797,7 @@
 				</property>
 			</properties>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources</destination>
@@ -1829,7 +1816,7 @@
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
 			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>

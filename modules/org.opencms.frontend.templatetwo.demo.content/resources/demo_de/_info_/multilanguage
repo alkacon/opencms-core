@@ -9,10 +9,10 @@
     </Content>
   </TextBox>
   <TextBox language="en">
-    <Title><![CDATA[Multilanguage Pages]]></Title>
+    <Title><![CDATA[Mehrsprachige Seiten]]></Title>
     <Content name="Content0">
       <links/>
-      <content><![CDATA[<p>Depending on the language settings of your browser, the intro page shows up in the appropriate language, if available.</p>]]></content>
+      <content><![CDATA[<p>Abhängig von den Spracheinstellungen des Browsers wird der jeweils entsprechende Seiteninhalt angezeigt, sofern dieser verfügbar ist.</p>]]></content>
     </Content>
   </TextBox>
 </TextBoxes>

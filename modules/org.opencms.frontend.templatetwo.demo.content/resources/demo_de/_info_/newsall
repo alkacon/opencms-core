@@ -7,7 +7,7 @@
       <links/>
       <content><![CDATA[<p>Die Box auf dieser Seite zeigt alle verfügbaren Meldungen an.</p>
 <p>&nbsp;</p>
-<p>Dabei wurde hier für die Listbox ein &quot;Collector&quot; verwendet, der die Meldungen erst nach Priorität, dann nach Datum anordnet</p>]]></content>
+<p>Dabei wurde hier für die Listbox ein &quot;Collector&quot; verwendet, der die Meldungen erst nach Priorität, dann nach Datum anordnet.</p>]]></content>
     </Content>
   </TextBox>
 </TextBoxes>

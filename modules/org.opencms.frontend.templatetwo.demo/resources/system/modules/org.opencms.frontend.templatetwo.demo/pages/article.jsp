@@ -25,7 +25,7 @@
 		</cms:contentloop>
 
 		<cms:contentcheck ifexists="Headline"><h3><cms:contentshow element="Headline" /></h3></cms:contentcheck>	
-		<p><cms:contentshow element="Text" /></p>
+		<cms:contentshow element="Text" />
 	</cms:contentloop>
 </div>
 

@@ -1,4 +1,7 @@
 <%@ page import="org.opencms.file.types.*, org.opencms.file.*, org.opencms.jsp.*, org.opencms.main.*" %>
+<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <% 
 	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
 	CmsObject cms = jsp.getCmsObject();
@@ -11,10 +14,10 @@
 		}
 	}
 %>
-<%@ page import="org.opencms.file.*" %>
-<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <cms:include property="template" element="head"/>
+
+<fmt:setLocale value="${cms.requestContext.locale}" />
+<fmt:bundle basename="org.opencms.frontend.templatetwo.demo.messages">
 
 <cms:contentload collector="singleFile" param="%(opencms.uri)" editable="auto">
 <div class="view-article">
@@ -26,8 +29,10 @@
 		<p><cms:contentshow element="Text" /></p>
 	</cms:contentloop>
 
-	<strong>${param.module}</strong>
+	<strong><fmt:message key="${param.module}" /></strong>
 </div>
 </cms:contentload>
+
+</fmt:bundle>
 
 <cms:include property="template" element="foot"/>

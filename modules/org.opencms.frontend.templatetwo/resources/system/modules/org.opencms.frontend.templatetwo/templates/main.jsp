@@ -22,26 +22,26 @@
 <html>
 <head>
 	<title><cms:property name="Title" file="search" /></title>
-	<meta name="description" content="<cms:property name="Description" file="search" />" />
-	<meta name="keywords" content="<cms:property name="Keywords" file="search" />" />
-	<meta http-equiv="Content-Type" content="text/html; charset=<cms:property name="content-encoding" file="search" default="<%= OpenCms.getSystemInfo().getDefaultEncoding() %>"/>" />
-	<meta name="robots" content="index, follow" />
-	<meta name="revisit-after" content="7 days" />
+	<meta name="description" content="<cms:property name="Description" file="search" />" >
+	<meta name="keywords" content="<cms:property name="Keywords" file="search" />" >
+	<meta http-equiv="Content-Type" content="text/html; charset=<cms:property name="content-encoding" file="search" default="<%= OpenCms.getSystemInfo().getDefaultEncoding() %>"/>" >
+	<meta name="robots" content="index, follow" >
+	<meta name="revisit-after" content="7 days" >
 
 	<!-- insert stylesheets needed for the template -->
 	<c:forEach items="${cms.stylesheets}" var="cssFile">
-		<link href="<cms:link>${cssFile}</cms:link>" rel="stylesheet" type="text/css"/>		
+		<link href="<cms:link>${cssFile}</cms:link>" rel="stylesheet" type="text/css">		
 	</c:forEach>
 		
-	<link href="<cms:link>../resources/css/style.css?preset=${cms.presetPath}&amp;style=${cms.stylePath}</cms:link>" rel="stylesheet" type="text/css"/>
+	<link href="<cms:link>../resources/css/style.css?preset=${cms.presetPath}&amp;style=${cms.stylePath}</cms:link>" rel="stylesheet" type="text/css">
 	<!--[if lte IE 6]>
-		<link href="<cms:link>%(link.weak:../resources/css/patch_ie.css)</cms:link>" rel="stylesheet" type="text/css"/>
-    <![endif]-->
+		<link href="<cms:link>%(link.weak:/system/modules/org.opencms.frontend.templatetwo/resources/css/patch_ie.css:8ffaafcc-e131-11dc-bbcd-3bdd2ea0b1ac)</cms:link>" rel="stylesheet" type="text/css">
+    	<![endif]-->
 
 	<!-- insert individual stylesheet -->
 	<c:set var="stylesheet"><cms:property name="stylesheet" file="search"/></c:set>
 	<c:if test="${!empty stylesheet}">
-		<link href="<cms:link>${stylesheet}</cms:link>" rel="stylesheet" type="text/css"/>
+		<link href="<cms:link>${stylesheet}</cms:link>" rel="stylesheet" type="text/css">
 	</c:if>
 
 	<cms:editable/>
@@ -71,14 +71,14 @@
 					<cms:include file="${cms.styleValue['nav.main']}"/>
 				</c:when>
 				<c:otherwise>
-					<cms:include file="%(link.weak:../elements/menu/nav_style2.jsp)"/>
+					<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_style2.jsp:ee5498d9-dbe4-11dc-b087-3bdd2ea0b1ac)"/>
 				</c:otherwise>
 			</c:choose>
 			<!-- end: main navigation -->
 			
 			<!-- begin: breadcrumb -->
 			<div id="breadcrumb">
-				<cms:include file="%(link.weak:../elements/breadcrumb.jsp)" />
+				<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/breadcrumb.jsp:e72c6f1c-dbb3-11dc-af66-3bdd2ea0b1ac)" />
 			</div>
 			<!-- end: breadcrumb -->
 			
@@ -91,11 +91,11 @@
 					<c:if test="${cms.presetValue['column.left.visible'] == 'true'}">
 						<!-- include the left navigation menu -->
 						<c:if test="${cms.presetValue['nav.left.visible'] == 'true'}">
-							<cms:include file="%(link.weak:../elements/menu/nav_left.jsp)" />
+							<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_left.jsp:ee1ea4f4-d97c-11dc-bc65-3bdd2ea0b1ac)" />
 						</c:if>
 						
 						<!-- include the boxes on the left side -->
-						<cms:include file="%(link.weak:../elements/boxes.jsp)">
+						<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/boxes.jsp:622548e8-d886-11dc-8ec1-3bdd2ea0b1ac)">
 							<cms:param name="orientation" value="left" />
 							<cms:param name="config" value="${cms.configPath}" />
 						</cms:include>
@@ -113,7 +113,7 @@
 					
 					<!-- include the boxes on the right side -->
 					<c:if test="${cms.presetValue['column.right.visible'] == 'true'}">
-						<cms:include file="%(link.weak:../elements/boxes.jsp)">
+						<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/boxes.jsp:622548e8-d886-11dc-8ec1-3bdd2ea0b1ac)">
 							<cms:param name="orientation" value="right" />
 							<cms:param name="config" value="${cms.configPath}" />
 						</cms:include>
@@ -137,7 +137,7 @@
 						<cms:include element="body2" editable="true"/>
 					</c:if>
 					<!-- include the boxes in the center -->
-	                <cms:include file="%(link.weak:../elements/boxes.jsp)">
+	                <cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/boxes.jsp:622548e8-d886-11dc-8ec1-3bdd2ea0b1ac)">
 	                	<cms:param name="orientation" value="center" />
 						<cms:param name="config" value="${cms.configPath}" />
 					</cms:include>
