@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2008/02/27 12:05:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/03/01 12:31:17 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -118,7 +118,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -1604,6 +1604,9 @@ public class CmsSetupBean implements I_CmsShellCommands {
      */
     public void prepareStep8bOutput(JspWriter out) throws IOException {
 
+        if ((m_workplaceImportThread == null) || (m_workplaceImportThread.getLoggingThread() == null)) {
+            return;
+        }
         m_oldLoggingOffset = m_newLoggingOffset;
         m_newLoggingOffset = m_workplaceImportThread.getLoggingThread().getMessages().size();
         if (isInitialized()) {

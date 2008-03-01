@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsUpdateBean.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/03/01 12:31:17 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -557,6 +557,9 @@ public class CmsUpdateBean extends CmsSetupBean {
      */
     public void prepareUpdateStep5bOutput(JspWriter out) throws IOException {
 
+        if ((m_workplaceUpdateThread == null) || (m_workplaceUpdateThread.getLoggingThread() == null)) {
+            return;
+        }
         m_oldLoggingOffset = m_newLoggingOffset;
         m_newLoggingOffset = m_workplaceUpdateThread.getLoggingThread().getMessages().size();
         if (isInitialized()) {

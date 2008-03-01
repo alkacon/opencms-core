@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/03/01 12:31:17 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,10 +31,8 @@
 
 package org.opencms.setup.xml;
 
-import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.setup.CmsSetupBean;
-import org.opencms.setup.CmsUpdateBean;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -49,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.8 
  */
@@ -68,6 +66,16 @@ public class CmsSetupXmlManager {
      * Default constructor.<p>
      */
     public CmsSetupXmlManager() {
+
+        // empty
+    }
+
+    /**
+     * Initializes the plug-ins.<p>
+     * 
+     * @param fromV6 if the update is coming from a version 6.x
+     */
+    public void initialize(boolean fromV6) {
 
         m_selectedPlugins = new ArrayList();
         m_plugins = new ArrayList();
@@ -105,7 +113,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new CmsXmlAddResourceTypes());
 
         // workplace
-        if (false) {
+        if (fromV6) {
             // all this plugins apply to v6 and not anymore to v7
             m_plugins.add(new CmsXmlUpdateDefaultProperties());
 
@@ -118,6 +126,7 @@ public class CmsSetupXmlManager {
             m_plugins.add(new CmsXmlAddAutoSetFeatures());
             m_plugins.add(new CmsXmlUpdateLocalizationKeys());
         }
+        m_plugins.add(new CmsXmlUpdateDirectEditProvider());
         setup();
     }
 
@@ -168,13 +177,6 @@ public class CmsSetupXmlManager {
         Iterator itFiles = m_sortedPlugins.keySet().iterator();
         while (itFiles.hasNext()) {
             String fileName = (String)itFiles.next();
-            if (setupBean instanceof CmsUpdateBean) {
-                if (!((CmsUpdateBean)setupBean).isNeedDbUpdate()) {
-                    if (CmsWorkplaceConfiguration.DEFAULT_XML_FILE_NAME.equals(fileName)) {
-                        continue;
-                    }
-                }
-            }
             Iterator itPlugins = ((List)m_sortedPlugins.get(fileName)).iterator();
             StringBuffer code = new StringBuffer(256);
             for (int i = 0; itPlugins.hasNext(); i++) {
