@@ -28,6 +28,8 @@ colors.put("innerBorderRightBottom", "#777777");
 colors.put("innerBorderLeftTop", "#F0F0F0");
 colors.put("colorText", "#000000");
 colors.put("progessBar", "#E10050");
+colors.put("bgHeadline", "#000066");
+colors.put("colorHeadline", "#FFFFFF");
 wp.setAppletWindowColors(colors);
 %><%= wp.createAppletCode() %>
 
