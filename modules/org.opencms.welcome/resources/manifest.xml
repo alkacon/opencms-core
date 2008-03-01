@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.0.4</opencms_version>
-		<createdate>Fri, 29 Feb 2008 09:49:09 GMT</createdate>
+		<createdate>Sat, 01 Mar 2008 14:49:03 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -94,7 +94,7 @@ It will also remove the "default" template.</p>
 			<type>xmlpage</type>
 			<uuidstructure>f0d416a8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>0fe6cf2e-2a34-11d8-9147-c2dcabc28482</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 08:40:23 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 12:30:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -122,7 +122,7 @@ It will also remove the "default" template.</p>
 			<type>xmlpage</type>
 			<uuidstructure>f0d8f8ae-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>167d141b-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Wed, 27 Feb 2008 11:05:06 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 13:47:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -145,124 +145,12 @@ It will also remove the "default" template.</p>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>release/notes_6.2.1.html</source>
-			<destination>release/notes_6.2.1.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>f0e4dead-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>57e15f7c-d6a0-11da-949b-bf247dbd39dc</uuidresource>
-			<datelastmodified>Wed, 27 Feb 2008 11:05:17 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 28 Apr 2006 10:18:31 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[26]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[OpenCms 6.2.1 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 6.2.1 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_6.2.2.html</source>
-			<destination>release/notes_6.2.2.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>f0e4deac-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>d3a4419e-1802-11db-bb55-c1b5b7a5ce9e</uuidresource>
-			<datelastmodified>Tue, 26 Feb 2008 14:55:44 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 20 Jul 2006 15:17:15 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[25]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[OpenCms 6.2.2 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 6.2.2 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_6.2.3.html</source>
-			<destination>release/notes_6.2.3.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>a2c48bac-600e-11db-aab7-85e26798f8a4</uuidstructure>
-			<uuidresource>448788fa-5f7f-11db-999e-6d3a42edecd8</uuidresource>
-			<datelastmodified>Wed, 27 Feb 2008 11:05:37 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 19 Oct 2006 14:36:55 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[24]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[OpenCms 6.2.3 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 6.2.3 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/notes_6.2.html</source>
-			<destination>release/notes_6.2.html</destination>
-			<type>xmlpage</type>
-			<uuidstructure>f0e999a8-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>7ff44e54-bb17-11da-a3a7-f326e0bcb6a1</uuidresource>
-			<datelastmodified>Wed, 27 Feb 2008 11:05:44 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 24 Mar 2006 09:20:56 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[27]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[OpenCms 6.2 Release Notes]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms 6.2 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>release/notes_7.0.0.html</source>
 			<destination>release/notes_7.0.0.html</destination>
 			<type>xmlpage</type>
 			<uuidstructure>c9fc76f0-2a48-11dc-ac2c-8d625826ae79</uuidstructure>
 			<uuidresource>c9fc76f1-2a48-11dc-ac2c-8d625826ae79</uuidresource>
-			<datelastmodified>Wed, 27 Feb 2008 11:05:53 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 13:27:33 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 04 Jul 2007 16:08:22 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -274,7 +162,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[OpenCms 7.0.0 Release Notes]]></value>
+					<value><![CDATA[7.0.0 Release Notes]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -290,7 +178,7 @@ It will also remove the "default" template.</p>
 			<type>xmlpage</type>
 			<uuidstructure>0e457c06-2fab-11dc-94ea-8d625826ae79</uuidstructure>
 			<uuidresource>0e457c07-2fab-11dc-94ea-8d625826ae79</uuidresource>
-			<datelastmodified>Wed, 27 Feb 2008 11:06:01 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 13:28:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 11 Jul 2007 12:34:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -302,7 +190,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[OpenCms 7.0.1 Release Notes]]></value>
+					<value><![CDATA[7.0.1 Release Notes]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -318,7 +206,7 @@ It will also remove the "default" template.</p>
 			<type>xmlpage</type>
 			<uuidstructure>0485edbe-610c-11dc-9596-990e70098fc7</uuidstructure>
 			<uuidresource>0485edbf-610c-11dc-9596-990e70098fc7</uuidresource>
-			<datelastmodified>Wed, 27 Feb 2008 11:06:10 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 13:28:26 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Sep 2007 08:41:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -330,7 +218,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[OpenCms 7.0.2 Release Notes]]></value>
+					<value><![CDATA[7.0.2 Release Notes]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -346,7 +234,7 @@ It will also remove the "default" template.</p>
 			<type>xmlpage</type>
 			<uuidstructure>a888e233-8c44-11dc-8613-f5a391e6c891</uuidstructure>
 			<uuidresource>a888e234-8c44-11dc-8613-f5a391e6c891</uuidresource>
-			<datelastmodified>Wed, 27 Feb 2008 11:06:17 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 13:28:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 06 Nov 2007 08:45:42 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -358,7 +246,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[OpenCms 7.0.3 Release Notes]]></value>
+					<value><![CDATA[7.0.3 Release Notes]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -374,8 +262,8 @@ It will also remove the "default" template.</p>
 			<type>xmlpage</type>
 			<uuidstructure>9f579584-e5e9-11dc-a1ea-31960a76c470</uuidstructure>
 			<uuidresource>9f579585-e5e9-11dc-a1ea-31960a76c470</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 10:41:35 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Sat, 01 Mar 2008 12:31:26 GMT</datelastmodified>
+			<userlastmodified>andreas</userlastmodified>
 			<datecreated>Thu, 28 Feb 2008 10:40:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -386,47 +274,11 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[OpenCms 7.0.4 Release Notes]]></value>
+					<value><![CDATA[7.0.4 Release Notes]]></value>
 				</property>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 7.0.4 Release Notes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>release/welcome.html</source>
-			<destination>release/welcome.html</destination>
-			<type>jsp</type>
-			<uuidstructure>f0ec0aae-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 18:19:49 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[500]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[Welcome to OpenCms]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Welcome to OpenCms]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;user]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -451,8 +303,8 @@ It will also remove the "default" template.</p>
 			<type>ttconfig</type>
 			<uuidstructure>42f73834-e54e-11dc-af52-31960a76c470</uuidstructure>
 			<uuidresource>42f73835-e54e-11dc-af52-31960a76c470</uuidresource>
-			<datelastmodified>Wed, 27 Feb 2008 16:13:05 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 14:09:12 GMT</datelastmodified>
+			<userlastmodified>bonrad</userlastmodified>
 			<datecreated>Wed, 27 Feb 2008 16:08:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -471,7 +323,7 @@ It will also remove the "default" template.</p>
 			<type>ttoptions</type>
 			<uuidstructure>43031f17-e54e-11dc-af52-31960a76c470</uuidstructure>
 			<uuidresource>43031f18-e54e-11dc-af52-31960a76c470</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 18:04:01 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 13:06:04 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 27 Feb 2008 16:08:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -491,8 +343,8 @@ It will also remove the "default" template.</p>
 			<type>ttstyle</type>
 			<uuidstructure>4318a2ea-e54e-11dc-af52-31960a76c470</uuidstructure>
 			<uuidresource>4318a2eb-e54e-11dc-af52-31960a76c470</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 16:13:52 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 14:07:43 GMT</datelastmodified>
+			<userlastmodified>roettgers</userlastmodified>
 			<datecreated>Wed, 27 Feb 2008 16:08:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -511,8 +363,8 @@ It will also remove the "default" template.</p>
 			<type>ttpreset</type>
 			<uuidstructure>432944bd-e54e-11dc-af52-31960a76c470</uuidstructure>
 			<uuidresource>432944be-e54e-11dc-af52-31960a76c470</uuidresource>
-			<datelastmodified>Wed, 27 Feb 2008 16:13:33 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 14:08:14 GMT</datelastmodified>
+			<userlastmodified>roettgers</userlastmodified>
 			<datecreated>Wed, 27 Feb 2008 16:08:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -528,10 +380,10 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>835becde-e5f5-11dc-aa85-c3eec68d3370</uuidstructure>
-			<datelastmodified>Thu, 28 Feb 2008 12:05:54 GMT</datelastmodified>
+			<uuidstructure>721910c3-e6b0-11dc-8289-d3bbbb60c354</uuidstructure>
+			<datelastmodified>Fri, 29 Feb 2008 10:24:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 28 Feb 2008 12:05:54 GMT</datecreated>
+			<datecreated>Fri, 29 Feb 2008 10:24:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -550,10 +402,10 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>83f96597-e5f5-11dc-aa85-c3eec68d3370</uuidstructure>
-			<datelastmodified>Thu, 28 Feb 2008 12:05:55 GMT</datelastmodified>
+			<uuidstructure>7257a09c-e6b0-11dc-8289-d3bbbb60c354</uuidstructure>
+			<datelastmodified>Fri, 29 Feb 2008 10:24:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 28 Feb 2008 12:05:55 GMT</datecreated>
+			<datecreated>Fri, 29 Feb 2008 10:24:02 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -652,7 +504,7 @@ It will also remove the "default" template.</p>
 			<type>plain</type>
 			<uuidstructure>f1a5e4fa-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>16e5c051-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Fri, 29 Feb 2008 09:16:58 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 13:45:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -698,50 +550,6 @@ It will also remove the "default" template.</p>
 			</accesscontrol>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.welcome/resources/images/bg.gif</source>
-			<destination>system/modules/org.opencms.welcome/resources/images/bg.gif</destination>
-			<type>image</type>
-			<uuidstructure>490f2c8a-e5d8-11dc-838d-31960a76c470</uuidstructure>
-			<uuidresource>490f2c8b-e5d8-11dc-838d-31960a76c470</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 09:23:23 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 28 Feb 2008 08:36:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:15,h:600]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.welcome/resources/images/bg_foot.png</source>
-			<destination>system/modules/org.opencms.welcome/resources/images/bg_foot.png</destination>
-			<type>image</type>
-			<uuidstructure>49223f5d-e5d8-11dc-838d-31960a76c470</uuidstructure>
-			<uuidresource>49223f5e-e5d8-11dc-838d-31960a76c470</uuidresource>
-			<datelastmodified>Mon, 25 Feb 2008 10:12:29 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 28 Feb 2008 08:36:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[bg_foot]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:40,h:40]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/modules/org.opencms.welcome/resources/images/bg_foot_welcome_png24.png</source>
 			<destination>system/modules/org.opencms.welcome/resources/images/bg_foot_welcome_png24.png</destination>
 			<type>image</type>
@@ -760,30 +568,6 @@ It will also remove the "default" template.</p>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:40]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.welcome/resources/images/bg_head.png</source>
-			<destination>system/modules/org.opencms.welcome/resources/images/bg_head.png</destination>
-			<type>image</type>
-			<uuidstructure>492bb541-e5d8-11dc-838d-31960a76c470</uuidstructure>
-			<uuidresource>492bb542-e5d8-11dc-838d-31960a76c470</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 09:15:14 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 28 Feb 2008 08:36:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[bg_head]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:40,h:119]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -843,7 +627,7 @@ It will also remove the "default" template.</p>
 			<type>image</type>
 			<uuidstructure>ec7ee0fa-e612-11dc-a594-c3eec68d3370</uuidstructure>
 			<uuidresource>ec7ee0fb-e612-11dc-a594-c3eec68d3370</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 16:12:37 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 10:52:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 28 Feb 2008 15:36:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -855,7 +639,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property type="shared">
 					<name>image.size</name>
-					<value><![CDATA[w:185,h:60]]></value>
+					<value><![CDATA[w:154,h:50]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -867,7 +651,7 @@ It will also remove the "default" template.</p>
 			<type>image</type>
 			<uuidstructure>ec860cee-e612-11dc-a594-c3eec68d3370</uuidstructure>
 			<uuidresource>ec860cef-e612-11dc-a594-c3eec68d3370</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 16:12:37 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 10:52:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 28 Feb 2008 15:36:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -879,42 +663,19 @@ It will also remove the "default" template.</p>
 				</property>
 				<property type="shared">
 					<name>image.size</name>
-					<value><![CDATA[w:247,h:60]]></value>
+					<value><![CDATA[w:206,h:50]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.welcome/resources/images/top_image.png</source>
-			<destination>system/modules/org.opencms.welcome/resources/images/top_image.png</destination>
-			<type>image</type>
-			<uuidstructure>f1a12a06-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<uuidresource>bce5e6c4-b026-11da-8587-d7e64aecbbea</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Mar 2006 11:12:18 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[true]]></value>
-				</property>
-				<property type="shared">
-					<name>image.size</name>
-					<value><![CDATA[w:250,h:63]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
+			<source>index.jsp</source>
 			<destination>index.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>f1b1cbec-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>16f8ac22-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Thu, 28 Feb 2008 18:19:49 GMT</datelastmodified>
+			<datelastmodified>Fri, 29 Feb 2008 10:52:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>

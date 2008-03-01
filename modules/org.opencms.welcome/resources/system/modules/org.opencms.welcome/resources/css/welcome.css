@@ -3,7 +3,7 @@
 table {
 	margin-top:15px;
 	border: 1px solid black;
-	background-color:#CCCCCC;
+	background-color:#EEE;
 }
 
 .small {
@@ -15,4 +15,45 @@ table {
 	border: 1px solid #445;
 	margin:20px 0pt;
 	padding:5px;
+}
+
+.login {
+	background-color: #CCC; 
+	float: right;
+	border: 1px solid #445;
+	padding:5px;
+}
+
+blockquote, em{
+	font-style: normal;
+}
+
+.mailinglist{
+	margin-top: 0.2em;
+}
+
+.mailinglist table{
+	width : 70%;
+}
+
+.mailinglist blockquote{
+	margin: 0pt;
+}
+
+.inputMail{
+	width: 97%;
+	padding:2px;
+}
+
+.lblhover {
+	background-color: #c8d3e4;
+	width:55%;
+}
+
+.mailingLogin center input{
+	margin-top: 0.4em;
+}
+
+.mailingSubmit{
+	padding: 3px;
 }

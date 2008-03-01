@@ -26,7 +26,7 @@ You can access the VFS though the OpenCms workplace.</p>
 <p><a href="#" onclick="window.open('<cms:link>/system/login/</cms:link>');return false;"><cms:link>/system/login/</cms:link></a></p>
 </div>
 
-<div style="background-color: #ccc; float: right;">
+<div class="login">
 You are currently identified as:<br>
 User: <tt><cms:user property="name" /></tt><br>
 Description: <tt><cms:user property="description" /></tt>
