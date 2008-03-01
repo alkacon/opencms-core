@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddXmlContentWidgets.java,v $
- * Date   : $Date: 2008/02/27 12:05:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/03/01 11:10:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,9 @@ import org.opencms.widgets.CmsGroupWidget;
 import org.opencms.widgets.CmsInputWidgetPlaintext;
 import org.opencms.widgets.CmsLocalizationWidget;
 import org.opencms.widgets.CmsMultiSelectWidget;
+import org.opencms.widgets.CmsOrgUnitWidget;
+import org.opencms.widgets.CmsPrincipalWidget;
+import org.opencms.widgets.CmsRadioSelectWidget;
 import org.opencms.widgets.CmsTextareaWidgetPlaintext;
 import org.opencms.widgets.CmsUserWidget;
 
@@ -57,7 +60,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.1.8 
  */
@@ -166,6 +169,9 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
             m_widgetData.put("LocalizationWidget", CmsLocalizationWidget.class.getName());
             m_widgetData.put("TextareaWidgetPlaintext", CmsTextareaWidgetPlaintext.class.getName());
             m_widgetData.put("StringWidgetPlaintext", CmsInputWidgetPlaintext.class.getName());
+            m_widgetData.put("OrgUnitWidget", CmsOrgUnitWidget.class.getName());
+            m_widgetData.put("PrincipalWidget", CmsPrincipalWidget.class.getName());
+            m_widgetData.put("RadioSelectWidget", CmsRadioSelectWidget.class.getName());
         }
         return m_widgetData;
     }

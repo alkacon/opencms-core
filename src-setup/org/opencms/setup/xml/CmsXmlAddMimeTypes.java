@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddMimeTypes.java,v $
- * Date   : $Date: 2008/02/27 12:05:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/03/01 11:10:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.2.3
  */
@@ -547,7 +547,10 @@ public class CmsXmlAddMimeTypes extends A_CmsSetupXmlUpdate {
         {".wrz", "x-world/x-vrml"},
         {".vrt", "x-world/x-vrt"},
         {".xgz", "xgl/drawing"},
-        {".xmz", "xgl/movie"}};
+        {".xmz", "xgl/movie"},
+        {".rss", "application/rss+xml"},
+        {".jar", "application/java-archive"},
+        {".jad", "text/vnd.sun.j2me.app-descriptor"}};
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
