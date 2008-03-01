@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/02/29 10:39:59 $
- * Version: $Revision: 1.986 $
+ * Date   : $Date: 2008/03/01 12:48:51 $
+ * Version: $Revision: 1.987 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.0.4 - xxx, 2008
+OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 
 ! Added "default template" which is used by default if no template is found for a resource
 ! Added new JQuery based direct edit provider with much improved positioning of the DE buttons
