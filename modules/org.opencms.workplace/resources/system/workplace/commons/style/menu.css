@@ -909,6 +909,7 @@ table.logindialog {
 input.loginbutton {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
+	background-color: ButtonFace;
 	width: 148px;
 	height: 23px;
 	padding: 0 5px;
