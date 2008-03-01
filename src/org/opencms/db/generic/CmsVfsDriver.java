@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2008/02/27 12:05:52 $
- * Version: $Revision: 1.274 $
+ * Date   : $Date: 2008/03/01 14:40:47 $
+ * Version: $Revision: 1.275 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.274 $
+ * @version $Revision: 1.275 $
  * 
  * @since 6.0.0 
  */
@@ -2319,7 +2319,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 m_sqlManager.closeAll(dbc, null, stmt, null);
 
                 // if online we have to keep historical content
-                if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID) || (dbc.getProjectId() != null)) {
+                if (!projectId.equals(CmsProject.ONLINE_PROJECT_ID)
+                    || ((dbc.getProjectId() != null) && !dbc.getProjectId().isNullUUID())) {
                     // delete content records with this resource id
                     stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_OFFLINE_FILE_CONTENT_DELETE");
                     stmt.setString(1, resource.getResourceId().toString());
