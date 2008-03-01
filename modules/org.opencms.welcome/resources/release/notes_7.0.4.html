@@ -12,12 +12,81 @@
           <target><![CDATA[http://bugzilla.opencms.org/]]></target>
         </link>
       </links>
-      <content><![CDATA[<h1>Release Notes for OpenCms 7.0.3</h1>
-<p>November 7, 2007: This is the release of OpenCms 7.0.3. With OpenCms 7.0.3, a number of issues that persisted in the 7.0.2 release have been fixed. Some new features have been added as well.</p>
+      <content><![CDATA[<h1>Release Notes for OpenCms 7.0.4</h1>
+<p>March 3, 2008: This is the release of OpenCms 7.0.4. This version adds a number of improvements to the OpenCms core as well as the modules shipped with the core by default.</p>
+<p>Most notably in this release is the updated OpenCms demo website created with the new &quot;TemplateTwo&quot;. Both the demo and the template are a big step forward compared to the previous &quot;TemplateOne&quot;. &quot;TemplateOne&quot; still is available but not longer installed by default.</p>
+<p>Moreover, the &quot;Direct Edit&quot; function has been improved greatly. The positioning of the direct edit buttons now is much more precise, especially for CSS based layouts. Plus the look of the direct edit highlighting on the web page has been enhanced.</p>
+<p>A ton of other additions and improvements tops off this release. Of course, OpenCms 7.0.4 also fixes a number of issues that persisted in 7.0.3. See below for more details.</p>
+<h2>New Features in OpenCms 7.0.4</h2>
+<ul>
+    <li>Added new &quot;TemplateTwo&quot; demo template with improved demo content, replacing the old &quot;TemplateOne&quot; demo</li>
+    <li>Added &quot;default template&quot; which is used by default if no template is found for a resource</li>
+    <li>Added new JQuery based direct edit provider with much improved positioning of the DE buttons</li>
+    <li>Added better highlighting of selected content to new JQuery direct edit provider</li>
+    <li>Added new <cms:export>tag, which allows to write unprocessed JSP code to the static export </cms:export></li>
+    <li>Added support to import/export user roles, organizational units and projects</li>
+    <li>Added 'webusers' only organizational units</li>
+    <li>Added support for full text searching in OpenOffice documents (.odf,.ods), contributed by Dirk Oelkers</li>
+    <li>Added option to organizational units to be hidden from the login form</li>
+    <li>Added new resource type parameter to automatically set the 'internal' flag</li>
+    <li>Added new module group selection dialog to the Setup Wizard</li>
+    <li>Added support for resource type limitation settings from &quot;New&quot; dialog to the &quot;Change type&quot; dialog</li>
+    <li>Added option to CmsTimeFrameCategoryCollector, category filter may be turned off by leaving out collector parameter</li>
+    <li>Added new version of the import/export API, using Apache Digester instead of SAX</li>
+    <li>Added #getStringValue() method to CmsJspContentAccessValueWrapper for better support of 'empty' EL operator</li>
+    <li>Added option to resolve macros in XML contents read with the EL using the .resolveMacros method</li>
+    <li>Added method #setLocale(Locale locale) to org.opencms.file.CmsRequestContext</li>
+    <li>Added new multi language static export feature</li>
+    <li>Added database support for AS400</li>
+    <li>Added support for servlet container Resin 3</li>
+    <li>Added support for servlet container Websphere 6</li>
+</ul>
+<h2>Fixed issues and other changes in OpenCms 7.0.4</h2>
+<ul>
+    <li>Fixed security issue 27986 reported by Security Focus</li>
+    <li>Fixed issue with an account manager being able to become an administrator</li>
+    <li>Fixed issue with an account manager being able to modify an administrator account</li>
+    <li>Fixed issue with static export not correctly deleting exported jsp pages</li>
+    <li>Fixed issue with ACEs from all siblings being deleted if only one siblings was deleted</li>
+    <li>Fixed issue with ACEs not being restored when undeleting a resource</li>
+    <li>Fixed issue with search result excerpts highlighting path terms</li>
+    <li>Fixed issue with 'switch user' now working across OUs</li>
+    <li>Fixed issue with relations not being copied when copying a resource</li>
+    <li>Fixed issue with role caching after creating a new organizational unit</li>
+    <li>Fixed issue with role caching where users could administer OUs without having the required role</li>
+    <li>Fixed issue with possible NPE in the login form</li>
+    <li>Fixed issue with publish locks when publishing a file and a parent folder in separate publish jobs</li>
+    <li>Fixed issue with the creation flag of the explorer type permissions being broken</li>
+    <li>Fixed issue with XML content attribute mapping when siblings are involved</li>
+    <li>Fixed issue with XML content model file selection of expired model files</li>
+    <li>Fixed issue with direct edit button HTML not being valid XHTML</li>
+    <li>Fixed issue with the history dialog when setting an unlimited number of historic versions</li>
+    <li>Fixed issue with the history dialog not displaying the names of deleted users</li>
+    <li>Fixed issue with the permissions dialog not displaying the names of deleted users or groups</li>
+    <li>Fixed issue with blank pages appearing for JSP while including/forwarding in Tomcat</li>
+    <li>Fixed issue with synchronizing an expired or not yet released resource</li>
+    <li>Fixed issue with editor preview when the user does not have the visible permission</li>
+    <li>Fixed issue with HTTP 500 error if clients send the &quot;If-Modified-Since&quot; date header in a wrong format</li>
+    <li>Fixed issue with login form direct access URL still being available for hidden OUs</li>
+    <li>Fixed issue with the lock icon when logged in an OU different from the root OU</li>
+    <li>Fixed issue with the disabled context menu item for direct publishing showing a wrong message related to permissions</li>
+    <li>Fixed issue with moving a folder containing resources the user does not have write permissions for</li>
+    <li>Fixed issue with deleting a folder containing resources you do not have write permissions for</li>
+    <li>Fixed issue with displaying the settings from the &quot;Content check&quot; tool in the admin view</li>
+    <li>Fixed issue with role check not working if an organizational unit resource was deleted</li>
+    <li>Fixed issue with some parameters of SQL queries passed to JDBC with the wrong type</li>
+    <li>Fixed issue with OpenCmsColor widget not working with CSS 2 system colors names</li>
+    <li>Fixed issue with PostgreSQL driver with version 8.3, thanks to Ivan Codarin and Georgi Naplatanov</li>
+    <li>Improved support for servlet container BEA Weblogic 9 (no special servlet options needed anymore)</li>
+    <li>Improved default permission settings</li>
+    <li>Updated FCKeditor to version 2.5.1</li>
+    <li>Updated Postgresql JDBC driver to postgresql-8.3-603.jdbc3.jar</li>
+    <li>Updated JTidy library to jtidy-8-svn-206-05-21b.jar, thanks to Christian Steinert for the patch</li>
+</ul>
 <h2><strong>General Features of OpenCms 7</strong></h2>
 <ul>
     <li>An update Wizard for OpenCms 6 installations on MySQL, Oracle and PostgreSQL is available.</li>
-    <li>Support for Oracle, MySQL, PostgreSQL, MS SQL Server, DB2 and HSQLDB&nbsp;databases included.</li>
+    <li>Support for Oracle, MySQL, PostgreSQL, MS SQL Server, DB2, AS400 and HSQLDB&nbsp;databases included.</li>
     <li>The internal link management has been greatly improved.</li>
     <li>If files (or folders) are moved / renamed, all links to these files are now kept intact.</li>
     <li>Deleting a resource that is linked by other resources does now display a warning / confirmation dialog.</li>
@@ -41,50 +110,8 @@
     <li>The core database structure has been optimized.</li>
     <li>JSP 2.0 and Servlet 2.4 are now used by default.</li>
 </ul>
-<h2>New Features in OpenCms 7.0.3</h2>
-<ul>
-    <li>Added database support for DB2.</li>
-    <li>Added database support for HSQL, contributed by Sebastian Himberger.</li>
-    <li>The extended HTML import is now available in the 'new' dialog to import a site structure to the current folder.</li>
-    <li>The suffix added to new resources is now taken from the first configured default file instead of always being &quot;.html&quot;.</li>
-</ul>
-<h2>Fixed issues and other changes in OpenCms 7.0.3</h2>
-<ul>
-    <li>Fixed issue #1266: Improved robustness of default workplace tool handler implementation</li>
-    <li>Fixed issue #1303: Corrected style sheets path in static export configuration</li>
-    <li>Fixed issue #1304: In static export configuration the rfs-prefix parameter accepts URLs again</li>
-    <li>Fixed issue #1319: Updated comments on renaming servlets in web.xml</li>
-    <li>Fixed issue #1320: Added warning to 'readme.txt' about overwriting the web.xml file in update wizard</li>
-    <li>Fixed issue #1321: Servlet name is no longer hard-coded in setup wizard</li>
-    <li>Fixed issue #1326: Corrected typos in logout message (German locale)</li>
-    <li>Fixed issue #1335: Corrected typos in content-file of 404-handler (German locale)</li>
-    <li>Fixed issue #1420: Allowing workplace login page to be customized</li>
-    <li>Fixed issue #1433: Uninstalling xmlcontentdemo does not damage other module any more</li>
-    <li>Fixed issue #1468: Missing encoding property for German localization property files</li>
-    <li>Fixed issue #1477: User with &quot;workplace user&quot; role can again choose a template when creating file with free text</li>
-    <li>Fixed issue #1529: Validation for elements of type OpenCmsVfsFile/OpenCmsVarLink fails with parameters</li>
-    <li>Fixed issue #1530: The user password is not longer shown in plain text in the error message for password confirmation</li>
-    <li>Fixed issue #1542: Links to exported files containing anchors are not resolved correctly</li>
-    <li>Fixed issue #1550: Problem in CmsResourceBundleLoader using a SecurityManager</li>
-    <li>Fixed issue with deleting a module that contains locked resources</li>
-    <li>Fixed issue with OpenCms not starting if there are pending publish jobs for users not in the root OU</li>
-    <li>Fixed issue with org.opencms.util.CmsHtmlStripper preserving complete HTML in case no preserve Tags are configured</li>
-    <li>Fixed issue with static export generating wrong links from a resource to a related resource in a RFS rule</li>
-    <li>Fixed issue with importing a resource where the ID is already in use by other resource</li>
-    <li>Fixed issue with displaying running publish report</li>
-    <li>Fixed issue with NPEs in the publish dialog</li>
-    <li>Fixed issue with removing publish locks when aborting a publish job during shutdown</li>
-    <li>Fixed issue with mapping of values in XML contents to attributes of siblings</li>
-    <li>Fixed issue with history dialog not working for resources which are expired</li>
-    <li>Fixed issue with corrupted characters in filenames when uploading files without the applet</li>
-    <li>Fixed issue with filtering the accessible sites with the view permission</li>
-    <li>Fixed issue with context menu in Firefox browsers calling the selected action twice</li>
-    <li>Fixed issue with missing excerpts using default search field configuration</li>
-    <li>Fixed issue with displaying search result excerpts containing HTML code</li>
-    <li>Updated simapi.jar to version 0.9.6, fixing the &quot;missing line&quot; issue when scaling images</li>
-</ul>
 <h2>Backward compatibility</h2>
-<p>OpenCms 7.0.3 is fully backward compatible to version 7.0.0, 7.0.1&nbsp;and 7.0.2. We recommend everyone who uses an earlier version of OpenCms to update to the 7.0.3 release.</p>
+<p>OpenCms 7.0.4 is fully backward compatible to all prior 7.0.x versions. We recommend everyone who uses an earlier version of OpenCms to update to the 7.0.4 release.</p>
 <p>OpenCms 7 is largely backward compatible with version 6. Most templates and other OpenCms developed code from version 6 should work &quot;out of the box&quot; with version 7. A number of API methods from OpenCms 6 have been marked as &quot;deprecated&quot;. In case you have made extensive use of OpenCms internal classes and APIs from version 6, there may be some changes required in your code. However, in most cases this should not take longer than a couple of hours.</p>
 <p>Please note that since OpenCms 7 uses JSP 2.0 and Servlet 2.4 standards by default, you may have to change that back to JSP 1.2 / Servlet 2.3 so your existing OpenCms JSP templates from OpenCms 6 run without change. You must edit the &quot;web-app&quot; node in the OpenCms web.xml file to do that.</p>
 <h2>Compatibility with Java versions, Servlet containers and Databases</h2>
@@ -92,12 +119,12 @@
 <p>We have tested this release on the Tomcat servlet engine. OpenCms works &quot;out of the box&quot; with Tomcat 5.5, which we recommend. Others have reported deploying OpenCms successfully on other servlet containers like JBoss, BEA and Websphere. We appreciate any feedback regarding other servlet containers.</p>
 <p>On the database side, we have tested with MySQL 4.0.x, MySQL 4.1, MySQL 5.x, Oracle 9.x and Oracle 10.x, as well as PostgreSQL 8.2.x and 7.4.x, MS SQL Server 2000 / 2003, DB2 9.1 and HSQLDB 1.8.0. The automatic update wizard for OpenCms 7 supports MySQL, Oracle and PostgreSQL.</p>
 <h2>Regarding version numbers and CVS build tags</h2>
-<p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS tag numbers for all OpenCms 7 final releases are &quot;build_7_0_x&quot;, so the 7.0.3 release is tagged &quot;build_7_0_3&quot;. Development of maintenance releases (like 7.0.3) is currently done in CVS HEAD.</p>
+<p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS tag numbers for all OpenCms 7 final releases are &quot;build_7_0_x&quot;, so the 7.0.4 release is tagged &quot;build_7_0_4&quot;. Development of maintenance releases (like 7.0.4) is currently done in CVS HEAD.</p>
 <h2>How you can help</h2>
-<p>Contributions to the OpenCms core development are most welcome. Please contact the core development team on the <a target="extern" href="%(link0)">opencms-dev</a> mailing list in case you are interested in supporting the development of OpenCms.</p>
-<p>Please use our Bugzilla to report bugs in this release: <a target="extern" href="%(link1)">http://bugzilla.opencms.org/<br />
+<p>Contributions to the OpenCms core development are most welcome. Please contact the core development team on the <a href="%(link0)">opencms-dev</a> mailing list in case you are interested in supporting the development of OpenCms.</p>
+<p>Please use our Bugzilla to report bugs in this release: <a href="%(link1)">http://bugzilla.opencms.org/<br />
 </a></p>
-<p>Thank you for using OpenCms and have fun with OpenCms 7.0.3 :-)</p>
+<p>Thank you for using OpenCms and have fun with OpenCms 7.0.4 :-)</p>
 <p>&nbsp;</p>]]></content>
     </element>
   </page>
