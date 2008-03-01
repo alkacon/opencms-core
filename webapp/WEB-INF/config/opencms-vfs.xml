@@ -623,7 +623,7 @@
 				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
 				<widget class="org.opencms.widgets.CmsOrgUnitWidget" alias="OrgUnitWidget" />
 				<widget class="org.opencms.widgets.CmsPrincipalWidget" alias="PrincipalWidget" />
-				<widget class="org.opencms.widgets.CmsRadioSelectWidget" alias="ReadioSelectWidget" />				
+				<widget class="org.opencms.widgets.CmsRadioSelectWidget" alias="RadioSelectWidget" />				
 				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />				
 				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
 				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
