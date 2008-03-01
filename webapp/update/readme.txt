@@ -44,21 +44,7 @@ To do so, set the property
 wizard.enabled=true
 in the config file WEB-INF/config/opencms.properties.
 
-
-3.a. Important Note only for 6.x Updates: Manual configuration files update
-
-The automatic configuration files update from OpenCms 6.x to OpenCms 7.0.x is working, 
-for all configuration files, except the opencms-workplace.xml file, since it has been 
-completely restructured.
-Before continuing you need to get an OpenCms 7.0.x opencms-workplace.xml configuration 
-file. One is provided under update/config, but you will need to manually copy it to 
-your WEB-INF/config/ folder. This procedure is to prevent that your changes get lost,
-but you are the responsible for customizing this configuration file again.
-
-If you decide not to update this configuration file, most context menu entries will
-not properly work and you will not get the context menu entries for the new features.
-
-3.b. Disable search index update
+3.a. Disable search index update
 
 By default, during the update before installing the new modules, all your search
 indexes will be rebuild, this is needed because we updated to the latest Lucene
@@ -88,43 +74,16 @@ The update wizard should appear, which looks very similar to the OpenCms setup
 wizard. Make sure to read the instructions and the disclaimer on the start 
 page. Then execute the wizard which guides you through the update process.
 
---------------------------------------
-Important Note only for 6.x Updates: 
-
-The first step is a database update, please notice that until now this is working
-and has been tested only for MySQL versions 4.1 and 5.0, and for Oracle versions 
-9i and 10g. And it should also work for PostgreSQL, but it is not implemented for
-MsSQL.
-
-This process is very time and space consuming, for instance, for a system with 
-3,128 resources it takes about 5 minutes, but an update of a system with 120,000+ 
-resources takes about 2 hours (without historical data).
-
-By default, this process deletes all historical data. But you can decide to keep
-them, but this is not recommended since it is not really possible to convert the
-data to the new schema, so that the converted data might be unusable any how, 
-and second, the process might be more than 10 times slower if this option is 
-activated.
-
-The database update process writes report which is very technical, it is just to
-give you an idea of what is going on and if there is a problem, logging almost 
-any SQL statement send to the database, this report is also written to a log file 
-under /WEB-INF/logs/db-update.log.
-
-You should expect some exceptions while converting user data, so some user 
-settings may get lost, but this is unfortunately inevitable.
-
-After the database update is finished, you need the Admin password to continue 
-with the upgrade. 
---------------------------------------
+You will need the Admin password to continue with the upgrade.
 
 When asked to select the modules to update you should definitely select all
 org.opencms.editors.* and org.opencms.workplace.* modules. You only require 
-the org.opencms.frontend.* modules if you have installed
-Template One on your OpenCms server.
+the org.opencms.frontend.* modules if you have installed them before on your 
+OpenCms server.
 
 Here the site selection is only important for the org.opencms.frontend.* modules,
-so it should be the site where you have installed these modules.
+so it should be the site where you have installed these modules. This is by default:
+/sites/default/
 
 After you confirmed the module selection, you should see the status report of the 
 module import. This report is also written to WEB-INF/logs/update.log. Check this 
@@ -166,3 +125,39 @@ IMPORTANT: PLEASE READ THIS
 * Hint: You can use the "Resource changed since" feature in the the Database 
   Administration to export all the changes you have done after installing 
   OpenCms
+
+--------------------------------------
+Important Notes for 6.x Updates only: 
+
+The first step is a database update, please notice that until now this is working
+and has been tested only for MySQL versions 4.1 and 5.0, and for Oracle versions 
+9i and 10g. And it should also work for PostgreSQL, but it is not implemented for
+MsSQL.
+
+This process is very time and space consuming, for instance, for a system with 
+3,128 resources it takes about 5 minutes, but an update of a system with 120,000+ 
+resources takes about 2 hours (without historical data).
+
+By default, this process deletes all historical data. But you can decide to keep
+them, but this is not recommended since it is not really possible to convert the
+data to the new schema, so that the converted data might be unusable any how, 
+and second, the process might be more than 10 times slower if this option is 
+activated.
+
+The database update process writes report which is very technical, it is just to
+give you an idea of what is going on and if there is a problem, logging almost 
+any SQL statement send to the database, this report is also written to a log file 
+under /WEB-INF/logs/db-update.log.
+
+You should expect some exceptions while converting user data, so some user 
+settings may get lost, but this is unfortunately inevitable.
+
+Additionally the automatic configuration files update from OpenCms 6.x to OpenCms 
+7.0.x is working, for all configuration files, except the opencms-workplace.xml file, 
+since it has been completely restructured.
+Before continuing you need to get an OpenCms 7.0.x opencms-workplace.xml configuration 
+file. One is provided under update/config, but you will need to manually copy it to 
+your WEB-INF/config/ folder. This procedure is to prevent that your changes get lost,
+but you are the responsible for customizing this configuration file again.
+
+If you decide not to update this configuration file, the update will NOT work.
