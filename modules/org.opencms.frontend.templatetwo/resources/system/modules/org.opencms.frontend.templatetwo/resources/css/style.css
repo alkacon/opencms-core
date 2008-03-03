@@ -115,6 +115,7 @@
   	background: <c:out value="${cms.styleValue['header.background']}" default="#FFFFFF" /> <c:if test="${!empty cms.styleValue['header.background.image']}">url("<cms:link><c:out value="${cms.styleValue['header.background.image']}" /></cms:link>") top left</c:if>;
   	color: <c:out value="${cms.styleValue['header.color']}" default="#444444" />;
     position: relative;
+    padding-top: 0px;
   }
   
   #topnav {
