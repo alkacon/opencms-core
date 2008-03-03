@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2008/03/01 14:36:19 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2008/03/03 08:22:03 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.frontend.templateone;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
@@ -644,7 +645,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
             return currentSite;
         } else {
             // return default index
-            return getRequestContext().currentProject().getName()
+            return CmsProject.ONLINE_PROJECT_NAME
                 + " project "
                 + getRequestContext().getLocale().toString().toUpperCase()
                 + " (VFS)";
