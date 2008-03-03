@@ -47,15 +47,15 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[2.5]]></value>
+					<value><![CDATA[1000]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Templateone Demo Pages]]></value>
+					<value><![CDATA[Templateone]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Templateone Demo Pages]]></value>
+					<value><![CDATA[Templateone Demo]]></value>
 				</property>
 				<property>
 					<name>locale</name>
