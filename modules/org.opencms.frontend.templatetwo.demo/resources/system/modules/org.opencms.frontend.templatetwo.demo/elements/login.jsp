@@ -40,7 +40,7 @@
 		<div class="boxform" style="text-align:center;">
 			<input type="hidden" name="action" value="login" />
 			<input type="hidden" name="requestedResource" value="${param.requestedResource}" />
-			<input type="submit" value="<fmt:message key="login.label.login" />"/>
+			<input class="button" type="submit" value="<fmt:message key="login.label.login" />"/>
 		</div>
 	</form>
 </c:when>
@@ -53,7 +53,7 @@
 		<div class="boxform" style="text-align:center;">
 			<input type="hidden" name="action" value="logoff" />
 			<input type="hidden" name="requestedResource" value="${cms:vfs(pageContext).requestContext.uri}" />
-			<input type="submit" value="<fmt:message key="login.label.logoff" />"/>
+			<input class="button" type="submit" value="<fmt:message key="login.label.logoff" />"/>
 		</div>
 	</form>
 </c:otherwise>
