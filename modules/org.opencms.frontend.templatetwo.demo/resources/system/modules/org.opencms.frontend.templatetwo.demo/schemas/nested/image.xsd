@@ -1,15 +1,15 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
-	<xsd:element name="Images" type="OpenCmsImages"/>
+	<xsd:element name="TTImages" type="OpenCmsTTImages"/>
 	
-	<xsd:complexType name="OpenCmsImages">
+	<xsd:complexType name="OpenCmsTTImages">
 		<xsd:sequence>
-			<xsd:element name="Image" type="OpenCmsImage" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TTImage" type="OpenCmsTTImage" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="OpenCmsImage">
+	<xsd:complexType name="OpenCmsTTImage">
 		<xsd:sequence>
 			<xsd:element name="Image" type="OpenCmsVfsFile" minOccurs="0" />
 			<xsd:element name="Description" type="OpenCmsString" />
@@ -19,7 +19,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>
+			<resourcebundle name="org.opencms.frontend.templatetwo.demo.workplace"/>
 			<layouts>
 				<layout element="Image" widget="ImageGalleryWidget" />			
 			</layouts>

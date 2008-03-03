@@ -1,0 +1,27 @@
+<%@ page session="false" import="org.opencms.jsp.util.CmsJspVfsAccessBean" %><%--
+--%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
+--%><%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %><%--
+--%><c:set var="vfs" value="${cms:vfs(pageContext)}" /><%
+
+// Scriptlet code was required for redirection, will be improved...
+
+String target = request.getLocale().getLanguage();
+if (!"de".equals(target)) {
+    target = "en";
+}
+target = "/demo_" + target + "/intro.html";
+pageContext.setAttribute("target", target);
+String link = (String)((CmsJspVfsAccessBean)pageContext.getAttribute("vfs")).getLink().get(target);
+response.sendRedirect(link);
+
+%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>Please redirect to ${vfs.link[target]}</title>
+<meta http-equiv="refresh" content="3; URL=${vfs.link[target]}"/>
+</head>
+<body>
+<h1>This page has moved!</h1>
+<p>Please redirect your browser to: <a href="${vfs.link[target]}">${vfs.link[target]}</a></p>
+</body>
+</html>

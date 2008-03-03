@@ -4,27 +4,27 @@
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/image.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/extendedlink.xsd"/>
 
-	<xsd:element name="Paragraphs" type="OpenCmsParagraphs"/>
+	<xsd:element name="TTParagraphs" type="OpenCmsTTParagraphs"/>
 	
-	<xsd:complexType name="OpenCmsParagraphs">
+	<xsd:complexType name="OpenCmsTTParagraphs">
 		<xsd:sequence>
-			<xsd:element name="Paragraph" type="OpenCmsParagraph" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TTParagraph" type="OpenCmsTTParagraph" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="OpenCmsParagraph">
+	<xsd:complexType name="OpenCmsTTParagraph">
 		<xsd:sequence>
 			<xsd:element name="Headline" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="Text" type="OpenCmsHtml" />			
-			<xsd:element name="Image" type="OpenCmsImage" minOccurs="0" />
-			<xsd:element name="Links" type="OpenCmsExtendedLink" minOccurs="0" maxOccurs="5"/>
+			<xsd:element name="Image" type="OpenCmsTTImage" minOccurs="0" />
+			<xsd:element name="Links" type="OpenCmsTTExtendedLink" minOccurs="0" maxOccurs="5"/>
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>
+			<resourcebundle name="org.opencms.frontend.templatetwo.demo.workplace"/>
 			<layouts>
 				<layout element="Text" widget="HtmlWidget" configuration="height:500px,link,formatselect,source"/>
 			</layouts>

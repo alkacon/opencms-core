@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Articles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd">
-  <Article language="de">
+<TTArticles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd">
+  <TTArticle language="de">
     <Title><![CDATA[Feature nicht installiert]]></Title>
     <Paragraphs>
       <Text name="Text0">
@@ -12,5 +12,5 @@
 <p>&nbsp;</p>]]></content>
       </Text>
     </Paragraphs>
-  </Article>
-</Articles>
+  </TTArticle>
+</TTArticles>

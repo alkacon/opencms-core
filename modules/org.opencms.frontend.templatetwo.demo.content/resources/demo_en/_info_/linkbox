@@ -7,7 +7,7 @@
       <links/>
       <content><![CDATA[<p>XML contents can be used, also, to create reference lists:</p>
 <p>&nbsp;</p>
-<p>While the linkbox automatically shows contents which are subject to several conditions, the listbox just has an editable entry, so there is full control of what is displayed.</p>]]></content>
+<p>While the listbox automatically shows contents which are subject to several conditions, the linkbox just has an editable entry, so there is full control of what is displayed.</p>]]></content>
     </Content>
   </TextBox>
 </TextBoxes>

@@ -3,9 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
-<fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />
-
 <cms:include property="template" element="head" />
+
+<fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />
+<fmt:bundle basename="org/opencms/frontend/templatetwo/demo/messages">
 
 <cms:contentload collector="singleFile" param="%(opencms.uri)" editable="auto">
 <cms:contentaccess var="event" scope="page" />
@@ -13,7 +14,7 @@
 
 	<h2><cms:contentshow element="Title" /></h2>
 	<p>
-		<label>Beginn:</label>
+		<label><fmt:message key="tt.event.start" /></label>
 		<c:choose>
 			<c:when test="${event.value['EventDates/ShowTime'] == 'true'}">
 				<fmt:formatDate value="${cms:convertDate(event.value['EventDates/EventDate'])}" dateStyle="LONG" timeStyle="SHORT" type="both" /> Uhr
@@ -25,7 +26,7 @@
 
 		<c:if test="${event.value['EventDates/EventEndDate'].exists}">
 		<br />
-		<label>Ende:</label>
+		<label><fmt:message key="tt.event.end" /></label>
 		<c:choose>
 			<c:when test="${event.value['EventDates/ShowTime'] == 'true'}">
 				<fmt:formatDate value="${cms:convertDate(event.value['EventDates/EventEndDate'])}" dateStyle="LONG" timeStyle="SHORT" type="both" /> Uhr
@@ -38,7 +39,7 @@
 
 		<c:if test="${!event.value['EventDates/DateRemark'].isEmpty}">
 		<br />
-		<label>Hinweise:</label>
+		<label><fmt:message key="tt.event.remarks" /></label>
 			<cms:contentshow element="EventDates/DateRemark" />
 		</c:if>
 	</p>
@@ -75,5 +76,7 @@
 </cms:contentcheck>
 
 </cms:contentload>
+
+</fmt:bundle>
 
 <cms:include property="template" element="foot" />

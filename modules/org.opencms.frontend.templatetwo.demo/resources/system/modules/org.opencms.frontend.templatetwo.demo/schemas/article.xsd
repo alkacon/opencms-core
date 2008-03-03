@@ -4,19 +4,18 @@
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/config.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/paragraph.xsd"/>
 		
-	<xsd:element name="Articles" type="OpenCmsArticles"/>
+	<xsd:element name="TTArticles" type="OpenCmsTTArticles"/>
 	
-	<xsd:complexType name="OpenCmsArticles">
+	<xsd:complexType name="OpenCmsTTArticles">
 		<xsd:sequence>
-			<xsd:element name="Article" type="OpenCmsArticle" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TTArticle" type="OpenCmsTTArticle" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="OpenCmsArticle">
+	<xsd:complexType name="OpenCmsTTArticle">
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
-			<xsd:element name="Paragraphs" type="OpenCmsParagraph" maxOccurs="5" />
-			<xsd:element name="Source" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Paragraphs" type="OpenCmsTTParagraph" maxOccurs="5" />
 			<xsd:element name="Config" type="OpenCmsConfig" minOccurs="0" maxOccurs="1" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
@@ -24,14 +23,12 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.frontend.templatetwo.workplace"/>
+			<resourcebundle name="org.opencms.frontend.templatetwo.demo.workplace"/>
 			<preview uri="${previewtempfile}" />
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
 			</mappings>
-			<layouts>
-				<layout element="Source" widget="HtmlWidget" configuration="height:50px,link"/>
-			</layouts>
+			<layouts/>
 			<validationrules/>
 			<defaults/>
 		</xsd:appinfo>

@@ -7,21 +7,21 @@
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/eventdates.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/availability.xsd"/>
 	
-	<xsd:element name="EventArticles" type="OpenCmsEventArticles"/>
+	<xsd:element name="TTEventArticles" type="OpenCmsTTEventArticles"/>
 	
-	<xsd:complexType name="OpenCmsEventArticles">
+	<xsd:complexType name="OpenCmsTTEventArticles">
 		<xsd:sequence>
-			<xsd:element name="EventArticle" type="OpenCmsEventArticle" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TTEventArticle" type="OpenCmsTTEventArticle" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="OpenCmsEventArticle">
+	<xsd:complexType name="OpenCmsTTEventArticle">
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="Teaser" type="OpenCmsHtml" minOccurs="0" />
-			<xsd:element name="Paragraph" type="OpenCmsParagraph" />
-			<xsd:element name="EventDates" type="OpenCmsEventDate" />
-			<xsd:element name="Availability" type="OpenCmsAvailability" minOccurs="0" />
+			<xsd:element name="Paragraph" type="OpenCmsTTParagraph" />
+			<xsd:element name="EventDates" type="OpenCmsTTEventDate" />
+			<xsd:element name="Availability" type="OpenCmsTTAvailability" minOccurs="0" />
 			<xsd:element name="Config" type="OpenCmsConfig" minOccurs="0" maxOccurs="1" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
@@ -29,7 +29,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>
+			<resourcebundle name="org.opencms.frontend.templatetwo.demo.workplace"/>
 			<preview uri="${previewtempfile}" />
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />

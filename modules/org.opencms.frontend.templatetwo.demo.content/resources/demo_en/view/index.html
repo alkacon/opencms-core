@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Articles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd">
-  <Article language="en">
+<TTArticles xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/article.xsd">
+  <TTArticle language="en">
     <Title><![CDATA[An eye on sausage]]></Title>
     <Paragraphs>
       <Headline><![CDATA[Topics from the world of sausage]]></Headline>
@@ -12,7 +12,12 @@
       </Text>
     </Paragraphs>
     <Config>
-      <Preset><![CDATA[/demo_en/_config_/layout/threecolumns]]></Preset>
+      <Preset>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/demo_en/_config_/layout/threecolumns]]></target>
+          <uuid>78328875-e44b-11dc-add5-9f7a6a6ce285</uuid>
+        </link>
+      </Preset>
       <Element>
         <File>
           <link type="WEAK">
@@ -54,5 +59,5 @@
         <ColorSchema><![CDATA[box_schema2]]></ColorSchema>
       </Element>
     </Config>
-  </Article>
-</Articles>
+  </TTArticle>
+</TTArticles>

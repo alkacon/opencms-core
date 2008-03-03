@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/item.xsd">
-  <Item language="en">
+<TTItems xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/item.xsd">
+  <TTItem language="en">
     <Name><![CDATA[Mettwurst]]></Name>
     <Category><![CDATA[/system/categories/wurstsorten/rohwurst/]]></Category>
     <ShortDescription name="ShortDescription0">
@@ -38,7 +38,12 @@ Due to the large German immigration to South Australia (for example, the town of
       <Description><![CDATA[Mettwurst]]></Description>
     </Images>
     <Config>
-      <Preset><![CDATA[/demo_en/_config_/layout/threecolumns]]></Preset>
+      <Preset>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/demo_en/_config_/layout/threecolumns]]></target>
+          <uuid>78328875-e44b-11dc-add5-9f7a6a6ce285</uuid>
+        </link>
+      </Preset>
       <Element>
         <File>
           <link type="WEAK">
@@ -70,5 +75,5 @@ Due to the large German immigration to South Australia (for example, the town of
         <ColorSchema><![CDATA[box_schema2]]></ColorSchema>
       </Element>
     </Config>
-  </Item>
-</Items>
+  </TTItem>
+</TTItems>

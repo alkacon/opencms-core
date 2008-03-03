@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Items xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/item.xsd">
-  <Item language="en">
+<TTItems xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/item.xsd">
+  <TTItem language="en">
     <Name><![CDATA[Haggis]]></Name>
     <Category><![CDATA[/system/categories/wurstsorten/kochwurst/]]></Category>
     <ShortDescription name="ShortDescription0">
@@ -30,7 +30,7 @@ Most modern commercial haggis outside Scotland is prepared in a casing rather th
 <br />
 It is often asserted (e.g., on the packaging of MacSween's haggis) that the dish is traditionally served with &quot;neeps and tatties&quot; (Scots: swede, yellow turnip or rutabaga and potatoes; these are boiled and mashed separately) and a &quot;dram&quot; (ie. a glass of Scotch whisky). However, it might perhaps be more accurate to describe this as the traditional main course of a Burns supper, since on other occasions haggis may be eaten with other accompaniments. Whisky sauce (made from thickened stock and Scotch whisky) has recently been developed as an elegant addition.</p>
 <p>&nbsp;</p>
-<p>This article uses material from the <span class="external text"><a title="Wikipedia" target="_self" href="%(link0)">Wikipedia</a>&nbsp; article <a title="Haggis" target="_self" href="%(link1)">Haggis</a></span> and is licensed under the <a title="GNU Free Documentation License" target="_self" href="%(link2)"><span class="external text">GNU Free Documentation License</span></a>.</p>]]></content>
+<p>This article uses material from the <span class="external text"><a href="%(link0)" target="_self" title="Wikipedia">Wikipedia</a>&nbsp; article <a href="%(link1)" target="_self" title="Haggis">Haggis</a></span> and is licensed under the <a href="%(link2)" target="_self" title="GNU Free Documentation License"><span class="external text">GNU Free Documentation License</span></a>.</p>]]></content>
     </LongDescription>
     <Images>
       <Image>
@@ -42,7 +42,12 @@ It is often asserted (e.g., on the packaging of MacSween's haggis) that the dish
       <Description><![CDATA[Scottish Haggis]]></Description>
     </Images>
     <Config>
-      <Preset><![CDATA[/demo_de/_config_/layout/threecolumns]]></Preset>
+      <Preset>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/demo_en/_config_/layout/threecolumns]]></target>
+          <uuid>78328875-e44b-11dc-add5-9f7a6a6ce285</uuid>
+        </link>
+      </Preset>
       <Element>
         <File>
           <link type="WEAK">
@@ -74,5 +79,5 @@ It is often asserted (e.g., on the packaging of MacSween's haggis) that the dish
         <ColorSchema><![CDATA[box_schema2]]></ColorSchema>
       </Element>
     </Config>
-  </Item>
-</Items>
+  </TTItem>
+</TTItems>

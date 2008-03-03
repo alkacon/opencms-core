@@ -6,24 +6,23 @@
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/image.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/extendedlink.xsd"/>
 		
-	<xsd:element name="Items" type="OpenCmsItems"/>
+	<xsd:element name="TTItems" type="OpenCmsTTItems"/>
 	
-	<xsd:complexType name="OpenCmsItems">
+	<xsd:complexType name="OpenCmsTTItems">
 		<xsd:sequence>
-			<xsd:element name="Item" type="OpenCmsItem" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="TTItem" type="OpenCmsTTItem" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="OpenCmsItem">
+	<xsd:complexType name="OpenCmsTTItem">
 		<xsd:sequence>
 			<xsd:element name="Name" type="OpenCmsString" />
 			<xsd:element name="Category" type="OpenCmsString" />
 			<xsd:element name="ShortDescription" type="OpenCmsHtml" minOccurs="0" />
 			<xsd:element name="LongDescription" type="OpenCmsHtml" />
-			<xsd:element name="Source" type="OpenCmsHtml" minOccurs="0" />
-			<xsd:element name="Images" type="OpenCmsImage" minOccurs="0" maxOccurs="5"/>
-			<xsd:element name="Attachments" type="OpenCmsAttachment" minOccurs="0" maxOccurs="5"/>			
-			<xsd:element name="Links" type="OpenCmsExtendedLink" minOccurs="0" maxOccurs="5"/>
+			<xsd:element name="Images" type="OpenCmsTTImage" minOccurs="0" maxOccurs="5"/>
+			<xsd:element name="Attachments" type="OpenCmsTTAttachment" minOccurs="0" maxOccurs="5"/>			
+			<xsd:element name="Links" type="OpenCmsTTExtendedLink" minOccurs="0" maxOccurs="5"/>
 			<xsd:element name="Config" type="OpenCmsConfig" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
@@ -39,7 +38,6 @@
 				<layout element="Category" widget="CategoryWidget" configuration="category=wurstsorten|keyprefix=itemcategory" />
 				<layout element="ShortDescription" widget="HtmlWidget" configuration="height:100px,link"/>
 				<layout element="LongDescription" widget="HtmlWidget" configuration="link,source"/>
-				<layout element="Source" widget="HtmlWidget" configuration="height:50px,link"/>
 			</layouts>
 			<validationrules/>
 			<defaults>

@@ -9,7 +9,7 @@
         <uuid>19a6a302-df9e-11dc-b0b0-9f7a6a6ce285</uuid>
       </link>
     </Links>
-    <Collector><![CDATA[allInSubTreePriorityDateDesc]]></Collector>
+    <Collector><![CDATA[allInFolderPriorityDateDesc]]></Collector>
     <Parameter><![CDATA[%(link1)news_%(number).html|ttnews]]></Parameter>
     <More><![CDATA[Weiter]]></More>
     <PositionAuthor><![CDATA[Top]]></PositionAuthor>
