@@ -22,6 +22,7 @@
 
 <c:choose>
 <c:when test="${!login.loggedIn}">
+	<p><fmt:message key="login.message.enterdata" /></p>
 	<c:if test="${!login.loginSuccess}">
 	<div class="login-errormessage">
 		<fmt:message key="login.message.failed" />:<br />
@@ -45,10 +46,19 @@
 	</form>
 </c:when>
 <c:otherwise>
-	<br /><p><b><fmt:message key="login.message.loggedin" />:</b></p>
+	<p><b><fmt:message key="login.message.loggedin" />:</b></p>
 	<form method="get" action="<cms:link>${param.path}</cms:link>" class="loginform">
 		<div class="boxform">
-			<cms:user property="firstname"/>&nbsp;<cms:user property="lastname"/> (<cms:user property="name" />)
+			<c:set var="firstname"><cms:user property="firstname"/></c:set>
+			<c:set var="lastname"><cms:user property="lastname"/></c:set>
+			<c:if test="${not empty firstname}">${firstname}&nbsp;</c:if><c:if test="${not empty lastname}">${lastname}</c:if>
+			<c:set var="username"><cms:user property="name"/></c:set>
+			<c:if test="${empty firstname && empty lastname}">
+				<c:if test="${fn:indexOf(username, '/') != -1}">
+					<c:set var="username">${fn:substringAfter(username, '/')}</c:set>
+				</c:if>
+				(${username})
+			</c:if>
 		</div>
 		<div class="boxform" style="text-align:center;">
 			<input type="hidden" name="action" value="logoff" />
