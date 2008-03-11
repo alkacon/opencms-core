@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/03/11 08:42:57 $
- * Version: $Revision: 1.988 $
+ * Date   : $Date: 2008/03/11 08:44:19 $
+ * Version: $Revision: 1.989 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -21,6 +21,7 @@ Legend:
 
 OpenCms 7.0.5 - xxx, 2008
 - Many improvements on Template Two and the demo
+* Fixed issue with NPE in MacroResolver
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 

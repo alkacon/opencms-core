@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2008/02/29 10:35:00 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/03/11 08:44:20 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -481,14 +481,40 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         if (m_jspPageContext != null) {
 
-            if (macro.startsWith(CmsMacroResolver.KEY_REQUEST_PARAM)) {
-                // the key is a request parameter  
-                macro = macro.substring(CmsMacroResolver.KEY_REQUEST_PARAM.length());
-                String result = m_jspPageContext.getRequest().getParameter(macro);
-                if ((result == null) && macro.equals(KEY_PROJECT_ID)) {
-                    result = m_cms.getRequestContext().currentProject().getUuid().toString();
+            if (m_jspPageContext.getRequest() != null) {
+                if (macro.startsWith(CmsMacroResolver.KEY_REQUEST_PARAM)) {
+                    // the key is a request parameter  
+                    macro = macro.substring(CmsMacroResolver.KEY_REQUEST_PARAM.length());
+                    String result = m_jspPageContext.getRequest().getParameter(macro);
+                    if ((result == null) && macro.equals(KEY_PROJECT_ID)) {
+                        result = m_cms.getRequestContext().currentProject().getUuid().toString();
+                    }
+                    return result;
                 }
-                return result;
+
+                if ((m_cms != null) && macro.startsWith(CmsMacroResolver.KEY_PROPERTY_ELEMENT)) {
+
+                    // the key is a cms property to be read on the current element
+
+                    macro = macro.substring(CmsMacroResolver.KEY_PROPERTY_ELEMENT.length());
+                    CmsFlexController controller = CmsFlexController.getController(m_jspPageContext.getRequest());
+                    try {
+                        CmsProperty property = m_cms.readPropertyObject(
+                            controller.getCurrentRequest().getElementUri(),
+                            macro,
+                            false);
+                        if (property != CmsProperty.getNullProperty()) {
+                            return property.getValue();
+                        }
+                    } catch (CmsException e) {
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().getBundle().key(
+                                Messages.LOG_PROPERTY_READING_FAILED_2,
+                                macro,
+                                controller.getCurrentRequest().getElementUri()), e);
+                        }
+                    }
+                }
             }
 
             if (macro.startsWith(CmsMacroResolver.KEY_PAGE_CONTEXT)) {
@@ -496,30 +522,6 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 macro = macro.substring(CmsMacroResolver.KEY_PAGE_CONTEXT.length());
                 int scope = m_jspPageContext.getAttributesScope(macro);
                 return m_jspPageContext.getAttribute(macro, scope).toString();
-            }
-
-            if ((m_cms != null) && macro.startsWith(CmsMacroResolver.KEY_PROPERTY_ELEMENT)) {
-
-                // the key is a cms property to be read on the current element
-
-                macro = macro.substring(CmsMacroResolver.KEY_PROPERTY_ELEMENT.length());
-                CmsFlexController controller = CmsFlexController.getController(m_jspPageContext.getRequest());
-                try {
-                    CmsProperty property = m_cms.readPropertyObject(
-                        controller.getCurrentRequest().getElementUri(),
-                        macro,
-                        false);
-                    if (property != CmsProperty.getNullProperty()) {
-                        return property.getValue();
-                    }
-                } catch (CmsException e) {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_PROPERTY_READING_FAILED_2,
-                            macro,
-                            controller.getCurrentRequest().getElementUri()), e);
-                    }
-                }
             }
         }
 
