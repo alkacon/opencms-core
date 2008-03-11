@@ -2,7 +2,6 @@
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/config.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/attachment.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/image.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/extendedlink.xsd"/>
 		
@@ -20,8 +19,7 @@
 			<xsd:element name="Category" type="OpenCmsString" />
 			<xsd:element name="ShortDescription" type="OpenCmsHtml" minOccurs="0" />
 			<xsd:element name="LongDescription" type="OpenCmsHtml" />
-			<xsd:element name="Images" type="OpenCmsTTImage" minOccurs="0" maxOccurs="5"/>
-			<xsd:element name="Attachments" type="OpenCmsTTAttachment" minOccurs="0" maxOccurs="5"/>			
+			<xsd:element name="Images" type="OpenCmsTTImage" minOccurs="0" maxOccurs="5"/>			
 			<xsd:element name="Links" type="OpenCmsTTExtendedLink" minOccurs="0" maxOccurs="5"/>
 			<xsd:element name="Config" type="OpenCmsConfig" minOccurs="0" />
 		</xsd:sequence>
@@ -40,8 +38,10 @@
 				<layout element="LongDescription" widget="HtmlWidget" configuration="link,source"/>
 			</layouts>
 			<validationrules/>
-			<defaults>
-			</defaults>
+			<defaults/>
+			<relations>
+				<relation element="Images/Image" invalidate="parent" />
+			</relations>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

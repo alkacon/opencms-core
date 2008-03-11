@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.4</opencms_version>
+		<opencms_version>7.0.5</opencms_version>
 		<createdate>Mon, 03 Mar 2008 10:13:23 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -1854,10 +1854,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[tt_config]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -1878,10 +1874,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[tt_linkbox]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -1902,10 +1894,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[tt_listbox]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -1926,10 +1914,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[tt_menu]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -1950,10 +1934,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[tt_options]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -1974,10 +1954,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[tt_preset]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -1998,10 +1974,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[tt_search]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -2022,10 +1994,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[tt_style]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>
@@ -2046,10 +2014,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[tt_textbox]]></value>
-				</property>
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:16,h:16]]></value>

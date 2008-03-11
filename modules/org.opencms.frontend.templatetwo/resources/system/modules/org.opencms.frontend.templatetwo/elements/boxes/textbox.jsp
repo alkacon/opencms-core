@@ -1,7 +1,8 @@
-<%@ page import="org.opencms.jsp.*, org.opencms.util.*, java.util.*" %>
+<%@ page import="org.opencms.jsp.*" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
+
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	pageContext.setAttribute("cms", cms);
 %>
@@ -14,16 +15,22 @@
 
 			<c:if test="${content.hasValue['JspFile']}">
 				<c:set var="path" value="${content.value['JspFile'].stringValue}" />
-				<% 
-					String path = (String)pageContext.getAttribute("path");
-					if (path.indexOf("?") < 0) {
-						cms.include (path, null, false, null);
-					} else {
-						String[] section = CmsStringUtil.splitAsArray(path, "?"); 
-						Map params = CmsStringUtil.splitAsMap(section[1], "&", "=");
-						cms.include (section[0], null, false, params);
-					}
-				%>
+				<c:choose>
+					<c:when test="${!fn:contains(path, '?')}">
+						<cms:include file="${path}">
+							<cms:param name="box.uri" value="${param.file}" />
+						</cms:include>
+					</c:when>
+					<c:otherwise>
+						<c:set var="uriParams" value="${fn:split(path, '?')[1]}" />
+						<cms:include file="${fn:split(path, '?')[0]}">
+							<cms:param name="box.uri" value="${param.file}" />
+							<c:forTokens items="${uriParams}" delims="&" var="uriParam">
+								<cms:param name="${fn:split(uriParam, '=')[0]}" value="${fn:split(uriParam, '=')[1]}" />
+							</c:forTokens>
+						</cms:include>
+					</c:otherwise>
+				</c:choose>
 			</c:if>	
 		</div>
 	</div>

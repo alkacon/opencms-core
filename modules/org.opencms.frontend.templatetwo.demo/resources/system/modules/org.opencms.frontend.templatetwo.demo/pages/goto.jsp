@@ -1,19 +1,11 @@
-<%@ page import="org.opencms.file.types.*, org.opencms.file.*, org.opencms.jsp.*, org.opencms.main.*" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
-<% 
-	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
-	CmsObject cms = jsp.getCmsObject();
 
-	String redirectUri = request.getParameter("uri");
+<c:if test="${!empty param.uri && cms:vfs(pageContext).exists[param.uri]}">
+	<c:redirect url="${cms:vfs(pageContext).link[param.uri]}" context="/" />
+</c:if>
 
-	if (redirectUri != null && cms.existsResource(redirectUri)) {
-		if (OpenCms.getResourceManager().getResourceType(cms.readResource(redirectUri)).getTypeId() != CmsResourceTypePlain.getStaticTypeId()) {
-			response.sendRedirect (OpenCms.getLinkManager().substituteLink(cms, redirectUri, null, true));
-		}
-	}
-%>
 <cms:include property="template" element="head"/>
 
 <fmt:setLocale value="${cms.requestContext.locale}" />

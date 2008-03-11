@@ -28,6 +28,9 @@
 			</layouts>
 			<validationrules/>
 			<defaults/>
+			<relations>
+				<relation element="Preset" type="strong" invalidate="false"/>
+			</relations>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

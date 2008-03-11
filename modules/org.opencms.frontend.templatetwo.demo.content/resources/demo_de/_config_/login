@@ -5,7 +5,7 @@
     <Title><![CDATA[Anmelden]]></Title>
     <Content name="Content0">
       <links/>
-      <content><![CDATA[<p>Hier können Sie sich mit Ihrem Benutzernamen und Kennwort anmelden:</p>]]></content>
+      <content><![CDATA[]]></content>
     </Content>
     <JspFile>
       <link type="WEAK">

@@ -1,7 +1,7 @@
 <%@ page import="org.opencms.jsp.*, org.opencms.file.*, org.opencms.file.types.*, java.util.*" %> 
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%><%
 	CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
 	CmsObject cms = jsp.getCmsObject();
 
@@ -14,8 +14,11 @@
 	pageContext.setAttribute("nav", nav);
 %>
 
+<fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />
+<fmt:bundle basename="org/opencms/frontend/templatetwo/demo/messages">
+
 <div class="box ${param.schema}">
-	<h4>Bilder</h4>
+	<h4><fmt:message key="tt.image.sources.title" /></h4>
 	<div class="boxbody">
 		<c:forEach items="${nav}" var="navElement">
 		<p>
@@ -27,3 +30,5 @@
 		</c:forEach>
 	</div>
 </div>
+
+</fmt:bundle>

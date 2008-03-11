@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/03/01 12:48:51 $
- * Version: $Revision: 1.987 $
+ * Date   : $Date: 2008/03/11 08:42:57 $
+ * Version: $Revision: 1.988 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -18,6 +18,9 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 7.0.5 - xxx, 2008
+- Many improvements on Template Two and the demo
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 

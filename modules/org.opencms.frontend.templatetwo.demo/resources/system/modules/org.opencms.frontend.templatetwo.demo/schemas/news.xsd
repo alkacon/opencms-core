@@ -50,6 +50,9 @@
 				<default element="Availability/Release" value="${currenttime}" />
 				<default element="Availability/Expiration" value="${currenttime}" />
 			</defaults>
+			<relations>
+				<relation element="Paragraph/Image/Image" invalidate="parent" />
+			</relations>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

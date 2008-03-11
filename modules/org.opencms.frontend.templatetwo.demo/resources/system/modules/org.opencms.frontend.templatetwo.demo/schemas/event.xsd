@@ -48,9 +48,9 @@
 				<default element="Availability/Expiration" value="${currenttime}" />
 			</defaults>
 			<validationrules/>
-                        <relations>
-                                <relation element="Paragraph/Image/Image" invalidate="parent" />
-                        </relations>
+			<relations>
+				<relation element="Paragraph/Image/Image" invalidate="parent" />
+			</relations>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.4</opencms_version>
+		<opencms_version>7.0.5</opencms_version>
 		<createdate>Mon, 03 Mar 2008 10:13:41 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -369,6 +369,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -422,6 +426,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -442,6 +450,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -462,6 +474,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(uri,module)]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -482,6 +498,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -502,6 +522,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -522,6 +546,10 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
 				<property type="shared">
 					<name>Title</name>
 					<value><![CDATA[Language redirection page]]></value>
@@ -835,21 +863,6 @@
 			<datelastmodified>Wed, 13 Feb 2008 15:34:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 13 Feb 2008 15:34:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/attachment.xsd</source>
-			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/attachment.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>43bf99c3-da49-11dc-85fe-9f7a6a6ce285</uuidstructure>
-			<uuidresource>43bf99c4-da49-11dc-85fe-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Sat, 01 Mar 2008 16:49:42 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 Feb 2008 15:35:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

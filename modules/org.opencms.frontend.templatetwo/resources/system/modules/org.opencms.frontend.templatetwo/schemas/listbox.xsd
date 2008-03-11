@@ -42,9 +42,9 @@
 				<layout element="Text" widget="HtmlWidget" configuration="height:100px,imagegallery,downloadgallery,linkgallery,link,anchor,table" />
 				<layout element="Collector" widget="org.opencms.frontend.templatetwo.CmsCollectorSelectWidget" />
 				<layout element="Parameter" widget="VfsFileWidget" />
-				<layout element="PositionAuthor" widget="SelectorWidget" configuration="Top|Bottom" />
-				<layout element="PositionDate" widget="SelectorWidget" configuration="Top|Bottom" />
-				<layout element="PositionImage" widget="SelectorWidget" configuration="Top|Left|Right|Bottom" />
+				<layout element="PositionAuthor" widget="SelectorWidget" configuration="value='Top' option='${key.listbox.position.top}' | value='Bottom' option='${key.listbox.position.bottom}" />
+				<layout element="PositionDate" widget="SelectorWidget" configuration="value='Top' option='${key.listbox.position.top}' | value='Bottom' option='${key.listbox.position.bottom}" />
+				<layout element="PositionImage" widget="SelectorWidget" configuration="value='Top' option='${key.listbox.position.top}' | value='Left' option='${key.listbox.position.left} | value='Right' option='${key.listbox.position.right} | value='Bottom' option='${key.listbox.position.bottom}" />
 			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  

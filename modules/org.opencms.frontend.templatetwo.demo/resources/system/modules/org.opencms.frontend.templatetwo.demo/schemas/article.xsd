@@ -31,6 +31,9 @@
 			<layouts/>
 			<validationrules/>
 			<defaults/>
+			<relations>
+				<relation element="Paragraphs/Image/Image" invalidate="parent" />
+			</relations>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

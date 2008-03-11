@@ -99,6 +99,12 @@
 				<default element="nav.left.active.background" value="#aabaab" />
 				<default element="nav.left.active.color" value="#444444" />
 			</defaults>
+			<relations>
+				<relation element="window.background.image" type="strong" invalidate="false"/>
+				<relation element="header.background.image" type="strong" invalidate="false"/>
+				<relation element="footer.background.image" type="strong" invalidate="false"/>
+				<relation element="css.file" type="strong" invalidate="false"/>
+			</relations>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

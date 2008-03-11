@@ -30,6 +30,9 @@
 			</layouts>
 			<validationrules/>
 			<defaults/>
+			<relations>
+				<relation element="JspFile" type="strong" invalidate="false"/>
+			</relations>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

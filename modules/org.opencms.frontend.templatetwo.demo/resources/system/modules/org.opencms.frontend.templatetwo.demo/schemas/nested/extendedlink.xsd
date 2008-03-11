@@ -22,6 +22,5 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.frontend.templatetwo.demo.workplace"/>
 		</xsd:appinfo>
-
 	</xsd:annotation>  
 </xsd:schema>

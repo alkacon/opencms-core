@@ -5,7 +5,7 @@
     <Title><![CDATA[Login]]></Title>
     <Content name="Content0">
       <links/>
-      <content><![CDATA[<p>Please enter your credentials:</p>]]></content>
+      <content><![CDATA[]]></content>
     </Content>
     <JspFile>
       <link type="WEAK">

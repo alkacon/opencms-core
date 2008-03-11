@@ -13,9 +13,9 @@
 	<xsd:complexType name="OpenCmsPreset">
 		<xsd:sequence>
 			<xsd:element name="column.left.visible" type="OpenCmsBoolean" />
-			<xsd:element name="column.left.width" type="OpenCmsString" />
+			<xsd:element name="column.left.width" type="OpenCmsString" minOccurs="0" maxOccurs="1"/>
 			<xsd:element name="column.right.visible" type="OpenCmsBoolean" />
-			<xsd:element name="column.right.width" type="OpenCmsString" />
+			<xsd:element name="column.right.width" type="OpenCmsString" minOccurs="0" maxOccurs="1"/>
 			<xsd:element name="nav.left.visible" type="OpenCmsBoolean" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>

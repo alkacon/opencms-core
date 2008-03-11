@@ -11,8 +11,8 @@
 
 	<xsd:complexType name="OpenCmsTTImage">
 		<xsd:sequence>
-			<xsd:element name="Image" type="OpenCmsVfsFile" minOccurs="0" />
-			<xsd:element name="Description" type="OpenCmsString" />
+			<xsd:element name="Image" type="OpenCmsVfsFile" />
+			<xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
@@ -23,6 +23,9 @@
 			<layouts>
 				<layout element="Image" widget="ImageGalleryWidget" />			
 			</layouts>
+			<relations>
+				<relation element="Image" invalidate="false" type="strong" />
+			</relations>
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>
