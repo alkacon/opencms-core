@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationDefintion.java,v $
- * Date   : $Date: 2006/03/27 14:52:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/03/14 09:49:24 $
+ * Version: $Revision: 1.2.6.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,9 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.6.1 $ 
  * 
  * @since 6.1.3 
  */
@@ -126,6 +129,39 @@ public class CmsDecorationDefintion {
     }
 
     /**
+     * Returns all different decoration configuration names (like "abbr" or "acronym") that 
+     * are in the config file pointed to by module parameter "configfile".<p>
+     * 
+     * @param cms needed to access the decoration definition XML content
+     * 
+     * @return  all different decoration configuration names (like "abbr" or "acronym") that 
+     *      are in the config file pointed to by module parameter "configfile"
+     *      
+     * @throws CmsException if sth goes wrong
+     */
+    public static List getDecorationDefinitionNames(final CmsObject cms) throws CmsException {
+
+        List result = new ArrayList();
+        CmsModule module = OpenCms.getModuleManager().getModule("com.alkacon.opencms.extendeddecorator");
+        String configFile = module.getParameter("configfile");
+        if (CmsStringUtil.isEmpty(configFile)) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_CONFIG_MISSING_0));
+        } else {
+            CmsDecoratorConfiguration config = new CmsDecoratorConfiguration(cms, configFile);
+            List decorationDefinitions = config.getDecorationDefinitions();
+            Iterator it = decorationDefinitions.iterator();
+            CmsDecorationDefintion decDef;
+            while (it.hasNext()) {
+                decDef = (CmsDecorationDefintion)it.next();
+                result.add(decDef.getName());
+            }
+
+        }
+
+        return result;
+    }
+
+    /**
      * Creates a CmsDecorationBundle of text decoration to be used by the decorator.<p>
      * 
      * @param cms the CmsObject
@@ -155,6 +191,42 @@ public class CmsDecorationDefintion {
         // locale (or no locale at all) must be used. If no locale is given, all decoration maps are 
         // put into the decoration bundle        
         return createDecorationBundle(decorationMaps, locale);
+    }
+
+    /**
+     * Creates a CmsDecorationBundle of text decoration to be used by the decorator based on a list of decoration maps.<p>
+     * 
+     * @param decorationMaps the decoration maps to build the bundle from
+     * @param locale the locale to build the decoration bundle for. If no locale is given, a bundle of all locales is build
+     * @return CmsDecorationBundle including all decoration lists that match the locale
+     */
+    public CmsDecorationBundle createDecorationBundle(List decorationMaps, Locale locale) {
+
+        CmsDecorationBundle decorationBundle = new CmsDecorationBundle(locale);
+        // sort the bundles
+        Collections.sort(decorationMaps);
+        // now process the decoration maps to see which of those must be added to the bundle
+        Iterator i = decorationMaps.iterator();
+        while (i.hasNext()) {
+            CmsDecorationMap decMap = (CmsDecorationMap)i.next();
+            // a decoration map must be added to the bundle if one of the following conditions match:
+            // 1) the bundle has no locale
+            // 2) the bundle has a locale and the locale of the map is equal or a sublocale
+            // 3) the bundle has a locale and the map has no locale
+            if ((locale == null)
+                || (locale != null && decMap.getLocale() != null && locale.getDisplayLanguage().equals(
+                    decMap.getLocale().getDisplayLanguage()))
+                || (locale != null && decMap.getLocale() == null)) {
+                decorationBundle.putAll(decMap.getDecorationMap());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_DECORATION_DEFINITION_CREATE_BUNDLE_2,
+                        decMap.getName(),
+                        locale));
+                }
+            }
+        }
+        return decorationBundle;
     }
 
     /**
@@ -321,42 +393,6 @@ public class CmsDecorationDefintion {
         buf.append(m_configurationFile);
         buf.append("]");
         return buf.toString();
-    }
-
-    /**
-     * Creates a CmsDecorationBundle of text decoration to be used by the decorator based on a list of decoration maps.<p>
-     * 
-     * @param decorationMaps the decoration maps to build the bundle from
-     * @param locale the locale to build the decoration bundle for. If no locale is given, a bundle of all locales is build
-     * @return CmsDecorationBundle including all decoration lists that match the locale
-     */
-    private CmsDecorationBundle createDecorationBundle(List decorationMaps, Locale locale) {
-
-        CmsDecorationBundle decorationBundle = new CmsDecorationBundle(locale);
-        // sort the bundles
-        Collections.sort(decorationMaps);
-        // now process the decoration maps to see which of those must be added to the bundle
-        Iterator i = decorationMaps.iterator();
-        while (i.hasNext()) {
-            CmsDecorationMap decMap = (CmsDecorationMap)i.next();
-            // a decoration map must be added to the bundle if one of the following conditions match:
-            // 1) the bundle has no locale
-            // 2) the bundle has a locale and the locale of the map is equal or a sublocale
-            // 3) the bundle has a locale and the map has no locale
-            if ((locale == null)
-                || (locale != null && decMap.getLocale() != null && locale.getDisplayLanguage().equals(
-                    decMap.getLocale().getDisplayLanguage()))
-                || (locale != null && decMap.getLocale() == null)) {
-                decorationBundle.putAll(decMap.getDecorationMap());
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().getBundle().key(
-                        Messages.LOG_DECORATION_DEFINITION_CREATE_BUNDLE_2,
-                        decMap.getName(),
-                        locale));
-                }
-            }
-        }
-        return decorationBundle;
     }
 
     /**

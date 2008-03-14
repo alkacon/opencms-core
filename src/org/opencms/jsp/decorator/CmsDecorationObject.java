@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationObject.java,v $
- * Date   : $Date: 2006/03/27 14:52:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/03/14 09:49:24 $
+ * Version: $Revision: 1.2.10.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.10.1 $ 
  * 
  * @since 6.1.3 
  */
@@ -57,6 +57,9 @@ public class CmsDecorationObject {
 
     /** Macro for the locale. */
     public static final String MACRO_LOCALE = "locale";
+
+    /** Macro for the language. */
+    public static final String MACRO_LANGUAGE = "language";
 
     /** The decoration. */
     private String m_decoration;
@@ -98,9 +101,10 @@ public class CmsDecorationObject {
      * Gets the decorated content for this decoration object.<p>
      * 
      * @param config the configuration used
+     * @param contentLocale the locale of the content to be decorated
      * @return decorated content
      */
-    public String getContentDecoration(CmsDecoratorConfiguration config) {
+    public String getContentDecoration(I_CmsDecoratorConfiguration config, String contentLocale) {
 
         StringBuffer content = new StringBuffer();
         // TODO: we have to handle with word phrases, too
@@ -123,7 +127,7 @@ public class CmsDecorationObject {
         }
 
         // replace the occurance of the ${decoration} makro in the decorated text
-        return replaceMacros(content.toString());
+        return replaceMacros(content.toString(), contentLocale);
     }
 
     /**
@@ -179,17 +183,22 @@ public class CmsDecorationObject {
      * Replaces the macros in the given message.<p>
      * 
      * @param msg the message in which the macros are replaced
+     * @param contentLocale the locale of the content that is currently decorated
      * 
      * @return the message with the macros replaced
      */
-    private String replaceMacros(String msg) {
+    private String replaceMacros(String msg, String contentLocale) {
 
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         resolver.addMacro(MACRO_DECORATION, m_decoration);
         resolver.addMacro(MACRO_DECORATIONKEY, m_decorationKey);
         if (m_locale != null) {
             resolver.addMacro(MACRO_LOCALE, m_locale.toString());
+            if (!contentLocale.equals(m_locale.toString())) {
+                resolver.addMacro(MACRO_LANGUAGE, "lang=\"" + m_locale.toString() + "\"");
+            }
         }
+
         return resolver.resolveMacros(msg);
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2007/11/27 10:30:13 $
- * Version: $Revision: 1.42.2.1 $
+ * Date   : $Date: 2008/03/14 09:49:24 $
+ * Version: $Revision: 1.42.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.42.2.1 $ 
+ * @version $Revision: 1.42.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -715,8 +715,17 @@ public abstract class CmsEditor extends CmsDialog {
             // load the common JSP close dialog
             getJsp().include(FILE_DIALOG_CLOSE);
         } else {
-            // forward to the workplace explorer view
-            sendForward(CmsFrameset.JSP_WORKPLACE_URI, new HashMap());
+            if (CmsStringUtil.isNotEmpty(getParamBacklink())) {
+                // set link to the specified back link target
+                setParamCloseLink(getJsp().link(getParamBacklink()));
+                // save initialized instance of this class in request attribute for included sub-elements
+                getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
+                // load the common JSP close dialog
+                getJsp().include(FILE_DIALOG_CLOSE);
+            } else {
+                // forward to the workplace explorer view
+                sendForward(CmsFrameset.JSP_WORKPLACE_URI, new HashMap());
+            }
         }
     }
 

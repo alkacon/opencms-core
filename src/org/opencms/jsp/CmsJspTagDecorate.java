@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagDecorate.java,v $
- * Date   : $Date: 2007/05/29 10:11:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/03/14 09:49:24 $
+ * Version: $Revision: 1.4.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,10 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsProperty;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.jsp.decorator.CmsDecoratorConfiguration;
 import org.opencms.jsp.decorator.CmsHtmlDecorator;
+import org.opencms.jsp.decorator.I_CmsDecoratorConfiguration;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
@@ -53,11 +54,17 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.2.1 $ 
  * 
  * @since 6.1.3 
  */
 public class CmsJspTagDecorate extends BodyTagSupport {
+
+    /** The name of the default decorator configuration. */
+    public static final String DEFAULT_DECORATOR_CONFIGURATION = "org.opencms.jsp.decorator.CmsDecoratorConfiguration";
+
+    /** The property to store the decorator classname .*/
+    public static final String PROPERTY_CATEGORY = "category";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagDecorate.class);
@@ -98,9 +105,23 @@ public class CmsJspTagDecorate extends BodyTagSupport {
                 loc = new Locale(locale);
             }
 
+            // read the decorator configurator class
+            CmsProperty decoratorClass = controller.getCmsObject().readPropertyObject(
+                configFile,
+                PROPERTY_CATEGORY,
+                false);
+            String decoratorClassName = decoratorClass.getValue();
+            if (CmsStringUtil.isEmpty(decoratorClassName)) {
+                decoratorClassName = DEFAULT_DECORATOR_CONFIGURATION;
+            }
+
             String encoding = controller.getCmsObject().getRequestContext().getEncoding();
-            CmsDecoratorConfiguration config = new CmsDecoratorConfiguration(controller.getCmsObject(), configFile, loc);
-            CmsHtmlDecorator decorator = new CmsHtmlDecorator(config);
+
+            // use the correcrt decorator configurator and initalize it
+            I_CmsDecoratorConfiguration config = (I_CmsDecoratorConfiguration)Class.forName(decoratorClassName).newInstance();
+            config.init(controller.getCmsObject(), configFile, loc);
+
+            CmsHtmlDecorator decorator = new CmsHtmlDecorator(controller.getCmsObject(), config);
             decorator.setNoAutoCloseTags(m_noAutoCloseTags);
             return decorator.doDecoration(content, encoding);
         } catch (Exception e) {
@@ -171,7 +192,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
     public String getNoAutoCloseTags() {
 
         StringBuffer result = new StringBuffer();
-        if ((m_noAutoCloseTags != null) && (m_noAutoCloseTags.size() > 0)) {
+        if (m_noAutoCloseTags != null & m_noAutoCloseTags.size() > 0) {
             Iterator it = m_noAutoCloseTags.iterator();
             while (it.hasNext()) {
                 result.append(it.next()).append(',');

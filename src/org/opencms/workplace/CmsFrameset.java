@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2006/07/21 12:01:54 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2008/03/14 09:49:24 $
+ * Version: $Revision: 1.87.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.87 $ 
+ * @version $Revision: 1.87.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,14 +101,14 @@ public class CmsFrameset extends CmsWorkplace {
     /** Publish button appearance: show never. */
     public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
+    /** The request parameter for the selection of the frame. */
+    public static final String PARAM_WP_FRAME = "wpFrame";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFrameset.class);
 
     /** Indicates if a reload of the main body frame is required. */
     private boolean m_reloadRequired;
-
-    /** The request parameter for the selection of the frame. */
-    public static final String PARAM_WP_FRAME = "wpFrame";
 
     /**
      * Public constructor.<p>
@@ -324,6 +326,19 @@ public class CmsFrameset extends CmsWorkplace {
             // reset the startup URI, so that it is not displayed again on reload of the frameset
             getSettings().setViewStartup(null);
         }
+        
+        // add eventual request parameters to startup uri
+        if (getJsp().getRequest().getParameterMap().size() > 0) {
+            Set params = getJsp().getRequest().getParameterMap().entrySet();
+            Iterator i = params.iterator();
+            while (i.hasNext()) {
+                Map.Entry entry = (Map.Entry)i.next();
+                result = CmsRequestUtil.appendParameter(result, (String)entry.getKey(), ((String[])entry.getValue())[0]);
+            }
+        }
+        // append the frame name to the startup uri
+ 
+        
         return CmsRequestUtil.appendParameter(result, CmsFrameset.PARAM_WP_FRAME, FRAMES[2]);
     }
 

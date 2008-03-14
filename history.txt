@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2007/11/05 11:13:31 $
- * Version: $Revision: 1.818.2.5 $
+ * Date   : $Date: 2008/03/14 09:53:06 $
+ * Version: $Revision: 1.818.2.6 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ OpenCms 6.2.4 - xxxx, 2007
 ! The suffix of new resources is generated through the first default file in the opencms-vfs file
 ! Fixed issue with filtering the accessible sites with the view permission
 * Fixed issue #1346: Problem in CmsResourceBundleLoader using a SecurityManager
+* Changed decoration to plug in an extended decoration module
 
 
 OpenCms 6.2.3 - November 30, 2006

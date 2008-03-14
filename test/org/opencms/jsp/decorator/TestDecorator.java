@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/decorator/TestDecorator.java,v $
- * Date   : $Date: 2006/09/19 14:29:08 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/03/14 09:49:24 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.3.2.1 $
  * 
  * @since 6.1.3
  */
@@ -193,7 +193,7 @@ public class TestDecorator extends OpenCmsTestCase {
         configuration.setDecorations(decorationMap);
         
         // create the decorator
-        CmsHtmlDecorator processor = new CmsHtmlDecorator(configuration);
+        CmsHtmlDecorator processor = new CmsHtmlDecorator(getCmsObject(), configuration);
         processor.resetDecorationDefinitions();
         
         // excecute the tests
@@ -329,7 +329,7 @@ public class TestDecorator extends OpenCmsTestCase {
        
         // create a decorator  configuration
         CmsDecoratorConfiguration configuration = new CmsDecoratorConfiguration(getCmsObject(), configFile);
-        CmsHtmlDecorator decorator = new CmsHtmlDecorator(configuration);
+        CmsHtmlDecorator decorator = new CmsHtmlDecorator(getCmsObject(), configuration);
         
         System.out.println("Testing english decoration in english bundle");
         String result = decorator.doDecoration(inputTextEn1, CmsEncoder.ENCODING_ISO_8859_1);
@@ -347,7 +347,7 @@ public class TestDecorator extends OpenCmsTestCase {
         
         // create a german decorator configuration
         configuration = new CmsDecoratorConfiguration(getCmsObject(), configFile, new Locale("de"));
-        decorator = new CmsHtmlDecorator(configuration);
+        decorator = new CmsHtmlDecorator(getCmsObject(), configuration);
 
         System.out.println("Testing german decoration in german bundle");
         result = decorator.doDecoration(inputTextDe1, CmsEncoder.ENCODING_ISO_8859_1);
@@ -365,7 +365,7 @@ public class TestDecorator extends OpenCmsTestCase {
         
         // create a language independend decorator configuration
         configuration = new CmsDecoratorConfiguration(getCmsObject(), configFile, null);
-        decorator = new CmsHtmlDecorator(configuration);
+        decorator = new CmsHtmlDecorator(getCmsObject(), configuration);
         
         System.out.println("Testing english decoration in neutral bundle");
         result = decorator.doDecoration(inputTextEn1, CmsEncoder.ENCODING_ISO_8859_1);
