@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/decorator/TestDecorator.java,v $
- * Date   : $Date: 2008/03/14 09:49:24 $
- * Version: $Revision: 1.3.2.1 $
+ * Date   : $Date: 2008/03/14 14:28:50 $
+ * Version: $Revision: 1.3.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.3.2.1 $
+ * @version $Revision: 1.3.2.2 $
  * 
  * @since 6.1.3
  */
@@ -144,7 +144,7 @@ public class TestDecorator extends OpenCmsTestCase {
         String resultText9a = "Another example: <abbr title=\"zum Beispiel\">z. B.</abbr> is very nice.";
         
         String inputText10 = "Let's see: ZB MED - a CMS decoration in the VFS with a blank in it.";
-        String resultText10 = "Let's see: <abbr title=\"a decoarion with a blank in it\">ZB MED</abbr> - a <abbr>CMS</abbr> decoration in the <abbr>VFS</abbr> with a blank in it.";
+        String resultText10 = "Let's see: <abbr>ZB MED</abbr> - a <abbr>CMS</abbr> decoration in the <abbr>VFS</abbr> with a blank in it.";
 
         String inputText10a = "Let's see: ZB&nbsp;MED - a CMS decoration in the VFS with a blank in it.";
         String resultText10a = "Let's see: <abbr title=\"a decoarion with a blank in it\">ZB&nbsp;MED</abbr> - a <abbr>CMS</abbr> decoration in the <abbr>VFS</abbr> with a blank in it.";
@@ -363,23 +363,6 @@ public class TestDecorator extends OpenCmsTestCase {
         assertEquals(resultTextDe2, result);
         System.out.println("");
         
-        // create a language independend decorator configuration
-        configuration = new CmsDecoratorConfiguration(getCmsObject(), configFile, null);
-        decorator = new CmsHtmlDecorator(getCmsObject(), configuration);
-        
-        System.out.println("Testing english decoration in neutral bundle");
-        result = decorator.doDecoration(inputTextEn1, CmsEncoder.ENCODING_ISO_8859_1);
-        System.out.println(inputTextEn1);
-        System.out.println(result);
-        assertEquals(resultTextEn1, result);
-        System.out.println("");
-        
-        System.out.println("Testing german decoration in neutral bundle");
-        result = decorator.doDecoration(inputTextDe1, CmsEncoder.ENCODING_ISO_8859_1);
-        System.out.println(inputTextDe1);
-        System.out.println(result);
-        assertEquals(resultTextDe1, result);
-        System.out.println("");
     }
     
     

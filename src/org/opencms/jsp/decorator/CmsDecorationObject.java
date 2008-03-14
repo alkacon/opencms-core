@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationObject.java,v $
- * Date   : $Date: 2008/03/14 09:49:24 $
- * Version: $Revision: 1.2.10.1 $
+ * Date   : $Date: 2008/03/14 14:28:50 $
+ * Version: $Revision: 1.2.10.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.2.10.1 $ 
+ * @version $Revision: 1.2.10.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -101,10 +101,11 @@ public class CmsDecorationObject {
      * Gets the decorated content for this decoration object.<p>
      * 
      * @param config the configuration used
+     * @param text the text to be decorated     * 
      * @param contentLocale the locale of the content to be decorated
      * @return decorated content
      */
-    public String getContentDecoration(I_CmsDecoratorConfiguration config, String contentLocale) {
+    public String getContentDecoration(I_CmsDecoratorConfiguration config, String text, String contentLocale) {
 
         StringBuffer content = new StringBuffer();
         // TODO: we have to handle with word phrases, too
@@ -116,7 +117,7 @@ public class CmsDecorationObject {
             content.append(m_decorationDefinition.getPreText());
         }
         // now add the original word
-        content.append(m_decorationKey);
+        content.append(text);
 
         // add the posttext
         if (!config.hasUsed(m_decorationKey) && m_decorationDefinition.isMarkFirst()) {

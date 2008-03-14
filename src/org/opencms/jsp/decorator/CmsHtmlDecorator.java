@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2008/03/14 09:49:24 $
- * Version: $Revision: 1.4.2.1 $
+ * Date   : $Date: 2008/03/14 14:28:50 $
+ * Version: $Revision: 1.4.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.4.2.1 $ 
+ * @version $Revision: 1.4.2.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -349,10 +349,10 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                                     if (LOG.isDebugEnabled()) {
                                         LOG.debug(Messages.get().getBundle().key(
                                             Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
-                                            decObj.getContentDecoration(m_config, m_cms.getRequestContext().getLocale().toString())));
+                                            decObj.getContentDecoration(m_config, decKey.toString(), m_cms.getRequestContext().getLocale().toString())));
                                     }
                                     // decorate the current word with the following delimiter
-                                    m_result.append(decObj.getContentDecoration(m_config, m_cms.getRequestContext().getLocale().toString()));
+                                    m_result.append(decObj.getContentDecoration(m_config, decKey.toString(), m_cms.getRequestContext().getLocale().toString()));
                                     // important, we must skip the next element of the list
                                     i += j;
                                     break;
@@ -373,10 +373,10 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     if (LOG.isDebugEnabled()) { 
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
-                            decObj.getContentDecoration(m_config, m_cms.getRequestContext().getLocale().toString())));
+                            decObj.getContentDecoration(m_config, word, m_cms.getRequestContext().getLocale().toString())));
                     }
                     // decorate the current word
-                    m_result.append(decObj.getContentDecoration(m_config, m_cms.getRequestContext().getLocale().toString()));
+                    m_result.append(decObj.getContentDecoration(m_config, word, m_cms.getRequestContext().getLocale().toString()));
                 }
             }
         } else {
