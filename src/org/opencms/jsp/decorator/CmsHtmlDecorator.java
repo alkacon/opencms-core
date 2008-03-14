@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/03/14 14:29:56 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.jsp.decorator;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsHtmlParser;
 import org.opencms.util.CmsStringUtil;
@@ -53,7 +54,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.1.3 
  */
@@ -81,7 +82,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
     private static final String[] DELIMITERS_SECOND_LEVEL = {"-", "@", "/", ".", ","};
 
     /** Steps for forward lookup in workd list. */
-    private static final int FORWARD_LOOKUP = 5;
+    private static final int FORWARD_LOOKUP = 7;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlDecorator.class);
@@ -90,7 +91,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
     private static final String[] NON_TRANSLATORS = {"&nbsp;", "&quot;"};
 
     /** The decoration configuration.<p> */
-    CmsDecoratorConfiguration m_config;
+    I_CmsDecoratorConfiguration m_config;
 
     /** Decoration bundle to be used by the decorator. */
     CmsDecorationBundle m_decorations;
@@ -98,26 +99,17 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
     /** decorate flag. */
     private boolean m_decorate;
 
-    /**
-     * Constructor, creates a new CmsHtmlDecorator with a given configuration.<p>
-     * 
-     * @param config the configuration to be used
-     */
-    public CmsHtmlDecorator(CmsDecoratorConfiguration config) {
-
-        m_config = config;
-        m_decorations = config.getDecorations();
-        m_result = new StringBuffer(512);
-        m_echo = true;
-        m_decorate = true;
-    }
+    /** the CmsObject. */
+    private CmsObject m_cms;
 
     /**
      * Constructor, creates a new, empty CmsHtmlDecorator.<p>
      * 
      * @param cms the CmsObject
+     * @throws CmsException if something goes wrong
      */
-    public CmsHtmlDecorator(CmsObject cms) {
+    public CmsHtmlDecorator(CmsObject cms)
+    throws CmsException {
 
         m_config = new CmsDecoratorConfiguration(cms);
         m_decorations = m_config.getDecorations();
@@ -125,6 +117,23 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         m_echo = true;
         m_decorate = true;
 
+    }
+
+    /**
+     * Constructor, creates a new CmsHtmlDecorator with a given configuration.<p>
+     * 
+     * @param cms the CmsObject
+     * @param config the configuration to be used
+     * 
+     */
+    public CmsHtmlDecorator(CmsObject cms, I_CmsDecoratorConfiguration config) {
+
+        m_config = config;
+        m_decorations = config.getDecorations();
+        m_result = new StringBuffer(512);
+        m_echo = true;
+        m_decorate = true;
+        m_cms = cms;
     }
 
     /**
@@ -340,10 +349,16 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                                     if (LOG.isDebugEnabled()) {
                                         LOG.debug(Messages.get().getBundle().key(
                                             Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
-                                            decObj.getContentDecoration(m_config)));
+                                            decObj.getContentDecoration(
+                                                m_config,
+                                                decKey.toString(), 
+                                                m_cms.getRequestContext().getLocale().toString())));
                                     }
                                     // decorate the current word with the following delimiter
-                                    m_result.append(decObj.getContentDecoration(m_config));
+                                    m_result.append(decObj.getContentDecoration(
+                                        m_config,
+                                        decKey.toString(),
+                                        m_cms.getRequestContext().getLocale().toString()));
                                     // important, we must skip the next element of the list
                                     i += j;
                                     break;
@@ -364,10 +379,13 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
-                            decObj.getContentDecoration(m_config)));
+                            decObj.getContentDecoration(m_config, word, m_cms.getRequestContext().getLocale().toString())));
                     }
                     // decorate the current word
-                    m_result.append(decObj.getContentDecoration(m_config));
+                    m_result.append(decObj.getContentDecoration(
+                        m_config,
+                        word,
+                        m_cms.getRequestContext().getLocale().toString()));
                 }
             }
         } else {

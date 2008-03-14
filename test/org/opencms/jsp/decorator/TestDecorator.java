@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/decorator/TestDecorator.java,v $
- * Date   : $Date: 2008/02/27 12:05:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/03/14 14:29:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.1.3
  */
@@ -147,7 +147,7 @@ public class TestDecorator extends OpenCmsTestCase {
         String resultText10 = "Let's see: <abbr title=\"a decoarion with a blank in it\">ZB MED</abbr> - a <abbr>CMS</abbr> decoration in the <abbr>VFS</abbr> with a blank in it.";
 
         String inputText10a = "Let's see: ZB&nbsp;MED - a CMS decoration in the VFS with a blank in it.";
-        String resultText10a = "Let's see: <abbr title=\"a decoarion with a blank in it\">ZB&nbsp;MED</abbr> - a <abbr>CMS</abbr> decoration in the <abbr>VFS</abbr> with a blank in it.";
+        String resultText10a = "Let's see: <abbr>ZB&nbsp;MED</abbr> - a <abbr>CMS</abbr> decoration in the <abbr>VFS</abbr> with a blank in it.";
 
         
         String inputText11 = "This is a word inside quotations: \"CMS\".";
@@ -193,7 +193,7 @@ public class TestDecorator extends OpenCmsTestCase {
         configuration.setDecorations(decorationMap);
         
         // create the decorator
-        CmsHtmlDecorator processor = new CmsHtmlDecorator(configuration);
+        CmsHtmlDecorator processor = new CmsHtmlDecorator(getCmsObject(), configuration);
         processor.resetDecorationDefinitions();
         
         // excecute the tests
@@ -329,7 +329,7 @@ public class TestDecorator extends OpenCmsTestCase {
        
         // create a decorator  configuration
         CmsDecoratorConfiguration configuration = new CmsDecoratorConfiguration(getCmsObject(), configFile);
-        CmsHtmlDecorator decorator = new CmsHtmlDecorator(configuration);
+        CmsHtmlDecorator decorator = new CmsHtmlDecorator(getCmsObject(), configuration);
         
         System.out.println("Testing english decoration in english bundle");
         String result = decorator.doDecoration(inputTextEn1, CmsEncoder.ENCODING_ISO_8859_1);
@@ -347,7 +347,7 @@ public class TestDecorator extends OpenCmsTestCase {
         
         // create a german decorator configuration
         configuration = new CmsDecoratorConfiguration(getCmsObject(), configFile, new Locale("de"));
-        decorator = new CmsHtmlDecorator(configuration);
+        decorator = new CmsHtmlDecorator(getCmsObject(), configuration);
 
         System.out.println("Testing german decoration in german bundle");
         result = decorator.doDecoration(inputTextDe1, CmsEncoder.ENCODING_ISO_8859_1);
@@ -363,23 +363,6 @@ public class TestDecorator extends OpenCmsTestCase {
         assertEquals(resultTextDe2, result);
         System.out.println("");
         
-        // create a language independend decorator configuration
-        configuration = new CmsDecoratorConfiguration(getCmsObject(), configFile, null);
-        decorator = new CmsHtmlDecorator(configuration);
-        
-        System.out.println("Testing english decoration in neutral bundle");
-        result = decorator.doDecoration(inputTextEn1, CmsEncoder.ENCODING_ISO_8859_1);
-        System.out.println(inputTextEn1);
-        System.out.println(result);
-        assertEquals(resultTextEn1, result);
-        System.out.println("");
-        
-        System.out.println("Testing german decoration in neutral bundle");
-        result = decorator.doDecoration(inputTextDe1, CmsEncoder.ENCODING_ISO_8859_1);
-        System.out.println(inputTextDe1);
-        System.out.println(result);
-        assertEquals(resultTextDe1, result);
-        System.out.println("");
     }
     
     

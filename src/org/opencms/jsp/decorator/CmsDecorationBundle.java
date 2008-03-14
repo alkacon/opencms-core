@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationBundle.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/03/14 14:29:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Set;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.3 
  */
@@ -87,7 +87,7 @@ public class CmsDecorationBundle {
      */
     public Object get(Object key) {
 
-        return m_bundle.get(key);
+        return m_bundle.get(adjustKey(key.toString()));
     }
 
     /**
@@ -143,5 +143,28 @@ public class CmsDecorationBundle {
     public void setLocale(Locale locale) {
 
         m_locale = locale;
+    }
+
+    /**
+     * Adjusts the key for the decoration.<p>
+     * The following adjustments are made:
+     * <ul>
+     * <li>&nbsp; is replaced with space</li>
+     * <li>multiple spaces are replaced with a single space</li>
+     * </ul> 
+     * @param key the key to adjust
+     * @return the adjusted key
+     */
+    private String adjustKey(String key) {
+
+        // replace the &nbsp; with spaces
+        key = key.replaceAll("&nbsp;", " ");
+        // now eleiminate all double spaces
+        int keyLen;
+        do {
+            keyLen = key.length();
+            key = key.replaceAll("  ", " ");
+        } while (key.length() != keyLen);
+        return key;
     }
 }

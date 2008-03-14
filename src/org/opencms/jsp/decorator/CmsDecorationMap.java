@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationMap.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/03/14 14:29:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.3 
  */
@@ -78,6 +78,21 @@ public class CmsDecorationMap implements Comparable {
 
     /** The name of the decoration map. */
     private String m_name;
+
+    /**
+     * Constructor, creates a new, empty CmsDecorationMap.<p>
+     * 
+     * @param decDef the CmsDecorationDefintion to be used in this decoration map
+     * @param name The name of the decoration map
+     * @param locale the locale for this decoration map
+     */
+    public CmsDecorationMap(CmsDecorationDefintion decDef, String name, Locale locale) {
+
+        m_decoratorDefinition = decDef;
+        m_name = name;
+        m_locale = locale;
+        m_decorationMap = new HashMap();
+    }
 
     /**
      * Constructor, creates a new CmsDecorationMap.<p>
@@ -159,6 +174,16 @@ public class CmsDecorationMap implements Comparable {
     public int hashCode() {
 
         return m_name.hashCode();
+    }
+
+    /**
+     * Sets the decorationMap.<p>
+     *
+     * @param decorationMap the decorationMap to set
+     */
+    public void setDecorationMap(Map decorationMap) {
+
+        m_decorationMap = decorationMap;
     }
 
     /**
