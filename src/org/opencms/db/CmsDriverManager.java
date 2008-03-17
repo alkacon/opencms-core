@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/02/29 10:39:59 $
- * Version: $Revision: 1.611 $
+ * Date   : $Date: 2008/03/17 16:10:41 $
+ * Version: $Revision: 1.612 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1512,6 +1512,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         Messages.ERR_CREATE_RESOURCE_PARENT_LOCK_1,
                         dbc.removeSiteRoot(resourcePath)));
                 }
+            }
+            if (resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId()) {
+                // security check when trying to create a new jsp file
+                m_securityManager.checkRoleForResource(dbc, CmsRole.DEVELOPER, parentFolder);
             }
 
             // check import configuration of "lost and found" folder

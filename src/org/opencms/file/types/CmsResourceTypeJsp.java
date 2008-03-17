@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2008/03/17 14:51:49 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2008/03/17 16:10:41 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,20 +35,12 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsResource.CmsResourceCopyMode;
-import org.opencms.file.CmsResource.CmsResourceDeleteMode;
-import org.opencms.file.CmsResource.CmsResourceUndoMode;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
-import org.opencms.security.CmsRole;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -64,7 +56,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,139 +105,11 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
-     * @see org.opencms.file.types.A_CmsResourceType#chflags(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int)
-     */
-    public void chflags(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int flags)
-    throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // change flags
-        super.chflags(cms, securityManager, resource, flags);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#chtype(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int)
-     */
-    public void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int type)
-    throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // change type
-        super.chtype(cms, securityManager, resource, type);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#copyResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String, org.opencms.file.CmsResource.CmsResourceCopyMode)
-     */
-    public void copyResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource source,
-        String destination,
-        CmsResourceCopyMode siblingMode) throws CmsException {
-
-        // need the parent folder for security check
-        String parentFolderName = CmsResource.getParentFolder(cms.getRequestContext().addSiteRoot(destination));
-        CmsResource parentFolder = securityManager.readFolder(
-            cms.getRequestContext(),
-            parentFolderName,
-            CmsResourceFilter.ALL);
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, parentFolder);
-        // copy resource
-        super.copyResource(cms, securityManager, source, destination, siblingMode);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
-     */
-    public CmsResource createResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        String resourcename,
-        byte[] content,
-        List properties) throws CmsException {
-
-        // need the parent folder for security check
-        String parentFolderName = CmsResource.getParentFolder(cms.getRequestContext().addSiteRoot(resourcename));
-        CmsResource parentFolder = securityManager.readFolder(
-            cms.getRequestContext(),
-            parentFolderName,
-            CmsResourceFilter.ALL);
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, parentFolder);
-        // create resource
-        return super.createResource(cms, securityManager, resourcename, content, properties);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#createSibling(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String, java.util.List)
-     */
-    public CmsResource createSibling(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource source,
-        String destination,
-        List properties) throws CmsException {
-
-        // need the parent folder for security check
-        String parentFolderName = CmsResource.getParentFolder(cms.getRequestContext().addSiteRoot(destination));
-        CmsResource parentFolder = securityManager.readFolder(
-            cms.getRequestContext(),
-            parentFolderName,
-            CmsResourceFilter.ALL);
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, parentFolder);
-        // create sibling
-        return super.createSibling(cms, securityManager, source, destination, properties);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#deleteResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceDeleteMode)
-     */
-    public void deleteResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        CmsResourceDeleteMode siblingMode) throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // delete resource
-        super.deleteResource(cms, securityManager, resource, siblingMode);
-    }
-
-    /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
     public int getLoaderId() {
 
         return CmsJspLoader.RESOURCE_LOADER_ID;
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, org.opencms.file.CmsResource, byte[], java.util.List)
-     */
-    public CmsResource importResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        String resourcename,
-        CmsResource resource,
-        byte[] content,
-        List properties) throws CmsException {
-
-        // need the parent folder for security check
-        String parentFolderName = CmsResource.getParentFolder(cms.getRequestContext().addSiteRoot(resourcename));
-        CmsResource parentFolder = securityManager.readFolder(
-            cms.getRequestContext(),
-            parentFolderName,
-            CmsResourceFilter.ALL);
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, parentFolder);
-        // import resource
-        return super.importResource(cms, securityManager, resourcename, resource, content, properties);
     }
 
     /**
@@ -280,24 +144,6 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     }
 
     /**
-     * @see org.opencms.file.types.A_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
-     */
-    public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
-    throws CmsException, CmsIllegalArgumentException {
-
-        // need the parent folder for security check
-        String parentFolderName = CmsResource.getParentFolder(cms.getRequestContext().addSiteRoot(destination));
-        CmsResource parentFolder = securityManager.readFolder(
-            cms.getRequestContext(),
-            parentFolderName,
-            CmsResourceFilter.ALL);
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, parentFolder);
-        // move resource
-        super.moveResource(cms, securityManager, resource, destination);
-    }
-
-    /**
      * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
     public List parseLinks(CmsObject cms, CmsFile file) {
@@ -307,110 +153,6 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         String content = CmsEncoder.createString(file.getContents(), encoding);
         macroResolver.resolveMacros(content); // ignore return value
         return macroResolver.getLinks();
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#replaceResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int, byte[], java.util.List)
-     */
-    public void replaceResource(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        int type,
-        byte[] content,
-        List properties) throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // replace resource
-        super.replaceResource(cms, securityManager, resource, type, content, properties);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#restoreResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int)
-     */
-    public void restoreResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int version)
-    throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // restore resource
-        super.restoreResource(cms, securityManager, resource, version);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, long, boolean)
-     */
-    public void setDateExpired(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        long dateExpired,
-        boolean recursive) throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // set date expired
-        super.setDateExpired(cms, securityManager, resource, dateExpired, recursive);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#setDateLastModified(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, long, boolean)
-     */
-    public void setDateLastModified(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        long dateLastModified,
-        boolean recursive) throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // set date modified
-        super.setDateLastModified(cms, securityManager, resource, dateLastModified, recursive);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#setDateReleased(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, long, boolean)
-     */
-    public void setDateReleased(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        long dateReleased,
-        boolean recursive) throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // set date released
-        super.setDateReleased(cms, securityManager, resource, dateReleased, recursive);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#undelete(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, boolean)
-     */
-    public void undelete(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
-    throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // undelete resource
-        super.undelete(cms, securityManager, resource, recursive);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#undoChanges(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceUndoMode)
-     */
-    public void undoChanges(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        CmsResourceUndoMode mode) throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // undo resource
-        super.undoChanges(cms, securityManager, resource, mode);
     }
 
     /**
@@ -431,35 +173,5 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         }
         // write the content with the 'right' links
         return super.writeFile(cms, securityManager, resource);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#writePropertyObject(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsProperty)
-     */
-    public void writePropertyObject(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        CmsProperty property) throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // write properties
-        super.writePropertyObject(cms, securityManager, resource, property);
-    }
-
-    /**
-     * @see org.opencms.file.types.A_CmsResourceType#writePropertyObjects(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.util.List)
-     */
-    public void writePropertyObjects(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        List properties) throws CmsException {
-
-        // security check
-        securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
-        // write properties
-        super.writePropertyObjects(cms, securityManager, resource, properties);
     }
 }

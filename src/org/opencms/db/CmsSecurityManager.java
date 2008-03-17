@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2008/02/27 14:44:57 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2008/03/17 16:10:41 $
+ * Version: $Revision: 1.116 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
@@ -652,6 +653,10 @@ public final class CmsSecurityManager {
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+            if (type == CmsResourceTypeJsp.getStaticTypeId()) {
+                // security check preventing the creation of a jsp file without permissions
+                checkRoleForResource(dbc, CmsRole.DEVELOPER, resource);
+            }
             m_driverManager.chtype(dbc, resource, type);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
@@ -4465,6 +4470,10 @@ public final class CmsSecurityManager {
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.ALL);
+            if (type == CmsResourceTypeJsp.getStaticTypeId()) {
+                // security check preventing the creation of a jsp file without permissions
+                checkRoleForResource(dbc, CmsRole.DEVELOPER, resource);
+            }
             m_driverManager.replaceResource(dbc, resource, type, content, properties);
         } catch (Exception e) {
             dbc.report(
