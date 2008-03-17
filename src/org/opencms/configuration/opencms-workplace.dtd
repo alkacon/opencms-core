@@ -256,11 +256,19 @@
 # new Administration -> workplace-tools -> logfile.
 -->	
 <!ELEMENT rfsfileviewsettings (
+    rootPath?,
     filePath?,
     enabled?,
     fileEncoding?,
     isLogfile?, 
     windowSize?)>
+
+<!--
+# This element should be non-existant in new files during initialisation. 
+# It is an absolute path to a folder used to restrict the allowed files.
+# If the element is not available, all files are restricted to the logs folder.
+-->
+<!ELEMENT rootPath (#PCDATA)> 
 
 <!--
 # This element should be non-existant in new files during initialisation. 

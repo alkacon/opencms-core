@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2008/03/17 08:55:32 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.util;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,6 +88,9 @@ public class CmsRfsFileViewer implements Cloneable {
     /** The path to the underlying file. */
     protected String m_filePath;
 
+    /** The path to the root for all accessible files. */
+    protected String m_rootPath;
+    
     /** 
      * If value is <code>true</code>, all setter methods will throw a 
      * <code>{@link CmsRuntimeException}</code><p>. 
@@ -117,6 +121,7 @@ public class CmsRfsFileViewer implements Cloneable {
      */
     public CmsRfsFileViewer() {
 
+        m_rootPath = new File(OpenCms.getSystemInfo().getLogFileRfsPath()).getParent();
         m_isLogfile = true;
         m_fileName2lineIndex = new HashMap();
         // system default charset: see http://java.sun.com/j2se/corejava/intl/reference/faqs/index.html#default-encoding
@@ -160,6 +165,7 @@ public class CmsRfsFileViewer implements Cloneable {
             }
         }
         CmsRfsFileViewer clone = new CmsRfsFileViewer();
+        clone.m_rootPath = m_rootPath;
         try {
             // strings are immutable: no outside modification possible.
             clone.setFilePath(m_filePath);
@@ -231,6 +237,16 @@ public class CmsRfsFileViewer implements Cloneable {
         return m_windowPos;
     }
 
+    /**
+     * Returns the path denoting the root folder for all accessible files.<p>
+     * 
+     * @return the path denoting the root folder for all accessible files
+     */
+    public String getRootPath() {
+        
+        return m_rootPath;
+    }
+    
     /**
      * Get the amount of lines (or entries depending on wether a standard log file is shown) 
      * to display per page. <p>
@@ -497,6 +513,17 @@ public class CmsRfsFileViewer implements Cloneable {
                         Messages.ERR_FILE_ARG_NOT_READ_1,
                         new Object[] {String.valueOf(path)}));
                 }
+            } else if (m_rootPath != null && !file.getCanonicalPath().startsWith(m_rootPath)) {
+                // if wrong configuration perform self healing: 
+                if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_2_INITIALIZING) {
+                    // this deletes the illegal entry and will default to the log file path
+                    m_filePath = null;
+                    m_isLogfile = true;
+                } else {
+                    throw new CmsRfsException(Messages.get().container(
+                        Messages.ERR_FILE_ARG_NOT_READ_1,
+                        new Object[] {String.valueOf(path)}));
+                }                
             } else {
                 m_filePath = file.getCanonicalPath();
             }
@@ -566,6 +593,62 @@ public class CmsRfsFileViewer implements Cloneable {
 
         checkFrozen();
         m_isLogfile = isLogfile;
+    }
+
+    /**
+     * Set the path in the real file system that points to the folder/tree 
+     * containing the logfiles.<p>
+     * 
+     * This method will only suceed if the folder specified by the <code>path</code> 
+     * argument is valid within the file system.<p> 
+     * 
+     * @param path the path in the real file system that points to the folder containing the logfiles
+     * 
+     * @throws CmsRuntimeException if the configuration of this instance has been frozen 
+     * @throws CmsRfsException if the given path is invalid
+     */
+    public void setRootPath(String path) throws CmsRfsException, CmsRuntimeException {
+
+        checkFrozen();
+
+        if (path != null) {
+            // leading whitespace from CmsComboWidget causes exception 
+            path = path.trim();
+        }
+        if (CmsStringUtil.isEmpty(path)) {
+            throw new CmsRfsException(Messages.get().container(
+                Messages.ERR_FILE_ARG_EMPTY_1,
+                new Object[] {String.valueOf(path)}));
+        }
+        try {
+            // just for validation :
+            File file = new File(path);
+            if (file.exists()) {
+                m_rootPath = file.getCanonicalPath();
+            } else {
+                // if wrong configuration perform self healing: 
+                if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_2_INITIALIZING) {
+                    // this deletes the illegal entry
+                    m_rootPath = new File(OpenCms.getSystemInfo().getLogFileRfsPath()).getParent();
+                } else {
+    
+                    throw new CmsRfsException(Messages.get().container(
+                        Messages.ERR_FILE_ARG_NOT_FOUND_1,
+                        new Object[] {String.valueOf(path)}));
+                }
+            }
+        } catch (IOException ioex) {
+            // if wrong configuration perform self healing: 
+            if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_2_INITIALIZING) {
+                // this deletes the illegal entry and will default to the log file path
+                m_rootPath = new File(OpenCms.getSystemInfo().getLogFileRfsPath()).getParent();
+            } else {
+
+                throw new CmsRfsException(Messages.get().container(
+                    Messages.ERR_FILE_ARG_ACCESS_1,
+                    new Object[] {String.valueOf(path)}), ioex);
+            }
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2008/02/27 12:05:47 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2008/03/17 08:55:33 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 6.0.0
  */
@@ -377,6 +377,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the root node. */
     public static final String N_ROOT = "root";
 
+    /** The subname of the rfsfilesettings/rootPath node. */
+    public static final String N_ROOTPATH = "rootPath";
+    
     /** The node name of the roots node. */
     public static final String N_ROOTS = "roots";
 
@@ -841,6 +844,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add fileViewSettings rules
         String xPathPrefix = "*/" + N_RFSFILEVIEWESETTINGS;
         digester.addObjectCreate(xPathPrefix, CmsRfsFileViewer.class);
+        digester.addBeanPropertySetter(xPathPrefix + "/" + N_ROOTPATH); 
         digester.addBeanPropertySetter(xPathPrefix + "/" + N_FILEPATH);
         digester.addBeanPropertySetter(xPathPrefix + "/" + N_ENABLED);
         digester.addBeanPropertySetter(xPathPrefix + "/" + N_FILEENCODING);
@@ -981,6 +985,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add <rfsfileviewsettings> node
         CmsRfsFileViewer viewSettings = m_workplaceManager.getFileViewSettings();
         Element fileViewElement = workplaceElement.addElement(N_RFSFILEVIEWESETTINGS);
+        String rootPath = viewSettings.getRootPath();
+        if (rootPath != null) {
+            fileViewElement.addElement(N_ROOTPATH).setText(rootPath);
+        }
         String filePath = viewSettings.getFilePath();
         if (filePath != null) {
             fileViewElement.addElement(N_FILEPATH).setText(filePath);

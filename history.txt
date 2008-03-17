@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/03/14 14:29:56 $
- * Version: $Revision: 1.990 $
+ * Date   : $Date: 2008/03/17 08:55:32 $
+ * Version: $Revision: 1.991 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 7.0.5 - xxx, 2008
+* Fixed security issue 28152 reported by Security Focus
 - Many improvements on Template Two and the demo
 * Fixed issue with NPE in MacroResolver
 * Changed decoration to plug in an extended decoration module
