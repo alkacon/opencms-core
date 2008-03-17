@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2008/03/17 14:51:49 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,10 +39,12 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.ByteArrayInputStream;
@@ -61,7 +63,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 6.0.0
  */
@@ -200,7 +202,16 @@ public class CmsImportFolder {
                 int type = OpenCms.getResourceManager().getDefaultTypeForName(currentFile.getName()).getTypeId();
                 byte[] content = CmsFileUtil.readFile(currentFile);
                 // create the file
-                m_cms.createResource(importPath + currentFile.getName(), type, content, null);
+                try {
+                    m_cms.createResource(importPath + currentFile.getName(), type, content, null);
+                } catch (CmsSecurityException e) {
+                    // in case of not enough permissions, try to create a plain text file
+                    m_cms.createResource(
+                        importPath + currentFile.getName(),
+                        CmsResourceTypePlain.getStaticTypeId(),
+                        content,
+                        null);
+                }
                 content = null;
             }
         }
@@ -238,7 +249,7 @@ public class CmsImportFolder {
             String actImportPath = importPath;
             String title = CmsResource.getName(entry.getName());
             String filename = m_cms.getRequestContext().getFileTranslator().translateResource(entry.getName());
-            // separate path in direcotries an file name ...
+            // separate path in directories an file name ...
             StringTokenizer st = new StringTokenizer(filename, "/\\");
             int count = st.countTokens();
             String[] path = new String[count];
@@ -294,6 +305,13 @@ public class CmsImportFolder {
                     byte[] contents = file.getContents();
                     try {
                         m_cms.replaceResource(filename, res.getTypeId(), buffer, Collections.EMPTY_LIST);
+                    } catch (CmsSecurityException e) {
+                        // in case of not enough permissions, try to create a plain text file
+                        m_cms.replaceResource(
+                            filename,
+                            CmsResourceTypePlain.getStaticTypeId(),
+                            buffer,
+                            Collections.EMPTY_LIST);
                     } catch (CmsDbSqlException sqlExc) {
                         // SQL error, probably the file is too large for the database settings, restore content
                         file.setContents(contents);
@@ -320,6 +338,9 @@ public class CmsImportFolder {
                     properties.add(titleProp);
                     try {
                         m_cms.createResource(newResName, type, buffer, properties);
+                    } catch (CmsSecurityException e) {
+                        // in case of not enough permissions, try to create a plain text file
+                        m_cms.createResource(newResName, CmsResourceTypePlain.getStaticTypeId(), buffer, properties);
                     } catch (CmsDbSqlException sqlExc) {
                         // SQL error, probably the file is too large for the database settings, delete file
                         m_cms.lockResource(newResName);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2008/03/17 14:51:49 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.I_CmsLinkParseable;
+import org.opencms.security.CmsRole;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 6.0.0 
  */
@@ -244,6 +245,11 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int type)
     throws CmsException {
 
+        if (type == CmsResourceTypeJsp.getStaticTypeId()) {
+            // security check
+            securityManager.checkRoleForResource(cms.getRequestContext(), CmsRole.DEVELOPER, resource);
+        }
+        // change type
         securityManager.chtype(cms.getRequestContext(), resource, type);
         // type may have changed from non link parseable to link parseable
         createRelations(cms, securityManager, resource.getRootPath());
