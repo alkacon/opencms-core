@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/A_CmsMessageDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/03/17 15:20:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,9 @@
 
 package org.opencms.workplace.tools.workplace.broadcast;
 
+import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
@@ -53,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,10 +158,31 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
         if (!isForAll()) {
             return CmsStringUtil.splitAsList(getParamSessionids(), CmsHtmlList.ITEM_SEPARATOR);
         }
+        List manageableUsers = new ArrayList();
+        try {
+            manageableUsers = OpenCms.getRoleManager().getManageableUsers(getCms(), "", true);
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
         List ids = new ArrayList();
         Iterator itSessions = OpenCms.getSessionManager().getSessionInfos().iterator();
         while (itSessions.hasNext()) {
-            ids.add(((CmsSessionInfo)itSessions.next()).getSessionId());
+            CmsSessionInfo sessionInfo = (CmsSessionInfo)itSessions.next();
+            CmsUser user;
+            try {
+                user = getCms().readUser(sessionInfo.getUserId());
+            } catch (CmsException e) {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+                continue;
+            }
+            if (!manageableUsers.contains(user)) {
+                continue;
+            }
+            ids.add(sessionInfo.getSessionId());
         }
         return ids;
     }
