@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReplace.java,v $
- * Date   : $Date: 2008/02/27 12:05:35 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/03/18 10:46:30 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,11 +28,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLockType;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -46,46 +48,51 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestReplace extends OpenCmsTestCase {
-  
+
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
-     */    
+     */
     public TestReplace(String arg0) {
+
         super(arg0);
     }
-    
+
     /**
      * Test suite for this test class.<p>
      * 
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestReplace.class.getName());
-                
+
         suite.addTest(new TestReplace("testReplaceResourceContent"));
-        
+        suite.addTest(new TestReplace("testReplaceResourceJsp"));
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms("simpletest", "/sites/default/");
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
-    }     
-    
+    }
+
     /**
      * Tests the "replace resource" operation.<p>
      * 
@@ -93,18 +100,18 @@ public class TestReplace extends OpenCmsTestCase {
      */
     public void testReplaceResourceContent() throws Throwable {
 
-        CmsObject cms = getCmsObject();     
+        CmsObject cms = getCmsObject();
         echo("Testing replacement of file content");
-        
+
         String path = "/types/text.txt";
         String contentStr = "Hello this is the new content";
-        
+
         long timestamp = System.currentTimeMillis();
-        
+
         storeResources(cms, path);
         cms.lockResource(path);
-        cms.replaceResource(path, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);        
-        
+        cms.replaceResource(path, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);
+
         // project must be current project
         assertProject(cms, path, cms.getRequestContext().currentProject());
         // state must be "new"
@@ -118,6 +125,52 @@ public class TestReplace extends OpenCmsTestCase {
         // assert new content
         assertContent(cms, path, contentStr.getBytes());
         // now check the rest of the attributes
-        assertFilter(cms, path, OpenCmsTestResourceFilter.FILTER_REPLACERESOURCE);       
-    }    
+        assertFilter(cms, path, OpenCmsTestResourceFilter.FILTER_REPLACERESOURCE);
+    }
+
+    /**
+     * Tests the "replace resource" operation for jsp without permissions.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testReplaceResourceJsp() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing replacement of file for jsp without permissions");
+        CmsProject offlineProject = cms.getRequestContext().currentProject();
+
+        String path = "/types/text.txt";
+        String contentStr = "Hello this is the new content";
+
+        // this should work since we are admin
+        cms.replaceResource(path, CmsResourceTypeJsp.getStaticTypeId(), contentStr.getBytes(), null);
+        cms.unlockResource(path);
+
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(offlineProject);
+
+        try {
+            cms.lockResource(path);
+            cms.replaceResource(path, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);
+            fail("replaceResource from jsp without permissions should fail");
+        } catch (CmsSecurityException e) {
+            // ok
+        }
+
+        cms = getCmsObject();
+        cms.lockResource(path);
+        cms.replaceResource(path, CmsResourceTypePlain.getStaticTypeId(), contentStr.getBytes(), null);
+        cms.unlockResource(path);
+
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(offlineProject);
+
+        try {
+            cms.lockResource(path);
+            cms.replaceResource(path, CmsResourceTypeJsp.getStaticTypeId(), contentStr.getBytes(), null);
+            fail("replaceResource to jsp without permissions should fail");
+        } catch (CmsSecurityException e) {
+            // ok
+        }
+    }
 }

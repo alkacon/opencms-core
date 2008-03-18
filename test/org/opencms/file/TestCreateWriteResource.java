@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2008/02/27 12:05:35 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/03/18 10:46:30 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,14 @@
 package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -57,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -90,6 +92,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         suite.addTest(new TestCreateWriteResource("testImportFolder"));
         suite.addTest(new TestCreateWriteResource("testImportFolderAgain"));
         suite.addTest(new TestCreateWriteResource("testCreateResource"));
+        suite.addTest(new TestCreateWriteResource("testCreateResourceJsp"));
         suite.addTest(new TestCreateWriteResource("testCreateResourceAgain"));
         suite.addTest(new TestCreateWriteResource("testCreateFolder"));
         suite.addTest(new TestCreateWriteResource("testCreateFolderAgain"));
@@ -373,6 +376,35 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         OpenCms.getPublishManager().waitWhileRunning();
 
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
+    }
+
+    /**
+     * Test the create resource method for jsp files without permissions.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testCreateResourceJsp() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing create resource for jsp files without permissions");
+        CmsProject offlineProject = cms.getRequestContext().currentProject();
+
+        String path = "/testCreateResourceJsp.jsp";
+        String contentStr = "this is a really bad jsp code";
+
+        // this should work since we are admin
+        cms.createResource(path, CmsResourceTypeJsp.getStaticTypeId(), contentStr.getBytes(), null);
+
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(offlineProject);
+
+        String path2 = "/testCreateResourceJsp2.jsp";
+        try {
+            cms.createResource(path2, CmsResourceTypeJsp.getStaticTypeId(), contentStr.getBytes(), null);
+            fail("createResource for jsp without permissions should fail");
+        } catch (CmsSecurityException e) {
+            // ok
+        }
     }
 
     /**
