@@ -44,16 +44,7 @@
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>514</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
