@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/03/17 15:20:20 $
- * Version: $Revision: 1.993 $
+ * Date   : $Date: 2008/03/18 15:45:22 $
+ * Version: $Revision: 1.994 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -26,6 +26,7 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed security issues related to message broadcasting 
 - Many improvements on Template Two and the demo
 - Changed decoration to plug in an extended decoration module
+! Added editor with syntax highlighting functionality (EditArea) for text based files
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 
