@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2008/03/18 15:42:11 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 6.0.0
  */
@@ -603,7 +603,10 @@ public class CmsPreferences extends CmsTabDialog {
 
                     // create the table row for the current resource type
                     result.append("<tr>\n\t<td style=\"white-space: nowrap;\">");
-                    String localizedName = CmsWorkplaceMessages.getResourceName(this, currentResourceType);
+                    String localizedName = keyDefault("label.editor.preferred." + currentResourceType, "");
+                    if (CmsStringUtil.isEmpty(localizedName)) {
+                        localizedName = CmsWorkplaceMessages.getResourceName(this, currentResourceType);
+                    }
                     result.append(localizedName);
                     result.append("</td>\n\t<td>");
                     result.append(buildSelect(
