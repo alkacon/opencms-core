@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2008/02/27 12:05:21 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2008/03/18 10:47:52 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -49,6 +50,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -81,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,7 +155,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /** Request parameter name for the upload folder name. */
     public static final String PARAM_UPLOADFOLDER = "uploadfolder";
-    
+
     /** The configurable colors for the applet window (content frame JSP). */
     private Map m_appletWindowColors = DEFAULT_APPLET_WINDOW_COLORS;
     private String m_paramClientFolder;
@@ -476,6 +478,13 @@ public class CmsNewResourceUpload extends CmsNewResource {
                         try {
                             // create the resource
                             getCms().createResource(getParamResource(), resTypeId, content, properties);
+                        } catch (CmsSecurityException e) {
+                            // in case of not enough permissions, try to create a plain text file
+                            getCms().createResource(
+                                getParamResource(),
+                                CmsResourceTypePlain.getStaticTypeId(),
+                                content,
+                                properties);
                         } catch (CmsDbSqlException sqlExc) {
                             // SQL error, probably the file is too large for the database settings, delete file
                             getCms().lockResource(getParamResource());
@@ -488,6 +497,13 @@ public class CmsNewResourceUpload extends CmsNewResource {
                         byte[] contents = file.getContents();
                         try {
                             getCms().replaceResource(getParamResource(), resTypeId, content, null);
+                        } catch (CmsSecurityException e) {
+                            // in case of not enough permissions, try to create a plain text file
+                            getCms().replaceResource(
+                                getParamResource(),
+                                CmsResourceTypePlain.getStaticTypeId(),
+                                content,
+                                null);
                         } catch (CmsDbSqlException sqlExc) {
                             // SQL error, probably the file is too large for the database settings, restore content
                             file.setContents(contents);
@@ -516,6 +532,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
         return buildTypeList(this, false);
     }
+
     /**
      * Creates the HTML code of the file upload applet with all required parameters.<p>
      * 
@@ -559,7 +576,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         // these are configurable via set
         StringBuffer colors = new StringBuffer();
         Iterator it = m_appletWindowColors.entrySet().iterator();
-        Map.Entry color; 
+        Map.Entry color;
         while (it.hasNext()) {
             color = (Map.Entry)it.next();
             colors.append(color.getKey()).append('=').append(color.getValue());
@@ -985,7 +1002,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
         m_paramUploadFolder = uploadFolder;
     }
 
-    
     /**
      * Returns if the upload file should be unzipped.<p>
      * 
