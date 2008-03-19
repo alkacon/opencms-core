@@ -7,6 +7,8 @@
       <links/>
       <content><![CDATA[<p>Über die Login-Seite oder die Login-Box können Sie sich anmelden, um auf den geschützten Bereich zugreifen zu können.</p>
 <p>&nbsp;</p>
+<p>Da diese Loginbox in das &quot;Offline Project&quot; (eine Arbeitskopie aller Inhalte) umschaltet, können Sie desweiteren alle Inhalte über die "Direct Edit" Buttons bearbeiten.</p>
+<p>&nbsp;</p>
 <p>Sind Sie angemeldet, so können Sie sich hier auch wieder abmelden.</p>]]></content>
     </Content>
   </TextBox>

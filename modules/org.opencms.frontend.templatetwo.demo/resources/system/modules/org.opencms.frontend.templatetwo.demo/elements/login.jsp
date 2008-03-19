@@ -12,7 +12,7 @@
 		login.init (pageContext, request, response);
 	%> 
 	<c:if test="${param.action eq 'login' && !empty param.name && !empty param.password}">
-		<% login.login ((String)request.getParameter("name"), (String)request.getParameter("password"), "Online", (String)request.getParameter("requestedResource")); %>
+		<% login.login ((String)request.getParameter("name"), (String)request.getParameter("password"), "Offline", (String)request.getParameter("requestedResource")); %>
 	</c:if>
 	<c:if test="${param.action eq 'logoff'}">
 	<% 

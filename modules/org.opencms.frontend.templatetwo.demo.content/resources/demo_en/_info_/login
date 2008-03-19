@@ -7,6 +7,8 @@
       <links/>
       <content><![CDATA[<p>Via the login page or the login box, you can enter your credentials in order to access the protected section (extranet).</p>
 <p>&nbsp;</p>
+<p>Furthermore, since this login switches to the &quot;Offline Project&quot; (a working copy of all contents of the site), the user can edit the contents using the &quot;direct edit&quot; buttons.</p>
+<p>&nbsp;</p>
 <p>If you are already logged in, you can logout here.</p>]]></content>
     </Content>
   </TextBox>
