@@ -23,15 +23,13 @@
 
 	form.loginform div.boxform label {
 		text-align: left;
-		width: 5.5em;
 	}
 
 	form.loginform div.boxform input {
-		width: 10em;
+		width: 95%;
 	}
 
 	form.loginform div.boxform input.button {
 		width: auto;
-		margin-left: 6em;
 	}	
 }
