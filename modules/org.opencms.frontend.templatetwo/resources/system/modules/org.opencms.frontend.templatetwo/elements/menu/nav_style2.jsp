@@ -1,4 +1,4 @@
-<%@page session="false" import="org.opencms.frontend.templatetwo.*"%>
+<%@page session="false" import="org.opencms.frontend.templatetwo.*, org.opencms.file.*"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%><%
@@ -16,11 +16,14 @@
 	// /system/modules/org.opencms.frontend.templatetwo/java_src/CmsTemplateMenu.java
 
 	CmsTemplateMenu cms = new CmsTemplateMenu(pageContext, request, response);
-	cms.setElements(cms.getNavigation().getNavigationForFolder("/"));
+	// in order to omit folder levels, set the NavStartLevel property to the level number where 0 is the root "/" level
+	int navStartLevel = Integer.parseInt(cms.property("NavStartLevel", "search", "0"));
+	cms.setElements(cms.getNavigation().getNavigationForFolder(CmsResource.getPathPart(cms.getRequestContext().getFolderUri(), navStartLevel)));
 	pageContext.setAttribute("cms", cms);
 %>
 
 <div id="nav_main" class="gradient">
+<c:if test="${!empty cms.elements}">
 	<ul>
 		<c:set var="oldLevel" value="" />
 		<c:forEach items="${cms.elements}" var="elem">
@@ -43,4 +46,5 @@
 		
 		<c:forEach begin="${cms.topLevel+1}" end="${oldLevel}"></li></ul></c:forEach>
 	</ul>
+</c:if>
 </div>
