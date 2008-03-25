@@ -890,7 +890,7 @@
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.templatetwo/resources/images</destination>
-			<type>imagegallery</type>
+			<type>folder</type>
 			<uuidstructure>3c3ac0b6-d59c-11dc-8cca-3bdd2ea0b1ac</uuidstructure>
 			<datelastmodified>Thu, 07 Feb 2008 16:46:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>

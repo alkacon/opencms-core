@@ -524,7 +524,7 @@ It will also remove the "default" template.</p>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.welcome/resources/images</destination>
-			<type>imagegallery</type>
+			<type>folder</type>
 			<uuidstructure>e69f01b9-e5d4-11dc-838d-31960a76c470</uuidstructure>
 			<datelastmodified>Thu, 28 Feb 2008 16:26:24 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>

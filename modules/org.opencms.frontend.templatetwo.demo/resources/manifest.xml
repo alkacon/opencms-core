@@ -605,7 +605,7 @@
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.templatetwo.demo/resources/images</destination>
-			<type>imagegallery</type>
+			<type>folder</type>
 			<uuidstructure>b681d875-e394-11dc-a72c-9f7a6a6ce285</uuidstructure>
 			<datelastmodified>Mon, 25 Feb 2008 11:27:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>

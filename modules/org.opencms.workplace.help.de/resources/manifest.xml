@@ -2559,7 +2559,7 @@
 		</file>
 		<file>
 			<destination>system/workplace/locales/de/help/images</destination>
-			<type>imagegallery</type>
+			<type>folder</type>
 			<uuidstructure>f770e5ca-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
