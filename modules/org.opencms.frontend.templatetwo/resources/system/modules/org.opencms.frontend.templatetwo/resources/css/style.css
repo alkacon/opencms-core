@@ -146,18 +146,21 @@
   #col1 {
     <c:if test="${cms.presetValue['column.left.visible'] != 'true'}">
 	  	display: none;
-	</c:if>
-	width: <c:out value="${cms.presetValue['column.left.width']}" default="20em" />;
+    </c:if>
+    width: <c:out value="${cms.presetValue['column.left.width']}" default="20em" />;
     float: left;
+    z-index: 3;
   }
 
   #col1_content {
     position: relative;
     padding: 10px 10px 10px 0px;
+    z-index: 4;
   }
   
   #col2 {
     width: auto;
+    z-index: 1;
     <c:if test="${cms.presetValue['column.left.visible'] == 'true'}">
     	margin-left: <c:out value="${cms.presetValue['column.left.width']}" default="20em" />;
     </c:if>
@@ -174,19 +177,22 @@
   #col2_content {
     position: relative;
     padding: 10px;
+    z-index: 2;
   }
   
   #col3 {
     <c:if test="${cms.presetValue['column.right.visible'] != 'true'}">
 	  	display: none;
-	</c:if>
-	width: <c:out value="${cms.presetValue['column.right.width']}" default="20em" />;
+    </c:if>
+    width: <c:out value="${cms.presetValue['column.right.width']}" default="20em" />;
     float: right;
+    z-index: 5;    
   }
 
   #col3_content {
     position: relative;
     padding: 10px 0px 10px 10px;
+    z-index: 6;
   }
   
   #footer {

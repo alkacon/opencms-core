@@ -9,9 +9,8 @@
 <c:set var="locale" value="${cms.requestContext.locale}" />
 <fmt:setLocale value="${locale}" />
 
-<div class="box ${param.schema}">
-
-	<cms:contentload collector="singleFile" param="${param.file}" editable="true">
+<cms:contentload collector="singleFile" param="${param.file}" editable="true">
+	<div class="box ${param.schema}">
 
 		<cms:contentaccess var="linkbox" />
 
@@ -39,6 +38,5 @@
 			</c:forEach>
 
 		</div>
-		
-	</cms:contentload>				
-</div>
+	</div>
+</cms:contentload>
