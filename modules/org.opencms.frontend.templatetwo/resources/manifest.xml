@@ -428,7 +428,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[params=(schema,file)]]></value>
+					<value><![CDATA[params=(schema,file);locale]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -456,7 +456,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[params=(schema,file)]]></value>
+					<value><![CDATA[params=(schema,file);locale]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
@@ -484,7 +484,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[params=(schema,file)]]></value>
+					<value><![CDATA[params=(schema,file);locale]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>
