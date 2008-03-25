@@ -18,6 +18,7 @@ var ocms_de_data = new Array();
 
 /** For the hover effect. **/
 var ocms_de_mbo=3;
+var ocms_hover_border_width=1;
 
 /** Template to create the div and the form. **/   
 var t_ocms_de_template = function() {
@@ -55,11 +56,11 @@ var t_ocms_de_buttonDisabled = function() {
 /** Template to create the hover effect for the direct edit buttons. **/
 var t_ocms_de_hoverEffect = function() {
     return [
-    	'div', { className:  'directedit-highlight directedit-highlight-top',  		style: 'width: '+	this.width+'px; left: '	+(this.offset.left-ocms_de_mbo)+'px; top: '+			(this.offset.top-ocms_de_mbo)+'px;'}, [],
-    	'div', { className:  'directedit-highlight directedit-highlight-right',  	style: 'height: '+	this.height+'px; left: '+(this.offset.left+this.width-ocms_de_mbo)+'px; top: '+	this.offset.top+'px;'}, [],
-    	'div', { className:  'directedit-highlight directedit-highlight-bottom',  	style: 'width: '+	this.width+'px; left: '	+(this.offset.left-ocms_de_mbo)+'px; top: '+			(this.offset.top+this.height)+'px;'}, [],
-    	'div', { className:  'directedit-highlight directedit-highlight-left',  	style: 'height: '+	this.height+'px; left: '+(this.offset.left-ocms_de_mbo)+'px; top: '+			this.offset.top+'px;'}, [],
-    	'div', { className:  'directedit-highlight directedit-highlight-all',  		style: 'height: '+	this.height+'px; left: '+(this.offset.left-ocms_de_mbo)+'px; top: '+			this.offset.top+'px; width: '+	this.width+'px;'}
+    	'div', { className:  'directedit-highlight directedit-highlight-top',  		style: 'width: '+	this.width+'px; left: '	+(this.offset.left-ocms_de_mbo-ocms_hover_border_width)+'px; top: '+			(this.offset.top-ocms_de_mbo-ocms_hover_border_width)+'px;'}, [],
+    	'div', { className:  'directedit-highlight directedit-highlight-right',  	style: 'height: '+	this.height+'px; left: '+(this.offset.left+this.width-ocms_de_mbo-ocms_hover_border_width)+'px; top: '+		(this.offset.top-ocms_de_mbo)+'px;'}, [],
+    	'div', { className:  'directedit-highlight directedit-highlight-bottom',  	style: 'width: '+	this.width+'px; left: '	+(this.offset.left-ocms_de_mbo-ocms_hover_border_width)+'px; top: '+			(this.offset.top+this.height-ocms_de_mbo)+'px;'}, [],
+    	'div', { className:  'directedit-highlight directedit-highlight-left',  	style: 'height: '+	this.height+'px; left: '+(this.offset.left-ocms_de_mbo-ocms_hover_border_width)+'px; top: '+			(this.offset.top-ocms_de_mbo)+'px;'}, [],
+    	'div', { className:  'directedit-highlight directedit-highlight-all',  		style: 'height: '+	this.height+'px; left: '+(this.offset.left-ocms_de_mbo-ocms_hover_border_width)+'px; top: '+			(this.offset.top-ocms_de_mbo)+'px; width: '+	this.width+'px;'}
     ];
 };
 
@@ -67,7 +68,7 @@ $(document).ready(function(){
 	
 	/** Creates the structure with the form and divs. **/
 	$("div[id^='ocms_']").each(function() {
-		$(this).parent().tplAppend(ocms_de_data[this.id], t_ocms_de_template);
+		$(this).tplAppend(ocms_de_data[this.id], t_ocms_de_template);
 		var btWidth=0;
 		var t_buttons=t_ocms_de_buttonDisabled;
 		if(!ocms_de_data[this.id].disabled){
@@ -134,11 +135,15 @@ $(document).ready(function(){
 /** Function to activate the hover effects. **/
 var func_ocms_de_activate = function() {
 	var id = this.id;
-    var type = id.substr(id.indexOf('ocms_'));
+	var type = id.substr(id.indexOf('ocms_'));
+	
+	// remove margin-bottom of the last element
+	var last = $('#' + type + ' > :not(:last)');
+	var marginBottom = parseFloat(jQuery.curCSS(last[0], "margin-bottom", true)) || 0;
 	if(!$('#'+ type).hasClass('ocms_de_selected')) {
 		$('#'+ type).addClass('ocms_de_selected');
-        var pointTo={ offset: $('#'+ type).calcOcmsDeOffset(), width:  ($('#'+ type).width()+2*ocms_de_mbo), height: ($('#'+ type).height()+2*ocms_de_mbo)};
-       	$('#'+ type).parent().tplAppend(pointTo,t_ocms_de_hoverEffect);
+		var pointTo={ offset: $('#'+ type).calcOcmsDeOffset(), width:  ($('#'+ type).width() + 2*ocms_de_mbo), height: ($('#'+ type).height() - marginBottom + 2*ocms_de_mbo)};
+		$('#'+ type).parent().tplAppend(pointTo,t_ocms_de_hoverEffect);
 		$(".directedit-highlight-all").opacity(.1);
 	}
 };
