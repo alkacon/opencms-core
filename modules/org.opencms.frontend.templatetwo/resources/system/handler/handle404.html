@@ -1,12 +1,30 @@
 <%@ page session="false" isErrorPage="true" contentType="text/html" import="
-	org.opencms.jsp.util.*
+	org.opencms.jsp.util.*,org.opencms.file.*,org.opencms.main.*,org.opencms.frontend.templatetwo.*
 "%><%
 
 // initialize instance of status bean
 CmsJspStatusBean cms = new CmsJspStatusBean(pageContext, request, response, exception);
 
 // get the template to use
-String template = cms.property("template", "search", "/system/handler/template/handlertemplate");
+String template = null;
+String path = cms.getRequestResourceName();
+do {
+	try {
+		path = CmsResource.getParentFolder(path);
+		if (path == null) {
+			break;
+		}
+		template = cms.getCmsObject().readPropertyObject(cms.getSiteRoot() + path, "template", true).getValue();
+	} catch (CmsException ex) {
+		out.println(ex.getMessage());
+	}
+} while (template == null);
+
+if (template != null && template.equals(CmsTemplateLayout.VFS_PATH_TEMPLATE)) {
+	cms.setTemplateUri(path);
+} else {
+	template = cms.property("template", "search", "/system/handler/template/handlertemplate");
+}
 
 // include the template head part
 cms.includeTemplatePart(template, "head");
