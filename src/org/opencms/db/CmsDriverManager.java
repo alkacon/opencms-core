@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/03/27 13:22:43 $
- * Version: $Revision: 1.613 $
+ * Date   : $Date: 2008/03/27 16:46:08 $
+ * Version: $Revision: 1.614 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3084,6 +3084,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     }
 
                     if (publishList.isPublishSubResources()) {
+                        int flags = CmsDriverManager.READMODE_INCLUDE_TREE | CmsDriverManager.READMODE_EXCLUDE_STATE;
+                        if (!directPublishResource.getState().isDeleted()) {
+                            // fix for org.opencms.file.TestPublishIssues#testPublishFolderWithDeletedFileFromOtherProject
+                            flags = flags | CmsDriverManager.READMODE_INCLUDE_PROJECT;
+                        }
+
                         // add all sub resources of the folder
                         List folderList = m_vfsDriver.readResourceTree(
                             dbc,
@@ -3097,10 +3103,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             CmsDriverManager.READ_IGNORE_TIME,
                             CmsDriverManager.READ_IGNORE_TIME,
                             CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READMODE_INCLUDE_TREE
-                                | CmsDriverManager.READMODE_INCLUDE_PROJECT
-                                | CmsDriverManager.READMODE_EXCLUDE_STATE
-                                | CmsDriverManager.READMODE_ONLY_FOLDERS);
+                            flags | CmsDriverManager.READMODE_ONLY_FOLDERS);
 
                         publishList.addAll(filterResources(dbc, publishList, folderList), true);
 
@@ -3116,10 +3119,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             CmsDriverManager.READ_IGNORE_TIME,
                             CmsDriverManager.READ_IGNORE_TIME,
                             CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READMODE_INCLUDE_TREE
-                                | CmsDriverManager.READMODE_INCLUDE_PROJECT
-                                | CmsDriverManager.READMODE_EXCLUDE_STATE
-                                | CmsDriverManager.READMODE_ONLY_FILES);
+                            flags | CmsDriverManager.READMODE_ONLY_FILES);
 
                         publishList.addAll(filterResources(dbc, publishList, fileList), true);
                     }

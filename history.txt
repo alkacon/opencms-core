@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/03/27 13:24:39 $
- * Version: $Revision: 1.995 $
+ * Date   : $Date: 2008/03/27 16:46:08 $
+ * Version: $Revision: 1.996 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -25,6 +25,7 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed security issues manipulating JSP files
 * Fixed security issues related to message broadcasting
 * Fixed some minor issues importing/exporting csv user data 
+* Fixed issue while deleting a folder containing a file previously deleted in another project
 - Many improvements on Template Two and the demo
 - Changed decoration to plug in an extended decoration module
 - Improved internal link validation performance
