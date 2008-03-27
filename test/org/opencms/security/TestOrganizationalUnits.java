@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/03/27 13:20:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -114,6 +114,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestOrganizationalUnits.class.getName());
 
+        suite.addTest(new TestOrganizationalUnits("testOuNotFound"));
         suite.addTest(new TestOrganizationalUnits("testRootOu"));
         suite.addTest(new TestOrganizationalUnits("testRootRoles"));
         suite.addTest(new TestOrganizationalUnits("testFirstLevelOu"));
@@ -149,7 +150,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
     }
 
     /**
-     * Tests ou creating with illegal name.<p>
+     * Tests ou creation with illegal name.<p>
      * 
      * @throws Throwable if something goes wrong
      */
@@ -821,6 +822,23 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
         assertEquals(4, cms.getGroupsOfUser("test/test1", true).size());
         assertTrue(cms.getGroupsOfUser("test/test1", true).contains(cms.readGroup("test/group1")));
         assertTrue(cms.getGroupsOfUser("test/test1", true).contains(cms.readGroup("group1")));
+    }
+
+    /**
+     * Tests exception when ou not found.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testOuNotFound() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Trying to read an unexistant ou");
+
+        try {
+            OpenCms.getOrgUnitManager().readOrganizationalUnit(cms, "/testOuNotFound/");
+        } catch (CmsDbEntryNotFoundException e) {
+            // ok, this is the expected exception
+        }
     }
 
     /**

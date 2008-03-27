@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLinkValidation.java,v $
- * Date   : $Date: 2008/02/27 12:05:35 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/03/27 13:20:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,13 @@
 package org.opencms.file;
 
 import org.opencms.file.history.I_CmsHistoryResource;
+import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsInternalLinksValidator;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
@@ -65,7 +67,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestLinkValidation extends OpenCmsTestCase {
 
@@ -147,6 +149,7 @@ public class TestLinkValidation extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestLinkValidation.class.getName());
 
+        suite.addTest(new TestLinkValidation("testInternalLinkValidation"));
         suite.addTest(new TestLinkValidation("testLinkValidationXmlPages"));
         suite.addTest(new TestLinkValidation("testLinkValidationXmlContents"));
         suite.addTest(new TestLinkValidation("testLinkValidationXmlContentsHtml"));
@@ -168,6 +171,47 @@ public class TestLinkValidation extends OpenCmsTestCase {
         };
 
         return wrapper;
+    }
+
+    /**
+     * Test internal link validation.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testInternalLinkValidation() throws Throwable {
+
+        echo("Testing internal link validation");
+        CmsObject cms = getCmsObject();
+
+        CmsInternalLinksValidator validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
+        assertTrue(validator.getResourcesWithBrokenLinks().isEmpty());
+
+        String resName = "testInternalLinkValidation.html";
+        String linkName = "brokenlink.gif";
+
+        CmsResource res = cms.createResource(resName, CmsResourceTypeXmlPage.getStaticTypeId());
+        setContent(cms, resName, "<img src='" + linkName + "' >");
+
+        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
+        assertEquals(1, validator.getResourcesWithBrokenLinks().size());
+        assertEquals(res, validator.getResourcesWithBrokenLinks().get(0));
+
+        cms.createResource(linkName, CmsResourceTypeBinary.getStaticTypeId());
+
+        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
+        assertTrue(validator.getResourcesWithBrokenLinks().isEmpty());
+
+        String linkMoved = "brokenlink2.gif";
+        cms.moveResource(linkName, linkMoved);
+
+        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
+        assertTrue(validator.getResourcesWithBrokenLinks().isEmpty());
+
+        cms.deleteResource(linkMoved, CmsResource.DELETE_REMOVE_SIBLINGS);
+
+        validator = new CmsInternalLinksValidator(cms, Collections.singletonList("/"));
+        assertEquals(1, validator.getResourcesWithBrokenLinks().size());
+        assertEquals(res, validator.getResourcesWithBrokenLinks().get(0));
     }
 
     /**
