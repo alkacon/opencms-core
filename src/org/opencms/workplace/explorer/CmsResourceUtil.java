@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2008/03/27 13:22:45 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/03/27 16:50:41 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -524,7 +524,7 @@ public final class CmsResourceUtil {
 
         try {
             CmsUUID pId = getLockedInProjectId();
-            if (pId == null) {
+            if ((pId == null) || pId.isNullUUID()) {
                 // the resource is unlocked and unchanged
                 return "";
             }
