@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/03/18 15:45:22 $
- * Version: $Revision: 1.994 $
+ * Date   : $Date: 2008/03/27 13:24:39 $
+ * Version: $Revision: 1.995 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -23,10 +23,13 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed security issue 28152 reported by Security Focus
 * Fixed issue with NPE in MacroResolver
 * Fixed security issues manipulating JSP files
-* Fixed security issues related to message broadcasting 
+* Fixed security issues related to message broadcasting
+* Fixed some minor issues importing/exporting csv user data 
 - Many improvements on Template Two and the demo
 - Changed decoration to plug in an extended decoration module
+- Improved internal link validation performance
 ! Added editor with syntax highlighting functionality (EditArea) for text based files
+! New preferences option for displaying all projects or only the ones in the current ou in the project selector
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 
