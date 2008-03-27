@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsInternalLinksValidator.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/03/27 13:20:36 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.3
  */
@@ -167,7 +168,8 @@ public class CmsInternalLinksValidator {
 
         Map brokenRelations = new HashMap();
 
-        CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterIncludeChildren();
+        CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterIncludeChildren().filterStructureId(
+            CmsUUID.getNullUUID());
 
         Iterator itFolders = resourceNames.iterator();
         while (itFolders.hasNext()) {
@@ -182,19 +184,14 @@ public class CmsInternalLinksValidator {
             Iterator itRelations = relations.iterator();
             while (itRelations.hasNext()) {
                 CmsRelation relation = (CmsRelation)itRelations.next();
-                try {
-                    // try to read the target
-                    relation.getTarget(m_cms, CmsResourceFilter.IGNORE_EXPIRATION);
-                } catch (Exception e) {
-                    // target is broken
-                    String resourceName = relation.getSourcePath();
-                    List broken = (List)brokenRelations.get(resourceName);
-                    if (broken == null) {
-                        broken = new ArrayList();
-                        brokenRelations.put(resourceName, broken);
-                    }
-                    broken.add(relation);
+                // target is broken
+                String resourceName = relation.getSourcePath();
+                List broken = (List)brokenRelations.get(resourceName);
+                if (broken == null) {
+                    broken = new ArrayList();
+                    brokenRelations.put(resourceName, broken);
                 }
+                broken.add(relation);
             }
         }
         return brokenRelations;
