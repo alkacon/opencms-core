@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserDataImexportDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/03/27 12:51:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,12 +34,16 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.7.1
  */
@@ -184,16 +188,39 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
         List retVal = new ArrayList();
 
         try {
-
-            List roles = OpenCms.getRoleManager().getRoles(getCms(), getParamOufqn(), false);
+            boolean inRootOu = CmsStringUtil.isEmptyOrWhitespaceOnly(getParamOufqn())
+                || CmsOrganizationalUnit.SEPARATOR.equals(getParamOufqn());
+            List roles = OpenCms.getRoleManager().getRolesOfUser(
+                getCms(),
+                getCms().getRequestContext().currentUser().getName(),
+                getParamOufqn(),
+                false,
+                false,
+                false);
             Iterator itRoles = roles.iterator();
             while (itRoles.hasNext()) {
                 CmsRole role = (CmsRole)itRoles.next();
+                if (role.isOrganizationalUnitIndependent() && !inRootOu) {
+                    continue;
+                }
                 retVal.add(new CmsSelectWidgetOption(role.getGroupName(), false, role.getName(getLocale())));
             }
         } catch (CmsException e) {
             // noop
         }
+        Collections.sort(retVal, new Comparator() {
+
+            public int compare(Object arg0, Object arg1) {
+
+                if (!(arg0 instanceof CmsSelectWidgetOption) || !(arg1 instanceof CmsSelectWidgetOption)) {
+                    return 0;
+                }
+                CmsSelectWidgetOption opt0 = (CmsSelectWidgetOption)arg0;
+                CmsSelectWidgetOption opt1 = (CmsSelectWidgetOption)arg1;
+                return opt0.getOption().compareTo(opt1.getOption());
+            }
+
+        });
         return retVal;
     }
 }

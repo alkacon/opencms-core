@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataImportList.java,v $
- * Date   : $Date: 2008/02/27 12:05:26 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/03/27 12:51:57 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6
  */
@@ -112,6 +112,9 @@ public class CmsUserDataImportList extends A_CmsUsersList {
 
     /** Stores the value of the request parameter for the import file. */
     private String m_paramImportfile;
+
+    /** Stores the value of the request parameter for the organizational unit fqn. */
+    private String m_paramOufqn;
 
     /** Stores the value of the request parameter for the default password. */
     private String m_paramPassword;
@@ -244,7 +247,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                     CmsUser user = (CmsUser)itUsers.next();
                     try {
                         if (user.getName().equals(userName)
-                            && (m_reasons == null || !m_reasons.containsKey(userName))
+                            && ((m_reasons == null) || !m_reasons.containsKey(userName))
                             && !isAlreadyAvailable(user.getName())) {
 
                             String password = user.getPassword();
@@ -330,6 +333,16 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     }
 
     /**
+     * Returns the organizational unit fqn parameter value.<p>
+     * 
+     * @return the organizational unit fqn parameter value
+     */
+    public String getParamOufqn() {
+
+        return m_paramOufqn;
+    }
+
+    /**
      * Returns the paramPassword.<p>
      *
      * @return the paramPassword
@@ -377,6 +390,19 @@ public class CmsUserDataImportList extends A_CmsUsersList {
     public void setParamImportfile(String paramImportfile) {
 
         m_paramImportfile = paramImportfile;
+    }
+
+    /**
+     * Sets the organizational unit fqn parameter value.<p>
+     * 
+     * @param ouFqn the organizational unit fqn parameter value
+     */
+    public void setParamOufqn(String ouFqn) {
+
+        if (ouFqn == null) {
+            ouFqn = "";
+        }
+        m_paramOufqn = ouFqn;
     }
 
     /**
@@ -460,7 +486,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
             String userName = item.get(LIST_COLUMN_DISPLAY).toString();
             StringBuffer html = new StringBuffer(512);
             try {
-                if (detailId.equals(LIST_DETAIL_REASON) && m_reasons != null && m_reasons.containsKey(userName)) {
+                if (detailId.equals(LIST_DETAIL_REASON) && (m_reasons != null) && m_reasons.containsKey(userName)) {
                     html.append(m_reasons.get(userName));
                 } else {
                     html.append(key(Messages.GUI_IMPORTLISTCSV_VALID_USER_0));
@@ -503,7 +529,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                     user.getName(),
                     Messages.get().container(Messages.GUI_IMPORTLISTCSV_ALREADY_EXISTS_0).key(getLocale()));
             }
-            if (m_reasons != null && m_reasons.containsKey(user.getName())) {
+            if ((m_reasons != null) && m_reasons.containsKey(user.getName())) {
                 item.set(LIST_COLUMN_VALIDATION_HIDDEN, "invalid");
             } else {
                 item.set(LIST_COLUMN_VALIDATION_HIDDEN, "valid");
@@ -557,7 +583,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
                                 Method method = CmsUser.class.getMethod("set"
                                     + curValue.substring(0, 1).toUpperCase()
                                     + curValue.substring(1), new Class[] {String.class});
-                                if (lineValues.size() > i && lineValues.get(i) != null) {
+                                if ((lineValues.size() > i) && (lineValues.get(i) != null)) {
                                     String value = (String)lineValues.get(i);
                                     if (curValue.equals("password")) {
                                         if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
@@ -736,7 +762,7 @@ public class CmsUserDataImportList extends A_CmsUsersList {
 
                 String userName = getItem().getId();
 
-                if ((((CmsUserDataImportList)getWp()).getReasons() != null && ((CmsUserDataImportList)getWp()).getReasons().containsKey(
+                if (((((CmsUserDataImportList)getWp()).getReasons() != null) && ((CmsUserDataImportList)getWp()).getReasons().containsKey(
                     userName))
                     || ((CmsUserDataImportList)getWp()).isAlreadyAvailable(userName)) {
                     return ICON_MULTI_DELETE;

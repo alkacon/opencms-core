@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataExportDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/03/27 12:51:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.7.1
  */
@@ -154,46 +154,48 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
 
         for (int i = 0; i < users.length; i++) {
             CmsUser exportUser = (CmsUser)users[i];
-            if (exportUser.getOuFqn().equals(getParamOufqn())) {
-                String output = "";
-                output += exportUser.getSimpleName();
-                itValues = values.iterator();
-                while (itValues.hasNext()) {
-                    output += separator;
-                    String curValue = (String)itValues.next();
-                    try {
-                        Method method = CmsUser.class.getMethod("get"
-                            + curValue.substring(0, 1).toUpperCase()
-                            + curValue.substring(1), null);
-                        String curOutput = (String)method.invoke(exportUser, null);
-                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) || curOutput.equals("null")) {
-                            curOutput = (String)exportUser.getAdditionalInfo(curValue);
-                        }
-
-                        if (curValue.equals("password")) {
-                            curOutput = OpenCms.getPasswordHandler().getDigestType() + "_" + curOutput;
-                        }
-
-                        if (!CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) && !curOutput.equals("null")) {
-                            output += curOutput;
-                        }
-                    } catch (NoSuchMethodException e) {
-                        String curOutput = (String)exportUser.getAdditionalInfo(curValue);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(curOutput)) {
-                            output += curOutput;
-                        }
-                    } catch (IllegalAccessException e) {
-                        throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ILLEGAL_ACCESS_0), e);
-                    } catch (InvocationTargetException e) {
-                        throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INVOCATION_TARGET_0), e);
-                    }
-                }
-                output += "\n";
+            if (!exportUser.getOuFqn().equals(getParamOufqn())) {
+                // skip users of others ous
+                continue;
+            }
+            String output = "";
+            output += exportUser.getSimpleName();
+            itValues = values.iterator();
+            while (itValues.hasNext()) {
+                output += separator;
+                String curValue = (String)itValues.next();
                 try {
-                    bufferedWriter.write(output);
-                } catch (IOException e) {
-                    throw new CmsRuntimeException(Messages.get().container(Messages.ERR_WRITE_TO_EXPORT_FILE_0), e);
+                    Method method = CmsUser.class.getMethod("get"
+                        + curValue.substring(0, 1).toUpperCase()
+                        + curValue.substring(1), null);
+                    String curOutput = (String)method.invoke(exportUser, null);
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) || curOutput.equals("null")) {
+                        curOutput = (String)exportUser.getAdditionalInfo(curValue);
+                    }
+
+                    if (curValue.equals("password")) {
+                        curOutput = OpenCms.getPasswordHandler().getDigestType() + "_" + curOutput;
+                    }
+
+                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) && !curOutput.equals("null")) {
+                        output += curOutput;
+                    }
+                } catch (NoSuchMethodException e) {
+                    String curOutput = (String)exportUser.getAdditionalInfo(curValue);
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(curOutput)) {
+                        output += curOutput;
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ILLEGAL_ACCESS_0), e);
+                } catch (InvocationTargetException e) {
+                    throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INVOCATION_TARGET_0), e);
                 }
+            }
+            output += "\n";
+            try {
+                bufferedWriter.write(output);
+            } catch (IOException e) {
+                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_WRITE_TO_EXPORT_FILE_0), e);
             }
         }
 
@@ -215,7 +217,9 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
      * Returns a map with the users to export added.<p>
      * 
      * @param exportUsers the map to add the users
+     * 
      * @return a map with the users to export added
+     * 
      * @throws CmsException if getting users failed
      */
     public Map getExportAllUsers(Map exportUsers) throws CmsException {
@@ -274,7 +278,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
             while (itRoles.hasNext()) {
                 List roleUsers = OpenCms.getRoleManager().getUsersOfRole(
                     getCms(),
-                    CmsRole.valueOfGroupName((String)itRoles.next()),
+                    CmsRole.valueOfGroupName((String)itRoles.next()).forOrgUnit(getParamOufqn()),
                     true,
                     false);
                 Iterator itRoleUsers = roleUsers.iterator();

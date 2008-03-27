@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:49 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/03/27 12:51:57 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,11 +173,11 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
 
     /**
      * Returns the HTML for a button that triggers a file download with 
-     * <code>{@link CmsRfsFileDownloadServlet}</code> and a button for the chancel action.<p>
+     * <code>{@link CmsRfsFileDownloadServlet}</code> and a button for the cancel action.<p>
      *  
      * @see org.opencms.workplace.CmsDialog#dialogButtonsOkCancel()
      * @return the HTML for a button that triggers a file download with 
-     *         <code>{@link CmsRfsFileDownloadServlet}</code> and a button for the chancel action. 
+     *         <code>{@link CmsRfsFileDownloadServlet}</code> and a button for the cancel action. 
      */
     public String dialogButtonsOkCancel() {
 
@@ -216,7 +216,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
     protected void initMessages() {
-    
+
         addMessages(org.opencms.workplace.tools.workplace.rfsfile.Messages.get().getBundleName());
         super.initMessages();
     }
@@ -247,7 +247,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
                 new Object[] {getDownloadFile().getName()}));
         }
     }
-    
+
     /**
      * Returns the File to downoad from the <code>{@link org.opencms.workplace.CmsWorkplaceManager}</code>'s 
      * setting {@link org.opencms.workplace.CmsWorkplaceManager#getFileViewSettings()}.<p>

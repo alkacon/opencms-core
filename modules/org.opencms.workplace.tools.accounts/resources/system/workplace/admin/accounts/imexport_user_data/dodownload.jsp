@@ -1,10 +1,19 @@
 <%@ page import="org.opencms.main.*,org.opencms.util.*,java.io.*"%>
 <%
 // cannot use new_admin style, link class shifts vertical-align from baseline (firefox looks awful).
+            org.opencms.i18n.CmsMessages messages = org.opencms.workplace.tools.workplace.rfsfile.Messages.get().getBundle();
+	    
+            String filePath = request.getParameter("filePath");
+
+            if (CmsStringUtil.isEmpty(filePath)) {
+                throw new ServletException(
+                    messages.key(org.opencms.workplace.tools.workplace.rfsfile.Messages.ERR_DOWNLOAD_SERVLET_FILE_ARG_0));
+            }
+	    File file = new File(filePath);
 %>
 <html>
 <head>
-<title>%=messages.key(org.opencms.workplace.tools.workplace.rfsfile.Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_HEADER_1,file.getName())%></title>
+<title><%=messages.key(org.opencms.workplace.tools.workplace.rfsfile.Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_HEADER_1,file.getName())%></title>
 <style type="text/css">
 body, table {
   font-size: 11px;
@@ -34,17 +43,6 @@ body, table {
   text-decoration: none;
 }
 </style>
-<%
-            org.opencms.i18n.CmsMessages messages = org.opencms.workplace.tools.workplace.rfsfile.Messages.get().getBundle();
-	    
-            String filePath = request.getParameter("filePath");
-
-            if (CmsStringUtil.isEmpty(filePath)) {
-                throw new ServletException(
-                    messages.key(org.opencms.workplace.tools.workplace.rfsfile.Messages.ERR_DOWNLOAD_SERVLET_FILE_ARG_0));
-            }
-	    File file = new File(filePath);
-%>
 <script type="text/javascript">
 function download(){
   window.location.href = "<%= request.getParameter("servletUrl")%>?filePath=<%=filePath.replace('\\', '/') %>"
