@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2008/02/27 12:05:21 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/03/27 13:22:45 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -527,7 +528,11 @@ public final class CmsResourceUtil {
                 // the resource is unlocked and unchanged
                 return "";
             }
-            return getCurrentOuRelativeName(getCms().readProject(pId).getName());
+            try {
+                return getCurrentOuRelativeName(getCms().readProject(pId).getName());
+            } catch (CmsDbEntryNotFoundException e) {
+                return getCurrentOuRelativeName(getCms().readHistoryProject(pId).getName());
+            }
         } catch (Throwable e) {
             LOG.error(e.getLocalizedMessage(), e);
             return "";

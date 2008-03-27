@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLoginHelper.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/03/27 13:22:44 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.3 
  */
@@ -133,7 +133,8 @@ public class CmsLoginHelper extends CmsWorkplace {
             }
             // read the project
             CmsProject project = getCms().readProject(projectName);
-            if (getCms().getAllAccessibleProjects().contains(project)) {
+            if (OpenCms.getOrgUnitManager().getAllAccessibleProjects(getCms(), project.getOuFqn(), false).contains(
+                project)) {
                 // user has access to the project, set this as current project
                 getCms().getRequestContext().setCurrentProject(project);
             } else {

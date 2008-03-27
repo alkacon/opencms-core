@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2008/02/27 12:05:35 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2008/03/27 13:22:45 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class TestProjects extends OpenCmsTestCase {
 
@@ -114,32 +114,32 @@ public class TestProjects extends OpenCmsTestCase {
         // restore the after setup scenario
         cms.deleteProject(cms.readProject("UnitTest1").getUuid());
         cms.deleteProject(cms.readProject("UnitTest4").getUuid());
-        
-        List projects = cms.getAllAccessibleProjects();
+
+        List projects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, "", true);
         assertEquals(2, projects.size());
         assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
         assertTrue(projects.contains(cms.readProject("Offline")));
-        
+
         OpenCms.getOrgUnitManager().createOrganizationalUnit(cms, "/test/", "test ou", 0, "/folder1");
-        
-        projects = cms.getAllAccessibleProjects();
+
+        projects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, "", true);
         assertEquals(3, projects.size());
         assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
         assertTrue(projects.contains(cms.readProject("Offline")));
         assertTrue(projects.contains(cms.readProject("test/Offline")));
-        
+
         cms.createUser("/test/user1", "user1", "my test user", null);
         cms.loginUser("/test/user1", "user1");
-        
-        projects = cms.getAllAccessibleProjects();
+
+        projects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, "", true);
         assertEquals(1, projects.size());
         assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
 
         cms = getCmsObject();
         OpenCms.getRoleManager().addUserToRole(cms, CmsRole.WORKPLACE_USER.forOrgUnit("/test/"), "/test/user1");
         cms.loginUser("/test/user1", "user1");
-        
-        projects = cms.getAllAccessibleProjects();
+
+        projects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, "", true);
         assertEquals(2, projects.size());
         assertTrue(projects.contains(cms.readProject(CmsProject.ONLINE_PROJECT_ID)));
         assertTrue(projects.contains(cms.readProject("test/Offline")));
@@ -215,7 +215,7 @@ public class TestProjects extends OpenCmsTestCase {
         assertFalse(project.isOnlineProject());
 
         // ensure the project is now accessible
-        List projects = cms.getAllAccessibleProjects();
+        List projects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, "", true);
         int i;
         for (i = 0; i < projects.size(); i++) {
             if (((CmsProject)projects.get(i)).getUuid().equals(project.getUuid())) {
@@ -227,7 +227,7 @@ public class TestProjects extends OpenCmsTestCase {
         }
 
         // ensure the project is manageable
-        projects = cms.getAllManageableProjects();
+        projects = OpenCms.getOrgUnitManager().getAllManageableProjects(cms, "", true);
         for (i = 0; i < projects.size(); i++) {
             if (((CmsProject)projects.get(i)).getUuid().equals(project.getUuid())) {
                 break;
@@ -243,14 +243,14 @@ public class TestProjects extends OpenCmsTestCase {
         cms.deleteProject(project.getUuid());
 
         // ensure the project is not accessible anymore
-        projects = cms.getAllAccessibleProjects();
+        projects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(cms, "", true);
         for (i = 0; i < projects.size(); i++) {
             if (((CmsProject)projects.get(i)).getUuid().equals(project.getUuid())) {
                 fail("Project " + project.getName() + "not deleted");
             }
         }
     }
-    
+
     /**
      * Test the "delete project with resources" function.<p>
      * 

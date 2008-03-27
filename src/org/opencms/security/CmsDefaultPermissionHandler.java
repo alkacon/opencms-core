@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPermissionHandler.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/03/27 13:22:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.0.2
  */
@@ -178,7 +178,10 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
                     resource);
                 // if not, check the manageable projects
                 if (!canIgnorePublishPermission) {
-                    Iterator itProjects = m_driverManager.getAllManageableProjects(dbc).iterator();
+                    Iterator itProjects = m_driverManager.getAllManageableProjects(
+                        dbc,
+                        m_driverManager.readOrganizationalUnit(dbc, ""),
+                        true).iterator();
                     while (itProjects.hasNext()) {
                         CmsProject project = (CmsProject)itProjects.next();
                         if (CmsProject.isInsideProject(m_driverManager.readProjectResources(dbc, project), resource)) {

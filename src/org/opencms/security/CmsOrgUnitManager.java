@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrgUnitManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/03/27 13:22:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.5.6
  */
@@ -130,6 +130,46 @@ public class CmsOrgUnitManager {
 
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
         m_securityManager.deleteOrganizationalUnit(cms.getRequestContext(), orgUnit);
+    }
+
+    /**
+     * Returns all accessible projects of the given organizational unit. 
+     * 
+     * That is all projects which are owned by the current user or which are 
+     * accessible for the group of the user.<p>
+     *
+     * @param cms the opencms context
+     * @param ouFqn the fully qualified name of the organizational unit to get projects for
+     * @param includeSubOus if all projects of sub-organizational units should be retrieved too
+     * 
+     * @return all <code>{@link org.opencms.file.CmsProject}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public List getAllAccessibleProjects(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
+
+        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
+        return (m_securityManager.getAllAccessibleProjects(cms.getRequestContext(), orgUnit, includeSubOus));
+    }
+
+    /**
+     * Returns all manageable projects of the given organizational unit.<p>
+     *
+     * That is all projects which are owned by the current user or which are manageable
+     * for the group of the user.<p>
+     *
+     * @param cms the opencms context
+     * @param ouFqn the fully qualified name of the organizational unit to get projects for
+     * @param includeSubOus if all projects of sub-organizational units should be retrieved too
+     * 
+     * @return all <code>{@link org.opencms.file.CmsProject}</code> objects in the organizational unit
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public List getAllManageableProjects(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
+
+        CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
+        return (m_securityManager.getAllManageableProjects(cms.getRequestContext(), orgUnit, includeSubOus));
     }
 
     /**
@@ -253,7 +293,7 @@ public class CmsOrgUnitManager {
      *
      * The organizational unit has to be a valid OpenCms organizational unit.<br>
      * 
-     * The organizational unit will be completely overriden by the given data.<p>
+     * The organizational unit will be completely overridden by the given data.<p>
      *
      * @param cms the opencms context
      * @param organizationalUnit the organizational unit that should be written
@@ -264,5 +304,4 @@ public class CmsOrgUnitManager {
 
         m_securityManager.writeOrganizationalUnit(cms.getRequestContext(), organizationalUnit);
     }
-
 }

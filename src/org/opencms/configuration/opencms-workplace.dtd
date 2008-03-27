@@ -456,6 +456,7 @@
 									reporttype,
 									uploadapplet,
 									publishbuttonappearance?,
+									listallprojects?,
 									publishnotification?,
 									show-fileuploadbutton?,
 									allowbrokenrelations?, 
@@ -495,6 +496,12 @@
 # workplace explorer after publishing. This setting can be changed in the preferences dialog.
 -->	
 <!ELEMENT publishnotification (#PCDATA)>								
+	
+<!--
+# If this element is set to "true", the project list will show all projects. 
+# This setting can be changed in the preferences dialog.
+-->	
+<!ELEMENT listallprojects (#PCDATA)>								
 	
 <!--
 # If this element is set to "true", the file upload button will be shown in the 

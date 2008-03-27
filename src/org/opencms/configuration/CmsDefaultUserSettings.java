@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2008/02/27 12:05:47 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2008/03/27 13:22:45 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 6.0.0 
  */
@@ -314,6 +314,18 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     public String getExplorerButtonStyleString() {
 
         return BUTTON_STYLES[getExplorerButtonStyle()];
+    }
+
+    /**
+     * Returns a string representation of the list all projects flag.<p>
+     * 
+     * @return string representation of the list all projects flag
+     * 
+     * @see #getListAllProjects()
+     */
+    public String getListAllProjectsString() {
+
+        return String.valueOf(getShowPublishNotification());
     }
 
     /**
@@ -696,6 +708,16 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
+     * Sets if all projects should be shown for the user.<p>
+     * 
+     * @param listAllProjects <code>"true"</code> or <code>"false"</code>
+     */
+    public void setListAllProjects(String listAllProjects) {
+
+        setListAllProjects(Boolean.valueOf(listAllProjects).booleanValue());
+    }
+
+    /**
      * Sets the workplace locale.<p> 
      * 
      * @param locale the workplace language default
@@ -939,7 +961,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      * The given <code>String</code> value is interpreted as a {@link Boolean} by the means 
      * of <code>{@link Boolean#valueOf(String)}</code>. <p>
      * 
-     * @param booleanValue a <code>String</code> that is interpred as a {@link Boolean} by the means 
+     * @param booleanValue a <code>String</code> that is interpreted as a {@link Boolean} by the means 
      *      of <code>{@link Boolean#valueOf(String)}</code> 
      */
     public void setShowUploadTypeDialog(String booleanValue) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2008/02/27 12:05:52 $
- * Version: $Revision: 1.123 $
+ * Date   : $Date: 2008/03/27 13:22:44 $
+ * Version: $Revision: 1.124 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.123 $
+ * @version $Revision: 1.124 $
  * 
  * @since 6.0.0 
  */
@@ -1288,6 +1288,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 ORGUNIT_BASE_FOLDER + ouFqn,
                 CmsResourceFilter.DEFAULT);
             return internalCreateOrgUnitFromResource(dbc, resource);
+        } catch (CmsVfsResourceNotFoundException e) {
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_READ_ORGUNIT_1, ouFqn), e);
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);
         }

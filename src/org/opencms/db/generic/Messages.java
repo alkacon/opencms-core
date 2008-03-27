@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:52 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2008/03/27 13:22:44 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 6.0.0 
  */
@@ -110,6 +110,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_NO_GROUP_WITH_ID_1 = "ERR_NO_GROUP_WITH_ID_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_HISTORY_PROJECT_WITH_ID_1 = "ERR_NO_HISTORY_PROJECT_WITH_ID_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_HISTORY_PROJECT_WITH_TAG_ID_1 = "ERR_NO_HISTORY_PROJECT_WITH_TAG_ID_1";
 
     /** Message constant for key in the resource bundle. */
@@ -167,13 +170,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_QUERY_NOT_FOUND_1 = "ERR_QUERY_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_CONTENT_WITH_RESOURCE_ID_2 = "ERR_READ_CONTENT_WITH_RESOURCE_ID_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_DELETED_FILE_1 = "ERR_READ_DELETED_FILE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_DELETED_RESOURCE_1 = "ERR_READ_DELETED_RESOURCE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_CONTENT_WITH_RESOURCE_ID_2 = "ERR_READ_CONTENT_WITH_RESOURCE_ID_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_FOLDER_1 = "ERR_READ_FOLDER_1";

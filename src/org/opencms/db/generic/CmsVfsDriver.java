@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2008/03/03 11:54:29 $
- * Version: $Revision: 1.276 $
+ * Date   : $Date: 2008/03/27 13:22:43 $
+ * Version: $Revision: 1.277 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.276 $
+ * @version $Revision: 1.277 $
  * 
  * @since 6.0.0 
  */
@@ -3557,7 +3557,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             }
 
             // target or source id filter from filter parameter
-            if ((filter.getStructureId() != null) && (!filter.getStructureId().isNullUUID())) {
+            if (filter.getStructureId() != null) {
                 if (conditions.length() == 0) {
                     conditions.append(BEGIN_CONDITION);
                 } else {

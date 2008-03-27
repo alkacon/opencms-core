@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2008/03/27 13:22:44 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import org.xml.sax.SAXException;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.94 $ 
+ * @version $Revision: 1.95 $ 
  * 
  * @since 6.0.0 
  */
@@ -1235,7 +1235,7 @@ public class CmsExport {
 
         try {
             I_CmsReport report = getReport();
-            List allProjects = getCms().getAllManageableProjects();
+            List allProjects = OpenCms.getOrgUnitManager().getAllManageableProjects(getCms(), "", true);
             for (int i = 0; i < allProjects.size(); i++) {
                 CmsProject project = (CmsProject)allProjects.get(i);
                 report.print(org.opencms.report.Messages.get().container(

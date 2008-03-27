@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2008/03/17 16:10:41 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2008/03/27 13:22:43 $
+ * Version: $Revision: 1.117 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -338,7 +338,10 @@ public final class CmsSecurityManager {
 
         boolean hasRole = false;
         try {
-            hasRole = m_driverManager.getAllManageableProjects(dbc).contains(project);
+            hasRole = m_driverManager.getAllManageableProjects(
+                dbc,
+                m_driverManager.readOrganizationalUnit(dbc, project.getOuFqn()),
+                false).contains(project);
         } catch (CmsException e) {
             // should never happen
             if (LOG.isErrorEnabled()) {
@@ -1677,17 +1680,20 @@ public final class CmsSecurityManager {
      * accessible for the group of the user.<p>
      *
      * @param context the current request context
+     * @param orgUnit the organizational unit to search project in
+     * @param includeSubOus if to include sub organizational units
      * 
      * @return a list of objects of type <code>{@link CmsProject}</code>
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getAllAccessibleProjects(CmsRequestContext context) throws CmsException {
+    public List getAllAccessibleProjects(CmsRequestContext context, CmsOrganizationalUnit orgUnit, boolean includeSubOus)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.getAllAccessibleProjects(dbc);
+            result = m_driverManager.getAllAccessibleProjects(dbc, orgUnit, includeSubOus);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_GET_ALL_ACCESSIBLE_PROJECTS_1,
@@ -1729,17 +1735,20 @@ public final class CmsSecurityManager {
      * for the group of the user.<p>
      *
      * @param context the current request context
+     * @param orgUnit the organizational unit to search project in
+     * @param includeSubOus if to include sub organizational units
      * 
      * @return a list of objects of type <code>{@link CmsProject}</code>
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getAllManageableProjects(CmsRequestContext context) throws CmsException {
+    public List getAllManageableProjects(CmsRequestContext context, CmsOrganizationalUnit orgUnit, boolean includeSubOus)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.getAllManageableProjects(dbc);
+            result = m_driverManager.getAllManageableProjects(dbc, orgUnit, includeSubOus);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_GET_ALL_MANAGEABLE_PROJECTS_1,
@@ -2801,7 +2810,10 @@ public final class CmsSecurityManager {
     public boolean isManagerOfProject(CmsRequestContext context) {
 
         try {
-            return getAllManageableProjects(context).contains(context.currentProject());
+            return getAllManageableProjects(
+                context,
+                readOrganizationalUnit(context, context.currentProject().getOuFqn()),
+                false).contains(context.currentProject());
         } catch (CmsException e) {
             // should never happen
             if (LOG.isErrorEnabled()) {
@@ -3462,6 +3474,33 @@ public final class CmsSecurityManager {
             result = m_driverManager.readHistoricalPrincipal(dbc, principalId);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_HISTORY_PRINCIPAL_1, principalId), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns the latest historical project entry with the given id.<p>
+     *
+     * @param context the current request context
+     * @param projectId the project id
+     * 
+     * @return the requested historical project entry
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsHistoryProject readHistoryProject(CmsRequestContext context, CmsUUID projectId) throws CmsException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        CmsHistoryProject result = null;
+        try {
+            result = m_driverManager.readHistoryProject(dbc, projectId);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_READ_HISTORY_PROJECT_2,
+                projectId,
+                dbc.currentProject().getName()), e);
         } finally {
             dbc.clear();
         }

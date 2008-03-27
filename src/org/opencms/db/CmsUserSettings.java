@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2008/03/27 13:22:43 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 6.0.0
  */
@@ -91,6 +91,21 @@ public class CmsUserSettings {
         /** Serializable version id. */
         private static final long serialVersionUID = 6611568161885127011L;
 
+        /** The localization key for this style. */
+        private final String m_key;
+
+        /**
+         * Private constructor.<p>
+         * 
+         * @param style the workplace search result style string representation
+         * @param key the localization key for this style
+         */
+        private CmsSearchResultStyle(String style, String key) {
+
+            super(style);
+            m_key = key;
+        }
+
         /**
          * Returns the copy mode object from the old copy mode integer.<p>
          * 
@@ -107,21 +122,6 @@ public class CmsUserSettings {
             } else {
                 return STYLE_EXPLORER;
             }
-        }
-
-        /** The localization key for this style. */
-        private final String m_key;
-
-        /**
-         * Private constructor.<p>
-         * 
-         * @param style the workplace search result style string representation
-         * @param key the localization key for this style
-         */
-        private CmsSearchResultStyle(String style, String key) {
-
-            super(style);
-            m_key = key;
         }
 
         /**
@@ -276,6 +276,9 @@ public class CmsUserSettings {
     /** The list of numbers in the preferences dialog, how much entries shown on a page. */
     private String m_exporerFileEntryOptions;
 
+    /** Flag to determine if all projects should be list. */
+    private boolean m_listAllProjects;
+
     private Locale m_locale;
 
     /** Controls if the "create index page" check box in the new folder dialog should be initially be checked or not. */
@@ -345,6 +348,7 @@ public class CmsUserSettings {
         m_editorSettings = new TreeMap();
         m_showFileUploadButton = true;
         m_showPublishNotification = false;
+        m_listAllProjects = false;
         m_uploadApplet = true;
         m_publishButtonAppearance = CmsDefaultUserSettings.PUBLISHBUTTON_SHOW_ALWAYS;
         m_newFolderCreateIndexPage = Boolean.TRUE;
@@ -536,6 +540,16 @@ public class CmsUserSettings {
     public String getExporerFileEntryOptions() {
 
         return m_exporerFileEntryOptions;
+    }
+
+    /**
+     * Returns if all projects should be listed or only the ones in the current ou.<p>
+     * 
+     * @return true if all projects should be listed, otherwise false
+     */
+    public boolean getListAllProjects() {
+
+        return m_listAllProjects;
     }
 
     /** 
@@ -802,7 +816,15 @@ public class CmsUserSettings {
         if (m_workplaceReportType == null) {
             m_workplaceReportType = OpenCms.getWorkplaceManager().getDefaultUserSettings().getWorkplaceReportType();
         }
-        // workplace upload applet mode
+        // workplace list all projects
+        try {
+            m_listAllProjects = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                + CmsWorkplaceConfiguration.N_LISTALLPROJECTS)).booleanValue();
+        } catch (Throwable t) {
+            m_listAllProjects = OpenCms.getWorkplaceManager().getDefaultUserSettings().getListAllProjects();
+        }
+        // workplace show publish notification
         try {
             m_showPublishNotification = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
@@ -810,7 +832,7 @@ public class CmsUserSettings {
         } catch (Throwable t) {
             m_showPublishNotification = OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowPublishNotification();
         }
-        // workplace show publish notification
+        // workplace upload applet mode
         try {
             m_uploadApplet = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
@@ -1084,6 +1106,16 @@ public class CmsUserSettings {
             m_user.deleteAdditionalInfo(PREFERENCES
                 + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
                 + CmsWorkplaceConfiguration.N_UPLOADAPPLET);
+        }
+        // list all projects
+        if (getListAllProjects() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getListAllProjects()) {
+            m_user.setAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                + CmsWorkplaceConfiguration.N_LISTALLPROJECTS, Boolean.valueOf(getListAllProjects()));
+        } else if (cms != null) {
+            m_user.deleteAdditionalInfo(PREFERENCES
+                + CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS
+                + CmsWorkplaceConfiguration.N_LISTALLPROJECTS);
         }
         // publish notification
         if (getShowPublishNotification() != OpenCms.getWorkplaceManager().getDefaultUserSettings().getShowPublishNotification()) {
@@ -1525,6 +1557,16 @@ public class CmsUserSettings {
     public void setExporerFileEntryOptions(String exporerFileEntryOptions) {
 
         m_exporerFileEntryOptions = exporerFileEntryOptions;
+    }
+
+    /**
+     * Sets if all the projects should be shown or not.<p>
+     * 
+     * @param listAllProjects true if all the projects should be shown, otherwise false
+     */
+    public void setListAllProjects(boolean listAllProjects) {
+
+        m_listAllProjects = listAllProjects;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2008/03/27 13:22:44 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.92 $ 
+ * @version $Revision: 1.93 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,11 +190,19 @@ public class CmsFrameset extends CmsWorkplace {
         // get all project information
         List allProjects;
         try {
-            allProjects = getCms().getAllAccessibleProjects();
+            String ouFqn = "";
+            CmsUserSettings settings = new CmsUserSettings(getCms());
+            if (!settings.getListAllProjects()) {
+                ouFqn = getCms().getRequestContext().currentUser().getOuFqn();
+            }
+            allProjects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(
+                getCms(),
+                ouFqn,
+                settings.getListAllProjects());
         } catch (CmsException e) {
             // should usually never happen
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
             }
             allProjects = Collections.EMPTY_LIST;
         }

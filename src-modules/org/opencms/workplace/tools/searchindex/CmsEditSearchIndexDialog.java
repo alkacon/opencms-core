@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/03/27 13:22:44 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.searchindex;
 import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,7 +124,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         super.defineWidgets();
 
         // widgets to display
-        if (m_index == null || m_index.getName() == null) {
+        if ((m_index == null) || (m_index.getName() == null)) {
             addWidget(new CmsWidgetDialogParameter(m_index, "name", PAGES[0], new CmsInputWidget()));
         } else {
             addWidget(new CmsWidgetDialogParameter(m_index, "name", PAGES[0], new CmsDisplayWidget()));
@@ -162,7 +163,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         Locale indexLocale = m_index.getLocale();
 
         Iterator analyzers = m_searchManager.getAnalyzers().keySet().iterator();
-        
+
         Set distinctLocales = new HashSet();
         while (analyzers.hasNext()) {
             distinctLocales.add(analyzers.next());
@@ -185,7 +186,7 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         List result = new ArrayList();
         List projects;
         try {
-            projects = getCms().getAllManageableProjects();
+            projects = OpenCms.getOrgUnitManager().getAllManageableProjects(getCms(), "", true);
             //projects.addAll(getCms().getAllHistoricalProjects());
             projects.add(getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
             Iterator itProjects = projects.iterator();

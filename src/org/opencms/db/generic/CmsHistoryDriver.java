@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2008/02/27 12:05:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/03/27 13:22:43 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.9.1
  */
@@ -875,6 +875,44 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
         return historyPrincipal;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsHistoryDriver#readProject(org.opencms.db.CmsDbContext, CmsUUID)
+     */
+    public CmsHistoryProject readProject(CmsDbContext dbc, CmsUUID projectId) throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        CmsHistoryProject project = null;
+        ResultSet res = null;
+        Connection conn = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_HISTORY_READ_BYID");
+
+            stmt.setString(1, projectId.toString());
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                int tag = res.getInt(m_sqlManager.readQuery("C_PROJECTS_PUBLISH_TAG_0"));
+                List projectresources = readProjectResources(dbc, tag);
+                project = internalCreateProject(res, projectresources);
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            } else {
+                throw new CmsDbEntryNotFoundException(Messages.get().container(
+                    Messages.ERR_NO_HISTORY_PROJECT_WITH_ID_1,
+                    projectId));
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return project;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/03/27 13:22:43 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import java.util.List;
  * @author Thomas Weckert
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.9.1
  */
@@ -259,6 +259,18 @@ public interface I_CmsHistoryDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     CmsHistoryPrincipal readPrincipal(CmsDbContext dbc, CmsUUID principalId) throws CmsDataAccessException;
+
+    /**
+     * Reads the latest historical project version with the given id.<p>
+     *
+     * @param dbc the current database context
+     * @param projectId the project id
+     * 
+     * @return the requested historical project
+     * 
+     * @throws CmsDataAccessException is something goes wrong
+     */
+    CmsHistoryProject readProject(CmsDbContext dbc, CmsUUID projectId) throws CmsDataAccessException;
 
     /**
      * Reads an historical project version.<p>

@@ -109,8 +109,8 @@ case 1:
 			<tr>
 				<td style="white-space: nowrap;padding:4px;"><%= wp.key(Messages.GUI_LABEL_TIMEWARP_0) %></td><td style="padding:4px;"> <input type="text" id="<%= wp.PARAM_WORKPLACE_TIMEWARP %>"  name="<%= wp.PARAM_WORKPLACE_TIMEWARP %>"  style="float:left;" value="<%= wp.getParamTabWpTimewarp()%>"/><table border="0" cellpadding="0" cellspacing="0"><tr><td style="vertical-align:top;"><a id="timewarp.widgettrigger"style="float:left;" href="#" class="button" title="<%=org.opencms.workplace.Messages.get().getBundle().key(org.opencms.workplace.Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>"><span unselectable="on" class="norm" onmouseover="className='over'" onmouseout="className='norm'" onmousedown="className='push'" onmouseup="className='over'"><img class="button" src="<%= CmsWorkplace.getSkinUri()%>buttons/calendar.png" alt="<%=org.opencms.workplace.Messages.get().getBundle().key(org.opencms.workplace.Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=org.opencms.workplace.Messages.get().getBundle().key(org.opencms.workplace.Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>"></span></a></td><%= wp.button("javascript:document.getElementById('" + wp.PARAM_WORKPLACE_TIMEWARP + "').value='-'", "", "deletecontent.png", "GUI_DIALOG_BUTTON_RESET_0", 0) %></tr></table></td><%--
 				--%><%= CmsCalendarWidget.calendarInit(wp.getMessages(), wp.PARAM_WORKPLACE_TIMEWARP, "timewarp.widgettrigger", "cR", false, false, true, "", true) %>				
-				<td>&nbsp;</td>
-				<td>&nbsp;</td>
+				<td style="padding:4px;">&nbsp;</td>
+				<td style="white-space: nowrap;padding 4px;"><input type="checkbox" name="<%= wp.PARAM_WORKPLACE_LISTALLPROJECTS %>" value="true"<%= wp.isChecked(wp.getParamTabWpListAllProjects()) %>> <%= wp.key(Messages.GUI_PREF_LIST_ALL_PROJECTS_0) %></td>
 			</tr>
 		</table>		
 		<%= wp.dialogBlockEnd() %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2008/03/18 15:42:11 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2008/03/27 13:22:44 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,6 +63,7 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -92,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 6.0.0
  */
@@ -214,6 +215,9 @@ public class CmsPreferences extends CmsTabDialog {
 
     /** Request parameter name for the workplace language. */
     public static final String PARAM_WORKPLACE_LANGUAGE = "tabwplanguage";
+
+    /** Request parameter name for the user language. */
+    public static final String PARAM_WORKPLACE_LISTALLPROJECTS = "tabwplistallprojects";
 
     /** Request parameter name for the workplace project. */
     public static final String PARAM_WORKPLACE_PROJECT = "tabwpproject";
@@ -630,61 +634,73 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectProject(String htmlAttributes) {
 
+        List allProjects;
         try {
-            List allProjects = getCms().getAllAccessibleProjects();
-
-            boolean singleOu = true;
-            String ouFqn = null;
-            Iterator itProjects = allProjects.iterator();
-            while (itProjects.hasNext()) {
-                CmsProject prj = (CmsProject)itProjects.next();
-                if (prj.isOnlineProject()) {
-                    // skip the online project
-                    continue;
-                }
-                if (ouFqn == null) {
-                    // set the first ou
-                    ouFqn = prj.getOuFqn();
-                }
-                if (!ouFqn.equals(prj.getOuFqn())) {
-                    // break if one different ou is found
-                    singleOu = false;
-                    break;
-                }
+            String ouFqn = "";
+            CmsUserSettings settings = new CmsUserSettings(getCms());
+            if (!settings.getListAllProjects()) {
+                ouFqn = getCms().getRequestContext().currentUser().getOuFqn();
             }
-
-            List options = new ArrayList(allProjects.size());
-            List values = new ArrayList(allProjects.size());
-            int checkedIndex = 0;
-            String startProject = "";
-
-            startProject = getParamTabWpProject();
-
-            for (int i = 0, n = allProjects.size(); i < n; i++) {
-                CmsProject project = (CmsProject)allProjects.get(i);
-                String projectName = project.getSimpleName();
-                if (!singleOu && !project.isOnlineProject()) {
-                    try {
-                        projectName = projectName
-                            + " - "
-                            + OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), project.getOuFqn()).getDisplayName(
-                                getLocale());
-                    } catch (CmsException e) {
-                        projectName = projectName + " - " + project.getOuFqn();
-                    }
-                }
-                options.add(projectName);
-                values.add(project.getName());
-                if (startProject.equals(project.getName())) {
-                    checkedIndex = i;
-                }
-            }
-            return buildSelect(htmlAttributes, options, values, checkedIndex);
+            allProjects = OpenCms.getOrgUnitManager().getAllAccessibleProjects(
+                getCms(),
+                ouFqn,
+                settings.getListAllProjects());
         } catch (CmsException e) {
             // should usually never happen
-            LOG.error(e.getLocalizedMessage());
-            return getSettings().getProject() + "";
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            allProjects = Collections.EMPTY_LIST;
         }
+
+        boolean singleOu = true;
+        String ouFqn = null;
+        Iterator itProjects = allProjects.iterator();
+        while (itProjects.hasNext()) {
+            CmsProject prj = (CmsProject)itProjects.next();
+            if (prj.isOnlineProject()) {
+                // skip the online project
+                continue;
+            }
+            if (ouFqn == null) {
+                // set the first ou
+                ouFqn = prj.getOuFqn();
+            }
+            if (!ouFqn.equals(prj.getOuFqn())) {
+                // break if one different ou is found
+                singleOu = false;
+                break;
+            }
+        }
+
+        List options = new ArrayList(allProjects.size());
+        List values = new ArrayList(allProjects.size());
+        int checkedIndex = 0;
+        String startProject = "";
+
+        startProject = getParamTabWpProject();
+
+        for (int i = 0, n = allProjects.size(); i < n; i++) {
+            CmsProject project = (CmsProject)allProjects.get(i);
+            String projectName = project.getSimpleName();
+            if (!singleOu && !project.isOnlineProject()) {
+                try {
+                    projectName = projectName
+                        + " - "
+                        + OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), project.getOuFqn()).getDisplayName(
+                            getLocale());
+                } catch (CmsException e) {
+                    projectName = projectName + " - " + project.getOuFqn();
+                }
+            }
+            options.add(projectName);
+            values.add(project.getName());
+            if (startProject.equals(project.getName())) {
+                checkedIndex = i;
+            }
+        }
+        return buildSelect(htmlAttributes, options, values, checkedIndex);
+
     }
 
     /**
@@ -1279,6 +1295,16 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * Returns the "list all projects" setting.<p>
+     * 
+     * @return <code>"true"</code> if the "list all projects" input is checked, otherwise ""
+     */
+    public String getParamTabWpListAllProjects() {
+
+        return isParamEnabled(m_userSettings.getListAllProjects());
+    }
+
+    /**
      * Returns the start project setting.<p>
      * 
      * @return the start project setting
@@ -1755,6 +1781,17 @@ public class CmsPreferences extends CmsTabDialog {
     public void setParamTabWpLanguage(String value) {
 
         m_userSettings.setLocale(CmsLocaleManager.getLocale(value));
+    }
+
+    /**
+     * Sets the "list all projects" flag.<p>
+     * 
+     * @param value <code>"true"</code> to enable the "list all project" feature, all others to
+     *        disable
+     */
+    public void setParamTabWpListAllProjects(String value) {
+
+        m_userSettings.setListAllProjects(Boolean.valueOf(value).booleanValue());
     }
 
     /**

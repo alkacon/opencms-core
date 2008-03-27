@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2008/02/27 12:05:51 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2008/03/27 13:22:44 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -314,17 +314,16 @@ public class CmsProjectsList extends A_CmsListDialog {
 
         List ret = new ArrayList();
         // get content
-        List projects = getCms().getAllManageableProjects();
+        List projects = OpenCms.getOrgUnitManager().getAllManageableProjects(getCms(), "", true);
         Iterator itProjects = projects.iterator();
         while (itProjects.hasNext()) {
             CmsProject project = (CmsProject)itProjects.next();
             CmsListItem item = getList().newItem(project.getUuid().toString());
             item.set(LIST_COLUMN_NAME, project.getSimpleName());
             item.set(LIST_COLUMN_DESCRIPTION, project.getDescription());
-            item.set(
-                LIST_COLUMN_ORGUNIT,
-                OpenCms.getOrgUnitManager().readOrganizationalUnit(getCms(), project.getOuFqn()).getDisplayName(
-                    getLocale()));
+            item.set(LIST_COLUMN_ORGUNIT, OpenCms.getOrgUnitManager().readOrganizationalUnit(
+                getCms(),
+                project.getOuFqn()).getDisplayName(getLocale()));
             try {
                 item.set(LIST_COLUMN_OWNER, getCms().readUser(project.getOwnerId()).getName());
             } catch (Exception e) {
@@ -350,7 +349,7 @@ public class CmsProjectsList extends A_CmsListDialog {
             item.set(LIST_DETAIL_RESOURCES, html.toString());
             ret.add(item);
         }
-        
+
         // hide ou column if only one ou exists
         try {
             if (OpenCms.getOrgUnitManager().getOrganizationalUnits(getCms(), "", true).isEmpty()) {

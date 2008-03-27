@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/03/17 16:10:41 $
- * Version: $Revision: 1.612 $
+ * Date   : $Date: 2008/03/27 13:22:43 $
+ * Version: $Revision: 1.613 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3281,17 +3281,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * accessible by the current user.<p>
      *
      * @param dbc the current database context
+     * @param orgUnit the organizational unit to search project in
+     * @param includeSubOus if to include sub organizational units
      * 
      * @return a list of objects of type <code>{@link CmsProject}</code>
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getAllAccessibleProjects(CmsDbContext dbc) throws CmsException {
+    public List getAllAccessibleProjects(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean includeSubOus)
+    throws CmsException {
 
         Set projects = new HashSet();
 
         // get the ous where the user has the project manager role
-        List ous = getOrgUnitsForRole(dbc, CmsRole.PROJECT_MANAGER.forOrgUnit(""), true);
+        List ous = getOrgUnitsForRole(dbc, CmsRole.PROJECT_MANAGER.forOrgUnit(orgUnit.getName()), includeSubOus);
 
         // get the groups of the user if needed
         Set userGroupIds = new HashSet();
@@ -3301,20 +3304,32 @@ public final class CmsDriverManager implements I_CmsEventListener {
             userGroupIds.add(group.getId());
         }
 
-        // get all projects
-        projects.addAll(m_projectDriver.readProjects(dbc, ""));
+        // TODO: this could be optimize if this method would have an additional parameter 'includeSubOus'
+        // get all projects that might come in question
+        projects.addAll(m_projectDriver.readProjects(dbc, orgUnit.getName()));
 
         // filter hidden and not accessible projects
         Iterator itProjects = projects.iterator();
         while (itProjects.hasNext()) {
             CmsProject project = (CmsProject)itProjects.next();
+            boolean accessible = true;
             // if hidden
-            if (project.isHidden()) {
+            accessible = accessible && !project.isHidden();
+
+            if (!includeSubOus) {
+                // if not exact in the given ou
+                accessible = accessible && project.getOuFqn().equals(orgUnit.getName());
+            } else {
+                // if not in the given ou
+                accessible = accessible && project.getOuFqn().startsWith(orgUnit.getName());
+            }
+
+            if (!accessible) {
                 itProjects.remove();
                 continue;
             }
 
-            boolean accessible = false;
+            accessible = false;
             // online project
             accessible = accessible || project.isOnlineProject();
             // if owner
@@ -3372,7 +3387,48 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List getAllHistoricalProjects(CmsDbContext dbc) throws CmsException {
 
-        return m_historyDriver.readProjects(dbc);
+        // user is allowed to access all existing projects for the ous he has the project_manager role
+        Set manOus = new HashSet(getOrgUnitsForRole(dbc, CmsRole.PROJECT_MANAGER, true));
+
+        List projects = m_historyDriver.readProjects(dbc);
+        Iterator itProjects = projects.iterator();
+        while (itProjects.hasNext()) {
+            CmsHistoryProject project = (CmsHistoryProject)itProjects.next();
+            if (project.isHidden()) {
+                // project is hidden
+                itProjects.remove();
+                continue;
+            }
+            if (!project.getOuFqn().startsWith(dbc.currentUser().getOuFqn())) {
+                // project is not visible from the users ou
+                itProjects.remove();
+                continue;
+            }
+            CmsOrganizationalUnit ou = readOrganizationalUnit(dbc, project.getOuFqn());
+            if (manOus.contains(ou)) {
+                // user is project manager for this project
+                continue;
+            } else if (project.getOwnerId().equals(dbc.currentUser().getId())) {
+                // user is owner of the project
+                continue;
+            } else {
+                boolean found = false;
+                Iterator itGroups = getGroupsOfUser(dbc, dbc.currentUser().getName(), false).iterator();
+                while (itGroups.hasNext()) {
+                    CmsGroup group = (CmsGroup)itGroups.next();
+                    if (project.getManagerGroupId().equals(group.getId())) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    // user is member of the manager group of the project
+                    continue;
+                }
+            }
+            itProjects.remove();
+        }
+        return projects;
     }
 
     /**
@@ -3380,52 +3436,90 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * for the group of the user.<p>
      *
      * @param dbc the current database context
+     * @param orgUnit the organizational unit to search project in
+     * @param includeSubOus if to include sub organizational units
      * 
      * @return a list of objects of type <code>{@link CmsProject}</code>
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getAllManageableProjects(CmsDbContext dbc) throws CmsException {
+    public List getAllManageableProjects(CmsDbContext dbc, CmsOrganizationalUnit orgUnit, boolean includeSubOus)
+    throws CmsException {
 
-        // the result set
         Set projects = new HashSet();
 
-        if (m_securityManager.hasRole(dbc, dbc.currentUser(), CmsRole.PROJECT_MANAGER)) {
-            // user is allowed to access all existing projects for the ous he has the project_manager role
-            Iterator itOus = getOrgUnitsForRole(dbc, CmsRole.PROJECT_MANAGER, true).iterator();
-            while (itOus.hasNext()) {
-                CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
-                projects.addAll(m_projectDriver.readProjects(dbc, ou.getName()));
-            }
-        }
-        // add all projects which are owned by the user
-        projects.addAll(m_projectDriver.readProjectsForUser(dbc, dbc.currentUser()));
+        // get the ous where the user has the project manager role
+        List ous = getOrgUnitsForRole(dbc, CmsRole.PROJECT_MANAGER.forOrgUnit(orgUnit.getName()), includeSubOus);
 
-        // get all groups of the user
-        List groups = getGroupsOfUser(dbc, dbc.currentUser().getName(), false);
-
-        // add all projects, that the user can access with his groups
-        for (int i = 0, n = groups.size(); i < n; i++) {
-            projects.addAll(m_projectDriver.readProjectsForManagerGroup(dbc, (CmsGroup)groups.get(i)));
+        // get the groups of the user if needed
+        Set userGroupIds = new HashSet();
+        Iterator itGroups = getGroupsOfUser(dbc, dbc.currentUser().getName(), false).iterator();
+        while (itGroups.hasNext()) {
+            CmsGroup group = (CmsGroup)itGroups.next();
+            userGroupIds.add(group.getId());
         }
 
-        // remove the online-project, it is not manageable!
-        projects.remove(readProject(dbc, CmsProject.ONLINE_PROJECT_ID));
+        // TODO: this could be optimize if this method would have an additional parameter 'includeSubOus'
+        // get all projects that might come in question
+        projects.addAll(m_projectDriver.readProjects(dbc, orgUnit.getName()));
 
-        // filter hidden projects
+        // filter hidden and not manageable projects
         Iterator itProjects = projects.iterator();
         while (itProjects.hasNext()) {
             CmsProject project = (CmsProject)itProjects.next();
-            if (project.isHidden() || !project.getOuFqn().startsWith(dbc.currentUser().getOuFqn())) {
-                // remove hidden projects
+            boolean manageable = true;
+            // if online
+            manageable = manageable && !project.isOnlineProject();
+            // if hidden
+            manageable = manageable && !project.isHidden();
+
+            if (!includeSubOus) {
+                // if not exact in the given ou
+                manageable = manageable && project.getOuFqn().equals(orgUnit.getName());
+            } else {
+                // if not in the given ou
+                manageable = manageable && project.getOuFqn().startsWith(orgUnit.getName());
+            }
+
+            if (!manageable) {
                 itProjects.remove();
                 continue;
             }
+
+            manageable = false;
+            // if owner
+            manageable = manageable || project.getOwnerId().equals(dbc.currentUser().getId());
+
+            // project managers
+            Iterator itOus = ous.iterator();
+            while (!manageable && itOus.hasNext()) {
+                CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
+                // for project managers check visibility
+                manageable = manageable || project.getOuFqn().startsWith(ou.getName());
+            }
+
+            if (!manageable) {
+                // if manager of project 
+                if (userGroupIds.contains(project.getManagerGroupId())) {
+                    String oufqn = readGroup(dbc, project.getManagerGroupId()).getOuFqn();
+                    manageable = manageable || (oufqn.startsWith(dbc.getRequestContext().getOuFqn()));
+                }
+            }
+            if (!manageable) {
+                // remove not accessible project
+                itProjects.remove();
+            }
         }
 
-        // return the list of projects
         ArrayList manageableProjects = new ArrayList(projects);
+        // sort the list of projects based on the project name
         Collections.sort(manageableProjects);
+        // ensure the online project is not in the list
+        CmsProject onlineProject = readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
+        if (manageableProjects.contains(onlineProject)) {
+            manageableProjects.remove(onlineProject);
+        }
+
         return manageableProjects;
     }
 
@@ -3827,7 +3921,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public CmsUUID getProjectId(CmsDbContext dbc, int id) throws CmsException {
 
-        Iterator itProjects = getAllAccessibleProjects(dbc).iterator();
+        Iterator itProjects = getAllAccessibleProjects(dbc, readOrganizationalUnit(dbc, ""), true).iterator();
         while (itProjects.hasNext()) {
             CmsProject project = (CmsProject)itProjects.next();
             if (project.getUuid().hashCode() == id) {
@@ -5744,6 +5838,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsHistoryPrincipal readHistoricalPrincipal(CmsDbContext dbc, CmsUUID principalId) throws CmsException {
 
         return m_historyDriver.readPrincipal(dbc, principalId);
+    }
+
+    /**
+     * Returns the latest historical project entry with the given id.<p>
+     *
+     * @param dbc the current database context
+     * @param projectId the project id
+     * 
+     * @return the requested historical project entry
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsHistoryProject readHistoryProject(CmsDbContext dbc, CmsUUID projectId) throws CmsException {
+
+        return m_historyDriver.readProject(dbc, projectId);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsPublishProjectReport.java,v $
- * Date   : $Date: 2008/02/27 12:05:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/03/27 13:22:44 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,6 +121,10 @@ public class CmsPublishProjectReport extends CmsReport {
                     }
                 } catch (Exception e) {
                     // ignore
+                }
+
+                if (getParamProjectid() == null) {
+                    return;
                 }
 
                 CmsPublishList list = null;
@@ -196,7 +200,10 @@ public class CmsPublishProjectReport extends CmsReport {
         // create a publish thread from the current publish list
         CmsPublishList publishList = getSettings().getPublishList();
         try {
-            OpenCms.getPublishManager().publishProject(getCms(), new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot()), publishList);
+            OpenCms.getPublishManager().publishProject(
+                getCms(),
+                new CmsHtmlReport(getLocale(), getCms().getRequestContext().getSiteRoot()),
+                publishList);
         } catch (CmsException e) {
             throw new CmsRuntimeException(e.getMessageContainer());
         }

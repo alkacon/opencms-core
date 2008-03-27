@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2008/03/17 08:55:33 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2008/03/27 13:22:45 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 6.0.0
  */
@@ -359,6 +359,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the publish button appearance node. */
     public static final String N_PUBLISHBUTTONAPPEARANCE = "publishbuttonappearance";
 
+    /** The node name of the list all projects node. */
+    public static final String N_LISTALLPROJECTS = "listallprojects";
+
     /** The node name of the publish notification node. */
     public static final String N_PUBLISHNOTIFICATION = "publishnotification";
 
@@ -379,7 +382,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The subname of the rfsfilesettings/rootPath node. */
     public static final String N_ROOTPATH = "rootPath";
-    
+
     /** The node name of the roots node. */
     public static final String N_ROOTS = "roots";
 
@@ -844,7 +847,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add fileViewSettings rules
         String xPathPrefix = "*/" + N_RFSFILEVIEWESETTINGS;
         digester.addObjectCreate(xPathPrefix, CmsRfsFileViewer.class);
-        digester.addBeanPropertySetter(xPathPrefix + "/" + N_ROOTPATH); 
+        digester.addBeanPropertySetter(xPathPrefix + "/" + N_ROOTPATH);
         digester.addBeanPropertySetter(xPathPrefix + "/" + N_FILEPATH);
         digester.addBeanPropertySetter(xPathPrefix + "/" + N_ENABLED);
         digester.addBeanPropertySetter(xPathPrefix + "/" + N_FILEENCODING);
@@ -1110,6 +1113,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             workplaceGeneraloptions.addElement(N_PUBLISHBUTTONAPPEARANCE).setText(
                 m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance());
         }
+        // add the list all projects option
+        workplaceGeneraloptions.addElement(N_LISTALLPROJECTS).setText(
+            m_workplaceManager.getDefaultUserSettings().getListAllProjectsString());
         // add the <publishnotification> node
         workplaceGeneraloptions.addElement(N_PUBLISHNOTIFICATION).setText(
             m_workplaceManager.getDefaultUserSettings().getShowPublishNotificationString());
@@ -1461,7 +1467,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // TODO: most of these settings are not user dependent, so they should not be stored in the CmsDefaultUserSettings class
         int todo = 0;
 
-        // add workplace preferences generaloptions rules 
+        // add workplace preferences general options rules 
         String xPathPrefix = "*/"
             + N_WORKPLACE
             + "/"
@@ -1473,6 +1479,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod(xPathPrefix + "/" + N_BUTTONSTYLE, "setWorkplaceButtonStyle", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_REPORTTYPE, "setWorkplaceReportType", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_UPLOADAPPLET, "setUploadApplet", 0);
+        digester.addCallMethod(xPathPrefix + "/" + N_LISTALLPROJECTS, "setListAllProjects", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHNOTIFICATION, "setShowPublishNotification", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_PUBLISHBUTTONAPPEARANCE, "setPublishButtonAppearance", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_SHOWFILEUPLOADBUTTON, "setShowFileUploadButton", 0);
@@ -1488,7 +1495,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod(xPathPrefix + "/" + N_NEWFOLDERCREATEINDEXPAGE, "setNewFolderCreateIndexPage", 0);
         digester.addCallMethod(xPathPrefix + "/" + N_SHOWUPLOADTYPEDIALOG, "setShowUploadTypeDialog", 0);
 
-        // add workplace preferences startupsettings rules
+        // add workplace preferences startup settings rules
         xPathPrefix = "*/"
             + N_WORKPLACE
             + "/"

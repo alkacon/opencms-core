@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.158 $
+ * Date   : $Date: 2008/03/27 13:22:45 $
+ * Version: $Revision: 1.159 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.158 $
+ * @version $Revision: 1.159 $
  * 
  * @since 6.0.0 
  */
@@ -1182,10 +1182,12 @@ public final class CmsObject {
      * @return a list of objects of type <code>{@link CmsProject}</code>
      *
      * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link org.opencms.security.CmsOrgUnitManager#getAllAccessibleProjects(CmsObject, String, boolean) OpenCms.getOrgUnitManager().getAllAccessibleProjects(CmsObject, String, boolean)} instead
      */
     public List getAllAccessibleProjects() throws CmsException {
 
-        return m_securityManager.getAllAccessibleProjects(m_context);
+        return OpenCms.getOrgUnitManager().getAllAccessibleProjects(this, "", true);
     }
 
     /**
@@ -1223,10 +1225,12 @@ public final class CmsObject {
      * @return a list of objects of type <code>{@link CmsProject}</code>
      *
      * @throws CmsException if operation was not successful
+     * 
+     * @deprecated use {@link org.opencms.security.CmsOrgUnitManager#getAllManageableProjects(CmsObject, String, boolean) OpenCms.getOrgUnitManager().getAllManageableProjects(CmsObject, String, boolean)} instead
      */
     public List getAllManageableProjects() throws CmsException {
 
-        return m_securityManager.getAllManageableProjects(m_context);
+        return OpenCms.getOrgUnitManager().getAllManageableProjects(this, "", true);
     }
 
     /**
@@ -1354,7 +1358,7 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      * 
-     * @deprecated use {@link org.opencms.security.CmsOrgUnitManager#getGroups(CmsObject, String, boolean) OpenCms.getOrgUnitManager().getGroupsForOrganizationalUnit(CmsObject, String, boolean)} instead
+     * @deprecated use {@link org.opencms.security.CmsOrgUnitManager#getGroups(CmsObject, String, boolean) OpenCms.getOrgUnitManager().getGroups(CmsObject, String, boolean)} instead
      */
     public List getGroups() throws CmsException {
 
@@ -2889,6 +2893,20 @@ public final class CmsObject {
     public CmsHistoryPrincipal readHistoryPrincipal(CmsUUID principalId) throws CmsException {
 
         return m_securityManager.readHistoricalPrincipal(m_context, principalId);
+    }
+
+    /**
+     * Returns the latest historical project entry with the given id.<p>
+     *
+     * @param projectId the project id
+     * 
+     * @return the requested historical project entry
+     * 
+     * @throws CmsException if operation was not successful
+     */
+    public CmsHistoryProject readHistoryProject(CmsUUID projectId) throws CmsException {
+
+        return (m_securityManager.readHistoryProject(m_context, projectId));
     }
 
     /**
