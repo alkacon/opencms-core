@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2008/03/27 13:22:45 $
- * Version: $Revision: 1.159 $
+ * Date   : $Date: 2008/03/28 16:57:40 $
+ * Version: $Revision: 1.160 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.159 $
+ * @version $Revision: 1.160 $
  * 
  * @since 6.0.0 
  */
@@ -3027,8 +3027,8 @@ public final class CmsObject {
      * 
      * @param project the project to get the project resources for
      * 
-     * @return the list of all resource names, as <code>{@link String}</code> objects 
-     *              that define the "view" of the given project.
+     * @return the list of all resource names (root paths), as <code>{@link String}</code> 
+     *              objects that define the "view" of the given project
      * 
      * @throws CmsException if something goes wrong
      */
