@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/03/27 16:46:08 $
- * Version: $Revision: 1.614 $
+ * Date   : $Date: 2008/03/28 16:58:32 $
+ * Version: $Revision: 1.615 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1325,6 +1325,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsPublishList pl = new CmsPublishList(ouRes, false);
         pl.add(ouRes, false);
 
+        getProjectDriver().writePublishHistory(
+            dbc,
+            pl.getPublishHistoryId(),
+            new CmsPublishedResource(ouRes, -1, CmsResourceState.STATE_NEW));
+
         // fire the 'virtual' publish event
         Map eventData = new HashMap();
         eventData.put(I_CmsEventListener.KEY_PUBLISHID, pl.getPublishHistoryId().toString());
@@ -2386,7 +2391,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_userDriver.deleteOrganizationalUnit(dbc, organizationalUnit);
 
         // write the publish history entry
-        m_projectDriver.writePublishHistory(dbc, pl.getPublishHistoryId(), new CmsPublishedResource(resource));
+        m_projectDriver.writePublishHistory(dbc, pl.getPublishHistoryId(), new CmsPublishedResource(
+            resource,
+            -1,
+            CmsResourceState.STATE_DELETED));
 
         // flush relevant caches
         OpenCms.getMemoryMonitor().clearPrincipalsCache();
@@ -3880,6 +3888,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the list of organizational units the given resource belongs to.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource
+     * 
+     * @return list of {@link CmsOrganizationalUnit} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getResourceOrgUnits(CmsDbContext dbc, CmsResource resource) throws CmsException {
+
+        try {
+            dbc.getRequestContext().setAttribute(I_CmsVfsDriver.REQ_ATTR_RESOURCE_OUS, Boolean.TRUE);
+            return m_vfsDriver.readRelations(
+                dbc,
+                dbc.currentProject().getUuid(),
+                resource,
+                CmsRelationFilter.TARGETS.filterIncludeChildren());
+        } finally {
+            dbc.getRequestContext().removeAttribute(I_CmsVfsDriver.REQ_ATTR_RESOURCE_OUS);
+        }
+    }
+
+    /**
      * Returns the set of permissions of the current user for a given resource.<p>
      * 
      * @param dbc the current database context
@@ -4172,40 +4204,32 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         result = new ArrayList();
 
-        // read all roles of the current user
-        List roles = new ArrayList(getGroupsOfUser(
-            dbc,
-            user.getName(),
-            "",
-            true,
-            true,
-            false,
-            dbc.getRequestContext().getRemoteAddress()));
+        Iterator itOus = getResourceOrgUnits(dbc, resource).iterator();
+        while (itOus.hasNext()) {
+            CmsOrganizationalUnit ou = (CmsOrganizationalUnit)itOus.next();
 
-        // check the roles applying to the given resource
-        Iterator it = roles.iterator();
-        while (it.hasNext()) {
-            CmsGroup group = (CmsGroup)it.next();
-            CmsRole givenRole = CmsRole.valueOf(group);
-            if (result.contains(givenRole.forOrgUnit(null))) {
-                // skip already added roles
-                continue;
-            }
-            // now check the resource if needed
-            if (givenRole.getOuFqn() != null) {
-                CmsOrganizationalUnit orgUnit = readOrganizationalUnit(dbc, givenRole.getOuFqn());
-                Iterator itResources = getResourcesForOrganizationalUnit(dbc, orgUnit).iterator();
-                while (itResources.hasNext()) {
-                    CmsResource givenResource = (CmsResource)itResources.next();
-                    if (resource.getRootPath().startsWith(givenResource.getRootPath())) {
-                        result.add(givenRole.forOrgUnit(null));
-                        break;
-                    }
+            // read all roles of the current user
+            List roles = new ArrayList(getGroupsOfUser(
+                dbc,
+                user.getName(),
+                ou.getName(),
+                false,
+                true,
+                false,
+                dbc.getRequestContext().getRemoteAddress()));
+            // check the roles applying to the given resource
+            Iterator it = roles.iterator();
+            while (it.hasNext()) {
+                CmsGroup group = (CmsGroup)it.next();
+                CmsRole givenRole = CmsRole.valueOf(group).forOrgUnit(null);
+                if (givenRole.isOrganizationalUnitIndependent() || result.contains(givenRole)) {
+                    // skip already added roles
+                    continue;
                 }
-            } else {
                 result.add(givenRole);
             }
         }
+
         result = Collections.unmodifiableList(result);
         OpenCms.getMemoryMonitor().cacheRoleList(key, result);
         return result;
@@ -8125,6 +8149,25 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         OpenCms.getMemoryMonitor().uncacheOrgUnit(organizationalUnit);
         m_userDriver.writeOrganizationalUnit(dbc, organizationalUnit);
+
+        // create a publish list for the 'virtual' publish event
+        CmsResource ouRes = readResource(dbc, organizationalUnit.getId(), CmsResourceFilter.DEFAULT);
+        CmsPublishList pl = new CmsPublishList(ouRes, false);
+        pl.add(ouRes, false);
+
+        getProjectDriver().writePublishHistory(
+            dbc,
+            pl.getPublishHistoryId(),
+            new CmsPublishedResource(ouRes, -1, CmsResourceState.STATE_NEW));
+
+        // fire the 'virtual' publish event
+        Map eventData = new HashMap();
+        eventData.put(I_CmsEventListener.KEY_PUBLISHID, pl.getPublishHistoryId().toString());
+        eventData.put(I_CmsEventListener.KEY_PROJECTID, dbc.currentProject().getUuid());
+        eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
+        CmsEvent afterPublishEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
+        OpenCms.fireCmsEvent(afterPublishEvent);
+
         OpenCms.getMemoryMonitor().cacheOrgUnit(organizationalUnit);
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/03/27 16:46:08 $
- * Version: $Revision: 1.996 $
+ * Date   : $Date: 2008/03/28 16:58:31 $
+ * Version: $Revision: 1.997 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -29,6 +29,7 @@ OpenCms 7.0.5 - xxx, 2008
 - Many improvements on Template Two and the demo
 - Changed decoration to plug in an extended decoration module
 - Improved internal link validation performance
+- Improved performance when having several organizational units
 ! Added editor with syntax highlighting functionality (EditArea) for text based files
 ! New preferences option for displaying all projects or only the ones in the current ou in the project selector
 

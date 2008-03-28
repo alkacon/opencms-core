@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2008/02/27 12:05:43 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2008/03/28 16:58:32 $
+ * Version: $Revision: 1.121 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.120 $
+ * @version $Revision: 1.121 $
  * 
  * @since 6.0.0 
  */
@@ -65,6 +65,9 @@ public interface I_CmsVfsDriver {
 
     /** The internal request attribute to indicate that the permissions have to be checked. */
     String REQ_ATTR_CHECK_PERMISSIONS = "CHECK_PERMISSIONS";
+
+    /** The internal request attribute to indicate that resource organizational units have to be retrieved. */
+    String REQ_ATTR_RESOURCE_OUS = "RETRIEVE_RESOURCE_OUS";
 
     /**
      * Counts the number of siblings of a resource.<p>

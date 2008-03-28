@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2008/03/27 13:22:43 $
- * Version: $Revision: 1.277 $
+ * Date   : $Date: 2008/03/28 16:58:31 $
+ * Version: $Revision: 1.278 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,6 +62,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -89,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.277 $
+ * @version $Revision: 1.278 $
  * 
  * @since 6.0.0 
  */
@@ -1771,6 +1772,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public List readRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, CmsRelationFilter filter)
     throws CmsDataAccessException {
 
+        if (dbc.getRequestContext().getAttribute(REQ_ATTR_RESOURCE_OUS) != null) {
+            return getResourceOus(dbc, projectId, resource);
+        }
         Set relations = new HashSet();
 
         Connection conn = null;
@@ -1839,6 +1843,60 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         List result = new ArrayList(relations);
         Collections.sort(result, CmsRelation.COMPARATOR);
         return result;
+    }
+
+    /**
+     * Returns all organizational units for the given resource.<p>
+     * 
+     * @param dbc the database context
+     * @param projectId the id of the project
+     * @param resource the resource
+     * 
+     * @return a list of {@link CmsOrganizationalUnit} objects
+     * 
+     * @throws CmsDbSqlException if something goes wrong
+     */
+    protected List getResourceOus(CmsDbContext dbc, CmsUUID projectId, CmsResource resource) throws CmsDbSqlException {
+
+        List ous = new ArrayList();
+        String resName = resource.getRootPath();
+        if (resource.isFolder() && !resName.endsWith("/")) {
+            resName += "/";
+        }
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatementForSql(conn, m_sqlManager.readQuery(
+                projectId,
+                "C_READ_RESOURCE_OUS"));
+            stmt.setInt(1, CmsRelationType.OU_RESOURCE.getId());
+            stmt.setString(2, resName);
+            res = stmt.executeQuery();
+            while (res.next()) {
+                CmsRelation rel = internalReadRelation(res);
+                try {
+                    ous.add(m_driverManager.readOrganizationalUnit(dbc, rel.getSourcePath().substring(
+                        CmsUserDriver.ORGUNIT_BASE_FOLDER.length())));
+                } catch (CmsException e) {
+                    // should never happen
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                }
+            }
+            m_sqlManager.closeAll(dbc, null, stmt, res);
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return ous;
     }
 
     /**

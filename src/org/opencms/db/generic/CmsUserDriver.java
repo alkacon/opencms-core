@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2008/03/27 13:22:44 $
- * Version: $Revision: 1.124 $
+ * Date   : $Date: 2008/03/28 16:58:31 $
+ * Version: $Revision: 1.125 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,20 +101,20 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.124 $
+ * @version $Revision: 1.125 $
  * 
  * @since 6.0.0 
  */
 public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
+
+    /** The root path for organizational units. */
+    public static final String ORGUNIT_BASE_FOLDER = "/system/orgunits/";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsUserDriver.class);
 
     /** The name of the offline project. */
     private static final String OFFLINE_PROJECT_NAME = "Offline";
-
-    /** The root path for organizational units. */
-    private static final String ORGUNIT_BASE_FOLDER = "/system/orgunits/";
 
     /** Property for the organizational unit description. */
     private static final String ORGUNIT_PROPERTY_DESCRIPTION = CmsPropertyDefinition.PROPERTY_DESCRIPTION;
@@ -572,11 +572,15 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 organizationalUnit.getId(),
                 CmsResourceFilter.DEFAULT);
             internalDeleteOrgUnitResource(dbc, resource);
-            try {
-                // maintain the default project synchronized
-                m_driverManager.deleteProject(dbc, m_driverManager.readProject(dbc, organizationalUnit.getProjectId()));
-            } catch (CmsDbEntryNotFoundException e) {
-                // ignore
+            if (organizationalUnit.getProjectId() != null) {
+                try {
+                    // maintain the default project synchronized
+                    m_driverManager.deleteProject(dbc, m_driverManager.readProject(
+                        dbc,
+                        organizationalUnit.getProjectId()));
+                } catch (CmsDbEntryNotFoundException e) {
+                    // ignore
+                }
             }
         } catch (CmsException e) {
             throw new CmsDataAccessException(e.getMessageContainer(), e);

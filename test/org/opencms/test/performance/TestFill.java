@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/performance/TestFill.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/03/28 16:58:32 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.test.performance;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.main.OpenCms;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.test.OpenCmsTestCase;
@@ -51,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestFill extends OpenCmsTestCase {
 
@@ -78,6 +80,7 @@ public class TestFill extends OpenCmsTestCase {
         suite.setName(TestFill.class.getName());
 
         //suite.addTest(new TestFill("testFillResources"));
+        suite.addTest(new TestFill("testPermissionsWithOUs"));
         suite.addTest(new TestFill("testResWithProps"));
         suite.addTest(new TestFill("testReadFile"));
 
@@ -98,7 +101,62 @@ public class TestFill extends OpenCmsTestCase {
     }
 
     /**
-     * fills the db with app in average: <br>
+     * fills the db with organizational units.<br>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPermissionsWithOUs() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Test filling the db with tons of ous");
+
+        // prepare the scenario
+        String resourcename = "testPermissionsWithOu.jsp";
+        CmsResource res = cms.createResource(resourcename, CmsResourceTypeJsp.getStaticTypeId());
+
+        // check the initial performance
+        long t = System.currentTimeMillis();
+        OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeJsp.getStaticTypeName()).isEditable(
+            cms,
+            res);
+        t = System.currentTimeMillis() - t;
+        echo("initial permissions read in " + t + " msecs");
+
+        int x = 50;
+        for (int k = 0; k < x; k++) {
+            // create some ous
+            t = System.currentTimeMillis();
+            int n = 10;
+            for (int i = 0; i < n; i++) {
+                int number = n * k + i;
+                cms.createResource("testPermissionsWithOu" + number, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+                OpenCms.getPublishManager().publishResource(cms, "testPermissionsWithOu" + number);
+                OpenCms.getPublishManager().waitWhileRunning();
+                OpenCms.getOrgUnitManager().createOrganizationalUnit(
+                    cms,
+                    "testPermissionsWithOu" + number,
+                    "test" + number,
+                    0,
+                    "/testPermissionsWithOu" + number);
+            }
+            t = System.currentTimeMillis() - t;
+            echo("" + n + " ous created in " + t + " msecs");
+
+            // check the performance
+            String newName = "testPermissionsWithOu" + (n * k + 1) + "/" + resourcename;
+            cms.copyResource(resourcename, newName);
+            res = cms.readResource(newName);
+            t = System.currentTimeMillis();
+            OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeJsp.getStaticTypeName()).isEditable(
+                cms,
+                res);
+            t = System.currentTimeMillis() - t;
+            echo("permissions with " + n * (k + 1) + " OUs read in " + t + " msecs");
+        }
+    }
+
+    /**
+     * fills the db with resources in average: <br>
      *    <ul>
      *        <li>10 folders in 5 subfolders
      *        <li>20 files in each folder, 75% binary / 30% text files,<li>
