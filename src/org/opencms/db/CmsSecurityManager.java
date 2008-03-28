@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2008/03/27 13:22:43 $
- * Version: $Revision: 1.117 $
+ * Date   : $Date: 2008/03/28 09:48:05 $
+ * Version: $Revision: 1.118 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -338,6 +338,9 @@ public final class CmsSecurityManager {
 
         boolean hasRole = false;
         try {
+            if (hasRole(dbc, dbc.currentUser(), CmsRole.ROOT_ADMIN)) {
+                return;
+            }
             hasRole = m_driverManager.getAllManageableProjects(
                 dbc,
                 m_driverManager.readOrganizationalUnit(dbc, project.getOuFqn()),
