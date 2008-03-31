@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsExternalLinksValidator.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/03/31 13:00:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,8 @@ import org.opencms.scheduler.I_CmsScheduledJob;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,7 +57,7 @@ import java.util.Map;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,22 +69,32 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
     /**
      * Checks if the given url is valid.<p>
      *
-     * @param url the url to check
+     * @param check the url to check
      * @param cms a OpenCms context object
      * 
      * @return false if the url could not be accessed
      */
-    public static boolean checkUrl(CmsObject cms, String url) {
+    public static boolean checkUrl(CmsObject cms, String check) {
 
+        // first, create a uri from the string representation
+        URI uri = null; 
         try {
-            if (url.toLowerCase().startsWith("/")) {
-                return cms.existsResource(cms.getRequestContext().removeSiteRoot(url));
-            } else if (url.startsWith("http")) {
-                URL checkedUrl = new URL(url);
-                HttpURLConnection httpcon = (HttpURLConnection)checkedUrl.openConnection();
-                return (httpcon.getResponseCode() == 200);
+            uri = new URI(null, check, null); 
+        } catch (URISyntaxException exc) {
+           return false; 
+        }    
+        try {
+            if (!uri.isAbsolute()) {
+                return cms.existsResource(cms.getRequestContext().removeSiteRoot(uri.getPath())); 
             } else {
-                return true;
+                URL url = uri.toURL();
+                if ("http".equals(url.getProtocol())) {
+                    // ensure that file is encoded properly
+                    HttpURLConnection httpcon = (HttpURLConnection)url.openConnection();
+                    return (httpcon.getResponseCode() == 200);
+                } else {
+                    return true;
+                }
             }
         } catch (MalformedURLException mue) {
             return false;
