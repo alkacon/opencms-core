@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPatternLayout.java,v $
- * Date   : $Date: 2008/04/01 15:03:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/04/01 15:48:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,6 +103,8 @@ public class CmsPatternLayout extends PatternLayout {
             StringBuffer minTrace = new StringBuffer();
 
             boolean exclFound = false;
+            int count = 0;
+
             String[] elements = ti.getThrowableStrRep();
             for (int i = 0; i < elements.length; i++) {
                 String elem = elements[i];
@@ -113,10 +115,17 @@ public class CmsPatternLayout extends PatternLayout {
                     minTrace.append(Layout.LINE_SEP);
                 }
 
+                // if cause trace starts reset counter (subtrace)
+                if (elem.trim().startsWith("Caused")) {
+                    count = 0;
+                }
+
                 // filter the entry
-                if (!matches(elem, m_filters) && !exclFound && i < m_maxLength) {
+                if (!matches(elem, m_filters) && !exclFound && count < m_maxLength) {
                     trace.append(elem);
                     trace.append(Layout.LINE_SEP);
+
+                    count++;
                 }
 
                 // check for exclusion
