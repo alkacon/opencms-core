@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2008/03/27 16:46:08 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/04/01 10:18:00 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -87,6 +87,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestPublishIssues.class.getName());
 
+        suite.addTest(new TestPublishIssues("testPublishFolderWithNewFileFromOtherProject"));
+        suite.addTest(new TestPublishIssues("testPublishFolderWithChangedFileFromOtherProject"));
         suite.addTest(new TestPublishIssues("testPublishFolderWithDeletedFileFromOtherProject"));
         suite.addTest(new TestPublishIssues("testPublishScenarioA"));
         suite.addTest(new TestPublishIssues("testPublishScenarioB"));
@@ -241,6 +243,56 @@ public class TestPublishIssues extends OpenCmsTestCase {
     }
 
     /**
+     * Tests publishing a deleted folder containing a file that was changed in other project.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishFolderWithChangedFileFromOtherProject() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publishing a deleted folder containing a file that was changed in other project");
+
+        // create the initial files
+        String folder = "testFolderABC2/";
+        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        String file = folder + "file.txt";
+        cms.createResource(file, CmsResourceTypePlain.getStaticTypeId());
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        CmsProject offline = cms.getRequestContext().currentProject();
+        // create a new project and switch to it
+        CmsProject prj = cms.createProject(
+            "testABC",
+            "tets project",
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
+            OpenCms.getDefaultUsers().getGroupAdministrators());
+        cms.getRequestContext().setCurrentProject(prj);
+        cms.copyResourceToProject(folder);
+
+        // change the file in the new project
+        cms.lockResource(file);
+        cms.setDateLastModified(file, System.currentTimeMillis(), false);
+
+        // switch back
+        cms.getRequestContext().setCurrentProject(offline);
+        // delete folder
+        cms.lockResource(folder);
+        cms.deleteResource(folder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // try to publish
+        I_CmsReport report = new CmsLogReport(Locale.ENGLISH, getClass());
+        OpenCms.getPublishManager().publishResource(cms, folder, true, report);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // assert
+        assertTrue(report.getErrors().isEmpty());
+        assertTrue(report.getWarnings().isEmpty());
+        assertFalse(cms.existsResource(folder, CmsResourceFilter.ALL));
+        assertFalse(cms.existsResource(file, CmsResourceFilter.ALL));
+    }
+
+    /**
      * Tests publishing a deleted folder containing a file that was deleted in other project.<p>
      * 
      * @throws Throwable if something goes wrong
@@ -271,6 +323,54 @@ public class TestPublishIssues extends OpenCmsTestCase {
         // delete the file in the new project
         cms.lockResource(file);
         cms.deleteResource(file, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // switch back
+        cms.getRequestContext().setCurrentProject(offline);
+        // delete folder
+        cms.lockResource(folder);
+        cms.deleteResource(folder, CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // try to publish
+        I_CmsReport report = new CmsLogReport(Locale.ENGLISH, getClass());
+        OpenCms.getPublishManager().publishResource(cms, folder, true, report);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // assert
+        assertTrue(report.getErrors().isEmpty());
+        assertTrue(report.getWarnings().isEmpty());
+        assertFalse(cms.existsResource(folder, CmsResourceFilter.ALL));
+        assertFalse(cms.existsResource(file, CmsResourceFilter.ALL));
+    }
+
+    /**
+     * Tests publishing a deleted folder containing a file that was new created in other project.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testPublishFolderWithNewFileFromOtherProject() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing publishing a deleted folder containing a file that was new created in other project");
+
+        // create the initial files
+        String folder = "testFolderABC1/";
+        cms.createResource(folder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        OpenCms.getPublishManager().publishResource(cms, folder);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        CmsProject offline = cms.getRequestContext().currentProject();
+        // create a new project and switch to it
+        CmsProject prj = cms.createProject(
+            "testABC",
+            "tets project",
+            OpenCms.getDefaultUsers().getGroupAdministrators(),
+            OpenCms.getDefaultUsers().getGroupAdministrators());
+        cms.getRequestContext().setCurrentProject(prj);
+        cms.copyResourceToProject(folder);
+
+        // create the file in the new project
+        String file = folder + "file.txt";
+        cms.createResource(file, CmsResourceTypePlain.getStaticTypeId());
 
         // switch back
         cms.getRequestContext().setCurrentProject(offline);
