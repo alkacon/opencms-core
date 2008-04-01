@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2006/03/27 14:52:27 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2008/04/01 14:10:21 $
+ * Version: $Revision: 1.35.6.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.35.6.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,7 +64,7 @@ public class CmsHtmlList {
     /** Standard list button location. */
     public static final String ICON_RIGHT = "list/rightarrow.png";
 
-    /** Constant for item separator char used for coding/encoding multiselection. */
+    /** Constant for item separator char used for coding/encoding multi-selection. */
     public static final String ITEM_SEPARATOR = "|";
 
     /** Var name for error message if no item has been selected. */
@@ -74,40 +74,40 @@ public class CmsHtmlList {
     public static final String NO_SELECTION_MATCH_HELP_VAR = "noSelMatchHelp";
 
     /** Current displayed page number. */
-    private int m_currentPage;
+    protected int m_currentPage;
 
     /** Current sort order. */
-    private CmsListOrderEnum m_currentSortOrder;
+    protected CmsListOrderEnum m_currentSortOrder;
 
     /** Filtered list of items or <code>null</code> if no filter is set and not sorted. */
-    private List m_filteredItems;
+    protected List m_filteredItems;
 
     /** Dhtml id. */
-    private final String m_id;
+    protected final String m_id;
 
     /** Maximum number of items per page. */
-    private int m_maxItemsPerPage = 20;
+    protected int m_maxItemsPerPage = 20;
 
     /** Metadata for building the list. */
-    private CmsListMetadata m_metadata;
+    protected CmsListMetadata m_metadata;
 
     /** Display Name of the list. */
-    private final CmsMessageContainer m_name;
+    protected final CmsMessageContainer m_name;
 
     /** Really content of the list. */
-    private final List m_originalItems = new ArrayList();
+    protected final List m_originalItems = new ArrayList();
 
     /** printable flag. */
-    private boolean m_printable;
+    protected boolean m_printable;
 
     /** Search filter text. */
-    private String m_searchFilter;
+    protected String m_searchFilter;
 
     /** Column name to be sorted. */
-    private String m_sortedColumn;
+    protected String m_sortedColumn;
 
     /** Items currently displayed. */
-    private List m_visibleItems;
+    protected List m_visibleItems;
 
     /**
      * Default Constructor.<p>
@@ -377,7 +377,7 @@ public class CmsHtmlList {
     public void insertAllItems(Collection listItems, Locale locale) {
 
         CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
+        if ((m_filteredItems != null) || (m_visibleItems != null)) {
             state = getState();
         }
         addAllItems(listItems);
@@ -403,7 +403,7 @@ public class CmsHtmlList {
     public void insertItem(CmsListItem listItem, Locale locale) {
 
         CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
+        if ((m_filteredItems != null) || (m_visibleItems != null)) {
             state = getState();
         }
         addItem(listItem);
@@ -605,7 +605,7 @@ public class CmsHtmlList {
             return removedItems;
         }
         CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
+        if ((m_filteredItems != null) || (m_visibleItems != null)) {
             state = getState();
         }
         m_originalItems.removeAll(removedItems);
@@ -635,20 +635,12 @@ public class CmsHtmlList {
      */
     public CmsListItem removeItem(String id, Locale locale) {
 
-        CmsListItem item = null;
-        Iterator itItems = m_originalItems.iterator();
-        while (itItems.hasNext()) {
-            CmsListItem listItem = (CmsListItem)itItems.next();
-            if (listItem.getId().equals(id)) {
-                item = listItem;
-                break;
-            }
-        }
+        CmsListItem item = getItem(id);
         if (item == null) {
             return null;
         }
         CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
+        if ((m_filteredItems != null) || (m_visibleItems != null)) {
             state = getState();
         }
         m_originalItems.remove(item);
@@ -694,7 +686,7 @@ public class CmsHtmlList {
             }
         }
         CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
+        if ((m_filteredItems != null) || (m_visibleItems != null)) {
             state = getState();
         }
         if (!removedItems.isEmpty()) {
@@ -735,7 +727,7 @@ public class CmsHtmlList {
             }
         }
         CmsListState state = null;
-        if (m_filteredItems != null || m_visibleItems != null) {
+        if ((m_filteredItems != null) || (m_visibleItems != null)) {
             state = getState();
         }
         if (item != null) {
@@ -758,7 +750,7 @@ public class CmsHtmlList {
     public void setCurrentPage(int currentPage) throws CmsIllegalArgumentException {
 
         if (getSize() != 0) {
-            if (currentPage < 1 || currentPage > getNumberOfPages()) {
+            if ((currentPage < 1) || (currentPage > getNumberOfPages())) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.ERR_LIST_INVALID_PAGE_1,
                     new Integer(currentPage)));
@@ -820,7 +812,7 @@ public class CmsHtmlList {
      */
     public void setSortedColumn(String sortedColumn, Locale locale) throws CmsIllegalArgumentException {
 
-        if (getMetadata().getColumnDefinition(sortedColumn) == null
+        if ((getMetadata().getColumnDefinition(sortedColumn) == null)
             || !getMetadata().getColumnDefinition(sortedColumn).isSorteable()) {
             return;
         }
@@ -880,12 +872,12 @@ public class CmsHtmlList {
      * Sets the metadata for this list.<p>
      * 
      * Should only be used by the <code>{@link A_CmsListDialog}</code> class
-     * for temporaly removing the metadata object while the list is saved in the 
+     * for temporally removing the metadata object while the list is saved in the 
      * <code>{@link org.opencms.workplace.CmsWorkplaceSettings}</code>.<p>     
      * 
      * @param metadata the list metadata
      */
-    /*package*/void setMetadata(CmsListMetadata metadata) {
+    protected void setMetadata(CmsListMetadata metadata) {
 
         m_metadata = metadata;
     }
@@ -895,7 +887,7 @@ public class CmsHtmlList {
      * 
      * @return the number (from 1) of the first displayed item, or zero if the list is empty
      */
-    private int displayedFrom() {
+    protected int displayedFrom() {
 
         if (getSize() != 0) {
             if (isPrintable()) {
@@ -912,7 +904,7 @@ public class CmsHtmlList {
      * 
      * @return the number (from 1) of the last displayed item, or zero if the list is empty
      */
-    private int displayedTo() {
+    protected int displayedTo() {
 
         if (getSize() != 0) {
             if (!isPrintable()) {
@@ -931,11 +923,11 @@ public class CmsHtmlList {
      *  
      * @return html code
      */
-    private String htmlBegin(CmsWorkplace wp) {
+    protected String htmlBegin(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
         // help & confirmation text for actions if needed
-        if (!isPrintable() && m_visibleItems != null && !m_visibleItems.isEmpty()) {
+        if (!isPrintable() && (m_visibleItems != null) && !m_visibleItems.isEmpty()) {
             Iterator cols = getMetadata().getColumnDefinitions().iterator();
             while (cols.hasNext()) {
                 CmsListColumnDefinition col = (CmsListColumnDefinition)cols.next();
@@ -964,13 +956,13 @@ public class CmsHtmlList {
     }
 
     /**
-     * Generates the need html code for ending a lsit.<p>
+     * Generates the need html code for ending a list.<p>
      * 
      * @param wp the workplace context
      * 
      * @return html code
      */
-    private String htmlEnd(CmsWorkplace wp) {
+    protected String htmlEnd(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
         html.append("\t\t\t</td></tr>\n");
@@ -997,7 +989,7 @@ public class CmsHtmlList {
      * 
      * @return html code
      */
-    private String htmlPagingBar(CmsWorkplace wp) {
+    protected String htmlPagingBar(CmsWorkplace wp) {
 
         if (getNumberOfPages() < 2) {
             return "";
@@ -1070,13 +1062,14 @@ public class CmsHtmlList {
         html.append("\t\t\t</select>\n");
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
-            html.append(messages.key(
-                Messages.GUI_LIST_PAGING_TEXT_2,
-                new Object[] {m_name.key(wp.getLocale()), new Integer(getTotalSize())}));
+            html.append(messages.key(Messages.GUI_LIST_PAGING_TEXT_2, new Object[] {
+                m_name.key(wp.getLocale()),
+                new Integer(getTotalSize())}));
         } else {
-            html.append(messages.key(
-                Messages.GUI_LIST_PAGING_FILTER_TEXT_3,
-                new Object[] {m_name.key(wp.getLocale()), new Integer(getSize()), new Integer(getTotalSize())}));
+            html.append(messages.key(Messages.GUI_LIST_PAGING_FILTER_TEXT_3, new Object[] {
+                m_name.key(wp.getLocale()),
+                new Integer(getSize()),
+                new Integer(getTotalSize())}));
         }
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");
@@ -1091,7 +1084,7 @@ public class CmsHtmlList {
      * 
      * @return html code
      */
-    private String htmlTitle(CmsWorkplace wp) {
+    protected String htmlTitle(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
         CmsMessages messages = Messages.get().getBundle(wp.getLocale());
@@ -1135,13 +1128,13 @@ public class CmsHtmlList {
     }
 
     /**
-     * Returns the html code for the toolbar (search bar + multiactions bar).<p>
+     * Returns the html code for the tool bar (search bar + multi actions bar).<p>
      * 
      * @param wp the workplace context
      * 
      * @return html code
      */
-    private String htmlToolBar(CmsWorkplace wp) {
+    protected String htmlToolBar(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
         html.append("<table width='100%' cellspacing='0' style='margin-bottom: 5px'>\n");
