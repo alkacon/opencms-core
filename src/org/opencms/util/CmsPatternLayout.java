@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPatternLayout.java,v $
- * Date   : $Date: 2008/04/01 15:48:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/04/02 09:38:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,8 @@ import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
 
 /**
- * Extends the default by adding functionality for stack traces output.<p>
+ * Extends the default pattern layout of log4j by adding functionality for filtering the 
+ * stack traces output.<p>
  * 
  * CAUTION: Do not use classes which instantiate a logger in this class!!!<p>
  * 
@@ -104,6 +105,8 @@ public class CmsPatternLayout extends PatternLayout {
 
             boolean exclFound = false;
             int count = 0;
+            int filtered = 0;
+            int truncated = 0;
 
             String[] elements = ti.getThrowableStrRep();
             for (int i = 0; i < elements.length; i++) {
@@ -111,25 +114,34 @@ public class CmsPatternLayout extends PatternLayout {
 
                 // if entry not start with "at" -> put in minimum trace
                 if (!elem.trim().startsWith("at ") && !elem.trim().startsWith("...")) {
-                    minTrace.append(elem);
-                    minTrace.append(Layout.LINE_SEP);
+                    minTrace.append(elem).append(Layout.LINE_SEP);
                 }
 
                 // if cause trace starts reset counter (subtrace)
                 if (elem.trim().startsWith("Caused")) {
+                    if (!exclFound && (truncated > 0 || filtered > 0)) {
+                        trace.append(createSummary(truncated, filtered));
+                    }
                     count = 0;
+                    filtered = 0;
+                    truncated = 0;
                 }
 
                 // filter the entry
-                if (!matches(elem, m_filters) && !exclFound && count < m_maxLength) {
-                    trace.append(elem);
-                    trace.append(Layout.LINE_SEP);
+                if (!matches(elem, m_filters) && !exclFound) {
+                    if (count < m_maxLength) {
+                        trace.append(elem).append(Layout.LINE_SEP);
 
-                    count++;
+                        count++;
+                    } else {
+                        truncated++;
+                    }
+                } else {
+                    filtered++;
                 }
 
                 // check for exclusion
-                if (matches(elem, m_excludes) && !exclFound) {
+                if (!exclFound && matches(elem, m_excludes)) {
                     exclFound = true;
                 }
             }
@@ -137,6 +149,9 @@ public class CmsPatternLayout extends PatternLayout {
             if (exclFound) {
                 result += minTrace.toString();
             } else {
+                if (truncated > 0 || filtered > 0) {
+                    trace.append(createSummary(truncated, filtered));
+                }
                 result += trace.toString();
             }
         }
@@ -202,6 +217,30 @@ public class CmsPatternLayout extends PatternLayout {
         } catch (NumberFormatException ex) {
             m_maxLength = Integer.MAX_VALUE;
         }
+    }
+
+    /**
+     * Creates a string with the count of filtered and truncated elements.<p>
+     * 
+     * @param truncated the number of truncated elements
+     * @param filtered the number of filtered elements
+     * 
+     * @return a string with the count of filtered and truncated elements
+     */
+    private String createSummary(int truncated, int filtered) {
+
+        StringBuffer result = new StringBuffer(128);
+
+        result.append("\t... ");
+        result.append(filtered + truncated);
+        result.append(" more (");
+        result.append(filtered);
+        result.append(" filtered; ");
+        result.append(truncated);
+        result.append(" truncated)");
+        result.append(Layout.LINE_SEP);
+
+        return result.toString();
     }
 
     /**
