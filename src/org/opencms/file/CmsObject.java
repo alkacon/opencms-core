@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2008/03/28 16:57:40 $
- * Version: $Revision: 1.160 $
+ * Date   : $Date: 2008/04/02 10:13:57 $
+ * Version: $Revision: 1.161 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.160 $
+ * @version $Revision: 1.161 $
  * 
  * @since 6.0.0 
  */
@@ -2227,7 +2227,7 @@ public final class CmsObject {
         // set the project back to the "Online" project
         CmsProject newProject = m_securityManager.readProject(CmsProject.ONLINE_PROJECT_ID);
         // switch the cms context to the new user and project
-        m_context.switchUser(newUser, newProject, CmsOrganizationalUnit.getParentFqn(username));
+        m_context.switchUser(newUser, newProject, newUser.getOuFqn());
         // init this CmsObject with the new user
         init(m_securityManager, m_context);
         // fire a login event
