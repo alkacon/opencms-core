@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparison.java,v $
- * Date   : $Date: 2008/02/27 12:05:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/04/02 07:05:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.comparison;
 
+import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
@@ -40,6 +41,7 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.workplace.commons.Messages;
 
@@ -173,8 +175,18 @@ public class CmsResourceComparison {
             dateCreated1,
             dateCreated2));
         try {
-            String userLastModified1 = cms.readUser(resource1.getUserLastModified()).getName();
-            String userLastModified2 = cms.readUser(resource2.getUserLastModified()).getName();
+            String userLastModified1 = resource1.getUserLastModified().toString();
+            try {
+                userLastModified1 = CmsPrincipal.readPrincipalIncludingHistory(cms, resource1.getUserLastModified()).getName();
+            } catch (CmsDbEntryNotFoundException e) {
+                // ignore
+            }
+            String userLastModified2 = resource2.getUserLastModified().toString();
+            try {
+                userLastModified2 = CmsPrincipal.readPrincipalIncludingHistory(cms, resource2.getUserLastModified()).getName();
+            } catch (CmsDbEntryNotFoundException e) {
+                // ignore
+            }
             comparedAttributes.add(new CmsAttributeComparison(
                 Messages.GUI_LABEL_USER_LAST_MODIFIED_0,
                 userLastModified1,

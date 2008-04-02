@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/04/02 07:05:28 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.2 
  */
@@ -539,8 +539,14 @@ public class CmsHistoryList extends A_CmsListDialog {
             item.set(LIST_COLUMN_DATE_LAST_MODIFIED, getMessages().getDateTime(offlineResource.getDateLastModified()));
             // resource type           
             item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(offlineResource.getTypeId()));
-            // user           
-            item.set(LIST_COLUMN_USER, getCms().readUser(offlineResource.getUserLastModified()).getName());
+            // user
+            String user = offlineResource.getUserLastModified().toString();
+            try {
+                user = CmsPrincipal.readPrincipalIncludingHistory(getCms(), offlineResource.getUserLastModified()).getName();
+            } catch (CmsDbEntryNotFoundException e) {
+                // ignore
+            }
+            item.set(LIST_COLUMN_USER, user);
             // size 
             item.set(LIST_COLUMN_SIZE, new Integer(offlineResource.getLength()).toString());
             // path
