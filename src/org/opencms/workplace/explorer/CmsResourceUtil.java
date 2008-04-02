@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsResourceUtil.java,v $
- * Date   : $Date: 2008/03/27 16:50:41 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/04/02 07:14:57 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -485,8 +485,12 @@ public final class CmsResourceUtil {
 
         String lockedBy = "";
         if (!getLock().isNullLock()) {
+            // user
+            lockedBy = getLock().getUserId().toString();
             try {
-                lockedBy = getCurrentOuRelativeName(getCms().readUser(getLock().getUserId()).getName());
+                lockedBy = getCurrentOuRelativeName(CmsPrincipal.readPrincipalIncludingHistory(
+                    getCms(),
+                    getLock().getUserId()).getName());
             } catch (Throwable e) {
                 lockedBy = e.getMessage();
             }
