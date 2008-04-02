@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2008/03/27 13:22:44 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2008/04/02 08:14:41 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -937,6 +937,10 @@ public class CmsLogin extends CmsJspLoginBean {
      */
     protected void setCookie(Cookie cookie) {
 
+        if (getRequest().getAttribute(PARAM_PREDEF_OUFQN) != null) {
+            // prevent the use of cookies if using a direct ou login url
+            return;
+        }
         // set the expiration date of the cookie to six months from today
         GregorianCalendar cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, 6);
