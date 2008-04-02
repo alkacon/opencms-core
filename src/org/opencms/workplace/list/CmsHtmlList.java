@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2008/02/27 12:05:28 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2008/04/02 07:26:42 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,62 +68,62 @@ public class CmsHtmlList {
     /** Constant for item separator char used for coding/encoding multiselection. */
     public static final String ITEM_SEPARATOR = "|";
 
-    /** Var name for error message if no item has been selected. */
+    /** Constant name for error message if no item has been selected. */
     public static final String NO_SELECTION_HELP_VAR = "noSelHelp";
 
-    /** Var name for error message if number of selected items does not match. */
+    /** Constant name for error message if number of selected items does not match. */
     public static final String NO_SELECTION_MATCH_HELP_VAR = "noSelMatchHelp";
 
     /** Current displayed page number. */
-    private int m_currentPage;
+    protected int m_currentPage;
 
     /** Current sort order. */
-    private CmsListOrderEnum m_currentSortOrder;
+    protected CmsListOrderEnum m_currentSortOrder;
 
     /** Filtered list of items or <code>null</code> if no filter is set and not sorted. */
-    private List m_filteredItems;
+    protected List m_filteredItems;
 
     /** Dhtml id. */
-    private final String m_id;
+    protected final String m_id;
 
     /** If this flag is set the list will be surrounded by a box. */
-    private boolean m_isBoxed = true;
+    protected boolean m_isBoxed = true;
 
     /** Maximum number of items per page. */
-    private int m_maxItemsPerPage = 20;
+    protected int m_maxItemsPerPage = 20;
 
     /** Metadata for building the list. */
-    private CmsListMetadata m_metadata;
+    protected CmsListMetadata m_metadata;
 
     /** Display Name of the list. */
-    private CmsMessageContainer m_name;
+    protected CmsMessageContainer m_name;
 
     /** Really content of the list. */
-    private List m_originalItems = new ArrayList();
+    protected List m_originalItems = new ArrayList();
 
     /** printable flag. */
-    private boolean m_printable;
+    protected boolean m_printable;
 
     /** Search filter text. */
-    private String m_searchFilter;
+    protected String m_searchFilter;
 
     /** Show the title of the list. */
-    private boolean m_showTitle;
+    protected boolean m_showTitle;
 
     /** The filtered content size, only used if data self managed. */
-    private int m_size;
+    protected int m_size;
 
     /** Column name to be sorted. */
-    private String m_sortedColumn;
+    protected String m_sortedColumn;
 
     /** The total size, only used is data self managed. */
-    private int m_totalSize;
+    protected int m_totalSize;
 
     /** Items currently displayed. */
-    private List m_visibleItems;
+    protected List m_visibleItems;
 
     /** The related workplace dialog object. */
-    private transient A_CmsListDialog m_wp;
+    protected transient A_CmsListDialog m_wp;
 
     /**
      * Default Constructor.<p>
@@ -613,6 +613,40 @@ public class CmsHtmlList {
     }
 
     /**
+     * Removes an item from the list.<p> 
+     * 
+     * Keeping care of all the state like sorted column, sorting order, displayed page and search filter.<p>
+     * 
+     * Try to use it instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
+     * 
+     * @param id the id of the item to remove
+     * 
+     * @return the removed list item
+     */
+    public CmsListItem removeItem(String id) {
+
+        CmsListItem item = getItem(id);
+        if (item == null) {
+            return null;
+        }
+        CmsListState state = null;
+        if ((m_filteredItems != null) || (m_visibleItems != null)) {
+            state = getState();
+        }
+        m_originalItems.remove(item);
+        if (m_filteredItems != null) {
+            m_filteredItems.remove(item);
+        }
+        if (m_visibleItems != null) {
+            m_visibleItems.remove(item);
+        }
+        if (state != null) {
+            setState(state);
+        }
+        return item;
+    }
+
+    /**
      * Sets the isBoxed flag.<p>
      *
      * If this flag is set, the list will be surrounded by a box.<p>
@@ -836,25 +870,11 @@ public class CmsHtmlList {
     }
 
     /**
-     * Sets the metadata for this list.<p>
-     * 
-     * Should only be used by the <code>{@link A_CmsListDialog}</code> class
-     * for temporaly removing the metadata object while the list is saved in the 
-     * <code>{@link org.opencms.workplace.CmsWorkplaceSettings}</code>.<p>     
-     * 
-     * @param metadata the list metadata
-     */
-    void setMetadata(CmsListMetadata metadata) {
-
-        m_metadata = metadata;
-    }
-
-    /**
      * Returns the number (from 1) of the first displayed item.<p>
      * 
      * @return the number (from 1) of the first displayed item, or zero if the list is empty
      */
-    private int displayedFrom() {
+    protected int displayedFrom() {
 
         if (getSize() != 0) {
             if (isPrintable()) {
@@ -871,7 +891,7 @@ public class CmsHtmlList {
      * 
      * @return the number (from 1) of the last displayed item, or zero if the list is empty
      */
-    private int displayedTo() {
+    protected int displayedTo() {
 
         if (getSize() != 0) {
             if (!isPrintable()) {
@@ -888,7 +908,7 @@ public class CmsHtmlList {
      *
      * @return html code
      */
-    private String htmlBegin() {
+    protected String htmlBegin() {
 
         StringBuffer html = new StringBuffer(512);
         // help & confirmation text for actions if needed
@@ -927,7 +947,7 @@ public class CmsHtmlList {
      * 
      * @return html code
      */
-    private String htmlEnd() {
+    protected String htmlEnd() {
 
         StringBuffer html = new StringBuffer(512);
         html.append("\t\t\t</td></tr>\n");
@@ -954,7 +974,7 @@ public class CmsHtmlList {
      * 
      * @return html code
      */
-    private String htmlPagingBar() {
+    protected String htmlPagingBar() {
 
         if (getNumberOfPages() < 2) {
             return "";
@@ -1038,7 +1058,7 @@ public class CmsHtmlList {
      * 
      * @return html code
      */
-    private String htmlTitle() {
+    protected String htmlTitle() {
 
         boolean showTitle = isShowTitle();
         Iterator itIndepActions = getMetadata().getIndependentActions().iterator();
@@ -1103,7 +1123,7 @@ public class CmsHtmlList {
      * 
      * @return html code
      */
-    private String htmlToolBar() {
+    protected String htmlToolBar() {
 
         boolean showToolBar = getMetadata().isSearchable();
         Iterator itMultiActions = getMetadata().getMultiActions().iterator();
@@ -1123,5 +1143,19 @@ public class CmsHtmlList {
         html.append("\t</tr>\n");
         html.append("</table>\n");
         return html.toString();
+    }
+
+    /**
+     * Sets the metadata for this list.<p>
+     * 
+     * Should only be used by the <code>{@link A_CmsListDialog}</code> class
+     * for temporally removing the metadata object while the list is saved in the 
+     * <code>{@link org.opencms.workplace.CmsWorkplaceSettings}</code>.<p>     
+     * 
+     * @param metadata the list metadata
+     */
+    protected void setMetadata(CmsListMetadata metadata) {
+
+        m_metadata = metadata;
     }
 }
