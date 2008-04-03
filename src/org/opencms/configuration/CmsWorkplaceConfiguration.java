@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2008/03/27 13:22:45 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2008/04/03 08:19:26 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 6.0.0
  */
@@ -573,7 +573,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /**
      * Creates the xml output for explorer type nodes.<p>
      * 
-     * @param startNode the startnode to add all rescource types to
+     * @param startNode the start node to add all resource types to
      * @param explorerTypes the list of explorer types
      * @param module true if the XML tree for the module config should be generated, false otherwise
      */
@@ -593,25 +593,25 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
             if (settings.isAddititionalModuleExplorerType() == module) {
                 Element explorerTypeElement = startNode.addElement(N_EXPLORERTYPE);
-                explorerTypeElement.addAttribute(A_NAME, settings.getName());
-                explorerTypeElement.addAttribute(A_KEY, settings.getKey());
-                explorerTypeElement.addAttribute(A_ICON, settings.getIcon());
+                explorerTypeElement.addAttribute(A_NAME, CmsEncoder.escapeXml(settings.getName()));
+                explorerTypeElement.addAttribute(A_KEY, CmsEncoder.escapeXml(settings.getKey()));
+                explorerTypeElement.addAttribute(A_ICON, CmsEncoder.escapeXml(settings.getIcon()));
                 if (settings.getReference() != null) {
-                    explorerTypeElement.addAttribute(A_REFERENCE, settings.getReference());
+                    explorerTypeElement.addAttribute(A_REFERENCE, CmsEncoder.escapeXml(settings.getReference()));
                 }
                 // create subnode <newresource>
                 Element newResElement = explorerTypeElement.addElement(N_NEWRESOURCE);
                 if (CmsStringUtil.isNotEmpty(settings.getNewResourcePage())) {
-                    newResElement.addAttribute(A_PAGE, settings.getNewResourcePage());
+                    newResElement.addAttribute(A_PAGE, CmsEncoder.escapeXml(settings.getNewResourcePage()));
                 }
-                newResElement.addAttribute(A_HANDLER, settings.getNewResourceHandlerClassName());
+                newResElement.addAttribute(A_HANDLER, CmsEncoder.escapeXml(settings.getNewResourceHandlerClassName()));
                 newResElement.addAttribute(A_URI, CmsEncoder.escapeXml(settings.getNewResourceUri()));
                 newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
                 newResElement.addAttribute(A_AUTOSETNAVIGATION, String.valueOf(settings.isAutoSetNavigation()));
                 newResElement.addAttribute(A_AUTOSETTITLE, String.valueOf(settings.isAutoSetTitle()));
-                newResElement.addAttribute(A_INFO, settings.getInfo());
-                newResElement.addAttribute(A_ICON, settings.getDescriptionImage());
-                newResElement.addAttribute(A_KEY, settings.getTitleKey());
+                newResElement.addAttribute(A_INFO, CmsEncoder.escapeXml(settings.getInfo()));
+                newResElement.addAttribute(A_ICON, CmsEncoder.escapeXml(settings.getDescriptionImage()));
+                newResElement.addAttribute(A_KEY, CmsEncoder.escapeXml(settings.getTitleKey()));
                 // create subnode <accesscontrol>            
                 CmsExplorerTypeAccess access = settings.getAccess();
                 if (access != defaultAccess) {
@@ -626,8 +626,8 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                             String key = (String)k.next();
                             String value = (String)settings.getAccess().getAccessEntries().get(key);
                             Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
-                            accessEntryElement.addAttribute(A_PRINCIPAL, key);
-                            accessEntryElement.addAttribute(A_PERMISSIONS, value);
+                            accessEntryElement.addAttribute(A_PRINCIPAL, CmsEncoder.escapeXml(key));
+                            accessEntryElement.addAttribute(A_PERMISSIONS, CmsEncoder.escapeXml(value));
                         }
                     }
                 }
@@ -639,7 +639,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                     defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, String.valueOf(settings.isShowNavigation()));
                     Iterator m = settings.getProperties().iterator();
                     while (m.hasNext()) {
-                        defaultPropertiesElement.addElement(N_DEFAULTPROPERTY).addAttribute(A_NAME, (String)m.next());
+                        defaultPropertiesElement.addElement(N_DEFAULTPROPERTY).addAttribute(
+                            A_NAME,
+                            CmsEncoder.escapeXml((String)m.next()));
                     }
                     Element contextMenuElement = editOptionsElement.addElement(N_CONTEXTMENU);
                     m = settings.getContextMenuEntries().iterator();
@@ -697,20 +699,22 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
             // create an <entry> node
             itemElement = parentElement.addElement(N_ENTRY);
-            itemElement.addAttribute(A_KEY, item.getKey());
-            itemElement.addAttribute(A_URI, item.getUri());
+            itemElement.addAttribute(A_KEY, CmsEncoder.escapeXml(item.getKey()));
+            itemElement.addAttribute(A_URI, CmsEncoder.escapeXml(item.getUri()));
             if (item.getTarget() != null) {
-                itemElement.addAttribute(A_TARGET, item.getTarget());
+                itemElement.addAttribute(A_TARGET, CmsEncoder.escapeXml(item.getTarget()));
             }
             String rule = item.getRule();
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(rule)) {
-                itemElement.addAttribute(A_RULE, rule);
+                itemElement.addAttribute(A_RULE, CmsEncoder.escapeXml(rule));
             } else {
                 String legacyRules = item.getRules();
                 if (CmsStringUtil.isNotEmpty(legacyRules) && menuRuleTranslator.hasMenuRule(legacyRules)) {
-                    itemElement.addAttribute(A_RULE, menuRuleTranslator.getMenuRuleName(legacyRules));
+                    itemElement.addAttribute(
+                        A_RULE,
+                        CmsEncoder.escapeXml(menuRuleTranslator.getMenuRuleName(legacyRules)));
                 } else {
-                    itemElement.addAttribute(A_RULES, legacyRules);
+                    itemElement.addAttribute(A_RULES, CmsEncoder.escapeXml(legacyRules));
                 }
             }
             if (item.isParentItem()) {

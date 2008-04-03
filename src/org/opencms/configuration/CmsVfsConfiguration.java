@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2008/04/03 08:19:26 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.configuration;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.I_CmsResourceType;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsMimeType;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.I_CmsResourceLoader;
@@ -60,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 6.0.0
  */
@@ -322,9 +323,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     }
 
     /**
-     * Creates the xml output for resourcetype nodes.<p>
+     * Creates the xml output for resource type nodes.<p>
      * 
-     * @param startNode the startnode to add all rescource types to
+     * @param startNode the start node to add all resource types to
      * @param resourceTypes the list of resource types
      * @param module flag, signaling to add them module resource types or not
      */
@@ -335,9 +336,11 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             // only add this resource type to the xml output, if it is no additional type defined
             // in a module
             if (resType.isAdditionalModuleResourceType() == module) {
-                Element resourceType = startNode.addElement(N_TYPE).addAttribute(A_CLASS, resType.getClassName());
+                Element resourceType = startNode.addElement(N_TYPE).addAttribute(
+                    A_CLASS,
+                    CmsEncoder.escapeXml(resType.getClassName()));
                 // add type id and type name
-                resourceType.addAttribute(A_NAME, resType.getTypeName());
+                resourceType.addAttribute(A_NAME, CmsEncoder.escapeXml(resType.getTypeName()));
                 resourceType.addAttribute(A_ID, String.valueOf(resType.getTypeId()));
                 // add resource mappings
                 List mappings = resType.getConfiguredMappings();
@@ -345,7 +348,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                     Element mappingsNode = resourceType.addElement(N_MAPPINGS);
                     for (int j = 0; j < mappings.size(); j++) {
                         Element mapping = mappingsNode.addElement(N_MAPPING);
-                        mapping.addAttribute(A_SUFFIX, (String)mappings.get(j));
+                        mapping.addAttribute(A_SUFFIX, CmsEncoder.escapeXml((String)mappings.get(j)));
                     }
                 }
                 // add default properties
@@ -356,7 +359,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                     while (p.hasNext()) {
                         CmsProperty property = (CmsProperty)p.next();
                         Element propertyNode = propertiesNode.addElement(N_PROPERTY);
-                        propertyNode.addElement(N_NAME).addText(property.getName());
+                        propertyNode.addElement(N_NAME).addText(CmsEncoder.escapeXml(property.getName()));
                         if (property.getStructureValue() != null) {
                             propertyNode.addElement(N_VALUE).addCDATA(property.getStructureValue());
                         }
@@ -374,12 +377,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                     while (p.hasNext()) {
                         CmsConfigurationCopyResource cRes = (CmsConfigurationCopyResource)p.next();
                         Element cNode = copyResNode.addElement(N_COPY_RESOURCE);
-                        cNode.addAttribute(A_SOURCE, cRes.getSource());
+                        cNode.addAttribute(A_SOURCE, CmsEncoder.escapeXml(cRes.getSource()));
                         if (!cRes.isTargetWasNull()) {
-                            cNode.addAttribute(A_TARGET, cRes.getTarget());
+                            cNode.addAttribute(A_TARGET, CmsEncoder.escapeXml(cRes.getTarget()));
                         }
                         if (!cRes.isTypeWasNull()) {
-                            cNode.addAttribute(A_TYPE, cRes.getTypeString());
+                            cNode.addAttribute(A_TYPE, CmsEncoder.escapeXml(cRes.getTypeString()));
                         }
                     }
                 }
@@ -393,7 +396,8 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
                         String key = (String)it.next();
                         // create <param name="">value</param> subnodes
                         Object val = prop.get(key);
-                        resourceType.addElement(N_PARAM).addAttribute(A_NAME, key).addText(String.valueOf(val));
+                        resourceType.addElement(N_PARAM).addAttribute(A_NAME, CmsEncoder.escapeXml(key)).addText(
+                            CmsEncoder.escapeXml(String.valueOf(val)));
                     }
                 }
             }
