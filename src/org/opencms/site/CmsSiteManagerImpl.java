@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/04/03 09:08:37 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -53,6 +54,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 
@@ -63,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.2
  */
@@ -95,6 +97,9 @@ public final class CmsSiteManagerImpl {
     /** Indicates if the configuration is finalized (frozen). */
     private boolean m_frozen;
 
+    /** List to access the time offsets. */
+    private List m_matchers;
+
     /** Maps site matchers to sites. */
     private Map m_siteMatcherSites;
 
@@ -119,6 +124,7 @@ public final class CmsSiteManagerImpl {
         m_siteMatcherSites = new HashMap();
         m_siteRootSites = new HashMap();
         m_aliases = new ArrayList();
+        m_matchers = new ArrayList();
         m_additionalSiteRoots = new ArrayList();
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -130,10 +136,17 @@ public final class CmsSiteManagerImpl {
      * Adds an alias to the currently configured site.
      * 
      * @param alias the URL of the alias server
+     * @param offset the optional time offset for this alias
      */
-    public void addAliasToConfigSite(String alias) {
+    public void addAliasToConfigSite(String alias, String offset) {
 
-        CmsSiteMatcher siteMatcher = new CmsSiteMatcher(alias);
+        long timeOffset = 0;
+        try {
+            timeOffset = Long.parseLong(offset);
+        } catch (Throwable e) {
+            // ignore
+        }
+        CmsSiteMatcher siteMatcher = new CmsSiteMatcher(alias, timeOffset);
         m_aliases.add(siteMatcher);
     }
 
@@ -573,6 +586,7 @@ public final class CmsSiteManagerImpl {
 
         // set site lists to unmodifiable 
         m_siteMatcherSites = Collections.unmodifiableMap(m_siteMatcherSites);
+        m_matchers = Collections.unmodifiableList(m_matchers);
         m_siteRoots = Collections.unmodifiableSet(m_siteRootSites.keySet());
 
         // store additional site roots to optimize lookups later
@@ -644,7 +658,7 @@ public final class CmsSiteManagerImpl {
             // this may be true inside a static export test case scenario
             return false;
         }
-        return isWorkplaceRequest(new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort()));
+        return isWorkplaceRequest(getRequestMatcher(req));
     }
 
     /**
@@ -657,7 +671,14 @@ public final class CmsSiteManagerImpl {
      */
     public CmsSite matchRequest(HttpServletRequest req) {
 
-        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
+        CmsSiteMatcher matcher = getRequestMatcher(req);
+        if (matcher.getTimeOffset() != 0) {
+            HttpSession session = req.getSession();
+            if (session != null) {
+                session.setAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME, new Long(System.currentTimeMillis()
+                    + matcher.getTimeOffset()));
+            }
+        }
         CmsSite site = matchSite(matcher);
 
         if (LOG.isDebugEnabled()) {
@@ -734,7 +755,21 @@ public final class CmsSiteManagerImpl {
                 Messages.ERR_DUPLICATE_SERVER_NAME_1,
                 matcher.getUrl()));
         }
+        m_matchers.add(matcher);
         m_siteMatcherSites.put(matcher, site);
+    }
+
+    /**
+     * 
+     * 
+     * @param req
+     * @return
+     */
+    private CmsSiteMatcher getRequestMatcher(HttpServletRequest req) {
+
+        CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
+        // this is needed to get the right configured time offset
+        return (CmsSiteMatcher)m_matchers.get(m_matchers.indexOf(matcher));
     }
 
     /**

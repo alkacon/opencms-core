@@ -261,7 +261,8 @@ Each job can have an optional list of parameters.
 	error (true|false|TRUE|FALSE) "false">
 <!ELEMENT alias EMPTY>	
 <!ATTLIST alias
-	server CDATA #REQUIRED>	
+	server CDATA #REQUIRED
+	offset CDATA #IMPLIED>	
 	
 <!--
 # Optional configuration that controls some additional information as key/value param pairs

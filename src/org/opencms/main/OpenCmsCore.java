@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2008/02/27 12:05:39 $
- * Version: $Revision: 1.232 $
+ * Date   : $Date: 2008/04/03 09:08:37 $
+ * Version: $Revision: 1.233 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.232 $ 
+ * @version $Revision: 1.233 $ 
  * 
  * @since 6.0.0 
  */
@@ -768,7 +768,7 @@ public final class OpenCmsCore {
      * 
      * @return an independent copy of the provided CmsObject
      * 
-     * @throws CmsException in case the intialization failed
+     * @throws CmsException in case the initialization failed
      * 
      * @see OpenCms#initCmsObject(CmsObject)
      * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
@@ -1815,7 +1815,7 @@ public final class OpenCmsCore {
      * @param cms the current cms context, might be null !
      * @param req the client request
      * @param res the client response
-     * @param t the exception that occured
+     * @param t the exception that occurred
      */
     private void errorHandling(CmsObject cms, HttpServletRequest req, HttpServletResponse res, Throwable t) {
 
@@ -1931,7 +1931,7 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Inits a CmsObject with the given users information.<p>
+     * Initializes a {@link CmsObject} with the given users information.<p>
      * 
      * @param request the current http request (or <code>null</code>)
      * @param user the initialized user
@@ -1975,13 +1975,10 @@ public final class OpenCmsCore {
             }
 
             // check for special "time warp" browsing
-            if (!CmsProject.isOnlineProject(project.getUuid())) {
-                // this feature is not available in the "online" project
-                HttpSession session = request.getSession(false);
-                if (session != null) {
-                    // no new session must be created here
-                    requestTimeAttr = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
-                }
+            HttpSession session = request.getSession(false);
+            if (session != null) {
+                // no new session must be created here
+                requestTimeAttr = (Long)session.getAttribute(CmsContextInfo.ATTRIBUTE_REQUEST_TIME);
             }
         } else {
             // if no request is available, the IP is always set to localhost

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2008/04/03 09:08:38 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 6.0.0
  */
@@ -94,6 +94,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The "exclusive" attribute. */
     public static final String A_EXCLUSIVE = "exclusive";
+
+    /** The attribute name for the alias offset. */
+    public static final String A_OFFSET = "offset";
 
     /** The "server" attribute. */
     public static final String A_SERVER = "server";
@@ -851,8 +854,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS,
             "addAliasToConfigSite",
-            1);
+            2);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 0, A_SERVER);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 1, A_OFFSET);
 
         // add compatibility parameter rules 
         digester.addCallMethod(
@@ -1187,8 +1191,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             // create <alias server=""/> subnode(s)            
             Iterator aliasIterator = site.getAliases().iterator();
             while (aliasIterator.hasNext()) {
-                String aliasServerName = ((CmsSiteMatcher)aliasIterator.next()).getUrl();
-                siteElement.addElement(N_ALIAS).addAttribute(A_SERVER, aliasServerName);
+                CmsSiteMatcher matcher = (CmsSiteMatcher)aliasIterator.next();
+                Element aliasElement = siteElement.addElement(N_ALIAS);
+                aliasElement.addAttribute(A_SERVER, matcher.getUrl());
+                if (matcher.getTimeOffset() != 0) {
+                    aliasElement.addAttribute(A_OFFSET, "" + matcher.getTimeOffset());
+                }
             }
         }
 

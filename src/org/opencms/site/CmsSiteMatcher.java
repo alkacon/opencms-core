@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2008/04/03 09:08:37 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,9 +36,9 @@ import org.opencms.util.CmsStringUtil;
 /**
  * A matcher object to compare request data against the configured sites.<p>
  *
- * @author  Alexander Kandzior 
+ * @author  Alexander Kandzior
  *
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +74,9 @@ public final class CmsSiteMatcher implements Cloneable {
     /** The protocol (e.g. "http", "https") which is required to access this site. */
     private String m_serverProtocol;
 
+    /** The time offset. */
+    private long m_timeOffset;
+
     /**
      * Construct a new site matcher from a String which should be in default URL notation.<p>
      * 
@@ -84,8 +87,22 @@ public final class CmsSiteMatcher implements Cloneable {
      */
     public CmsSiteMatcher(String serverString) {
 
+        this(serverString, 0);
+    }
+
+    /**
+     * Construct a new site matcher from a String which should be in default URL notation.<p>
+     * 
+     * If no port is provided, the default port 80 or 443 will be used for http or https respectively.
+     * If no protocol is provided, the default protocol "http" will be used.
+     * 
+     * @param serverString the String, e.g. http://localhost:8080
+     * @param timeOffset the time offset
+     */
+    public CmsSiteMatcher(String serverString, long timeOffset) {
+
         if (serverString == null) {
-            init(WILDCARD, WILDCARD, 0);
+            init(WILDCARD, WILDCARD, 0, timeOffset);
             return;
         }
         // remove whitespace
@@ -134,7 +151,7 @@ public final class CmsSiteMatcher implements Cloneable {
         }
 
         // initialize members
-        init(serverProtocol, serverName, serverPort);
+        init(serverProtocol, serverName, serverPort, timeOffset);
     }
 
     /**
@@ -146,7 +163,20 @@ public final class CmsSiteMatcher implements Cloneable {
      */
     public CmsSiteMatcher(String serverProtocol, String serverName, int serverPort) {
 
-        init(serverProtocol, serverName, serverPort);
+        init(serverProtocol, serverName, serverPort, 0);
+    }
+
+    /**
+     * Constructs a new site matcher object.<p>
+     * 
+     * @param serverProtocol to protocol required to access this site
+     * @param serverName the server URL prefix to which this site is mapped
+     * @param serverPort the port required to access this site
+     * @param timeOffset the time offset
+     */
+    public CmsSiteMatcher(String serverProtocol, String serverName, int serverPort, long timeOffset) {
+
+        init(serverProtocol, serverName, serverPort, timeOffset);
     }
 
     /**
@@ -156,7 +186,7 @@ public final class CmsSiteMatcher implements Cloneable {
      */
     public Object clone() {
 
-        return new CmsSiteMatcher(m_serverProtocol, m_serverName, m_serverPort);
+        return new CmsSiteMatcher(m_serverProtocol, m_serverName, m_serverPort, m_timeOffset);
     }
 
     /**
@@ -208,6 +238,16 @@ public final class CmsSiteMatcher implements Cloneable {
     public String getServerProtocol() {
 
         return m_serverProtocol;
+    }
+
+    /**
+     * Returns the time Offset.<p>
+     *
+     * @return the time Offset
+     */
+    public long getTimeOffset() {
+
+        return m_timeOffset;
     }
 
     /**
@@ -307,16 +347,28 @@ public final class CmsSiteMatcher implements Cloneable {
     }
 
     /**
-     * Inits the member variables.<p>
+     * Sets the time Offset.<p>
+     *
+     * @param timeOffset the time Offset to set
+     */
+    protected void setTimeOffset(long timeOffset) {
+
+        m_timeOffset = timeOffset;
+    }
+
+    /**
+     * Initializes the member variables.<p>
      * 
      * @param serverProtocol to protocol required to access this site
      * @param serverName the server URL prefix to which this site is mapped
      * @param serverPort the port required to access this site
+     * @param timeOffset the time offset
      */
-    private void init(String serverProtocol, String serverName, int serverPort) {
+    private void init(String serverProtocol, String serverName, int serverPort, long timeOffset) {
 
         setServerProtocol(serverProtocol);
         setServerName(serverName);
         setServerPort(serverPort);
+        setTimeOffset(timeOffset);
     }
 }

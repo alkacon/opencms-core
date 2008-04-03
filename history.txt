@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/03 08:19:26 $
- * Version: $Revision: 1.998 $
+ * Date   : $Date: 2008/04/03 09:08:38 $
+ * Version: $Revision: 1.999 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ OpenCms 7.0.5 - xxx, 2008
 - Improved performance when having several organizational units
 ! Added editor with syntax highlighting functionality (EditArea) for text based files
 ! New preferences option for displaying all projects or only the ones in the current ou in the project selector
+! Added new site alias attribute to manipulate request time
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 
