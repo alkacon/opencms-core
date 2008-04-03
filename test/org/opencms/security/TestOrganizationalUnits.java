@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestOrganizationalUnits.java,v $
- * Date   : $Date: 2008/03/27 13:20:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/04/03 13:38:11 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestOrganizationalUnits extends OpenCmsTestCase {
 
@@ -383,7 +383,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
             // ok, now check the error message
             assertEquals(
                 ((CmsDbConsistencyException)e.getCause()).getMessageContainer().getKey(),
-                org.opencms.db.Messages.ERR_ORGUNIT_DELETE_CURRENT_USER_1);
+                org.opencms.db.Messages.ERR_ORGUNIT_DELETE_IN_CONTEXT_1);
         }
         cms.loginUser("Admin", "admin");
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
@@ -1540,7 +1540,7 @@ public class TestOrganizationalUnits extends OpenCmsTestCase {
 
         // login user in deeper ou
         cms.loginUser("test/test2/test1", "test1");
-        assertEquals("test/test2/", cms.getRequestContext().getOuFqn());
+        assertEquals("test/", cms.getRequestContext().getOuFqn());
         assertEquals("test/test1", cms.getRequestContext().currentUser().getName());
 
         try {
