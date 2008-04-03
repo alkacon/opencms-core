@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/04/03 15:26:28 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -386,7 +386,17 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
                 write(" ");
                 write(resolveName(attributes.getLocalName(i), attributes.getQName(i)));
                 write("=\"");
-                write(attributes.getValue(i));
+                String value = attributes.getValue(i);
+                if (m_escapeXml) {
+                    // XML should be escaped 
+                    // escape HTML entities ('<' becomes '&lt;')
+                    value = CmsEncoder.escapeXml(value, true);
+                    if (m_escapeUnknownChars) {
+                        // escape all chars that can not be displayed in the selected encoding (using '&#123;' entities)
+                        value = CmsEncoder.adjustHtmlEncoding(value, getEncoding());
+                    }
+                }
+                write(value);
                 write("\"");
             }
         }

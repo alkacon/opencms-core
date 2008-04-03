@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2008/04/03 08:19:25 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2008/04/03 15:26:28 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.types.I_CmsResourceType;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
@@ -65,7 +64,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -273,17 +272,17 @@ public class CmsModuleXmlHandler {
 
         Element moduleElement = doc.addElement(N_MODULE);
 
-        moduleElement.addElement(N_NAME).setText(CmsEncoder.escapeXml(module.getName()));
+        moduleElement.addElement(N_NAME).setText(module.getName());
         if (!module.getName().equals(module.getNiceName())) {
             moduleElement.addElement(N_NICENAME).addCDATA(module.getNiceName());
         } else {
             moduleElement.addElement(N_NICENAME);
         }
         if (CmsStringUtil.isNotEmpty(module.getGroup())) {
-            moduleElement.addElement(N_GROUP).setText(CmsEncoder.escapeXml(module.getGroup()));
+            moduleElement.addElement(N_GROUP).setText(module.getGroup());
         }
         if (CmsStringUtil.isNotEmpty(module.getActionClass())) {
-            moduleElement.addElement(N_CLASS).setText(CmsEncoder.escapeXml(module.getActionClass()));
+            moduleElement.addElement(N_CLASS).setText(module.getActionClass());
         } else {
             moduleElement.addElement(N_CLASS);
         }
@@ -292,7 +291,7 @@ public class CmsModuleXmlHandler {
         } else {
             moduleElement.addElement(N_DESCRIPTION);
         }
-        moduleElement.addElement(N_VERSION).setText(CmsEncoder.escapeXml(module.getVersion().toString()));
+        moduleElement.addElement(N_VERSION).setText(module.getVersion().toString());
         if (CmsStringUtil.isNotEmpty(module.getAuthorName())) {
             moduleElement.addElement(N_AUTHORNAME).addCDATA(module.getAuthorName());
         } else {
@@ -304,20 +303,18 @@ public class CmsModuleXmlHandler {
             moduleElement.addElement(N_AUTHOREMAIL);
         }
         if (module.getDateCreated() != CmsModule.DEFAULT_DATE) {
-            moduleElement.addElement(N_DATECREATED).setText(
-                CmsEncoder.escapeXml(CmsDateUtil.getHeaderDate(module.getDateCreated())));
+            moduleElement.addElement(N_DATECREATED).setText(CmsDateUtil.getHeaderDate(module.getDateCreated()));
         } else {
             moduleElement.addElement(N_DATECREATED);
         }
 
         if (CmsStringUtil.isNotEmpty(module.getUserInstalled())) {
-            moduleElement.addElement(N_USERINSTALLED).setText(CmsEncoder.escapeXml(module.getUserInstalled()));
+            moduleElement.addElement(N_USERINSTALLED).setText(module.getUserInstalled());
         } else {
             moduleElement.addElement(N_USERINSTALLED);
         }
         if (module.getDateInstalled() != CmsModule.DEFAULT_DATE) {
-            moduleElement.addElement(N_DATEINSTALLED).setText(
-                CmsEncoder.escapeXml(CmsDateUtil.getHeaderDate(module.getDateInstalled())));
+            moduleElement.addElement(N_DATEINSTALLED).setText(CmsDateUtil.getHeaderDate(module.getDateInstalled()));
         } else {
             moduleElement.addElement(N_DATEINSTALLED);
         }
@@ -326,25 +323,21 @@ public class CmsModuleXmlHandler {
             CmsModuleDependency dependency = (CmsModuleDependency)module.getDependencies().get(i);
             dependenciesElement.addElement(N_DEPENDENCY).addAttribute(
                 I_CmsXmlConfiguration.A_NAME,
-                CmsEncoder.escapeXml(dependency.getName())).addAttribute(
-                A_VERSION,
-                CmsEncoder.escapeXml(dependency.getVersion().toString()));
+                dependency.getName()).addAttribute(A_VERSION, dependency.getVersion().toString());
         }
         Element exportpointsElement = moduleElement.addElement(I_CmsXmlConfiguration.N_EXPORTPOINTS);
         for (int i = 0; i < module.getExportPoints().size(); i++) {
             CmsExportPoint point = (CmsExportPoint)module.getExportPoints().get(i);
             exportpointsElement.addElement(I_CmsXmlConfiguration.N_EXPORTPOINT).addAttribute(
                 I_CmsXmlConfiguration.A_URI,
-                CmsEncoder.escapeXml(point.getUri())).addAttribute(
-                I_CmsXmlConfiguration.A_DESTINATION,
-                CmsEncoder.escapeXml(point.getConfiguredDestination()));
+                point.getUri()).addAttribute(I_CmsXmlConfiguration.A_DESTINATION, point.getConfiguredDestination());
         }
         Element resourcesElement = moduleElement.addElement(N_RESOURCES);
         for (int i = 0; i < module.getResources().size(); i++) {
             String resource = (String)module.getResources().get(i);
             resourcesElement.addElement(I_CmsXmlConfiguration.N_RESOURCE).addAttribute(
                 I_CmsXmlConfiguration.A_URI,
-                CmsEncoder.escapeXml(resource));
+                resource);
         }
         Element parametersElement = moduleElement.addElement(N_PARAMETERS);
         SortedMap parameters = module.getParameters();
@@ -356,8 +349,8 @@ public class CmsModuleXmlHandler {
                 String name = (String)it.next();
                 String value = parameters.get(name).toString();
                 Element paramNode = parametersElement.addElement(I_CmsXmlConfiguration.N_PARAM);
-                paramNode.addAttribute(I_CmsXmlConfiguration.A_NAME, CmsEncoder.escapeXml(name));
-                paramNode.addText(CmsEncoder.escapeXml(value));
+                paramNode.addAttribute(I_CmsXmlConfiguration.A_NAME, name);
+                paramNode.addText(value);
             }
         }
 
