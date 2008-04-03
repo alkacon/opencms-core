@@ -115,7 +115,7 @@
             debug="on"
             optimize="on"
             deprecation="on"
-       		source="1.4"
+       		source="1.5"
     		target="${java.target.version}">
        	    <classpath>
        	      <fileset dir="${opencms.input.libs.compile}">
@@ -491,7 +491,7 @@
             debug="on"
             optimize="on"
             deprecation="on" 
-       		source="1.4"
+       		source="1.5"
     		target="${java.target.version}">
        	    <classpath>
      	      <fileset dir="${opencms.output}/build">
@@ -535,7 +535,7 @@
             debug="on"
             optimize="on"
             deprecation="on" 
-       		source="1.4"
+       		source="1.5"
     		target="${java.target.version}">
        	    <classpath>
      	      <fileset dir="${opencms.output}/build">
@@ -621,7 +621,7 @@
             debug="on"
             optimize="on"
             deprecation="on"
-            source="1.4"
+            source="1.5"
             target="${java.target.version}">
         </javac>
  
