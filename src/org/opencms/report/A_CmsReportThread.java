@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior  
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,7 +90,7 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
     }
 
     /**
-     * Adds an error object to the list of errors that occured during the report.<p>
+     * Adds an error object to the list of errors that occurred during the report.<p>
      * 
      * @param obj the error object
      */
@@ -113,9 +113,9 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
     }
 
     /**
-     * Returns a list of all errors that occured during the report.<p>
+     * Returns a list of all errors that occurred during the report.<p>
      * 
-     * @return an error list that occured during the report
+     * @return an error list that occurred during the report
      */
     public List getErrors() {
 

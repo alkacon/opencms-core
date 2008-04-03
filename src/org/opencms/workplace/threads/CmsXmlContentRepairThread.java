@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsXmlContentRepairThread.java,v $
- * Date   : $Date: 2008/02/27 12:05:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  */
 public class CmsXmlContentRepairThread extends A_CmsReportThread {
@@ -229,7 +229,7 @@ public class CmsXmlContentRepairThread extends A_CmsReportThread {
                 }
 
             } catch (CmsException e) {
-                // an error occured, show exception on report output
+                // an error occurred, show exception on report output
                 getReport().println(e);
             }
         }

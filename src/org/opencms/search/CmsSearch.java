@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -194,7 +194,7 @@ public class CmsSearch {
     /**
      * Gets the last exception after a search operation.<p>
      * 
-     * @return the exception occured in a search operation or null
+     * @return the exception occurred in a search operation or null
      */
     public Exception getLastException() {
 

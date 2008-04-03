@@ -290,7 +290,7 @@
 	<cfset SendUploadResults(errorNumber, '#resourceTypeUrl##url.currentFolder##fileName#.#fileExt#', replace( fileName & "." & fileExt, "'", "\'", "ALL"), customMsg)>
 	<cfabort>
 <cfelse>
-	<!--- An error occured(202). Submit only the error code and a message (if available). --->
+	<!--- An error occurred(202). Submit only the error code and a message (if available). --->
 	<cfset SendUploadResults(errorNumber, '', '', customMsg)>
 	<cfabort>
 </cfif>

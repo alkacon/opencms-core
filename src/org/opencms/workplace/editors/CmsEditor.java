@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,7 +99,7 @@ public abstract class CmsEditor extends CmsEditorBase {
     /** Value for the action: show the editor. */
     public static final int ACTION_SHOW = 125;
 
-    /** Value for the action: an error occured. */
+    /** Value for the action: an error occurred. */
     public static final int ACTION_SHOW_ERRORMESSAGE = 127;
 
     /** Value for the action parameter: change the element. */
@@ -132,7 +132,7 @@ public abstract class CmsEditor extends CmsEditorBase {
     /** Value for the action parameter: show the editor. */
     public static final String EDITOR_SHOW = "show";
 
-    /** Value for the action parameter: an error occured. */
+    /** Value for the action parameter: an error occurred. */
     public static final String EDITOR_SHOW_ERRORMESSAGE = "error";
 
     /** Marker for empty locale in locale selection. */
@@ -752,7 +752,7 @@ public abstract class CmsEditor extends CmsEditorBase {
             switchToCurrentProject();
         }
         if (cms.existsResource(getParamResource(), CmsResourceFilter.ALL)) {
-            // update properties of original file first (required if change in encoding occured)
+            // update properties of original file first (required if change in encoding occurred)
             cms.writePropertyObjects(getParamResource(), properties);
             // now replace the content of the original file
             CmsFile orgFile = cms.readFile(getParamResource(), CmsResourceFilter.ALL);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2008/02/27 12:05:24 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -307,7 +307,7 @@ public class CmsMove extends CmsMultiDialog {
                     }
                 }
             }
-            // check if exceptions occured
+            // check if exceptions occurred
             checkMultiOperationException(Messages.get(), Messages.ERR_MOVE_MULTI_0);
         } finally {
             if (siteRootFolder != null) {

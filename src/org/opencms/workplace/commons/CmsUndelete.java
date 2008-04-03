@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndelete.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,7 +193,7 @@ public class CmsUndelete extends CmsMultiDialog {
                 }
             }
         }
-        // check if exceptions occured
+        // check if exceptions occurred
         checkMultiOperationException(Messages.get(), Messages.ERR_UNDELETE_MULTI_0);
         return true;
     }

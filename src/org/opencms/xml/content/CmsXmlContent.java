@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -218,7 +218,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
      * @return the created XML content value 
      * 
      * @throws CmsIllegalArgumentException if the given path is invalid
-     * @throws CmsRuntimeException if the element identified by the path already occured {@link I_CmsXmlSchemaType#getMaxOccurs()}  
+     * @throws CmsRuntimeException if the element identified by the path already occurred {@link I_CmsXmlSchemaType#getMaxOccurs()}  
      *         or the given <code>index</code> is invalid (too high).
      */
     public I_CmsXmlContentValue addValue(CmsObject cms, String path, Locale locale, int index)

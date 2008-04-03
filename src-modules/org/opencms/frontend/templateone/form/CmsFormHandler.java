@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2008/02/27 12:05:22 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -476,7 +476,7 @@ public class CmsFormHandler extends CmsJspActionElement {
                 theMail.send();
             }
         } catch (Exception e) {
-            // an error occured during mail creation
+            // an error occurred during mail creation
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);
             }

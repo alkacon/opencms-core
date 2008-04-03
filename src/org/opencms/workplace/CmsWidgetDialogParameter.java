@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialogParameter.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -495,7 +495,7 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
 
     /**
      * Returns the Exception caused when this parameter value was commited, or <code>null</code>
-     * if error occured.<p> 
+     * if error occurred.<p> 
      * 
      * @return the Exception caused when this parameter value was commited
      */

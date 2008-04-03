@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorFileBrowser.java,v $
- * Date   : $Date: 2008/02/27 12:05:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.1.7
  */
@@ -424,7 +424,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
             getCms().createResource(
                 getParamCurrentFolder() + getParamNewFolderName(),
                 CmsResourceTypeFolder.RESOURCE_TYPE_ID);
-            // no error occured, return error code 0
+            // no error occurred, return error code 0
             error.addAttribute(ATTR_NUMBER, ERROR_CREATEFOLDER_OK);
         } catch (Exception e) {
             // check cause of error to return a specific error code

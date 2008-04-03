@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ModalDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import javax.swing.JPanel;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  */
 public class ModalDialog extends JDialog {
@@ -88,7 +88,7 @@ public class ModalDialog extends JDialog {
     public static final int CANCEL_OPTION = 1;
 
     /**
-     * Return value if an error occured.
+     * Return value if an error occurred.
      */
     public static final int ERROR_OPTION = -1;
 

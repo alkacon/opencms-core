@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2008/02/27 12:05:33 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -343,7 +343,7 @@ import org.quartz.Trigger;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -616,7 +616,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      * If any error occurs during class invocaion, the error 
      * is written to the OpenCms log and <code>null</code> is returned.<p>
      *
-     * @return an instance of the configured job class, or null if an error occured
+     * @return an instance of the configured job class, or null if an error occurred
      */
     public synchronized I_CmsScheduledJob getJobInstance() {
 

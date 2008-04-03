@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2008/03/18 10:47:52 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,7 +98,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** The value for the resource name form action. */
     public static final int ACTION_NEWFORM2 = 120;
 
-    /** The value for the resource upload applet action: error occured. */
+    /** The value for the resource upload applet action: error occurred. */
     public static final int ACTION_SHOWERROR = 150;
 
     /** The value for the resource name form submission action. */

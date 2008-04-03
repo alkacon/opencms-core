@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2008/03/17 08:55:33 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.67 $ 
+ * @version $Revision: 1.68 $ 
  * 
  * @since 6.0.0 
  */
@@ -820,7 +820,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /**
      * Commits all values on the dialog.<p> 
      * 
-     * @return a List of all Exceptions that occured when comitting the dialog.<p>
+     * @return a List of all Exceptions that occurred when comitting the dialog.<p>
      */
     protected List commitWidgetValues() {
 

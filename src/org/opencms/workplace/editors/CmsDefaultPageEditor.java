@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -218,7 +218,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             }
             initContent();
         } catch (CmsXmlException e) {
-            // an error occured while trying to delete the locale, stop action
+            // an error occurred while trying to delete the locale, stop action
             showErrorPage(e);
         } catch (CmsException e) {
             // should usually never happen

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Jan Baudisch 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,14 +76,14 @@ public interface I_CmsReport {
     String REPORT_TYPE_SIMPLE = "simple";
 
     /**
-     * Adds an error object to the list of errors that occured during the report.<p>
+     * Adds an error object to the list of errors that occurred during the report.<p>
      * 
      * @param obj the error object
      */
     void addError(Object obj);
 
     /**
-     * Adds a warning object to the list of warnings that occured during the report.<p>
+     * Adds a warning object to the list of warnings that occurred during the report.<p>
      * 
      * @param obj the error object
      */
@@ -97,9 +97,9 @@ public interface I_CmsReport {
     String formatRuntime();
 
     /**
-     * Returns a list of all errors that occured during the report.<p>
+     * Returns a list of all errors that occurred during the report.<p>
      * 
-     * @return an error list that occured during the report
+     * @return an error list that occurred during the report
      */
     List getErrors();
 
@@ -137,9 +137,9 @@ public interface I_CmsReport {
     String getSiteRoot();
 
     /**
-     * Returns a list of all warnings that occured during the report.<p>
+     * Returns a list of all warnings that occurred during the report.<p>
      * 
-     * @return a warning list that occured during the report
+     * @return a warning list that occurred during the report
      */
     List getWarnings();
 

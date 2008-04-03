@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2008/03/01 12:31:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -118,7 +118,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -434,7 +434,7 @@ public class CmsSetupBean implements I_CmsShellCommands {
     }
 
     /**
-     * Returns html code to display the errors occured.<p> 
+     * Returns html code to display the errors occurred.<p> 
      * 
      * @param pathPrefix to adjust the path
      * 

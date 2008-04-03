@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -248,7 +248,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
                 getJsp().include(FILE_DIALOG_SCREEN_WAIT);
             }
         } catch (Throwable e) {
-            // exception occured, show error dialog
+            // exception occurred, show error dialog
             includeErrorpage(this, e);
         }
     }

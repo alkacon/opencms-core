@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsThreadedTestCase.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.lang.reflect.Method;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.0
  */
@@ -63,7 +63,7 @@ public class OpenCmsThreadedTestCase extends Thread {
     /** The base test case class to run the method from. */
     private OpenCmsTestCase m_testCase;
 
-    /** Error that occured when running the test method. */
+    /** Error that occurred when running the test method. */
     private Throwable m_throwable;
 
     /**

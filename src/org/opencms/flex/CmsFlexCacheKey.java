@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2008/02/27 12:05:47 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,7 +165,7 @@ public class CmsFlexCacheKey {
     /** Cache key variable: List of parameters. */
     private Set m_params;
 
-    /** Flag raised in case a key parse error occured. */
+    /** Flag raised in case a key parse error occurred. */
     private boolean m_parseError;
 
     /** Cache key variable: The request TCP/IP port. */
@@ -260,7 +260,7 @@ public class CmsFlexCacheKey {
 
     /**
      * This flag is used to indicate that a parse error had
-     * occured, which can happen if the cache directives String
+     * occurred, which can happen if the cache directives String
      * passed to the constructor using the response is
      * not build according to the Flex cache language syntax.<p>
      * 

@@ -118,7 +118,7 @@ case CmsEditor.ACTION_SAVE:
 	if (wp.getAction() == CmsEditor.ACTION_SAVE) {
 		wp.actionSave();
 		if (wp.getAction() == CmsDialog.ACTION_CANCEL) {
-			// an error occured during save, do not show editor form
+			// an error occurred during save, do not show editor form
 			break;
 		}
 	}

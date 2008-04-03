@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/photoalbum/CmsPhotoAlbumBean.java,v $
- * Date   : $Date: 2008/02/27 12:05:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.1.3 
  */
@@ -858,9 +858,9 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
     }
 
     /**
-     * Returns the configuration errors that occured.<p>
+     * Returns the configuration errors that occurred.<p>
      * 
-     * @return the configuration errors that occured
+     * @return the configuration errors that occurred
      */
     protected List getConfigErrors() {
 
@@ -868,9 +868,9 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
     }
 
     /**
-     * Sets the configuration errors that occured.<p>
+     * Sets the configuration errors that occurred.<p>
      * 
-     * @param configErrors the configuration errors that occured
+     * @param configErrors the configuration errors that occurred
      */
     protected void setConfigErrors(List configErrors) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.103 $
+ * @version $Revision: 1.104 $
  * 
  * @since 6.0.0
  */
@@ -753,7 +753,7 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
-     * Check the setup DB for errors that might have occured.<p>
+     * Check the setup DB for errors that might have occurred.<p>
      * 
      * @param setupDb the setup DB object to check
      */

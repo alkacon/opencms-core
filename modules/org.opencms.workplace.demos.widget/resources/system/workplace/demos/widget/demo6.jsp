@@ -14,7 +14,7 @@ switch (wp.getAction()) {
 	break;
 
     case CmsAdminWidgetDemo6.ACTION_ERROR:
-//////////////////// ACTION: an error occured
+//////////////////// ACTION: an error occurred
 	break;
 	
     case CmsAdminWidgetDemo6.ACTION_SAVE:

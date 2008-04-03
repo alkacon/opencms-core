@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlException.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,11 +35,11 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
- * Signals that an error occured while processing an xml resource.<p>
+ * Signals that an error occurred while processing an xml resource.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */

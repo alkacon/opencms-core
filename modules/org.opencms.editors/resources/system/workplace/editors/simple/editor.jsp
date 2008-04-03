@@ -37,7 +37,7 @@ case CmsEditor.ACTION_SAVE:
 
 	wp.actionSave();
 	if (wp.getAction() == CmsDialog.ACTION_CANCEL) {
-		// an error occured during save
+		// an error occurred during save
 		break;
 	}
 

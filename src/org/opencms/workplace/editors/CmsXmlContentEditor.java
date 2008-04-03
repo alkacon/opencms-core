@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.77 $ 
+ * @version $Revision: 1.78 $ 
  * 
  * @since 6.0.0 
  */
@@ -300,7 +300,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
 
         } catch (CmsXmlException e) {
-            // an error occured while trying to delete the locale, stop action
+            // an error occurred while trying to delete the locale, stop action
             showErrorPage(e);
         } catch (CmsException e) {
             // should usually never happen
@@ -362,7 +362,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         try {
             setEditorValues(getElementLocale());
         } catch (CmsXmlException e) {
-            // an error occured while trying to set the values, stop action
+            // an error occurred while trying to set the values, stop action
             showErrorPage(e);
             return;
         }
@@ -392,7 +392,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // write the modified content to the temporary file
             writeContent();
         } catch (CmsException e) {
-            // an error occured while trying to save
+            // an error occurred while trying to save
             showErrorPage(e);
         }
     }
@@ -571,7 +571,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         try {
             setEditorValues(getElementLocale());
         } catch (CmsXmlException e) {
-            // an error occured while trying to set the values, stop action
+            // an error occurred while trying to set the values, stop action
             showErrorPage(e);
             return;
         }
@@ -605,7 +605,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // write the modified content to the temporary file
             writeContent();
         } catch (CmsException e) {
-            // an error occured while trying to save
+            // an error occurred while trying to save
             showErrorPage(e);
         }
 

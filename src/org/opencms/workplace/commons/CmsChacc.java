@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2008/04/03 07:45:25 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -801,7 +801,7 @@ public class CmsChacc extends CmsDialog {
     }
 
     /**
-     * Returns a list with all error messages which occured when trying to add a new access control entry.<p>
+     * Returns a list with all error messages which occurred when trying to add a new access control entry.<p>
      * 
      * @return List of error message Strings
      */

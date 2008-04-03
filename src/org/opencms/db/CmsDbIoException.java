@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbIoException.java,v $
- * Date   : $Date: 2008/02/27 12:05:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,11 +35,11 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
- * Signals that an IO exception occured when reading from or writing to the OpenCms database.<p>
+ * Signals that an IO exception occurred when reading from or writing to the OpenCms database.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */

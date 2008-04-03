@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentDefinition.java,v $
- * Date   : $Date: 2008/02/27 12:05:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/04/03 07:45:26 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.dom4j.io.XMLWriter;
  * Tests for generating an XML content definition.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestCmsXmlContentDefinition extends TestCase {
 
@@ -68,7 +68,7 @@ public class TestCmsXmlContentDefinition extends TestCase {
     /**
      * Basic test for xml content definitions.<p> 
      * 
-     * @throws Exception in case an error occured
+     * @throws Exception in case an error occurred
      */
     public void testCmsXmlContentDefiniton() throws Exception {
         CmsXmlContentDefinition cd1 = new CmsXmlContentDefinition("Article", null);         
