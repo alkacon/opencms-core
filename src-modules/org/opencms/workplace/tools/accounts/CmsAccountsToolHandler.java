@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2008/03/28 09:48:05 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2008/04/03 07:27:20 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,9 +198,13 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
             if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.ROOT_ADMIN)) {
                 return true;
             }
-            CmsUUID userId = new CmsUUID(CmsRequestUtil.getNotEmptyDecodedParameter(
+            String paramId = CmsRequestUtil.getNotEmptyDecodedParameter(
                 wp.getJsp().getRequest(),
-                A_CmsEditUserDialog.PARAM_USERID));
+                A_CmsEditUserDialog.PARAM_USERID);
+            if (paramId == null) {
+                return false;
+            }
+            CmsUUID userId = new CmsUUID(paramId);
             try {
                 CmsUser user = wp.getCms().readUser(userId);
                 // check if the user to change is root administrator 
