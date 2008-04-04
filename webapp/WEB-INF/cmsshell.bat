@@ -54,12 +54,12 @@ goto end
 :okHome
 
 rem Guess TOMCAT_HOME if not defined
-if not "%TOMCAT_HOME%" == "" goto gotTomcatHome
+if not "%TOMCAT_HOME%" == "" goto okTomcatHome
 set TOMCAT_HOME=..\..
-if exist "%TOMCAT_HOME%\bin\catalina.bat" goto okTomcatHome
+if exist "%TOMCAT_HOME%\bin\bootstrap.jar" goto okTomcatHome
 set TOMCAT_HOME=..\..\..
 :gotTomcatHome
-if exist "%TOMCAT_HOME%\bin\catalina.bat" goto okTomcatHome
+if exist "%TOMCAT_HOME%\bin\bootstrap.jar" goto okTomcatHome
 echo The TOMCAT_HOME environment variable is not defined correctly
 echo This environment variable is needed to run this program
 goto end
