@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/04 09:34:56 $
- * Version: $Revision: 1.1001 $
+ * Date   : $Date: 2008/04/04 13:51:02 $
+ * Version: $Revision: 1.1002 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -22,6 +22,7 @@ Legend:
 OpenCms 7.0.5 - xxx, 2008
 * Fixed security issue 28152 reported by Security Focus
 * Fixed issue #1595: Modules manifest file does not escape xml entities
+* Fixed issue #1596: Projects can be created being in the Online project
 * Fixed issue with NPE in MacroResolver
 * Fixed security issues manipulating JSP files
 * Fixed security issues related to message broadcasting
