@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2008/04/03 09:08:37 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/04/04 07:47:27 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.0.2
  */
@@ -760,16 +760,21 @@ public final class CmsSiteManagerImpl {
     }
 
     /**
+     * Returns the site matcher for the given request.<p>
      * 
+     * @param req the request to get the site matcher for
      * 
-     * @param req
-     * @return
+     * @return the site matcher for the given request
      */
     private CmsSiteMatcher getRequestMatcher(HttpServletRequest req) {
 
         CmsSiteMatcher matcher = new CmsSiteMatcher(req.getScheme(), req.getServerName(), req.getServerPort());
         // this is needed to get the right configured time offset
-        return (CmsSiteMatcher)m_matchers.get(m_matchers.indexOf(matcher));
+        int index = m_matchers.indexOf(matcher);
+        if (index < 0) {
+            return matcher;
+        }
+        return (CmsSiteMatcher)m_matchers.get(index);
     }
 
     /**
