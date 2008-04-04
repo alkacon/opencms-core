@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2008/02/27 12:05:35 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/04/04 07:42:03 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
 
@@ -491,13 +491,13 @@ public class TestUndoChanges extends OpenCmsTestCase {
         // now undo all changes on the folder
         cms.undoChanges(destination, CmsResource.UNDO_MOVE_CONTENT);
 
-        // now ensure source and destionation are in the original state
+        // now ensure source and destination are in the original state
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
 
         setMapping(source + newFile, destination + newFile);
-        // test recursivly
+        // test recursively
         Iterator subresources = cms.readResources(source, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
             CmsResource res = (CmsResource)subresources.next();
@@ -557,7 +557,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_CONTENT);
         // project must be current project
         assertProject(cms, destination, cms.getRequestContext().currentProject());
-        // test recursivly
+        // test recursively
         Iterator subresources = cms.readResources(destination, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
             CmsResource res = (CmsResource)subresources.next();
@@ -584,7 +584,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
-        // test recursivly
+        // test recursively
         subresources = cms.readResources(source, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
             CmsResource res = (CmsResource)subresources.next();
@@ -718,7 +718,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
-        // test recursivly
+        // test recursively
         Iterator subresources = cms.readResources(source, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
             CmsResource res = (CmsResource)subresources.next();
@@ -766,7 +766,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES_ALL);
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
-        // test recursivly
+        // test recursively
         Iterator subresources = cms.readResources(source, CmsResourceFilter.ALL).iterator();
         while (subresources.hasNext()) {
             CmsResource res = (CmsResource)subresources.next();

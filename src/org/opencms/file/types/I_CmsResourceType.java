@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2008/04/04 07:42:03 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -614,7 +614,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to touch
      * @param dateExpired the new expire date of the changed resource
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -635,7 +635,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to touch
      * @param dateLastModified timestamp the new timestamp of the changed resource
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -656,7 +656,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to touch
      * @param dateReleased the new release date of the changed resource
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
      * 
      * @throws CmsException if something goes wrong
      * 
@@ -679,7 +679,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to undelete
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * @param recursive if this operation is to be applied recursively to all resources in a folder
      * 
      * @throws CmsException if something goes wrong
      * 

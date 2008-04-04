@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/03 09:08:38 $
- * Version: $Revision: 1.999 $
+ * Date   : $Date: 2008/04/04 07:42:03 $
+ * Version: $Revision: 1.1000 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -1322,7 +1322,7 @@ OpenCms 5.1.10 Salusa Secundus - September 10, 2003
 OpenCms 5.1.9 Salusa Secundus - September 03, 2003
 * XMLTemplate content was not updated after a publish
 * Properties in Online project where not available in certain conditions
-- Improved "Dircet publish" functionality (dosen't walk the resource tree recursivly anymore)
+- Improved "Direct publish" functionality (doesn't walk the resource tree recursively anymore)
 * Fixed issue with deleted file siblings causing deleted folders not to be publishable
 * Several other minor bug fixes
 
