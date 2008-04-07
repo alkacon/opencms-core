@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:31 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2008/04/07 13:07:12 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,16 +51,16 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsToolDialog extends CmsWorkplace {
 
-    /** Request parameter name for the base tool path in the navegation, should be a parent tool of path. */
+    /** Request parameter name for the base tool path in the navigation, should be a parent tool of path. */
     public static final String PARAM_BASE = "base";
 
-    /** Request parameter name for the tool path, should be an accesible tool under the given root. */
+    /** Request parameter name for the tool path, should be an accessible tool under the given root. */
     public static final String PARAM_PATH = "path";
 
     /** Request parameter name for the root tool path. */
@@ -313,7 +313,8 @@ public class CmsToolDialog extends CmsWorkplace {
     /**
      * Initializes the admin tool main view.<p>
      * 
-     * @return the new modified params array
+     * @return the new modified parameters array
+     * 
      * @throws CmsRoleViolationException in case the dialog is opened by a user without the necessary privileges
      */
     public Map initAdminTool() throws CmsRoleViolationException {
@@ -322,14 +323,14 @@ public class CmsToolDialog extends CmsWorkplace {
         // initialize
         getToolManager().initParams(this);
 
-        // adjust params if called as default
+        // adjust parameters if called as default
         if (!useNewStyle()) {
             params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
             setParamStyle(CmsToolDialog.STYLE_NEW);
         }
 
         try {
-            // a dialog just for the close link param accessors
+            // a dialog just to access the close link parameter
             CmsDialog wp = (CmsDialog)this;
             // set close link
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(wp.getParamCloseLink())) {
@@ -495,7 +496,7 @@ public class CmsToolDialog extends CmsWorkplace {
     /**
      * Tests if we are working with the new administration dialog style.<p>
      * 
-     * The default is the new style, this param is not intented for external use.<p>
+     * The default is the new style, this parameter is not intended for external use.<p>
      * 
      * @return <code>true</code> if using the new style
      */
