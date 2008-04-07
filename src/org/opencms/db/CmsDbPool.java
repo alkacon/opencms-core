@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2008/04/07 10:53:07 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 6.0.0
  */
@@ -68,6 +68,12 @@ public final class CmsDbPool {
 
     /** This prefix is required to make the JDBC DriverManager return pooled DBCP connections. */
     public static final String DBCP_JDBC_URL_PREFIX = "jdbc:apache:commons:dbcp:";
+
+    /** Key for number of connection attempts. */
+    public static final String KEY_CONNECT_ATTEMTS = "connects";
+
+    /** Key for connection waiting. */
+    public static final String KEY_CONNECT_WAITS = "wait";
 
     /** Prefix for database keys. */
     public static final String KEY_DATABASE = "db.";
@@ -104,7 +110,7 @@ public final class CmsDbPool {
 
     /** Key for minimum number of connections kept open. */
     public static final String KEY_MIN_IDLE = "minIdle";
-    
+
     /** Key for number of tested connections per run. */
     public static final String KEY_NUM_TESTS_PER_EVICTION_RUN = "numTestsPerEvictionRun";
 
@@ -128,16 +134,16 @@ public final class CmsDbPool {
 
     /** Key for test on borrow flag. */
     public static final String KEY_TEST_ON_BORROW = "testOnBorrow";
-    
+
     /** Key for test query. */
     public static final String KEY_TEST_QUERY = "testQuery";
-    
+
     /** Key for test while idle flag. */
     public static final String KEY_TEST_WHILE_IDLE = "testWhileIdle";
-    
+
     /** Key for time between two eviction runs. */
     public static final String KEY_TIME_BETWEEN_EVICTION_RUNS = "timeBetweenEvictionRuns";
-    
+
     /** Key for user name. */
     public static final String KEY_USERNAME = "user";
 
@@ -188,10 +194,20 @@ public final class CmsDbPool {
         int maxActive = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_ACTIVE, 10);
         int maxWait = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_WAIT, 2000);
         int maxIdle = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MAX_IDLE, 5);
-        int minEvictableIdleTime = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_EVICTABLE_IDLE_TIME, 1800000);
+        int minEvictableIdleTime = config.getInteger(
+            KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_EVICTABLE_IDLE_TIME,
+            1800000);
         int minIdle = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_MIN_IDLE, 0);
-        int numTestsPerEvictionRun = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_NUM_TESTS_PER_EVICTION_RUN, 3);
-        int timeBetweenEvictionRuns = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TIME_BETWEEN_EVICTION_RUNS, 3600000);
+        int numTestsPerEvictionRun = config.getInteger(KEY_DATABASE_POOL
+            + '.'
+            + key
+            + '.'
+            + KEY_NUM_TESTS_PER_EVICTION_RUN, 3);
+        int timeBetweenEvictionRuns = config.getInteger(KEY_DATABASE_POOL
+            + '.'
+            + key
+            + '.'
+            + KEY_TIME_BETWEEN_EVICTION_RUNS, 3600000);
         String testQuery = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_QUERY);
         String username = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_USERNAME);
         String password = config.getString(KEY_DATABASE_POOL + '.' + key + '.' + KEY_PASSWORD);
@@ -244,6 +260,9 @@ public final class CmsDbPool {
             : ("fail".equalsIgnoreCase(whenStmtsExhaustedActionValue)) ? GenericKeyedObjectPool.WHEN_EXHAUSTED_FAIL
             : GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW;
         }
+
+        int connectionAttempts = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_CONNECT_ATTEMTS, 10);
+        int connetionsWait = config.getInteger(KEY_DATABASE_POOL + '.' + key + '.' + KEY_CONNECT_WAITS, 5000);
 
         // create an instance of the JDBC driver
         Class.forName(jdbcDriver).newInstance();
@@ -306,9 +325,34 @@ public final class CmsDbPool {
         PoolingDriver driver = new PoolingDriver();
         driver.registerPool(poolUrl, connectionPool);
 
+        Connection con = null;
+        boolean connect = false;
+        int connectionTests = 0;
+
         // try to connect once to the database to ensure it can be connected to at all
-        Connection con = connectionFactory.createConnection();
-        con.close();
+        // if the conection cannot be established, multiple attempts will be done to connect
+        // just in cast the database was not fast enough to start before OpenCms was started
+
+        do {
+            try {
+                // try to connect
+                con = connectionFactory.createConnection();
+                connect = true;
+            } catch (Exception e) {
+                // connection failed, increase attempts, sleept for some seconds and log a message
+                connectionTests++;
+                if (CmsLog.INIT.isInfoEnabled()) {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
+                        Messages.INIT_WAIT_FOR_DB_4,
+                        new Object[] {poolUrl, jdbcUrl, new Integer(connectionTests), new Integer(connetionsWait)}));
+                }
+                Thread.sleep(connetionsWait);
+            } finally {
+                if (con != null) {
+                    con.close();
+                }
+            }
+        } while (!connect && connectionTests < connectionAttempts);
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_JDBC_POOL_2, poolUrl, jdbcUrl));
