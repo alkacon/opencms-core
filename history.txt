@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/07 10:53:07 $
- * Version: $Revision: 1.1003 $
+ * Date   : $Date: 2008/04/08 11:50:29 $
+ * Version: $Revision: 1.1004 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ OpenCms 7.0.5 - xxx, 2008
 ! Added new site alias attribute to manipulate request time
 - Modfied TOMCAT_HOME detection in CmsShell to run CmsShell in more tomcat setup scenarios
 ! Several attempts are made to connect to database during startup.
+- Updated Lucene jars to version 2.3.1
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 
