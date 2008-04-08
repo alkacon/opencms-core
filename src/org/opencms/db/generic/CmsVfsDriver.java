@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2008/03/28 16:58:31 $
- * Version: $Revision: 1.278 $
+ * Date   : $Date: 2008/04/08 10:31:44 $
+ * Version: $Revision: 1.279 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.278 $
+ * @version $Revision: 1.279 $
  * 
  * @since 6.0.0 
  */
@@ -1772,7 +1772,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public List readRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, CmsRelationFilter filter)
     throws CmsDataAccessException {
 
-        if (dbc.getRequestContext().getAttribute(REQ_ATTR_RESOURCE_OUS) != null) {
+        if ((dbc.getRequestContext() != null) && dbc.getRequestContext().getAttribute(REQ_ATTR_RESOURCE_OUS) != null) {
             return getResourceOus(dbc, projectId, resource);
         }
         Set relations = new HashSet();
