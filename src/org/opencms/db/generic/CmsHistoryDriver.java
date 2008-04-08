@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2008/04/08 10:31:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/04/08 13:24:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.9.1
  */
@@ -1286,8 +1286,10 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             Iterator dummy = properties.iterator();
             while (dummy.hasNext()) {
                 CmsProperty property = (CmsProperty)dummy.next();
-                CmsPropertyDefinition propDef = readPropertyDefinition(dbc, property.getName());
-                if (propDef == null) {
+                CmsPropertyDefinition propDef = null;
+                try {
+                    propDef = readPropertyDefinition(dbc, property.getName());
+                } catch (CmsDbEntryNotFoundException e) {
                     // create if missing
                     propDef = createPropertyDefinition(dbc, property.getName(), CmsPropertyDefinition.TYPE_NORMAL);
                 }
