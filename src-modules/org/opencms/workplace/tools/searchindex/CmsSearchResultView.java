@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchResultView.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/04/08 14:19:29 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchResult;
 import org.opencms.search.fields.CmsSearchField;
@@ -70,19 +71,13 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
 public class CmsSearchResultView {
 
-    /** The project that forces evaluation of all dynamic content. */
-    protected CmsProject m_offlineProject;
-
-    /** The project that allows static export. */
-    protected CmsProject m_onlineProject;
-
-    /** The flag that decides wethter links to search result point to their exported version or not. */
+    /** The flag that decides whether links to search result point to their exported version or not. */
     private boolean m_exportLinks = false;
 
     /**
@@ -94,6 +89,12 @@ public class CmsSearchResultView {
 
     /** The CmsJspActionElement to use. **/
     private CmsJspActionElement m_jsp;
+
+    /** The project that forces evaluation of all dynamic content. */
+    protected CmsProject m_offlineProject;
+
+    /** The project that allows static export. */
+    protected CmsProject m_onlineProject;
 
     /** The url to a proprietary search url (different from m_jsp.getRequestContext().getUri). **/
     private String m_searchRessourceUrl;
@@ -133,7 +134,7 @@ public class CmsSearchResultView {
     /**
      * Returns the formatted search results.<p>
      * 
-     * @param search the preconfigured search bean 
+     * @param search the pre-configured search bean 
      * @return the formatted search results
      */
     public String displaySearchResult(CmsSearch search) {
@@ -189,11 +190,23 @@ public class CmsSearchResultView {
                 }
 
                 String name;
+                String path;
                 while (iterator.hasNext()) {
                     CmsSearchResult entry = (CmsSearchResult)iterator.next();
                     result.append("\n<div class=\"searchResult\">");
                     result.append("<a class=\"navhelp\" href=\"#\" onclick=\"javascript:window.open('");
-                    result.append(m_jsp.link(m_jsp.getRequestContext().removeSiteRoot(entry.getPath())));
+                    // CmsJspActionElement.link() is not programmed for using from root site 
+                    // because it assumes the "default CmsSite" when no configured site matches the 
+                    // root site "/":
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_jsp.getRequestContext().getSiteRoot())) {
+                        // link will always cut off "/sites/default" if we are in the 
+                        // root site, this call is only used to get the scheme, host, context name and servlet name...
+                        path = m_jsp.link(OpenCms.getSiteManager().getDefaultSite().getSiteRoot() + "/")
+                            + entry.getPath().substring(1);
+                    } else {
+                        path = m_jsp.link(entry.getPath());
+                    }
+                    result.append(path);
                     result.append("', '_blank', 'width='+screen.availWidth+', height='+ screen.availHeight+', scrollbars=yes, menubar=yes, toolbar=yes')\"");
                     result.append("\">\n");
                     name = entry.getField(CmsSearchField.FIELD_TITLE);
@@ -270,40 +283,6 @@ public class CmsSearchResultView {
     }
 
     /**
-     * Returns true if the links to search results shall point to exported content, false else. <p>
-     * @return true if the links to search results shall point to exported content, false else
-     */
-    public boolean isExportLinks() {
-
-        return m_exportLinks;
-    }
-
-    /**
-     * Set wether the links to search results point to exported content or not. <p>
-     * 
-     * @param exportLinks The value that decides Set wether the links to search results point to exported content or not. 
-     */
-    public void setExportLinks(boolean exportLinks) {
-
-        m_exportLinks = exportLinks;
-    }
-
-    /**
-     * Set a proprietary resource uri for the search page. <p>
-     * 
-     * This is optional but allows to override the standard search result links 
-     * (for next or previous pages) that point to 
-     * <code>getJsp().getRequestContext().getUri()</code> whenever the search 
-     * uri is element of some template and should not be linked directly.<p>
-     * 
-     * @param uri the proprietary resource uri for the search page
-     */
-    public void setSearchRessourceUrl(String uri) {
-
-        m_searchRessourceUrl = uri;
-    }
-
-    /**
      * Returns the resource uri to the search page with respect to the 
      * optionally configured value <code>{@link #setSearchRessourceUrl(String)}</code> 
      * with the request parameters of the given argument.<p>
@@ -340,6 +319,40 @@ public class CmsSearchResultView {
             link = new StringBuffer("javascript:document.forms['").append(formname).append("'].submit()").toString();
         }
         return link;
+    }
+
+    /**
+     * Returns true if the links to search results shall point to exported content, false else. <p>
+     * @return true if the links to search results shall point to exported content, false else
+     */
+    public boolean isExportLinks() {
+
+        return m_exportLinks;
+    }
+
+    /**
+     * Set wether the links to search results point to exported content or not. <p>
+     * 
+     * @param exportLinks The value that decides Set wether the links to search results point to exported content or not. 
+     */
+    public void setExportLinks(boolean exportLinks) {
+
+        m_exportLinks = exportLinks;
+    }
+
+    /**
+     * Set a proprietary resource uri for the search page. <p>
+     * 
+     * This is optional but allows to override the standard search result links 
+     * (for next or previous pages) that point to 
+     * <code>getJsp().getRequestContext().getUri()</code> whenever the search 
+     * uri is element of some template and should not be linked directly.<p>
+     * 
+     * @param uri the proprietary resource uri for the search page
+     */
+    public void setSearchRessourceUrl(String uri) {
+
+        m_searchRessourceUrl = uri;
     }
 
     /**
@@ -440,7 +453,7 @@ public class CmsSearchResultView {
                     result.append(value).append("\" />\n");
                 }
 
-                // custom searchindex code for making category widget - compatible 
+                // custom search index code for making category widget - compatible 
                 // this is needed for transforming e.g. the CmsSearch-generated 
                 // "&category=a,b,c" to widget fields categories.0..categories.n.
                 List categories = search.getParameters().getCategories();
