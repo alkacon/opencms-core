@@ -91,7 +91,7 @@
 		<file>
 			<source>system/modules/org.opencms.workplace.tools.publishqueue/lib/org.opencms.workplace.tools.publishqueue.jar</source>
 			<destination>system/modules/org.opencms.workplace.tools.publishqueue/lib/org.opencms.workplace.tools.publishqueue.jar</destination>
-			<type>plain</type>
+			<type>binary</type>
 			<uuidstructure>d462a5bf-deb7-acdb-91cd-f42ae480bac9</uuidstructure>
 			<uuidresource>bd73d0be-3b2a-feda-bcd3-df763b252368</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

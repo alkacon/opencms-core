@@ -90,7 +90,7 @@
 		<file>
 			<source>system/modules/org.opencms.workplace.tools.scheduler/lib/org.opencms.workplace.tools.scheduler.jar</source>
 			<destination>system/modules/org.opencms.workplace.tools.scheduler/lib/org.opencms.workplace.tools.scheduler.jar</destination>
-			<type>plain</type>
+			<type>binary</type>
 			<uuidstructure>d23027d9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>33273195-3b2b-11da-8883-df763b25cc68</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

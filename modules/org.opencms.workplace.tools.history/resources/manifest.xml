@@ -90,7 +90,7 @@
 		<file>
 			<source>system/modules/org.opencms.workplace.tools.history/lib/org.opencms.workplace.tools.history.jar</source>
 			<destination>system/modules/org.opencms.workplace.tools.history/lib/org.opencms.workplace.tools.history.jar</destination>
-			<type>plain</type>
+			<type>binary</type>
 			<uuidstructure>df0a6801-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2b441159-3b29-11da-8883-df763b25cc68</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

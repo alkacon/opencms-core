@@ -91,7 +91,7 @@
 		<file>
 			<source>system/modules/org.opencms.workplace.tools.searchindex/lib/org.opencms.workplace.tools.searchindex.jar</source>
 			<destination>system/modules/org.opencms.workplace.tools.searchindex/lib/org.opencms.workplace.tools.searchindex.jar</destination>
-			<type>plain</type>
+			<type>binary</type>
 			<uuidstructure>ce71bf78-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>924cf38c-3b2b-11da-8883-df763b25cc68</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

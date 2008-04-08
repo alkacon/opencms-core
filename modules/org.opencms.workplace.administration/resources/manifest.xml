@@ -95,7 +95,7 @@
 		<file>
 			<source>system/modules/org.opencms.workplace.administration/lib/org.opencms.workplace.administration.jar</source>
 			<destination>system/modules/org.opencms.workplace.administration/lib/org.opencms.workplace.administration.jar</destination>
-			<type>plain</type>
+			<type>binary</type>
 			<uuidstructure>95e742c0-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>c58d4f56-3b22-11da-8883-df763b25cc68</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

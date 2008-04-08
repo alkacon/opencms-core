@@ -90,7 +90,7 @@
 		<file>
 			<source>system/modules/org.opencms.workplace.tools.galleryoverview/lib/org.opencms.workplace.tools.galleryoverview.jar</source>
 			<destination>system/modules/org.opencms.workplace.tools.galleryoverview/lib/org.opencms.workplace.tools.galleryoverview.jar</destination>
-			<type>plain</type>
+			<type>binary</type>
 			<uuidstructure>dc5225b5-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>fc5c1f52-3b27-11da-8883-df763b25cc68</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>

@@ -90,7 +90,7 @@
 		<file>
 			<source>system/modules/org.opencms.workplace.tools.modules/lib/org.opencms.workplace.tools.modules.jar</source>
 			<destination>system/modules/org.opencms.workplace.tools.modules/lib/org.opencms.workplace.tools.modules.jar</destination>
-			<type>plain</type>
+			<type>binary</type>
 			<uuidstructure>d70ca97d-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>2e683f57-3b2a-11da-8883-df763b25cc68</uuidresource>
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
