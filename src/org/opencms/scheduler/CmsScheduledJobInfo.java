@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2008/04/03 07:45:26 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/04/09 08:55:30 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,12 @@
 package org.opencms.scheduler;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
@@ -134,7 +136,7 @@ import org.quartz.Trigger;
  * <p>
  * The '?' character is allowed for the day-of-month and day-of-week fields. It
  * is used to specify 'no specific value'. This is useful when you need to
- * specify something in one of the two fileds, but not the other. See the
+ * specify something in one of the two fields, but not the other. See the
  * examples below for clarification.
  * </p>
  * 
@@ -343,7 +345,7 @@ import org.quartz.Trigger;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -656,6 +658,11 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_JOB_CREATED_1, getClassName()));
         }
 
+        // this should not flood the log files: if class name is wrong or jar files missing this will 
+        // most likely persist until restart. 
+        if (job == null) {
+            this.setActive(false);
+        }
         return job;
     }
 
@@ -739,29 +746,45 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
 
         checkFrozen();
         if (!CmsStringUtil.isValidJavaClassName(className)) {
-            throw new CmsIllegalArgumentException(
-                Messages.get().container(Messages.ERR_BAD_JOB_CLASS_NAME_1, className));
-        }
-        Class jobClass;
-        try {
-            jobClass = Class.forName(className);
-        } catch (ClassNotFoundException e) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_JOB_CLASS_NOT_FOUND_1,
-                className));
-        }
-        if (!I_CmsScheduledJob.class.isAssignableFrom(jobClass)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_JOB_CLASS_BAD_INTERFACE_2,
-                className,
-                I_CmsScheduledJob.class.getName()));
-        }
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_BAD_JOB_CLASS_NAME_1, className);
+            if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
+                throw new CmsIllegalArgumentException(message);
+            } else {
+                LOG.warn(message.key());
+            }
+        } else {
+            Class jobClass;
+            try {
+                jobClass = Class.forName(className);
+                if (!I_CmsScheduledJob.class.isAssignableFrom(jobClass)) {
+                    CmsMessageContainer message = Messages.get().container(
+                        Messages.ERR_JOB_CLASS_BAD_INTERFACE_2,
+                        className,
+                        I_CmsScheduledJob.class.getName());
 
+                    if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
+                        throw new CmsIllegalArgumentException(message);
+                    } else {
+                        LOG.warn(message.key());
+                    }
+
+                }
+            } catch (ClassNotFoundException e) {
+                CmsMessageContainer message = Messages.get().container(Messages.ERR_JOB_CLASS_NOT_FOUND_1, className);
+                if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
+                    throw new CmsIllegalArgumentException(message);
+                } else {
+                    LOG.warn(message.key());
+                }
+
+            }
+        }
         m_className = className;
         if (getJobName() == null) {
             // initialize job name with class name as default
             setJobName(className);
         }
+
     }
 
     /**

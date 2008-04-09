@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:33 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2008/04/09 08:55:30 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.scheduler;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
@@ -76,7 +77,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  * 
@@ -336,22 +337,31 @@ public class CmsScheduleManager implements Job {
         Class jobClass;
         try {
             jobClass = Class.forName(jobInfo.getClassName());
+            if (!I_CmsScheduledJob.class.isAssignableFrom(jobClass)) {
+                // class does not implement required interface
+                CmsMessageContainer message = Messages.get().container(
+                    Messages.ERR_JOB_CLASS_BAD_INTERFACE_2,
+                    jobInfo.getClassName(),
+                    I_CmsScheduledJob.class.getName());
+                LOG.error(message.key());
+                if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
+                    throw new CmsIllegalArgumentException(message);
+                } else {
+                    jobInfo.setActive(false);
+                }
+            }
         } catch (ClassNotFoundException e) {
             // class does not exist
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_JOB_CLASS_NOT_FOUND_1,
                 jobInfo.getClassName());
             LOG.error(message.key());
-            throw new CmsSchedulerException(message);
-        }
-        if (!I_CmsScheduledJob.class.isAssignableFrom(jobClass)) {
-            // class does not implement required interface
-            CmsMessageContainer message = Messages.get().container(
-                Messages.ERR_JOB_CLASS_BAD_INTERFACE_2,
-                jobInfo.getClassName(),
-                I_CmsScheduledJob.class.getName());
-            LOG.error(message.key());
-            throw new CmsSchedulerException(message);
+            if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
+                throw new CmsIllegalArgumentException(message);
+            } else {
+                jobInfo.setActive(false);
+            }
+
         }
 
         String jobId = jobInfo.getId();
@@ -415,6 +425,22 @@ public class CmsScheduleManager implements Job {
             // finally add the job to the Quartz scheduler
             try {
                 m_scheduler.scheduleJob(jobDetail, trigger);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().getBundle().key(
+                        Messages.LOG_JOB_SCHEDULED_4,
+                        new Object[] {
+                            new Integer(m_jobs.size()),
+                            jobInfo.getJobName(),
+                            jobInfo.getClassName(),
+                            jobInfo.getContextInfo().getUserName()}));
+                    Date nextExecution = jobInfo.getExecutionTimeNext();
+                    if (nextExecution != null) {
+                        LOG.info(Messages.get().getBundle().key(
+                            Messages.LOG_JOB_NEXT_EXECUTION_2,
+                            jobInfo.getJobName(),
+                            nextExecution));
+                    }
+                }
             } catch (Exception e) {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(e.getMessage(), e);
@@ -457,22 +483,6 @@ public class CmsScheduleManager implements Job {
         // add the job to the list of configured jobs
         m_jobs.add(jobInfo);
 
-        if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().getBundle().key(
-                Messages.LOG_JOB_SCHEDULED_4,
-                new Object[] {
-                    new Integer(m_jobs.size()),
-                    jobInfo.getJobName(),
-                    jobInfo.getClassName(),
-                    jobInfo.getContextInfo().getUserName()}));
-            Date nextExecution = jobInfo.getExecutionTimeNext();
-            if (nextExecution != null) {
-                LOG.info(Messages.get().getBundle().key(
-                    Messages.LOG_JOB_NEXT_EXECUTION_2,
-                    jobInfo.getJobName(),
-                    nextExecution));
-            }
-        }
     }
 
     /** 
