@@ -225,9 +225,14 @@ function init() {
 	var href = parent.frames[0].location.href;
 	var languageParam = "elementlanguage=";
 	var p = href.indexOf(languageParam);
+	var p1 = href.indexOf("&", p + 1); 
+    if (p1 == -1){
+        p1 = href.length;
+    }
+	
 	languageParam = languageParam + "<%= wp.getParamElementlanguage() %>";
 	if (p>=0) { // exchange elementlanguage param only if it was available	
-		href = href.substr(0,p) + languageParam + href.substr(p+languageParam.length);
+		href = href.substr(0,p) + languageParam + href.substr(p1);
 	} else {
 		href = href + "&" + languageParam;
 	}
