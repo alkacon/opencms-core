@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2008/04/10 14:35:31 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,12 @@ package org.opencms.workplace;
 
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsExplorer;
@@ -51,7 +53,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 6.0.0 
  */
@@ -481,7 +483,9 @@ public class CmsWorkplaceSettings {
     /**
      * Sets the current resource to be displayed in the explorer.<p>
      * 
-     * @param value the current resource to be displayed in the explorer
+     * @param value the current resource to be displayed in the explorer 
+     * 
+     * @deprecated use {@link #setExplorerResource(String, CmsObject)} instead
      */
     public void setExplorerResource(String value) {
 
@@ -505,6 +509,49 @@ public class CmsWorkplaceSettings {
             // restrict access to /system/ 
             m_explorerResource.put(mode, "/");
         } else {
+
+            m_explorerResource.put(mode, value);
+        }
+    }
+
+    /**
+     * Sets the current resource to be displayed in the explorer.<p>
+     * 
+     * @param value the current resource to be displayed in the explorer 
+     * 
+     * @param cms needed for validation / normalization of the given path
+     */
+    public void setExplorerResource(String value, CmsObject cms) {
+
+        if (value == null) {
+            return;
+        }
+        // get the current explorer mode
+        String mode = getExplorerMode();
+        if (mode == null) {
+            mode = CmsExplorer.VIEW_EXPLORER;
+        }
+        if (CmsExplorer.VIEW_EXPLORER.equals(mode)) {
+            // append the current site to the key when in explorer view mode
+            mode += "_" + getSite() + "/";
+        }
+
+        // set the resource for the given mode
+        if (value.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")
+            && (!value.startsWith(m_currentSite))
+            && (!CmsExplorer.VIEW_GALLERY.equals(getExplorerMode()))) {
+            // restrict access to /system/ 
+            m_explorerResource.put(mode, "/");
+        } else {
+            // Validation with read resource has 2 advantages: 
+            // 1: Normalization of the path: a missing trailing slash is not fatal.
+            // 2: existence is verified. 
+            try {
+                CmsResource resource = cms.readResource(value);
+                value = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+            } catch (CmsException cme) {
+                // nop
+            }
             m_explorerResource.put(mode, value);
         }
     }

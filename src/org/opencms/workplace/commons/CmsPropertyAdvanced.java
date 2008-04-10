@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2008/04/10 14:35:31 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -276,7 +276,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 newFolder += "/";
             }
             // set the current explorer resource to the new created folder
-            getSettings().setExplorerResource(newFolder);
+            getSettings().setExplorerResource(newFolder, getCms());
             String newUri = PATH_DIALOGS
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getParamIndexPageType()).getNewResourceUri();
             try {
@@ -314,7 +314,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         } else if (MODE_WIZARD_INDEXCREATED.equals(getParamDialogmode())) {
             // set request attribute to reload the folder tree after creating an xml page in a new created folder in wizard mode
             getSettings().setExplorerResource(
-                CmsResource.getParentFolder(CmsResource.getParentFolder(getParamResource())));
+                CmsResource.getParentFolder(CmsResource.getParentFolder(getParamResource())),
+                getCms());
             List folderList = new ArrayList(1);
             folderList.add(CmsResource.getParentFolder(CmsResource.getParentFolder(getParamResource())));
             getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);

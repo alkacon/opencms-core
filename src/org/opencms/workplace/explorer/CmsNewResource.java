@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2008/02/27 12:05:21 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2008/04/10 14:35:31 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -366,7 +366,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
 
             // set the current explorer resource to the new created folder
             String updateFolder = CmsResource.getParentFolder(getSettings().getExplorerResource());
-            getSettings().setExplorerResource(updateFolder);
+            getSettings().setExplorerResource(updateFolder, getCms());
             List folderList = new ArrayList(1);
             if (updateFolder != null) {
                 folderList.add(updateFolder);

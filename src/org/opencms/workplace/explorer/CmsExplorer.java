@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2008/02/27 12:05:21 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2008/04/10 14:35:30 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -574,7 +574,7 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.setDirectory(\"");
         content.append(CmsResource.getFolderPath(currentResource.getRootPath()));
         content.append("\",\"");
-        content.append(CmsResource.getFolderPath(getSettings().getExplorerResource()));
+        content.append(CmsResource.getFolderPath(getCms().getRequestContext().removeSiteRoot(currentResource.getRootPath())));
         content.append("\");\n");
         content.append("top.rD();\n");
         List reloadTreeFolders = (List)getJsp().getRequest().getAttribute(REQUEST_ATTRIBUTE_RELOADTREE);
@@ -640,13 +640,13 @@ public class CmsExplorer extends CmsWorkplace {
 
         if (CmsStringUtil.isNotEmpty(currentResource) && folderExists(getCms(), currentResource)) {
             // resource is a folder, set resource name
-            settings.setExplorerResource(currentResource);
+            settings.setExplorerResource(currentResource, getCms());
         } else {
             // other cases (resource null, no folder), first get the resource name from settings
             currentResource = settings.getExplorerResource();
             if (!resourceExists(getCms(), currentResource)) {
                 // resource does not exist, display root folder
-                settings.setExplorerResource("/");
+                settings.setExplorerResource("/", getCms());
             }
         }
 

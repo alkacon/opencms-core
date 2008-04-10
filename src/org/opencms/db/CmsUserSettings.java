@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2008/03/27 13:22:43 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2008/04/10 14:35:30 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 6.0.0
  */
@@ -365,7 +365,7 @@ public class CmsUserSettings {
      */
     public CmsUserSettings(CmsObject cms) {
 
-        init(cms.getRequestContext().currentUser());
+        this(cms.getRequestContext().currentUser());
     }
 
     /**
@@ -1007,13 +1007,15 @@ public class CmsUserSettings {
         if (m_startSite == null) {
             m_startSite = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartSite();
         }
-        // start folder
-        m_startFolder = (String)m_user.getAdditionalInfo(PREFERENCES
+        // start folder, we use the setter here for default logic in case of illegal folder string:
+        String startFolder = (String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
             + CmsWorkplaceConfiguration.N_FOLDER);
-        if (m_startFolder == null) {
-            m_startFolder = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder();
+        if (startFolder == null) {
+            startFolder = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder();
         }
+        this.setStartFolder(startFolder);
+
         // restrict explorer folder view
         try {
             m_restrictExplorerView = ((Boolean)m_user.getAdditionalInfo(PREFERENCES
@@ -1819,7 +1821,12 @@ public class CmsUserSettings {
      */
     public void setStartFolder(String folder) {
 
-        m_startFolder = folder;
+        if (!(folder.startsWith("/") && folder.endsWith("/"))) {
+            m_startFolder = "/";
+        } else {
+            m_startFolder = folder;
+        }
+
     }
 
     /**

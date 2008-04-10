@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.172 $
+ * Date   : $Date: 2008/04/10 14:35:31 $
+ * Version: $Revision: 1.173 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.172 $ 
+ * @version $Revision: 1.173 $ 
  * 
  * @since 6.0.0 
  */
@@ -549,7 +549,14 @@ public abstract class CmsWorkplace {
         settings.setSite(siteRoot);
 
         // set the preferred folder to display
-        settings.setExplorerResource(settings.getUserSettings().getStartFolder());
+        // check start folder: 
+        String startFolder = settings.getUserSettings().getStartFolder();
+        if (!cms.existsResource(startFolder, CmsResourceFilter.IGNORE_EXPIRATION)) {
+            // self - healing: 
+            startFolder = "/";
+            settings.getUserSettings().setStartFolder(startFolder);
+        }
+        settings.setExplorerResource(startFolder, cms);
 
         // get the default view from the user settings
         settings.setViewUri(OpenCms.getLinkManager().substituteLink(cms, settings.getUserSettings().getStartView()));
@@ -1408,7 +1415,7 @@ public abstract class CmsWorkplace {
         String explorerResource = request.getParameter(PARAM_WP_EXPLORER_RESOURCE);
         if (explorerResource != null) {
             reloadRequired = true;
-            settings.setExplorerResource(explorerResource);
+            settings.setExplorerResource(explorerResource, getCms());
         }
 
         return reloadRequired;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2008/02/27 12:05:21 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/04/10 14:35:31 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.7.1 
  */
@@ -288,7 +288,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
             }
 
             // set the current explorer resource to the new created folder
-            getSettings().setExplorerResource(newFolder);
+            getSettings().setExplorerResource(newFolder, getCms());
             String newUri = PATH_DIALOGS
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(indexPageType).getNewResourceUri();
             CmsUriSplitter splitter = new CmsUriSplitter(newUri);
