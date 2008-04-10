@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2008/04/08 13:24:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/04/10 15:51:39 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.9.1
  */
@@ -787,11 +787,12 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         Connection conn = null;
         ResultSet res = null;
         int projectPublishTag = 1;
+        int resourcePublishTag = 1;
 
         try {
-            // get the max publish tag from contents 
+            // get the max publish tag from project history 
             conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_CONTENT_PUBLISH_MAXTAG");
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_PROJECTS_HISTORY_MAXTAG");
             res = stmt.executeQuery();
 
             if (res.next()) {
@@ -800,12 +801,57 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
             }
-
         } catch (SQLException exc) {
             LOG.error(Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), exc);
         } finally {
             m_sqlManager.closeAll(dbc, null, stmt, res);
         }
+
+        try {
+            // get the max publish tag from resource history 
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_MAXTAG");
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                resourcePublishTag = res.getInt(1) + 1;
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            }
+        } catch (SQLException exc) {
+            LOG.error(Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), exc);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+
+        // keep the biggest 
+        if (resourcePublishTag > projectPublishTag) {
+            projectPublishTag = resourcePublishTag;
+        }
+
+        try {
+            // get the max publish tag from contents 
+            conn = m_sqlManager.getConnection(dbc);
+            stmt = m_sqlManager.getPreparedStatement(conn, "C_CONTENT_PUBLISH_MAXTAG");
+            res = stmt.executeQuery();
+
+            if (res.next()) {
+                resourcePublishTag = res.getInt(1) + 1;
+                while (res.next()) {
+                    // do nothing only move through all rows because of mssql odbc driver
+                }
+            }
+        } catch (SQLException exc) {
+            LOG.error(Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), exc);
+        } finally {
+            m_sqlManager.closeAll(dbc, null, stmt, res);
+        }
+
+        // return the biggest 
+        if (resourcePublishTag > projectPublishTag) {
+            projectPublishTag = resourcePublishTag;
+        }
+
         return projectPublishTag;
     }
 
