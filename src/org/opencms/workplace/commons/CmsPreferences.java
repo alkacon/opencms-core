@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2008/03/27 13:22:44 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2008/04/10 14:36:59 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsResource.CmsResourceCopyMode;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
@@ -93,7 +94,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 6.0.0
  */
@@ -1770,6 +1771,10 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public void setParamTabWpFolder(String value) {
 
+        // perform self - healing 
+        if (!getCms().existsResource(value, CmsResourceFilter.IGNORE_EXPIRATION)) {
+            value = "/";
+        }
         m_userSettings.setStartFolder(value);
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/10 14:35:31 $
- * Version: $Revision: 1.1008 $
+ * Date   : $Date: 2008/04/10 14:36:59 $
+ * Version: $Revision: 1.1009 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -39,9 +39,10 @@ OpenCms 7.0.5 - xxx, 2008
 ! Several attempts are made to connect to database during startup.
 - Updated Lucene jars to version 2.3.1
 * Fixed issue #1591: OpenCms does not start with missing scheduled job class
-* Fixed issue #1491: Incorrect behaviour of language selector in editor with 3-sybmols locales
+* Fixed issue #1491: Incorrect behavior of language selector in editor with 3-sybmols locales
 * Fixed security issue 490498 reported by Security Focus
 * Fixed issue #1594: Location bar in workplace misfunctioning without ending '/'
+* Fixed issue with broken workplace when startup folder was chosen wrong / missing/
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 
