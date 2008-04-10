@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2008/04/10 14:35:31 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2008/04/10 15:46:28 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.61 $ 
+ * @version $Revision: 1.62 $ 
  * 
  * @since 6.0.0 
  */
@@ -489,29 +489,7 @@ public class CmsWorkplaceSettings {
      */
     public void setExplorerResource(String value) {
 
-        if (value == null) {
-            return;
-        }
-        // get the current explorer mode
-        String mode = getExplorerMode();
-        if (mode == null) {
-            mode = CmsExplorer.VIEW_EXPLORER;
-        }
-        if (CmsExplorer.VIEW_EXPLORER.equals(mode)) {
-            // append the current site to the key when in explorer view mode
-            mode += "_" + getSite() + "/";
-        }
-
-        // set the resource for the given mode
-        if (value.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")
-            && (!value.startsWith(m_currentSite))
-            && (!CmsExplorer.VIEW_GALLERY.equals(getExplorerMode()))) {
-            // restrict access to /system/ 
-            m_explorerResource.put(mode, "/");
-        } else {
-
-            m_explorerResource.put(mode, value);
-        }
+        this.setExplorerResource(value, null);
     }
 
     /**
@@ -543,14 +521,16 @@ public class CmsWorkplaceSettings {
             // restrict access to /system/ 
             m_explorerResource.put(mode, "/");
         } else {
-            // Validation with read resource has 2 advantages: 
-            // 1: Normalization of the path: a missing trailing slash is not fatal.
-            // 2: existence is verified. 
-            try {
-                CmsResource resource = cms.readResource(value);
-                value = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-            } catch (CmsException cme) {
-                // nop
+            if (cms != null) {
+                // Validation with read resource has 2 advantages: 
+                // 1: Normalization of the path: a missing trailing slash is not fatal.
+                // 2: existence is verified. 
+                try {
+                    CmsResource resource = cms.readResource(value);
+                    value = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+                } catch (CmsException cme) {
+                    // nop
+                }
             }
             m_explorerResource.put(mode, value);
         }
