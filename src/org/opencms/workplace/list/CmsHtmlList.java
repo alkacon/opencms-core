@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2008/04/10 08:17:53 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2008/04/10 08:32:46 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,11 +31,11 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
-import org.opencms.util.CmsHtmlStripper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.commons.CmsProgressThread;
@@ -49,14 +49,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import org.htmlparser.util.ParserException;
-
 /**
  * The main class of the html list widget.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -727,7 +725,7 @@ public class CmsHtmlList {
             return;
         }
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchFilter)) {
-       
+
             // reset content if filter is empty
             if (!m_metadata.isSelfManaged()) {
                 m_filteredItems = null;
@@ -736,15 +734,7 @@ public class CmsHtmlList {
             getMetadata().getSearchAction().getShowAllAction().setVisible(false);
         } else {
             // http://www.securityfocus.com/archive/1/490498: searchfilter cross site scripting vulnerability: 
-            CmsHtmlStripper stripper = new CmsHtmlStripper();
-            try {
-                searchFilter = stripper.stripHtml(searchFilter);
-            } catch (ParserException e) {
-                // the hard way: 
-                if (searchFilter.toLowerCase().contains("</script>")) {
-                    searchFilter = "";
-                }
-            }
+            searchFilter = CmsEncoder.escapeXml(searchFilter);
             if (!m_metadata.isSelfManaged()) {
                 m_filteredItems = getMetadata().getSearchAction().filter(getAllContent(), searchFilter);
             }
