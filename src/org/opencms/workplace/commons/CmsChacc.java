@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2008/04/03 07:45:25 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2008/04/10 14:08:05 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -1789,7 +1789,9 @@ public class CmsChacc extends CmsDialog {
      */
     private CmsPermissionSet buildPermissionsForCurrentUser() throws CmsException {
 
-        CmsResourceUtil resUtil = new CmsResourceUtil(getCms(), getCms().readResource(getParamResource()));
+        CmsResourceUtil resUtil = new CmsResourceUtil(getCms(), getCms().readResource(
+            getParamResource(),
+            CmsResourceFilter.ALL));
         return resUtil.getPermissionSet();
     }
 
