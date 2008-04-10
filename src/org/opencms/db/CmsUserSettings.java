@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2008/04/10 14:35:30 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2008/04/10 15:47:29 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 6.0.0
  */
@@ -1014,7 +1014,7 @@ public class CmsUserSettings {
         if (startFolder == null) {
             startFolder = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartFolder();
         }
-        this.setStartFolder(startFolder);
+        setStartFolder(startFolder);
 
         // restrict explorer folder view
         try {
@@ -1821,12 +1821,13 @@ public class CmsUserSettings {
      */
     public void setStartFolder(String folder) {
 
-        if (!(folder.startsWith("/") && folder.endsWith("/"))) {
-            m_startFolder = "/";
-        } else {
-            m_startFolder = folder;
+        if (!folder.startsWith("/")) {
+            folder = "/" + folder;
         }
-
+        if (!folder.endsWith("/")) {
+            folder = folder + "/";
+        }
+        m_startFolder = folder;
     }
 
     /**

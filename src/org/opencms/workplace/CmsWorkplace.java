@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2008/04/10 14:35:31 $
- * Version: $Revision: 1.173 $
+ * Date   : $Date: 2008/04/10 15:47:29 $
+ * Version: $Revision: 1.174 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.173 $ 
+ * @version $Revision: 1.174 $ 
  * 
  * @since 6.0.0 
  */
@@ -2104,7 +2104,7 @@ public abstract class CmsWorkplace {
     private List paramSetMethods() {
 
         List list = new ArrayList();
-        Method[] methods = this.getClass().getMethods();
+        Method[] methods = getClass().getMethods();
         int length = methods.length;
         for (int i = 0; i < length; i++) {
             Method method = methods[i];
