@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/11 09:11:58 $
- * Version: $Revision: 1.1010 $
+ * Date   : $Date: 2008/04/11 10:34:47 $
+ * Version: $Revision: 1.1011 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,8 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed security issue manipulating JSP files
 * Fixed security issue related to message broadcasting
 * Fixed issue #1491: Incorrect behavior of language selector in editor with 3-symbols locales
+* Fixed issue #1568: Broken calendar widget for locale locale es. 
+* Fixed issue #1586: Broken calendar widgets for locale pt. 
 * Fixed issue #1591: OpenCms does not start with missing scheduled job class
 * Fixed issue #1594: Location bar in workplace malfunctioning without ending '/'
 * Fixed issue #1595: Modules manifest file does not escape XML entities
