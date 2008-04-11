@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2008/04/08 10:31:44 $
- * Version: $Revision: 1.279 $
+ * Date   : $Date: 2008/04/11 09:04:33 $
+ * Version: $Revision: 1.280 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
@@ -90,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.279 $
+ * @version $Revision: 1.280 $
  * 
  * @since 6.0.0 
  */
@@ -1772,7 +1771,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     public List readRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, CmsRelationFilter filter)
     throws CmsDataAccessException {
 
-        if ((dbc.getRequestContext() != null) && dbc.getRequestContext().getAttribute(REQ_ATTR_RESOURCE_OUS) != null) {
+        if ((dbc.getRequestContext() != null) && (dbc.getRequestContext().getAttribute(REQ_ATTR_RESOURCE_OUS) != null)) {
             return getResourceOus(dbc, projectId, resource);
         }
         Set relations = new HashSet();
@@ -1852,7 +1851,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      * @param projectId the id of the project
      * @param resource the resource
      * 
-     * @return a list of {@link CmsOrganizationalUnit} objects
+     * @return a list of {@link org.opencms.security.CmsOrganizationalUnit} objects
      * 
      * @throws CmsDbSqlException if something goes wrong
      */
