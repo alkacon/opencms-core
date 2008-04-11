@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2008/04/11 10:25:00 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,7 +128,7 @@ public class CmsImport {
             }
             if (!run) {
                 m_report.println(
-                    Messages.get().container(Messages.RPT_IMPORT_DB_NO_CLASS_0),
+                    Messages.get().container(Messages.RPT_IMPORT_DB_NO_CLASS_1, parameters.getPath()),
                     I_CmsReport.FORMAT_WARNING);
             }
         } finally {
