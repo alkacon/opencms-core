@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/10 14:36:59 $
- * Version: $Revision: 1.1009 $
+ * Date   : $Date: 2008/04/11 09:11:58 $
+ * Version: $Revision: 1.1010 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,29 +20,29 @@ Legend:
 - General comment
 
 OpenCms 7.0.5 - xxx, 2008
-* Fixed security issue 28152 reported by Security Focus
-* Fixed issue #1595: Modules manifest file does not escape xml entities
-* Fixed issue #1596: Projects can be created being in the Online project
-* Fixed issue with NPE in MacroResolver
-* Fixed security issues manipulating JSP files
-* Fixed security issues related to message broadcasting
-* Fixed some minor issues importing/exporting csv user data 
-* Fixed issue while deleting a folder containing a file previously deleted in another project
-- Many improvements on Template Two and the demo
+! Added editor with syntax highlighting functionality (EditArea) for text based files
+! New preferences option for displaying all projects or only the ones in the current OU in the project selector
+! Added new site alias attribute to manipulate request time
+! Several attempts are made to connect to database during startup
+- Many improvements on Template Two and the demo content
 - Changed decoration to plug in an extended decoration module
 - Improved internal link validation performance
 - Improved performance when having several organizational units
-! Added editor with syntax highlighting functionality (EditArea) for text based files
-! New preferences option for displaying all projects or only the ones in the current ou in the project selector
-! Added new site alias attribute to manipulate request time
-- Modfied TOMCAT_HOME detection in CmsShell to run CmsShell in more tomcat setup scenarios
-! Several attempts are made to connect to database during startup.
+- Modified TOMCAT_HOME detection in CmsShell to work in more Tomcat setup scenarios
 - Updated Lucene jars to version 2.3.1
-* Fixed issue #1591: OpenCms does not start with missing scheduled job class
-* Fixed issue #1491: Incorrect behavior of language selector in editor with 3-sybmols locales
+* Fixed security issue 28152 reported by Security Focus
 * Fixed security issue 490498 reported by Security Focus
-* Fixed issue #1594: Location bar in workplace misfunctioning without ending '/'
-* Fixed issue with broken workplace when startup folder was chosen wrong / missing/
+* Fixed security issue manipulating JSP files
+* Fixed security issue related to message broadcasting
+* Fixed issue #1491: Incorrect behavior of language selector in editor with 3-symbols locales
+* Fixed issue #1591: OpenCms does not start with missing scheduled job class
+* Fixed issue #1594: Location bar in workplace malfunctioning without ending '/'
+* Fixed issue #1595: Modules manifest file does not escape XML entities
+* Fixed issue #1596: Projects can be created being in the Online project
+* Fixed issue while deleting a folder containing a file previously deleted in another project
+* Fixed issue with NPE in MacroResolver
+* Fixed issue with importing / exporting CSV user data 
+* Fixed issue with broken workplace when startup folder does not exist or misses /
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 
