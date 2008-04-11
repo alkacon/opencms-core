@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2008/04/09 08:55:30 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2008/04/11 12:26:51 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -345,7 +345,7 @@ import org.quartz.Trigger;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -661,7 +661,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         // this should not flood the log files: if class name is wrong or jar files missing this will 
         // most likely persist until restart. 
         if (job == null) {
-            this.setActive(false);
+            setActive(false);
         }
         return job;
     }

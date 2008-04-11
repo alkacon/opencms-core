@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2008/04/10 15:46:28 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2008/04/11 12:26:52 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.62 $ 
+ * @version $Revision: 1.63 $ 
  * 
  * @since 6.0.0 
  */
@@ -489,7 +489,7 @@ public class CmsWorkplaceSettings {
      */
     public void setExplorerResource(String value) {
 
-        this.setExplorerResource(value, null);
+        setExplorerResource(value, null);
     }
 
     /**

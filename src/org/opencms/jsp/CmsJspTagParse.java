@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParse.java,v $
- * Date   : $Date: 2008/02/27 12:05:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/04/11 12:26:51 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.1.3
  */
@@ -237,7 +237,7 @@ public class CmsJspTagParse extends BodyTagSupport {
 
             String encoding = cmsContext.getEncoding();
             try {
-                result = parser.doParse(content, encoding, this.m_noAutoCloseTags);
+                result = parser.doParse(content, encoding, m_noAutoCloseTags);
 
             } catch (ParserException pex) {
 

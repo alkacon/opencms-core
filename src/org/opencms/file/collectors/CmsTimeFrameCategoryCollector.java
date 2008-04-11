@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsTimeFrameCategoryCollector.java,v $
- * Date   : $Date: 2008/02/27 12:05:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/04/11 12:26:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -149,7 +149,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.0.3
  *
@@ -296,7 +296,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         throws CmsLoaderException {
 
             try {
-                this.parseParam(data);
+                parseParam(data);
             } catch (ParseException pe) {
                 CmsRuntimeException ex = new CmsIllegalArgumentException(Messages.get().container(
                     Messages.ERR_COLLECTOR_PARAM_DATE_FORMAT_SYNTAX_0));
