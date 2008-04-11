@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2008/04/11 12:26:52 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2008/04/11 13:26:18 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 6.0.0 
  */
@@ -527,7 +527,7 @@ public class CmsWorkplaceSettings {
                 // 2: existence is verified. 
                 try {
                     CmsResource resource = cms.readResource(value);
-                    value = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+                    value = cms.getSitePath(resource);
                 } catch (CmsException cme) {
                     // nop
                 }
