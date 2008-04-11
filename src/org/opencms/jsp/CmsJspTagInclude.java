@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2008/02/27 12:05:34 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2008/04/11 12:17:44 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -289,7 +289,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(file);
             String content;
             if (loader instanceof I_CmsResourceStringDumpLoader) {
-                // loder can provide content as a String
+                // loader can provide content as a String
                 I_CmsResourceStringDumpLoader strLoader = (I_CmsResourceStringDumpLoader)loader;
                 content = strLoader.dumpAsString(cms, file, element, locale, req, res);
             } else {
@@ -310,6 +310,10 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 // use the encoding from the property or the system default if not available
                 String encoding = cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(
                     OpenCms.getSystemInfo().getDefaultEncoding());
+                // If the included target issued a redirect null will be returned from loader 
+                if (result == null) {
+                    result = new byte[0];
+                }
                 content = new String(result, encoding);
             }
             // write the content String to the JSP output writer

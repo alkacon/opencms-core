@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/11 10:34:47 $
- * Version: $Revision: 1.1011 $
+ * Date   : $Date: 2008/04/11 12:17:44 $
+ * Version: $Revision: 1.1012 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed security issue 490498 reported by Security Focus
 * Fixed security issue manipulating JSP files
 * Fixed security issue related to message broadcasting
+* Fixed issue #1409: NullPointerException in case of redirect inside a included file with cacheable set to false
 * Fixed issue #1491: Incorrect behavior of language selector in editor with 3-symbols locales
 * Fixed issue #1568: Broken calendar widget for locale locale es. 
 * Fixed issue #1586: Broken calendar widgets for locale pt. 
