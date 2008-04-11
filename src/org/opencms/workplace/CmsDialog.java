@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.101 $
+ * Date   : $Date: 2008/04/11 10:27:07 $
+ * Version: $Revision: 1.102 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.101 $ 
+ * @version $Revision: 1.102 $ 
  * 
  * @since 6.0.0 
  */
@@ -295,6 +295,7 @@ public class CmsDialog extends CmsToolDialog {
      * @param context the JSP page context
      * @param req the JSP request
      * @param res the JSP response
+     * 
      * @return an initialized CmsDialog instance that is read from the request attributes
      */
     public static CmsDialog initCmsDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
@@ -313,7 +314,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * This method tries to include the URI stored in the workplace settings.
      * This URI is determined by the frame name, which has to be set 
-     * in the framename parameter.<p>
+     * in the frame name parameter.<p>
      * 
      * @throws JspException if including an element fails
      */
@@ -355,8 +356,8 @@ public class CmsDialog extends CmsToolDialog {
                 throw new JspException(e.getMessage(), e);
             }
         } else if (getParamFramename() != null) {
-            // non wp frame mode (currently used for galleries)
-            // framename parameter found, get URI
+            // no workplace frame mode (currently used for galleries)
+            // frame name parameter found, get URI
             String frameUri = (String)getSettings().getFrameUris().get(getParamFramename());
             if (frameUri != null) {
                 // URI found, include it
@@ -371,7 +372,7 @@ public class CmsDialog extends CmsToolDialog {
                 getJsp().include(FILE_EXPLORER_FILELIST, null, params);
             }
         } else {
-            // no framename parameter found, include the explorer file list
+            // no frame name parameter found, include the explorer file list
             getJsp().include(FILE_EXPLORER_FILELIST, null, params);
         }
     }
@@ -463,7 +464,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param nonBlockingFilter the filter to get all non blocking locks
      * @param blockingFilter the filter to get all blocking locks
-     * @param hiddenTimeout the maximal number of millis the dialog will be hidden
+     * @param hiddenTimeout the maximal number of milliseconds the dialog will be hidden
      * @param includeRelated indicates if the report should include related resources
      * 
      * @return html code
@@ -546,6 +547,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param segment the HTML segment (START / END)
      * @param attributes optional additional attributes for the opening dialog table
+     * 
      * @return a dialog window start / end segment
      */
     public String dialog(int segment, String attributes) {
@@ -577,6 +579,7 @@ public class CmsDialog extends CmsToolDialog {
      * @param segment the HTML segment (START / END)
      * @param headline the headline String for the block
      * @param error if true, an error block will be created
+     * 
      * @return 3D block start / end segment
      */
     public String dialogBlock(int segment, String headline, boolean error) {
@@ -617,6 +620,7 @@ public class CmsDialog extends CmsToolDialog {
      * Builds the start HTML for a block with 3D border and optional subheadline in the dialog content area.<p>
      * 
      * @param headline the headline String for the block
+     * 
      * @return 3D block start / end segment
      */
     public String dialogBlockStart(String headline) {
@@ -628,6 +632,7 @@ public class CmsDialog extends CmsToolDialog {
      * Builds the button row under the dialog content area without the buttons.<p>
      * 
      * @param segment the HTML segment (START / END)
+     * 
      * @return the button row start / end segment
      */
     public String dialogButtonRow(int segment) {
@@ -664,6 +669,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param buttons array of constants of which buttons to include in the row
      * @param attributes array of Strings for additional button attributes
+     * 
      * @return the html for the button row under the dialog content area, including buttons
      */
     public String dialogButtons(int[] buttons, String[] attributes) {
@@ -691,6 +697,7 @@ public class CmsDialog extends CmsToolDialog {
      * Builds a button row with a single "close" button.<p>
      * 
      * @param closeAttribute additional attributes for the "close" button
+     * 
      * @return the button row 
      */
     public String dialogButtonsClose(String closeAttribute) {
@@ -703,6 +710,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param closeAttribute additional attributes for the "close" button
      * @param detailsAttribute additional attributes for the "details" button
+     * 
      * @return the button row 
      */
     public String dialogButtonsCloseDetails(String closeAttribute, String detailsAttribute) {
@@ -724,6 +732,7 @@ public class CmsDialog extends CmsToolDialog {
      * Builds a button row with a single "ok" button.<p>
      * 
      * @param okAttribute additional attributes for the "ok" button
+     * 
      * @return the button row 
      */
     public String dialogButtonsOk(String okAttribute) {
@@ -746,6 +755,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param okAttributes additional attributes for the "ok" button
      * @param cancelAttributes additional attributes for the "cancel" button
+     * 
      * @return the button row 
      */
     public String dialogButtonsOkCancel(String okAttributes, String cancelAttributes) {
@@ -759,6 +769,7 @@ public class CmsDialog extends CmsToolDialog {
      * @param okAttributes additional attributes for the "ok" button
      * @param cancelAttributes additional attributes for the "cancel" button
      * @param advancedAttributes additional attributes for the "advanced" button
+     * 
      * @return the button row 
      */
     public String dialogButtonsOkCancelAdvanced(String okAttributes, String cancelAttributes, String advancedAttributes) {
@@ -775,6 +786,7 @@ public class CmsDialog extends CmsToolDialog {
      * @param setAttributes additional attributes for the "set" button
      * @param okAttributes additional attributes for the "ok" button
      * @param cancelAttributes additional attributes for the "cancel" button
+     * 
      * @return the button row 
      */
     public String dialogButtonsSetOkCancel(String setAttributes, String okAttributes, String cancelAttributes) {
@@ -790,6 +802,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param segment the HTML segment (START / END)
      * @param title the title String for the dialog window
+     * 
      * @return a content area start / end segment
      */
     public String dialogContent(int segment, String title) {
@@ -820,6 +833,7 @@ public class CmsDialog extends CmsToolDialog {
      * Returns the start html for the content area of the dialog window.<p>
      * 
      * @param title the title for the dialog
+     * 
      * @return the start html for the content area of the dialog window
      */
     public String dialogContentStart(String title) {
@@ -841,6 +855,7 @@ public class CmsDialog extends CmsToolDialog {
      * Builds the title of the dialog window.<p>
      * 
      * @param title the title String for the dialog window
+     * 
      * @return the HTML title String for the dialog window
      */
     public String dialogHead(String title) {
@@ -849,9 +864,11 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Builds an invisible horiziontal spacer with the specified width.<p>
+     * Builds an invisible horizontal spacer with the specified width.<p>
+     * 
      * @param width the width of the spacer in pixels
-     * @return an invisible horiziontal spacer with the specified width
+     * 
+     * @return an invisible horizontal spacer with the specified width
      */
     public String dialogHorizontalSpacer(int width) {
 
@@ -881,6 +898,7 @@ public class CmsDialog extends CmsToolDialog {
      * Builds a dialog line without break (display: block).<p>
      * 
      * @param segment the HTML segment (START / END)
+     * 
      * @return a row start / end segment
      */
     public String dialogRow(int segment) {
@@ -973,6 +991,7 @@ public class CmsDialog extends CmsToolDialog {
      * Returns the start html for the outer dialog window border.<p>
      * 
      * @param attributes optional html attributes to insert
+     * 
      * @return the start html for the outer dialog window border
      */
     public String dialogStart(String attributes) {
@@ -984,6 +1003,7 @@ public class CmsDialog extends CmsToolDialog {
      * Builds a subheadline in the dialog content area.<p>
      * 
      * @param headline the desired headline string
+     * 
      * @return a subheadline element
      */
     public String dialogSubheadline(String headline) {
@@ -996,13 +1016,13 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Builds the HTML code to fold and unfild a white-box.<p>
+     * Builds the HTML code to fold and unfold a white-box.<p>
      * 
      * @param headline the heading to display
      * @param id the id of the toggle
      * @param show true if the white box is open at the beginning
      * 
-     * @return HTML code to fold and unfild a white-box
+     * @return HTML code to fold and unfold a white-box
      */
     public String dialogToggleStart(String headline, String id, boolean show) {
 
@@ -1045,6 +1065,7 @@ public class CmsDialog extends CmsToolDialog {
      * Builds a white box in the dialog content area.<p>
      * 
      * @param segment the HTML segment (START / END)
+     * 
      * @return the white box start / end segment
      */
     public String dialogWhiteBox(int segment) {
@@ -1165,10 +1186,10 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Returns the value of the closelink parameter, 
+     * Returns the value of the close link parameter, 
      * or null if this parameter was not provided.<p>
      * 
-     * @return the value of the closelink parameter
+     * @return the value of the close link parameter
      */
     public String getParamCloseLink() {
 
@@ -1179,7 +1200,7 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Returns the value of the dialogtype parameter, 
+     * Returns the value of the dialog type parameter, 
      * or null if this parameter was not provided.<p>
      * 
      * This parameter is very important. 
@@ -1189,7 +1210,7 @@ public class CmsDialog extends CmsToolDialog {
      * This parameter must be set manually by the subclass during 
      * first initialization.<p> 
      * 
-     * @return the value of the dialogtype parameter
+     * @return the value of the dialog type parameter
      */
     public String getParamDialogtype() {
 
@@ -1199,7 +1220,7 @@ public class CmsDialog extends CmsToolDialog {
     /**
      * Returns the value of the frame name parameter.<p>
      * 
-     * @return the value of the errorstack parameter
+     * @return the value of the frame name parameter
      */
     public String getParamFramename() {
 
@@ -1211,11 +1232,11 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Returns the ispopup parameter.<p>
+     * Returns the is popup parameter.<p>
      * 
      * Use this parameter to indicate that the dialog is shown in a popup window.<p>
      * 
-     * @return the ispopup parameter
+     * @return the is popup parameter
      */
     public String getParamIsPopup() {
 
@@ -1237,11 +1258,11 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Returns the value of the originalparams parameter.<p>
+     * Returns the value of the original parameters parameter.<p>
      * 
      * This stores the request parameter values from a previous dialog, if necessary.<p>
      * 
-     * @return the value of the originalparams parameter
+     * @return the value of the original parameters parameter
      */
     public String getParamOriginalParams() {
 
@@ -1249,9 +1270,9 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Returns the value of the preactiondone parameter.<p>
+     * Returns the value of the preaction done parameter.<p>
      * 
-     * @return the value of the preactiondone parameter
+     * @return the value of the preaction done parameter
      */
     public String getParamPreActionDone() {
 
@@ -1305,6 +1326,7 @@ public class CmsDialog extends CmsToolDialog {
      * Gets a formatted file state string.<p>
      * 
      * @return formatted state string
+     * 
      * @throws CmsException if something goes wrong
      */
     public String getState() throws CmsException {
@@ -1339,7 +1361,7 @@ public class CmsDialog extends CmsToolDialog {
             LOG.error(e.getLocalizedMessage(getLocale()), e);
             return false;
         }
-        // check if autolock feature is enabled
+        // check if auto lock feature is enabled
         boolean autoLockFeature = lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources();
         return autoLockFeature || lock.isExclusive() || lock.isInherited();
     }
@@ -1378,6 +1400,7 @@ public class CmsDialog extends CmsToolDialog {
      * This overloads the default method of the parent class.<p>
      * 
      * @param helpUrl the key for the online help to include on the page
+     * 
      * @return the start html of the page
      */
     public String htmlStart(String helpUrl) {
@@ -1391,6 +1414,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param helpUrl the key for the online help to include on the page
      * @param title the title for the page
+     * 
      * @return the start html of the page
      */
     public String htmlStart(String helpUrl, String title) {
@@ -1404,6 +1428,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param title the title for the page
      * @param stylesheet the style sheet to include
+     * 
      * @return the start html of the page
      */
     public String htmlStartStyle(String title, String stylesheet) {
@@ -1416,6 +1441,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param wp the workplace class
      * @param t the throwable to be displayed on the error page
+     * 
      * @throws JspException if the include of the error page jsp fails
      */
     public void includeErrorpage(CmsWorkplace wp, Throwable t) throws JspException {
@@ -1454,6 +1480,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param segment the HTML segment (START / END)
      * @param helpUrl the url for the online help to include on the page
+     * 
      * @return the start html of the page
      */
     public String pageHtml(int segment, String helpUrl) {
@@ -1470,6 +1497,7 @@ public class CmsDialog extends CmsToolDialog {
      * @param segment the HTML segment (START / END)
      * @param helpUrl the url for the online help to include on the page
      * @param title the title for the page
+     * 
      * @return the start html of the page
      */
     public String pageHtml(int segment, String helpUrl, String title) {
@@ -1496,7 +1524,7 @@ public class CmsDialog extends CmsToolDialog {
             // the variable that may be set as path: if non-null this will be 
             // used as path for the online help window. This is needed because there are pages 
             // e.g. /administration/accounts/users/new  that perform a jsp - forward while leaving the 
-            // path param on the old page: no correct online help possible. 
+            // path parameter on the old page: no correct online help possible. 
             result.append("var onlineHelpUriCustom = ");
             result.append(getOnlineHelpUriCustom());
             result.append(";\n");
@@ -1537,7 +1565,7 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Sets the value of the closelink parameter.<p>
+     * Sets the value of the close link parameter.<p>
      * 
      * @param value the value to set
      */
@@ -1549,7 +1577,7 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Sets the value of the dialogtype parameter.<p>
+     * Sets the value of the dialog type parameter.<p>
      * 
      * @param value the value to set
      */
@@ -1569,9 +1597,9 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Sets the ispopup parameter.<p>
+     * Sets the is popup parameter.<p>
      * 
-     * @param value the ispopup parameter value
+     * @param value the is popup parameter value
      */
     public void setParamIsPopup(String value) {
 
@@ -1589,9 +1617,9 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Sets the value of the originalparams parameter.<p>
+     * Sets the value of the original parameters parameter.<p>
      * 
-     * @param paramOriginalParams the value of the originalparams parameter
+     * @param paramOriginalParams the value of the original parameters parameter
      */
     public void setParamOriginalParams(String paramOriginalParams) {
 
@@ -1599,9 +1627,9 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Sets the value of the preactiondone parameter.<p>
+     * Sets the value of the preaction done parameter.<p>
      * 
-     * @param paramPreActionDone the value of the preactiondone parameter
+     * @param paramPreActionDone the value of the preaction done parameter
      */
     public void setParamPreActionDone(String paramPreActionDone) {
 
@@ -1639,16 +1667,17 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
-     * Appends a space char. between tag attribs.<p>
+     * Appends a space char. between tag attributes.<p>
      * 
      * @param attribute a tag attribute
-     * @return the tag attribute with a leading space char.
+     * 
+     * @return the tag attribute with a leading space char
      */
     protected String appendDelimiter(String attribute) {
 
         if (CmsStringUtil.isNotEmpty(attribute)) {
             if (!attribute.startsWith(" ")) {
-                // add a delimiter space between the beginning button HTML and the button tag attribs
+                // add a delimiter space between the beginning button HTML and the button tag attributes
                 return " " + attribute;
             } else {
                 return attribute;
@@ -1683,6 +1712,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @param required the required permissions for the dialog
      * @param neededForFolder if true, the permissions are required for the parent folder of the resource (e.g. for editors)
+     * 
      * @return true if the permissions are sufficient, otherwise false
      */
     protected boolean checkResourcePermissions(CmsPermissionSet required, boolean neededForFolder) {
@@ -1701,6 +1731,7 @@ public class CmsDialog extends CmsToolDialog {
      * @param required the required permissions for the dialog
      * @param neededForFolder if true, the permissions are required for the parent folder of the resource (e.g. for editors)
      * @param errorMessage the message container that is stored in the session in case the permissions are not sufficient
+     * 
      * @return true if the permissions are sufficient, otherwise false
      */
     protected boolean checkResourcePermissions(
