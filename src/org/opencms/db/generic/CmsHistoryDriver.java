@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2008/04/10 15:51:39 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/04/11 10:05:30 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.9.1
  */
@@ -821,7 +821,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         } catch (SQLException exc) {
             LOG.error(Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), exc);
         } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
+            m_sqlManager.closeAll(dbc, null, stmt, res);
         }
 
         // keep the biggest 
@@ -831,7 +831,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
         try {
             // get the max publish tag from contents 
-            conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_CONTENT_PUBLISH_MAXTAG");
             res = stmt.executeQuery();
 
@@ -844,7 +843,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         } catch (SQLException exc) {
             LOG.error(Messages.get().container(Messages.ERR_GENERIC_SQL_1, CmsDbSqlException.getErrorQuery(stmt)), exc);
         } finally {
-            m_sqlManager.closeAll(dbc, null, stmt, res);
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
 
         // return the biggest 
