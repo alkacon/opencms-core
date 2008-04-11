@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2008/02/27 12:05:39 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2008/04/11 10:25:44 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  * 
@@ -250,16 +250,6 @@ public interface I_CmsEventListener {
      * @see #EVENT_RESOURCES_MODIFIED
      */
     int EVENT_RESOURCE_DELETED = 25;
-
-    /** 
-     * Event "the list of sub-resources of a folder has been modified", (e.g. a new resource has been created).<p>
-     * 
-     * Event data:
-     * <ul>
-     * <li>key "resource" (mandatory): the modified CmsResource (a folder)</li>
-     * </ul>
-     */
-    int EVENT_RESOURCE_LIST_MODIFIED = 13;
 
     /** 
      * Event "a single resource has been modified".<p>
