@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2008/02/27 12:05:27 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/04/14 09:38:41 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.5.5
  */
@@ -648,6 +648,8 @@ public final class CmsPublishEngine implements Runnable {
         m_publishHistory.add(publishJob);
         // wipe the dead thread
         m_currentPublishThread = null;
+        // clear the published resources cache
+        OpenCms.getMemoryMonitor().flushPublishedResources();
         // try to start a new publish job
         new Thread(this).start();
     }

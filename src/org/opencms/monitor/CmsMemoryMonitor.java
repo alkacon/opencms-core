@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2008/02/27 12:05:49 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2008/04/14 09:38:40 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.db.CmsCacheSettings;
 import org.opencms.db.CmsDriverManager;
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
@@ -100,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.64 $ 
+ * @version $Revision: 1.65 $ 
  * 
  * @since 6.0.0 
  */
@@ -196,6 +197,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Cache for property lists. */
     private Map m_propertyListCache;
 
+    /** Cache for published resources. */
+    private Map m_publishedResourcesCache;
+
     /** Buffer for publish history. */
     private Buffer m_publishHistory;
 
@@ -288,6 +292,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             return 1024; // estimated size
         }
 
+        if (obj instanceof CmsPublishedResource) {
+            return 512; // estimated size
+        }
+
         if (obj instanceof CmsUser) {
             return 2048; // estimated size
         }
@@ -332,6 +340,132 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
 
         return 8;
+    }
+
+    /**
+     * Returns the total value size of a list object.<p>
+     * 
+     * @param listValue the list object
+     * @param depth the max recursion depth for calculation the size
+     * 
+     * @return the size of the list object
+     */
+    public static long getValueSize(List listValue, int depth) {
+
+        long totalSize = 0;
+        try {
+            Object[] values = listValue.toArray();
+            for (int i = 0, s = values.length; i < s; i++) {
+
+                Object obj = values[i];
+
+                if (obj instanceof CmsAccessControlList) {
+                    obj = ((CmsAccessControlList)obj).getPermissionMap();
+                }
+
+                if (obj instanceof CmsFlexCacheVariation) {
+                    obj = ((CmsFlexCacheVariation)obj).m_map;
+                }
+
+                if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
+                    totalSize += getValueSize((Map)obj, depth + 1);
+                    continue;
+                }
+
+                if ((obj instanceof List) && (depth < MAX_DEPTH)) {
+                    totalSize += getValueSize((List)obj, depth + 1);
+                    continue;
+                }
+
+                totalSize += getMemorySize(obj);
+            }
+        } catch (ConcurrentModificationException e) {
+            // this might happen since even the .toArray() method internally creates an iterator
+        } catch (Throwable t) {
+            // catch all other exceptions otherwise the whole monitor will stop working
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
+            }
+        }
+
+        return totalSize;
+    }
+
+    /**
+     * Returns the total value size of a map object.<p>
+     * 
+     * @param mapValue the map object
+     * @param depth the max recursion depth for calculation the size
+     * 
+     * @return the size of the map object
+     */
+    public static long getValueSize(Map mapValue, int depth) {
+
+        long totalSize = 0;
+        try {
+            Object[] values = mapValue.values().toArray();
+            for (int i = 0, s = values.length; i < s; i++) {
+
+                Object obj = values[i];
+
+                if (obj instanceof CmsAccessControlList) {
+                    obj = ((CmsAccessControlList)obj).getPermissionMap();
+                }
+
+                if (obj instanceof CmsFlexCacheVariation) {
+                    obj = ((CmsFlexCacheVariation)obj).m_map;
+                }
+
+                if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
+                    totalSize += getValueSize((Map)obj, depth + 1);
+                    continue;
+                }
+
+                if ((obj instanceof List) && (depth < MAX_DEPTH)) {
+                    totalSize += getValueSize((List)obj, depth + 1);
+                    continue;
+                }
+
+                totalSize += getMemorySize(obj);
+            }
+        } catch (ConcurrentModificationException e) {
+            // this might happen since even the .toArray() method internally creates an iterator
+        } catch (Throwable t) {
+            // catch all other exceptions otherwise the whole monitor will stop working
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
+            }
+        }
+
+        return totalSize;
+    }
+
+    /**
+     * Returns the value sizes of value objects within the monitored object.<p>
+     * 
+     * @param obj the object 
+     * 
+     * @return the value sizes of value objects or "-"-fields
+     */
+    public static long getValueSize(Object obj) {
+
+        if (obj instanceof CmsLruCache) {
+            return ((CmsLruCache)obj).size();
+        }
+
+        if (obj instanceof Map) {
+            return getValueSize((Map)obj, 1);
+        }
+
+        if (obj instanceof List) {
+            return getValueSize((List)obj, 1);
+        }
+
+        try {
+            return getMemorySize(obj);
+        } catch (Exception exc) {
+            return 0;
+        }
     }
 
     /**
@@ -468,6 +602,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public void cachePropertyList(String key, List propertyList) {
 
         m_propertyListCache.put(key, propertyList);
+    }
+
+    /**
+     * Caches the given published resources list under the given cache key.<p>
+     * 
+     * @param cacheKey the cache key
+     * @param publishedResources the published resources list to cache
+     */
+    public void cachePublishedResources(String cacheKey, List publishedResources) {
+
+        m_publishedResourcesCache.put(cacheKey, publishedResources);
     }
 
     /**
@@ -612,6 +757,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushProperties();
         flushPropertyLists();
         flushProjectResources();
+        flushPublishedResources();
     }
 
     /**
@@ -770,6 +916,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public void flushPropertyLists() {
 
         m_propertyListCache.clear();
+    }
+
+    /**
+     * Flushes the published resources cache.<p>
+     */
+    public void flushPublishedResources() {
+
+        m_publishedResourcesCache.clear();
     }
 
     /**
@@ -1048,6 +1202,18 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public List getCachedPropertyList(String key) {
 
         return (List)m_propertyListCache.get(key);
+    }
+
+    /**
+     * Returns the published resources list cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param cacheKey the cache key to look for
+     * 
+     * @return the published resources list cached with the given cache key
+     */
+    public List getCachedPublishedResources(String cacheKey) {
+
+        return (List)m_publishedResourcesCache.get(cacheKey);
     }
 
     /**
@@ -1400,6 +1566,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         lruMap = new LRUMap(cacheSettings.getPropertyListsCacheSize());
         m_propertyListCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".propertyListCache", lruMap);
+
+        // published resources list cache
+        lruMap = new LRUMap(5);
+        m_publishedResourcesCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".publishedResourcesCache", lruMap);
 
         // acl cache
         lruMap = new LRUMap(cacheSettings.getAclCacheSize());
@@ -1803,132 +1974,6 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         }
 
         return "-";
-    }
-
-    /**
-     * Returns the total value size of a list object.<p>
-     * 
-     * @param listValue the list object
-     * @param depth the max recursion depth for calculation the size
-     * 
-     * @return the size of the list object
-     */
-    private long getValueSize(List listValue, int depth) {
-
-        long totalSize = 0;
-        try {
-            Object[] values = listValue.toArray();
-            for (int i = 0, s = values.length; i < s; i++) {
-
-                Object obj = values[i];
-
-                if (obj instanceof CmsAccessControlList) {
-                    obj = ((CmsAccessControlList)obj).getPermissionMap();
-                }
-
-                if (obj instanceof CmsFlexCacheVariation) {
-                    obj = ((CmsFlexCacheVariation)obj).m_map;
-                }
-
-                if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
-                    totalSize += getValueSize((Map)obj, depth + 1);
-                    continue;
-                }
-
-                if ((obj instanceof List) && (depth < MAX_DEPTH)) {
-                    totalSize += getValueSize((List)obj, depth + 1);
-                    continue;
-                }
-
-                totalSize += getMemorySize(obj);
-            }
-        } catch (ConcurrentModificationException e) {
-            // this might happen since even the .toArray() method internally creates an iterator
-        } catch (Throwable t) {
-            // catch all other exceptions otherwise the whole monitor will stop working
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
-            }
-        }
-
-        return totalSize;
-    }
-
-    /**
-     * Returns the total value size of a map object.<p>
-     * 
-     * @param mapValue the map object
-     * @param depth the max recursion depth for calculation the size
-     * 
-     * @return the size of the map object
-     */
-    private long getValueSize(Map mapValue, int depth) {
-
-        long totalSize = 0;
-        try {
-            Object[] values = mapValue.values().toArray();
-            for (int i = 0, s = values.length; i < s; i++) {
-
-                Object obj = values[i];
-
-                if (obj instanceof CmsAccessControlList) {
-                    obj = ((CmsAccessControlList)obj).getPermissionMap();
-                }
-
-                if (obj instanceof CmsFlexCacheVariation) {
-                    obj = ((CmsFlexCacheVariation)obj).m_map;
-                }
-
-                if ((obj instanceof Map) && (depth < MAX_DEPTH)) {
-                    totalSize += getValueSize((Map)obj, depth + 1);
-                    continue;
-                }
-
-                if ((obj instanceof List) && (depth < MAX_DEPTH)) {
-                    totalSize += getValueSize((List)obj, depth + 1);
-                    continue;
-                }
-
-                totalSize += getMemorySize(obj);
-            }
-        } catch (ConcurrentModificationException e) {
-            // this might happen since even the .toArray() method internally creates an iterator
-        } catch (Throwable t) {
-            // catch all other exceptions otherwise the whole monitor will stop working
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_CAUGHT_THROWABLE_1, t.getMessage()));
-            }
-        }
-
-        return totalSize;
-    }
-
-    /**
-     * Returns the value sizes of value objects within the monitored object.<p>
-     * 
-     * @param obj the object 
-     * 
-     * @return the value sizes of value objects or "-"-fields
-     */
-    private long getValueSize(Object obj) {
-
-        if (obj instanceof CmsLruCache) {
-            return ((CmsLruCache)obj).size();
-        }
-
-        if (obj instanceof Map) {
-            return getValueSize((Map)obj, 1);
-        }
-
-        if (obj instanceof List) {
-            return getValueSize((List)obj, 1);
-        }
-
-        try {
-            return getMemorySize(obj);
-        } catch (Exception exc) {
-            return 0;
-        }
     }
 
     /**

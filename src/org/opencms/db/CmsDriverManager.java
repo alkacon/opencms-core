@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/03/28 16:58:32 $
- * Version: $Revision: 1.615 $
+ * Date   : $Date: 2008/04/14 09:38:41 $
+ * Version: $Revision: 1.616 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -6385,7 +6385,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
 
-        return m_projectDriver.readPublishedResources(dbc, publishHistoryId);
+        String cacheKey = publishHistoryId.toString();
+        List resourceList = OpenCms.getMemoryMonitor().getCachedPublishedResources(cacheKey);
+        if (resourceList == null) {
+            resourceList = m_projectDriver.readPublishedResources(dbc, publishHistoryId);
+            // store the result in the cache
+            OpenCms.getMemoryMonitor().cachePublishedResources(cacheKey, resourceList);
+        }
+        return resourceList;
     }
 
     /**
