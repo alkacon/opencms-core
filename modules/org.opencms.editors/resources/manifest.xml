@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Common Editing tools.</p>
 <p>This module is needed to be able to edit files in the OpenCms Workplace.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.5</version>
+		<version>7.0.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -257,6 +257,30 @@
 			<relations/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/editors/dialogs/copylanguage.jsp</source>
+			<destination>system/workplace/editors/dialogs/copylanguage.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>514ba880-0a10-11dd-a4e2-2559755c82e0</uuidstructure>
+			<uuidresource>514ba881-0a10-11dd-a4e2-2559755c82e0</uuidresource>
+			<datelastmodified>Mon, 14 Apr 2008 10:52:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Apr 2008 10:48:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Copy language dialog]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<source>system/workplace/editors/dialogs/elements.jsp</source>
 			<destination>system/workplace/editors/dialogs/elements.jsp</destination>

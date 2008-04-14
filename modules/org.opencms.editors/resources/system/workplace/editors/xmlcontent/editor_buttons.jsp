@@ -71,6 +71,7 @@ if (options.showElement("option.element.language", displayOptions) && wp.showEle
 	out.println(wp.buttonBarLabel(org.opencms.workplace.editors.Messages.GUI_INPUT_LANG_0));
 	out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + CmsEditor.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"changeElementLanguage();\"") + "</td>");
 	out.println(wp.deleteLocaleButton("javascript:confirmDeleteLocale();", null, "deletelocale", org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0, buttonStyle));
+	out.println(wp.button("javascript:buttonAction(15);", null, "copy", org.opencms.workplace.editors.Messages.GUI_BUTTON_COPY_0, buttonStyle));
 }
 
 %>

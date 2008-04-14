@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2008/04/03 07:45:25 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2008/04/14 13:51:36 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.78 $ 
+ * @version $Revision: 1.79 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,6 +96,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** Action for confirming the XML content structure correction. */
     public static final int ACTION_CONFIRMCORRECTION = 152;
+
+    /** Value for the action: copy the current locale. */
+    public static final int ACTION_COPYLOCALE = 141;
 
     /** Action for correction of the XML content structure confirmed. */
     public static final int ACTION_CORRECTIONCONFIRMED = 153;
@@ -135,6 +138,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** Indicates a new file should be created. */
     public static final String EDITOR_ACTION_NEW = CmsDirectEditButtonSelection.VALUE_NEW;
+
+    /** Indicates that the contents of the current locale should be copied to other locales. */
+    public static final String EDITOR_COPYLOCALE = "copylocale";
 
     /** Indicates that the correction of the XML content structure was confirmed by the user. */
     public static final String EDITOR_CORRECTIONCONFIRMED = "correctconfirmed";
@@ -273,6 +279,28 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 }
             }
         }
+    }
+
+    /**
+     * Performs the copy locale action.<p>
+     * 
+     * @throws JspException if something goes wrong
+     */
+    public void actionCopyElementLocale() throws JspException {
+
+        try {
+            setEditorValues(getElementLocale());
+            if (!hasValidationErrors()) {// !m_content.validate(getCms()).hasErrors(getElementLocale())) {
+                // save content of the editor only to the temporary file
+                writeContent();
+                // remove eventual release & expiration date from temporary file to make preview work
+                getCms().setDateReleased(getParamTempfile(), CmsResource.DATE_RELEASED_DEFAULT, false);
+                getCms().setDateExpired(getParamTempfile(), CmsResource.DATE_EXPIRED_DEFAULT, false);
+            }
+        } catch (CmsException e) {
+            // show error page
+            showErrorPage(this, e);
+        }        
     }
 
     /**
@@ -1083,6 +1111,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 }
             }
             setAction(ACTION_EXIT);
+        } else if (EDITOR_COPYLOCALE.equals(getParamAction())) {
+            setAction(ACTION_COPYLOCALE);            
         } else if (EDITOR_DELETELOCALE.equals(getParamAction())) {
             setAction(ACTION_DELETELOCALE);
         } else if (EDITOR_SHOW.equals(getParamAction())) {

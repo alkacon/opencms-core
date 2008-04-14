@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/14 09:05:32 $
- * Version: $Revision: 1.1014 $
+ * Date   : $Date: 2008/04/14 13:51:37 $
+ * Version: $Revision: 1.1015 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 7.0.5 - xxx, 2008
+! Added button for copying fields in xmlcontents to other locales. 
 ! Added editor with syntax highlighting functionality (EditArea) for text based files
 ! New preferences option for displaying all projects or only the ones in the current OU in the project selector
 ! Added new site alias attribute to manipulate request time

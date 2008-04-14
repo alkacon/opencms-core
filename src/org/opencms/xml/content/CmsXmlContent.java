@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2008/04/03 07:45:25 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2008/04/14 13:51:37 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -336,6 +336,52 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         return (I_CmsXmlContentValue)getBookmark(getBookmarkName(newValue.getPath(), locale));
     }
 
+    /**
+     * Copies the content of the given source locale to the given destination locale in this XML document.<p>
+     * 
+     * @param source the source locale
+     * @param destination the destination loacle
+     * @param elements the set of elements to copy
+     * @throws CmsXmlException if something goes wrong
+     */
+    public void copyLocale(Locale source, Locale destination, Set elements) throws CmsXmlException {
+
+        if (!hasLocale(source)) {
+            throw new CmsXmlException(Messages.get().container(org.opencms.xml.Messages.ERR_LOCALE_NOT_AVAILABLE_1, source));
+        }
+        if (hasLocale(destination)) {
+            throw new CmsXmlException(Messages.get().container(org.opencms.xml.Messages.ERR_LOCALE_ALREADY_EXISTS_1, destination));
+        }
+
+        Element sourceElement = null;
+        Element rootNode = m_document.getRootElement();
+        Iterator i = rootNode.elementIterator();
+        String localeStr = source.toString();
+        while (i.hasNext()) {
+            Element element = (Element)i.next();
+            String language = element.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE, null);
+            if ((language != null) && (localeStr.equals(language))) {
+                // detach node with the locale
+                sourceElement = createDeepElementCopy(element, elements);
+                // there can be only one node for the locale
+                break;
+            }
+        }
+
+        if (sourceElement == null) {
+            // should not happen since this was checked already, just to make sure...
+            throw new CmsXmlException(Messages.get().container(org.opencms.xml.Messages.ERR_LOCALE_NOT_AVAILABLE_1, source));
+        }
+
+        // switch locale value in attribute of copied node
+        sourceElement.addAttribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE, destination.toString());
+        // attach the copied node to the root node
+        rootNode.add(sourceElement);
+
+        // re-initialize the document bookmarks
+        initDocument(m_document, m_encoding, getContentDefinition());
+    }
+    
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition()
      */

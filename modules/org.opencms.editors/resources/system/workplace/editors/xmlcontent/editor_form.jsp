@@ -106,6 +106,12 @@ case CmsEditor.ACTION_SAVEEXIT:
 		break;
 	}
 
+case CmsXmlContentEditor.ACTION_COPYLOCALE:
+//////////////////// ACTION: copy the contents of the locale and show the editor again
+	if (wp.getAction() == CmsXmlContentEditor.ACTION_COPYLOCALE) {
+		wp.actionCopyElementLocale();
+        }
+        
 case CmsEditor.ACTION_DELETELOCALE:
 //////////////////// ACTION: delete a localeand show the editor again
 	if (wp.getAction() == CmsEditor.ACTION_DELETELOCALE) {
@@ -189,6 +195,7 @@ var actionMoveElementDown = "<%= CmsXmlContentEditor.EDITOR_ACTION_ELEMENT_MOVE_
 var actionMoveElementUp = "<%= CmsXmlContentEditor.EDITOR_ACTION_ELEMENT_MOVE_UP %>";
 var actionCorrectXml = "<%= CmsXmlContentEditor.EDITOR_CORRECTIONCONFIRMED %>";
 var actionDeleteLocale = "<%= CmsEditor.EDITOR_DELETELOCALE %>";
+var actionCopyLocale = "<%= CmsXmlContentEditor.EDITOR_COPYLOCALE %>";
 
 // Localized button labels
 var LANG_BT_DELETE = "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0) %>";
@@ -213,7 +220,11 @@ function confirmDeleteLocale() {
 	}
 }
 
-
+function askCopyLanguage() {
+	var dialogElementWindow = window.open("about:blank","DIALOGCOPYLANGUAGE","width=320,height=250,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,status=no,dependent=yes");
+	COPYLANGUAGE.submit();
+        dialogElementWindow.focus();
+}
 
 function init() {
 	checkElementLanguage("<%= wp.getParamElementlanguage() %>");
@@ -306,8 +317,16 @@ function httpStateDummy() {
 
 </form>
 
-<%= wp.getXmlEditorHtmlEnd() %><%
+<form style="display: none;" name="COPYLANGUAGE" action="../dialogs/copylanguage.jsp" target="DIALOGCOPYLANGUAGE" method="post">
+<input type="hidden" name="<%= CmsEditor.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
+<input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="usetempfileproject" value="true">
+<input type="hidden" name="<%= CmsDialog.PARAM_ISPOPUP %>" value="true">
+</form>
 
+<%= wp.getXmlEditorHtmlEnd() %>
+<%
 if ((wp.getAction() == CmsXmlContentEditor.ACTION_CHECK) && (! wp.hasValidationErrors())) {
 	// automatically submit form after loading it for validation when button "customized action" was pressed
 	%>
@@ -329,6 +348,17 @@ if ((wp.getAction() == CmsXmlContentEditor.ACTION_CHECK) && (! wp.hasValidationE
 		} catch (e) {
 			setTimeout('submitSaveAction();', 20);
 		}
+	//-->
+	</script>
+	<%
+}
+
+if (wp.getAction() == CmsXmlContentEditor.ACTION_COPYLOCALE && !wp.hasValidationErrors()) {
+	// open dialog to select the copy targets
+	%>
+	<script type="text/javascript">
+	<!--
+		askCopyLanguage();
 	//-->
 	</script>
 	<%

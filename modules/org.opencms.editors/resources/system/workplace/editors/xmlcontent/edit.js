@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2008/02/27 12:05:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/04/14 13:51:37 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -158,6 +158,11 @@ function buttonAction(para) {
 		// delete the current locale content
 		clearLastPosition();
 		_form.action.value = actionDeleteLocale;
+		_form.submit();
+		break;
+	case 15:
+		// copy the current locale content
+		_form.action.value = actionCopyLocale;
 		_form.submit();
 		break;
 	default:

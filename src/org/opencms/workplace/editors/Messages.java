@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2008/04/14 13:51:36 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,6 +76,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UPDATE_ELEMENTS_0 = "ERR_UPDATE_ELEMENTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UPDATE_LANGUAGES_0 = "ERR_UPDATE_LANGUAGES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XML_EDITOR_0 = "ERR_XML_EDITOR_0";
@@ -258,7 +261,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITOR_DIALOG_CLEANUP_BUTTON_0 = "GUI_EDITOR_DIALOG_CLEANUP_BUTTON_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_DIALOG_COPYLANGUAGE_HEADLINE_1 = "GUI_EDITOR_DIALOG_COPYLANGUAGE_HEADLINE_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_DIALOG_COPYLANGUAGE_NEW_0 = "GUI_EDITOR_DIALOG_COPYLANGUAGE_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_DIALOG_COPYLANGUAGE_TITLE_0 = "GUI_EDITOR_DIALOG_COPYLANGUAGE_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_DIALOG_COPYLANGUAGE_WARNING_0 = "GUI_EDITOR_DIALOG_COPYLANGUAGE_WARNING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_DIALOG_ELEMENTS_BUTTON_0 = "GUI_EDITOR_DIALOG_ELEMENTS_BUTTON_0";
 
     /** Message constant for key in the resource bundle. */
