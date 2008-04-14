@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultValidationHandler.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/04/14 09:05:32 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,14 +39,14 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.3.0 
  */
 public class CmsDefaultValidationHandler implements I_CmsValidationHandler {
 
     /** The email regular expression. */
-    public static final String EMAIL_REGEX = "^([a-zA-Z0-9_\\.\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$";
+    public static final String EMAIL_REGEX = "^([a-zA-Z0-9_\\.\\-'])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$";
 
     /** The user name constraints. */
     public static final String USERNAME_CONSTRAINTS = "-._~$@";

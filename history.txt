@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/11 15:48:10 $
- * Version: $Revision: 1.1013 $
+ * Date   : $Date: 2008/04/14 09:05:32 $
+ * Version: $Revision: 1.1014 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -30,6 +30,7 @@ OpenCms 7.0.5 - xxx, 2008
 - Improved performance when having several organizational units
 - Modified TOMCAT_HOME detection in CmsShell to work in more Tomcat setup scenarios
 - Updated Lucene jars to version 2.3.1
+- Allowed ' in email adresses
 * Fixed security issue 28152 reported by Security Focus
 * Fixed security issue 490498 reported by Security Focus
 * Fixed security issue manipulating JSP files
