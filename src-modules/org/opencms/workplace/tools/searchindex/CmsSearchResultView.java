@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchResultView.java,v $
- * Date   : $Date: 2008/04/11 15:26:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/04/14 07:37:54 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
@@ -159,7 +159,7 @@ public class CmsSearchResultView {
         // get the action to perform from the request
         String action = request.getParameter("action");
 
-        if (action != null && searchResult == null) {
+        if ((action != null) && (searchResult == null)) {
             result.append("<p class=\"formerror\">\n");
             if (search.getLastException() != null) {
 
@@ -171,12 +171,12 @@ public class CmsSearchResultView {
                 result.append("\n");
             }
             result.append("</p>\n");
-        } else if (action != null && searchResult.size() <= 0) {
+        } else if ((action != null) && (searchResult.size() <= 0)) {
             result.append("<p class=\"formerror\">\n");
             result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_NOMATCH_1, search.getQuery()));
             result.append("\n");
             result.append("</p>\n");
-        } else if (action != null && searchResult.size() > 0) {
+        } else if ((action != null) && (searchResult.size() > 0)) {
             result.append("<p>\n");
             result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_RESULT_START_0));
             result.append("\n");
@@ -220,7 +220,7 @@ public class CmsSearchResultView {
                     result.append("<span class=\"searchExcerpt\">\n");
                     String excerptString = entry.getExcerpt();
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(excerptString)) {
-                        result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_EXCERPT_UNAVAILABLE_0));
+                        result.append("");
                     } else {
                         result.append(excerptString).append('\n');
                     }
@@ -234,7 +234,7 @@ public class CmsSearchResultView {
             result.append("</p>\n");
 
             // search page links below results
-            if (search.getPreviousUrl() != null || search.getNextUrl() != null) {
+            if ((search.getPreviousUrl() != null) || (search.getNextUrl() != null)) {
                 result.append("<p>");
                 if (search.getPreviousUrl() != null) {
 
