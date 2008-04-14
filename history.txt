@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/07 08:58:06 $
- * Version: $Revision: 1.818.2.7 $
+ * Date   : $Date: 2008/04/14 09:01:58 $
+ * Version: $Revision: 1.818.2.8 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ OpenCms 6.2.4 - xxxx, 2007
 * Fixed issue #1346: Problem in CmsResourceBundleLoader using a SecurityManager
 * Changed decoration to plug in an extended decoration module
 ! Several attempts are made to connect to database during startup.
+- Allowed ' in email adresses
 
 
 OpenCms 6.2.3 - November 30, 2006
