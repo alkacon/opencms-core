@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2008/03/28 09:48:05 $
- * Version: $Revision: 1.118 $
+ * Date   : $Date: 2008/04/14 12:10:56 $
+ * Version: $Revision: 1.119 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3654,7 +3654,6 @@ public final class CmsSecurityManager {
      * Builds a list of resources for a given path.<p>
      * 
      * @param context the current request context
-     * @param projectId the project to lookup the resource
      * @param path the requested path
      * @param filter a filter object (only "includeDeleted" information is used!)
      * 
@@ -3662,15 +3661,17 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readPath(CmsRequestContext context, CmsUUID projectId, String path, CmsResourceFilter filter)
-    throws CmsException {
+    public List readPath(CmsRequestContext context, String path, CmsResourceFilter filter) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.readPath(dbc, projectId, path, filter);
+            result = m_driverManager.readPath(dbc, path, filter);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_READ_PATH_2, projectId, path), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_PATH_2, dbc.currentProject().getName(), path),
+                e);
         } finally {
             dbc.clear();
         }

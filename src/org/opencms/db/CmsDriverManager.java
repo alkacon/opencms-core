@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/04/14 09:38:41 $
- * Version: $Revision: 1.616 $
+ * Date   : $Date: 2008/04/14 12:10:56 $
+ * Version: $Revision: 1.617 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3888,30 +3888,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the list of organizational units the given resource belongs to.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the resource
-     * 
-     * @return list of {@link CmsOrganizationalUnit} objects
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public List getResourceOrgUnits(CmsDbContext dbc, CmsResource resource) throws CmsException {
-
-        try {
-            dbc.getRequestContext().setAttribute(I_CmsVfsDriver.REQ_ATTR_RESOURCE_OUS, Boolean.TRUE);
-            return m_vfsDriver.readRelations(
-                dbc,
-                dbc.currentProject().getUuid(),
-                resource,
-                CmsRelationFilter.TARGETS.filterIncludeChildren());
-        } finally {
-            dbc.getRequestContext().removeAttribute(I_CmsVfsDriver.REQ_ATTR_RESOURCE_OUS);
-        }
-    }
-
-    /**
      * Returns the set of permissions of the current user for a given resource.<p>
      * 
      * @param dbc the current database context
@@ -4101,6 +4077,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         return m_vfsDriver.readRelations(dbc, dbc.getProjectId().isNullUUID() ? dbc.currentProject().getUuid()
         : dbc.getProjectId(), resource, filter);
+    }
+
+    /**
+     * Returns the list of organizational units the given resource belongs to.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource
+     * 
+     * @return list of {@link CmsOrganizationalUnit} objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getResourceOrgUnits(CmsDbContext dbc, CmsResource resource) throws CmsException {
+
+        try {
+            dbc.getRequestContext().setAttribute(I_CmsVfsDriver.REQ_ATTR_RESOURCE_OUS, Boolean.TRUE);
+            return m_vfsDriver.readRelations(
+                dbc,
+                dbc.currentProject().getUuid(),
+                resource,
+                CmsRelationFilter.TARGETS.filterIncludeChildren());
+        } finally {
+            dbc.getRequestContext().removeAttribute(I_CmsVfsDriver.REQ_ATTR_RESOURCE_OUS);
+        }
     }
 
     /**
@@ -5485,7 +5485,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             : CmsCacheKey.CACHE_KEY_SUBFILES,
             checkPermissions ? "+" : "-",
             filter.getCacheId(),
-            resource.getRootPath()}, dbc.currentProject());
+            resource.getRootPath()}, dbc);
 
         List resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
         if (resourceList == null) {
@@ -5984,7 +5984,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Builds a list of resources for a given path.<p>
      * 
      * @param dbc the current database context
-     * @param projectId the project to lookup the resource
      * @param path the requested path
      * @param filter a filter object (only "includeDeleted" information is used!)
      * 
@@ -5992,8 +5991,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readPath(CmsDbContext dbc, CmsUUID projectId, String path, CmsResourceFilter filter)
-    throws CmsException {
+    public List readPath(CmsDbContext dbc, String path, CmsResourceFilter filter) throws CmsException {
 
         // # of folders in the path
         int folderCount = 0;
@@ -6005,7 +6003,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String currentResourceName = null;
         // the current resource
         CmsResource currentResource = null;
-        // this is a comment. i love comments!
+
         int i = 0, count = 0;
         // key to cache the resources
         String cacheKey = null;
@@ -6029,6 +6027,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         currentPath.append('/');
 
         String cp = currentPath.toString();
+        CmsUUID projectId = getProjectIdForContext(dbc);
         cacheKey = getCacheKey(null, false, projectId, cp);
         currentResource = OpenCms.getMemoryMonitor().getCachedResource(cacheKey);
         if (currentResource == null) {
@@ -6234,17 +6233,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsProperty readPropertyObject(CmsDbContext dbc, CmsResource resource, String key, boolean search)
     throws CmsException {
 
-        // check if we have the result already cached
-        String cacheKey = getCacheKey(key, search, dbc.currentProject().getUuid(), resource.getRootPath());
+        CmsUUID projectId = getProjectIdForContext(dbc);
+        String cacheKey = getCacheKey(key, search, projectId, resource.getRootPath());
         CmsProperty value = OpenCms.getMemoryMonitor().getCachedProperty(cacheKey);
 
         if (value == null) {
             // check if the map of all properties for this resource is already cached
-            String cacheKey2 = getCacheKey(
-                CACHE_ALL_PROPERTIES,
-                search,
-                dbc.currentProject().getUuid(),
-                resource.getRootPath());
+            String cacheKey2 = getCacheKey(CACHE_ALL_PROPERTIES, search, projectId, resource.getRootPath());
 
             List allProperties = OpenCms.getMemoryMonitor().getCachedPropertyList(cacheKey2);
 
@@ -6259,7 +6254,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             } else if (search) {
                 // result not cached, look it up recursively with search enabled
-                String cacheKey3 = getCacheKey(key, search, dbc.currentProject().getUuid(), resource.getRootPath());
+                String cacheKey3 = getCacheKey(key, search, projectId, resource.getRootPath());
                 value = OpenCms.getMemoryMonitor().getCachedProperty(cacheKey3);
 
                 if ((value == null) || value.isNullProperty()) {
@@ -6320,11 +6315,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List readPropertyObjects(CmsDbContext dbc, CmsResource resource, boolean search) throws CmsException {
 
         // check if we have the result already cached
-        String cacheKey = getCacheKey(
-            CACHE_ALL_PROPERTIES,
-            search,
-            dbc.currentProject().getUuid(),
-            resource.getRootPath());
+        CmsUUID projectId = getProjectIdForContext(dbc);
+        String cacheKey = getCacheKey(CACHE_ALL_PROPERTIES, search, projectId, resource.getRootPath());
 
         List properties = OpenCms.getMemoryMonitor().getCachedPropertyList(cacheKey);
 
@@ -6588,7 +6580,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             dbc.currentUser().getName(),
             filter.getCacheId(),
             readTree ? "+" : "-",
-            parent.getRootPath()}, dbc.currentProject());
+            parent.getRootPath()}, dbc);
 
         List resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
         if (resourceList == null) {
@@ -6657,14 +6649,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 dbc.currentUser().getName(),
                 folder.getRootPath(),
                 propertyDefinition,
-                filter.getCacheId()}, dbc.currentProject());
+                filter.getCacheId()}, dbc);
         } else {
             cacheKey = getCacheKey(new String[] {
                 dbc.currentUser().getName(),
                 folder.getRootPath(),
                 propertyDefinition,
                 value,
-                filter.getCacheId()}, dbc.currentProject());
+                filter.getCacheId()}, dbc);
         }
         List resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
         if (resourceList == null) {
@@ -8785,7 +8777,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             inheritedOnly ? "+" : "-",
             forFolder ? "+" : "-",
             Integer.toString(depth),
-            resource.getStructureId().toString()}, dbc.currentProject());
+            resource.getStructureId().toString()}, dbc);
 
         CmsAccessControlList acl = OpenCms.getMemoryMonitor().getCachedACL(cacheKey);
 
@@ -8879,11 +8871,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * Return a cache key build from the provided information.<p>
      * 
      * @param keys an array of keys to generate the cache key from
-     * @param project the project for which to generate the key
+     * @param dbc the database context for which to generate the key
      *
      * @return String a cache key build from the provided information
      */
-    private String getCacheKey(String[] keys, CmsProject project) {
+    private String getCacheKey(String[] keys, CmsDbContext dbc) {
 
         StringBuffer b = new StringBuffer(64);
         int len = keys.length;
@@ -8893,10 +8885,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 b.append('_');
             }
         }
-        if (project != null) {
-            b.append(project.isOnlineProject() ? '+' : '-');
+        CmsUUID id = dbc.currentProject().getUuid();
+        if (!dbc.getProjectId().isNullUUID()) {
+            id = dbc.getProjectId();
         }
+        b.append(id.toString());
         return b.toString();
+    }
+
+    /**
+     * Returns the correct project id.<p>
+     * 
+     * @param dbc the database context
+     * 
+     * @return the correct project id
+     */
+    private CmsUUID getProjectIdForContext(CmsDbContext dbc) {
+
+        CmsUUID projectId = dbc.getProjectId();
+        if (projectId.isNullUUID()) {
+            projectId = dbc.currentProject().getUuid();
+        }
+        return projectId;
     }
 
     /**

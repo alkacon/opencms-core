@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2008/04/02 10:13:57 $
- * Version: $Revision: 1.161 $
+ * Date   : $Date: 2008/04/14 12:10:57 $
+ * Version: $Revision: 1.162 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.161 $
+ * @version $Revision: 1.162 $
  * 
  * @since 6.0.0 
  */
@@ -2975,7 +2975,7 @@ public final class CmsObject {
      */
     public List readPath(String path, CmsResourceFilter filter) throws CmsException {
 
-        return m_securityManager.readPath(m_context, m_context.currentProject().getUuid(), addSiteRoot(path), filter);
+        return m_securityManager.readPath(m_context, addSiteRoot(path), filter);
     }
 
     /**
