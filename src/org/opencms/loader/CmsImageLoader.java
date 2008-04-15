@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2008/02/27 12:05:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/04/15 11:11:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 
 /**
- * Loader for images from the OpenCms VSF with integrated image scaling and processing capabilites.<p>
+ * Loader for images from the OpenCms VSF with integrated image scaling and processing capabilities.<p>
  * 
  * To scale or process an image, the parameter <code>{@link org.opencms.loader.CmsImageScaler#PARAM_SCALE}</code>
  * has to be appended to the image URI. The value for the parameter needs to be composed from the <code>SCALE_PARAM</code>
@@ -61,16 +61,16 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.2.0 
  */
 public class CmsImageLoader extends CmsDumpLoader {
 
-    /** The configuration parameter for the OpenCms XML configuration to set the image downscale operation. */
+    /** The configuration parameter for the OpenCms XML configuration to set the image down scale operation. */
     public static final String CONFIGURATION_DOWNSCALE = "image.scaling.downscale";
 
-    /** The configuration parameter for the OpenCms XML configuration to set the image cache respository. */
+    /** The configuration parameter for the OpenCms XML configuration to set the image cache repository. */
     public static final String CONFIGURATION_IMAGE_FOLDER = "image.folder";
 
     /** The configuration parameter for the OpenCms XML configuration to set the maximum image blur size. */
@@ -91,22 +91,22 @@ public class CmsImageLoader extends CmsDumpLoader {
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsImageLoader.class);
 
-    /** The (optional) image downscale parameters for image write operations. */
-    static String m_downScaleParams;
+    /** The (optional) image down scale parameters for image write operations. */
+    protected static String m_downScaleParams;
 
     /** Indicates if image scaling is active. */
-    static boolean m_enabled;
+    protected static boolean m_enabled;
 
-    /** The maximum image size (width * height) to apply image blurring when downscaling (setting this to high may cause "out of memory" errors). */
-    static int m_maxBlurSize = CmsImageScaler.SCALE_DEFAULT_MAX_BLUR_SIZE;
+    /** The maximum image size (width * height) to apply image blurring when down scaling (setting this to high may cause "out of memory" errors). */
+    protected static int m_maxBlurSize = CmsImageScaler.SCALE_DEFAULT_MAX_BLUR_SIZE;
 
     /** The disk cache to use for saving scaled image versions. */
-    static CmsVfsNameBasedDiskCache m_vfsDiskCache;
+    protected static CmsVfsNameBasedDiskCache m_vfsDiskCache;
 
     /** The name of the configured image cache repository. */
     protected String m_imageRepositoryFolder;
 
-    /** The maximum image size (width or height) to allow when upscaling an image using request parameters. */
+    /** The maximum image size (width or height) to allow when up scaling an image using request parameters. */
     protected int m_maxScaleSize = CmsImageScaler.SCALE_DEFAULT_MAX_SIZE;
 
     /**
@@ -118,12 +118,12 @@ public class CmsImageLoader extends CmsDumpLoader {
     }
 
     /**
-     * Returns the image downscale paramerters, 
+     * Returns the image down scale parameters, 
      * which is set with the {@link #CONFIGURATION_DOWNSCALE} configuration option.<p> 
      * 
-     * If no downscale parameters have been set in the configuration, this will return <code>null</code>.
+     * If no down scale parameters have been set in the configuration, this will return <code>null</code>.
      * 
-     * @return the image downscale paramerters
+     * @return the image down scale parameters
      */
     public static String getDownScaleParams() {
 
@@ -142,12 +142,12 @@ public class CmsImageLoader extends CmsDumpLoader {
     }
 
     /**
-     * The maximum blur size for image rescale operations, 
+     * The maximum blur size for image re-scale operations, 
      * which is set with the {@link #CONFIGURATION_MAX_BLUR_SIZE} configuration option.<p>
      * 
      * The default is 2500 * 2500 pixel.<p>
      * 
-     * @return the maximum blur size for image rescale operations
+     * @return the maximum blur size for image re-scale operations
      */
     public static int getMaxBlurSize() {
 
@@ -155,7 +155,7 @@ public class CmsImageLoader extends CmsDumpLoader {
     }
 
     /**
-     * Returns <code>true</code> if the image scaling and processing capablities for the 
+     * Returns <code>true</code> if the image scaling and processing capabilities for the 
      * OpenCms VFS images have been enabled, <code>false</code> if not.<p>
      * 
      * Image scaling is enabled by setting the loader parameter <code>image.scaling.enabled</code>
@@ -164,9 +164,9 @@ public class CmsImageLoader extends CmsDumpLoader {
      * Enabling image processing in OpenCms may require several additional configuration steps
      * on the server running OpenCms, especially in UNIX systems. Here it is often required to have an X window server
      * configured and accessible so that the required Java ImageIO operations work.
-     * Therefore the image scaling capablities in OpenCms are disabled by default.<p>
+     * Therefore the image scaling capabilities in OpenCms are disabled by default.<p>
      * 
-     * @return <code>true</code> if the image scaling and processing capablities for the 
+     * @return <code>true</code> if the image scaling and processing capabilities for the 
      *      OpenCms VFS images have been enabled
      */
     public static boolean isEnabled() {
@@ -275,7 +275,7 @@ public class CmsImageLoader extends CmsDumpLoader {
             CmsImageScaler scaler = new CmsImageScaler(req, m_maxScaleSize, m_maxBlurSize);
             // load the file from the cache
             CmsFile file = getScaledImage(cms, resource, scaler);
-            // now perform standarad load operation inherited from dump loader
+            // now perform standard load operation inherited from dump loader
             super.load(cms, file, req, res);
         } else {
             // scaling is disabled
@@ -296,7 +296,7 @@ public class CmsImageLoader extends CmsDumpLoader {
      * 
      * @return a scaled version of the given OpenCms VFS image resource
      * 
-     * @throws IOException in case of errors acessing the disk based cache
+     * @throws IOException in case of errors accessing the disk based cache
      * @throws CmsException in case of errors accessing the OpenCms VFS
      */
     protected CmsFile getScaledImage(CmsObject cms, CmsResource resource, CmsImageScaler scaler)
