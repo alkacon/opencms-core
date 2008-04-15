@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/04/14 13:28:57 $
- * Version: $Revision: 1.618 $
+ * Date   : $Date: 2008/04/15 09:31:25 $
+ * Version: $Revision: 1.619 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -5478,16 +5478,28 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean getFiles,
         boolean checkPermissions) throws CmsException {
 
-        // try to get the sub resources from the cache
-        String cacheKey = getCacheKey(new String[] {
-            dbc.currentUser().getName(),
-            getFolders ? (getFiles ? CmsCacheKey.CACHE_KEY_SUBALL : CmsCacheKey.CACHE_KEY_SUBFOLDERS)
-            : CmsCacheKey.CACHE_KEY_SUBFILES,
-            checkPermissions ? "+" : "-",
-            filter.getCacheId(),
-            resource.getRootPath()}, dbc);
+        String cacheKey = null;
+        List resourceList = null;
+        if (OpenCms.getMemoryMonitor().isCacheResourceList()) { // check this here to skip the complex cache key generation
+            String time = "";
+            if (checkPermissions) {
+                // ensure correct caching if site time offset is set
+                if ((dbc.getRequestContext() != null)
+                    && (OpenCms.getSiteManager().getSiteForSiteRoot(dbc.getRequestContext().getSiteRoot()) != null)) {
+                    time += OpenCms.getSiteManager().getSiteForSiteRoot(dbc.getRequestContext().getSiteRoot()).getSiteMatcher().getTimeOffset();
+                }
+            }
+            // try to get the sub resources from the cache
+            cacheKey = getCacheKey(new String[] {
+                dbc.currentUser().getName(),
+                getFolders ? (getFiles ? CmsCacheKey.CACHE_KEY_SUBALL : CmsCacheKey.CACHE_KEY_SUBFOLDERS)
+                : CmsCacheKey.CACHE_KEY_SUBFILES,
+                checkPermissions ? "+" + time : "-",
+                filter.getCacheId(),
+                resource.getRootPath()}, dbc);
 
-        List resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
+            resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
+        }
         if (resourceList == null) {
             // read the result form the database
             resourceList = m_vfsDriver.readChildResources(dbc, dbc.currentProject(), resource, getFolders, getFiles);
@@ -5993,43 +6005,35 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readPath(CmsDbContext dbc, String path, CmsResourceFilter filter) throws CmsException {
 
-        // # of folders in the path
-        int folderCount = 0;
-        // true if the path doesn't end with a folder
-        boolean lastResourceIsFile = false;
-        // holds the CmsResource instances in the path
-        List pathList = null;
-        // the current path token
-        String currentResourceName = null;
-        // the current resource
-        CmsResource currentResource = null;
-
-        int i = 0, count = 0;
-        // key to cache the resources
-        String cacheKey = null;
-
         // splits the path into folder and filename tokens
         List tokens = CmsStringUtil.splitAsList(path, '/');
 
         // the root folder is no token in the path but a resource which has to be added to the path
-        count = tokens.size() + 1;
-        pathList = new ArrayList(count);
+        int count = tokens.size() + 1;
+        // holds the CmsResource instances in the path
+        List pathList = new ArrayList(count);
 
-        folderCount = count;
+        // true if the path doesn't end with a folder
+        boolean lastResourceIsFile = false;
+        // number of folders in the path
+        int folderCount = count;
         if (!path.endsWith("/")) {
             folderCount--;
             lastResourceIsFile = true;
         }
 
-        // read the root folder, coz it's ID is required to read any sub-resources
-        currentResourceName = "/";
+        // read the root folder, because it's ID is required to read any sub-resources
+        String currentResourceName = "/";
         StringBuffer currentPath = new StringBuffer(64);
         currentPath.append('/');
 
         String cp = currentPath.toString();
         CmsUUID projectId = getProjectIdForContext(dbc);
-        cacheKey = getCacheKey(null, false, projectId, cp);
-        currentResource = OpenCms.getMemoryMonitor().getCachedResource(cacheKey);
+
+        // key to cache the resources
+        String cacheKey = getCacheKey(null, false, projectId, cp);
+        // the current resource
+        CmsResource currentResource = OpenCms.getMemoryMonitor().getCachedResource(cacheKey);
         if (currentResource == null) {
             currentResource = m_vfsDriver.readFolder(dbc, projectId, cp);
             OpenCms.getMemoryMonitor().cacheResource(cacheKey, currentResource);
@@ -6046,6 +6050,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         currentResourceName = (String)it.next();
 
         // read the folder resources in the path /a/b/c/
+        int i = 0;
         for (i = 1; i < folderCount; i++) {
             currentPath.append(currentResourceName);
             currentPath.append('/');
@@ -6287,8 +6292,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // freeze the value
             value.setFrozen(true);
-            // store the result in the cache
-            OpenCms.getMemoryMonitor().cacheProperty(cacheKey, value);
+
+            if (!search && OpenCms.getMemoryMonitor().isCacheProperty()) {
+                // store the result in the cache only if needed
+                OpenCms.getMemoryMonitor().cacheProperty(cacheKey, value);
+            }
         }
 
         // ensure the result value is not frozen
@@ -6356,10 +6364,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 properties = m_vfsDriver.readPropertyObjects(dbc, dbc.currentProject(), resource);
             }
 
-            // set all properties in the result lisst as frozen
+            // set all properties in the result list as frozen
             CmsProperty.setFrozen(properties);
-            // store the result in the driver manager's cache
-            OpenCms.getMemoryMonitor().cachePropertyList(cacheKey, properties);
+            if (!search && OpenCms.getMemoryMonitor().isCachePropertyList()) {
+                // store the result in the cache if needed
+                OpenCms.getMemoryMonitor().cachePropertyList(cacheKey, properties);
+            }
         }
 
         return new ArrayList(properties);

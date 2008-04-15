@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2008/04/14 09:38:40 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2008/04/15 09:31:25 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.65 $ 
+ * @version $Revision: 1.66 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,6 +121,14 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Cache for access control lists. */
     private Map m_accessControlListCache;
+
+    private boolean m_cacheProperty;
+
+    private boolean m_cachePropertyList;
+
+    private boolean m_cacheResource;
+
+    private boolean m_cacheResourceList;
 
     /** The memory monitor configuration. */
     private CmsMemoryMonitorConfiguration m_configuration;
@@ -590,6 +598,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheProperty(String key, CmsProperty property) {
 
+        if (!m_cacheProperty) {
+            return;
+        }
         m_propertyCache.put(key, property);
     }
 
@@ -601,6 +612,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cachePropertyList(String key, List propertyList) {
 
+        if (!m_cachePropertyList) {
+            return;
+        }
         m_propertyListCache.put(key, propertyList);
     }
 
@@ -643,6 +657,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheResource(String key, CmsResource resource) {
 
+        if (!m_cacheResource) {
+            return;
+        }
         m_resourceCache.put(key, resource);
     }
 
@@ -654,6 +671,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void cacheResourceList(String key, List resourceList) {
 
+        if (!m_cacheResourceList) {
+            return;
+        }
         m_resourceListCache.put(key, resourceList);
     }
 
@@ -1189,6 +1209,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsProperty getCachedProperty(String key) {
 
+        if (!m_cacheProperty) {
+            return null;
+        }
         return (CmsProperty)m_propertyCache.get(key);
     }
 
@@ -1201,6 +1224,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public List getCachedPropertyList(String key) {
 
+        if (!m_cachePropertyList) {
+            return null;
+        }
         return (List)m_propertyListCache.get(key);
     }
 
@@ -1263,6 +1289,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsResource getCachedResource(String key) {
 
+        if (!m_cacheResource) {
+            return null;
+        }
         return (CmsResource)m_resourceCache.get(key);
     }
 
@@ -1275,6 +1304,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public List getCachedResourceList(String key) {
 
+        if (!m_cacheResourceList) {
+            return null;
+        }
         return (List)m_resourceListCache.get(key);
     }
 
@@ -1594,6 +1626,46 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Checks if the property cache is enabled.<p>
+     * 
+     * @return <code>true</code> if the property cache is enabled
+     */
+    public boolean isCacheProperty() {
+
+        return m_cacheProperty;
+    }
+
+    /**
+     * Checks if the property list cache is enabled.<p>
+     * 
+     * @return <code>true</code> if the property list cache is enabled
+     */
+    public boolean isCachePropertyList() {
+
+        return m_cachePropertyList;
+    }
+
+    /**
+     * Checks if the resource cache is enabled.<p>
+     * 
+     * @return <code>true</code> if the resource cache is enabled
+     */
+    public boolean isCacheResource() {
+
+        return m_cacheResource;
+    }
+
+    /**
+     * Checks if the resource list cache is enabled.<p>
+     * 
+     * @return <code>true</code> if the resource list cache is enabled
+     */
+    public boolean isCacheResourceList() {
+
+        return m_cacheResourceList;
+    }
+
+    /**
      * Checks if there is a registered monitored object with the given key.<p>
      * 
      * @param key the key to look for
@@ -1684,6 +1756,50 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public boolean requiresPersistency() {
 
         return true;
+    }
+
+    /**
+     * Sets if the property cache is enabled.<p>
+     *
+     * @param cacheProperty if the property cache is enabled
+     */
+    public void setCacheProperty(boolean cacheProperty) {
+
+        m_cacheProperty = cacheProperty;
+        flushProperties();
+    }
+
+    /**
+     * Sets if the property list cache is enabled.<p>
+     *
+     * @param cachePropertyList if the property list cache is enabled
+     */
+    public void setCachePropertyList(boolean cachePropertyList) {
+
+        m_cachePropertyList = cachePropertyList;
+        flushPropertyLists();
+    }
+
+    /**
+     * Sets if the resource cache is enabled.<p>
+     *
+     * @param cacheResource if the resource cache is enabled
+     */
+    public void setCacheResource(boolean cacheResource) {
+
+        m_cacheResource = cacheResource;
+        flushResources();
+    }
+
+    /**
+     * Sets if the resource list cache is enabled.<p>
+     *
+     * @param cacheResourceList if the resource list cache is enabled
+     */
+    public void setCacheResourceList(boolean cacheResourceList) {
+
+        m_cacheResourceList = cacheResourceList;
+        flushResourceLists();
     }
 
     /**
@@ -2255,5 +2371,4 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         m_memoryCurrent.update();
         m_memoryAverage.calculateAverage(m_memoryCurrent);
     }
-
 }
