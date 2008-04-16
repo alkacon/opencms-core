@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:28 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/04/16 13:00:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -358,6 +358,17 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      */
     protected List getListItems() throws CmsException {
 
+        if (getSettings().getExplorerMode() != null) {
+            CmsListColumnDefinition nameCol = getList().getMetadata().getColumnDefinition(LIST_COLUMN_NAME);
+            if (!(getSettings().getExplorerMode().equals(CmsExplorer.VIEW_GALLERY) || getSettings().getExplorerMode().equals(
+                CmsExplorer.VIEW_LIST))) {
+                nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+                    org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
+            } else {
+                nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+                    org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0));
+            }
+        }
         return getCollector().getListItems(null);
     }
 
@@ -414,7 +425,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
-        // this to show first the exlorer view
+        // this to show first the explorer view
         if (getShowExplorer()) {
             CmsUUID projectId = getProject().getUuid();
             Map params = new HashMap();
@@ -521,14 +532,8 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         // position 4: name
         CmsListColumnDefinition nameCol = new CmsListExplorerColumn(LIST_COLUMN_NAME);
-        if (!(getSettings().getExplorerMode().equals(CmsExplorer.VIEW_GALLERY) || getSettings().getExplorerMode().equals(
-            CmsExplorer.VIEW_LIST))) {
-            nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-                org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
-        } else {
-            nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
-                org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0));
-        }
+        nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_PATH_0));
 
         // add resource open action
         CmsListDefaultAction resourceOpenDefAction = new CmsListOpenResourceAction(
