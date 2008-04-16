@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/04/15 09:31:25 $
- * Version: $Revision: 1.619 $
+ * Date   : $Date: 2008/04/16 12:26:43 $
+ * Version: $Revision: 1.620 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -4075,8 +4075,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List getRelationsForResource(CmsDbContext dbc, CmsResource resource, CmsRelationFilter filter)
     throws CmsException {
 
-        return m_vfsDriver.readRelations(dbc, dbc.getProjectId().isNullUUID() ? dbc.currentProject().getUuid()
-        : dbc.getProjectId(), resource, filter);
+        CmsUUID projectId = getProjectIdForContext(dbc);
+        return m_vfsDriver.readRelations(dbc, projectId, resource, filter);
     }
 
     /**
@@ -5500,7 +5500,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
         }
-        if (resourceList == null) {
+        if ((resourceList == null) || !dbc.getProjectId().isNullUUID()) {
             // read the result form the database
             resourceList = m_vfsDriver.readChildResources(dbc, dbc.currentProject(), resource, getFolders, getFiles);
 
@@ -5509,7 +5509,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 resourceList = filterPermissions(dbc, resourceList, filter);
             }
             // cache the sub resources
-            OpenCms.getMemoryMonitor().cacheResourceList(cacheKey, resourceList);
+            if (dbc.getProjectId().isNullUUID()) {
+                OpenCms.getMemoryMonitor().cacheResourceList(cacheKey, resourceList);
+            }
         }
 
         // we must always apply the result filter and update the context dates
@@ -6034,9 +6036,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String cacheKey = getCacheKey(null, false, projectId, cp);
         // the current resource
         CmsResource currentResource = OpenCms.getMemoryMonitor().getCachedResource(cacheKey);
-        if (currentResource == null) {
+        if ((currentResource == null) || !dbc.getProjectId().isNullUUID()) {
             currentResource = m_vfsDriver.readFolder(dbc, projectId, cp);
-            OpenCms.getMemoryMonitor().cacheResource(cacheKey, currentResource);
+            if (dbc.getProjectId().isNullUUID()) {
+                OpenCms.getMemoryMonitor().cacheResource(cacheKey, currentResource);
+            }
         }
 
         pathList.add(0, currentResource);
@@ -6058,9 +6062,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
             cp = currentPath.toString();
             cacheKey = getCacheKey(null, false, projectId, cp);
             currentResource = OpenCms.getMemoryMonitor().getCachedResource(cacheKey);
-            if (currentResource == null) {
+            if ((currentResource == null) || !dbc.getProjectId().isNullUUID()) {
                 currentResource = m_vfsDriver.readFolder(dbc, projectId, cp);
-                OpenCms.getMemoryMonitor().cacheResource(cacheKey, currentResource);
+                if (dbc.getProjectId().isNullUUID()) {
+                    OpenCms.getMemoryMonitor().cacheResource(cacheKey, currentResource);
+                }
             }
 
             pathList.add(i, currentResource);
@@ -6083,9 +6089,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
             cp = currentPath.toString();
             cacheKey = getCacheKey(null, false, projectId, cp);
             currentResource = OpenCms.getMemoryMonitor().getCachedResource(cacheKey);
-            if (currentResource == null) {
+            if ((currentResource == null) || !dbc.getProjectId().isNullUUID()) {
                 currentResource = m_vfsDriver.readResource(dbc, projectId, cp, filter.includeDeleted());
-                OpenCms.getMemoryMonitor().cacheResource(cacheKey, currentResource);
+                if (dbc.getProjectId().isNullUUID()) {
+                    OpenCms.getMemoryMonitor().cacheResource(cacheKey, currentResource);
+                }
             }
 
             pathList.add(i, currentResource);
@@ -6242,13 +6250,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         String cacheKey = getCacheKey(key, search, projectId, resource.getRootPath());
         CmsProperty value = OpenCms.getMemoryMonitor().getCachedProperty(cacheKey);
 
-        if (value == null) {
+        if ((value == null) || !dbc.getProjectId().isNullUUID()) {
             // check if the map of all properties for this resource is already cached
             String cacheKey2 = getCacheKey(CACHE_ALL_PROPERTIES, search, projectId, resource.getRootPath());
 
             List allProperties = OpenCms.getMemoryMonitor().getCachedPropertyList(cacheKey2);
 
-            if (allProperties != null) {
+            if ((allProperties != null) && dbc.getProjectId().isNullUUID()) {
                 // list of properties already read, look up value there 
                 for (int i = 0; i < allProperties.size(); i++) {
                     CmsProperty property = (CmsProperty)allProperties.get(i);
@@ -6262,7 +6270,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 String cacheKey3 = getCacheKey(key, search, projectId, resource.getRootPath());
                 value = OpenCms.getMemoryMonitor().getCachedProperty(cacheKey3);
 
-                if ((value == null) || value.isNullProperty()) {
+                if ((value == null) || value.isNullProperty() || !dbc.getProjectId().isNullUUID()) {
                     boolean cont;
                     do {
                         try {
@@ -6293,7 +6301,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // freeze the value
             value.setFrozen(true);
 
-            if (!search && OpenCms.getMemoryMonitor().isCacheProperty()) {
+            if ((search || OpenCms.getMemoryMonitor().isCacheProperty()) && dbc.getProjectId().isNullUUID()) {
                 // store the result in the cache only if needed
                 OpenCms.getMemoryMonitor().cacheProperty(cacheKey, value);
             }
@@ -6328,7 +6336,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         List properties = OpenCms.getMemoryMonitor().getCachedPropertyList(cacheKey);
 
-        if (properties == null) {
+        if ((properties == null) || !dbc.getProjectId().isNullUUID()) {
             // result not cached, let's look it up in the DB
             if (search) {
                 boolean cont;
@@ -6366,7 +6374,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // set all properties in the result list as frozen
             CmsProperty.setFrozen(properties);
-            if (!search && OpenCms.getMemoryMonitor().isCachePropertyList()) {
+            if ((search || OpenCms.getMemoryMonitor().isCachePropertyList()) && dbc.getProjectId().isNullUUID()) {
                 // store the result in the cache if needed
                 OpenCms.getMemoryMonitor().cachePropertyList(cacheKey, properties);
             }
@@ -6387,12 +6395,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsException {
 
-        String cacheKey = getProjectIdForContext(dbc).toString() + publishHistoryId.toString();
+        String cacheKey = publishHistoryId.toString();
         List resourceList = OpenCms.getMemoryMonitor().getCachedPublishedResources(cacheKey);
-        if (resourceList == null) {
+        if ((resourceList == null) || !dbc.getProjectId().isNullUUID()) {
             resourceList = m_projectDriver.readPublishedResources(dbc, publishHistoryId);
             // store the result in the cache
-            OpenCms.getMemoryMonitor().cachePublishedResources(cacheKey, resourceList);
+            if (dbc.getProjectId().isNullUUID()) {
+                OpenCms.getMemoryMonitor().cachePublishedResources(cacheKey, resourceList);
+            }
         }
         return resourceList;
     }
@@ -6497,12 +6507,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsResource readResource(CmsDbContext dbc, CmsUUID structureID, CmsResourceFilter filter)
     throws CmsDataAccessException {
 
+        CmsUUID projectId = getProjectIdForContext(dbc);
         // please note: the filter will be applied in the security manager later
-        CmsResource resource = m_vfsDriver.readResource(
-            dbc,
-            dbc.getProjectId().isNullUUID() ? dbc.currentProject().getUuid() : dbc.getProjectId(),
-            structureID,
-            filter.includeDeleted());
+        CmsResource resource = m_vfsDriver.readResource(dbc, projectId, structureID, filter.includeDeleted());
 
         // context dates need to be updated
         updateContextDates(dbc, resource);
@@ -6529,12 +6536,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsResource readResource(CmsDbContext dbc, String resourcePath, CmsResourceFilter filter)
     throws CmsDataAccessException {
 
+        CmsUUID projectId = getProjectIdForContext(dbc);
         // please note: the filter will be applied in the security manager later
-        CmsResource resource = m_vfsDriver.readResource(
-            dbc,
-            dbc.getProjectId().isNullUUID() ? dbc.currentProject().getUuid() : dbc.getProjectId(),
-            resourcePath,
-            filter.includeDeleted());
+        CmsResource resource = m_vfsDriver.readResource(dbc, projectId, resourcePath, filter.includeDeleted());
 
         // context dates need to be updated 
         updateContextDates(dbc, resource);
@@ -6593,7 +6597,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             parent.getRootPath()}, dbc);
 
         List resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
-        if (resourceList == null) {
+        if ((resourceList == null) || !dbc.getProjectId().isNullUUID()) {
             // read the result from the database
             resourceList = m_vfsDriver.readResourceTree(
                 dbc,
@@ -6620,7 +6624,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 resourceList = filterPermissions(dbc, resourceList, filter);
             }
             // store the result in the resourceList cache
-            OpenCms.getMemoryMonitor().cacheResourceList(cacheKey, resourceList);
+            if (dbc.getProjectId().isNullUUID()) {
+                OpenCms.getMemoryMonitor().cacheResourceList(cacheKey, resourceList);
+            }
         }
         // we must always apply the result filter and update the context dates
         return updateContextDates(dbc, resourceList, filter);
@@ -6669,7 +6675,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 filter.getCacheId()}, dbc);
         }
         List resourceList = OpenCms.getMemoryMonitor().getCachedResourceList(cacheKey);
-        if (resourceList == null) {
+        if ((resourceList == null) || !dbc.getProjectId().isNullUUID()) {
             // first read the property definition
             CmsPropertyDefinition propDef = readPropertyDefinition(dbc, propertyDefinition);
             // now read the list of resources that have a value set for the property definition
@@ -6682,7 +6688,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // apply permission filter
             resourceList = filterPermissions(dbc, resourceList, filter);
             // store the result in the resourceList cache
-            OpenCms.getMemoryMonitor().cacheResourceList(cacheKey, resourceList);
+            if (dbc.getProjectId().isNullUUID()) {
+                OpenCms.getMemoryMonitor().cacheResourceList(cacheKey, resourceList);
+            }
         }
         // we must always apply the result filter and update the context dates
         return updateContextDates(dbc, resourceList, filter);
@@ -8792,7 +8800,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsAccessControlList acl = OpenCms.getMemoryMonitor().getCachedACL(cacheKey);
 
         // return the cached acl if already available
-        if (acl != null) {
+        if ((acl != null) && dbc.getProjectId().isNullUUID()) {
             return acl;
         }
 
@@ -8852,7 +8860,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
         }
-        OpenCms.getMemoryMonitor().cacheACL(cacheKey, acl);
+        if (dbc.getProjectId().isNullUUID()) {
+            OpenCms.getMemoryMonitor().cacheACL(cacheKey, acl);
+        }
         return acl;
     }
 
@@ -8887,6 +8897,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private String getCacheKey(String[] keys, CmsDbContext dbc) {
 
+        if (!dbc.getProjectId().isNullUUID()) {
+            return "";
+        }
         StringBuffer b = new StringBuffer(64);
         int len = keys.length;
         if (len > 0) {
@@ -8895,11 +8908,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 b.append('_');
             }
         }
-        CmsUUID id = dbc.currentProject().getUuid();
-        if (!dbc.getProjectId().isNullUUID()) {
-            id = dbc.getProjectId();
+        if (dbc.currentProject().isOnlineProject()) {
+            b.append("+");
+        } else {
+            b.append("-");
         }
-        b.append(id.toString());
         return b.toString();
     }
 
