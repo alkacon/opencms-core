@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2008/03/28 16:58:32 $
- * Version: $Revision: 1.121 $
+ * Date   : $Date: 2008/04/16 12:25:31 $
+ * Version: $Revision: 1.122 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.121 $
+ * @version $Revision: 1.122 $
  * 
  * @since 6.0.0 
  */
@@ -438,12 +438,15 @@ public interface I_CmsVfsDriver {
      * 
      * The implementation must return {@link CmsProperty#getNullProperty()} if the property is not found.<p>
      * 
+     * TODO: change project parameter to project id
+     * 
      * @param dbc the current database context
      * @param key the key of the property
      * @param project the current project
      * @param resource the resource where the property is attached to
      * 
      * @return a CmsProperty object containing both the structure and resource value of the property
+     * 
      * @throws CmsDataAccessException if something goes wrong
      */
     CmsProperty readPropertyObject(CmsDbContext dbc, String key, CmsProject project, CmsResource resource)
@@ -453,6 +456,8 @@ public interface I_CmsVfsDriver {
      * Reads all property objects mapped to a specified resource from the database.<p>
      * 
      * The implementation must return an empty list if no properties are found at all.<p>
+     * 
+     * TODO: change project parameter to project id
      * 
      * @param dbc the current database context
      * @param project the current project
