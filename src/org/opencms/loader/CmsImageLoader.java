@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2008/04/15 11:11:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/04/17 13:49:14 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,12 @@ import org.opencms.cache.CmsVfsNameBasedDiskCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.scheduler.jobs.CmsImageCacheCleanupJob;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
@@ -61,11 +64,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.2.0 
  */
-public class CmsImageLoader extends CmsDumpLoader {
+public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener {
 
     /** The configuration parameter for the OpenCms XML configuration to set the image down scale operation. */
     public static final String CONFIGURATION_DOWNSCALE = "image.scaling.downscale";
@@ -84,6 +87,9 @@ public class CmsImageLoader extends CmsDumpLoader {
 
     /** Default name for the image cache repository. */
     public static final String IMAGE_REPOSITORY_DEFAULT = "/WEB-INF/imagecache/";
+
+    /** Clear event parameter. */
+    public static final String PARAM_CLEAR_IMAGES_CACHE = "_IMAGES_CACHE_";
 
     /** The id of this loader. */
     public static final int RESOURCE_LOADER_ID_IMAGE_LOADER = 2;
@@ -203,6 +209,37 @@ public class CmsImageLoader extends CmsDumpLoader {
     }
 
     /**
+     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
+     */
+    public void cmsEvent(CmsEvent event) {
+
+        if (event == null) {
+            return;
+        }
+        // only react on the clear caches event
+        int type = event.getType();
+        if (type != I_CmsEventListener.EVENT_CLEAR_CACHES) {
+            return;
+        }
+        // only react if the clear images cache parameter is set
+        Map data = event.getData();
+        if (data == null) {
+            return;
+        }
+        Object param = data.get(PARAM_CLEAR_IMAGES_CACHE);
+        if (param == null) {
+            return;
+        }
+        float age = -1;
+        if (param instanceof String) {
+            age = Float.valueOf((String)param).floatValue();
+        } else if (param instanceof Number) {
+            age = ((Number)param).floatValue();
+        }
+        CmsImageCacheCleanupJob.cleanImageCache(age);
+    }
+
+    /**
      * @see org.opencms.loader.I_CmsResourceLoader#destroy()
      */
     public void destroy() {
@@ -249,6 +286,7 @@ public class CmsImageLoader extends CmsDumpLoader {
                 OpenCms.getSystemInfo().getWebApplicationRfsPath(),
                 m_imageRepositoryFolder);
         }
+        OpenCms.addCmsEventListener(this);
         // output setup information
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
