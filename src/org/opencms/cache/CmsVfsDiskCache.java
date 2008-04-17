@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsDiskCache.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/04/17 13:47:06 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.io.IOException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.2.0
  */
@@ -68,12 +68,13 @@ public class CmsVfsDiskCache {
     /**
      * Saves the given file content to a RFS file of the given name (full path).<p> 
      * 
-     * If the required pared folders do not exists, they are also created.<p>
+     * If the required parent folders do not exists, they are also created.<p>
      * 
      * @param rfsName the RFS name of the file to save the content in
      * @param content the content of the file to save
      * 
      * @return a reference to the File that was saved
+     * 
      * @throws IOException in case of disk access errors
      */
     public static File saveFile(String rfsName, byte[] content) throws IOException {
@@ -168,8 +169,8 @@ public class CmsVfsDiskCache {
     }
 
     /**
-     * Simplifies the "date last modified" from the OpenCms VFS based milisseconds 
-     * to just seconds, to support file systems that don't use milisseconds.
+     * Simplifies the "date last modified" from the OpenCms VFS based milliseconds 
+     * to just seconds, to support file systems that don't use milliseconds.<p>
      * 
      * @param dateLastModified the date to simplify
      * 

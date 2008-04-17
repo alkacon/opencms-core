@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsNameBasedDiskCache.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/04/17 13:47:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,19 +40,19 @@ import java.io.IOException;
 /**
  * Implements a name based RFS file based disk cache, that handles parameter based versions of VFS files.<p>
  * 
- * This RFS cache operates on file names, plus a hashcode calculated from 
+ * This RFS cache operates on file names, plus a hash code calculated from 
  * {@link org.opencms.file.CmsResource#getDateLastModified()}, {@link org.opencms.file.CmsResource#getDateCreated()} 
  * and {@link org.opencms.file.CmsResource#getLength()}. Optional parameters can be appended to this name, 
- * which will be added as a second hashcode. This way a file can have multiple versions based on different parameters.<p> 
+ * which will be added as a second hash code. This way a file can have multiple versions based on different parameters.<p> 
  * 
  * This cache is usable for resources from the online AND the offline project at the same time, 
- * because any change to a resource will result in a changed hashcode. This means a resource changed in the offline
- * project will have a new hashcode compared to the online project. If the resource is identical in the online and 
- * the offline project, the generated hashcodes will be the same.<p>
+ * because any change to a resource will result in a changed hash code. This means a resource changed in the offline
+ * project will have a new hash code compared to the online project. If the resource is identical in the online and 
+ * the offline project, the generated hash codes will be the same.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.2.0
  */
@@ -65,7 +65,7 @@ public class CmsVfsNameBasedDiskCache {
      * Creates a new disk cache.<p>
      * 
      * @param basepath the base path for the cache in the RFS
-     * @param foldername the folder name for this cache, to be used a subfolder for the base folder
+     * @param foldername the folder name for this cache, to be used a sub-folder for the base folder
      */
     public CmsVfsNameBasedDiskCache(String basepath, String foldername) {
 
@@ -127,6 +127,7 @@ public class CmsVfsNameBasedDiskCache {
             ext.append(resource.getLength());
         }
         // append hash code to the result buffer 
+        buf.append('_');
         buf.append(ext.toString().hashCode());
 
         // check if parameters are provided, if so add them as well
