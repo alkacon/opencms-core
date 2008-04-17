@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2008/02/27 12:05:26 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2008/04/17 13:43:14 $
+ * Version: $Revision: 1.23 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -247,9 +247,8 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
      */
     protected List getListItems() throws CmsException {
 
-        boolean withOtherOus = hasGroupsInOtherOus()
-            && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU) != null
-            && getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU).isVisible();
+        CmsListItemDetails details = getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU);
+        boolean withOtherOus = hasGroupsInOtherOus() && (details != null) && details.isVisible();
         List ret = new ArrayList();
         // get content        
         List groups = getGroups(withOtherOus);
