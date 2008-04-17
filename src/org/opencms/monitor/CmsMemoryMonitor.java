@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2008/04/15 09:31:25 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2008/04/17 14:30:37 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.66 $ 
+ * @version $Revision: 1.67 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,13 +122,17 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     /** Cache for access control lists. */
     private Map m_accessControlListCache;
 
-    private boolean m_cacheProperty;
+    /** If the property cache is enabled. */
+    private boolean m_cacheProperty = true;
 
-    private boolean m_cachePropertyList;
+    /** If the property list cache is enabled. */
+    private boolean m_cachePropertyList = true;
 
-    private boolean m_cacheResource;
+    /** If the resource cache is enabled. */
+    private boolean m_cacheResource = true;
 
-    private boolean m_cacheResourceList;
+    /** If the resource list cache is enabled. */
+    private boolean m_cacheResourceList = true;
 
     /** The memory monitor configuration. */
     private CmsMemoryMonitorConfiguration m_configuration;
