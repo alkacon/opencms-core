@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListReport.java,v $
- * Date   : $Date: 2008/02/27 12:05:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/04/18 09:21:59 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,6 +142,28 @@ public abstract class A_CmsListReport extends CmsReport {
             // set the default action               
             setAction(ACTION_DEFAULT);
         }
+        // test the needed parameters
+        try {
+            validateParamaters();
+        } catch (Exception e) {
+            // redirect to parent if parameters not available
+            setAction(ACTION_CANCEL);
+            try {
+                actionCloseDialog();
+            } catch (JspException e1) {
+                // noop
+            }
+            return;
+        }
     }
 
+    /**
+     * Should be overridden for parameter validation.<p>
+     * 
+     * @throws Exception if the parameters are not valid
+     */
+    protected void validateParamaters() throws Exception {
+
+        // valid by default
+    }
 }
