@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListReport.java,v $
- * Date   : $Date: 2008/04/18 09:21:59 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/04/18 09:48:16 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,9 +116,9 @@ public abstract class A_CmsListReport extends CmsReport {
     }
 
     /**
-     * Initalizes the report thread to use for this report.<p>
+     * Initializes the report thread to use for this report.<p>
      * 
-     * @return the reportd thread to use for this report.
+     * @return the reported thread to use for this report.
      */
     public abstract I_CmsReportThread initializeThread();
 
@@ -142,18 +142,20 @@ public abstract class A_CmsListReport extends CmsReport {
             // set the default action               
             setAction(ACTION_DEFAULT);
         }
-        // test the needed parameters
-        try {
-            validateParamaters();
-        } catch (Exception e) {
-            // redirect to parent if parameters not available
-            setAction(ACTION_CANCEL);
+        if (DIALOG_INITIAL.equals(getParamAction()) || (getParamAction() == null)) {
+            // test the needed parameters
             try {
-                actionCloseDialog();
-            } catch (JspException e1) {
-                // noop
+                validateParameters();
+            } catch (Exception e) {
+                // redirect to parent if parameters not available
+                setAction(ACTION_CANCEL);
+                try {
+                    actionCloseDialog();
+                } catch (JspException e1) {
+                    // noop
+                }
+                return;
             }
-            return;
         }
     }
 
@@ -162,7 +164,7 @@ public abstract class A_CmsListReport extends CmsReport {
      * 
      * @throws Exception if the parameters are not valid
      */
-    protected void validateParamaters() throws Exception {
+    protected void validateParameters() throws Exception {
 
         // valid by default
     }
