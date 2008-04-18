@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2008/04/03 09:08:37 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2008/04/18 13:05:53 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author  Alexander Kandzior
  *
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -186,7 +186,7 @@ public final class CmsSiteMatcher implements Cloneable {
      */
     public Object clone() {
 
-        return new CmsSiteMatcher(m_serverProtocol, m_serverName, m_serverPort, m_timeOffset);
+        return new CmsSiteMatcher(m_serverProtocol, m_serverName, m_serverPort, (m_timeOffset / 1000L));
     }
 
     /**
@@ -347,13 +347,13 @@ public final class CmsSiteMatcher implements Cloneable {
     }
 
     /**
-     * Sets the time Offset.<p>
+     * Sets the time Offset in seconds.<p>
      *
      * @param timeOffset the time Offset to set
      */
     protected void setTimeOffset(long timeOffset) {
 
-        m_timeOffset = timeOffset;
+        m_timeOffset = timeOffset * 1000L;
     }
 
     /**
