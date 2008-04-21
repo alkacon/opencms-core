@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/04/16 12:26:43 $
- * Version: $Revision: 1.620 $
+ * Date   : $Date: 2008/04/21 08:35:04 $
+ * Version: $Revision: 1.621 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2884,8 +2884,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         boolean isVfsManager = m_securityManager.hasRole(dbc, replacementUser, CmsRole.VFS_MANAGER);
 
+        boolean readRoles = false; // iterate groups and roles
         for (int i = 0; i < 2; i++) {
-            boolean readRoles = false; // iterate groups and roles
             Iterator itGroups = getGroupsOfUser(
                 dbc,
                 username,
@@ -4139,18 +4139,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param permissions a set of permissions to match, can be <code>null</code> for all ACEs
      * @param includeAttr a flag to include resources associated by attributes
      * 
-     * @return a list of <code>{@link CmsResource}</code> objects
+     * @return a set of <code>{@link CmsResource}</code> objects
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getResourcesForPrincipal(
+    public Set getResourcesForPrincipal(
         CmsDbContext dbc,
         CmsProject project,
         CmsUUID principalId,
         CmsPermissionSet permissions,
         boolean includeAttr) throws CmsException {
 
-        List resources = m_vfsDriver.readResourcesForPrincipalACE(dbc, project, principalId);
+        Set resources = new HashSet(m_vfsDriver.readResourcesForPrincipalACE(dbc, project, principalId));
         if (permissions != null) {
             Iterator itRes = resources.iterator();
             while (itRes.hasNext()) {
@@ -4163,17 +4163,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         if (includeAttr) {
             resources.addAll(m_vfsDriver.readResourcesForPrincipalAttr(dbc, project, principalId));
-        }
-        // remove duplicated
-        Set resNames = new HashSet();
-        Iterator itRes = resources.iterator();
-        while (itRes.hasNext()) {
-            String resName = ((CmsResource)itRes.next()).getRootPath();
-            if (resNames.contains(resName)) {
-                itRes.remove();
-            } else {
-                resNames.add(resName);
-            }
         }
         return resources;
     }
@@ -9235,7 +9224,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean withACEs) throws CmsException {
 
         // get all resources for the given user including resources associated by ACEs or attributes
-        List resources = getResourcesForPrincipal(dbc, project, principalId, null, true);
+        Set resources = getResourcesForPrincipal(dbc, project, principalId, null, true);
         Iterator it = resources.iterator();
         while (it.hasNext()) {
             CmsResource resource = (CmsResource)it.next();

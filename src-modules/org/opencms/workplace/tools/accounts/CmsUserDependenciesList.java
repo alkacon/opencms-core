@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDependenciesList.java,v $
- * Date   : $Date: 2008/02/27 12:05:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/04/21 08:35:04 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -72,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -344,7 +345,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
             while (itUsers.hasNext()) {
                 CmsUser user = getCms().readUser(new CmsUUID(itUsers.next().toString()));
                 // get content
-                List resources = getCms().getResourcesForPrincipal(user.getId(), null, true);
+                Set resources = getCms().getResourcesForPrincipal(user.getId(), null, true);
                 Iterator itRes = resources.iterator();
                 while (itRes.hasNext()) {
                     CmsResource resource = (CmsResource)itRes.next();

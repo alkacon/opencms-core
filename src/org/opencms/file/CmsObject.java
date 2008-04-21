@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2008/04/14 12:10:57 $
- * Version: $Revision: 1.162 $
+ * Date   : $Date: 2008/04/21 08:35:04 $
+ * Version: $Revision: 1.163 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.162 $
+ * @version $Revision: 1.163 $
  * 
  * @since 6.0.0 
  */
@@ -1699,11 +1699,11 @@ public final class CmsObject {
      * @param permissions a set of permissions to match, can be <code>null</code> for all ACEs
      * @param includeAttr a flag to include resources associated by attributes
      * 
-     * @return a list of <code>{@link CmsResource}</code> objects
+     * @return a set of <code>{@link CmsResource}</code> objects
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getResourcesForPrincipal(CmsUUID principalId, CmsPermissionSet permissions, boolean includeAttr)
+    public Set getResourcesForPrincipal(CmsUUID principalId, CmsPermissionSet permissions, boolean includeAttr)
     throws CmsException {
 
         return m_securityManager.getResourcesForPrincipal(getRequestContext(), principalId, permissions, includeAttr);

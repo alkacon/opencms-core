@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupDependenciesList.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/04/21 08:35:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,6 +59,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -337,7 +338,7 @@ public class CmsGroupDependenciesList extends A_CmsListDialog {
             while (itGroups.hasNext()) {
                 CmsGroup group = getCms().readGroup(new CmsUUID(itGroups.next().toString()));
                 // get content
-                List resources = getCms().getResourcesForPrincipal(group.getId(), null, true);
+                Set resources = getCms().getResourcesForPrincipal(group.getId(), null, true);
                 Iterator itRes = resources.iterator();
                 while (itRes.hasNext()) {
                     CmsResource resource = (CmsResource)itRes.next();

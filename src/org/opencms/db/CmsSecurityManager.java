@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2008/04/14 12:10:56 $
- * Version: $Revision: 1.119 $
+ * Date   : $Date: 2008/04/21 08:35:04 $
+ * Version: $Revision: 1.120 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2208,17 +2208,17 @@ public final class CmsSecurityManager {
      * @param permissions a set of permissions to match, can be <code>null</code> for all ACEs
      * @param includeAttr a flag to include resources associated by attributes
      * 
-     * @return a list of <code>{@link CmsResource}</code> objects
+     * @return a set of <code>{@link CmsResource}</code> objects
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getResourcesForPrincipal(
+    public Set getResourcesForPrincipal(
         CmsRequestContext context,
         CmsUUID principalId,
         CmsPermissionSet permissions,
         boolean includeAttr) throws CmsException {
 
-        List dependencies;
+        Set dependencies;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             dependencies = m_driverManager.getResourcesForPrincipal(
@@ -2229,7 +2229,7 @@ public final class CmsSecurityManager {
                 includeAttr);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_RESOURCES_FOR_PRINCIPAL_LOG_1, principalId), e);
-            dependencies = new ArrayList();
+            dependencies = new HashSet();
         } finally {
             dbc.clear();
         }
