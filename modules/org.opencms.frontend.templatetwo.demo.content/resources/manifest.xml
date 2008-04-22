@@ -352,26 +352,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demo_de/_config_/kontakt</source>
-			<destination>demo_de/_config_/kontakt</destination>
-			<type>tttextbox</type>
-			<uuidstructure>133cb003-e072-11dc-bd1b-9f7a6a6ce285</uuidstructure>
-			<uuidresource>133cb004-e072-11dc-bd1b-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Sat, 01 Mar 2008 12:48:11 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 21 Feb 2008 11:42:26 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Bei Fragen: fragen !]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>demo_de/_config_/links_bruehwurst</source>
 			<destination>demo_de/_config_/links_bruehwurst</destination>
 			<type>ttlistbox</type>
@@ -3505,26 +3485,6 @@ http://de.wikipedia.org/wiki/Bild:Wurst_%28Rohwurst%29.jpg">Wurst (Rohwurst).jpg
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Layouts and Boxes]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>demo_en/_config_/contact</source>
-			<destination>demo_en/_config_/contact</destination>
-			<type>tttextbox</type>
-			<uuidstructure>d0938201-e48a-11dc-be5b-51cb880fd12a</uuidstructure>
-			<uuidresource>d0938202-e48a-11dc-be5b-51cb880fd12a</uuidresource>
-			<datelastmodified>Sat, 01 Mar 2008 12:55:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 26 Feb 2008 16:49:37 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Any Questions ?]]></value>
 				</property>
 			</properties>
 			<relations/>
