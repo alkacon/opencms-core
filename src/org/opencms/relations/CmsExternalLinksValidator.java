@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsExternalLinksValidator.java,v $
- * Date   : $Date: 2008/03/31 13:00:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/04/24 10:48:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import java.util.Map;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,15 +77,18 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
     public static boolean checkUrl(CmsObject cms, String check) {
 
         // first, create a uri from the string representation
-        URI uri = null; 
+        URI uri = null;
         try {
-            uri = new URI(null, check, null); 
+
+            // remove all spaces
+            String str = check.replaceAll(" ", "%20");
+            uri = new URI(str);
         } catch (URISyntaxException exc) {
-           return false; 
-        }    
+            return false;
+        }
         try {
             if (!uri.isAbsolute()) {
-                return cms.existsResource(cms.getRequestContext().removeSiteRoot(uri.getPath())); 
+                return cms.existsResource(cms.getRequestContext().removeSiteRoot(uri.getPath()));
             } else {
                 URL url = uri.toURL();
                 if ("http".equals(url.getProtocol())) {
