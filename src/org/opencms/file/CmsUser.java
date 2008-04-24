@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2008/04/24 16:02:35 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 6.0.0
  * 
@@ -491,9 +491,9 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if this user is the default guest user.<p>
+     * Checks if this user is the default guest user.<p>
      * 
-     * @return true if this user is the default guest user
+     * @return <code>true</code> if this user is the default guest user
      */
     public boolean isGuestUser() {
 
