@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Common Editing tools.</p>
 <p>This module is needed to be able to edit files in the OpenCms Workplace.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.6</version>
+		<version>7.0.5</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -24,13 +24,11 @@
 		<dateinstalled/>
 		<dependencies>
 			<dependency name="org.opencms.workplace" version="1.0.0"/>
+			<dependency name="org.opencms.jquery" version="1.0.0"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/workplace/editors/direct_edit.jsp"/>
-			<resource uri="/system/workplace/resources/commons/jquery.dimensions.js"/>
-			<resource uri="/system/workplace/resources/commons/jquery.flydom.js"/>
-			<resource uri="/system/workplace/resources/commons/jquery.js"/>
 			<resource uri="/system/workplace/resources/editors/directedit/"/>
 			<resource uri="/system/workplace/editors/jquery_direct_edit_include.txt"/>
 			<resource uri="/system/workplace/editors/direct_edit_include.txt"/>		
@@ -2231,87 +2229,6 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/commons</destination>
-			<type>folder</type>
-			<uuidstructure>831c03cf-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/commons/jquery.dimensions.js</source>
-			<destination>system/workplace/resources/commons/jquery.dimensions.js</destination>
-			<type>plain</type>
-			<uuidstructure>83c751cf-e09c-11dc-a7d2-9b4307eb5433</uuidstructure>
-			<uuidresource>ba259d2e-dbab-11dc-86a8-9b4307eb5433</uuidresource>
-			<datelastmodified>Fri, 15 Feb 2008 09:52:32 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 15 Feb 2008 09:52:32 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[The JQuery Dimension Library]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/commons/jquery.flydom.js</source>
-			<destination>system/workplace/resources/commons/jquery.flydom.js</destination>
-			<type>plain</type>
-			<uuidstructure>83eb2d82-e09c-11dc-a7d2-9b4307eb5433</uuidstructure>
-			<uuidresource>3a2d9bf7-de36-11dc-987e-9b4307eb5433</uuidresource>
-			<datelastmodified>Thu, 21 Feb 2008 16:48:11 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 18 Feb 2008 15:28:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[The JQuery Library for creating DOM elements]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/commons/jquery.js</source>
-			<destination>system/workplace/resources/commons/jquery.js</destination>
-			<type>plain</type>
-			<uuidstructure>83f23263-e09c-11dc-a7d2-9b4307eb5433</uuidstructure>
-			<uuidresource>ba2f1311-dbab-11dc-86a8-9b4307eb5433</uuidresource>
-			<datelastmodified>Fri, 15 Feb 2008 09:52:32 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 15 Feb 2008 09:52:32 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[The JQuery Library]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>

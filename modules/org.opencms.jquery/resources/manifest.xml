@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>7.0.5</opencms_version>
+		<createdate>Fri, 25 Apr 2008 10:11:53 GMT</createdate>
+		<infoproject>Offline</infoproject>
+		<export_version>7</export_version>
+	</info>
+	<module>
+		<name>org.opencms.jquery</name>
+		<nicename><![CDATA[JQuery]]></nicename>
+		<class/>
+		<description><![CDATA[This modules includes the JQuery javascript libraries as well as several plugins used by OpenCms]]></description>
+		<version>7.0.5</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/workplace/resources/jquery/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>6f0db124-0098-11dd-a08b-111d34530985</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 02 Apr 2008 09:37:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>825afce2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/jquery</destination>
+			<type>folder</type>
+			<uuidstructure>00a7c576-12ad-11dd-86ab-111d34530985</uuidstructure>
+			<datelastmodified>Fri, 25 Apr 2008 09:50:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 09:50:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/jquery.dimensions.js</source>
+			<destination>system/workplace/resources/jquery/jquery.dimensions.js</destination>
+			<type>plain</type>
+			<uuidstructure>a8383c83-12ae-11dd-86ab-111d34530985</uuidstructure>
+			<uuidresource>a8383c84-12ae-11dd-86ab-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 10:02:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 10:02:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Jquery Dimensions 1.2.0]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/jquery.flydom.js</source>
+			<destination>system/workplace/resources/jquery/jquery.flydom.js</destination>
+			<type>plain</type>
+			<uuidstructure>67c1db20-12ae-11dd-86ab-111d34530985</uuidstructure>
+			<uuidresource>67c1db21-12ae-11dd-86ab-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 10:00:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 10:00:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JQuery FlyDom 3.1.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/jquery.js</source>
+			<destination>system/workplace/resources/jquery/jquery.js</destination>
+			<type>plain</type>
+			<uuidstructure>3b9b7a1d-12ad-11dd-86ab-111d34530985</uuidstructure>
+			<uuidresource>3b9b7a1e-12ad-11dd-86ab-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 09:59:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 09:51:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JQuery 1.2.3]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/jquery/thickbox</destination>
+			<type>folder</type>
+			<uuidstructure>c9f55246-12ae-11dd-86ab-111d34530985</uuidstructure>
+			<datelastmodified>Fri, 25 Apr 2008 10:03:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 10:03:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/thickbox/loading.gif</source>
+			<destination>system/workplace/resources/jquery/thickbox/loading.gif</destination>
+			<type>image</type>
+			<uuidstructure>d20e3a58-12ae-11dd-86ab-111d34530985</uuidstructure>
+			<uuidresource>d20e3a59-12ae-11dd-86ab-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 10:05:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 10:03:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:208,h:13]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/thickbox/macFFBgHack.png</source>
+			<destination>system/workplace/resources/jquery/thickbox/macFFBgHack.png</destination>
+			<type>image</type>
+			<uuidstructure>298b3b32-12af-11dd-86ab-111d34530985</uuidstructure>
+			<uuidresource>298b3b33-12af-11dd-86ab-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 10:05:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 10:05:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:25,h:25]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/thickbox/thickbox.css</source>
+			<destination>system/workplace/resources/jquery/thickbox/thickbox.css</destination>
+			<type>plain</type>
+			<uuidstructure>d226081f-12ae-11dd-86ab-111d34530985</uuidstructure>
+			<uuidresource>d2260820-12ae-11dd-86ab-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 10:04:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 10:03:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Thickbox Stylesheet]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/thickbox/thickbox.js</source>
+			<destination>system/workplace/resources/jquery/thickbox/thickbox.js</destination>
+			<type>plain</type>
+			<uuidstructure>d2214d2c-12ae-11dd-86ab-111d34530985</uuidstructure>
+			<uuidresource>d2214d2d-12ae-11dd-86ab-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 10:06:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 10:03:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Thickbox 3.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
