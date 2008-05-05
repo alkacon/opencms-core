@@ -44,6 +44,10 @@ Calendar._SDN = new Array
  "Sab",
  "Dom");
 
+// First day of the week. "0" means display Sunday first, "1" means display
+// Monday first, etc.
+Calendar._FD = 0;
+
 // full month names
 Calendar._MN = new Array
 ("Gennaio",
