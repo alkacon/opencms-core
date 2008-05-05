@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchResultView.java,v $
- * Date   : $Date: 2008/04/14 07:37:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/05/05 20:08:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -220,7 +220,7 @@ public class CmsSearchResultView {
                     result.append("<span class=\"searchExcerpt\">\n");
                     String excerptString = entry.getExcerpt();
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(excerptString)) {
-                        result.append("");
+                        result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_EXCERPT_UNAVAILABLE_0));
                     } else {
                         result.append(excerptString).append('\n');
                     }

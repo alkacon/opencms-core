@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2008/05/05 20:08:31 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Name of the used resource bundle. */
+    private static final String BUNDLE_NAME = "org.opencms.search.messages";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ANALYZER_NOT_FOUND_1 = "ERR_ANALYZER_NOT_FOUND_1";
@@ -152,6 +155,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_HELP_BUTTON_SEARCH_0 = "GUI_HELP_BUTTON_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HELP_SEARCH_EXCERPT_UNAVAILABLE_0 = "GUI_HELP_SEARCH_EXCERPT_UNAVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_SEARCH_NOMATCH_1 = "GUI_HELP_SEARCH_NOMATCH_1";
 
     /** Message constant for key in the resource bundle. */
@@ -187,14 +193,14 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String INIT_START_SEARCH_CONFIG_0 = "INIT_START_SEARCH_CONFIG_0";
 
+    /** Static instance member. */
+    private static final I_CmsMessageBundle INSTANCE = new Messages();
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ABANDONED_THREAD_FINISHED_1 = "LOG_ABANDONED_THREAD_FINISHED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_BASE_QUERY_1 = "LOG_BASE_QUERY_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_FIELDS_QUERY_1 = "LOG_FIELDS_QUERY_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATING_INDEX_DOC_0 = "LOG_CREATING_INDEX_DOC_0";
@@ -213,6 +219,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_EVENT_REBUILD_SEARCHINDEX_1 = "LOG_EVENT_REBUILD_SEARCHINDEX_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_FIELDS_QUERY_1 = "LOG_FIELDS_QUERY_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INDEX_ACCESS_FAILED_1 = "LOG_INDEX_ACCESS_FAILED_1";
@@ -360,12 +369,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_UNABLE_TO_READ_SOURCE_2 = "RPT_UNABLE_TO_READ_SOURCE_2";
-
-    /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.search.messages";
-
-    /** Static instance member. */
-    private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
      * Hides the public constructor for this utility class.<p>
