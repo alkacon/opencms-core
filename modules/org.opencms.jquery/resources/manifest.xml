@@ -3,14 +3,15 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.5</opencms_version>
-		<createdate>Fri, 25 Apr 2008 10:11:53 GMT</createdate>
+		<opencms_version>7.0.5 alpha</opencms_version>
+		<createdate>Wed, 14 May 2008 15:16:03 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.jquery</name>
-		<nicename><![CDATA[JQuery]]></nicename>
+		<nicename><![CDATA[OpenCms 7 JQuery library]]></nicename>
+		<group>OpenCms frontend</group>
 		<class/>
 		<description><![CDATA[This modules includes the JQuery javascript libraries as well as several plugins used by OpenCms]]></description>
 		<version>7.0.5</version>
@@ -38,7 +39,16 @@
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
@@ -49,9 +59,39 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>518</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/workplace/resources</destination>
@@ -77,75 +117,64 @@
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
-			<source>system/workplace/resources/jquery/jquery.dimensions.js</source>
-			<destination>system/workplace/resources/jquery/jquery.dimensions.js</destination>
+			<source>system/workplace/resources/jquery/load.js</source>
+			<destination>system/workplace/resources/jquery/load.js</destination>
 			<type>plain</type>
-			<uuidstructure>a8383c83-12ae-11dd-86ab-111d34530985</uuidstructure>
-			<uuidresource>a8383c84-12ae-11dd-86ab-111d34530985</uuidresource>
-			<datelastmodified>Fri, 25 Apr 2008 10:02:45 GMT</datelastmodified>
+			<uuidstructure>27e630f3-21b4-11dd-a7a5-111d34530985</uuidstructure>
+			<uuidresource>27e630f4-21b4-11dd-a7a5-111d34530985</uuidresource>
+			<datelastmodified>Wed, 14 May 2008 15:04:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 25 Apr 2008 10:02:04 GMT</datecreated>
+			<datecreated>Wed, 14 May 2008 12:49:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Jquery Dimensions 1.2.0]]></value>
+					<value><![CDATA[Used by the jquery tag]]></value>
 				</property>
 			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/jquery/jquery.flydom.js</source>
-			<destination>system/workplace/resources/jquery/jquery.flydom.js</destination>
-			<type>plain</type>
-			<uuidstructure>67c1db20-12ae-11dd-86ab-111d34530985</uuidstructure>
-			<uuidresource>67c1db21-12ae-11dd-86ab-111d34530985</uuidresource>
-			<datelastmodified>Fri, 25 Apr 2008 10:00:41 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 25 Apr 2008 10:00:16 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[JQuery FlyDom 3.1.1]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/jquery/jquery.js</source>
-			<destination>system/workplace/resources/jquery/jquery.js</destination>
-			<type>plain</type>
-			<uuidstructure>3b9b7a1d-12ad-11dd-86ab-111d34530985</uuidstructure>
-			<uuidresource>3b9b7a1e-12ad-11dd-86ab-111d34530985</uuidresource>
-			<datelastmodified>Fri, 25 Apr 2008 09:59:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 25 Apr 2008 09:51:52 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[JQuery 1.2.3]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/resources/jquery/thickbox</destination>
+			<destination>system/workplace/resources/jquery/css</destination>
 			<type>folder</type>
-			<uuidstructure>c9f55246-12ae-11dd-86ab-111d34530985</uuidstructure>
-			<datelastmodified>Fri, 25 Apr 2008 10:03:01 GMT</datelastmodified>
+			<uuidstructure>a9e293c4-20e9-11dd-a08e-111d34530985</uuidstructure>
+			<datelastmodified>Tue, 13 May 2008 12:39:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 25 Apr 2008 10:03:01 GMT</datecreated>
+			<datecreated>Tue, 13 May 2008 12:39:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Shared style sheets]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/pagination.css</source>
+			<destination>system/workplace/resources/jquery/css/pagination.css</destination>
+			<type>plain</type>
+			<uuidstructure>126ed37b-1d13-11dd-b203-111d34530985</uuidstructure>
+			<uuidresource>126ed37c-1d13-11dd-b203-111d34530985</uuidresource>
+			<datelastmodified>Thu, 08 May 2008 15:26:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 08 May 2008 15:26:04 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -153,8 +182,1411 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/jquery/thickbox/loading.gif</source>
-			<destination>system/workplace/resources/jquery/thickbox/loading.gif</destination>
+			<destination>system/workplace/resources/jquery/css/flora</destination>
+			<type>folder</type>
+			<uuidstructure>6283d146-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.accordion.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.accordion.css</destination>
+			<type>plain</type>
+			<uuidstructure>628afd38-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>628afd39-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.accordion]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.all.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.all.css</destination>
+			<type>plain</type>
+			<uuidstructure>628fb82b-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>628fb82c-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.all]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.calendar.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.calendar.css</destination>
+			<type>plain</type>
+			<uuidstructure>6296e41e-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6296e41f-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.calendar]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.css</destination>
+			<type>plain</type>
+			<uuidstructure>629b9f11-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>629b9f12-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.datepicker.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.datepicker.css</destination>
+			<type>plain</type>
+			<uuidstructure>62a08114-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>62a08115-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.datepicker]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.dialog.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.dialog.css</destination>
+			<type>plain</type>
+			<uuidstructure>62a785f7-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>62a785f8-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.dialog]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.menu.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.menu.css</destination>
+			<type>plain</type>
+			<uuidstructure>62ac67fa-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>62ac67fb-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.menu]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.resizable.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.resizable.css</destination>
+			<type>plain</type>
+			<uuidstructure>62b122ed-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>62b122ee-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.resizable]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.slider.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.slider.css</destination>
+			<type>plain</type>
+			<uuidstructure>62b5dde0-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>62b5dde1-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.slider]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.tablesorter.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.tablesorter.css</destination>
+			<type>plain</type>
+			<uuidstructure>62babfe3-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>62babfe4-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.tablesorter]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.tabs.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.tabs.css</destination>
+			<type>plain</type>
+			<uuidstructure>62bf7ad6-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>62bf7ad7-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.tabs]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.toasterLite.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.toasterLite.css</destination>
+			<type>plain</type>
+			<uuidstructure>62cdd2b9-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>62cdd2ba-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.toasterLite]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/flora.toolbar.css</source>
+			<destination>system/workplace/resources/jquery/css/flora/flora.toolbar.css</destination>
+			<type>plain</type>
+			<uuidstructure>62d28dac-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>62d28dad-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[flora.toolbar]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/jquery/css/flora/i</destination>
+			<type>folder</type>
+			<uuidstructure>62d7489f-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/accordion-left-act.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/accordion-left-act.png</destination>
+			<type>image</type>
+			<uuidstructure>643f3d11-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>643f3d12-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[accordion-left-act]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:3,h:28]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/accordion-left-over.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/accordion-left-over.png</destination>
+			<type>image</type>
+			<uuidstructure>64441f15-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64441f16-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[accordion-left-over]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:3,h:28]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/accordion-left.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/accordion-left.png</destination>
+			<type>image</type>
+			<uuidstructure>645005f9-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>645005fa-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[accordion-left]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:3,h:28]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/accordion-middle-act.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/accordion-middle-act.png</destination>
+			<type>image</type>
+			<uuidstructure>64597bdd-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64597bde-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[accordion-middle-act]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:28]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/accordion-middle-over.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/accordion-middle-over.png</destination>
+			<type>image</type>
+			<uuidstructure>645e5de1-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>645e5de2-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[accordion-middle-over]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:28]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/accordion-middle.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/accordion-middle.png</destination>
+			<type>image</type>
+			<uuidstructure>6467d3c5-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6467d3c6-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[accordion-middle]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:28]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/accordion-right-act.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/accordion-right-act.png</destination>
+			<type>image</type>
+			<uuidstructure>646c8eb9-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>646c8eba-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[accordion-right-act]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:3,h:28]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/accordion-right-over.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/accordion-right-over.png</destination>
+			<type>image</type>
+			<uuidstructure>64762bad-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64762bae-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[accordion-right-over]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:3,h:28]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/accordion-right.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/accordion-right.png</destination>
+			<type>image</type>
+			<uuidstructure>647fa091-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>647fa092-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[accordion-right]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:3,h:28]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/asc.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/asc.gif</destination>
+			<type>image</type>
+			<uuidstructure>6486cc85-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6486cc86-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[asc]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:21,h:4]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/bg.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/bg.gif</destination>
+			<type>image</type>
+			<uuidstructure>648df879-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>648df87a-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[bg]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:21,h:9]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/desc.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/desc.gif</destination>
+			<type>image</type>
+			<uuidstructure>6492b36d-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6492b36e-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[desc]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:21,h:4]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/dialog-e.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/dialog-e.gif</destination>
+			<type>image</type>
+			<uuidstructure>6499df61-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6499df62-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog-e]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:7,h:1000]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/dialog-n.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/dialog-n.gif</destination>
+			<type>image</type>
+			<uuidstructure>64a10b55-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64a10b56-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog-n]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:2000,h:6]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/dialog-ne.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/dialog-ne.gif</destination>
+			<type>image</type>
+			<uuidstructure>64a5c649-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64a5c64a-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog-ne]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:29]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/dialog-nw.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/dialog-nw.gif</destination>
+			<type>image</type>
+			<uuidstructure>64b68f2d-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64b68f2e-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog-nw]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:29]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/dialog-s.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/dialog-s.gif</destination>
+			<type>image</type>
+			<uuidstructure>64bb4a21-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64bb4a22-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog-s]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1000,h:8]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/dialog-se.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/dialog-se.gif</destination>
+			<type>image</type>
+			<uuidstructure>64c27615-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64c27616-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog-se]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:9]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/dialog-sw.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/dialog-sw.gif</destination>
+			<type>image</type>
+			<uuidstructure>64c73109-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64c7310a-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog-sw]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:9]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/dialog-title.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/dialog-title.gif</destination>
+			<type>image</type>
+			<uuidstructure>64ce5cfd-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64ce5cfe-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog-title]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:29]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/dialog-titlebar-close-hover.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/dialog-titlebar-close-hover.png</destination>
+			<type>image</type>
+			<uuidstructure>64d588f1-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64d588f2-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog-titlebar-close-hover]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/dialog-titlebar-close.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/dialog-titlebar-close.png</destination>
+			<type>image</type>
+			<uuidstructure>64dcb4e5-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64dcb4e6-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog-titlebar-close]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/dialog-w.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/dialog-w.gif</destination>
+			<type>image</type>
+			<uuidstructure>64e3e0d9-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64e3e0da-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[dialog-w]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:7,h:1000]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/menu-submenu.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/menu-submenu.gif</destination>
+			<type>image</type>
+			<uuidstructure>64e89bcd-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64e89bce-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[menu-submenu]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/resizable-e.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/resizable-e.gif</destination>
+			<type>image</type>
+			<uuidstructure>64f211b1-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64f211b2-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[resizable-e]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:6,h:1000]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/resizable-n.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/resizable-n.gif</destination>
+			<type>image</type>
+			<uuidstructure>64f482b5-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64f482b6-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[resizable-n]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1000,h:6]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/resizable-ne.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/resizable-ne.gif</destination>
+			<type>image</type>
+			<uuidstructure>64fdf899-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>64fdf89a-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[resizable-ne]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:9]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/resizable-nw.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/resizable-nw.gif</destination>
+			<type>image</type>
+			<uuidstructure>6502da9d-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6502da9e-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[resizable-nw]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:9]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/resizable-s.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/resizable-s.gif</destination>
+			<type>image</type>
+			<uuidstructure>65079591-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>65079592-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[resizable-s]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1000,h:6]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/resizable-se.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/resizable-se.gif</destination>
+			<type>image</type>
+			<uuidstructure>650c5085-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>650c5086-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[resizable-se]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:9]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/resizable-sw.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/resizable-sw.gif</destination>
+			<type>image</type>
+			<uuidstructure>65110b79-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>65110b7a-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[resizable-sw]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:9]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/resizable-w.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/resizable-w.gif</destination>
+			<type>image</type>
+			<uuidstructure>6515ed7d-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6515ed7e-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[resizable-w]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:6,h:1000]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/shadow.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/shadow.png</destination>
+			<type>image</type>
+			<uuidstructure>6534e731-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6534e732-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[shadow]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:800]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/slider-bg-1.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/slider-bg-1.png</destination>
+			<type>image</type>
+			<uuidstructure>6539a225-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6539a226-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[slider-bg-1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:200,h:7]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/slider-bg-2.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/slider-bg-2.png</destination>
+			<type>image</type>
+			<uuidstructure>6540ce19-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6540ce1a-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[slider-bg-2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:200,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/slider-handle.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/slider-handle.gif</destination>
+			<type>image</type>
+			<uuidstructure>65433f1d-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>65433f1e-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[slider-handle]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:12,h:23]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/tabs.png</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/tabs.png</destination>
+			<type>image</type>
+			<uuidstructure>655651f1-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>655651f2-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[tabs]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:300,h:50]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/toaster-e.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/toaster-e.gif</destination>
+			<type>image</type>
+			<uuidstructure>655d56d5-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>655d56d6-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[toaster-e]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:7,h:1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/toaster-n.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/toaster-n.gif</destination>
+			<type>image</type>
+			<uuidstructure>656238d9-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>656238da-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[toaster-n]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:6]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/toaster-ne.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/toaster-ne.gif</destination>
+			<type>image</type>
+			<uuidstructure>6566f3cd-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6566f3ce-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[toaster-ne]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:29]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/toaster-nw.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/toaster-nw.gif</destination>
+			<type>image</type>
+			<uuidstructure>656e1fc1-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>656e1fc2-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[toaster-nw]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:29]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/toaster-s.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/toaster-s.gif</destination>
+			<type>image</type>
+			<uuidstructure>65754bb5-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>65754bb6-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[toaster-s]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:8]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/toaster-se.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/toaster-se.gif</destination>
+			<type>image</type>
+			<uuidstructure>657a06a9-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>657a06aa-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[toaster-se]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:9]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/toaster-sw.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/toaster-sw.gif</destination>
+			<type>image</type>
+			<uuidstructure>6581329d-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6581329e-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[toaster-sw]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:9]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/toaster-w.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/toaster-w.gif</destination>
+			<type>image</type>
+			<uuidstructure>65885e91-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>65885e92-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[toaster-w]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:7,h:1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/flora/i/toolbars-bot-bg.gif</source>
+			<destination>system/workplace/resources/jquery/css/flora/i/toolbars-bot-bg.gif</destination>
+			<type>image</type>
+			<uuidstructure>658d1985-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>658d1986-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 14:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[toolbars-bot-bg]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:8]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/jquery/css/thickbox</destination>
+			<type>folder</type>
+			<uuidstructure>6b1a141d-20ea-11dd-a08e-111d34530985</uuidstructure>
+			<datelastmodified>Tue, 13 May 2008 12:45:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 13 May 2008 12:45:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/thickbox/loading.gif</source>
+			<destination>system/workplace/resources/jquery/css/thickbox/loading.gif</destination>
 			<type>image</type>
 			<uuidstructure>d20e3a58-12ae-11dd-86ab-111d34530985</uuidstructure>
 			<uuidresource>d20e3a59-12ae-11dd-86ab-111d34530985</uuidresource>
@@ -173,8 +1605,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/jquery/thickbox/macFFBgHack.png</source>
-			<destination>system/workplace/resources/jquery/thickbox/macFFBgHack.png</destination>
+			<source>system/workplace/resources/jquery/css/thickbox/macFFBgHack.png</source>
+			<destination>system/workplace/resources/jquery/css/thickbox/macFFBgHack.png</destination>
 			<type>image</type>
 			<uuidstructure>298b3b32-12af-11dd-86ab-111d34530985</uuidstructure>
 			<uuidresource>298b3b33-12af-11dd-86ab-111d34530985</uuidresource>
@@ -193,8 +1625,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/jquery/thickbox/thickbox.css</source>
-			<destination>system/workplace/resources/jquery/thickbox/thickbox.css</destination>
+			<source>system/workplace/resources/jquery/css/thickbox/thickbox.css</source>
+			<destination>system/workplace/resources/jquery/css/thickbox/thickbox.css</destination>
 			<type>plain</type>
 			<uuidstructure>d226081f-12ae-11dd-86ab-111d34530985</uuidstructure>
 			<uuidresource>d2260820-12ae-11dd-86ab-111d34530985</uuidresource>
@@ -213,12 +1645,268 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/jquery/thickbox/thickbox.js</source>
-			<destination>system/workplace/resources/jquery/thickbox/thickbox.js</destination>
+			<destination>system/workplace/resources/jquery/packed</destination>
+			<type>folder</type>
+			<uuidstructure>8fe6820e-20e9-11dd-a08e-111d34530985</uuidstructure>
+			<datelastmodified>Tue, 13 May 2008 12:39:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 13 May 2008 12:39:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Used in the online project]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/packed/jquery.dimensions.js</source>
+			<destination>system/workplace/resources/jquery/packed/jquery.dimensions.js</destination>
+			<type>plain</type>
+			<uuidstructure>a8383c83-12ae-11dd-86ab-111d34530985</uuidstructure>
+			<uuidresource>a8383c84-12ae-11dd-86ab-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 10:02:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 10:02:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Jquery Dimensions 1.2.0]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/packed/jquery.flydom.js</source>
+			<destination>system/workplace/resources/jquery/packed/jquery.flydom.js</destination>
+			<type>plain</type>
+			<uuidstructure>67c1db20-12ae-11dd-86ab-111d34530985</uuidstructure>
+			<uuidresource>67c1db21-12ae-11dd-86ab-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 10:00:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 10:00:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JQuery FlyDom 3.1.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/packed/jquery.js</source>
+			<destination>system/workplace/resources/jquery/packed/jquery.js</destination>
+			<type>plain</type>
+			<uuidstructure>3b9b7a1d-12ad-11dd-86ab-111d34530985</uuidstructure>
+			<uuidresource>3b9b7a1e-12ad-11dd-86ab-111d34530985</uuidresource>
+			<datelastmodified>Wed, 14 May 2008 08:19:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 09:51:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JQuery 1.2.3]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/packed/jquery.pagination.js</source>
+			<destination>system/workplace/resources/jquery/packed/jquery.pagination.js</destination>
+			<type>plain</type>
+			<uuidstructure>12653688-1d13-11dd-b203-111d34530985</uuidstructure>
+			<uuidresource>12653689-1d13-11dd-b203-111d34530985</uuidresource>
+			<datelastmodified>Tue, 13 May 2008 12:43:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 08 May 2008 15:26:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JQuery Pagination 1.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/packed/jquery.ui.js</source>
+			<destination>system/workplace/resources/jquery/packed/jquery.ui.js</destination>
+			<type>plain</type>
+			<uuidstructure>6591d479-12d6-11dd-98ed-111d34530985</uuidstructure>
+			<uuidresource>6591d47a-12d6-11dd-98ed-111d34530985</uuidresource>
+			<datelastmodified>Wed, 14 May 2008 12:25:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JQuery UI 1.5b4]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/packed/thickbox.js</source>
+			<destination>system/workplace/resources/jquery/packed/thickbox.js</destination>
+			<type>plain</type>
+			<uuidstructure>833e0a6f-20ea-11dd-a08e-111d34530985</uuidstructure>
+			<uuidresource>9c9acdad-21b9-11dd-a429-111d34530985</uuidresource>
+			<datelastmodified>Wed, 14 May 2008 08:16:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 May 2008 13:28:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Thickbox 3.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/jquery/unpacked</destination>
+			<type>folder</type>
+			<uuidstructure>9c0b7c81-20e9-11dd-a08e-111d34530985</uuidstructure>
+			<datelastmodified>Tue, 13 May 2008 12:39:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 13 May 2008 12:39:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Used in the offline project]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/unpacked/jquery.dimensions.js</source>
+			<destination>system/workplace/resources/jquery/unpacked/jquery.dimensions.js</destination>
+			<type>plain</type>
+			<uuidstructure>fe05e24f-20e9-11dd-a08e-111d34530985</uuidstructure>
+			<uuidresource>fe05e250-20e9-11dd-a08e-111d34530985</uuidresource>
+			<datelastmodified>Wed, 14 May 2008 08:27:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 13 May 2008 12:42:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Jquery Dimensions 1.2.0]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/unpacked/jquery.flydom.js</source>
+			<destination>system/workplace/resources/jquery/unpacked/jquery.flydom.js</destination>
+			<type>plain</type>
+			<uuidstructure>fe1db012-20e9-11dd-a08e-111d34530985</uuidstructure>
+			<uuidresource>fe1db013-20e9-11dd-a08e-111d34530985</uuidresource>
+			<datelastmodified>Fri, 25 Apr 2008 10:00:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 13 May 2008 12:42:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JQuery FlyDom 3.1.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/unpacked/jquery.js</source>
+			<destination>system/workplace/resources/jquery/unpacked/jquery.js</destination>
+			<type>plain</type>
+			<uuidstructure>fe2725f5-20e9-11dd-a08e-111d34530985</uuidstructure>
+			<uuidresource>fe2725f6-20e9-11dd-a08e-111d34530985</uuidresource>
+			<datelastmodified>Wed, 14 May 2008 08:18:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 13 May 2008 12:42:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JQuery 1.2.3]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/unpacked/jquery.pagination.js</source>
+			<destination>system/workplace/resources/jquery/unpacked/jquery.pagination.js</destination>
+			<type>plain</type>
+			<uuidstructure>de1d657b-20e9-11dd-a08e-111d34530985</uuidstructure>
+			<uuidresource>de1d657c-20e9-11dd-a08e-111d34530985</uuidresource>
+			<datelastmodified>Tue, 13 May 2008 12:44:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 13 May 2008 12:41:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JQuery Pagination 1.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/unpacked/jquery.ui.js</source>
+			<destination>system/workplace/resources/jquery/unpacked/jquery.ui.js</destination>
+			<type>plain</type>
+			<uuidstructure>fe2e51e8-20e9-11dd-a08e-111d34530985</uuidstructure>
+			<uuidresource>fe2e51e9-20e9-11dd-a08e-111d34530985</uuidresource>
+			<datelastmodified>Wed, 14 May 2008 12:26:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 13 May 2008 12:42:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JQuery UI 1.5b4]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/unpacked/thickbox.js</source>
+			<destination>system/workplace/resources/jquery/unpacked/thickbox.js</destination>
 			<type>plain</type>
 			<uuidstructure>d2214d2c-12ae-11dd-86ab-111d34530985</uuidstructure>
 			<uuidresource>d2214d2d-12ae-11dd-86ab-111d34530985</uuidresource>
-			<datelastmodified>Fri, 25 Apr 2008 10:06:23 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 May 2008 08:16:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 25 Apr 2008 10:03:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>

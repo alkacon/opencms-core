@@ -13,7 +13,7 @@
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
- * @version     $Id: jquery.flydom.js,v 1.1 2008/04/25 10:28:45 m.moossen Exp $
+ * @version     $Id: jquery.flydom.js,v 1.1 2008/05/14 15:34:11 m.moossen Exp $
  *
  * @author      Ken Stanley [dohpaz at gmail dot com]
  * @copyright   (C) 2007. All rights reserved.

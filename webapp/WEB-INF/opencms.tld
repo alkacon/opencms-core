@@ -509,6 +509,30 @@
         <body-content>tagdependent</body-content>  
     </tag>    
 
+    <tag>
+        <description>
+            This tag allows to include jquery and some jquery plugins code and style sheets.
+        </description>
+        <name>jquery</name>
+        <tag-class>org.opencms.jsp.CmsJspTagJQuery</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>js</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>css</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+        <attribute>
+            <name>dynamic</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>            
+        </attribute>
+    </tag>
+            
     <function>
         <description>
             Provides simple access to a OpenCms JSP / EL content vfs access bean.
