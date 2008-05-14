@@ -1,5 +1,20 @@
-<script type="text/javascript" src="%(skinUri)jquery/jquery.js"></script>
-<script type="text/javascript" src="%(skinUri)jquery/jquery.dimensions.js"></script>
-<script type="text/javascript" src="%(skinUri)jquery/jquery.flydom.js"></script>
+<script type="text/javascript" src="%(skinUri)jquery/load.js"></script>
+<script type="text/javascript">
+if (window.$) {
+	// ignore, jquery already included
+} else {
+	load_script("%(skinUri)jquery/unpacked/jquery.js", 'js');
+}
+if (window.$ && window.$.dimensions) {
+	// ignore, dimensions already included
+} else {
+	load_script("%(skinUri)jquery/unpacked/jquery.dimensions.js", 'js');
+}
+if (window.jQuery && window.jQuery.fn && window.jQuery.fn.createAppend) {
+	// ignore, flydom already included
+} else {
+	load_script("%(skinUri)jquery/unpacked/jquery.flydom.js", 'js');
+}
+</script>
 <script type="text/javascript" src="%(skinUri)editors/directedit/jq_edit.js"></script>
 <link type="text/css" rel="stylesheet" href="%(skinUri)editors/directedit/jq_edit.css" />
