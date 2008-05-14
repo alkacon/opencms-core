@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2008/02/27 12:05:32 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2008/05/14 15:34:36 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -115,7 +115,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.112 $ 
+ * @version $Revision: 1.113 $ 
  * 
  * @since 6.0.0 
  * 
@@ -167,6 +167,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
     /** The directory to store the generated JSP pages in (relative path in web application). */
     private static String m_jspWebAppRepository;
+
+    /** Help variable to keep synchronized the jsp writing process. */
+    private static Set m_processingFiles = Collections.synchronizedSet(new HashSet());
 
     /** The CmsFlexCache used to store generated cache entries in. */
     private CmsFlexCache m_cache;
@@ -267,89 +270,107 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             d.mkdirs();
         }
 
-        // check if the JSP must be updated
-        boolean mustUpdate = false;
-        File f = new File(jspPath);
-        if (!f.exists()) {
-            // file does not exist in real FS
-            mustUpdate = true;
-            // make sure the parent folder exists
-            File folder = f.getParentFile();
-            if (!folder.exists()) {
-                boolean success = folder.mkdirs();
-                if (!success) {
-                    LOG.error(org.opencms.db.Messages.get().getBundle().key(
-                        org.opencms.db.Messages.LOG_CREATE_FOLDER_FAILED_1,
-                        folder.getAbsolutePath()));
+        try {
+            // check if the file is being concurrently processed
+            while (m_processingFiles.contains(jspVfsName)) {
+                // wait a little bit until the first thread finishes
+                try {
+                    synchronized (m_processingFiles) {
+                        m_processingFiles.wait(100);
+                    }
+                } catch (InterruptedException e) {
+                    // ignore
                 }
             }
-        } else if (f.lastModified() <= resource.getDateLastModified()) {
-            // file in real FS is older then file in VFS
-            mustUpdate = true;
-        } else if (controller.getCurrentRequest().isDoRecompile()) {
-            // recompile is forced with parameter
-            mustUpdate = true;
-        } else {
-            // update strong link dependencies
-            mustUpdate = updateStrongLinks(resource, controller, updatedFiles);
+            m_processingFiles.add(jspVfsName);
+            // check if the JSP must be updated
+            boolean mustUpdate = false;
+            File f = new File(jspPath);
+            if (!f.exists()) {
+                // file does not exist in real FS
+                mustUpdate = true;
+                // make sure the parent folder exists
+                File folder = f.getParentFile();
+                if (!folder.exists()) {
+                    boolean success = folder.mkdirs();
+                    if (!success) {
+                        LOG.error(org.opencms.db.Messages.get().getBundle().key(
+                            org.opencms.db.Messages.LOG_CREATE_FOLDER_FAILED_1,
+                            folder.getAbsolutePath()));
+                    }
+                }
+            } else if (f.lastModified() <= resource.getDateLastModified()) {
+                // file in real FS is older then file in VFS
+                mustUpdate = true;
+            } else if (controller.getCurrentRequest().isDoRecompile()) {
+                // recompile is forced with parameter
+                mustUpdate = true;
+            } else {
+                // prevent recursive update when including the same file
+                updatedFiles.add(jspTargetName);
+                // update strong link dependencies
+                mustUpdate = updateStrongLinks(resource, controller, updatedFiles);
+            }
+
+            if (mustUpdate) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRITING_JSP_1, jspTargetName));
+                }
+                updatedFiles.add(jspTargetName);
+                byte[] contents;
+                String encoding;
+                try {
+                    CmsObject cms = controller.getCmsObject();
+                    contents = cms.readFile(resource).getContents();
+                    // check the "content-encoding" property for the JSP, use system default if not found on path
+                    encoding = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
+                    if (encoding == null) {
+                        encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                    } else {
+                        encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
+                    }
+                } catch (CmsException e) {
+                    controller.setThrowable(e, jspVfsName);
+                    throw new ServletException(Messages.get().getBundle().key(
+                        Messages.ERR_LOADER_JSP_ACCESS_1,
+                        jspVfsName), e);
+                }
+
+                try {
+                    // parse the JSP and modify OpenCms critical directives
+                    contents = parseJsp(contents, encoding, controller, updatedFiles, isHardInclude);
+                    if (LOG.isInfoEnabled()) {
+                        // check for existing file and display some debug info
+                        LOG.info(Messages.get().getBundle().key(
+                            Messages.LOG_JSP_PERMCHECK_4,
+                            new Object[] {
+                                f.getAbsolutePath(),
+                                Boolean.valueOf(f.exists()),
+                                Boolean.valueOf(f.isFile()),
+                                Boolean.valueOf(f.canWrite())}));
+                    }
+                    // write the parsed JSP content to the real FS
+                    synchronized (CmsJspLoader.class) {
+                        // this must be done only one file at a time
+                        FileOutputStream fs = new FileOutputStream(f);
+                        fs.write(contents);
+                        fs.close();
+                    }
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(Messages.get().getBundle().key(Messages.LOG_UPDATED_JSP_2, jspTargetName, jspVfsName));
+                    }
+                } catch (FileNotFoundException e) {
+                    throw new ServletException(Messages.get().getBundle().key(
+                        Messages.ERR_LOADER_JSP_WRITE_1,
+                        f.getName()), e);
+                }
+            }
+
+            // update "last modified" and "expires" date on controller
+            controller.updateDates(f.lastModified(), CmsResource.DATE_EXPIRED_DEFAULT);
+        } finally {
+            m_processingFiles.remove(jspVfsName);
         }
-
-        if (mustUpdate) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRITING_JSP_1, jspTargetName));
-            }
-            updatedFiles.add(jspTargetName);
-            byte[] contents;
-            String encoding;
-            try {
-                CmsObject cms = controller.getCmsObject();
-                contents = cms.readFile(resource).getContents();
-                // check the "content-encoding" property for the JSP, use system default if not found on path
-                encoding = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
-                if (encoding == null) {
-                    encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-                } else {
-                    encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
-                }
-            } catch (CmsException e) {
-                controller.setThrowable(e, jspVfsName);
-                throw new ServletException(
-                    Messages.get().getBundle().key(Messages.ERR_LOADER_JSP_ACCESS_1, jspVfsName),
-                    e);
-            }
-
-            try {
-                // parse the JSP and modify OpenCms critical directives
-                contents = parseJsp(contents, encoding, controller, updatedFiles, isHardInclude);
-                if (LOG.isInfoEnabled()) {
-                    // check for existing file and display some debug info
-                    LOG.info(Messages.get().getBundle().key(
-                        Messages.LOG_JSP_PERMCHECK_4,
-                        new Object[] {
-                            f.getAbsolutePath(),
-                            Boolean.valueOf(f.exists()),
-                            Boolean.valueOf(f.isFile()),
-                            Boolean.valueOf(f.canWrite())}));
-                }
-                // write the parsed JSP content to the real FS
-                synchronized (CmsJspLoader.class) {
-                    // this must be done only one file at a time
-                    FileOutputStream fs = new FileOutputStream(f);
-                    fs.write(contents);
-                    fs.close();
-                }
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().getBundle().key(Messages.LOG_UPDATED_JSP_2, jspTargetName, jspVfsName));
-                }
-            } catch (FileNotFoundException e) {
-                throw new ServletException(
-                    Messages.get().getBundle().key(Messages.ERR_LOADER_JSP_WRITE_1, f.getName()),
-                    e);
-            }
-        }
-
-        // update "last modified" and "expires" date on controller
-        controller.updateDates(f.lastModified(), CmsResource.DATE_EXPIRED_DEFAULT);
 
         return jspTargetName;
     }
