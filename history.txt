@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/05/05 20:18:51 $
- * Version: $Revision: 1.1017 $
+ * Date   : $Date: 2008/05/14 15:38:17 $
+ * Version: $Revision: 1.1018 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -26,6 +26,7 @@ OpenCms 7.0.5 - xxx, 2008
 ! Added new site alias attribute to manipulate request time
 ! Several attempts are made to connect to database during startup
 ! Added admin tool for image cache flushing
+! Added JQuery module and <cms:jquery> tag to use packed/unpacked versions depending of the current project
 - Many improvements on Template Two and the demo content
 - Changed decoration to plug in an extended decoration module
 - Improved internal link validation performance
@@ -53,7 +54,9 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed issue with importing / exporting CSV user data 
 * Fixed issue with broken workplace when startup folder does not exist or misses /
 * Fixed issue with NPE when trying to direct delete after restart without workplace login
+* Fixed issue with concurrent JSP page request when writing to RFS is needed
 * Fixed issue with broken calendar widget in french or italian localization 
+* Fixed issue with the <cms:editable> tag, it now detects if it has to include the script files or not
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 
