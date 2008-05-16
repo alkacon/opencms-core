@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/05/14 15:38:17 $
- * Version: $Revision: 1.1018 $
+ * Date   : $Date: 2008/05/16 08:38:29 $
+ * Version: $Revision: 1.1019 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed issue #1594: Location bar in workplace malfunctioning without ending '/'
 * Fixed issue #1595: Modules manifest file does not escape XML entities
 * Fixed issue #1596: Projects can be created being in the Online project
+* Fixed issue #1610: Specific css selectors used for placing JQuery direct edit images
 * Fixed issue while deleting a folder containing a file previously deleted in another project
 * Fixed issue with NPE in MacroResolver
 * Fixed issue with importing / exporting CSV user data 
