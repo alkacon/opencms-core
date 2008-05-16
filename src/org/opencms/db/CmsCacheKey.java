@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheKey.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2008/05/16 09:17:50 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.security.CmsPermissionSet;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0
  */
@@ -69,6 +69,9 @@ public class CmsCacheKey implements I_CmsCacheKey {
      */
     public String getCacheKeyForGroupUsers(String prefix, CmsDbContext context, CmsGroup group) {
 
+        if (!context.getProjectId().isNullUUID()) {
+            return "";
+        }
         StringBuffer cacheBuffer = new StringBuffer(64);
         cacheBuffer.append(prefix);
         cacheBuffer.append('_');
@@ -81,6 +84,9 @@ public class CmsCacheKey implements I_CmsCacheKey {
      */
     public String getCacheKeyForUserGroups(String prefix, CmsDbContext context, CmsUser user) {
 
+        if (!context.getProjectId().isNullUUID()) {
+            return "";
+        }
         StringBuffer cacheBuffer = new StringBuffer(64);
         cacheBuffer.append(prefix);
         cacheBuffer.append('_');
@@ -97,6 +103,9 @@ public class CmsCacheKey implements I_CmsCacheKey {
         CmsResource resource,
         CmsPermissionSet requiredPermissions) {
 
+        if (!context.getProjectId().isNullUUID()) {
+            return "";
+        }
         StringBuffer cacheBuffer = new StringBuffer(64);
         cacheBuffer.append(prefix);
         cacheBuffer.append('_');

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/04/21 08:35:04 $
- * Version: $Revision: 1.621 $
+ * Date   : $Date: 2008/05/16 09:17:50 $
+ * Version: $Revision: 1.622 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3712,7 +3712,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
             // make group list unmodifiable for caching
             groups = Collections.unmodifiableList(new ArrayList(allGroups));
-            OpenCms.getMemoryMonitor().cacheUserGroups(cacheKey, groups);
+            if (dbc.getProjectId().isNullUUID()) {
+                OpenCms.getMemoryMonitor().cacheUserGroups(cacheKey, groups);
+            }
         }
 
         return groups;
@@ -9098,7 +9100,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
                 // make user list unmodifiable for caching
                 allUsers = Collections.unmodifiableList(new ArrayList(users));
-                OpenCms.getMemoryMonitor().cacheUserGroups(cacheKey, allUsers);
+                if (dbc.getProjectId().isNullUUID()) {
+                    OpenCms.getMemoryMonitor().cacheUserGroups(cacheKey, allUsers);
+                }
             }
             return allUsers;
         } else {

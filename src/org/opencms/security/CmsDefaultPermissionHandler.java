@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPermissionHandler.java,v $
- * Date   : $Date: 2008/03/27 13:22:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/05/16 09:17:50 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.0.2
  */
@@ -216,7 +216,9 @@ public class CmsDefaultPermissionHandler implements I_CmsPermissionHandler {
                         permissions.getPermissionString()}));
             }
         }
-        OpenCms.getMemoryMonitor().cachePermission(cacheKey, result);
+        if (dbc.getProjectId().isNullUUID()) {
+            OpenCms.getMemoryMonitor().cachePermission(cacheKey, result);
+        }
 
         return result;
     }
