@@ -1756,7 +1756,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery UI 1.5b4]]></value>
+					<value><![CDATA[JQuery UI 1.5b2]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1894,7 +1894,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery UI 1.5b4]]></value>
+					<value><![CDATA[JQuery UI 1.5b2]]></value>
 				</property>
 			</properties>
 			<relations/>
