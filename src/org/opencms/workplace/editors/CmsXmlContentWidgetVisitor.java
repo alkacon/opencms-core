@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentWidgetVisitor.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/05/23 12:48:46 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,7 +151,7 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
         if (value.isSimpleType()) {
             // only visit simple values
             boolean useLocale = m_locale != null;
-            if ((useLocale && (value.getLocale() == getLocale())) || (!useLocale)) {
+            if ((useLocale && (value.getLocale().equals(getLocale()))) || (!useLocale)) {
                 try {
                     // get widget for value
                     I_CmsWidget widget = value.getContentDefinition().getContentHandler().getWidget(value);
