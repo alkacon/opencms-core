@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/05/23 12:48:39 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,6 +89,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BUTTON_PREVIEW_0 = "GUI_BUTTON_PREVIEW_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORY_CHECK_EMPTY_ERROR_0 = "GUI_CATEGORY_CHECK_EMPTY_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORY_CHECK_NOLEAF_ERROR_0 = "GUI_CATEGORY_CHECK_NOLEAF_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CATEGORY_SELECT_0 = "GUI_CATEGORY_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_COLOR_TITLE_0 = "GUI_DIALOG_COLOR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -124,10 +133,10 @@ public final class Messages extends A_CmsMessageBundle {
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.widgets.messages";
 
-    /**Prefix to create button message key. */
+    /** Prefix to create button message key. */
     private static final String GUI_BUTTON_PREF = "GUI_EDITOR_BUTTON_";
 
-    /**postfix to create button message key. */
+    /** Postfix to create button message key. */
     private static final String GUI_BUTTON_SUF = "LIST_0";
 
     /** Static instance member. */
