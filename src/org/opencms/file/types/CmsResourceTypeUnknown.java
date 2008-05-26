@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeUnknown.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/05/26 12:37:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.apache.commons.logging.Log;
 
 /**
  * Resource type descriptor used in case the given resource type class in the XML configuration could 
- * not be instanciated.<p>
+ * not be instantiated.<p>
  * 
  * Using this class usually indicates that the class name given in the XML configuration is unavailable.
  * This can be the case if a module with a new resource type is imported, where the resource type class 
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */

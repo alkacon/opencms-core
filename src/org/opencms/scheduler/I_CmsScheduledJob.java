@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/I_CmsScheduledJob.java,v $
- * Date   : $Date: 2008/02/27 12:05:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/05/26 12:37:25 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,7 +53,7 @@ public interface I_CmsScheduledJob {
      * This method will be called when this scheduled job is executed.<p>
      * 
      * Depending on the configuration of this job, a new instance of 
-     * the configured class will be instanciated every time the job is launched, 
+     * the configured class will be instantiated every time the job is launched, 
      * or a new instance will be generated only the first time the 
      * job is launched, and re-used afterwards.<p>
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2008/04/03 07:45:25 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2008/05/26 12:37:25 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 6.0.0 
  */
@@ -445,11 +445,11 @@ public abstract class CmsEditor extends CmsEditorBase {
     }
 
     /**
-     * Returns the instanciated editor display option class from the workplace manager.<p>
+     * Returns the instantiated editor display option class from the workplace manager.<p>
      * 
      * This is a convenience method to be used on editor JSPs.<p>
      * 
-     * @return the instanciated editor display option class
+     * @return the instantiated editor display option class
      */
     public CmsEditorDisplayOptions getEditorDisplayOptions() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2008/04/04 07:42:03 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2008/05/26 12:37:25 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -317,14 +317,14 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     String getCachePropertyDefault();
 
     /**
-     * Returns the class name configured for this resouce type.<p>
+     * Returns the class name configured for this resource type.<p>
      * 
      * This may be different from the instance class name in case the configured class could not 
-     * be instanciated. If the configured class is unavailable, an instance of
+     * be instantiated. If the configured class is unavailable, an instance of
      * <code>{@link CmsResourceTypeUnknown}</code> is used. This enables the import of modules that contain their 
-     * own resource types classes (which are not available before the module is fully imnported).<p>
+     * own resource types classes (which are not available before the module is fully imported).<p>
      * 
-     * @return the class name configured for this resouce type
+     * @return the class name configured for this resource type
      */
     String getClassName();
 

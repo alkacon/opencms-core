@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2008/04/03 09:08:38 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2008/05/26 12:37:25 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 6.0.0
  */
@@ -489,10 +489,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The configured publish manager. */
     private CmsPublishManager m_publishManager;
 
-    /** A list of instanciated request handler classes. */
+    /** A list of instantiated request handler classes. */
     private List m_requestHandlers;
 
-    /** A list of instanciated resource init handler classes. */
+    /** A list of instantiated resource init handler classes. */
     private List m_resourceInitHandlers;
 
     /** The runtime info factory. */
@@ -546,7 +546,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /**
      * Adds the event manager class.<p>
      * 
-     * @param clazz the class name of event manager class  to instanciate and add
+     * @param clazz the class name of event manager class  to instantiate and add
      */
     public void addEventManager(String clazz) {
 
@@ -584,7 +584,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /**
      * Adds a new instance of a request handler class.<p>
      * 
-     * @param clazz the class name of the request handler to instanciate and add
+     * @param clazz the class name of the request handler to instantiate and add
      */
     public void addRequestHandler(String clazz) {
 
@@ -1615,9 +1615,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
-     * Returns the list of instanciated request handler classes.<p>
+     * Returns the list of instantiated request handler classes.<p>
      * 
-     * @return the list of instanciated request handler classes
+     * @return the list of instantiated request handler classes
      */
     public List getRequestHandlers() {
 
@@ -1625,9 +1625,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
-     * Returns the list of instanciated resource init handler classes.<p>
+     * Returns the list of instantiated resource init handler classes.<p>
      * 
-     * @return the list of instanciated resource init handler classes
+     * @return the list of instantiated resource init handler classes
      */
     public List getResourceInitHandlers() {
 

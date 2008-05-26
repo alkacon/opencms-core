@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2008/04/03 07:45:26 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2008/05/26 12:37:25 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,7 +112,7 @@ public class CmsSearch {
     protected int m_searchResultCount;
 
     /**
-     * Default constructor, used to instanciate the search facility as a bean.<p>
+     * Default constructor, used to instantiate the search facility as a bean.<p>
      */
     public CmsSearch() {
 

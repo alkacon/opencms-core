@@ -15,7 +15,7 @@
 #
 # You can also optionally provide the location of a file in the "real" 
 # file system that contains the XML. If you do not provide this attribute,
-# the instanciated configuration class must provide the file name.
+# the instantiated configuration class must provide the file name.
 -->
 
 <!ELEMENT configuration (config+)>

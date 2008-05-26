@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorSelector.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/05/26 12:37:25 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  * 
@@ -87,7 +87,7 @@ public class CmsEditorSelector {
     /**
      * Shows the error dialog when no valid editor is found and returns null for the editor URI.<p>
      * 
-     * @param jsp the instanciated CmsJspActionElement
+     * @param jsp the instantiated CmsJspActionElement
      * @param t a throwable object, can be null
      */
     private static void showErrorDialog(CmsJspActionElement jsp, Throwable t) {
