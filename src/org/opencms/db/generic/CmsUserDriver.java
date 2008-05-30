@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2008/03/28 16:58:31 $
- * Version: $Revision: 1.125 $
+ * Date   : $Date: 2008/05/30 10:12:20 $
+ * Version: $Revision: 1.126 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.125 $
+ * @version $Revision: 1.126 $
  * 
  * @since 6.0.0 
  */
@@ -322,11 +322,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     dbc,
                     internalCreateOrgUnitFromResource(dbc, parentFolder),
                     resource.getRootPath());
+            }
+            if (parentFolder != null) {
                 ouPath = parentFolder.getRootPath();
                 if (!ouPath.endsWith("/")) {
                     ouPath += "/";
                 }
             }
+            
             // create the resource
             CmsResource ouFolder = internalCreateResourceForOrgUnit(dbc, ouPath + name, flags);
 
