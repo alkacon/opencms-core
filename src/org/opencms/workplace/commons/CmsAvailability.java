@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2008/04/14 12:32:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/06/04 10:25:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -792,7 +792,7 @@ public class CmsAvailability extends CmsMultiDialog {
             }
         }
 
-        boolean notificationEnabled = Boolean.parseBoolean(getParamEnablenotification());
+        boolean notificationEnabled = Boolean.valueOf(getParamEnablenotification()).booleanValue();
         int notificationInterval = 0;
         try {
             notificationInterval = Integer.parseInt(getParamNotificationinterval());
