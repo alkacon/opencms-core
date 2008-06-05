@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/05/16 08:38:29 $
- * Version: $Revision: 1.1019 $
+ * Date   : $Date: 2008/06/05 14:43:49 $
+ * Version: $Revision: 1.1020 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -27,6 +27,7 @@ OpenCms 7.0.5 - xxx, 2008
 ! Several attempts are made to connect to database during startup
 ! Added admin tool for image cache flushing
 ! Added JQuery module and <cms:jquery> tag to use packed/unpacked versions depending of the current project
+! Module dependencies are now displayed sorted in the workplace administration
 - Many improvements on Template Two and the demo content
 - Changed decoration to plug in an extended decoration module
 - Improved internal link validation performance

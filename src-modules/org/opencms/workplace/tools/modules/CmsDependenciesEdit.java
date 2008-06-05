@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsDependenciesEdit.java,v $
- * Date   : $Date: 2008/02/27 12:05:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/06/05 14:43:49 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,10 @@ import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,55 +170,6 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     }
 
     /**
-     * @see org.opencms.workplace.CmsDialog#getCancelAction()
-     */
-    public String getCancelAction() {
-
-        // set the default action
-        setParamPage((String)getPages().get(0));
-
-        return DIALOG_SET;
-    }
-
-    /**
-     * Gets the module dependency parameter.<p>
-     * 
-     * @return the module dependency parameter
-     */
-    public String getParamDependency() {
-
-        return m_paramDependency;
-    }
-
-    /**
-     * Gets the module parameter.<p>
-     * 
-     * @return the module parameter
-     */
-    public String getParamModule() {
-
-        return m_paramModule;
-    }
-
-    /** 
-     * Sets the module dependency parameter.<p>
-     * @param paramDependency the module dependency parameter
-     */
-    public void setParamDependency(String paramDependency) {
-
-        m_paramDependency = paramDependency;
-    }
-
-    /** 
-     * Sets the module parameter.<p>
-     * @param paramModule the module parameter
-     */
-    public void setParamModule(String paramModule) {
-
-        m_paramModule = paramModule;
-    }
-
-    /**
      * Creates the dialog HTML for all defined widgets of the named dialog (page).<p>  
      * 
      * @param dialog the dialog (page) to get the HTML for
@@ -258,11 +212,81 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsDialog#getCancelAction()
+     */
+    public String getCancelAction() {
+
+        // set the default action
+        setParamPage((String)getPages().get(0));
+
+        return DIALOG_SET;
+    }
+
+    /**
+     * Get the list of all modules available.<p>
+     * 
+     * @return list of module names
+     */
+    private List getModules() {
+
+        List retVal = new ArrayList();
+        // get all modules
+        Iterator i = OpenCms.getModuleManager().getModuleNames().iterator();
+        // add them to the list of modules
+        while (i.hasNext()) {
+            String moduleName = (String)i.next();
+            if (moduleName.equals(getParamDependency())) {
+                // check for the preselection
+                retVal.add(new CmsSelectWidgetOption(moduleName, true));
+            } else {
+                retVal.add(new CmsSelectWidgetOption(moduleName, false));
+            }
+        }
+        Collections.sort(retVal, new Comparator() {
+
+            /** Collator used / wrapped */
+            private Collator m_collator = Collator.getInstance(getLocale());
+
+            /**
+             * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+             */
+            public int compare(Object arg0, Object arg1) {
+
+                CmsSelectWidgetOption o1 = (CmsSelectWidgetOption)arg0;
+                CmsSelectWidgetOption o2 = (CmsSelectWidgetOption)arg1;
+                return m_collator.compare(o1.getOption(), o2.getOption());
+            }
+        });
+        return retVal;
+
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
     protected String[] getPageArray() {
 
         return PAGES;
+    }
+
+    /**
+     * Gets the module dependency parameter.<p>
+     * 
+     * @return the module dependency parameter
+     */
+    public String getParamDependency() {
+
+        return m_paramDependency;
+    }
+
+    /**
+     * Gets the module parameter.<p>
+     * 
+     * @return the module parameter
+     */
+    public String getParamModule() {
+
+        return m_paramModule;
     }
 
     /**
@@ -341,6 +365,34 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
     }
 
     /**
+     * Checks if the new dependency dialog has to be displayed.<p>
+     * 
+     * @return <code>true</code> if the new dependency dialog has to be displayed
+     */
+    private boolean isNewDependency() {
+
+        return getCurrentToolPath().equals("/modules/edit/dependencies/new");
+    }
+
+    /** 
+     * Sets the module dependency parameter.<p>
+     * @param paramDependency the module dependency parameter
+     */
+    public void setParamDependency(String paramDependency) {
+
+        m_paramDependency = paramDependency;
+    }
+
+    /** 
+     * Sets the module parameter.<p>
+     * @param paramModule the module parameter
+     */
+    public void setParamModule(String paramModule) {
+
+        m_paramModule = paramModule;
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
     protected void validateParamaters() throws Exception {
@@ -363,38 +415,5 @@ public class CmsDependenciesEdit extends CmsWidgetDialog {
             }
             throw new Exception();
         }
-    }
-
-    /**
-     * Get the list of all modules available.<p>
-     * 
-     * @return list of module names
-     */
-    private List getModules() {
-
-        List retVal = new ArrayList();
-        // get all modules
-        Iterator i = OpenCms.getModuleManager().getModuleNames().iterator();
-        // add them to the list of modules
-        while (i.hasNext()) {
-            String moduleName = (String)i.next();
-            if (moduleName.equals(getParamDependency())) {
-                // check for the preselection
-                retVal.add(new CmsSelectWidgetOption(moduleName, true));
-            } else {
-                retVal.add(new CmsSelectWidgetOption(moduleName, false));
-            }
-        }
-        return retVal;
-    }
-
-    /**
-     * Checks if the new dependency dialog has to be displayed.<p>
-     * 
-     * @return <code>true</code> if the new dependency dialog has to be displayed
-     */
-    private boolean isNewDependency() {
-
-        return getCurrentToolPath().equals("/modules/edit/dependencies/new");
     }
 }
