@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2008/02/27 12:05:32 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2008/06/05 14:42:01 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -67,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,21 +79,24 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.26 $
+     * @version $Revision: 1.27 $
      * 
      * @since 7.0.3
      *
      */
     protected class ComparatorSelectWidgetOption implements Comparator {
 
+        /** Collator used / wrapped. */
+        private Collator m_collator = Collator.getInstance(CmsModulesUploadFromServer.this.getLocale());
+
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        public int compare(Object arg0, Object arg1) {
 
-            CmsSelectWidgetOption s1 = (CmsSelectWidgetOption)o1;
-            CmsSelectWidgetOption s2 = (CmsSelectWidgetOption)o2;
-            return s1.getOption().compareTo(s2.getOption());
+            CmsSelectWidgetOption o1 = (CmsSelectWidgetOption)arg0;
+            CmsSelectWidgetOption o2 = (CmsSelectWidgetOption)arg1;
+            return m_collator.compare(o1.getOption(), o2.getOption());
         }
 
     }
