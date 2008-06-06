@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCategoryXmlContentHandler.java,v $
- * Date   : $Date: 2008/05/23 12:48:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/06/06 13:42:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  *  
  * @since 7.0.5
  */
@@ -142,6 +142,9 @@ public class CmsCategoryXmlContentHandler extends CmsDefaultXmlContentHandler {
         CmsXmlContentErrorHandler errorHandler) {
 
         CmsXmlContentErrorHandler handler = super.resolveValidation(cms, value, errorHandler);
+        if (!value.isSimpleType()) {
+            return handler;
+        }
         I_CmsWidget widget = null;
         try {
             widget = value.getContentDefinition().getContentHandler().getWidget(value);
