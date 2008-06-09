@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2008/04/10 14:35:31 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2008/06/09 13:11:04 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -483,7 +483,9 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
         CmsUriSplitter splitter = new CmsUriSplitter(nextUri);
         Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
         params.putAll(paramsAsParameterMap());
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_page)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_page)
+            && (params.containsKey(PARAM_PAGE) && m_page.equals(params.get(PARAM_PAGE)))) {
+            // remove page parameter if found and equal to currently shown page
             params.remove(PARAM_PAGE);
         }
         if (!params.containsKey(PARAM_PAGE)) {
