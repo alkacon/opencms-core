@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.5 alpha</opencms_version>
-		<createdate>Wed, 14 May 2008 15:16:03 GMT</createdate>
+		<opencms_version>7.0.5</opencms_version>
+		<createdate>Mon, 09 Jun 2008 15:46:01 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -119,10 +119,10 @@
 			<relations/>
 			<accesscontrol>
 				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
 					<permissionset>
-						<allowed>1</allowed>
+						<allowed>5</allowed>
 						<denied>0</denied>
 					</permissionset>
 				</accessentry>
@@ -1747,10 +1747,10 @@
 			<destination>system/workplace/resources/jquery/packed/jquery.ui.js</destination>
 			<type>plain</type>
 			<uuidstructure>6591d479-12d6-11dd-98ed-111d34530985</uuidstructure>
-			<uuidresource>6591d47a-12d6-11dd-98ed-111d34530985</uuidresource>
-			<datelastmodified>Wed, 14 May 2008 12:25:21 GMT</datelastmodified>
+			<uuidresource>e301be85-21cc-11dd-af0a-111d34530985</uuidresource>
+			<datelastmodified>Wed, 14 May 2008 15:45:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 25 Apr 2008 14:46:32 GMT</datecreated>
+			<datecreated>Wed, 14 May 2008 15:46:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1886,7 +1886,7 @@
 			<type>plain</type>
 			<uuidstructure>fe2e51e8-20e9-11dd-a08e-111d34530985</uuidstructure>
 			<uuidresource>fe2e51e9-20e9-11dd-a08e-111d34530985</uuidresource>
-			<datelastmodified>Wed, 14 May 2008 12:26:42 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 May 2008 15:45:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 13 May 2008 12:42:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
