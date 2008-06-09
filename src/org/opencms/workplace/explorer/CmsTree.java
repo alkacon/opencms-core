@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2008/02/28 17:20:09 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2008/06/09 13:41:54 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -580,13 +580,29 @@ public class CmsTree extends CmsWorkplace {
         setProjectAware(Boolean.valueOf(request.getParameter(PARAM_PROJECTAWARE)).booleanValue());
         boolean rootloaded = Boolean.valueOf(request.getParameter(PARAM_ROOTLOADED)).booleanValue();
         String resource = request.getParameter(PARAM_RESOURCE);
-        
-        if (!getCms().existsResource(resource)) {
-            resource = null; 
-        }       
-        
+
         setTreeType(request.getParameter(PARAM_TYPE));
         String treeSite = request.getParameter(PARAM_TREESITE);
+        if ((getTreeType() != null) && (treeSite != null)) {
+            getSettings().setTreeSite(getTreeType(), treeSite);
+        }
+
+        if (getSettings().getTreeSite(getTreeType()) != null) {
+            String site = getCms().getRequestContext().getSiteRoot();
+            try {
+                getCms().getRequestContext().setSiteRoot(getSettings().getTreeSite(getTreeType()));
+                if (!getCms().existsResource(resource)) {
+                    resource = null;
+                }
+            } finally {
+                getCms().getRequestContext().setSiteRoot(site);
+            }
+        } else {
+            if (!getCms().existsResource(resource)) {
+                resource = null;
+            }
+        }
+
         computeSiteSelector(request);
 
         String currentResource;
@@ -599,7 +615,7 @@ public class CmsTree extends CmsWorkplace {
 
         String lastknown = request.getParameter(PARAM_LASTKNOWN);
         // both "resource" and "lastknown" must be folders
-                
+
         if (resource != null) {
             resource = CmsResource.getFolderPath(resource);
         }
@@ -622,9 +638,6 @@ public class CmsTree extends CmsWorkplace {
 
         if (getTreeType() != null) {
             getSettings().setTreeResource(getTreeType(), resource);
-            if (treeSite != null) {
-                getSettings().setTreeSite(getTreeType(), treeSite);
-            }
         }
 
         setTargetFolder(resource);

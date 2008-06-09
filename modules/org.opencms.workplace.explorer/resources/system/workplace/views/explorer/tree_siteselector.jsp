@@ -29,15 +29,15 @@ function changeSite() {
 <%= wp.buttonBarStartTab(0, 0) %>
 <%= wp.buttonBarLabel(org.opencms.workplace.explorer.Messages.GUI_LABEL_SITE_0) %>
 
-<form name="siteselect" method="post" action="tree_fs.jsp" target="_top">
 <td>
+<form name="siteselect" method="post" action="tree_fs.jsp" target="_top">
 <input type="hidden" name="<%= CmsTree.PARAM_INCLUDEFILES %>" value="<%= wp.includeFiles() %>">
 <input type="hidden" name="<%= CmsTree.PARAM_TYPE %>" value="<%= wp.getTreeType() %>">
 <input type="hidden" name="<%= CmsTree.PARAM_SHOWSITESELECTOR %>" value="<%= wp.showSiteSelector() %>">
 <input type="hidden" name="<%= CmsTree.PARAM_RESOURCE %>" value="/">
 <%= wp.getSiteSelector("name=\"treesite\" onchange=\"changeSite();\" style=\"width:250px;\"") %>
-</td>
 </form>
+</td>
 
 <%= wp.buttonBar(CmsWorkplace.HTML_END) %>
 </body>
