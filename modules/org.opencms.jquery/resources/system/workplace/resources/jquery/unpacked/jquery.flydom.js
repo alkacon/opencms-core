@@ -13,7 +13,7 @@
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
- * @version     $Id: jquery.flydom.js,v 1.1 2008/05/14 15:34:12 m.moossen Exp $
+ * @version     3.0.5
  *
  * @author      Ken Stanley [dohpaz at gmail dot com]
  * @copyright   (C) 2007. All rights reserved.
@@ -45,14 +45,6 @@
 jQuery.fn.createAppend = function(element, attrs, content)
 {
 
-	// allows passing of single parameter
-	if (attrs == undefined && element.constructor == Array) {
-		for (var i = 0; i < element.length; i += 3) {
-			jQuery(this).createAppend(element[i], element[i + 1] || {}, element[i + 2] || []);
-		}	
-		return this;
-	}
-
     // This helps me remember what 'this' is later on.
     var parentElement = this[0];
 
@@ -71,12 +63,10 @@ jQuery.fn.createAppend = function(element, attrs, content)
     };
 
     // Check to see if we are using IE, and trying to append a TR to a TABLE.
-    // Certain attributes won't work properly without a tbody, so we will just
-    // create one if it doesn't exist, and do it for every web browser.
-    if (/*jQuery.browser.msie && */parentElement.nodeName.toLowerCase() == 'table' && element.nodeName.toLowerCase() == 'tr') {
+    if (jQuery.browser.msie && parentElement.nodeName.toLowerCase() == 'table' && element.nodeName.toLowerCase() == 'tr') {
 
         // Check to see if we already have a tbody element in the table
-        if (parentElement && parentElement.getElementsByTagName('tbody')[0]) {
+        if (parentElement.parentNode.getElementsByTagName('tbody')[0]) {
 
             // Use the existing tbody
             var tbody = parentElement.getElementsByTagName('tbody')[0];
@@ -138,14 +128,6 @@ jQuery.fn.createAppend = function(element, attrs, content)
  */
 jQuery.fn.createPrepend = function(element, attrs, content)
 {
-
-	// allows passing of single parameter
-	if (attrs == undefined && element.constructor == Array) {
-		for (var i = 0; i < element.length; i += 3) {
-			jQuery(this).createPrepend(element[i], element[i + 1] || {}, element[i + 2] || []);
-		}	
-		return this;
-	}
 
     // Create our DOM element
     var element     = document.createElement(element);
@@ -229,7 +211,7 @@ jQuery.fn.tplAppend = function(json, tpl)
     };
 
     // Return ourself for chaining
-    return this;
+    return self;
 
 }
 
@@ -305,7 +287,7 @@ jQuery.fn.tplPrepend = function(json, tpl) {
     };
 
     // Return ourself for chaining
-    return this;
+    return jQuery(self);
 
 };
 
@@ -323,22 +305,6 @@ String.prototype.toCamelCase = function()
 {
 
     var self = this;
-    var special = { 'class': 'className', 'colspan': 'colSpan', 'rowspan': 'rowSpan', 'for': 'htmlFor', 'httpequiv': 'httpEquiv',
-                    'alink': 'aLink', 'vlink': 'vLink', 'bgcolor': 'bgColor', 'acceptcharset': 'acceptCharset',
-                    'selectedindex': 'selectedIndex', 'tabindex': 'tabIndex', 'selected': 'defaultSelected', 'checked': 'defaultChecked',
-                    'value': 'defaultValue', 'accesskey': 'accessKey', 'noshade': 'noShade', 'datetime': 'dateTime', 'usemap': 'useMap',
-                    'lowsrc': 'lowSrc', 'longdesc': 'longDesc', 'ismap': 'isMap', 'codebase': 'codeBase', 'codetype': 'codeType',
-                    'valuetype': 'valueType', 'nohref': 'noHref', 'thead': 'tHead', 'tfoot': 'tFoot', 'cellpadding': 'cellPadding',
-                    'cellspacing': 'cellSpacing', 'charoff': 'chOff', 'valign': 'vAlign', 'frameborder': 'frameBorder',
-                    'marginheight': 'marginHeight', 'marginwidth': 'marginWidth', 'noresize': 'noResize' };
-
-    // It seems some elements may slip through the first condition (i.e., 'border'),
-    // so we use the typeof condition as a fail-safe.
-    if (special[self] != '' && typeof special[self] != 'undefined') {
-
-        return special[self];
-
-    }
 
     if (self.indexOf('-') > 0) {
 
@@ -469,7 +435,7 @@ __FlyDOM_parseAttrs = function(element, attrs)
 
                     // Determine whether we need to create an anonymous function,
                     // or if the user was kind enough to do it for us.
-                    attrValue = (typeof attrValue != 'function') ? eval('f = function() { ' + attrValue + '}') : attrValue;
+                    attrValue = (typeof attrValue != 'function') ? eval('function() { ' + attrValue + '}') : attrValue;
 
                     // Bind the function to the event
                     jQuery(element).bind(event, attrValue);
