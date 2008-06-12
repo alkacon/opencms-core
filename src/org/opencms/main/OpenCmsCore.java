@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2008/04/03 09:08:37 $
- * Version: $Revision: 1.233 $
+ * Date   : $Date: 2008/06/12 10:46:18 $
+ * Version: $Revision: 1.234 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.233 $ 
+ * @version $Revision: 1.234 $ 
  * 
  * @since 6.0.0 
  */
@@ -1024,7 +1024,7 @@ public final class OpenCmsCore {
             I_CmsRequestHandler handler = (I_CmsRequestHandler)it.next();
             addRequestHandler(handler);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.warn(Messages.get().getBundle().key(
+                CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_REQUEST_HANDLER_CLASS_1,
                     handler.getClass().getName()));
             }
