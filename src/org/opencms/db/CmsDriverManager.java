@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/06/12 08:14:49 $
- * Version: $Revision: 1.623 $
+ * Date   : $Date: 2008/06/12 08:15:13 $
+ * Version: $Revision: 1.624 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2800,10 +2800,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // structure record is removed during next publish
                     // if one (or more) siblings are not removed, the ACE can not be removed
                     removeAce = false;
-
-                    // update date last modified, has to done before setting the state!
-                    currentResource.setDateLastModified(System.currentTimeMillis());
-                    m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), currentResource, UPDATE_RESOURCE, false);
 
                     // set resource state to deleted
                     currentResource.setState(CmsResource.STATE_DELETED);
