@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2008/04/11 10:05:30 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2008/06/12 08:14:48 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.9.1
  */
@@ -647,6 +647,41 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
             stmt.setString(1, structureId.toString());
             if (userId != null) {
                 stmt.setString(2, userId.toString());
+            }
+            res = stmt.executeQuery();
+            while (res.next()) {
+                I_CmsHistoryResource histRes = internalCreateResource(res);
+                if (m_driverManager.getVfsDriver().validateStructureIdExists(
+                    dbc,
+                    dbc.currentProject().getUuid(),
+                    histRes.getStructureId())) {
+                    // only add resources that are really deleted
+                    continue;
+                }
+                result.add(histRes);
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        if (!result.isEmpty() || (dbc.getRequestContext().getAttribute("ATTR_RESOURCE_NAME") == null)) {
+            return result;
+        }
+        try {
+            conn = m_sqlManager.getConnection(dbc);
+            if (userId == null) {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_DELETED_NAME");
+            } else {
+                stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_HISTORY_READ_DELETED_NAME_RESTRICTED");
+            }
+            String path = dbc.getRequestContext().getAttribute("ATTR_RESOURCE_NAME").toString();
+            stmt.setString(1, path + '%');
+            stmt.setString(2, path);
+            if (userId != null) {
+                stmt.setString(3, userId.toString());
             }
             res = stmt.executeQuery();
             while (res.next()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/06/05 14:43:49 $
- * Version: $Revision: 1.1020 $
+ * Date   : $Date: 2008/06/12 08:14:48 $
+ * Version: $Revision: 1.1021 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ OpenCms 7.0.5 - xxx, 2008
 - Allowed ' in email addresses
 - New flags to enable/disable some caches
 - New rewritten cache administration
+- Deleted resource restoration now also works with paths instead of only ids
 * Fixed security issue 28152 reported by Security Focus
 * Fixed security issue 490498 reported by Security Focus
 * Fixed security issue manipulating JSP files

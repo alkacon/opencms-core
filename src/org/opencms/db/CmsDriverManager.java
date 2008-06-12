@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/05/16 09:17:50 $
- * Version: $Revision: 1.622 $
+ * Date   : $Date: 2008/06/12 08:14:49 $
+ * Version: $Revision: 1.623 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2800,6 +2800,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // structure record is removed during next publish
                     // if one (or more) siblings are not removed, the ACE can not be removed
                     removeAce = false;
+
+                    // update date last modified, has to done before setting the state!
+                    currentResource.setDateLastModified(System.currentTimeMillis());
+                    m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), currentResource, UPDATE_RESOURCE, false);
 
                     // set resource state to deleted
                     currentResource.setState(CmsResource.STATE_DELETED);
@@ -5601,87 +5605,91 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         Set result = new HashSet();
-        List deletedResources = m_historyDriver.readDeletedResources(
-            dbc,
-            resource.getStructureId(),
-            isVfsManager ? null : dbc.currentUser().getId());
+        List deletedResources;
+        dbc.getRequestContext().setAttribute("ATTR_RESOURCE_NAME", resource.getRootPath());
+        try {
+            deletedResources = m_historyDriver.readDeletedResources(dbc, resource.getStructureId(), isVfsManager ? null
+            : dbc.currentUser().getId());
+        } finally {
+            dbc.getRequestContext().removeAttribute("ATTR_RESOURCE_NAME");
+        }
         result.addAll(deletedResources);
-        List newResult = new ArrayList(result.size());
+        Set newResult = new HashSet(result.size());
         Iterator it = result.iterator();
         while (it.hasNext()) {
             I_CmsHistoryResource histRes = (I_CmsHistoryResource)it.next();
             // adjust the paths
             try {
-                if (!getVfsDriver().validateStructureIdExists(
+                if (getVfsDriver().validateStructureIdExists(
                     dbc,
                     dbc.currentProject().getUuid(),
                     histRes.getStructureId())) {
-                    // adjust the path in case of deleted files
-                    String resourcePath = histRes.getRootPath();
-                    String resName = CmsResource.getName(resourcePath);
-                    String path = CmsResource.getParentFolder(resourcePath);
-
-                    CmsUUID parentId = histRes.getParentId();
-                    try {
-                        // first look for the path through the parent id
-                        path = readResource(dbc, parentId, CmsResourceFilter.IGNORE_EXPIRATION).getRootPath();
-                    } catch (CmsDataAccessException e) {
-                        // if the resource with the parent id is not found, try to get a new parent id with the path
-                        try {
-                            parentId = readResource(dbc, path, CmsResourceFilter.IGNORE_EXPIRATION).getStructureId();
-                        } catch (CmsDataAccessException e1) {
-                            // ignore, the parent folder has been completely deleted
-                        }
-                    }
-                    resourcePath = path + resName;
-
-                    boolean isFolder = resourcePath.endsWith("/");
-                    if (isFolder) {
-                        newResult.add(new CmsHistoryFolder(
-                            histRes.getPublishTag(),
-                            histRes.getStructureId(),
-                            histRes.getResourceId(),
-                            resourcePath,
-                            histRes.getTypeId(),
-                            histRes.getFlags(),
-                            histRes.getProjectLastModified(),
-                            histRes.getState(),
-                            histRes.getDateCreated(),
-                            histRes.getUserCreated(),
-                            histRes.getDateLastModified(),
-                            histRes.getUserLastModified(),
-                            histRes.getDateReleased(),
-                            histRes.getDateExpired(),
-                            histRes.getVersion(),
-                            parentId,
-                            histRes.getResourceVersion(),
-                            histRes.getStructureVersion()));
-                    } else {
-                        newResult.add(new CmsHistoryFile(
-                            histRes.getPublishTag(),
-                            histRes.getStructureId(),
-                            histRes.getResourceId(),
-                            resourcePath,
-                            histRes.getTypeId(),
-                            histRes.getFlags(),
-                            histRes.getProjectLastModified(),
-                            histRes.getState(),
-                            histRes.getDateCreated(),
-                            histRes.getUserCreated(),
-                            histRes.getDateLastModified(),
-                            histRes.getUserLastModified(),
-                            histRes.getDateReleased(),
-                            histRes.getDateExpired(),
-                            histRes.getLength(),
-                            histRes.getDateContent(),
-                            histRes.getVersion(),
-                            parentId,
-                            null,
-                            histRes.getResourceVersion(),
-                            histRes.getStructureVersion()));
-                    }
-                } else {
                     newResult.add(histRes);
+                    continue;
+                }
+                // adjust the path in case of deleted files
+                String resourcePath = histRes.getRootPath();
+                String resName = CmsResource.getName(resourcePath);
+                String path = CmsResource.getParentFolder(resourcePath);
+
+                CmsUUID parentId = histRes.getParentId();
+                try {
+                    // first look for the path through the parent id
+                    path = readResource(dbc, parentId, CmsResourceFilter.IGNORE_EXPIRATION).getRootPath();
+                } catch (CmsDataAccessException e) {
+                    // if the resource with the parent id is not found, try to get a new parent id with the path
+                    try {
+                        parentId = readResource(dbc, path, CmsResourceFilter.IGNORE_EXPIRATION).getStructureId();
+                    } catch (CmsDataAccessException e1) {
+                        // ignore, the parent folder has been completely deleted
+                    }
+                }
+                resourcePath = path + resName;
+
+                boolean isFolder = resourcePath.endsWith("/");
+                if (isFolder) {
+                    newResult.add(new CmsHistoryFolder(
+                        histRes.getPublishTag(),
+                        histRes.getStructureId(),
+                        histRes.getResourceId(),
+                        resourcePath,
+                        histRes.getTypeId(),
+                        histRes.getFlags(),
+                        histRes.getProjectLastModified(),
+                        histRes.getState(),
+                        histRes.getDateCreated(),
+                        histRes.getUserCreated(),
+                        histRes.getDateLastModified(),
+                        histRes.getUserLastModified(),
+                        histRes.getDateReleased(),
+                        histRes.getDateExpired(),
+                        histRes.getVersion(),
+                        parentId,
+                        histRes.getResourceVersion(),
+                        histRes.getStructureVersion()));
+                } else {
+                    newResult.add(new CmsHistoryFile(
+                        histRes.getPublishTag(),
+                        histRes.getStructureId(),
+                        histRes.getResourceId(),
+                        resourcePath,
+                        histRes.getTypeId(),
+                        histRes.getFlags(),
+                        histRes.getProjectLastModified(),
+                        histRes.getState(),
+                        histRes.getDateCreated(),
+                        histRes.getUserCreated(),
+                        histRes.getDateLastModified(),
+                        histRes.getUserLastModified(),
+                        histRes.getDateReleased(),
+                        histRes.getDateExpired(),
+                        histRes.getLength(),
+                        histRes.getDateContent(),
+                        histRes.getVersion(),
+                        parentId,
+                        null,
+                        histRes.getResourceVersion(),
+                        histRes.getStructureVersion()));
                 }
             } catch (CmsDataAccessException e) {
                 // should never happen
@@ -5715,8 +5723,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
         }
-        Collections.sort(newResult, CmsResource.COMPARE_ROOT_PATH);
-        return newResult;
+        List finalRes = new ArrayList(newResult);
+        Collections.sort(finalRes, CmsResource.COMPARE_ROOT_PATH);
+        return finalRes;
     }
 
     /**

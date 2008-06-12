@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeletedResourcesList.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/06/12 08:14:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDateMacroFormatter;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
@@ -50,6 +51,7 @@ import org.opencms.workplace.list.CmsListResourceIconAction;
 import org.opencms.workplace.list.I_CmsListFormatter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -59,7 +61,7 @@ import java.util.Locale;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.9.1
  */
@@ -182,8 +184,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
             CmsListItem item = getList().newItem(res.getStructureId().toString());
             String resourcePath = getCms().getSitePath((CmsResource)res);
             item.set(LIST_COLUMN_NAME, m_resourcename + "|" + resourcePath);
-            String dateDeleted = getMessages().getDateTime(res.getDateLastModified());
-            item.set(LIST_COLUMN_DELETION_DATE, dateDeleted);
+            item.set(LIST_COLUMN_DELETION_DATE, new Date(res.getDateLastModified()));
             item.set(LIST_COLUMN_VERSION, String.valueOf(res.getVersion()));
             item.set(LIST_COLUMN_TYPEID, String.valueOf(res.getTypeId()));
             ret.add(item);
@@ -295,6 +296,7 @@ public class CmsDeletedResourcesList extends A_CmsListDialog {
         delDateCol.setName(Messages.get().container(Messages.GUI_DELETED_RESOURCES_LIST_COLS_DEL_DATE_0));
         delDateCol.setSorteable(false);
         delDateCol.setWidth("20%");
+        delDateCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(delDateCol);
 
         // add column for version
