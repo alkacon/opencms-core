@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2008/02/27 12:05:49 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2008/06/12 10:47:39 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 6.0.0
  */
@@ -108,6 +108,16 @@ public abstract class TestCmsMessageBundles extends TestCase {
     public void testLocale_EN_MessagesBundles() throws Exception {
 
         messagesBundleConstantTest(Locale.ENGLISH);
+    }
+
+    /**
+     * Checks all message bundles for the ES locale.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testLocale_ES_MessagesBundles() throws Exception {
+
+        messagesBundleConstantTest(new Locale("es"));
     }
 
     /**
