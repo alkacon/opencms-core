@@ -13,7 +13,7 @@ body, html, table, form, textarea{
 }
 
 #editor{
-	border: none;
+	border: solid WindowFrame 1px;
 	overflow: visible;
  /*	position: absolute;*/
 }

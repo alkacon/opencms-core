@@ -87,23 +87,9 @@
 			text= text.replace(/(<[a-z]+ [^>]*>)/gi, '[__htmlTag__]$1[_END_]');*/
 		if(this.settings["syntax"].length>0)
 			text= this.apply_syntax(text, this.settings["syntax"]);
-		/*for(var lang in this.settin){
-			text=this.apply_syntax(text, lang);
-		}*/
-		
-		text= text.substr(1);	// remove the first space added		
-		text= text.replace(/&/g,"&amp;");
-		text= text.replace(/</g,"&lt;");
-		text= text.replace(/>/g,"&gt;");	// no need if there is no <		
-		//text= text.replace(/ /g,"&nbsp;");
-		text= text.replace(/µ_END_µ/g,"</span>");
-		text= text.replace(/µ__([a-zA-Z0-9]+)__µ/g,"<span class='$1'>");
-		
-		
-		//text= text.replace(//gi, "<span class='quote'>$1</span>");
-		//alert("text: \n"+text);
-		
-		return text;
+
+		// remove the first space added
+		return text.substr(1).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/µ_END_µ/g,"</span>").replace(/µ__([a-zA-Z0-9]+)__µ/g,"<span class='$1'>");
 	};
 	
 	EditArea.prototype.apply_syntax= function(text, lang){
@@ -111,39 +97,7 @@
 	
 		if(!parent.editAreaLoader.syntax[lang])
 			return text;
-	
-		/*alert(typeof(text)+"\n"+text.length);
 		
-		var parse_index=0;
-		for(var script_start in this.code[lang]["script_delimiters"]){
-			var pos_start= text.indexOf(script_start);
-			var pos_end= text.length;	// MUST BE SET TO CORRECT VAL!!!
-			if(pos_start!=-1){
-				var start_text=text.substr(0, pos_start);
-				var middle_text= text.substring(pos_start, pos_end);
-				var end_text= text.substring(pos_end);
-				if(this.code[lang]["comment_or_quote_reg_exp"]){
-					//setTimeout("document.getElementById('debug_area').value=editArea.comment_or_quote_reg_exp;", 500);
-					middle_text= middle_text.replace(this.code[lang]["comment_or_quote_reg_exp"], this.comment_or_quote);
-				}
-				
-				if(this.code[lang]["keywords_reg_exp"]){
-					for(var i in this.code[lang]["keywords_reg_exp"]){	
-						this.reg_exp_span_tag=i;
-						middle_text= middle_text.replace(this.code[lang]["keywords_reg_exp"][i], this.custom_highlight);			
-					}			
-				}
-				
-				if(this.code[lang]["delimiters_reg_exp"]){
-					middle_text= middle_text.replace(this.code[lang]["delimiters_reg_exp"], 'µ__delimiters__µ$1µ_END_µ');
-				}		
-				
-				if(this.code[lang]["operators_reg_exp"]){
-					middle_text= middle_text.replace(this.code[lang]["operators_reg_exp"], 'µ__operators__µ$1µ_END_µ');
-				}
-			}
-			text= start_text+ middle_text + end_text;
-		}*/
 		if(parent.editAreaLoader.syntax[lang]["custom_regexp"]['before']){
 			for( var i in parent.editAreaLoader.syntax[lang]["custom_regexp"]['before']){
 				var convert="$1µ__"+ parent.editAreaLoader.syntax[lang]["custom_regexp"]['before'][i]['class'] +"__µ$2µ_END_µ$3";
@@ -152,15 +106,12 @@
 		}
 		
 		if(parent.editAreaLoader.syntax[lang]["comment_or_quote_reg_exp"]){
-			//setTimeout("document.getElementById('debug_area').value=editArea.comment_or_quote_reg_exp;", 500);
+			//setTimeout("$('debug_area').value=editArea.comment_or_quote_reg_exp;", 500);
 			text= text.replace(parent.editAreaLoader.syntax[lang]["comment_or_quote_reg_exp"], this.comment_or_quote);
 		}
 		
 		if(parent.editAreaLoader.syntax[lang]["keywords_reg_exp"]){
 			for(var i in parent.editAreaLoader.syntax[lang]["keywords_reg_exp"]){	
-				/*this.reg_exp_span_tag=i;
-				text= text.replace(parent.editAreaLoader.syntax[lang]["keywords_reg_exp"][i], this.custom_highlight);			
-				*/
 				text= text.replace(parent.editAreaLoader.syntax[lang]["keywords_reg_exp"][i], 'µ__'+i+'__µ$2µ_END_µ');
 			}			
 		}

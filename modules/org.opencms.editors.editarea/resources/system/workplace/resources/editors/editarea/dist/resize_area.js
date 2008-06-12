@@ -79,18 +79,4 @@
 		return false;
 	};
 	
-/*	EditAreaLoader.prototype.full_screen= function(id, mode){
-		if(mode=="on")	{
-			//document.getElementById("frame_"+id).parentNode= document;
-			document.body.appendChild(document.getElementById("frame_"+id));
-			document.getElementById("frame_"+id).style.position= "absolute";			
-			document.getElementById("frame_"+id).style.top="0px";
-			document.getElementById("frame_"+id).style.left="0px";
-			document.getElementById("frame_"+id).style.width= "100%";
-			document.getElementById("frame_"+id).style.height= "100%";
-		}else{
-		
-		}
-	};	*/
-	
 	editAreaLoader.waiting_loading["resize_area.js"]= "loaded";

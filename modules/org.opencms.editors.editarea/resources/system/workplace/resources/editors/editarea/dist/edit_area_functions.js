@@ -59,7 +59,7 @@
 			this.settings["font_size"]=size;
 		if(this.nav['isOpera'])	// opera can't manage non monospace font
 			this.settings['font_family']="monospace";
-		var elem_font=document.getElementById("area_font_size");	
+		var elem_font=$("area_font_size");	
 		if(elem_font){	
 			for(var i=0; i<elem_font.length; i++){
 				if(elem_font.options[i].value && elem_font.options[i].value == this.settings["font_size"])
@@ -68,17 +68,18 @@
 		}
 		
 		// calc line height
-		document.getElementById("test_font_size").style.fontFamily= ""+this.settings["font_family"];
-		document.getElementById("test_font_size").style.fontSize= this.settings["font_size"]+"pt";				
-		document.getElementById("test_font_size").innerHTML="0";		
-		this.lineHeight= document.getElementById("test_font_size").offsetHeight;
+		elem	= $("test_font_size");
+		elem.style.fontFamily= ""+this.settings["font_family"];
+		elem.style.fontSize= this.settings["font_size"]+"pt";				
+		elem.innerHTML="0";		
+		this.lineHeight= elem.offsetHeight;
 
 		
 		for(var i=0; i<elems.length; i++){
-			var elem= document.getElementById(elems[i]);	
-			document.getElementById(elems[i]).style.fontFamily= this.settings["font_family"];
-			document.getElementById(elems[i]).style.fontSize= this.settings["font_size"]+"pt";
-			document.getElementById(elems[i]).style.lineHeight= this.lineHeight+"px";
+			var elem= $(elems[i]);	
+			elem.style.fontFamily= this.settings["font_family"];
+			elem.style.fontSize= this.settings["font_size"]+"pt";
+			elem.style.lineHeight= this.lineHeight+"px";
 
 		}
 		if(this.nav['isOpera']){	// opera doesn't update font change to the textarea
@@ -91,7 +92,7 @@
 		
 		this.add_style("pre{font-family:"+this.settings["font_family"]+"}");
 		
-		//alert(	getAttribute(document.getElementById("edit_area_test_font_size"), "style"));
+		//alert(	getAttribute($("edit_area_test_font_size"), "style"));
 		
 
 		//alert("font "+this.textarea.style.font);
@@ -110,7 +111,7 @@
 	};
 	
 	EditArea.prototype.change_font_size= function(){
-		var size=document.getElementById("area_font_size").value;
+		var size=$("area_font_size").value;
 		if(size>0)
 			this.set_font("", size);			
 	};
@@ -118,13 +119,13 @@
 	
 	EditArea.prototype.open_inline_popup= function(popup_id){
 		this.close_all_inline_popup();
-		var popup= document.getElementById(popup_id);		
-		var editor= document.getElementById("editor");
+		var popup= $(popup_id);		
+		var editor= $("editor");
 		
 		// search matching icon
 		for(var i=0; i<this.inlinePopup.length; i++){
 			if(this.inlinePopup[i]["popup_id"]==popup_id){
-				var icon= document.getElementById(this.inlinePopup[i]["icon_id"]);
+				var icon= $(this.inlinePopup[i]["icon_id"]);
 				if(icon){
 					this.switchClassSticky(icon, 'editAreaButtonSelected', true);			
 					break;
@@ -156,11 +157,11 @@
 	};
 
 	EditArea.prototype.close_inline_popup= function(popup_id){
-		var popup= document.getElementById(popup_id);		
+		var popup= $(popup_id);		
 		// search matching icon
 		for(var i=0; i<this.inlinePopup.length; i++){
 			if(this.inlinePopup[i]["popup_id"]==popup_id){
-				var icon= document.getElementById(this.inlinePopup[i]["icon_id"]);
+				var icon= $(this.inlinePopup[i]["icon_id"]);
 				if(icon){
 					this.switchClassSticky(icon, 'editAreaButtonNormal', false);			
 					break;
@@ -190,7 +191,7 @@
 	};
 	
 	EditArea.prototype.get_all_toolbar_height= function(){
-		var area= document.getElementById("editor");
+		var area= $("editor");
 		var results= parent.getChildren(area, "div", "class", "area_toolbar", "all", "0");	// search only direct children
 		//results= results.concat(getChildren(area, "table", "class", "area_toolbar", "all", "0"));
 		var height=0;
@@ -204,7 +205,7 @@
 	EditArea.prototype.go_to_line= function(line){	
 		if(!line)
 		{	
-			var icon= document.getElementById("go_to_line");
+			var icon= $("go_to_line");
 			if(icon != null){
 				this.restoreClass(icon);
 				this.switchClassSticky(icon, 'editAreaButtonSelected', true);
@@ -241,7 +242,7 @@
 			else
 				this.smooth_selection=false;
 		}
-		var icon= document.getElementById("change_smooth_selection");
+		var icon= $("change_smooth_selection");
 		this.textarea.focus();
 		if(this.smooth_selection===true){
 			//setAttribute(icon, "class", getAttribute(icon, "class").replace(/ selected/g, "") );
@@ -252,17 +253,17 @@
 			this.switchClassSticky(icon, 'editAreaButtonNormal', false);
 			
 			this.smooth_selection=false;
-			document.getElementById("selection_field").style.display= "none";
-			document.getElementById("cursor_pos").style.display= "none";
-			document.getElementById("end_bracket").style.display= "none";
+			$("selection_field").style.display= "none";
+			$("cursor_pos").style.display= "none";
+			$("end_bracket").style.display= "none";
 		}else{
 			//setAttribute(icon, "class", getAttribute(icon, "class") + " selected");
 			//this.switchClass(icon,'editAreaButtonSelected');
 			this.switchClassSticky(icon, 'editAreaButtonSelected', false);
 			this.smooth_selection=true;
-			document.getElementById("selection_field").style.display= "block";
-			document.getElementById("cursor_pos").style.display= "block";
-			document.getElementById("end_bracket").style.display= "block";
+			$("selection_field").style.display= "block";
+			$("cursor_pos").style.display= "block";
+			$("end_bracket").style.display= "block";
 		}	
 	};
 	
@@ -271,10 +272,10 @@
 	EditArea.prototype.scroll_to_view= function(show){
 		if(!this.smooth_selection)
 			return;
-		var zone= document.getElementById("result");
+		var zone= $("result");
 		
-		//var cursor_pos_top= parseInt(document.getElementById("cursor_pos").style.top.replace("px",""));
-		var cursor_pos_top= document.getElementById("cursor_pos").cursor_top;
+		//var cursor_pos_top= parseInt($("cursor_pos").style.top.replace("px",""));
+		var cursor_pos_top= $("cursor_pos").cursor_top;
 		if(show=="bottom")
 			cursor_pos_top+= (this.last_selection["line_nb"]-1)* this.lineHeight;
 			
@@ -288,8 +289,8 @@
 			//alert("else: "+cursor_pos_top);
 			zone.scrollTop= cursor_pos_top;	 
 		}
-		//var cursor_pos_left= parseInt(document.getElementById("cursor_pos").style.left.replace("px",""));
-		var cursor_pos_left= document.getElementById("cursor_pos").cursor_left;
+		//var cursor_pos_left= parseInt($("cursor_pos").style.left.replace("px",""));
+		var cursor_pos_left= $("cursor_pos").cursor_left;
 		var max_width_visible= zone.clientWidth + zone.scrollLeft;
 		var miss_left= cursor_pos_left + 10 - max_width_visible;
 		if(miss_left>0){			
@@ -308,7 +309,7 @@
 		if(this.textareaFocused && editAreas[this.id]["displayed"]==true){
 			var text=this.textarea.value;
 			if(this.previous.length<=1)
-				this.switchClassSticky(document.getElementById("undo"), 'editAreaButtonDisabled', true);
+				this.switchClassSticky($("undo"), 'editAreaButtonDisabled', true);
 		
 			if(!this.previous[this.previous.length-1] || this.previous[this.previous.length-1]["text"] != text){
 				this.previous.push({"text": text, "selStart": this.textarea.selectionStart, "selEnd": this.textarea.selectionEnd});
@@ -317,7 +318,7 @@
 				
 			}
 			if(this.previous.length >= 2)
-				this.switchClassSticky(document.getElementById("undo"), 'editAreaButtonNormal', false);		
+				this.switchClassSticky($("undo"), 'editAreaButtonNormal', false);		
 		}
 
 		if(!only_once)
@@ -337,7 +338,7 @@
 			this.textarea.value= prev["text"];
 			this.last_undo= prev["text"];
 			this.area_select(prev["selStart"], prev["selEnd"]-prev["selStart"]);
-			this.switchClassSticky(document.getElementById("redo"), 'editAreaButtonNormal', false);
+			this.switchClassSticky($("redo"), 'editAreaButtonNormal', false);
 			this.resync_highlight(true);
 			//alert("undo"+this.previous.length);
 			this.check_file_changes();
@@ -354,22 +355,22 @@
 			this.textarea.value= next["text"];
 			this.last_undo= next["text"];
 			this.area_select(next["selStart"], next["selEnd"]-next["selStart"]);
-			this.switchClassSticky(document.getElementById("undo"), 'editAreaButtonNormal', false);
+			this.switchClassSticky($("undo"), 'editAreaButtonNormal', false);
 			this.resync_highlight(true);
 			this.check_file_changes();
 		}
 		if(	this.next.length == 0)
-			this.switchClassSticky(document.getElementById("redo"), 'editAreaButtonDisabled', true);
+			this.switchClassSticky($("redo"), 'editAreaButtonDisabled', true);
 	};
 	
 	EditArea.prototype.check_redo= function(){
 		if(editArea.next.length == 0 || editArea.textarea.value!=editArea.last_undo){
 			editArea.next= new Array();	// undo the ability to use "redo" button
-			editArea.switchClassSticky(document.getElementById("redo"), 'editAreaButtonDisabled', true);
+			editArea.switchClassSticky($("redo"), 'editAreaButtonDisabled', true);
 		}
 		else
 		{
-			this.switchClassSticky(document.getElementById("redo"), 'editAreaButtonNormal', false);
+			this.switchClassSticky($("redo"), 'editAreaButtonNormal', false);
 		}
 	};
 	
@@ -425,15 +426,15 @@
 	EditArea.prototype.scroll_page= function(params){
 		var dir= params["dir"];
 		var shift_pressed= params["shift"];
-		screen_height=document.getElementById("result").clientHeight;
+		screen_height=$("result").clientHeight;
 		var lines= this.textarea.value.split("\n");		
 		var new_pos=0;
 		var length=0;
 		var char_left=0;
 		var line_nb=0;
 		if(dir=="up"){
-			//val= Math.max(0, document.getElementById("result").scrollTop - screen_height);
-			//document.getElementById("result").scrollTop= val;
+			//val= Math.max(0, $("result").scrollTop - screen_height);
+			//$("result").scrollTop= val;
 			var scroll_line= Math.ceil((screen_height -30)/this.lineHeight);
 			if(this.last_selection["selec_direction"]=="up"){
 				for(line_nb=0; line_nb< Math.min(this.last_selection["line_start"]-scroll_line, lines.length); line_nb++){
@@ -462,8 +463,8 @@
 				
 			}
 		}else{
-			//val= Math.max(document.getElementById("result").style.height.replace("px", ""), document.getElementById("result").scrollTop + screen_height);
-			//document.getElementById("result").scrollTop= val;
+			//val= Math.max($("result").style.height.replace("px", ""), $("result").scrollTop + screen_height);
+			//$("result").scrollTop= val;
 			var scroll_line= Math.floor((screen_height-30)/this.lineHeight);				
 			if(this.last_selection["selec_direction"]=="down"){
 				view="bottom";
@@ -527,13 +528,13 @@
 			to= !this.fullscreen['isFull'];
 		var old= this.fullscreen['isFull'];
 		this.fullscreen['isFull']= to;
-		var icon= document.getElementById("fullscreen");
+		var icon= $("fullscreen");
 		if(to && to!=old)
 		{	// toogle on fullscreen		
 			var selStart= this.textarea.selectionStart;
 			var selEnd= this.textarea.selectionEnd;
 			var html= parent.document.getElementsByTagName("html")[0];
-			var frame= parent.document.getElementById("frame_"+this.id);
+			var frame= parent.$("frame_"+this.id);
 
 			this.fullscreen['old_overflow']= parent.get_css_property(html, "overflow");
 			this.fullscreen['old_height']= parent.get_css_property(html, "height");
@@ -595,7 +596,7 @@
 			var selStart= this.textarea.selectionStart;
 			var selEnd= this.textarea.selectionEnd;
 			
-			var frame= parent.document.getElementById("frame_"+this.id);	
+			var frame= parent.$("frame_"+this.id);	
 			frame.style.position="static";
 			frame.style.zIndex= this.fullscreen['old_zIndex'];
 		
@@ -631,7 +632,7 @@
 	};
 	
 	EditArea.prototype.allow_resize= function(allow){
-		var resize= document.getElementById("resize_area");
+		var resize= $("resize_area");
 		if(allow){
 			
 			resize.style.visibility="visible";
@@ -680,7 +681,7 @@
 					this.allready_used_syntax[new_syntax]=true;
 				}
 				// be sure that the select option is correctly updated
-				var sel= document.getElementById("syntax_selection");
+				var sel= $("syntax_selection");
 				if(sel && sel.value!=new_syntax)
 				{
 					for(var i=0; i<sel.length; i++){
@@ -691,8 +692,8 @@
 				
 			/*	if(this.settings['syntax'].length==0)
 				{
-					this.switchClassSticky(document.getElementById("highlight"), 'editAreaButtonNormal', false);
-					this.switchClassSticky(document.getElementById("reset_highlight"), 'editAreaButtonNormal', false);
+					this.switchClassSticky($("highlight"), 'editAreaButtonNormal', false);
+					this.switchClassSticky($("reset_highlight"), 'editAreaButtonNormal', false);
 					this.change_highlight(true);
 				}
 				*/
@@ -767,7 +768,7 @@
 			this.filesIdAssoc[html_id]= id;
 			this.files[id]['html_id']= html_id;
 		
-			if(!document.getElementById(this.files[id]['html_id']) && id!="")
+			if(!$(this.files[id]['html_id']) && id!="")
 			{
 				// be sure the tab browsing area is displayed
 				this.tab_browsing_area.style.display= "block";
@@ -775,7 +776,7 @@
 				elem.id= this.files[id]['html_id'];
 				var close= "<img src=\""+ parent.editAreaLoader.baseURL +"images/close.gif\" title=\""+ this.get_translation('close_tab', 'word') +"\" onclick=\"editArea.execCommand('close_file', editArea.filesIdAssoc['"+ html_id +"']);return false;\" class=\"hidden\" onmouseover=\"this.className=''\" onmouseout=\"this.className='hidden'\" />";
 				elem.innerHTML= "<a onclick=\"javascript:editArea.execCommand('switch_to_file', editArea.filesIdAssoc['"+ html_id +"']);\" selec=\"none\"><b><span><strong class=\"edited\">*</strong>"+ this.files[id]['title'] + close +"</span></b></a>";
-				document.getElementById('tab_browsing_list').appendChild(elem);
+				$('tab_browsing_list').appendChild(elem);
 				var elem= document.createElement('text');
 				this.update_size();
 			}
@@ -801,7 +802,7 @@
 			if(this.execCommand('file_close', this.files[id])!==false)
 			{
 				// remove the tab in the toolbar
-				var li= document.getElementById(this.files[id]['html_id']);
+				var li= $(this.files[id]['html_id']);
 				li.parentNode.removeChild(li);
 				// select a new file
 				if(id== this.curr_file)
@@ -853,7 +854,7 @@
 			save['font_family']= this.settings["font_family"];
 			save['toolbar']= {'links':{}, 'selects': {}};
 			// save toolbar buttons state for fileSpecific buttons
-			var links= document.getElementById("toolbar_1").getElementsByTagName("a");
+			var links= $("toolbar_1").getElementsByTagName("a");
 			for(var i=0; i<links.length; i++)
 			{
 				if(links[i].getAttribute('fileSpecific')=='yes')
@@ -868,7 +869,7 @@
 				}
 			}
 			// save toolbar select state for fileSpecific buttons
-			var selects= document.getElementById("toolbar_1").getElementsByTagName("select");
+			var selects= $("toolbar_1").getElementsByTagName("select");
 			for(var i=0; i<selects.length; i++)
 			{
 				if(selects[i].getAttribute('fileSpecific')=='yes')
@@ -900,7 +901,7 @@
 		{
 			this.textarea.readOnly= true;
 			this.tab_browsing_area.style.display= "none";
-			document.getElementById("no_file_selected").style.display= "block";
+			$("no_file_selected").style.display= "block";
 			this.result.className= "empty";
 			if(!this.files[''])
 				this.open_file({id: ''});
@@ -909,7 +910,7 @@
 		{
 			this.result.className= "";
 			this.textarea.readOnly= !this.is_editable;
-			document.getElementById("no_file_selected").style.display= "none";
+			$("no_file_selected").style.display= "none";
 			this.tab_browsing_area.style.display= "block";
 		}
 		
@@ -960,7 +961,7 @@
 		var links= new_file['toolbar']['links'];
 		for(var i in links)
 		{
-			if(img= document.getElementById(i).getElementsByTagName('img')[0])
+			if(img= $(i).getElementsByTagName('img')[0])
 			{
 				var save_butt= new Object();
 				img.classLock= links[i]['classLock'];
@@ -972,11 +973,11 @@
 		var selects= new_file['toolbar']['selects'];
 		for(var i in selects)
 		{
-			var options= document.getElementById(i).options;
+			var options= $(i).options;
 			for(var j=0; j<options.length; j++)
 			{
 				if(options[j].value == selects[i])
-					document.getElementById(i).options[j].selected=true;
+					$(i).options[j].selected=true;
 			}
 		}
 	
@@ -1034,9 +1035,9 @@
 	// set if the file is edited or not
 	EditArea.prototype.set_file_edited_mode= function(id, to){
 		// change CSS for edited tab
-		if(this.files[id] && document.getElementById(this.files[id]['html_id']))
+		if(this.files[id] && $(this.files[id]['html_id']))
 		{
-			var link= document.getElementById(this.files[id]['html_id']).getElementsByTagName('a')[0];
+			var link= $(this.files[id]['html_id']).getElementsByTagName('a')[0];
 			if(to==true)
 			{
 				link.className= 'edited';

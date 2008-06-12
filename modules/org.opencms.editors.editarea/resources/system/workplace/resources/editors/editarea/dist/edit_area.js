@@ -110,7 +110,7 @@
 			
 			// check that the popups don't get out of the screen
 			for(var i=0; i<editArea.inlinePopup.length; i++){
-				var popup= document.getElementById(editArea.inlinePopup[i]["popup_id"]);
+				var popup= $(editArea.inlinePopup[i]["popup_id"]);
 				var max_left= document.body.offsetWidth- popup.offsetWidth;
 				var max_top= document.body.offsetHeight- popup.offsetHeight;
 				if(popup.offsetTop>max_top)
@@ -122,19 +122,19 @@
 	};
 
 	EditArea.prototype.init= function(){
-		this.textarea= document.getElementById("textarea");
-		this.container= document.getElementById("container");
-		this.result= document.getElementById("result");
-		this.content_highlight= document.getElementById("content_highlight");
-		this.selection_field= document.getElementById("selection_field");
-		this.processing_screen= document.getElementById("processing");
-		this.editor_area= document.getElementById("editor");
-		this.tab_browsing_area= document.getElementById("tab_browsing_area");
+		this.textarea= $("textarea");
+		this.container= $("container");
+		this.result= $("result");
+		this.content_highlight= $("content_highlight");
+		this.selection_field= $("selection_field");
+		this.processing_screen= $("processing");
+		this.editor_area= $("editor");
+		this.tab_browsing_area= $("tab_browsing_area");
 		
 		if(!this.settings['is_editable'])
 			this.set_editable(false);
 		
-		if(syntax_selec= document.getElementById("syntax_selection"))
+		if(syntax_selec= $("syntax_selection"))
 		{
 			// set up syntax selection lsit in the toolbar
 			for(var i=0; i<this.syntax_list.length; i++) {
@@ -149,7 +149,7 @@
 		}
 		
 		// add plugins buttons in the toolbar
-		spans= parent.getChildren(document.getElementById("toolbar_1"), "span", "", "", "all", -1);
+		spans= parent.getChildren($("toolbar_1"), "span", "", "", "all", -1);
 		
 		for(var i=0; i<spans.length; i++){
 		
@@ -180,8 +180,8 @@
 		// init size		
 		//this.update_size();
 		
-		if(document.getElementById("redo") != null)
-			this.switchClassSticky(document.getElementById("redo"), 'editAreaButtonDisabled', true);
+		if($("redo") != null)
+			this.switchClassSticky($("redo"), 'editAreaButtonDisabled', true);
 		
 		
 		// insert css rules for highlight mode		
@@ -192,18 +192,18 @@
 		}
 		// init key events
 		if(this.nav['isOpera'])
-			document.getElementById("editor").onkeypress= keyDown;
+			$("editor").onkeypress= keyDown;
 		else
-			document.getElementById("editor").onkeydown= keyDown;
+			$("editor").onkeydown= keyDown;
 	/*	if(this.nav['isIE'] || this.nav['isFirefox'])
 			this.textarea.onkeydown= keyDown;
 		else if
 			this.textarea.onkeypress= keyDown;*/
 		for(var i=0; i<this.inlinePopup.length; i++){
 			if(this.nav['isIE'] || this.nav['isFirefox'])
-				document.getElementById(this.inlinePopup[i]["popup_id"]).onkeydown= keyDown;
+				$(this.inlinePopup[i]["popup_id"]).onkeydown= keyDown;
 			else
-				document.getElementById(this.inlinePopup[i]["popup_id"]).onkeypress= keyDown;
+				$(this.inlinePopup[i]["popup_id"]).onkeypress= keyDown;
 		}
 		
 		if(this.settings["allow_resize"]=="both" || this.settings["allow_resize"]=="x" || this.settings["allow_resize"]=="y")
@@ -238,10 +238,10 @@
 			this.editor_area.style.position= "absolute";
 			this.selection_field.style.marginTop= "-1pt";			
 			this.selection_field.style.paddingTop= "1pt";
-			document.getElementById("cursor_pos").style.marginTop= "-1pt";
-			document.getElementById("end_bracket").style.marginTop= "-1pt";
+			$("cursor_pos").style.marginTop= "-1pt";
+			$("end_bracket").style.marginTop= "-1pt";
 			this.content_highlight.style.marginTop= "-1pt";
-			/*document.getElementById("end_bracket").style.marginTop="1px";*/
+			/*$("end_bracket").style.marginTop="1px";*/
 		}
 		
 		if(this.nav['isSafari']){
@@ -251,8 +251,8 @@
 			this.selection_field.style.marginLeft= "3px";			
 			this.content_highlight.style.marginTop= "-1pt";
 			this.content_highlight.style.marginLeft= "3px";
-			document.getElementById("cursor_pos").style.marginLeft= "3px";	
-			document.getElementById("end_bracket").style.marginLeft= "3px";	
+			$("cursor_pos").style.marginLeft= "3px";	
+			$("end_bracket").style.marginLeft= "3px";	
 			
 		}
 		
@@ -358,7 +358,7 @@
 				if(this.nav['isIE'])
 					span.unselectable=true;
 				span.innerHTML=div_line_number;         
-				document.getElementById("line_number").appendChild(span);       
+				$("line_number").appendChild(span);       
 			}
 		
 			//4) be sure the text is well displayed
@@ -496,6 +496,9 @@
 		for(var i in values)
 			parent.editAreaLoader.lang[language][i]= values[i];
 	};
+	
+	// short cut for document.getElementById()
+	function $(id){return document.getElementById( id );};
 
 	var editArea = new EditArea();	
 	editArea.add_event(window, "load", init);
