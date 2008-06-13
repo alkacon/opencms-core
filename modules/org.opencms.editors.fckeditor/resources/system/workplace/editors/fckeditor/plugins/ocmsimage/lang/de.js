@@ -3,7 +3,7 @@ FCKLang.OcmsImageDlgTitle		= "Bild Eigenschaften";
 FCKLang.OcmsImageDlgTooltip		= "Bild einf\u00fcgen/editieren";
 
 // Dialog tabs
-FCKLang.DlgImgGalleryTab		= "Bildergallerien";
+FCKLang.DlgImgGalleryTab		= "Bildergalerien";
 
 // Detail info keys
 FCKLang.DlgImgDetailType		= "Bildtyp";
