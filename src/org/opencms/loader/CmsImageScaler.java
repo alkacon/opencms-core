@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageScaler.java,v $
- * Date   : $Date: 2008/02/27 12:05:32 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/06/17 09:59:03 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.2.0
  */
@@ -188,7 +188,7 @@ public class CmsImageScaler {
     }
 
     /**
-     * Creates a new image scaler that is a recale from the original size to the given scaler.<p> 
+     * Creates a new image scaler that is a rescale from the original size to the given scaler.<p> 
      * 
      * @param original the scaler that holds the original image dimensions
      * @param target the image scaler to be used for rescaling this image scaler
@@ -456,7 +456,7 @@ public class CmsImageScaler {
     /**
      * Returns the maximum image size (width * height) to apply image blurring when downscaling images.<p>
      * 
-     * Image blurring is required to achive the best results for downscale operatios when the target image size 
+     * Image blurring is required to achieve the best results for downscale operations when the target image size 
      * is 2 times or more smaller then the original image size. This parameter controls the maximum size (width * height) of an 
      * image that is blurred before it is downscaled. If the image is larger, no blurring is done. 
      * However, image blurring is an expensive operation in both CPU usage and memory consumption. 
@@ -494,7 +494,7 @@ public class CmsImageScaler {
     /**
      * Returns the image saving quality in percent (0 - 100).<p>
      * 
-     * This is used oly if applicable, for example when saving JPEG images.<p>
+     * This is used only if applicable, for example when saving JPEG images.<p>
      *
      * @return the image saving quality in percent
      */
@@ -578,34 +578,34 @@ public class CmsImageScaler {
      * <dt>0 (default): Scale to exact target size with background padding</dt><dd><ul>
      * <li>enlarge image to fit in target size (if required)
      * <li>reduce image to fit in target size (if required)
-     * <li>keep image aspect ratio / propotions intact
+     * <li>keep image aspect ratio / proportions intact
      * <li>fill up with bgcolor to reach exact target size
      * <li>fit full image inside target size (only applies if reduced)</ul></dd>
      *
      * <dt>1: Thumbnail generation mode (like 0 but no image enlargement)</dt><dd><ul>
      * <li>dont't enlarge image
      * <li>reduce image to fit in target size (if required)
-     * <li>keep image aspect ratio / propotions intact
+     * <li>keep image aspect ratio / proportions intact
      * <li>fill up with bgcolor to reach exact target size
      * <li>fit full image inside target size (only applies if reduced)</ul></dd>
      *
      * <dt>2: Scale to exact target size, crop what does not fit</dt><dd><ul>
      * <li>enlarge image to fit in target size (if required)
      * <li>reduce image to fit in target size (if required)
-     * <li>keep image aspect ratio / propotions intact
+     * <li>keep image aspect ratio / proportions intact
      * <li>fit full image inside target size (crop what does not fit)</ul></dd>
      *
-     * <dt>3: Scale and keep image propotions, target size variable</dt><dd><ul>
+     * <dt>3: Scale and keep image proportions, target size variable</dt><dd><ul>
      * <li>enlarge image to fit in target size (if required)
      * <li>reduce image to fit in target size (if required)
-     * <li>keep image aspect ratio / propotions intact
-     * <li>scaled image will not be padded or cropped, so target size is likley not the exact requested size</ul></dd>
+     * <li>keep image aspect ratio / proportions intact
+     * <li>scaled image will not be padded or cropped, so target size is likely not the exact requested size</ul></dd>
      *
-     * <dt>4: Don't keep image propotions, use exact target size</dt><dd><ul>
+     * <dt>4: Don't keep image proportions, use exact target size</dt><dd><ul>
      * <li>enlarge image to fit in target size (if required)
      * <li>reduce image to fit in target size (if required)
-     * <li>don't keep image aspect ratio / propotions intact
-     * <li>the image will be scaled exactly to the given target size and likley will be loose proportions</ul></dd>
+     * <li>don't keep image aspect ratio / proportions intact
+     * <li>the image will be scaled exactly to the given target size and likely will be loose proportions</ul></dd>
      * </dl>
      * 
      * @return the type
@@ -881,11 +881,11 @@ public class CmsImageScaler {
                     image = scaler.resize(image, getWidth(), getHeight(), getPosition());
                     break;
                 case 3:
-                    // scale and keep image propotions, target size variable
+                    // scale and keep image proportions, target size variable
                     image = scaler.resize(image, getWidth(), getHeight(), true);
                     break;
                 case 4:
-                    // don't keep image propotions, use exact target size
+                    // don't keep image proportions, use exact target size
                     image = scaler.resize(image, getWidth(), getHeight(), false);
                     break;
                 default:
@@ -1081,7 +1081,7 @@ public class CmsImageScaler {
 
     /**
      * Creates a request parameter configured with the values from this image scaler, also
-     * appends a <code>'?'</code> char as a prefix so that this may be direclty appended to an image URL.<p>
+     * appends a <code>'?'</code> char as a prefix so that this may be directly appended to an image URL.<p>
      * 
      * This can be appended to an image request in order to apply image scaling parameters.<p>
      * 
@@ -1172,7 +1172,7 @@ public class CmsImageScaler {
     }
 
     /**
-     * Copys all values from the given scaler into this scaler.<p>
+     * Copies all values from the given scaler into this scaler.<p>
      * 
      * @param source the source scaler
      */
