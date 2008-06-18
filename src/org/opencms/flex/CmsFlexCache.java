@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2008/02/27 12:05:47 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2008/06/18 07:27:53 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * 
  * @since 6.0.0 
  * 
@@ -371,7 +371,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * Returns the CmsFlexCacheKey data structure for a given
      * key (i.e. resource name).<p>
      * 
-     * Usefull if you want to show the cache key for a resources,
+     * Useful if you want to show the cache key for a resources,
      * like on the FlexCache administration page.<p>
      *
      * Only users with administrator permissions are allowed

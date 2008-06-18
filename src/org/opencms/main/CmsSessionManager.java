@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:39 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2008/06/18 07:27:51 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -186,7 +186,7 @@ public class CmsSessionManager {
 
         HttpSession session = req.getSession(false);
         if (session == null) {
-            // special case for acessing a session from "outside" requests (e.g. upload applet)
+            // special case for accessing a session from "outside" requests (e.g. upload applet)
             String sessionId = req.getHeader(CmsRequestUtil.HEADER_JSESSIONID);
             return sessionId == null ? null : getSessionInfo(sessionId);
         }
