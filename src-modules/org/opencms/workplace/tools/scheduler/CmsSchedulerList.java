@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2008/02/27 12:05:43 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2008/06/18 13:38:17 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,6 +101,9 @@ public class CmsSchedulerList extends A_CmsListDialog {
 
     /** List column class. */
     public static final String LIST_COLUMN_CLASS = "cs";
+
+    /** List column class. */
+    public static final String LIST_COLUMN_ACTIVE = "cac";
 
     /** List column copy. */
     public static final String LIST_COLUMN_COPY = "cc";
@@ -338,6 +341,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             item.set(LIST_COLUMN_CLASS, job.getClassName());
             item.set(LIST_COLUMN_LASTEXE, job.getExecutionTimePrevious());
             item.set(LIST_COLUMN_NEXTEXE, job.getExecutionTimeNext());
+            item.set(LIST_COLUMN_ACTIVE, Boolean.valueOf(job.isActive()));
             items.add(item);
         }
 
@@ -394,9 +398,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             public boolean isVisible() {
 
                 if (getItem() != null) {
-                    String jobId = getItem().getId();
-                    CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobId);
-                    return !job.isActive();
+                    return !((Boolean)getItem().get(LIST_COLUMN_ACTIVE)).booleanValue();
                 }
                 return super.isVisible();
             }
@@ -416,9 +418,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             public boolean isVisible() {
 
                 if (getItem() != null) {
-                    String jobId = getItem().getId();
-                    CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobId);
-                    return job.isActive();
+                    return ((Boolean)getItem().get(LIST_COLUMN_ACTIVE)).booleanValue();
                 }
                 return super.isVisible();
             }
@@ -502,6 +502,11 @@ public class CmsSchedulerList extends A_CmsListDialog {
         nextExecCol.setWidth("25%");
         nextExecCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         nextExecCol.setListItemComparator(new CmsListItemDefaultComparator());
+        // add column for activation information
+        CmsListColumnDefinition actInfoCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVE);
+        actInfoCol.setVisible(false);
+        metadata.addColumn(actInfoCol);
+
         // create date formatter for next execution time
         nextExecCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(nextExecCol);
