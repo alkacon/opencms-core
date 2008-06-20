@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2008/06/20 15:38:03 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  */
@@ -936,6 +936,7 @@ public final class CmsStringUtil {
      */
     public static Map splitAsMap(String source, String paramDelim, String keyValDelim) {
 
+        int keyValLen = keyValDelim.length();
         Map params = new HashMap();
         Iterator itParams = CmsStringUtil.splitAsList(source, paramDelim, true).iterator();
         while (itParams.hasNext()) {
@@ -945,8 +946,8 @@ public final class CmsStringUtil {
             String value = "";
             if (pos > 0) {
                 key = param.substring(0, pos);
-                if (pos + keyValDelim.length() < param.length()) {
-                    value = param.substring(pos + 1);
+                if (pos + keyValLen < param.length()) {
+                    value = param.substring(pos + keyValLen);
                 }
             }
             params.put(key, value);
