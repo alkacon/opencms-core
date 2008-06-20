@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditBase.java,v $
- * Date   : $Date: 2008/02/27 12:05:32 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2008/06/20 15:38:35 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,11 +57,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsModulesEditBase extends CmsWidgetDialog {
+
+    /** localized messages Keys prefix. */
+    public static final String KEY_PREFIX = "modules";
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "ModulesEdit";
@@ -181,7 +184,8 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
      */
     protected void defineWidgets() {
 
-        // nothing to add here, see the different edit modules
+        initModule();
+        setKeyPrefix(KEY_PREFIX);
     }
 
     /**

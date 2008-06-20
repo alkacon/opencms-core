@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsEdit.java,v $
- * Date   : $Date: 2008/02/27 12:05:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/06/20 15:38:35 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +69,9 @@ public class CmsExportpointsEdit extends CmsWidgetDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "ExportpointsOverview";
+
+    /** localized messages Keys prefix. */
+    public static final String KEY_PREFIX = "modules";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
@@ -253,6 +256,8 @@ public class CmsExportpointsEdit extends CmsWidgetDialog {
 
         initModule();
 
+        setKeyPrefix(KEY_PREFIX);
+
         List destinations = getDestinations();
 
         addWidget(new CmsWidgetDialogParameter(m_exportpoint, "uri", PAGES[0], new CmsVfsFileWidget()));
@@ -314,7 +319,7 @@ public class CmsExportpointsEdit extends CmsWidgetDialog {
 
         List exportpoints = module.getExportPoints();
         m_exportpoint = new CmsExportPoint();
-        if (exportpoints != null && exportpoints.size() > 0) {
+        if ((exportpoints != null) && (exportpoints.size() > 0)) {
             Iterator i = exportpoints.iterator();
             while (i.hasNext()) {
                 CmsExportPoint exportpoint = (CmsExportPoint)i.next();

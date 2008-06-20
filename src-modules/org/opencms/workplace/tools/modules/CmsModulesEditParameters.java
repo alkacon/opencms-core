@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditParameters.java,v $
- * Date   : $Date: 2008/02/27 12:05:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/06/20 15:38:35 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +106,7 @@ public class CmsModulesEditParameters extends CmsModulesEditBase {
      */
     protected void defineWidgets() {
 
-        initModule();
+        super.defineWidgets();
 
         addWidget(new CmsWidgetDialogParameter(m_module, "parameters", PAGES[0], new CmsInputWidget()));
 
