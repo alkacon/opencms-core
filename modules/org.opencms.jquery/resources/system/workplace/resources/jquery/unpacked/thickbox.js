@@ -4,8 +4,6 @@
  * Copyright (c) 2007 cody lindley
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
 */
-		  
-var tb_pathToImage = "../css/thickbox/loading.gif";
 
 /*!!!!!!!!!!!!!!!!! edit below this line at your own risk !!!!!!!!!!!!!!!!!!!!!!!*/
 
@@ -13,7 +11,6 @@ var tb_pathToImage = "../css/thickbox/loading.gif";
 $(document).ready(function(){   
 	tb_init('a.thickbox, area.thickbox, input.thickbox');//pass where to apply thickbox
 	imgLoader = new Image();// preload image
-	imgLoader.src = tb_pathToImage;
 });
 
 //add thickbox to href & area elements that have a class of .thickbox
