@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/04/14 09:01:58 $
- * Version: $Revision: 1.818.2.8 $
+ * Date   : $Date: 2008/06/23 10:27:24 $
+ * Version: $Revision: 1.818.2.9 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ OpenCms 6.2.4 - xxxx, 2007
 * Changed decoration to plug in an extended decoration module
 ! Several attempts are made to connect to database during startup.
 - Allowed ' in email adresses
+* Trailing "/" is handled correctly when reading resources in the VFSDriver.
 
 
 OpenCms 6.2.3 - November 30, 2006
