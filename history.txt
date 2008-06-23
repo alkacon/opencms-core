@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/06/12 10:47:40 $
- * Version: $Revision: 1.1022 $
+ * Date   : $Date: 2008/06/23 10:35:37 $
+ * Version: $Revision: 1.1023 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -61,6 +61,7 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed issue with concurrent JSP page request when writing to RFS is needed
 * Fixed issue with broken calendar widget in french or italian localization 
 * Fixed issue with the <cms:editable> tag, it now detects if it has to include the script files or not
+* Trailing "/" is handled correctly when reading resources in the VFSDriver.
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 

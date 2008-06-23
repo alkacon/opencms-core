@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2008/04/11 09:04:33 $
- * Version: $Revision: 1.280 $
+ * Date   : $Date: 2008/06/23 10:35:37 $
+ * Version: $Revision: 1.281 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.280 $
+ * @version $Revision: 1.281 $
  * 
  * @since 6.0.0 
  */
@@ -1957,6 +1957,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         // must remove trailing slash
         path = CmsFileUtil.removeTrailingSeparator(path);
+        boolean endsWithSlash = path.endsWith("/");
 
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -1967,6 +1968,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
             if (res.next()) {
                 resource = createResource(res, projectId);
+
+                // check if the resource is a file, it is not allowed to end with a "/" then
+                if (endsWithSlash && resource.isFile()) {
+                    throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                        Messages.ERR_READ_RESOURCE_1,
+                        dbc.removeSiteRoot(path + "/")));
+                }
+
                 while (res.next()) {
                     // do nothing only move through all rows because of mssql odbc driver
                 }
