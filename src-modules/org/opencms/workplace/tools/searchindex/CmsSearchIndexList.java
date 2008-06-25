@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexList.java,v $
- * Date   : $Date: 2008/02/27 12:05:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/06/25 13:19:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -107,9 +107,6 @@ public class CmsSearchIndexList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_EDIT = "cae";
-
-    /** list column id constant. */
-    public static final String LIST_COLUMN_INDEX_SOURCE = "cai";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_INDEXSOURCES = "cis";
@@ -365,8 +362,8 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         CmsListColumnDefinition editCol = new CmsListColumnDefinition(LIST_COLUMN_EDIT);
         editCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_EDIT_NAME_0));
         editCol.setHelpText(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_EDIT_HELP_0));
-        editCol.setWidth("5");
-        editCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        editCol.setWidth("20");
+        editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         editCol.setSorteable(false);
         // add edit action
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);
@@ -381,8 +378,8 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         CmsListColumnDefinition sourceCol = new CmsListColumnDefinition(LIST_COLUMN_INDEXSOURCES);
         sourceCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_INDEXSOURCES_NAME_0));
         sourceCol.setHelpText(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_INDEXSOURCES_NAME_HELP_0));
-        sourceCol.setWidth("5");
-        sourceCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        sourceCol.setWidth("20");
+        sourceCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         sourceCol.setSorteable(false);
         // add assign indexsource action
         CmsListDirectAction sourceAction = new CmsListDirectAction(LIST_ACTION_INDEXSOURCES);
@@ -397,8 +394,8 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         CmsListColumnDefinition deleteCol = new CmsListColumnDefinition(LIST_COLUMN_DELETE);
         deleteCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_DELETE_NAME_0));
         deleteCol.setHelpText(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_DELETE_HELP_0));
-        deleteCol.setWidth("5");
-        deleteCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        deleteCol.setWidth("20");
+        deleteCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         deleteCol.setSorteable(false);
         // add delete action
         CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE);
@@ -414,8 +411,8 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         CmsListColumnDefinition rebuildCol = new CmsListColumnDefinition(LIST_COLUMN_REBUILD);
         rebuildCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_REBUILD_NAME_0));
         rebuildCol.setHelpText(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_REBUILD_HELP_0));
-        rebuildCol.setWidth("5");
-        rebuildCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        rebuildCol.setWidth("20");
+        rebuildCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         rebuildCol.setSorteable(false);
         // add search action
         CmsListDirectAction rebuildAction = new CmsListDirectAction(LIST_ACTION_REBUILD);
@@ -432,8 +429,8 @@ public class CmsSearchIndexList extends A_CmsListDialog {
         CmsListColumnDefinition searchCol = new CmsListColumnDefinition(LIST_COLUMN_SEARCH);
         searchCol.setName(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_SEARCH_NAME_0));
         searchCol.setHelpText(Messages.get().container(Messages.GUI_LIST_SEARCHINDEX_COL_SEARCH_HELP_0));
-        searchCol.setWidth("5");
-        searchCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        searchCol.setWidth("20");
+        searchCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         searchCol.setSorteable(false);
         // add search action
         CmsListDirectAction searchAction = new CmsListDirectAction(LIST_ACTION_SEARCH);
