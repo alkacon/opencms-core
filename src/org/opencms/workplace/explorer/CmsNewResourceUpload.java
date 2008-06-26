@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2008/04/03 07:45:25 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2008/06/26 15:01:57 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,10 +48,12 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceException;
@@ -83,7 +85,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -570,7 +572,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         // get the current session id
         HttpSession session = getJsp().getRequest().getSession(false);
         // we assume we always have a session here, otherwise an unhandled NPE will occur
-        String sessionId = session.getId();
+        String sessionId = ((CmsUUID)session.getAttribute(CmsSessionInfo.ATTRIBUTE_SESSION_ID)).getStringValue();
 
         // define the required colors.
         // these are configurable via set

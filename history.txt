@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/06/23 10:35:37 $
- * Version: $Revision: 1.1023 $
+ * Date   : $Date: 2008/06/26 15:01:56 $
+ * Version: $Revision: 1.1024 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -53,6 +53,7 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed issue #1595: Modules manifest file does not escape XML entities
 * Fixed issue #1596: Projects can be created being in the Online project
 * Fixed issue #1610: Specific css selectors used for placing JQuery direct edit images
+* Fixed issue #1626: NPE while uploading with the Upload Applet on some application servers 
 * Fixed issue while deleting a folder containing a file previously deleted in another project
 * Fixed issue with NPE in MacroResolver
 * Fixed issue with importing / exporting CSV user data 
