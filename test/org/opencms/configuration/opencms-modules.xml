@@ -50,6 +50,7 @@
 						<copy-resource source="/system/index2.html" target="${resource.folder.path}" type="preserve" />
 						<copy-resource source="/system/index3.html" target="${resource.folder.path}" type="new" />
 					</copy-resources>					
+					<param name="resource.flag.internal">true</param>
 					<param name="schema">/sites/default/xmlcontent/article.xsd</param>
 				</type>	
 			</resourcetypes>		
