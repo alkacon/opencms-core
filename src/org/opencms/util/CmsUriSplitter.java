@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUriSplitter.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/06/30 15:33:05 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.util;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 
 /** 
  * Splits an URI String into separate components.<p>
@@ -40,23 +41,26 @@ import java.net.URI;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class CmsUriSplitter {
 
     /** Empty (non null) StringBuffer constant. */
     private static final StringBuffer EMPTY_BUFFER = new StringBuffer(0);
 
-    /** The anchor part of the uri, for example <code>someanchor</code>. */
+    /** The anchor part of the URI, for example <code>someanchor</code>. */
     private String m_anchor;
 
     /** Indicates if 'strict' URI parsing did produce an error. */
     private boolean m_errorFree;
 
-    /** The prefix part of the uri, for example <code>http://www.opencms.org/some/path/</code>. */
+    /** Indicates if 'strict' URI parsing was used. */
+    private boolean m_isStrict;
+
+    /** The prefix part of the URI, for example <code>http://www.opencms.org/some/path/</code>. */
     private String m_prefix;
 
-    /** The query part of the uri, for example <code>a=b&c=d</code>. */
+    /** The query part of the URI, for example <code>a=b&c=d</code>. */
     private String m_query;
 
     /** The original URI String that was split. */
@@ -87,6 +91,7 @@ public class CmsUriSplitter {
 
         m_uri = uri;
         m_errorFree = true;
+        m_isStrict = strict;
 
         if (strict) {
 
@@ -111,7 +116,7 @@ public class CmsUriSplitter {
                     }
                 }
             } catch (Exception exc) {
-                // may be thrown by URI constructor if uri is invalid
+                // may be thrown by URI constructor if URI is invalid
                 strict = false;
                 m_errorFree = false;
             }
@@ -138,7 +143,7 @@ public class CmsUriSplitter {
                 if (c == '?') {
                     // start of query
                     cur = 2;
-                    // ensure a duplicate query part is 'flushed' (same behaviour as strict parser)
+                    // ensure a duplicate query part is 'flushed' (same behavior as strict parser)
                     query = new StringBuffer(uri.length());
                     continue;
                 }
@@ -265,5 +270,27 @@ public class CmsUriSplitter {
     public boolean isErrorFree() {
 
         return m_errorFree;
+    }
+
+    /**
+     * Returns an URI object created from the original input String.<p>
+     * 
+     * This method will do a "best effort" to convert the original input String to a legal URI. 
+     * Most notably, it will be able to handle original input Strings that contain a space " "
+     * and other usually illegal characters.<p>
+     * 
+     * @return an URI object created from the original input String
+     * 
+     * @throws URISyntaxException in case no URI object can be created from the original input String
+     */
+    public URI toURI() throws URISyntaxException {
+
+        if (m_isStrict && m_errorFree) {
+            // we have already verified that the URI contains no errors
+            return new URI(m_uri);
+        }
+        // create a new URI from the components
+        // using this constructor the input will be escaped if required
+        return new URI(null, m_prefix + (m_query != null ? "?" + m_query : ""), m_anchor);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsExternalLinksValidator.java,v $
- * Date   : $Date: 2008/04/24 10:47:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/06/30 15:33:05 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.staticexport;
 import org.opencms.file.CmsObject;
 import org.opencms.relations.CmsExternalLinksValidator;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.util.CmsUriSplitter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ import junit.framework.TestSuite;
 
 /** 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.0.4
  */
@@ -104,21 +105,24 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
         list.add("http://www.energinet.dk/da/servicemenu/Bibliotek/Nyhedsbreve/Markedsrapporter/Markedsrapporter.htm#");
         list.add("http://www.deloitte.com/dtt/section_node/0,1042,sid%253D62862,00.html");
         list.add("http://www.ddc.dk/DESIGNVIDEN/DESIGNnyt#");
-        list.add("http://www.horesta.dk/Service/Om%20Horesta/Medier/Dialog.aspx");
-        list.add("http://www.dsb.dk/servlet/Satellite?pagename=Millenium%2FPage%2FStandardForside&c=Page&cid=1002806878464");
+        list.add("http://www.horesta.dk/Service/Om Horesta/Medier/Dialog.aspx");
+        list.add("http://www.dsb.dk/servlet/Satellite?pagename=Millenium/Page/StandardForside&c=Page&cid=1002806878464");
+        list.add("http://www.kbht.dk:80/Emner/klub_1_raekke/1 raekke nr 1.aspx?pagename=Millenium/Page/StandardForside&c=Page&cid=1002806878464");
         list.add("http://www.nbi.dk/%7Enatphil/hug/hug.intro.html");
-        list.add("http://www.si-folkesundhed.dk/Forskning/Sygdomme%20og%20tilskadekomst/Ulykker/Nyhedsbrev.aspx");
+        list.add("http://www.si-folkesundhed.dk/Forskning/Sygdomme og tilskadekomst/Ulykker/Nyhedsbrev.aspx");
         list.add("http://www.mim.dk/Udgivelser/Milj%F8Danmark/");
-        list.add("http://www.ug.dk/Videnscenter%20for%20vejledning/Forside/Virtuelt%20tidsskrift.aspx");
+        list.add("http://www.ug.dk/Videnscenter for vejledning/Forside/Virtuelt tidsskrift.aspx");
         list.add("http://www.energinet.dk/da/servicemenu/Bibliotek/Nyhedsbreve/OmEnergi/OmEnergi.htm#");
         list.add("http://www.energinet.dk/da/servicemenu/Bibliotek/Nyhedsbreve/Nyhedsbrev fra Magnetfeltudvalget/Nyhedsbrev fra Magnetfeltudvalget.htm#");
-        list.add("http://www.kbht.dk/Emner/klub_1_raekke/1 raekke nr 1.aspx");
+        list.add("http://www.kbht.dk:80/Emner/klub_1_raekke/1 raekke nr 1.aspx?a=b#test");
         list.add("http://www.kbht.dk/Emner/klub_1_raekke/1%20raekke%20nr%201.aspx");
 
         // checks the list of external links
         for (int i = 0; i < list.size(); i++) {
             String url = (String)list.get(i);
-            assertTrue("Link not exists:" + url, CmsExternalLinksValidator.checkUrl(cms, url));
+            System.out.println("Checking external link: " + url);
+            System.out.println("  Extenal link encoded: " + new CmsUriSplitter(url, true).toURI().toURL());
+            assertTrue("External link check failed:" + url, CmsExternalLinksValidator.checkUrl(cms, url));
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsExternalLinksValidator.java,v $
- * Date   : $Date: 2008/04/24 10:48:18 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/06/30 15:33:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
+import org.opencms.util.CmsUriSplitter;
 
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -57,7 +58,7 @@ import java.util.Map;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,13 +77,10 @@ public class CmsExternalLinksValidator implements I_CmsScheduledJob {
      */
     public static boolean checkUrl(CmsObject cms, String check) {
 
-        // first, create a uri from the string representation
+        // first, create an URI from the string representation
         URI uri = null;
         try {
-
-            // remove all spaces
-            String str = check.replaceAll(" ", "%20");
-            uri = new URI(str);
+            uri = new CmsUriSplitter(check, true).toURI();
         } catch (URISyntaxException exc) {
             return false;
         }
