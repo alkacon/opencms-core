@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/06/30 14:52:26 $
- * Version: $Revision: 1.1029 $
+ * Date   : $Date: 2008/06/30 15:35:47 $
+ * Version: $Revision: 1.1030 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ OpenCms 7.0.5 - xxx, 2008
 - Improved performance when having several organizational units
 - Modified TOMCAT_HOME detection in CmsShell to work in more Tomcat setup scenarios
 - Updated Lucene jars to version 2.3.1
+- Updated simapi.jar to version 0.9.7, fixing issue #1617
 - Allowed ' in email addresses
 - New flags to enable/disable some caches
 - New rewritten cache administration
@@ -56,6 +57,7 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed issue #1596: Projects can be created being in the Online project
 * Fixed issue #1602: Editor problem with setup without welcome module
 * Fixed issue #1610: Specific css selectors used for placing JQuery direct edit images
+* Fixed issue #1617: CmsImageScaler returns Exception with special Image Dimensions   
 * Fixed issue #1621: Pagination in the Explorer view fails if the number of items is equal to number of files per page
 * Fixed issue #1626: NPE while uploading with the Upload Applet on some application servers 
 * Fixed issue #1630: Configuration of creating internal resources is lost
