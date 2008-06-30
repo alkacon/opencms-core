@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/06/12 08:15:13 $
- * Version: $Revision: 1.624 $
+ * Date   : $Date: 2008/06/30 14:22:58 $
+ * Version: $Revision: 1.625 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -4747,6 +4747,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // add an invalid login attempt for this user to the storage
                     OpenCms.getLoginManager().addInvalidLogin(userName, remoteAddress);
                 }
+                // check if this account is temporarily disabled because of too many invalid login attempts
+                // this will throw an exception if the test fails
+                OpenCms.getLoginManager().checkInvalidLogins(userName, remoteAddress);
                 throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                     org.opencms.security.Messages.ERR_LOGIN_FAILED_2,
                     userName,
