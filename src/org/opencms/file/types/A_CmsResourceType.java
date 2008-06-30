@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2008/03/17 16:10:41 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2008/06/30 14:19:38 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 6.0.0 
  */
@@ -406,7 +407,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_GET_CONFIGURATION_1, this));
         }
-        return null;
+
+        Map result = null;
+        if (m_internal != null) {
+            result = new TreeMap();
+            result.put(CONFIGURATION_INTERNAL, m_internal);
+        }
+        return result;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/06/30 14:08:30 $
- * Version: $Revision: 1.1026 $
+ * Date   : $Date: 2008/06/30 14:19:38 $
+ * Version: $Revision: 1.1027 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -56,6 +56,7 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed issue #1610: Specific css selectors used for placing JQuery direct edit images
 * Fixed issue #1621: Pagination in the Explorer view fails if the number of items is equal to number of files per page
 * Fixed issue #1626: NPE while uploading with the Upload Applet on some application servers 
+* Fixed issue #1630: Configuration of creating internal resources is lost
 * Fixed issue while deleting a folder containing a file previously deleted in another project
 * Fixed issue with NPE in MacroResolver
 * Fixed issue with importing / exporting CSV user data 
