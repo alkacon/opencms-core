@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlDateTimeValue.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2008/06/30 14:08:30 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,7 +55,7 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
     public static final String TYPE_NAME = "OpenCmsDateTime";
 
     /** The validation rule used for this schema type. */
-    public static final String TYPE_RULE = "\\p{Digit}+|"
+    public static final String TYPE_RULE = "-?\\p{Digit}+|"
         + CmsStringUtil.escapePattern(CmsMacroResolver.formatMacro(CmsMacroResolver.KEY_CURRENT_TIME));
 
     /** Pre-compiled regular expression pattern for this rule. */
