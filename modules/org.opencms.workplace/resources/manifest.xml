@@ -27,6 +27,7 @@
 		<resources>
 			<resource uri="/system/login/"/>
 			<resource uri="/system/lost-found/"/>
+			<resource uri="/system/modules/org.opencms.workplace/"/>
 			<resource uri="/system/shared/page.dtd"/>
 			<resource uri="/system/shared/showversion"/>
 			<resource uri="/system/workplace/admin/notification/"/>
@@ -211,6 +212,74 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>5bf7903e-467d-11dd-be3b-cdc06201ec99</uuidstructure>
+			<datelastmodified>Mon, 30 Jun 2008 08:20:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 30 Jun 2008 08:20:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace</destination>
+			<type>folder</type>
+			<uuidstructure>552326d5-46a8-11dd-8d13-af64097d1d4c</uuidstructure>
+			<datelastmodified>Mon, 30 Jun 2008 13:27:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 30 Jun 2008 13:27:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace/default_bodies</destination>
+			<type>folder</type>
+			<uuidstructure>5eba7187-46a8-11dd-8d13-af64097d1d4c</uuidstructure>
+			<datelastmodified>Mon, 30 Jun 2008 13:28:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 30 Jun 2008 13:28:04 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace/default_bodies/default</source>
+			<destination>system/modules/org.opencms.workplace/default_bodies/default</destination>
+			<type>plain</type>
+			<uuidstructure>6e1c4779-46a8-11dd-8d13-af64097d1d4c</uuidstructure>
+			<uuidresource>6e1c477a-46a8-11dd-8d13-af64097d1d4c</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 30 Jun 2008 13:28:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Default body]]></value>
 				</property>
 			</properties>
 			<relations/>
