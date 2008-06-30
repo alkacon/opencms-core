@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2008/04/10 14:35:30 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2008/06/30 13:28:09 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,7 +189,7 @@ public class CmsExplorer extends CmsWorkplace {
             selectedPage = getSettings().getExplorerPage();
             if (stopat > maxEntrys) {
                 // we have to split
-                numberOfPages = (stopat / maxEntrys) + 1;
+                numberOfPages = ((stopat - 1) / maxEntrys) + 1;
                 if (selectedPage > numberOfPages) {
                     // the user has changed the folder and then selected a page for the old folder
                     selectedPage = 1;
