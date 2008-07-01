@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersCsvDownloadDialog.java,v $
- * Date   : $Date: 2008/07/01 07:21:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/07/01 07:33:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -187,8 +188,13 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
             }
             buffer.append("\n");
         }
-        CmsFlexController.getController(getJsp().getRequest()).getTopResponse().setContentType(
-            "text/comma-separated-values");
+        HttpServletResponse res = CmsFlexController.getController(getJsp().getRequest()).getTopResponse();
+        res.setContentType("text/comma-separated-values");
+        String filename = "export_users" + new Random().nextInt(1024) + ".csv";
+        res.setHeader(
+            "Content-Disposition",
+            new StringBuffer("attachment; filename=\"").append(filename).append("\"").toString());
+        res.setContentLength(buffer.length());
 
         return buffer.toString();
     }
