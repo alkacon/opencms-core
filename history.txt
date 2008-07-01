@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/06/30 15:35:47 $
- * Version: $Revision: 1.1030 $
+ * Date   : $Date: 2008/07/01 08:02:56 $
+ * Version: $Revision: 1.1031 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,8 @@ OpenCms 7.0.5 - xxx, 2008
 * Fixed issue #1409: NullPointerException in case of redirect inside a included file with cacheable set to false
 * Fixed issue #1481: Wrong rule in CmsXmlDateTimeValue prevented storing dates before 1/1/1970 in XML contents
 * Fixed issue #1491: Incorrect behavior of language selector in editor with 3-symbols locales
-* Fixed issue #1568: Broken calendar widget for locale locale es. 
+* Fixed issue #1568: Broken calendar widget for locale locale es.
+* Fixed issue #1580: Publishing and Static export run with too high priority and lock out other tasks 
 * Fixed issue #1581: Logic error for Temp Disabled Accounts
 * Fixed issue #1586: Broken calendar widgets for locale pt. 
 * Fixed issue #1591: OpenCms does not start with missing scheduled job class

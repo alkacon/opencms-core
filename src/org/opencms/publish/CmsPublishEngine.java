@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2008/04/14 13:29:18 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/07/01 08:02:56 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.5.5
  */
@@ -249,6 +249,7 @@ public final class CmsPublishEngine implements Runnable {
                     // start the next waiting publish job
                     CmsPublishJobInfoBean publishJob = m_publishQueue.next();
                     m_currentPublishThread = new CmsPublishThread(this, publishJob);
+                    m_currentPublishThread.setPriority(Thread.MIN_PRIORITY);
                     m_currentPublishThread.start();
                 } else {
                     // nothing to do

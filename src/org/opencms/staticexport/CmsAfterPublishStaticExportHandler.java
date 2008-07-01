@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2008/02/27 12:05:46 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2008/07/01 08:02:56 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  * 
@@ -352,6 +352,8 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
                     new Integer(status)};
                 LOG.info(Messages.get().getBundle().key(Messages.LOG_EXPORT_FILE_STATUS_3, arguments));
             }
+            //don't lock up the CPU exclusively - allow other Threads to run as well 
+            Thread.yield();
         }
 
         resourcesToExport = null;
@@ -525,6 +527,8 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
             } catch (IOException e) {
                 report.println(e);
             }
+            //don't lock up the CPU exclusively - allow other Threads to run as well 
+            Thread.yield();
         }
         report.println(
             Messages.get().container(Messages.RPT_STATICEXPORT_TEMPLATE_RESOURCES_END_0),
