@@ -24,9 +24,7 @@
 		<dateinstalled/>
 		<dependencies/>
 		<exportpoints/>
-		<resources>
-			<resource uri="/system/galleries/"/>
-		</resources>
+		<resources/>
 		<parameters/>
 	</module>
 	<files>
