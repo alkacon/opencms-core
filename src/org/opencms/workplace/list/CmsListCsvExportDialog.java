@@ -52,7 +52,7 @@ public class CmsListCsvExportDialog extends CmsDialog {
     /** List class parameter name constant. */
     public static final String PARAM_LISTCLASS = "listclass";
 
-    /** List class paramater value. */
+    /** List class parameter value. */
     private String m_paramListclass;
 
     /**
