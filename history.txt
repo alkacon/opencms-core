@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/07/01 11:01:51 $
- * Version: $Revision: 1.1034 $
+ * Date   : $Date: 2008/07/01 11:04:47 $
+ * Version: $Revision: 1.1035 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ OpenCms 7.0.5 - July 2, 2008
 * Fixed issue #1581: Logic error for temporary disabled user accounts
 * Fixed issue #1586: Broken calendar widgets for locale PT 
 * Fixed issue #1591: OpenCms does not start if configured scheduled job class is missing
+* Fixed issue #1593: CmsFormHandler of Template One generates invalid HTML/XHTML code
 * Fixed issue #1594: Location bar in workplace malfunctioning without ending '/'
 * Fixed issue #1595: Module manifest file does not escape XML entities
 * Fixed issue #1596: Projects can be created being in the Online project
