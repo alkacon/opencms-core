@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2008/06/12 08:14:49 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/07/01 16:26:56 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.9.1
  */
@@ -288,16 +288,15 @@ public class TestHistory extends OpenCmsTestCase {
         CmsObject cms = getCmsObject();
         echo("Testing the delete date of deleted resources");
 
-        String folderName = "/folderReadDeleted";
+        String folderName = "/folderReadDeletedDate";
         String fileName = "/test.txt";
 
+        cms.createResource(folderName, CmsResourceTypeFolder.getStaticTypeId());
+        cms.createResource(folderName + fileName, CmsResourceTypePlain.getStaticTypeId(), "hallo".getBytes(), null);
         OpenCms.getPublishManager().publishResource(cms, folderName);
         OpenCms.getPublishManager().waitWhileRunning();
 
         long time = cms.readResource(folderName + fileName).getDateLastModified();
-        synchronized (this) {
-            this.wait(1000);
-        }
         cms.lockResource(folderName + fileName);
         cms.deleteResource(folderName + fileName, CmsResource.DELETE_REMOVE_SIBLINGS);
         echo("time: " + time);
@@ -310,7 +309,7 @@ public class TestHistory extends OpenCmsTestCase {
         List deleted = cms.readDeletedResources(folderName, false);
         assertEquals(1, deleted.size());
         echo("dlm2: " + ((I_CmsHistoryResource)deleted.get(0)).getDateLastModified());
-        if (((I_CmsHistoryResource)deleted.get(0)).getDateLastModified() <= time) {
+        if (((I_CmsHistoryResource)deleted.get(0)).getDateLastModified() < time) {
             fail("the date last modified after deletion is wrong.");
         }
     }

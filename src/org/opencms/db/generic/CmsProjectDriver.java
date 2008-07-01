@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2008/02/27 12:05:52 $
- * Version: $Revision: 1.251 $
+ * Date   : $Date: 2008/07/01 16:26:56 $
+ * Version: $Revision: 1.252 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.251 $
+ * @version $Revision: 1.252 $
  * 
  * @since 6.0.0 
  */
@@ -579,14 +579,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
         m_driverManager.getVfsDriver().createResource(dbc, onlineProject.getUuid(), rootFolder, null);
 
-        rootFolder.setState(CmsResource.STATE_UNCHANGED);
-
-        m_driverManager.getVfsDriver().writeResource(
-            dbc,
-            onlineProject.getUuid(),
-            rootFolder,
-            CmsDriverManager.UPDATE_ALL);
-
         // important: must access through driver manager to ensure proper cascading
         m_driverManager.getProjectDriver().createProjectResource(dbc, onlineProject.getUuid(), rootFolder.getRootPath());
 
@@ -608,14 +600,6 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             0);
 
         m_driverManager.getVfsDriver().createResource(dbc, onlineProject.getUuid(), systemFolder, null);
-
-        systemFolder.setState(CmsResource.STATE_UNCHANGED);
-
-        m_driverManager.getVfsDriver().writeResource(
-            dbc,
-            onlineProject.getUuid(),
-            systemFolder,
-            CmsDriverManager.UPDATE_ALL);
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // setup project stuff
@@ -647,7 +631,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             dbc,
             setupProject.getUuid(),
             offlineRootFolder,
-            CmsDriverManager.UPDATE_ALL);
+            CmsDriverManager.NOTHING_CHANGED);
 
         // important: must access through driver manager to ensure proper cascading        
         m_driverManager.getProjectDriver().createProjectResource(
@@ -669,7 +653,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             dbc,
             setupProject.getUuid(),
             offlineSystemFolder,
-            CmsDriverManager.UPDATE_ALL);
+            CmsDriverManager.NOTHING_CHANGED);
     }
 
     /**

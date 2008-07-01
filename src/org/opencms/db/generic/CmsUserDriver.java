@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2008/05/30 10:12:20 $
- * Version: $Revision: 1.126 $
+ * Date   : $Date: 2008/07/01 16:26:56 $
+ * Version: $Revision: 1.127 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.126 $
+ * @version $Revision: 1.127 $
  * 
  * @since 6.0.0 
  */
@@ -329,7 +329,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                     ouPath += "/";
                 }
             }
-            
+
             // create the resource
             CmsResource ouFolder = internalCreateResourceForOrgUnit(dbc, ouPath + name, flags);
 
@@ -2270,12 +2270,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // online persistence
             CmsProject onlineProject = m_driverManager.readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
             m_driverManager.getVfsDriver().createResource(dbc, onlineProject.getUuid(), resource, null);
-            resource.setState(CmsResource.STATE_UNCHANGED);
-            m_driverManager.getVfsDriver().writeResource(
-                dbc,
-                onlineProject.getUuid(),
-                resource,
-                CmsDriverManager.NOTHING_CHANGED);
         }
 
         // clear the internal caches
