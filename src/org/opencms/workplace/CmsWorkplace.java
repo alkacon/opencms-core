@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2008/04/10 15:47:29 $
- * Version: $Revision: 1.174 $
+ * Date   : $Date: 2008/07/01 13:46:04 $
+ * Version: $Revision: 1.175 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.174 $ 
+ * @version $Revision: 1.175 $ 
  * 
  * @since 6.0.0 
  */
@@ -528,6 +528,9 @@ public abstract class CmsWorkplace {
         }
         boolean access = false;
         CmsResource res = null;
+
+        String currentSite = cms.getRequestContext().getSiteRoot();
+        cms.getRequestContext().setSiteRoot(siteRoot);
         try {
             // check access to the site
             res = cms.readResource("/");
@@ -537,6 +540,8 @@ public abstract class CmsWorkplace {
             if (LOG.isInfoEnabled()) {
                 LOG.info(e.getLocalizedMessage(), e);
             }
+        } finally {
+            cms.getRequestContext().setSiteRoot(currentSite);
         }
         if ((res == null) || !access) {
             List sites = OpenCms.getSiteManager().getAvailableSites(cms, true);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/07/01 12:00:39 $
- * Version: $Revision: 1.1036 $
+ * Date   : $Date: 2008/07/01 13:46:04 $
+ * Version: $Revision: 1.1037 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@ OpenCms 7.0.5 - July 2, 2008
 ! Added function to display module dependencies in a sorted list in the workplace administration
 ! Added option to plug in an extended decoration module to the <cms:decorate> tag
 ! Added new flags in the configuration to enable/disable certain caches
-! Added configuration options for servlet container specific settings
+! Added configuration options for servlet container specific settings, fixing issue #1628
 - Improved Template Two example and demo content
 - Improved internal link validation performance
 - Improved performance when having several organizational units
@@ -77,6 +77,7 @@ OpenCms 7.0.5 - July 2, 2008
 * Fixed issue with trailing "/" when reading resources in the VFSDriver
 * Fixed issue with the "'" character not being allowed in email addresses
 * Fixed issue with deleted resource restoration only working based on parent folder id, not on folder path
+* Fixed issue with initial site check during login
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 
