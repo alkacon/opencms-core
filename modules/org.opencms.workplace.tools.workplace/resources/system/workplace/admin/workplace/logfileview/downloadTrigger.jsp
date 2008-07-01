@@ -1,3 +1,5 @@
-<%@ page import="org.opencms.workplace.tools.workplace.rfsfile.*" %><%
-  CmsRfsFileDownloadServlet downloadServlet = new CmsRfsFileDownloadServlet();
-  downloadServlet.doPost(request,response);%>
+<%@ page import="org.opencms.workplace.tools.workplace.rfsfile.*"%><%
+
+	CmsRfsFileDisposalDialog wp = new CmsRfsFileDisposalDialog(pageContext, request, response);	
+	wp.generateOutput();
+%>

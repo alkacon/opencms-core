@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/07/01 09:25:19 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,10 +114,10 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
     }
 
     /**
-     * Returns true wether the content of the file should be written to the response or false 
+     * Returns true whether the content of the file should be written to the response or false 
      * if the page content should be generated.<p>
      *  
-     * @return true wether the content of the file should be written to the response or false 
+     * @return true whether the content of the file should be written to the response or false 
      * if the page content should be generated
      */
     public String getParamShowlog() {
@@ -126,9 +126,9 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
     }
 
     /**
-     * Set the value to decide wether page content or the file content has to be shown to the response.<p> 
+     * Set the value to decide whether page content or the file content has to be shown to the response.<p> 
      * 
-     * @param value the value to decide wether page content or the file content has to be shown to the response to set
+     * @param value the value to decide whether page content or the file content has to be shown to the response to set
      */
     public void setParamShowlog(String value) {
 

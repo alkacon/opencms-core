@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2008/03/17 14:51:21 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/07/01 09:25:19 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -254,7 +254,7 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
-     * Get the amount of lines (or entries depending on wether a standard log file is shown) 
+     * Get the amount of lines (or entries depending on whether a standard log file is shown) 
      * to display per page. <p>
      * 
      * @return the amount of lines to display per page
@@ -288,7 +288,7 @@ public class CmsRfsFileViewer implements Cloneable {
     public String readFilePortion() throws CmsRfsException {
 
         if (m_enabled) {
-            // if we want to view the logfile we have to set the internal m_windowPos to the last window 
+            // if we want to view the log file we have to set the internal m_windowPos to the last window 
             // to view the end: 
             int lines = -1;
             int startLine;
@@ -322,7 +322,6 @@ public class CmsRfsFileViewer implements Cloneable {
                 // logfile treatment is different
                 // we invert the lines: latest come first
                 if (m_isLogfile) {
-
                     // stack is java hall of shame member... but standard
                     Stack inverter = new Stack();
                     for (int i = m_windowSize; (i > 0) && (read != null); i--) {
@@ -334,9 +333,7 @@ public class CmsRfsFileViewer implements Cloneable {
                         result.append(inverter.pop());
                         result.append('\n');
                     }
-
                 } else {
-
                     for (int i = m_windowSize; (i > 0) && (read != null); i--) {
                         result.append(read);
                         result.append('\n');
@@ -356,13 +353,11 @@ public class CmsRfsFileViewer implements Cloneable {
                     } catch (IOException e) {
                         LOG.error(e.getLocalizedMessage(), e);
                     }
-
                 }
             }
         } else {
             return Messages.get().getBundle().key(Messages.GUI_FILE_VIEW_NO_PREVIEW_0);
         }
-
     }
 
     /**
@@ -427,16 +422,14 @@ public class CmsRfsFileViewer implements Cloneable {
     /**
      * Set the character encoding of the underlying file.<p>
      * 
-     * The given String has to match a valid charset name (canonical or alias) 
+     * The given String has to match a valid char set name (canonical or alias) 
      * of one of the system's supported <code>{@link Charset}</code> instances 
      * (see <code>{@link Charset#forName(java.lang.String)}</code>).<p>
      * 
-     * This setting will be used for transcoding the file when portions 
-     * of it are read via <code>{@link CmsRfsFileViewer#readFilePortion()}</code> 
-     * to a String. This enables to correctly display files with text in various encodings 
-     * in UIs.<p>
+     * This setting will be used for reading the file. This enables to correctly 
+     * display files with text in various encodings in UIs.<p>
      * 
-     * @param fileEncoding the character encoding of the underlying file to set.
+     * @param fileEncoding the character encoding of the underlying file to set
      */
     public void setFileEncoding(String fileEncoding) {
 
@@ -460,7 +453,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * Set the path in the real file system that points to the file 
      * that should be displayed.<p>
      * 
-     * This method will only suceed if the file specified by the <code>path</code> 
+     * This method will only success if the file specified by the <code>path</code> 
      * argument is valid within the file system, no folder and may be read by the 
      * OpenCms process on the current platform.<p> 
      * 
@@ -540,12 +533,10 @@ public class CmsRfsFileViewer implements Cloneable {
                 m_filePath = null;
                 m_isLogfile = true;
             } else {
-
                 throw new CmsRfsException(Messages.get().container(
                     Messages.ERR_FILE_ARG_NOT_FOUND_1,
                     new Object[] {String.valueOf(path)}), fnfe);
             }
-
         } catch (IOException ioex) {
             // if wrong configuration perform self healing: 
             if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_2_INITIALIZING) {
@@ -553,7 +544,6 @@ public class CmsRfsFileViewer implements Cloneable {
                 m_filePath = null;
                 m_isLogfile = true;
             } else {
-
                 throw new CmsRfsException(Messages.get().container(
                     Messages.ERR_FILE_ARG_ACCESS_1,
                     new Object[] {String.valueOf(path)}), ioex);
@@ -571,7 +561,6 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @throws CmsRuntimeException if the configuration of this instance has been frozen 
      *                             ({@link #setFrozen(boolean)})
-     * 
      */
     public void setFrozen(boolean frozen) throws CmsRuntimeException {
 
@@ -579,18 +568,18 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
-     * Set if the internal file is in standard logfile format (true) or not (false).<p>  
+     * Set if the internal file is in standard log file format (true) or not (false).<p>  
      * 
      * If set to true the file might be 
      * treated / displayed in a more convenient format than standard files in future.
      * Currently it is only inverted (last lines appear first) and only the last 
-     * <code>windowsize</code> lines of the file are displayed.<p>
+     * 'Window Size' lines of the file are displayed.<p>
      * 
      * Do not activate this (it is possible from the log file viewer settings in the workplace 
      * administration) if your selected file is no log file: The display will confuse you and 
      * be more expensive (imaging scrolling a 20 MB file to view the last 200 lines). <p>
      * 
-     * @param isLogfile determines if the internal file is in standard logfile format (true) or not (false)
+     * @param isLogfile determines if the internal file is in standard log file format (true) or not (false)
      * 
      * @throws CmsRuntimeException if the configuration of this instance has been frozen 
      *                             ({@link #setFrozen(boolean)})
@@ -603,12 +592,12 @@ public class CmsRfsFileViewer implements Cloneable {
 
     /**
      * Set the path in the real file system that points to the folder/tree 
-     * containing the logfiles.<p>
+     * containing the log files.<p>
      * 
-     * This method will only suceed if the folder specified by the <code>path</code> 
+     * This method will only success if the folder specified by the <code>path</code> 
      * argument is valid within the file system.<p> 
      * 
-     * @param path the path in the real file system that points to the folder containing the logfiles
+     * @param path the path in the real file system that points to the folder containing the log files
      * 
      * @throws CmsRuntimeException if the configuration of this instance has been frozen 
      * @throws CmsRfsException if the given path is invalid
@@ -665,6 +654,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * log-entries (for a standard log file).<p>
      * 
      * @param windowPos the start position of the current display to set 
+     * 
      * @throws CmsRuntimeException if the configuration of this instance has been frozen 
      *                             ({@link #setFrozen(boolean)})
      */
@@ -675,13 +665,13 @@ public class CmsRfsFileViewer implements Cloneable {
     }
 
     /**
-     * Set the amount of lines (or entries depending on wether a standard log file is shown) 
+     * Set the amount of lines (or entries depending on whether a standard log file is shown) 
      * to display per page.<p>
      * 
      * @param windowSize the amount of lines to display per page 
+     * 
      * @throws CmsRuntimeException if the configuration of this instance has been frozen 
      *                             ({@link #setFrozen(boolean)})
-     * 
      */
     public void setWindowSize(int windowSize) throws CmsRuntimeException {
 

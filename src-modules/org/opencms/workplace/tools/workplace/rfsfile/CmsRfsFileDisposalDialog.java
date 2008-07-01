@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDisposalDialog.java,v $
  * Date   : $Date: 2008/07/01 09:25:19 $
- * Version: $Revision: 1.18 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,46 +31,37 @@
 
 package org.opencms.workplace.tools.workplace.rfsfile;
 
+import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsDateUtil;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsRfsFileViewer;
-import org.opencms.widgets.CmsDisplayWidget;
-import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
-import org.opencms.workplace.CmsWidgetDialogParameter;
-import org.opencms.workplace.tools.CmsToolDialog;
 
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.net.SocketException;
 
-import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Shows useful information about the current file chosen within the 
- * <code>{@link org.opencms.util.CmsRfsFileViewer}</code> and offers 
- * a direct download link. <p>
- *
- * @author Michael Moossen
+ * Generates a CSV file for a given list.<p>
  * 
- * @version $Revision: 1.18 $ 
+ * @author Michael Moossen  
+ * 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
-
-    /** localized messages Keys prefix. */
-    public static final String KEY_PREFIX = "workplace.download";
+public class CmsRfsFileDisposalDialog extends CmsWidgetDialog {
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
@@ -78,27 +69,14 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /** The file to download. */
     private File m_downloadFile;
 
-    /** The file date */
-    private String m_filedate;
-
-    /** The file name */
-    private String m_filename;
-
-    /** The file path */
-    private String m_filepath;
-
-    /** The file size */
-    private String m_filesize;
-
     /**
-     * Public constructor with JSP action element.<p>
+     * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsRfsFileDownloadDialog(CmsJspActionElement jsp) {
+    public CmsRfsFileDisposalDialog(CmsJspActionElement jsp) {
 
         super(jsp);
-
     }
 
     /**
@@ -108,24 +86,17 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsRfsFileDownloadDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsRfsFileDisposalDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
 
     /**
-     * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
+     * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#actionCommit()
      */
-    public void actionCommit() throws IOException, ServletException {
+    public void actionCommit() {
 
-        List errors = new ArrayList();
-
-        Map params = new HashMap();
-        params.put(CmsDialog.PARAM_CLOSELINK, getParamCloseLink());
-        params.put(CmsToolDialog.PARAM_STYLE, CmsToolDialog.STYLE_NEW);
-        getToolManager().jspForwardPage(this, "/system/workplace/admin/workplace/logfileview/dodownload.jsp", params);
-
-        setCommitErrors(errors);
+        // empty
     }
 
     /**
@@ -133,87 +104,55 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
      */
     public String dialogButtonsCustom() {
 
-        return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]);
+        return dialogButtons(new int[] {BUTTON_CLOSE}, new String[1]);
     }
 
     /**
-     * Returns the file date.<p>
-     *
-     * @return the file date
+     * Generates the output.<p>
+     * 
+     * @throws IOException if something goes wrong 
      */
-    public String getFiledate() {
+    public void generateOutput() throws IOException {
 
-        return m_filedate;
+        HttpServletResponse res = CmsFlexController.getController(getJsp().getRequest()).getTopResponse();
+        res.setContentType("application/octet-stream");
+        res.setHeader("Content-Disposition", new StringBuffer("attachment; filename=\"").append(
+            getDownloadFile().getName()).append("\"").toString());
+        res.setContentLength((int)getDownloadFile().length());
+
+        // getOutputStream() throws IllegalStateException if the jsp directive buffer="none" is set. 
+        ServletOutputStream outStream = res.getOutputStream();
+        InputStream in = new BufferedInputStream(new FileInputStream(getDownloadFile()));
+
+        try {
+            // don't write the last '-1'
+            int bit = in.read();
+            while ((bit) >= 0) {
+                outStream.write(bit);
+                bit = in.read();
+            }
+        } catch (SocketException soe) {
+            // this is the case for ie if cancel in download window is chosen: 
+            // "Connection reset by peer: socket write error". But not for firefox -> don't care
+        } finally {
+            if (outStream != null) {
+                try {
+                    outStream.flush();
+                    outStream.close();
+                } catch (SocketException soe) {
+                    // ignore
+                }
+            }
+            in.close();
+        }
     }
 
     /**
-     * Returns the file name.<p>
-     *
-     * @return the file name
+     * @see org.opencms.workplace.CmsWorkplace#checkRole()
      */
-    public String getFilename() {
+    protected void checkRole() throws CmsRoleViolationException {
 
-        return m_filename;
-    }
-
-    /**
-     * Returns the file path.<p>
-     *
-     * @return the file path
-     */
-    public String getFilepath() {
-
-        return m_filepath;
-    }
-
-    /**
-     * Returns the file size.<p>
-     *
-     * @return the file size
-     */
-    public String getFilesize() {
-
-        return m_filesize;
-    }
-
-    /**
-     * Sets the file date.<p>
-     *
-     * @param filedate the file date to set
-     */
-    public void setFiledate(String filedate) {
-
-        m_filedate = filedate;
-    }
-
-    /**
-     * Sets the file name.<p>
-     *
-     * @param filename the file name to set
-     */
-    public void setFilename(String filename) {
-
-        m_filename = filename;
-    }
-
-    /**
-     * Sets the file path.<p>
-     *
-     * @param filepath the file path to set
-     */
-    public void setFilepath(String filepath) {
-
-        m_filepath = filepath;
-    }
-
-    /**
-     * Sets the file size.<p>
-     *
-     * @param filesize the file size to set
-     */
-    public void setFilesize(String filesize) {
-
-        m_filesize = filesize;
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.WORKPLACE_MANAGER);
     }
 
     /**
@@ -234,12 +173,22 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
 
         if (dialog.equals(PAGES[0])) {
             // create the widgets for the first dialog page
-            result.append(dialogBlockStart(key(Messages.GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_MSG_0)));
-            result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(0, 3));
-            result.append(createWidgetTableEnd());
+            result.append("<script type=\"text/javascript\">\n");
+            result.append("function download(){\n");
+            result.append("\twindow.open(\"").append(getJsp().link(getDownloadPath())).append("\", \"rfsfile\");\n");
+            result.append("}\n");
+            result.append("window.setTimeout(\"download()\",500);\n");
+            result.append("</script>\n");
+            result.append(dialogBlockStart(key(
+                Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_HEADER_1,
+                new Object[] {getDownloadFile().getName()})));
+            result.append(key(Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_MESSAGE_0));
+            result.append(" <a href='javascript:download()'>");
+            result.append(key(Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_LINKTXT_0));
+            result.append("</a>.");
             result.append(dialogBlockEnd());
         }
+
         result.append(createWidgetTableEnd());
         return result.toString();
     }
@@ -249,17 +198,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
      */
     protected void defineWidgets() {
 
-        setKeyPrefix(KEY_PREFIX);
-
-        setFilename(getDownloadFile().getName());
-        setFilesize("" + getDownloadFile().length());
-        setFilepath(getDownloadFile().getAbsolutePath());
-        setFiledate(CmsDateUtil.getDateTime(new Date(getDownloadFile().lastModified()), DateFormat.MEDIUM, getLocale()));
-
-        addWidget(new CmsWidgetDialogParameter(this, "filename", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "filesize", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "filepath", PAGES[0], new CmsDisplayWidget()));
-        addWidget(new CmsWidgetDialogParameter(this, "filedate", PAGES[0], new CmsDisplayWidget()));
+        // empty
     }
 
     /**
@@ -288,6 +227,16 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the download path.<p>
+     * 
+     * @return the download path
+     */
+    protected String getDownloadPath() {
+
+        return "/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp";
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
     protected String[] getPageArray() {
@@ -302,5 +251,13 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
 
         super.initMessages();
         addMessages(org.opencms.workplace.tools.workplace.rfsfile.Messages.get().getBundleName());
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        OpenCms.getRoleManager().checkRole(getCms(), CmsRole.WORKPLACE_MANAGER);
     }
 }

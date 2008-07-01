@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:49 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/07/01 09:25:19 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,24 +47,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_LOGVIEW_NO_FILE_SELECTED_0 = "GUI_WORKPLACE_LOGVIEW_NO_FILE_SELECTED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DOWNLOAD_SERVLET_FILE_ARG_0 = "ERR_DOWNLOAD_SERVLET_FILE_ARG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FILE_ACCESS_0 = "ERR_FILE_ACCESS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FLMOD_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FLMOD_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FNAME_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FNAME_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FPATH_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FPATH_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FSIZE_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_FSIZE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_MSG_0 = "GUI_WORKPLACE_LOGVIEW_DOWNLOAD_START_MSG_0";
