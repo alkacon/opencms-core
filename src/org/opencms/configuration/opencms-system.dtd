@@ -543,7 +543,8 @@ Each job can have an optional list of parameters.
 # you should also check the 'servlet.exception.enabled' property in the opencms.properties file.
 # See the JavaDoc of class org.opencms.main.CmsServletContainerSettings for more details.
 -->
-<!ELEMENT servletcontainer-settings (prevent-response-flush,release-tags-after-end,request-error-page-attribute?)>
+<!ELEMENT servletcontainer-settings (prevent-response-flush?,release-tags-after-end?,request-error-page-attribute?)>
+<!ATTLIST servletcontainer-settings mode (auto|manual|AUTO|MANUAL) #REQUIRED>
 <!ELEMENT prevent-response-flush (#PCDATA)>
 <!ELEMENT release-tags-after-end (#PCDATA)>
 <!ELEMENT request-error-page-attribute (#PCDATA)>

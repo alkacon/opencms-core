@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2008/07/01 12:00:40 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2008/07/01 13:17:16 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.47 $
+ * @version $Revision: 1.48 $
  * 
  * @since 6.0.0
  */
@@ -95,6 +95,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The "exclusive" attribute. */
     public static final String A_EXCLUSIVE = "exclusive";
+
+    /** The "mode" attribute. */
+    public static final String A_MODE = "mode";
 
     /** The attribute name for the alias offset. */
     public static final String A_OFFSET = "offset";
@@ -1015,6 +1018,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PERMISSIONHANDLER, "setPermissionHandler", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_PERMISSIONHANDLER, 0, A_CLASS);
 
+        // add rules for servlet container settings
         digester.addCallMethod(
             "*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS + "/" + N_PREVENTRESPONSEFLUSH,
             "setPreventResponseFlush",
@@ -1027,6 +1031,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             "*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS + "/" + N_REQUESTERRORPAGEATTRIBUTE,
             "setRequestErrorPageAttribute",
             0);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS, "setServletContainerSettingsMode", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS, 0, A_MODE);
     }
 
     /**
@@ -1398,15 +1404,21 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             permissionHandlerElem.addAttribute(A_CLASS, m_permissionHandler);
         }
 
+        // servlet container settings
         CmsServletContainerSettings servletContainerSettings = OpenCms.getSystemInfo().getServletContainerSettings();
-        Element servletContainerSettingsElem = systemElement.addElement(N_SERVLETCONTAINERSETTINGS);
-        servletContainerSettingsElem.addElement(N_PREVENTRESPONSEFLUSH).addText(
-            "" + servletContainerSettings.isPreventResponseFlush());
-        servletContainerSettingsElem.addElement(N_RELEASETAGSAFTEREND).addText(
-            "" + servletContainerSettings.isReleaseTagsAfterEnd());
-        if (servletContainerSettings.getRequestErrorPageAttribute() != null) {
-            servletContainerSettingsElem.addElement(N_REQUESTERRORPAGEATTRIBUTE).addText(
-                servletContainerSettings.getRequestErrorPageAttribute());
+        if (!servletContainerSettings.getMode().isNone()) {
+            Element servletContainerSettingsElem = systemElement.addElement(N_SERVLETCONTAINERSETTINGS);
+            servletContainerSettingsElem.addAttribute(A_MODE, servletContainerSettings.getMode().getMode());
+            if (!servletContainerSettings.getMode().isAuto()) {
+                servletContainerSettingsElem.addElement(N_PREVENTRESPONSEFLUSH).addText(
+                    "" + servletContainerSettings.isPreventResponseFlush());
+                servletContainerSettingsElem.addElement(N_RELEASETAGSAFTEREND).addText(
+                    "" + servletContainerSettings.isReleaseTagsAfterEnd());
+                if (servletContainerSettings.getRequestErrorPageAttribute() != null) {
+                    servletContainerSettingsElem.addElement(N_REQUESTERRORPAGEATTRIBUTE).addText(
+                        servletContainerSettings.getRequestErrorPageAttribute());
+                }
+            }
         }
 
         // return the system node
@@ -2138,6 +2150,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             }
         }
 
+    }
+
+    /**
+     * Sets the servlet container settings configuration mode.<p>
+     * 
+     * @param configValue the value to set
+     */
+    public void setServletContainerSettingsMode(String configValue) {
+
+        OpenCms.getSystemInfo().getServletContainerSettings().setMode(configValue);
     }
 
     /**

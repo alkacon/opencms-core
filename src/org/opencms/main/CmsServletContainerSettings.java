@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsServletContainerSettings.java,v $
- * Date   : $Date: 2008/07/01 12:00:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/07/01 13:17:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,16 +31,109 @@
 
 package org.opencms.main;
 
+import org.opencms.util.A_CmsModeStringEnumeration;
+
 /**
  * Stores specific servlet container options, that might influence OpenCms behavior.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.5 
  */
 public class CmsServletContainerSettings {
+
+    /**
+     *  Enumeration class for the configuration mode.<p>
+     */
+    public static final class CmsServletContainerCfgMode extends A_CmsModeStringEnumeration {
+
+        /** Auto configuration mode. */
+        protected static final CmsServletContainerCfgMode MODE_AUTO = new CmsServletContainerCfgMode("auto");
+
+        /** Manual configuration mode. */
+        protected static final CmsServletContainerCfgMode MODE_MANUAL = new CmsServletContainerCfgMode("manual");
+
+        /** No set configuration mode. */
+        protected static final CmsServletContainerCfgMode MODE_NONE = new CmsServletContainerCfgMode("none");
+
+        /** Version id required for safe serialization. */
+        private static final long serialVersionUID = -8191582624108081577L;
+
+        /**
+         * Private constructor.<p>
+         * 
+         * @param mode the remote command execution return type integer representation
+         */
+        private CmsServletContainerCfgMode(String mode) {
+
+            super(mode);
+        }
+
+        /**
+         * Returns the parsed mode object if the string representation matches, or <code>null</code> if not.<p>
+         * 
+         * @param mode the string representation to parse
+         * 
+         * @return the parsed mode object
+         */
+        public static CmsServletContainerCfgMode valueOf(String mode) {
+
+            if (mode == null) {
+                return null;
+            }
+            if (mode.equalsIgnoreCase(MODE_NONE.getMode())) {
+                return MODE_NONE;
+            }
+            if (mode.equalsIgnoreCase(MODE_MANUAL.getMode())) {
+                return MODE_MANUAL;
+            }
+            if (mode.equalsIgnoreCase(MODE_AUTO.getMode())) {
+                return MODE_AUTO;
+            }
+            return null;
+        }
+
+        /**
+         * Checks if this is the none mode.<p>
+         * 
+         * @return <code>true</code> if this is the none mode
+         */
+        public boolean isNone() {
+
+            return this == MODE_NONE;
+        }
+
+        /**
+         * Checks if this is the auto mode.<p>
+         * 
+         * @return <code>true</code> if this is the auto mode
+         */
+        public boolean isAuto() {
+
+            return this == MODE_AUTO;
+        }
+
+        /**
+         * Checks if this is the manual mode.<p>
+         * 
+         * @return <code>true</code> if this is the manual mode
+         */
+        public boolean isManual() {
+
+            return this == MODE_MANUAL;
+        }
+    }
+
+    /** String remote command execution return type. */
+    public static final CmsServletContainerCfgMode CFG_MODE_AUTO = CmsServletContainerCfgMode.MODE_AUTO;
+
+    /** Map remote command execution return type. */
+    public static final CmsServletContainerCfgMode CFG_MODE_MANUAL = CmsServletContainerCfgMode.MODE_MANUAL;
+
+    /** List remote command execution return type. */
+    public static final CmsServletContainerCfgMode CFG_MODE_NONE = CmsServletContainerCfgMode.MODE_NONE;
 
     /** 
      * The replacement request attribute for the {@link javax.servlet.http.HttpServletRequest#getPathInfo()} method, 
@@ -56,6 +149,9 @@ public class CmsServletContainerSettings {
 
     /** Constant name to identify IBM Websphere servers. */
     private static final String SERVLET_CONTAINER_WEBSPHERE = "IBM WebSphere Application Server";
+
+    /** The configuration mode. */
+    private CmsServletContainerCfgMode m_mode = CFG_MODE_NONE;
 
     /** If the flex response has to prevent buffer flushing, for instance, Websphere does not allow to set headers afterwards, so we have to prevent it. */
     private boolean m_preventResponseFlush;
@@ -110,6 +206,16 @@ public class CmsServletContainerSettings {
     }
 
     /**
+     * Returns the mode.<p>
+     *
+     * @return the mode
+     */
+    public CmsServletContainerCfgMode getMode() {
+
+        return m_mode;
+    }
+
+    /**
      * Returns the request error page attribute.<p>
      *
      * @return the request error page attribute
@@ -157,6 +263,16 @@ public class CmsServletContainerSettings {
     public boolean isServletThrowsException() {
 
         return m_servletThrowsException;
+    }
+
+    /**
+     * Sets the mode from the configuration.<p>
+     * 
+     * @param configValue the mode to set
+     */
+    public void setMode(String configValue) {
+
+        m_mode = CmsServletContainerCfgMode.valueOf(configValue);
     }
 
     /**
