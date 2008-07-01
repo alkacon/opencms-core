@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/06/30 14:22:58 $
- * Version: $Revision: 1.625 $
+ * Date   : $Date: 2008/07/01 09:24:36 $
+ * Version: $Revision: 1.626 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -8643,11 +8643,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
     /**
      * Returns a filtered list of resources for publishing.<p>
      * Contains all resources, which are not locked 
-     * and which have a parent folder that is already published or will be published, too.
+     * and which have a parent folder that is already published or will be published, too.<p>
      * 
      * @param dbc the current database context
      * @param publishList the filling publish list
      * @param resourceList the list of resources to filter
+     * 
      * @return a filtered list of resources
      */
     private List filterResources(CmsDbContext dbc, CmsPublishList publishList, List resourceList) {
