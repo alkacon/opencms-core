@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/collectors/TestCategoryResourceCollectors.java,v $
- * Date   : $Date: 2008/07/01 16:00:57 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/07/01 16:26:40 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the {@link CmsCategoryResourceCollector}.<p>
  * 
  * @author Raphael Schnuck 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
@@ -74,21 +74,31 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
      */
     public static synchronized void initResources(CmsObject cms) throws Exception {
 
-        cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
+        synchronized (cms) {
+            cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
+            cms.wait(100); // this is needed for testing the date sorting collector
 
-        // jsps
-        cms.createResource("/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-        cms.createResource("/folder1/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-        cms.createResource("/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-        cms.createResource("/folder1/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-        cms.createResource("/file5", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            // jsps
+            cms.createResource("/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/folder1/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/folder1/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/file5", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+            cms.wait(100);
 
-        // plains
-        cms.createResource("/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
-        cms.createResource("/folder1/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
-        cms.createResource("/folder1/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
-        cms.createResource("/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
-
+            // plains
+            cms.createResource("/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/folder1/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/folder1/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
+            cms.wait(100);
+            cms.createResource("/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
+        }
         CmsCategoryService service = CmsCategoryService.getInstance();
         CmsCategory catBusiness = service.createCategory(
             cms,
