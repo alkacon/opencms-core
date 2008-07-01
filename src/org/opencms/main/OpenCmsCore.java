@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2008/06/12 10:46:18 $
- * Version: $Revision: 1.234 $
+ * Date   : $Date: 2008/07/01 12:00:39 $
+ * Version: $Revision: 1.235 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.234 $ 
+ * @version $Revision: 1.235 $ 
  * 
  * @since 6.0.0 
  */
@@ -527,7 +527,7 @@ public final class OpenCmsCore {
         String path = req.getPathInfo();
         if (path == null) {
             // if the HttpServletRequest#getPathInfo() method does not work properly  
-            String requestErrorPageAttribute = getSystemInfo().getRequestErrorPageAttribute();
+            String requestErrorPageAttribute = getSystemInfo().getServletContainerSettings().getRequestErrorPageAttribute();
             if (requestErrorPageAttribute != null) {
                 // use the proper page attribute
                 path = (String)req.getAttribute(requestErrorPageAttribute);
@@ -1239,7 +1239,8 @@ public final class OpenCmsCore {
             servletMapping,
             webApplicationContext,
             defaultWebApplication,
-            servletContainerName);
+            servletContainerName,
+            true);
 
         // Collect the configurations 
         ExtendedProperties configuration;
@@ -1250,6 +1251,9 @@ public final class OpenCmsCore {
                 Messages.ERR_CRITICAL_INIT_PROPFILE_1,
                 getSystemInfo().getConfigurationFileRfsPath()), e);
         }
+
+        getSystemInfo().getServletContainerSettings().setServletThrowsException(
+            configuration.getBoolean("servlet.exception.enabled", true));
 
         // check if the wizard is enabled, if so stop initialization
         if (configuration.getBoolean("wizard.enabled", true)) {

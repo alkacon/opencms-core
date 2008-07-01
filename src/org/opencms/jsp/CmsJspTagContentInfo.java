@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2008/02/27 12:05:34 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2008/07/01 12:00:39 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,7 +89,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
      */
     public int doEndTag() {
 
-        if (OpenCms.getSystemInfo().isTagsReleaseAfterEndTag()) {
+        if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
             // need to release manually, JSP container may not call release as required (happens with Tomcat)
             release();
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/07/01 11:04:47 $
- * Version: $Revision: 1.1035 $
+ * Date   : $Date: 2008/07/01 12:00:39 $
+ * Version: $Revision: 1.1036 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@ OpenCms 7.0.5 - July 2, 2008
 ! Added function to display module dependencies in a sorted list in the workplace administration
 ! Added option to plug in an extended decoration module to the <cms:decorate> tag
 ! Added new flags in the configuration to enable/disable certain caches
+! Added configuration options for servlet container specific settings
 - Improved Template Two example and demo content
 - Improved internal link validation performance
 - Improved performance when having several organizational units
@@ -61,6 +62,8 @@ OpenCms 7.0.5 - July 2, 2008
 * Fixed issue #1617: CmsImageScaler throws Exception when scaling images from/to certain dimensions    
 * Fixed issue #1621: Pagination in the Explorer view fails if the number of items is equal to number of files per page
 * Fixed issue #1626: NPE while uploading with the upload applet on some application servers 
+* Fixed issue #1627: Security Issue in Logviewer
+* Fixed issue #1628: Deploying on different servlet containers
 * Fixed issue #1630: Configuration of creating internal resources is lost
 * Fixed issue with highlighting context menu entries in Internet Explorer 7
 * Fixed issue while deleting a folder containing a file previously deleted in another project

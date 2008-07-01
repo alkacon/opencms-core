@@ -154,5 +154,10 @@
 		</publishmanager>
 		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 		<permissionhandler class="org.opencms.security.CmsDefaultPermissionHandler" />
+		<servletcontainer-settings>
+			<prevent-response-flush>true</prevent-response-flush>
+			<release-tags-after-end>false</release-tags-after-end>
+			<request-error-page-attribute>servlet.container.test</request-error-page-attribute>
+		</servletcontainer-settings>
 	</system>
 </opencms>

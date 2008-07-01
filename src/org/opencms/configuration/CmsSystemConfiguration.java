@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2008/05/26 12:37:25 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2008/07/01 12:00:40 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.main.CmsDefaultSessionStorageProvider;
 import org.opencms.main.CmsEventManager;
 import org.opencms.main.CmsHttpAuthenticationSettings;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsServletContainerSettings;
 import org.opencms.main.I_CmsSessionStorageProvider;
 import org.opencms.main.I_CmsRequestHandler;
 import org.opencms.main.I_CmsResourceInit;
@@ -83,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 6.0.0
  */
@@ -284,6 +285,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the permission handler. */
     public static final String N_PERMISSIONHANDLER = "permissionhandler";
 
+    /** The node name for the prevent-response-flush node. */
+    public static final String N_PREVENTRESPONSEFLUSH = "prevent-response-flush";
+
     /** The node name for the context project name. */
     public static final String N_PROJECT = "project";
 
@@ -299,11 +303,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The node name for the memory email receiver. */
     public static final String N_RECEIVER = "receiver";
 
+    /** The node name for the release-tags-after-end node. */
+    public static final String N_RELEASETAGSAFTEREND = "release-tags-after-end";
+
     /** The node name for the context remote addr. */
     public static final String N_REMOTEADDR = "remoteaddr";
 
     /** The node name for the context requested uri. */
     public static final String N_REQUESTEDURI = "requesteduri";
+
+    /** The node name for the request-error-page-attribute node. */
+    public static final String N_REQUESTERRORPAGEATTRIBUTE = "request-error-page-attribute";
 
     /** The node name for the request handler classes. */
     public static final String N_REQUESTHANDLER = "requesthandler";
@@ -334,6 +344,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The node name for the secure site. */
     public static final String N_SECURE = "secure";
+
+    /** The node name for the servlet container settings. */
+    public static final String N_SERVLETCONTAINERSETTINGS = "servletcontainer-settings";
 
     /** The node name for the session-storageprovider node. */
     public static final String N_SESSION_STORAGEPROVIDER = "session-storageprovider";
@@ -1001,6 +1014,19 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         // add rule for permission handler
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PERMISSIONHANDLER, "setPermissionHandler", 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_PERMISSIONHANDLER, 0, A_CLASS);
+
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS + "/" + N_PREVENTRESPONSEFLUSH,
+            "setPreventResponseFlush",
+            0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS + "/" + N_RELEASETAGSAFTEREND,
+            "setReleaseTagsAfterEnd",
+            0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_SERVLETCONTAINERSETTINGS + "/" + N_REQUESTERRORPAGEATTRIBUTE,
+            "setRequestErrorPageAttribute",
+            0);
     }
 
     /**
@@ -1370,6 +1396,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         if (m_permissionHandler != null) {
             Element permissionHandlerElem = systemElement.addElement(N_PERMISSIONHANDLER);
             permissionHandlerElem.addAttribute(A_CLASS, m_permissionHandler);
+        }
+
+        CmsServletContainerSettings servletContainerSettings = OpenCms.getSystemInfo().getServletContainerSettings();
+        Element servletContainerSettingsElem = systemElement.addElement(N_SERVLETCONTAINERSETTINGS);
+        servletContainerSettingsElem.addElement(N_PREVENTRESPONSEFLUSH).addText(
+            "" + servletContainerSettings.isPreventResponseFlush());
+        servletContainerSettingsElem.addElement(N_RELEASETAGSAFTEREND).addText(
+            "" + servletContainerSettings.isReleaseTagsAfterEnd());
+        if (servletContainerSettings.getRequestErrorPageAttribute() != null) {
+            servletContainerSettingsElem.addElement(N_REQUESTERRORPAGEATTRIBUTE).addText(
+                servletContainerSettings.getRequestErrorPageAttribute());
         }
 
         // return the system node
@@ -2031,6 +2068,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Sets the servlet container specific setting.<p>
+     * 
+     * @param configValue the configuration value
+     */
+    public void setPreventResponseFlush(String configValue) {
+
+        OpenCms.getSystemInfo().getServletContainerSettings().setPreventResponseFlush(
+            Boolean.valueOf(configValue).booleanValue());
+    }
+
+    /**
      * Sets the publish manager.<p>
      * 
      * @param publishManager the publish manager
@@ -2038,6 +2086,27 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     public void setPublishManager(CmsPublishManager publishManager) {
 
         m_publishManager = publishManager;
+    }
+
+    /**
+     * Sets the servlet container specific setting.<p>
+     * 
+     * @param configValue the configuration value
+     */
+    public void setReleaseTagsAfterEnd(String configValue) {
+
+        OpenCms.getSystemInfo().getServletContainerSettings().setReleaseTagsAfterEnd(
+            Boolean.valueOf(configValue).booleanValue());
+    }
+
+    /**
+     * Sets the servlet container specific setting.<p>
+     * 
+     * @param configValue the configuration value
+     */
+    public void setRequestErrorPageAttribute(String configValue) {
+
+        OpenCms.getSystemInfo().getServletContainerSettings().setRequestErrorPageAttribute(configValue);
     }
 
     /**

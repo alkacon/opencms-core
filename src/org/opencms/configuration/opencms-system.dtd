@@ -33,7 +33,8 @@
 	authorizationhandler?,
 	publishmanager?,
 	session-storageprovider?,
-	permissionhandler?)>
+	permissionhandler?,
+	servletcontainer-settings?)>
 
 <!--
 # Version history settings.
@@ -529,8 +530,20 @@ Each job can have an optional list of parameters.
 
 <!--
 # Permission handler:
-# provides the implememtation of the permission check.
+# provides the implementation of the permission check.
 # See the JavaDoc of interface org.opencms.db.I_CmsPermissionHandler for more details.
 -->
 <!ELEMENT permissionhandler EMPTY>
 <!ATTLIST permissionhandler class CDATA #REQUIRED>
+
+<!--
+# Servlet container settings:
+# OpenCms tries to identify your servlet container and to set the right settings for optimal behavior,
+# But this is not always possible, so here you have the chance to overwrite these settings, additionally
+# you should also check the 'servlet.exception.enabled' property in the opencms.properties file.
+# See the JavaDoc of class org.opencms.main.CmsServletContainerSettings for more details.
+-->
+<!ELEMENT servletcontainer-settings (prevent-response-flush,release-tags-after-end,request-error-page-attribute?)>
+<!ELEMENT prevent-response-flush (#PCDATA)>
+<!ELEMENT release-tags-after-end (#PCDATA)>
+<!ELEMENT request-error-page-attribute (#PCDATA)>

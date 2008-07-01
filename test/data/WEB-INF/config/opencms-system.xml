@@ -103,5 +103,9 @@
 		</publishmanager>
 		<session-storageprovider class="org.opencms.main.CmsDefaultSessionStorageProvider" />
 		<permissionhandler class="org.opencms.security.CmsDefaultPermissionHandler" />
+		<servletcontainer-settings>
+			<prevent-response-flush>false</prevent-response-flush>
+			<release-tags-after-end>true</release-tags-after-end>
+		</servletcontainer-settings>
 	</system>
 </opencms>

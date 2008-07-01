@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2008/02/27 12:05:39 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2008/07/01 12:00:39 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.62 $ 
+ * @version $Revision: 1.63 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,21 +78,6 @@ public class CmsSystemInfo {
     /** Static version number to use if version.properties can not be read. */
     private static final String DEFAULT_VERSION_NUMBER = "7.0.x";
 
-    /** 
-     * The replacement request attribute for the {@link javax.servlet.http.HttpServletRequest#getPathInfo()} method, 
-     * which is needed because this method is not properly implemented in BEA WLS 9.x.<p>
-     */
-    private static final String REQUEST_ERROR_PAGE_ATTRIBUTE_WEBLOGIC = "weblogic.servlet.errorPage";
-
-    /** Constant name to identify Resin servers. */
-    private static final String SERVLET_CONTAINER_RESIN = "Resin";
-
-    /** Constant name to identify BEA WebLogic servers. */
-    private static final String SERVLET_CONTAINER_WEBLOGIC = "WebLogic Server";
-
-    /** Constant name to identify IBM Websphere servers. */
-    private static final String SERVLET_CONTAINER_WEBSPHERE = "IBM WebSphere Application Server";
-
     /** The absolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
 
@@ -104,9 +89,6 @@ public class CmsSystemInfo {
 
     /** The default web application (usually "ROOT"). */
     private String m_defaultWebApplicationName;
-
-    /** If the servlet can throw an exception if initialization fails, for instance, Weblogic and Resin have problems with the exception. */
-    private boolean m_failedInitializationThrowsException = true;
 
     /** Indicates if the version history is enabled. */
     private boolean m_historyEnabled;
@@ -135,29 +117,17 @@ public class CmsSystemInfo {
     /** The absolute path to the "packages" folder (in the "real" file system). */
     private String m_packagesRfsPath;
 
-    /** If the flex response allows to flush the buffer, for instance, Websphere does not allow to set headers afterwards, so we have to prevent it. */
-    private boolean m_preventFlushResponse;
-
-    /** 
-     * The request error page attribute to use if {@link javax.servlet.http.HttpServletRequest#getPathInfo()}
-     * is not working properly, like in BEA WLS 9.x. 
-     */
-    private String m_requestErrorPageAttribute;
-
     /** The name of the OpenCms server. */
     private String m_serverName;
 
-    /** The name of the servlet container running OpenCms. */
-    private String m_servletContainerName;
+    /** The servlet container specific settings. */
+    private CmsServletContainerSettings m_servletContainerSettings;
 
     /** The servlet path for the OpenCms servlet. */
     private String m_servletPath;
 
     /** The startup time of this OpenCms instance. */
     private long m_startupTime;
-
-    /** If the tags need to release after ending, this has to be prevented when running with Resin, for example. */
-    private boolean m_tagsReleaseAfterEndTag = true;
 
     /** The version identifier of this OpenCms installation, contains "OpenCms/" and the version number. */
     private String m_version;
@@ -185,6 +155,7 @@ public class CmsSystemInfo {
         initVersion();
         // set default encoding (will be changed again later when properties have been read)
         m_defaultEncoding = DEFAULT_ENCODING.intern();
+        m_servletContainerSettings = new CmsServletContainerSettings(null);
     }
 
     /**
@@ -404,17 +375,6 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the request error page attribute name to use if {@link javax.servlet.http.HttpServletRequest#getPathInfo()}
-     * is not working properly, like in BEA WLS 9.x.<p>
-     * 
-     * @return the request error page attribute name
-     */
-    public String getRequestErrorPageAttribute() {
-
-        return m_requestErrorPageAttribute;
-    }
-
-    /**
      * Returns the time this OpenCms instance is running in milliseconds.<p>
      * 
      * @return the time this OpenCms instance is running in milliseconds
@@ -440,13 +400,13 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the name of the servlet container running OpenCms.<p>
+     * Returns the servlet container specific settings.<p>
      *
-     * @return the name of the servlet container running OpenCms
+     * @return the servlet container specific settings
      */
-    public String getServletContainerName() {
+    public CmsServletContainerSettings getServletContainerSettings() {
 
-        return m_servletContainerName;
+        return m_servletContainerSettings;
     }
 
     /**
@@ -552,18 +512,6 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Checks if the servlet can throw an exception if initialization fails.<p>
-     * 
-     * Some servlet containers like BEA WLS or Resin does not like it.<p>
-     * 
-     * @return <code>true</code> if the servlet can throw an exception if initialization fails
-     */
-    public boolean isFailedInitializationThrowsException() {
-
-        return m_failedInitializationThrowsException;
-    }
-
-    /**
      * Returns if the VFS version history is enabled.<p> 
      * 
      * @return if the VFS version history is enabled
@@ -571,30 +519,6 @@ public class CmsSystemInfo {
     public boolean isHistoryEnabled() {
 
         return m_historyEnabled;
-    }
-
-    /**
-     * Check if the flex response has to allow flushing the buffer.<p>
-     * 
-     * For instance, Websphere does not allow to set headers afterwards, so we have to prevent it.<p>
-     *
-     * @return <code>true</code> if the flex response has to allow flushing the buffer
-     */
-    public boolean isPreventFlushResponse() {
-
-        return m_preventFlushResponse;
-    }
-
-    /**
-     * Checks if the tags need to release after ending.<p>
-     * 
-     * Depends on how the servlet container generates code for tags, for instance, this has to be prevented with Resin.<p>
-     * 
-     * @return <code>true</code> if the tags need to release after ending
-     */
-    public boolean isTagsReleaseAfterEndTag() {
-
-        return m_tagsReleaseAfterEndTag;
     }
 
     /**
@@ -643,39 +567,19 @@ public class CmsSystemInfo {
      * @param webApplicationContext the name/path of the OpenCms web application context (optional, will be calculated form the path if null)
      * @param defaultWebApplication the default web application name (usually "ROOT")
      * @param servletContainerName the name of the servlet container running OpenCms
+     * @param throwException <code>true</code> if the servlet should throw an exception if initialization fails
      */
     protected void init(
         String webInfRfsPath,
         String servletMapping,
         String webApplicationContext,
         String defaultWebApplication,
-        String servletContainerName) {
+        String servletContainerName,
+        boolean throwException) {
 
-        // init servlet container name
-        m_servletContainerName = "";
-        if (servletContainerName != null) {
-            // init servlet container dependent parameters
-            m_servletContainerName = servletContainerName;
-
-            // the tags behavior
-            m_tagsReleaseAfterEndTag = !(m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) > -1);
-
-            // the request error page attribute
-            m_requestErrorPageAttribute = null;
-            if (m_servletContainerName.indexOf(SERVLET_CONTAINER_WEBLOGIC) > -1) {
-                m_requestErrorPageAttribute = REQUEST_ERROR_PAGE_ATTRIBUTE_WEBLOGIC;
-            }
-
-            // the failed initialization behavior
-            m_failedInitializationThrowsException = true;
-            m_failedInitializationThrowsException &= (m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) < 0);
-            m_failedInitializationThrowsException &= (m_servletContainerName.indexOf(SERVLET_CONTAINER_WEBLOGIC) < 0);
-
-            // the flush flex response behavior
-            m_preventFlushResponse = false;
-            m_preventFlushResponse |= (m_servletContainerName.indexOf(SERVLET_CONTAINER_WEBSPHERE) > -1);
-            m_preventFlushResponse |= (m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) > -1);
-        }
+        // init servlet container dependent parameters
+        m_servletContainerSettings = new CmsServletContainerSettings(servletContainerName);
+        m_servletContainerSettings.setServletThrowsException(throwException);
 
         // init base path
         webInfRfsPath = webInfRfsPath.replace('\\', '/');

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParse.java,v $
- * Date   : $Date: 2008/04/11 12:26:51 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/07/01 12:00:39 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.1.3
  */
@@ -145,13 +145,13 @@ public class CmsJspTagParse extends BodyTagSupport {
                     getBodyContent().clear();
                     getBodyContent().print(content);
                     getBodyContent().writeOut(pageContext.getOut());
-                    if (OpenCms.getSystemInfo().isTagsReleaseAfterEndTag()) {
+                    if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
                         // need to release manually, JSP container may not call release as required (happens with Tomcat)
                         release();
                     }
 
                 } catch (Exception ex) {
-                    if (OpenCms.getSystemInfo().isTagsReleaseAfterEndTag()) {
+                    if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
                         // need to release manually, JSP container may not call release as required (happens with Tomcat)
                         release();
                     }

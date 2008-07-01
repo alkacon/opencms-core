@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2008/02/27 12:05:47 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2008/07/01 12:00:39 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
@@ -494,7 +494,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      */
     public void flushBuffer() throws IOException {
 
-        if (OpenCms.getSystemInfo().isPreventFlushResponse()) {
+        if (OpenCms.getSystemInfo().getServletContainerSettings().isPreventResponseFlush()) {
             // Websphere does not allow to set headers afterwards, so we have to prevent this call
             return;
         }
