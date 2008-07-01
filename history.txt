@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/07/01 10:08:54 $
- * Version: $Revision: 1.1032 $
+ * Date   : $Date: 2008/07/01 10:52:20 $
+ * Version: $Revision: 1.1033 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,59 +19,59 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.0.5 - xxx, 2008
-! Added button for copying fields in xmlcontents to other locales. 
-! Added editor with syntax highlighting functionality (EditArea) for text based files
-! New preferences option for displaying all projects or only the ones in the current OU in the project selector
+OpenCms 7.0.5 - July 2, 2008
+! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)
+! Added option for copying content from one locale to another in the XML content editor 
+! Added Spanish Localization, contributed by OpenCmsHispano 
+! Added administration tool for image cache flushing
+! Added new preference option for displaying all projects or only the ones in the current OU in the project selector
 ! Added new site alias attribute to manipulate request time
-! Several attempts are made to connect to database during startup
-! Added admin tool for image cache flushing
-! Added JQuery module and <cms:jquery> tag to use packed/unpacked versions depending of the current project
-! Module dependencies are now displayed sorted in the workplace administration
-! Added Spanish Localization, contributed by OpenCms Hispano 
-- Many improvements on Template Two and the demo content
-- Changed decoration to plug in an extended decoration module
+! Added several connection attempts the database during startup
+! Added JQuery module that contains a set of default jQuery libraries
+! Added <cms:jquery> tag to use packed/unpacked jQuery versions depending of the current project
+! Added function to display module dependencies in a sorted list in the workplace administration
+! Added option to plug in an extended decoration module to the <cms:decorate> tag
+! Added new flags in the configuration to enable/disable certain caches
+- Improved Template Two example and demo content
 - Improved internal link validation performance
 - Improved performance when having several organizational units
-- Modified TOMCAT_HOME detection in CmsShell to work in more Tomcat setup scenarios
+- Improved TOMCAT_HOME detection in CmsShell to work in more Tomcat setup scenarios
 - Updated Lucene jars to version 2.3.1
 - Updated simapi.jar to version 0.9.7, fixing issue #1617
-- Allowed ' in email addresses
-- New flags to enable/disable some caches
-- New rewritten cache administration
-- Deleted resource restoration now also works with paths instead of only ids
 * Fixed security issue 28152 reported by Security Focus
 * Fixed security issue 490498 reported by Security Focus
 * Fixed security issue manipulating JSP files
 * Fixed security issue related to message broadcasting
 * Fixed issue #900: Search fails when searching with umlauts and wildcards
-* Fixed issue #1409: NullPointerException in case of redirect inside a included file with cacheable set to false
-* Fixed issue #1481: Wrong rule in CmsXmlDateTimeValue prevented storing dates before 1/1/1970 in XML contents
+* Fixed issue #1409: NPE in case of redirect inside a included file with cacheable set to false
+* Fixed issue #1481: CmsXmlDateTimeValue prevented storing dates before 1/1/1970 in XML contents
 * Fixed issue #1491: Incorrect behavior of language selector in editor with 3-symbols locales
-* Fixed issue #1568: Broken calendar widget for locale locale es.
+* Fixed issue #1568: Broken calendar widget for locale ES
 * Fixed issue #1571: Publishing of strongly related resource ignores locking
 * Fixed issue #1580: Publishing and Static export run with too high priority and lock out other tasks 
-* Fixed issue #1581: Logic error for Temp Disabled Accounts
-* Fixed issue #1586: Broken calendar widgets for locale pt. 
-* Fixed issue #1591: OpenCms does not start with missing scheduled job class
+* Fixed issue #1581: Logic error for temporary disabled user accounts
+* Fixed issue #1586: Broken calendar widgets for locale PT 
+* Fixed issue #1591: OpenCms does not start if configured scheduled job class is missing
 * Fixed issue #1594: Location bar in workplace malfunctioning without ending '/'
-* Fixed issue #1595: Modules manifest file does not escape XML entities
+* Fixed issue #1595: Module manifest file does not escape XML entities
 * Fixed issue #1596: Projects can be created being in the Online project
-* Fixed issue #1602: Editor problem with setup without welcome module
-* Fixed issue #1610: Specific css selectors used for placing JQuery direct edit images
-* Fixed issue #1617: CmsImageScaler returns Exception with special Image Dimensions   
+* Fixed issue #1602: Editor for xmlpages has a dependency to the welcome module
+* Fixed issue #1610: Specific CSS selectors used for placing JQuery direct edit images
+* Fixed issue #1617: CmsImageScaler throws Exception when scaling images from/to certain dimensions    
 * Fixed issue #1621: Pagination in the Explorer view fails if the number of items is equal to number of files per page
-* Fixed issue #1626: NPE while uploading with the Upload Applet on some application servers 
+* Fixed issue #1626: NPE while uploading with the upload applet on some application servers 
 * Fixed issue #1630: Configuration of creating internal resources is lost
-* Fixed issue while deleting a folder containing a file previously deleted in another project
+* Fixed issue with deleting a folder containing a file previously deleted in another project
 * Fixed issue with NPE in MacroResolver
 * Fixed issue with importing / exporting CSV user data 
 * Fixed issue with broken workplace when startup folder does not exist or misses /
 * Fixed issue with NPE when trying to direct delete after restart without workplace login
-* Fixed issue with concurrent JSP page request when writing to RFS is needed
-* Fixed issue with broken calendar widget in french or italian localization 
+* Fixed issue with concurrent JSP page requests when writing to RFS is needed
+* Fixed issue with broken calendar widget in French or Italian localization 
 * Fixed issue with the <cms:editable> tag, it now detects if it has to include the script files or not
-* Trailing "/" is handled correctly when reading resources in the VFSDriver.
+* Fixed issue with trailing "/" when reading resources in the VFSDriver
+* Fixed issue with the "'" character not being allowed in email addresses
+* Fixed issue with deleted resource restoration only working based on parent folder id, not on folder path
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 
