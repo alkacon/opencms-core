@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/07/01 10:52:20 $
- * Version: $Revision: 1.1033 $
+ * Date   : $Date: 2008/07/01 11:01:51 $
+ * Version: $Revision: 1.1034 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,8 @@ OpenCms 7.0.5 - July 2, 2008
 * Fixed issue #1621: Pagination in the Explorer view fails if the number of items is equal to number of files per page
 * Fixed issue #1626: NPE while uploading with the upload applet on some application servers 
 * Fixed issue #1630: Configuration of creating internal resources is lost
-* Fixed issue with deleting a folder containing a file previously deleted in another project
+* Fixed issue with highlighting context menu entries in Internet Explorer 7
+* Fixed issue while deleting a folder containing a file previously deleted in another project
 * Fixed issue with NPE in MacroResolver
 * Fixed issue with importing / exporting CSV user data 
 * Fixed issue with broken workplace when startup folder does not exist or misses /
