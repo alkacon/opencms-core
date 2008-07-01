@@ -58,7 +58,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[notes_7.0.4.html]]></value>
+					<value><![CDATA[notes_7.0.5.html]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -279,6 +279,34 @@ It will also remove the "default" template.</p>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 7.0.4 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_7.0.5.html</source>
+			<destination>release/notes_7.0.5.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>15873677-4763-11dd-b806-f9ac78a2765b</uuidstructure>
+			<uuidresource>15873678-4763-11dd-b806-f9ac78a2765b</uuidresource>
+			<datelastmodified>Tue, 01 Jul 2008 12:02:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 01 Jul 2008 11:44:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[8.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.0.5 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms 7.0.5 Release Notes]]></value>
 				</property>
 			</properties>
 			<relations/>
