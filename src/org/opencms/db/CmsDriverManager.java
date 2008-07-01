@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/07/01 09:24:36 $
- * Version: $Revision: 1.626 $
+ * Date   : $Date: 2008/07/01 10:08:54 $
+ * Version: $Revision: 1.627 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -4022,10 +4022,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                             dbc.getRequestContext().setSiteRoot(storedSiteRoot);
                         }
                     }
+                    CmsLock lock = getLock(dbc, target);
                     // just add resources that may come in question
                     if (!publishResources.contains(target) // is not in the original list
                         && !relations.containsKey(target.getRootPath()) // has not been already added by another relation
-                        && !target.getState().isUnchanged()) { // has been changed
+                        && !target.getState().isUnchanged() // has been changed
+                        && lock.isLockableBy(dbc.currentUser())) { // is lockable by current user
 
                         relations.put(target.getRootPath(), target);
                         // now check the folder structure
