@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/07/01 09:24:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.5.5
  */
@@ -372,7 +372,7 @@ public class CmsPublishManager {
      * @param publishJob the published job
      * @return the content of the assigned publish report
      * 
-     * @throws CmsException if somethign goes wrong
+     * @throws CmsException if something goes wrong
      */
     public byte[] getReportContents(CmsPublishJobFinished publishJob) throws CmsException {
 
