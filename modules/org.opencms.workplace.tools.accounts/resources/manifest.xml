@@ -1956,22 +1956,46 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/accounts/imexport_user_data/dodownload.jsp</source>
-			<destination>system/workplace/admin/accounts/imexport_user_data/dodownload.jsp</destination>
+			<source>system/workplace/admin/accounts/imexport_user_data/csvdownload.jsp</source>
+			<destination>system/workplace/admin/accounts/imexport_user_data/csvdownload.jsp</destination>
 			<type>jsp</type>
-			<uuidstructure>ce4d6bd6-c574-11db-bdd9-6b9f86bc881c</uuidstructure>
-			<uuidresource>ce4d6bd7-c574-11db-bdd9-6b9f86bc881c</uuidresource>
-			<datelastmodified>Wed, 14 Mar 2007 14:12:02 GMT</datelastmodified>
+			<uuidstructure>96897024-46b4-11dd-884e-111d34530985</uuidstructure>
+			<uuidresource>96897025-46b4-11dd-884e-111d34530985</uuidresource>
+			<datelastmodified>Mon, 30 Jun 2008 15:04:18 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 26 Feb 2007 08:39:00 GMT</datecreated>
+			<datecreated>Mon, 30 Jun 2008 14:55:32 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Download popup]]></value>
+					<value><![CDATA[CSV Download]]></value>
 				</property>
-				<property type="shared">
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/accounts/imexport_user_data/dodownload.jsp</source>
+			<destination>system/workplace/admin/accounts/imexport_user_data/dodownload.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>ce4d6bd6-c574-11db-bdd9-6b9f86bc881c</uuidstructure>
+			<uuidresource>81e400f1-46ae-11dd-884e-111d34530985</uuidresource>
+			<datelastmodified>Mon, 30 Jun 2008 15:09:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 30 Jun 2008 14:12:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[CSV Download Screen]]></value>
+				</property>
+				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>

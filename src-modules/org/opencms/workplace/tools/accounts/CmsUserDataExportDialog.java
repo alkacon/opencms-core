@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataExportDialog.java,v $
- * Date   : $Date: 2008/03/27 12:51:57 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/07/01 07:21:16 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,29 +31,18 @@
 
 package org.opencms.workplace.tools.accounts;
 
-import org.opencms.db.CmsUserExportSettings;
-import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.OpenCms;
-import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsGroupWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsToolDialog;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.7.1
  */
@@ -75,9 +64,6 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
 
     /** localized messages Keys prefix. */
     public static final String KEY_PREFIX = "userdata.export";
-
-    /** Stores the value of the request parameter for the export file. */
-    private String m_paramExportfile;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -107,248 +93,13 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
-        // key CmsUser uuid, value CmsUser object
-        Map exportUsers = new HashMap();
-        try {
-            if (((getGroups() == null) || (getGroups().size() < 1))
-                && ((getRoles() == null) || (getRoles().size() < 1))) {
-                exportUsers = getExportAllUsers(exportUsers);
-            } else {
-                exportUsers = getExportUsersFromGroups(exportUsers);
-                exportUsers = getExportUsersFromRoles(exportUsers);
-            }
-        } catch (CmsException e) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_GET_EXPORT_USERS_0), e);
-        }
-
-        BufferedWriter bufferedWriter;
-        File downloadFile;
-        try {
-            downloadFile = File.createTempFile("export_users", ".csv");
-            FileWriter fileWriter = new FileWriter(downloadFile);
-            bufferedWriter = new BufferedWriter(fileWriter);
-        } catch (IOException e) {
-            throw e;
-        }
-
-        CmsUserExportSettings settings = OpenCms.getImportExportManager().getUserExportSettings();
-
-        String separator = CmsStringUtil.substitute(settings.getSeparator(), "\\t", "\t");
-        List values = settings.getColumns();
-
-        String headline = "";
-        headline += "name";
-        Iterator itValues = values.iterator();
-        while (itValues.hasNext()) {
-            headline += separator;
-            headline += (String)itValues.next();
-        }
-        headline += "\n";
-        try {
-            bufferedWriter.write(headline);
-        } catch (IOException e) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_WRITE_TO_EXPORT_FILE_0), e);
-        }
-
-        Object[] users = exportUsers.values().toArray();
-
-        for (int i = 0; i < users.length; i++) {
-            CmsUser exportUser = (CmsUser)users[i];
-            if (!exportUser.getOuFqn().equals(getParamOufqn())) {
-                // skip users of others ous
-                continue;
-            }
-            String output = "";
-            output += exportUser.getSimpleName();
-            itValues = values.iterator();
-            while (itValues.hasNext()) {
-                output += separator;
-                String curValue = (String)itValues.next();
-                try {
-                    Method method = CmsUser.class.getMethod("get"
-                        + curValue.substring(0, 1).toUpperCase()
-                        + curValue.substring(1), null);
-                    String curOutput = (String)method.invoke(exportUser, null);
-                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) || curOutput.equals("null")) {
-                        curOutput = (String)exportUser.getAdditionalInfo(curValue);
-                    }
-
-                    if (curValue.equals("password")) {
-                        curOutput = OpenCms.getPasswordHandler().getDigestType() + "_" + curOutput;
-                    }
-
-                    if (!CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) && !curOutput.equals("null")) {
-                        output += curOutput;
-                    }
-                } catch (NoSuchMethodException e) {
-                    String curOutput = (String)exportUser.getAdditionalInfo(curValue);
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(curOutput)) {
-                        output += curOutput;
-                    }
-                } catch (IllegalAccessException e) {
-                    throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ILLEGAL_ACCESS_0), e);
-                } catch (InvocationTargetException e) {
-                    throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INVOCATION_TARGET_0), e);
-                }
-            }
-            output += "\n";
-            try {
-                bufferedWriter.write(output);
-            } catch (IOException e) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_WRITE_TO_EXPORT_FILE_0), e);
-            }
-        }
-
-        try {
-            bufferedWriter.close();
-        } catch (IOException e) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_WRITE_TO_EXPORT_FILE_0), e);
-        }
 
         Map params = new HashMap();
-        params.put("exportfile", downloadFile.getAbsolutePath().replace('\\', '/'));
         params.put(A_CmsOrgUnitDialog.PARAM_OUFQN, getParamOufqn());
         params.put(CmsDialog.PARAM_CLOSELINK, getParamCloseLink());
-        getToolManager().jspForwardTool(this, getCurrentToolPath(), params);
+        params.put(CmsToolDialog.PARAM_STYLE, CmsToolDialog.STYLE_NEW);
+        getToolManager().jspForwardPage(this, getDownloadPath(), params);
         setCommitErrors(errors);
-    }
-
-    /**
-     * Returns a map with the users to export added.<p>
-     * 
-     * @param exportUsers the map to add the users
-     * 
-     * @return a map with the users to export added
-     * 
-     * @throws CmsException if getting users failed
-     */
-    public Map getExportAllUsers(Map exportUsers) throws CmsException {
-
-        List users = OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false);
-        if ((users != null) && (users.size() > 0)) {
-            Iterator itUsers = users.iterator();
-            while (itUsers.hasNext()) {
-                CmsUser user = (CmsUser)itUsers.next();
-                if (!exportUsers.containsKey(user.getId())) {
-                    exportUsers.put(user.getId(), user);
-                }
-            }
-        }
-        return exportUsers;
-    }
-
-    /**
-     * Returns a map with the users to export added.<p>
-     * 
-     * @param exportUsers the map to add the users
-     * @return a map with the users to export added
-     * @throws CmsException if getting groups or users of group failed
-     */
-    public Map getExportUsersFromGroups(Map exportUsers) throws CmsException {
-
-        List groups = getGroups();
-        if ((groups != null) && (groups.size() > 0)) {
-            Iterator itGroups = groups.iterator();
-            while (itGroups.hasNext()) {
-                List groupUsers = getCms().getUsersOfGroup((String)itGroups.next());
-                Iterator itGroupUsers = groupUsers.iterator();
-                while (itGroupUsers.hasNext()) {
-                    CmsUser groupUser = (CmsUser)itGroupUsers.next();
-                    if (!exportUsers.containsKey(groupUser.getId())) {
-                        exportUsers.put(groupUser.getId(), groupUser);
-                    }
-                }
-            }
-        }
-        return exportUsers;
-    }
-
-    /**
-     * Returns a map with the users to export added.<p>
-     * 
-     * @param exportUsers the map to add the users
-     * @return a map with the users to export added
-     * @throws CmsException if getting roles or users of role failed
-     */
-    public Map getExportUsersFromRoles(Map exportUsers) throws CmsException {
-
-        List roles = getRoles();
-        if ((roles != null) && (roles.size() > 0)) {
-            Iterator itRoles = roles.iterator();
-            while (itRoles.hasNext()) {
-                List roleUsers = OpenCms.getRoleManager().getUsersOfRole(
-                    getCms(),
-                    CmsRole.valueOfGroupName((String)itRoles.next()).forOrgUnit(getParamOufqn()),
-                    true,
-                    false);
-                Iterator itRoleUsers = roleUsers.iterator();
-                while (itRoleUsers.hasNext()) {
-                    CmsUser roleUser = (CmsUser)itRoleUsers.next();
-                    // contains
-                    if (exportUsers.get(roleUser.getId()) == null) {
-                        exportUsers.put(roleUser.getId(), roleUser);
-                    }
-                }
-            }
-        }
-        return exportUsers;
-    }
-
-    /**
-     * Returns the JavaScript code to execute during the load of the dialog.<p>
-     * 
-     * @return the JavaScript code to execute
-     */
-    public String getOnloadJavaScript() {
-
-        StringBuffer result = new StringBuffer(256);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_paramExportfile)) {
-            result.append("javascript:window.open(\"");
-            result.append(getJsp().link(getDownloadPath()));
-            result.append("?servletUrl=");
-            result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/downloadTrigger.jsp"));
-            result.append("&filePath=").append(getParamExportfile());
-            result.append("\", \"download\", \"width=300,height=130,left=100,top=100,menubar=no,status=no,toolbar=no\");");
-        }
-        return result.toString();
-    }
-
-    /**
-     * Returns the export file.<p>
-     *
-     * @return the export file
-     */
-    public String getParamExportfile() {
-
-        return m_paramExportfile;
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.CmsToolDialog#pageBody(int, java.lang.String, java.lang.String)
-     */
-    public String pageBody(int segment, String className, String parameters) {
-
-        if (parameters != null) {
-            if (parameters.lastIndexOf("onload") != -1) {
-                // get substring until onload='
-                String subParameters = parameters.substring(0, parameters.lastIndexOf("onload") + 8);
-                subParameters += getOnloadJavaScript();
-                // get the rest of the old parameter string
-                subParameters += parameters.substring(parameters.lastIndexOf("onload") + 8);
-                parameters = subParameters;
-            }
-        }
-        return super.pageBody(segment, className, parameters);
-    }
-
-    /**
-     * Sets the export file.<p>
-     *
-     * @param paramExportfile the export file to set
-     */
-    public void setParamExportfile(String paramExportfile) {
-
-        m_paramExportfile = paramExportfile;
     }
 
     /**
@@ -402,13 +153,12 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
             PAGES[0],
             new CmsGroupWidget(null, null, getParamOufqn())));
         addWidget(new CmsWidgetDialogParameter(this, "roles", PAGES[0], new CmsSelectWidget(getSelectRoles())));
-
     }
 
     /**
-     * Returns the path to the download jsp.<p>
+     * Returns the download path.<p>
      * 
-     * @return the path to the download jsp
+     * @return the download path
      */
     protected String getDownloadPath() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/07/01 07:21:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,8 +39,8 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16 $ 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -1329,6 +1329,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USER_SENDEMAIL_ADMIN_TOOL_NAME_0 = "GUI_USER_SENDEMAIL_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERDATA_DOWNLOAD_LABEL_HINT_CLICK_0 = "GUI_USERDATA_DOWNLOAD_LABEL_HINT_CLICK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERDATA_DOWNLOAD_LABEL_HINT_TEXT_0 = "GUI_USERDATA_DOWNLOAD_LABEL_HINT_TEXT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_USERDATA_EXPORT_LABEL_GROUPS_BLOCK_0 = "GUI_USERDATA_EXPORT_LABEL_GROUPS_BLOCK_0";
