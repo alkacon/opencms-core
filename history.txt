@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/07/01 13:46:04 $
- * Version: $Revision: 1.1037 $
+ * Date   : $Date: 2008/07/01 16:00:57 $
+ * Version: $Revision: 1.1038 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -78,6 +78,7 @@ OpenCms 7.0.5 - July 2, 2008
 * Fixed issue with the "'" character not being allowed in email addresses
 * Fixed issue with deleted resource restoration only working based on parent folder id, not on folder path
 * Fixed issue with initial site check during login
+* Fixed issue with using the category collector without resource type restrictions
 
 OpenCms 7.0.4 - March 3rd, 2008
 ! Added new "TemplateTwo" demo template with improved demo content, replacing the old "TemplateOne" demo 

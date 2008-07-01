@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCategoryResourceCollector.java,v $
- * Date   : $Date: 2008/02/27 12:05:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/07/01 16:00:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.0.0
  */
@@ -182,7 +182,7 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
         private void parseExtendedData(String data) throws CmsLoaderException {
 
             String[] keyValueTokens = CmsStringUtil.splitAsArray(data, '|');
-
+            setType(-1);
             for (int i = keyValueTokens.length - 1; i >= 0; i--) {
                 String relation = keyValueTokens[i];
                 String[] keyValuePair = CmsStringUtil.splitAsArray(relation, '=');
