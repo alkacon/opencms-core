@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishManager.java,v $
- * Date   : $Date: 2008/07/02 13:31:57 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/07/02 16:02:03 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.5.5
  */
@@ -66,7 +66,7 @@ public class CmsPublishManager {
     /** The default history size. */
     public static final int DEFAULT_HISTORY_SIZE = 100;
 
-    /** The default persistance setting for the publish queue. */
+    /** The default persistence setting for the publish queue. */
     public static final boolean DEFAULT_QUEUE_PERSISTANCE = false;
 
     /** The default shutdown time for the running publish job. */
@@ -84,7 +84,7 @@ public class CmsPublishManager {
     /** The maximum size of the publish history. */
     private int m_publishHistorySize;
 
-    /** Indicates if the publish queue is re-initialized on statup. */
+    /** Indicates if the publish queue is re-initialized on startup. */
     private boolean m_publishQueuePersistance;
 
     /** The amount of time to wait for a publish job during shutdown. */
@@ -153,7 +153,7 @@ public class CmsPublishManager {
     }
 
     /**
-     * Check if the thread for the current publish job is stil active or was interrupted
+     * Check if the thread for the current publish job is still active or was interrupted
      * and so the next job in the queue can be started.<p>
      */
     public void checkCurrentPublishJobThread() {
@@ -195,7 +195,7 @@ public class CmsPublishManager {
      * 
      * The returned publish job may be an enqueued, running or finished publish job.<p>
      * 
-     * @param publishHistoryId the publish hostory id to search for
+     * @param publishHistoryId the publish history id to search for
      * 
      * @return the publish job with the given publish history id, or <code>null</code>
      */
@@ -602,7 +602,7 @@ public class CmsPublishManager {
     /**
      * Sets if the publish queue is re-initialized on startup.<p>
      * 
-     * @param publishQueuePersistance the persistance flag, parsed as <code>boolean</code>
+     * @param publishQueuePersistance the persistence flag, parsed as <code>boolean</code>
      */
     public void setPublishQueuePersistance(String publishQueuePersistance) {
 
@@ -615,7 +615,7 @@ public class CmsPublishManager {
     /**
      * Sets the publish queue shutdown time.
      * 
-     * @param publishQueueShutdowntime the shutdowntime to set, parsed as <code>int</code>
+     * @param publishQueueShutdowntime the shutdown time to set, parsed as <code>int</code>
      */
     public void setPublishQueueShutdowntime(String publishQueueShutdowntime) {
 
