@@ -25,7 +25,9 @@
 		<dependencies>
 			<dependency name="org.opencms.editors" version="1.2.0"/>
 		</dependencies>
-		<exportpoints/>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.editors.editarea/lib/" destination="WEB-INF/lib/"/>
+		</exportpoints>
 		<resources>
 			<resource uri="/system/workplace/editors/editarea/"/>
 			<resource uri="/system/workplace/resources/editors/editarea/"/>
@@ -54,6 +56,69 @@
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>5bf7903e-467d-11dd-be3b-cdc06201ec99</uuidstructure>
+			<datelastmodified>Mon, 30 Jun 2008 08:20:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 30 Jun 2008 08:20:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.editarea</destination>
+			<type>folder</type>
+			<uuidstructure>583fe1b9-4809-11dd-a4ab-af64097d1d4c</uuidstructure>
+			<datelastmodified>Wed, 02 Jul 2008 07:34:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 02 Jul 2008 07:34:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.editors.editarea/lib</destination>
+			<type>folder</type>
+			<uuidstructure>5de4bc8b-4809-11dd-a4ab-af64097d1d4c</uuidstructure>
+			<datelastmodified>Wed, 02 Jul 2008 07:34:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 02 Jul 2008 07:34:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.editors.editarea/lib/org.opencms.editors.editarea.jar</source>
+			<destination>system/modules/org.opencms.editors.editarea/lib/org.opencms.editors.editarea.jar</destination>
+			<type>binary</type>
+			<uuidstructure>8090780e-4809-11dd-a4ab-af64097d1d4c</uuidstructure>
+			<uuidresource>8090780f-4809-11dd-a4ab-af64097d1d4c</uuidresource>
+			<datelastmodified>Wed, 02 Jul 2008 07:36:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 02 Jul 2008 07:35:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace</destination>
