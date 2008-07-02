@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestGroupOperations.java,v $
- * Date   : $Date: 2008/02/27 12:05:35 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/07/02 08:31:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestGroupOperations extends OpenCmsTestCase {
 
@@ -77,6 +77,7 @@ public class TestGroupOperations extends OpenCmsTestCase {
         suite.addTest(new TestGroupOperations("testParentGroups"));
         suite.addTest(new TestGroupOperations("testChildGroups"));
         suite.addTest(new TestGroupOperations("testDeleteGroup"));
+        suite.addTest(new TestGroupOperations("testDeleteGroupWithChildren"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -183,6 +184,38 @@ public class TestGroupOperations extends OpenCmsTestCase {
 
         assertEquals(userGroups.size(), cms.getGroupsOfUser(user.getName(), true).size());
         assertFalse(cms.getGroupsOfUser(user.getName(), true).contains(group));
+    }
+
+    /**
+     * Tests group deletion with children groups.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testDeleteGroupWithChildren() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing group deletion with children");
+
+        // get all groups
+        List groups = OpenCms.getOrgUnitManager().getGroups(cms, "", true);
+
+        CmsGroup groupA = cms.createGroup("testDeleteGroupA", "group for deletion", 0, null);
+        CmsGroup groupB = cms.createGroup("testDeleteGroupB", "child group for deletion", 0, groupA.getName());
+
+        assertEquals(groups.size() + 2, OpenCms.getOrgUnitManager().getGroups(cms, "", true).size());
+
+        cms.deleteGroup(groupA.getName());
+        try {
+            cms.readGroup(groupA.getName());
+            fail("should not be able to read a deleted group");
+        } catch (CmsDbEntryNotFoundException e) {
+            // ok, ignore
+        }
+        cms.readGroup(groupB.getName());
+
+        assertEquals(groups.size() + 1, OpenCms.getOrgUnitManager().getGroups(cms, "", true).size());
+        assertFalse(OpenCms.getOrgUnitManager().getGroups(cms, "", true).contains(groupA));
+        assertTrue(OpenCms.getOrgUnitManager().getGroups(cms, "", true).contains(groupB));
     }
 
     /**
