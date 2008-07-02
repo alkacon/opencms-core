@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsUpdateBean.java,v $
- * Date   : $Date: 2008/03/01 12:31:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/07/02 13:31:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -877,6 +877,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         if (OpenCms.getModuleManager().getModule(moduleName) != null) {
             OpenCms.getModuleManager().deleteModule(m_cms, moduleName, true, report);
         }
+        OpenCms.getPublishManager().waitWhileRunning();
         OpenCms.getImportExportManager().importData(m_cms, report, new CmsImportParameters(fileName, "/", true));
         report.println(
             Messages.get().container(Messages.RPT_END_UPDATE_MODULE_1, moduleName),
