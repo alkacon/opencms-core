@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2008/02/27 12:05:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/07/03 10:03:38 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import org.opencms.lock.CmsLockType;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionViolationException;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
@@ -55,7 +56,7 @@ import junit.framework.TestSuite;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestDeletion extends OpenCmsTestCase {
 
@@ -82,6 +83,9 @@ public class TestDeletion extends OpenCmsTestCase {
         suite.setName(TestDeletion.class.getName());
 
         suite.addTest(new TestDeletion("testGroupDeletion"));
+        suite.addTest(new TestDeletion("testDeleteFolderAfterMove"));
+        suite.addTest(new TestDeletion("testDeleteFolderAfterMoveWithLock"));
+        suite.addTest(new TestDeletion("testDeleteFolderAfterDeleteWithLock"));
         suite.addTest(new TestDeletion("testAdvancedGroupDeletion"));
         suite.addTest(new TestDeletion("testUserDeletion"));
         suite.addTest(new TestDeletion("testDeleteFolderWithUnvisibleResources"));
@@ -175,6 +179,112 @@ public class TestDeletion extends OpenCmsTestCase {
         cms.deleteUser(testUser1.getId());
         cms.setParentGroup(OpenCms.getDefaultUsers().getGroupUsers(), null);
         cms.deleteGroup(testGroup2.getName());
+    }
+
+    /**
+     * Tests to delete a folder after deleting a subresource with lock.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testDeleteFolderAfterDeleteWithLock() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to delete a folder after deleting a subresource with lock");
+
+        CmsResource folder = cms.createResource("breakFolder", CmsResourceTypeFolder.getStaticTypeId());
+        CmsResource file1 = cms.createResource(
+            "breakFolder/file1.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            "test1".getBytes(),
+            null);
+        cms.createResource("breakFolder/file2.txt", CmsResourceTypePlain.getStaticTypeId(), "test2".getBytes(), null);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.lockResource(cms.getSitePath(file1));
+        cms.deleteResource(cms.getSitePath(file1), CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.PROJECT_MANAGER, "test2");
+
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        cms.lockResource(cms.getSitePath(folder));
+        cms.deleteResource(cms.getSitePath(folder), CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+    }
+
+    /**
+     * Tests to delete a folder after moving a subresource.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testDeleteFolderAfterMove() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to delete a folder after moving a subresource");
+
+        CmsResource folder = cms.createResource("breakFolder", CmsResourceTypeFolder.getStaticTypeId());
+        CmsResource file1 = cms.createResource(
+            "breakFolder/file1.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            "test1".getBytes(),
+            null);
+        cms.createResource("breakFolder/file2.txt", CmsResourceTypePlain.getStaticTypeId(), "test2".getBytes(), null);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.lockResource(cms.getSitePath(file1));
+        cms.moveResource(cms.getSitePath(file1), "folder1/movedFile1.txt");
+
+        cms.lockResource(cms.getSitePath(folder));
+        cms.deleteResource(cms.getSitePath(folder), CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+    }
+
+    /**
+     * Tests to delete a folder after moving a subresource with lock.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testDeleteFolderAfterMoveWithLock() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing to delete a folder after moving a subresource with lock");
+
+        CmsResource folder = cms.createResource("breakFolder", CmsResourceTypeFolder.getStaticTypeId());
+        CmsResource file1 = cms.createResource(
+            "breakFolder/file1.txt",
+            CmsResourceTypePlain.getStaticTypeId(),
+            "test1".getBytes(),
+            null);
+        cms.createResource("breakFolder/file2.txt", CmsResourceTypePlain.getStaticTypeId(), "test2".getBytes(), null);
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        cms.lockResource(cms.getSitePath(file1));
+        cms.moveResource(cms.getSitePath(file1), "folder1/movedFile2.txt");
+
+        OpenCms.getRoleManager().addUserToRole(cms, CmsRole.PROJECT_MANAGER, "test2");
+
+        cms.loginUser("test2", "test2");
+        cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
+
+        cms.lockResource(cms.getSitePath(folder));
+        cms.deleteResource(cms.getSitePath(folder), CmsResource.DELETE_PRESERVE_SIBLINGS);
+
+        // publish all test2 resources
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
+
+        // publish all remaining resources
+        cms = getCmsObject();
+        OpenCms.getPublishManager().publishProject(cms);
+        OpenCms.getPublishManager().waitWhileRunning();
     }
 
     /**
