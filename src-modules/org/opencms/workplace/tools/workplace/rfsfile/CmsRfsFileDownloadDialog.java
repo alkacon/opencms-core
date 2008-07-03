@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
- * Date   : $Date: 2008/07/01 09:25:19 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2008/07/03 13:48:28 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,16 +78,16 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /** The file to download. */
     private File m_downloadFile;
 
-    /** The file date */
+    /** The file date. */
     private String m_filedate;
 
-    /** The file name */
+    /** The file name. */
     private String m_filename;
 
-    /** The file path */
+    /** The file path. */
     private String m_filepath;
 
-    /** The file size */
+    /** The file size. */
     private String m_filesize;
 
     /**

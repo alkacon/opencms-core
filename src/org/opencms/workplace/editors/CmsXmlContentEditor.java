@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2008/04/14 13:51:36 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2008/07/03 13:48:28 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.79 $ 
+ * @version $Revision: 1.80 $ 
  * 
  * @since 6.0.0 
  */
@@ -290,7 +290,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         try {
             setEditorValues(getElementLocale());
-            if (!hasValidationErrors()) {// !m_content.validate(getCms()).hasErrors(getElementLocale())) {
+            if (!hasValidationErrors()) { // !m_content.validate(getCms()).hasErrors(getElementLocale())) {
                 // save content of the editor only to the temporary file
                 writeContent();
                 // remove eventual release & expiration date from temporary file to make preview work
@@ -300,7 +300,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         } catch (CmsException e) {
             // show error page
             showErrorPage(this, e);
-        }        
+        }
     }
 
     /**
@@ -1112,7 +1112,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
             setAction(ACTION_EXIT);
         } else if (EDITOR_COPYLOCALE.equals(getParamAction())) {
-            setAction(ACTION_COPYLOCALE);            
+            setAction(ACTION_COPYLOCALE);
         } else if (EDITOR_DELETELOCALE.equals(getParamAction())) {
             setAction(ACTION_DELETELOCALE);
         } else if (EDITOR_SHOW.equals(getParamAction())) {

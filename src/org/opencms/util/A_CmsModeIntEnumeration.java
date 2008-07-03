@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/A_CmsModeIntEnumeration.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/07/03 13:48:28 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,11 +45,14 @@ import java.io.Serializable;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.5.3 
  */
 public abstract class A_CmsModeIntEnumeration implements Serializable {
+
+    /** Serialization id. */
+    private static final long serialVersionUID = -6652924582255509879L;
 
     /** The internal mode descriptor. */
     private final int m_mode;
