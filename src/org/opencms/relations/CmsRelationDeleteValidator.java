@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationDeleteValidator.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/07/04 15:21:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.5.3
  */
@@ -240,7 +240,7 @@ public class CmsRelationDeleteValidator {
                 CmsResource resource = (CmsResource)itResources.next();
                 String resourceName = resource.getRootPath();
                 try {
-                    Iterator it = m_cms.getRelationsForResource(resourceName, CmsRelationFilter.SOURCES).iterator();
+                    Iterator it = m_cms.getRelationsForResource(resource, CmsRelationFilter.SOURCES).iterator();
                     while (it.hasNext()) {
                         CmsRelation relation = (CmsRelation)it.next();
                         String relationName = relation.getSourcePath();

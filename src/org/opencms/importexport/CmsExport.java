@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2008/03/27 13:22:44 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2008/07/04 15:21:25 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import org.xml.sax.SAXException;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.95 $ 
+ * @version $Revision: 1.96 $ 
  * 
  * @since 6.0.0 
  */
@@ -703,7 +703,7 @@ public class CmsExport {
 
             // Write the relations to the manifest
             List relations = getCms().getRelationsForResource(
-                getCms().getSitePath(resource),
+                resource,
                 CmsRelationFilter.TARGETS.filterNotDefinedInContent());
             CmsRelation relation = null;
             Element relationsElement = fileElement.addElement(CmsImportVersion7.N_RELATIONS);

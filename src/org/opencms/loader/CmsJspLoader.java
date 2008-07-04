@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2008/05/14 15:34:36 $
- * Version: $Revision: 1.113 $
+ * Date   : $Date: 2008/07/04 15:21:25 $
+ * Version: $Revision: 1.114 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexCache;
@@ -49,9 +48,6 @@ import org.opencms.jsp.util.CmsJspLinkMacroResolver;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.relations.CmsRelation;
-import org.opencms.relations.CmsRelationFilter;
-import org.opencms.relations.CmsRelationType;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
@@ -66,7 +62,6 @@ import java.io.Writer;
 import java.net.SocketException;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -115,7 +110,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.113 $ 
+ * @version $Revision: 1.114 $ 
  * 
  * @since 6.0.0 
  * 
@@ -308,8 +303,6 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             } else {
                 // prevent recursive update when including the same file
                 updatedFiles.add(jspTargetName);
-                // update strong link dependencies
-                mustUpdate = updateStrongLinks(resource, controller, updatedFiles);
             }
 
             if (mustUpdate) {
@@ -886,59 +879,6 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             }
         }
         return jspRfsName;
-    }
-
-    /**
-     * Updates all jsp files that include the given jsp file using the 'link.strong' macro.<p>
-     * 
-     * @param resource the current updated jsp file
-     * @param controller the controller for the jsp integration
-     * @param updatedFiles the already updated files
-     * 
-     * @return <code>true</code> if the given JSP file should be updated due to dirty included files
-     * 
-     * @throws ServletException might be thrown in the process of including the JSP 
-     * @throws IOException might be thrown in the process of including the JSP 
-     * @throws CmsLoaderException if the resource type can not be read
-     */
-    private static boolean updateStrongLinks(CmsResource resource, CmsFlexController controller, Set updatedFiles)
-    throws CmsLoaderException, IOException, ServletException {
-
-        int numberOfUpdates = updatedFiles.size();
-        CmsObject cms = controller.getCmsObject();
-        CmsRelationFilter filter = CmsRelationFilter.TARGETS.filterType(CmsRelationType.JSP_STRONG);
-        Iterator it;
-        try {
-            it = cms.getRelationsForResource(cms.getSitePath(resource), filter).iterator();
-        } catch (CmsException e) {
-            // should never happen
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-            return false;
-        }
-        while (it.hasNext()) {
-            CmsRelation relation = (CmsRelation)it.next();
-            CmsResource target = null;
-            try {
-                target = relation.getTarget(cms, CmsResourceFilter.DEFAULT);
-            } catch (CmsException e) {
-                // should never happen
-                if (LOG.isErrorEnabled()) {
-                    LOG.error(e.getLocalizedMessage(), e);
-                }
-                continue;
-            }
-            // check if page was already updated
-            if (updatedFiles.contains(target.getRootPath())) {
-                // no need to write the included file to the real FS more than once
-                continue;
-            }
-            // update the target
-            updateJsp(target, controller, updatedFiles);
-        }
-        // the current jsp file should be updated only if one of the included jsp has been updated
-        return numberOfUpdates < updatedFiles.size();
     }
 
     /**

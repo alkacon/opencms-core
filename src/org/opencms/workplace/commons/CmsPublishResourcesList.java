@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishResourcesList.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/07/04 15:21:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.5.5 
  */
@@ -278,7 +278,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                         cms.getRequestContext().setSiteRoot(rightSite);
                         // get and iterate over all related resources
                         Iterator itRelations = cms.getRelationsForResource(
-                            cms.getSitePath(resource),
+                            resource,
                             CmsRelationFilter.TARGETS.filterStrong()).iterator();
                         while (itRelations.hasNext()) {
                             CmsRelation relation = (CmsRelation)itRelations.next();
@@ -327,7 +327,7 @@ public class CmsPublishResourcesList extends A_CmsListExplorerDialog {
                         if (((Boolean)item.get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
                             // mark the reverse references
                             itRelations = cms.getRelationsForResource(
-                                cms.getSitePath(resource),
+                                resource,
                                 CmsRelationFilter.SOURCES.filterStrong()).iterator();
                             while (itRelations.hasNext()) {
                                 CmsRelation relation = (CmsRelation)itRelations.next();

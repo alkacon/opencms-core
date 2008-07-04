@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
- * Date   : $Date: 2008/02/27 12:05:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/07/04 15:21:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,11 +33,17 @@ package org.opencms.publish;
 
 import org.opencms.db.CmsDbContext;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -46,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.5 
  */
@@ -136,6 +142,14 @@ final class CmsPublishThread extends A_CmsReportThread {
                 Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0),
                 I_CmsReport.FORMAT_HEADLINE);
 
+            Set includingFiles = new HashSet();
+            Iterator it = m_publishJob.getPublishList().getFileList().iterator();
+            while (it.hasNext()) {
+                CmsResource resource = (CmsResource)it.next();
+                if (resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId()) {
+                    CmsResourceTypeJsp.getReferencingStrongLinks(m_publishJob.getCmsObject(), resource, includingFiles);
+                }
+            }
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext(getCms().getRequestContext());
             try {
                 m_publishEngine.getDriverManager().publishJob(getCms(), dbc, m_publishJob.getPublishList(), m_report);
@@ -149,6 +163,7 @@ final class CmsPublishThread extends A_CmsReportThread {
                 if (m_updateSessionInfo) {
                     OpenCms.getSessionManager().updateSessionInfos(getCms());
                 }
+                CmsResourceTypeJsp.deleteReferencingStrongLinks(includingFiles, true);
                 m_report.println(
                     Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_END_0),
                     I_CmsReport.FORMAT_HEADLINE);

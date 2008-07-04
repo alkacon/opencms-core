@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2008/04/21 08:35:04 $
- * Version: $Revision: 1.163 $
+ * Date   : $Date: 2008/07/04 15:21:25 $
+ * Version: $Revision: 1.164 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.163 $
+ * @version $Revision: 1.164 $
  * 
  * @since 6.0.0 
  */
@@ -1654,6 +1654,28 @@ public final class CmsObject {
      * 
      * You may become source and/or target paths to resource you do not have view/read permissions on.<p> 
      * 
+     * @param resource the resource to retrieve the relations for
+     * @param filter the filter to match the relation 
+     * 
+     * @return a List containing all {@link org.opencms.relations.CmsRelation} 
+     *          objects for the given resource matching the given filter
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsSecurityManager#getRelationsForResource(CmsRequestContext, CmsResource, CmsRelationFilter)
+     */
+    public List getRelationsForResource(CmsResource resource, CmsRelationFilter filter) throws CmsException {
+
+        return m_securityManager.getRelationsForResource(m_context, resource, filter);
+    }
+
+    /**
+     * Returns all relations for the given resource matching the given filter.<p> 
+     * 
+     * You should have view/read permissions on the given resource.<p>
+     * 
+     * You may become source and/or target paths to resource you do not have view/read permissions on.<p> 
+     * 
      * @param resourceName the name of the resource to retrieve the relations for
      * @param filter the filter to match the relation 
      * 
@@ -1666,8 +1688,7 @@ public final class CmsObject {
      */
     public List getRelationsForResource(String resourceName, CmsRelationFilter filter) throws CmsException {
 
-        CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
-        return m_securityManager.getRelationsForResource(m_context, resource, filter);
+        return getRelationsForResource(readResource(resourceName, CmsResourceFilter.ALL), filter);
     }
 
     /**
