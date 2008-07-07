@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsHookList.java,v $
- * Date   : $Date: 2008/02/27 12:05:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/07/07 08:08:56 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,11 +36,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
- * A list intended for sublclassing that triggers "listlet" operations that may 
+ * A list intended for subclassing that triggers "listlet" operations that may 
  * access a on a "peer" object 
  * that is provided by a template method to implement in subclasses. <p>
  * 
- * This is inteded to react on modifications on <code>{@link java.util.List}</code> instances 
+ * This is intended to react on modifications on <code>{@link java.util.List}</code> instances 
  * performed by <code>{@link org.opencms.workplace.CmsWidgetDialogParameter}</code> instances 
  * linked to them. Using normal list implementations makes it impossible to intervene in those 
  * list modification by the widget technology.<p>
@@ -50,7 +50,7 @@ import java.util.LinkedList;
  * where &lt;methodName&gt; is the name of the original list operation that took place, 
  * "[e]d" stands for the past (operation took place), &lt;peerObject&gt; is the 
  * given class to perform reactions on (see constructors) and 
- *   &lt;argList&gt; are the arguments of the orginal list method in that order. <p>
+ *   &lt;argList&gt; are the arguments of the original list method in that order. <p>
  * 
  * Currently only the operations used by <code>{@link org.opencms.workplace.CmsWidgetDialog}</code> 
  * (see implementation of <code>{@link org.opencms.workplace.CmsWidgetDialog#actionToggleElement()}</code>) 
@@ -59,11 +59,14 @@ import java.util.LinkedList;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
 public abstract class CmsHookList extends LinkedList {
+
+    /** Id for safe serialization. */
+    private static final long serialVersionUID = 3606129489707495072L;
 
     /** The object operations are made upon. This design cries for 1.5 generics. **/
     private Object m_peer;
