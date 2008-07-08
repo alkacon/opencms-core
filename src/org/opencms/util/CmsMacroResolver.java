@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2008/03/11 08:44:20 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2008/07/08 15:56:56 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -362,7 +362,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             pp1 = p + 1;
             pp2 = pp1 + 1;
             if (pp2 >= len) {
-                // remaining chars can't be a macro (minumum size is 3)
+                // remaining chars can't be a macro (minimum size is 3)
                 result.append(input.substring(p, len));
                 break;
             }
@@ -374,7 +374,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 po = input.indexOf(I_CmsMacroResolver.MACRO_DELIMITER_OLD, pp1);
             }
             if ((po == -1) && (pn == -1)) {
-                // none found, make sure remaining chars in this segement are appended
+                // none found, make sure remaining chars in this segment are appended
                 np = len;
             } else {
                 // check if the next delimiter is old or new style
