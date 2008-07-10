@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelation.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/07/10 14:53:05 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Comparator;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.3.0 
  */
@@ -77,7 +77,7 @@ public class CmsRelation {
     /** Default value for undefined Strings. */
     private static final String UNDEF = "";
 
-    /** Precalculated hashcode. */
+    /** Cached hash code. */
     private int m_hashCode;
 
     /** The structure id of the source resource. */
@@ -146,7 +146,7 @@ public class CmsRelation {
     }
 
     /**
-     * Returns the source resource wenn possible to read with the given filter.<p>
+     * Returns the source resource when possible to read with the given filter.<p>
      * 
      * @param cms the current user context
      * @param filter the filter to use
@@ -193,7 +193,7 @@ public class CmsRelation {
     }
 
     /**
-     * Returns the target resource wenn possible to read with the given filter.<p>
+     * Returns the target resource when possible to read with the given filter.<p>
      * 
      * @param cms the current user context
      * @param filter the filter to use
@@ -220,9 +220,9 @@ public class CmsRelation {
     }
 
     /**
-     * Returns the tructure id of the target resource.<p>
+     * Returns the structure id of the target resource.<p>
      *
-     * @return the tructure id of the target resource
+     * @return the structure id of the target resource
      */
     public CmsUUID getTargetId() {
 
@@ -255,7 +255,7 @@ public class CmsRelation {
     public int hashCode() {
 
         if (m_hashCode == 0) {
-            // calculate hashcode only once
+            // calculate hash code only once
             final int PRIME = 31;
             int result = 1;
             result = PRIME * result + ((m_sourceId == null) ? 0 : m_sourceId.hashCode());
