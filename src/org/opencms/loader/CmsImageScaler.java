@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageScaler.java,v $
- * Date   : $Date: 2008/06/17 09:59:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/07/10 15:13:02 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.2.0
  */
@@ -83,14 +83,26 @@ public class CmsImageScaler {
     /** The (optional) parameter used for sending the scale information of an image in the http request. */
     public static final String PARAM_SCALE = "__scale";
 
-    /** The default maximum image size (width * height) to apply image blurring when downscaling (setting this to high may case "out of memory" errors). */
+    /** The default maximum image size (width * height) to apply image blurring when down scaling (setting this to high may case "out of memory" errors). */
     public static final int SCALE_DEFAULT_MAX_BLUR_SIZE = 2500 * 2500;
 
-    /** The default maximum image size (width or height) to allow when updowscaling an image using request parameters. */
+    /** The default maximum image size (width or height) to allow when up or down scaling an image using request parameters. */
     public static final int SCALE_DEFAULT_MAX_SIZE = 1500;
 
     /** The scaler parameter to indicate the requested image background color (if required). */
     public static final String SCALE_PARAM_COLOR = "c";
+
+    /** The scaler parameter to indicate crop height. */
+    public static final String SCALE_PARAM_CROP_HEIGHT = "ch";
+
+    /** The scaler parameter to indicate crop width. */
+    public static final String SCALE_PARAM_CROP_WIDTH = "cw";
+
+    /** The scaler parameter to indicate crop X coordinate. */
+    public static final String SCALE_PARAM_CROP_X = "cx";
+
+    /** The scaler parameter to indicate crop Y coordinate. */
+    public static final String SCALE_PARAM_CROP_Y = "cy";
 
     /** The scaler parameter to indicate the requested image filter. */
     public static final String SCALE_PARAM_FILTER = "f";
@@ -119,13 +131,28 @@ public class CmsImageScaler {
     /** The target background color (optional). */
     private Color m_color;
 
+    /** The height for image cropping. */
+    private int m_cropHeigt;
+
+    /** Indicates if the image should be cropped or not. */
+    private boolean m_cropImage;
+
+    /** The width for image cropping. */
+    private int m_cropWidth;
+
+    /** The x coordinate for image cropping. */
+    private int m_cropX;
+
+    /** The y coordinate for image cropping. */
+    private int m_cropY;
+
     /** The list of image filter names (Strings) to apply. */
     private List m_filters;
 
     /** The target height (required). */
     private int m_height;
 
-    /** The maximum image size (width * height) to apply image blurring when downscaling (setting this to high may case "out of memory" errors). */
+    /** The maximum image size (width * height) to apply image blurring when down scaling (setting this to high may case "out of memory" errors). */
     private int m_maxBlurSize;
 
     /** The target position (optional). */
@@ -345,21 +372,21 @@ public class CmsImageScaler {
     }
 
     /**
-     * Returns a new image scaler that is a downscale from the size of <code>this</code> scaler 
+     * Returns a new image scaler that is a down scale from the size of <code>this</code> scaler 
      * to the given scaler size.<p>
      * 
-     * If no downscale from this to the given scaler is required according to
+     * If no down scale from this to the given scaler is required according to
      * {@link #isDownScaleRequired(CmsImageScaler)}, then <code>null</code> is returned.<p> 
      * 
-     * @param downScaler the image scaler that holds the downscaled target image dimensions
+     * @param downScaler the image scaler that holds the down scaled target image dimensions
      * 
-     * @return a new image scaler that is a downscale from the size of <code>this</code> scaler 
+     * @return a new image scaler that is a down scale from the size of <code>this</code> scaler 
      *      to the given target scaler size, or <code>null</code>
      */
     public CmsImageScaler getDownScaler(CmsImageScaler downScaler) {
 
         if (!isDownScaleRequired(downScaler)) {
-            // no downscaling is required
+            // no down scaling is required
             return null;
         }
 
@@ -384,7 +411,7 @@ public class CmsImageScaler {
             float scale = (float)downHeight / (float)height;
             downWidth = Math.round(width * scale);
         } else {
-            // something is wrong, don't downscale
+            // something is wrong, don't down scale
             return null;
         }
 
@@ -454,15 +481,15 @@ public class CmsImageScaler {
     }
 
     /**
-     * Returns the maximum image size (width * height) to apply image blurring when downscaling images.<p>
+     * Returns the maximum image size (width * height) to apply image blurring when down scaling images.<p>
      * 
-     * Image blurring is required to achieve the best results for downscale operations when the target image size 
+     * Image blurring is required to achieve the best results for down scale operations when the target image size 
      * is 2 times or more smaller then the original image size. This parameter controls the maximum size (width * height) of an 
-     * image that is blurred before it is downscaled. If the image is larger, no blurring is done. 
+     * image that is blurred before it is down scaled. If the image is larger, no blurring is done. 
      * However, image blurring is an expensive operation in both CPU usage and memory consumption. 
      * Setting the blur size to large may case "out of memory" errors.<p>
      * 
-     * @return the maximum image size (width * height) to apply image blurring when downscaling images
+     * @return the maximum image size (width * height) to apply image blurring when down scaling images
      */
     public int getMaxBlurSize() {
 
@@ -533,7 +560,7 @@ public class CmsImageScaler {
      * 
      * @param target the image scaler that holds the target image dimensions
      * 
-     * @return a new image scaler that is a rescale from the <code>this</code> scaler 
+     * @return a new image scaler that is a rescaler from the <code>this</code> scaler 
      *      size to the given target scaler size.<p>
      */
     public CmsImageScaler getReScaler(CmsImageScaler target) {
@@ -626,16 +653,16 @@ public class CmsImageScaler {
     }
 
     /**
-     * Returns a new image scaler that is a width based downscale from the size of <code>this</code> scaler 
+     * Returns a new image scaler that is a width based down scale from the size of <code>this</code> scaler 
      * to the given scaler size.<p>
      * 
-     * If no downscale from this to the given scaler is required because the width of <code>this</code>
+     * If no down scale from this to the given scaler is required because the width of <code>this</code>
      * scaler is not larger than the target width, then the image dimensions of <code>this</code> scaler 
-     * are unchanged in the result scaler. No upscaling is done!<p>
+     * are unchanged in the result scaler. No up scaling is done!<p>
      * 
-     * @param downScaler the image scaler that holds the downscaled target image dimensions
+     * @param downScaler the image scaler that holds the down scaled target image dimensions
      * 
-     * @return a new image scaler that is a downscale from the size of <code>this</code> scaler 
+     * @return a new image scaler that is a down scale from the size of <code>this</code> scaler 
      *      to the given target scaler size
      */
     public CmsImageScaler getWidthScaler(CmsImageScaler downScaler) {
@@ -666,8 +693,8 @@ public class CmsImageScaler {
     }
 
     /**
-     * Returns <code>true</code> if this image scaler must be downscaled when compared to the
-     * given "downscale" image scaler.<p>
+     * Returns <code>true</code> if this image scaler must be down scaled when compared to the
+     * given "down scale" image scaler.<p>
      *
      * If either <code>this</code> scaler or the given <code>downScaler</code> is invalid according to
      * {@link #isValid()}, then <code>false</code> is returned.<p>
@@ -676,12 +703,12 @@ public class CmsImageScaler {
      * an image). The <code>downScaler</code> represents the maximum wanted image. The scalers
      * are compared and if the image represented by <code>this</code> scaler is too large,
      * <code>true</code> is returned. Image orientation is ignored, so for example an image with 600x800 pixel 
-     * will NOT be downscaled if the target size is 800x600 but kept unchanged.<p>
+     * will NOT be down scaled if the target size is 800x600 but kept unchanged.<p>
      * 
-     * @param downScaler the downscaler to compare this image scaler with
+     * @param downScaler the down scaler to compare this image scaler with
      * 
-     * @return <code>true</code> if this image scaler must be downscaled when compared to the
-     *      given "downscale" image scaler
+     * @return <code>true</code> if this image scaler must be down scaled when compared to the
+     *      given "down scale" image scaler
      */
     public boolean isDownScaleRequired(CmsImageScaler downScaler) {
 
@@ -767,6 +794,18 @@ public class CmsImageScaler {
                 } else if (SCALE_PARAM_WIDTH.equals(k)) {
                     // image width
                     m_width = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
+                } else if (SCALE_PARAM_CROP_X.equals(k)) {
+                    // crop x coordinate
+                    m_cropX = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
+                } else if (SCALE_PARAM_CROP_Y.equals(k)) {
+                    // crop y coordinate
+                    m_cropY = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
+                } else if (SCALE_PARAM_CROP_WIDTH.equals(k)) {
+                    // crop width
+                    m_cropWidth = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
+                } else if (SCALE_PARAM_CROP_HEIGHT.equals(k)) {
+                    // crop height
+                    m_cropHeigt = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
                 } else if (SCALE_PARAM_TYPE.equals(k)) {
                     // scaling type
                     setType(CmsStringUtil.getIntValue(v, -1, CmsImageScaler.SCALE_PARAM_TYPE));
@@ -796,6 +835,8 @@ public class CmsImageScaler {
                 }
             }
         }
+        // initialize image crop area
+        initCropArea();
     }
 
     /**
@@ -810,6 +851,9 @@ public class CmsImageScaler {
 
         byte[] result = content;
 
+        // initialize image crop area
+        initCropArea();
+
         RenderSettings renderSettings;
         if ((m_renderMode == 0) && (m_quality == 0)) {
             // use default render mode and quality
@@ -821,18 +865,18 @@ public class CmsImageScaler {
                 renderSettings.setCompressionQuality(m_quality / 100f);
             }
         }
-        // set max blur siuze
+        // set max blur size
         renderSettings.setMaximumBlurSize(m_maxBlurSize);
         // new create the scaler
         Simapi scaler = new Simapi(renderSettings);
-        // calculate a valid image type supported by the imaging libary (e.g. "JPEG", "GIF")
+        // calculate a valid image type supported by the imaging library (e.g. "JPEG", "GIF")
         String imageType = Simapi.getImageType(rootPath);
         if (imageType == null) {
             // no type given, maybe the name got mixed up
             String mimeType = OpenCms.getResourceManager().getMimeType(rootPath, null, null);
-            // check if this is another known mime type, if so DONT use it (images should not be named *.pdf)
+            // check if this is another known MIME type, if so DONT use it (images should not be named *.pdf)
             if (mimeType == null) {
-                // no mime type found, use JPEG format to write images to the cache         
+                // no MIME type found, use JPEG format to write images to the cache         
                 imageType = Simapi.TYPE_JPEG;
             }
         }
@@ -853,7 +897,7 @@ public class CmsImageScaler {
                 while (i.hasNext()) {
                     String filter = (String)i.next();
                     if (FILTER_GRAYSCALE.equals(filter)) {
-                        // add a grayscale filter
+                        // add a gray scale filter
                         GrayscaleFilter grayscaleFilter = new GrayscaleFilter();
                         renderSettings.addImageFilter(grayscaleFilter);
                     } else if (FILTER_SHADOW.equals(filter)) {
@@ -870,27 +914,41 @@ public class CmsImageScaler {
                 }
             }
 
-            switch (getType()) {
-                // select the "right" method of scaling according to the "t" parameter
-                case 1:
-                    // thumbnail generation mode (like 0 but no image enlargement)
-                    image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), false);
-                    break;
-                case 2:
-                    // scale to exact target size, crop what does not fit
-                    image = scaler.resize(image, getWidth(), getHeight(), getPosition());
-                    break;
-                case 3:
-                    // scale and keep image proportions, target size variable
-                    image = scaler.resize(image, getWidth(), getHeight(), true);
-                    break;
-                case 4:
-                    // don't keep image proportions, use exact target size
-                    image = scaler.resize(image, getWidth(), getHeight(), false);
-                    break;
-                default:
-                    // scale to exact target size with background padding
-                    image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), true);
+            if (m_cropImage) {
+                // image crop operation
+                image = scaler.cropToSize(
+                    image,
+                    m_cropX,
+                    m_cropY,
+                    m_cropWidth,
+                    m_cropHeigt,
+                    getWidth(),
+                    getHeight(),
+                    color);
+            } else {
+                // image rescale operation
+                switch (getType()) {
+                    // select the "right" method of scaling according to the "t" parameter
+                    case 1:
+                        // thumbnail generation mode (like 0 but no image enlargement)
+                        image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), false);
+                        break;
+                    case 2:
+                        // scale to exact target size, crop what does not fit
+                        image = scaler.resize(image, getWidth(), getHeight(), getPosition());
+                        break;
+                    case 3:
+                        // scale and keep image proportions, target size variable
+                        image = scaler.resize(image, getWidth(), getHeight(), true);
+                        break;
+                    case 4:
+                        // don't keep image proportions, use exact target size
+                        image = scaler.resize(image, getWidth(), getHeight(), false);
+                        break;
+                    default:
+                        // scale to exact target size with background padding
+                        image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), true);
+                }
             }
 
             if (!m_filters.isEmpty()) {
@@ -948,6 +1006,22 @@ public class CmsImageScaler {
         } else {
             setColor(CmsStringUtil.getColorValue(value, Color.WHITE, SCALE_PARAM_COLOR));
         }
+    }
+
+    /**
+     * Sets the image crop area.<p>
+     * 
+     * @param x the x coordinate for the crop
+     * @param y the y coordinate for the crop
+     * @param width the crop width
+     * @param height the crop height
+     */
+    public void setCropArea(int x, int y, int width, int height) {
+
+        m_cropX = x;
+        m_cropY = y;
+        m_cropWidth = width;
+        m_cropHeigt = height;
     }
 
     /**
@@ -1108,13 +1182,35 @@ public class CmsImageScaler {
         }
 
         StringBuffer result = new StringBuffer(64);
-        result.append(CmsImageScaler.SCALE_PARAM_WIDTH);
-        result.append(':');
-        result.append(m_width);
-        result.append(',');
-        result.append(CmsImageScaler.SCALE_PARAM_HEIGHT);
-        result.append(':');
-        result.append(m_height);
+        if (m_cropImage) {
+            result.append(CmsImageScaler.SCALE_PARAM_CROP_X);
+            result.append(':');
+            result.append(m_cropX);
+            result.append(',');
+            result.append(CmsImageScaler.SCALE_PARAM_CROP_Y);
+            result.append(':');
+            result.append(m_cropY);
+            result.append(',');
+            result.append(CmsImageScaler.SCALE_PARAM_CROP_WIDTH);
+            result.append(':');
+            result.append(m_cropWidth);
+            result.append(',');
+            result.append(CmsImageScaler.SCALE_PARAM_CROP_HEIGHT);
+            result.append(':');
+            result.append(m_cropHeigt);
+        }
+        if (!m_cropImage || ((m_width != m_cropWidth) || (m_height != m_cropHeigt))) {
+            if (m_cropImage) {
+                result.append(',');
+            }
+            result.append(CmsImageScaler.SCALE_PARAM_WIDTH);
+            result.append(':');
+            result.append(m_width);
+            result.append(',');
+            result.append(CmsImageScaler.SCALE_PARAM_HEIGHT);
+            result.append(':');
+            result.append(m_height);
+        }
         if (m_type > 0) {
             result.append(',');
             result.append(CmsImageScaler.SCALE_PARAM_TYPE);
@@ -1166,9 +1262,38 @@ public class CmsImageScaler {
         m_position = 0;
         m_renderMode = 0;
         m_quality = 0;
+        m_cropHeigt = -1;
+        m_cropWidth = -1;
+        m_cropX = Integer.MIN_VALUE;
+        m_cropY = Integer.MIN_VALUE;
+        m_cropImage = false;
         m_color = Color.WHITE;
         m_filters = new ArrayList();
         m_maxBlurSize = CmsImageLoader.getMaxBlurSize();
+    }
+
+    /**
+     * Initializes the crop area setting.<p>
+     * 
+     * Only if all 4 required parameters have been set, the crop area is set accordingly.
+     * Moreover, it is not required to specify the target image width and height when using crop,
+     * because these parameters can be calculated from the crop area.<p> 
+     */
+    private void initCropArea() {
+
+        if ((m_cropX != Integer.MIN_VALUE) && (m_cropY != Integer.MIN_VALUE) && (m_cropHeigt > 0) && (m_cropWidth > 0)) {
+            // crop area is set up correctly
+            m_cropImage = true;
+            // adjust target image height or width if reauired
+            if (m_width < 0) {
+                m_width = m_cropWidth;
+            }
+            if (m_height < 0) {
+                m_height = m_cropHeigt;
+            }
+            // set type to 0 - scale type is ignored when using crop
+            setType(0);
+        }
     }
 
     /**
@@ -1187,5 +1312,9 @@ public class CmsImageScaler {
         m_color = source.m_color;
         m_filters = new ArrayList(source.m_filters);
         m_maxBlurSize = source.m_maxBlurSize;
+        m_cropHeigt = source.m_cropHeigt;
+        m_cropWidth = source.m_cropWidth;
+        m_cropX = source.m_cropX;
+        m_cropY = source.m_cropY;
     }
 }
