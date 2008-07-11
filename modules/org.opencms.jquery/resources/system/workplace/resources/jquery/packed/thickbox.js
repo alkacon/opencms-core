@@ -3,8 +3,20 @@
  * By Cody Lindley (http://www.codylindley.com)
  * Copyright (c) 2007 cody lindley
  * Licensed under the MIT License: http://www.opensource.org/licenses/mit-license.php
+ *
+ * Changes to original code for OpenCms:
+ * - usage of tb_msg object to localize pagination and close links:
+ *   var tb_msg = {
+ *     'close': 'Close',
+ *     'next': 'Next >',
+ *     'prev': '< Previous',
+ *     'imageCount': 'Image !current of !total'
+ *   };
+ *
+ * - changed behaviour if clicking on thickbox image, now flips to next image;
+ *   check lines 152 and following, line 188 and following
 */
-		  
+
 /*!!!!!!!!!!!!!!!!! edit below this line at your own risk !!!!!!!!!!!!!!!!!!!!!!!*/
 
 //on page load call tb_init
@@ -137,7 +149,9 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 				$("#TB_prev").click(goPrev);
 			}
 			
-			if (!(TB_NextHTML === "")) {		
+			var hasNext = false;
+			if (!(TB_NextHTML === "")) {
+				hasNext = true;	
 				function goNext(){
 					$("#TB_window").remove();
 					$("body").append("<div id='TB_window'></div>");
@@ -171,7 +185,12 @@ function tb_show(caption, url, imageGroup) {//function called when the user clic
 			
 			tb_position();
 			$("#TB_load").remove();
-			$("#TB_ImageOff").click(tb_remove);
+			if (hasNext) {
+				$("#TB_ImageOff").click(goNext);
+				$("#TB_ImageOff").attr("title", tb_msg.next);
+			} else {
+				$("#TB_ImageOff").click(tb_remove);
+			}
 			$("#TB_window").css({display:"block"}); //for safari using css instead of show
 			};
 			
