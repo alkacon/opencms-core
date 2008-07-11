@@ -15,8 +15,13 @@
  *
  * - changed behaviour if clicking on thickbox image, now flips to next image;
  *   check lines 152 and following, line 188 and following
-*/
-
+ * 
+ * - changed initialization method: 
+ *   you have to set the imgLoader.src url in your jsp file:
+ *   imgLoader.src = '<%=CmsWorkplace.getSkinUri()%>jquery/css/thickbox/loading.gif';
+ *   
+ * - changed global margin settings in the css.
+ */
 /*!!!!!!!!!!!!!!!!! edit below this line at your own risk !!!!!!!!!!!!!!!!!!!!!!!*/
 
 //on page load call tb_init
