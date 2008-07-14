@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:32 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2008/07/14 08:52:48 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
@@ -606,9 +606,9 @@ public class CmsResourceManager {
     }
 
     /**
-     * Returns the (unmodifyable array) list with all initialized resource loaders.<p>
+     * Returns the (unmodifiable array) list with all initialized resource loaders.<p>
      * 
-     * @return the (unmodifyable array) list with all initialized resource loaders
+     * @return the (unmodifiable array) list with all initialized resource loaders
      */
     public List getLoaders() {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2008/02/27 12:05:39 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2008/07/14 08:52:48 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.66 $ 
+ * @version $Revision: 1.67 $ 
  * 
  * @since 6.0.0 
  */
@@ -537,7 +537,7 @@ public final class OpenCms {
      * 
      * @return an independent copy of the provided CmsObject
      * 
-     * @throws CmsException in case the intialization failed
+     * @throws CmsException in case the initialization failed
      * 
      * @see OpenCms#initCmsObject(CmsObject)
      * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)

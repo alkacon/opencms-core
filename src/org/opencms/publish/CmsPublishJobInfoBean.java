@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobInfoBean.java,v $
- * Date   : $Date: 2008/02/27 12:05:27 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/07/14 08:52:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.5.5
  */
@@ -342,7 +342,8 @@ public final class CmsPublishJobInfoBean {
      * 
      * @param adminCms an admin cms object
      * @param publishList a publish list
-     * @throws CmsException if somethign goes wrong
+     * 
+     * @throws CmsException if something goes wrong
      */
     public void revive(CmsObject adminCms, CmsPublishList publishList) throws CmsException {
 

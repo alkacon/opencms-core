@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestLogAppender.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/07/14 08:52:48 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.test;
 
 import org.apache.log4j.ConsoleAppender;
@@ -42,32 +42,33 @@ import org.apache.log4j.spi.LoggingEvent;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
 public class OpenCmsTestLogAppender extends ConsoleAppender {
 
-    // indicates if a logged error / faltal message should cause a test to fail
+    // indicates if a logged error / fatal message should cause a test to fail
     private static boolean m_breakOnError = false;
-    
+
     /**
      * Sets the "break on error" status.<p>
      * 
      * @param value the "break on error" status to set
      */
     public static void setBreakOnError(boolean value) {
+
         m_breakOnError = value;
     }
-    
+
     /**
      * @see org.apache.log4j.WriterAppender#append(org.apache.log4j.spi.LoggingEvent)
      */
     public void append(LoggingEvent logEvent) {
 
-        // first log the event as ususal
+        // first log the event as usual
         super.append(logEvent);
-        
+
         if (m_breakOnError) {
             int logLevel = logEvent.getLevel().toInt();
             switch (logLevel) {
@@ -76,13 +77,13 @@ public class OpenCmsTestLogAppender extends ConsoleAppender {
                     if (logEvent.getThrowableInformation() != null) {
                         if (logEvent.getThrowableInformation().getThrowable() != null) {
                             throw new RuntimeException(
-                                logEvent.getRenderedMessage(), 
+                                logEvent.getRenderedMessage(),
                                 logEvent.getThrowableInformation().getThrowable());
                         }
                     }
                     throw new RuntimeException(logEvent.getRenderedMessage());
                 default:
-                    // noop
+                    // empty
             }
         }
     }
