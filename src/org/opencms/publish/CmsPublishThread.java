@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishThread.java,v $
- * Date   : $Date: 2008/07/04 15:21:25 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/07/14 10:05:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,9 +32,12 @@
 package org.opencms.publish;
 
 import org.opencms.db.CmsDbContext;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -52,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.5.5 
  */
@@ -79,6 +82,9 @@ final class CmsPublishThread extends A_CmsReportThread {
     /** Flag for updating the user info. */
     private final boolean m_updateSessionInfo;
 
+    /** JSP Loader instance. */
+    protected CmsJspLoader m_jspLoader;
+
     /**
      * Creates a thread that start a new publish job with the given information.<p>
      * 
@@ -100,6 +106,11 @@ final class CmsPublishThread extends A_CmsReportThread {
             m_updateSessionInfo = true;
         } else {
             m_updateSessionInfo = false;
+        }
+        try {
+            m_jspLoader = (CmsJspLoader)OpenCms.getResourceManager().getLoader(CmsJspLoader.RESOURCE_LOADER_ID);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // ignore, loader not configured
         }
     }
 
@@ -126,33 +137,66 @@ final class CmsPublishThread extends A_CmsReportThread {
      */
     public void run() {
 
-        try {
-            // start the job
-            m_publishJob.start(getUUID());
-            // set the report
-            m_report = m_publishJob.getPublishReport();
-            // signalizes that the thread has been started
-            m_publishEngine.publishJobStarted(m_publishJob);
-            m_started = true;
-            if (isAborted()) {
-                return;
-            }
+        // start the job
+        m_publishJob.start(getUUID());
+        // set the report
+        m_report = m_publishJob.getPublishReport();
+        // signalizes that the thread has been started
+        m_publishEngine.publishJobStarted(m_publishJob);
+        m_started = true;
+        if (isAborted()) {
+            return;
+        }
 
-            m_report.println(
-                Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0),
-                I_CmsReport.FORMAT_HEADLINE);
+        m_report.println(Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
 
-            Set includingFiles = new HashSet();
-            Iterator it = m_publishJob.getPublishList().getFileList().iterator();
-            while (it.hasNext()) {
-                CmsResource resource = (CmsResource)it.next();
-                if (resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId()) {
-                    CmsResourceTypeJsp.getReferencingStrongLinks(m_publishJob.getCmsObject(), resource, includingFiles);
-                }
-            }
+        Set includingFiles = new HashSet();
+        if (m_jspLoader != null) {
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext(getCms().getRequestContext());
             try {
+                // use the online project
+                CmsObject jspCms = OpenCms.initCmsObject(m_publishJob.getCmsObject());
+                jspCms.getRequestContext().setCurrentProject(jspCms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                // collect jsp referencing information
+                m_report.println(
+                    Messages.get().container(Messages.RPT_JSPLOADER_UPDATE_CACHE_BEGIN_0),
+                    I_CmsReport.FORMAT_HEADLINE);
+                Iterator it = m_publishJob.getPublishList().getFileList().iterator();
+                while (it.hasNext()) {
+                    CmsResource resource = (CmsResource)it.next();
+                    if ((resource.getTypeId() == CmsResourceTypeJsp.getStaticTypeId())
+                        || (resource.getTypeId() == CmsResourceTypePlain.getStaticTypeId())) {
+                        m_report.print(
+                            Messages.get().container(Messages.RPT_JSPLOADER_UPDATE_CACHE_0),
+                            I_CmsReport.FORMAT_NOTE);
+                        m_report.print(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            dbc.removeSiteRoot(resource.getRootPath())));
+                        m_report.print(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_DOTS_0));
+                        m_jspLoader.getReferencingStrongLinks(jspCms, resource, includingFiles);
+                        m_report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
+                    }
+                }
+            } catch (Throwable e) {
+                // catch every thing including runtime exceptions
+                m_report.println(e);
+            } finally {
+                dbc.clear();
+                dbc = null;
+                m_report.println(
+                    Messages.get().container(Messages.RPT_JSPLOADER_UPDATE_CACHE_END_0),
+                    I_CmsReport.FORMAT_HEADLINE);
+            }
+        }
+        try {
+            CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext(getCms().getRequestContext());
+            try {
+                // publish
                 m_publishEngine.getDriverManager().publishJob(getCms(), dbc, m_publishJob.getPublishList(), m_report);
+                // update jsp loader cache
+                m_jspLoader.removeFromCache(includingFiles, true);
             } catch (Throwable e) {
                 // catch every thing including runtime exceptions
                 m_report.println(e);
@@ -163,7 +207,6 @@ final class CmsPublishThread extends A_CmsReportThread {
                 if (m_updateSessionInfo) {
                     OpenCms.getSessionManager().updateSessionInfos(getCms());
                 }
-                CmsResourceTypeJsp.deleteReferencingStrongLinks(includingFiles, true);
                 m_report.println(
                     Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_END_0),
                     I_CmsReport.FORMAT_HEADLINE);

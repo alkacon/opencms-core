@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/07/01 16:00:57 $
- * Version: $Revision: 1.1038 $
+ * Date   : $Date: 2008/07/14 10:05:10 $
+ * Version: $Revision: 1.1039 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -18,6 +18,11 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 7.0.6 - xxx, 2008
+! Added support for decentralized categories
+* Fixed issue with JSP hard includes when using site relative paths
+* Fixed issue with performance when serving JSP pages using the link macro
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)

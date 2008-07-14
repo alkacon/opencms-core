@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2008/02/27 12:05:47 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2008/07/14 10:05:10 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,6 +96,9 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /** Flag to check if this request is in the online project or not. */
     private boolean m_isOnline;
+
+    /** JSP Loader instance. */
+    private CmsJspLoader m_jspLoader;
 
     /** The CmsFlexRequestKey for this request. */
     private CmsFlexRequestKey m_key;
@@ -467,7 +470,10 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
             servletPath = super.getServletPath();
         }
         // generate missing jsp file
-        CmsJspLoader.updateJspFromRequest(servletPath, this);
+        CmsJspLoader jspLoader = getJspLoader();
+        if (jspLoader != null) {
+            jspLoader.updateJspFromRequest(servletPath, this);
+        }
         return servletPath;
     }
 
@@ -549,6 +555,23 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     protected List getCmsIncludeCalls() {
 
         return m_includeCalls;
+    }
+
+    /**
+     * Returns the jsp loader instance.<p>
+     * 
+     * @return the jsp loader instance
+     */
+    protected CmsJspLoader getJspLoader() {
+
+        if (m_jspLoader == null) {
+            try {
+                m_jspLoader = (CmsJspLoader)OpenCms.getResourceManager().getLoader(CmsJspLoader.RESOURCE_LOADER_ID);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                // ignore, loader not configured
+            }
+        }
+        return m_jspLoader;
     }
 
     /**

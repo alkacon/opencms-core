@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:32 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2008/07/14 10:05:10 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,6 +152,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_IMAGE_SCALING_ENABLED_1 = "INIT_IMAGE_SCALING_ENABLED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_JSP_CACHE_SIZE_1 = "INIT_JSP_CACHE_SIZE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_JSP_REPOSITORY_ABS_PATH_1 = "INIT_JSP_REPOSITORY_ABS_PATH_1";

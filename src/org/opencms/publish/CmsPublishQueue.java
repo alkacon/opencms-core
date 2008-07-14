@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2008/02/27 12:05:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/07/14 10:05:10 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.5.5
  */
@@ -259,13 +259,13 @@ public class CmsPublishQueue {
      */
     protected void remove(CmsPublishJobInfoBean publishJob) throws CmsException {
 
-        // signalize that job will be removed
+        // signalizes that job will be removed
         m_publishEngine.publishJobRemoved(publishJob);
 
         // remove publish job from cache
         OpenCms.getMemoryMonitor().uncachePublishJob(publishJob);
 
-        // remove job from database if neccessary
+        // remove job from database if necessary
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
             try {
@@ -280,15 +280,17 @@ public class CmsPublishQueue {
      * Updates the given job in the list.<p>
      * 
      * @param publishJob the publish job to 
-     * 
-     * @throws CmsException if something goes wrong
      */
-    protected void update(CmsPublishJobInfoBean publishJob) throws CmsException {
+    protected void update(CmsPublishJobInfoBean publishJob) {
 
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
             try {
                 m_publishEngine.getDriverManager().writePublishJob(dbc, publishJob);
+            } catch (CmsException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             } finally {
                 dbc.clear();
             }
