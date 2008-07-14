@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsResourceCategoriesList.java,v $
- * Date   : $Date: 2008/02/27 12:05:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/07/14 10:04:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,18 +31,15 @@
 
 package org.opencms.workplace.commons;
 
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.relations.CmsCategory;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,14 +51,17 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.9.2
  */
 public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
 
     /** list action id constant. */
-    public static final String LIST_ACTION_REMOVE = "ar";
+    public static final String LIST_ACTION_REMOVE1 = "ar1";
+
+    /** list action id constant. */
+    public static final String LIST_ACTION_REMOVE2 = "ar2";
 
     /** list id constant. */
     public static final String LIST_ID = "lrc";
@@ -106,7 +106,7 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
      */
     public void executeListSingleActions() throws CmsRuntimeException {
 
-        if (getParamListAction().equals(LIST_ACTION_REMOVE)) {
+        if (getParamListAction().equals(LIST_ACTION_REMOVE1) || getParamListAction().equals(LIST_ACTION_REMOVE2)) {
             try {
                 // lock resource if autolock is enabled
                 checkLock(getParamResource());
@@ -114,6 +114,7 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
                 CmsListItem listItem = getSelectedItem();
                 String categoryPath = listItem.getId();
                 getCategoryService().removeResourceFromCategory(getCms(), getParamResource(), categoryPath);
+                getCategoryService().repairRelations(getCms(), getParamResource());
             } catch (CmsException e) {
                 throw new CmsRuntimeException(e.getMessageContainer(), e);
             }
@@ -151,44 +152,44 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
         stateCol.setWidth("20");
         stateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         stateCol.setSorteable(false);
-        // add remove action
-        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_REMOVE) {
+        // add remove action with confirmation message
+        CmsListDirectAction stateAction1 = new CmsListDirectAction(LIST_ACTION_REMOVE1) {
 
             /**
-             * @see org.opencms.workplace.list.A_CmsListAction#getConfirmationMessage()
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
-            public CmsMessageContainer getConfirmationMessage() {
+            public boolean isVisible() {
 
-                Iterator itCategories;
-                try {
-                    itCategories = ((A_CmsResourceCategoriesList)getWp()).getResourceCategories().iterator();
-                } catch (CmsException e) {
-                    e.printStackTrace();
-                    return super.getConfirmationMessage();
+                if ((getItem() == null) || ((Boolean)getItem().get(LIST_COLUMN_LEAFS)).booleanValue()) {
+                    return false;
                 }
-                while (itCategories.hasNext()) {
-                    CmsCategory category = (CmsCategory)itCategories.next();
-                    try {
-                        if (((A_CmsResourceCategoriesList)getWp()).getResourceCategories().containsAll(
-                            ((A_CmsResourceCategoriesList)getWp()).getCategoryService().readSubCategories(
-                                getWp().getCms(),
-                                category.getPath(),
-                                true))) {
-                            return Messages.get().container(Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_CONF_MORE_0);
-                        }
-                    } catch (CmsException e) {
-                        return super.getConfirmationMessage();
-                    }
-                }
-                return super.getConfirmationMessage();
+                return true;
             }
         };
-        stateAction.setName(Messages.get().container(Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_NAME_0));
-        stateAction.setHelpText(Messages.get().container(Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_HELP_0));
-        stateAction.setIconPath(ICON_MINUS);
-        stateAction.setConfirmationMessage(Messages.get().container(
-            Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_CONF_SINGLE_0));
-        stateCol.addDirectAction(stateAction);
+        stateAction1.setName(Messages.get().container(Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_NAME_0));
+        stateAction1.setHelpText(Messages.get().container(Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_HELP_0));
+        stateAction1.setIconPath(ICON_MINUS);
+        stateAction1.setConfirmationMessage(Messages.get().container(
+            Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_CONF_MORE_0));
+        stateCol.addDirectAction(stateAction1);
+        // add remove action without confirmation message
+        CmsListDirectAction stateAction2 = new CmsListDirectAction(LIST_ACTION_REMOVE2) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if ((getItem() == null) || ((Boolean)getItem().get(LIST_COLUMN_LEAFS)).booleanValue()) {
+                    return true;
+                }
+                return false;
+            }
+        };
+        stateAction2.setName(Messages.get().container(Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_NAME_0));
+        stateAction2.setHelpText(Messages.get().container(Messages.GUI_CATEGORIES_LIST_DEFACTION_REMOVE_HELP_0));
+        stateAction2.setIconPath(ICON_MINUS);
+        stateCol.addDirectAction(stateAction2);
         // add it to the list definition
         metadata.addColumn(stateCol);
     }

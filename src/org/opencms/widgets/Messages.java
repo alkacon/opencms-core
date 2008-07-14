@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Messages.java,v $
- * Date   : $Date: 2008/05/23 12:48:39 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/07/14 10:04:27 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,12 +87,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_PREVIEW_0 = "GUI_BUTTON_PREVIEW_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CATEGORY_CHECK_EMPTY_ERROR_0 = "GUI_CATEGORY_CHECK_EMPTY_ERROR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_CATEGORY_CHECK_NOLEAF_ERROR_0 = "GUI_CATEGORY_CHECK_NOLEAF_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CATEGORY_SELECT_0 = "GUI_CATEGORY_SELECT_0";

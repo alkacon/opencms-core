@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsNotResourceCategoriesList.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/07/14 10:04:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.9.2
  */
@@ -116,6 +116,7 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
 
                 CmsListItem listItem = getSelectedItem();
                 getCategoryService().addResourceToCategory(getCms(), getParamResource(), listItem.getId());
+                getCategoryService().repairRelations(getCms(), getParamResource());
             } catch (CmsException e) {
                 throw new CmsRuntimeException(e.getMessageContainer(), e);
             }
@@ -139,15 +140,16 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
     protected List getCategories() throws CmsException {
 
         List resourceRelations = getResourceCategories();
-        List result = getCategoryService().readAllCategories(getJsp().getCmsObject(), true);
+        List result = getCategoryService().readCategories(getJsp().getCmsObject(), null, true, getParamResource());
         Iterator itResourceRelations = resourceRelations.iterator();
         while (itResourceRelations.hasNext()) {
             CmsCategory category = (CmsCategory)itResourceRelations.next();
             if (result.contains(category)
-                && resourceRelations.containsAll(getCategoryService().readSubCategories(
+                && resourceRelations.containsAll(getCategoryService().readCategories(
                     getJsp().getCmsObject(),
                     category.getPath(),
-                    true))) {
+                    true,
+                    getParamResource()))) {
                 result.remove(category);
             }
         }
@@ -205,14 +207,13 @@ public class CmsNotResourceCategoriesList extends A_CmsResourceCategoriesList {
             public boolean isEnabled() {
 
                 try {
-                    if (((A_CmsResourceCategoriesList)getWp()).getResourceCategories().contains(
-                        ((A_CmsResourceCategoriesList)getWp()).getCategoryService().readCategory(
-                            getWp().getCms(),
-                            getItem().getId()))) {
+                    A_CmsResourceCategoriesList wp = (A_CmsResourceCategoriesList)getWp();
+                    if (wp.getResourceCategories().contains(
+                        wp.getCategoryService().readCategory(wp.getCms(), getItem().getId(), wp.getParamResource()))) {
                         return false;
                     }
                 } catch (CmsException e) {
-                    // noop
+                    // ignore
                 }
                 return true;
             }

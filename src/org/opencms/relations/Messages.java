@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/07/14 10:04:27 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,15 +39,15 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.3.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_ERR_CREATE_CATEGORY_FOLDER_1 = "LOG_ERR_CREATE_CATEGORY_FOLDER_1";
-    
+    public static final String ERR_CATEGORY_INVALID_LOCATION_1 = "ERR_CATEGORY_INVALID_LOCATION_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RELATION_TYPE_INIT_1 = "ERR_RELATION_TYPE_INIT_1";
 
@@ -59,7 +59,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_VALIDATION_RESULTS_ALL_VALID_1 = "GUI_LINK_VALIDATION_RESULTS_ALL_VALID_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LINK_VALIDATION_RESULTS_INTRO_1 = "GUI_LINK_VALIDATION_RESULTS_INTRO_1";
 
@@ -113,13 +113,16 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_BROKEN_LINK_UPDATED_BY_NAME_3 = "LOG_BROKEN_LINK_UPDATED_BY_NAME_3";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_CREATE_CATEGORY_FOLDER_1 = "LOG_ERR_CREATE_CATEGORY_FOLDER_1";
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_SEARCH_1 = "LOG_LINK_SEARCH_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_VALIDATION_READBYID_FAILED_2 = "LOG_LINK_VALIDATION_READBYID_FAILED_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LINK_VALIDATION_READBYPATH_FAILED_2 = "LOG_LINK_VALIDATION_READBYPATH_FAILED_2";
 

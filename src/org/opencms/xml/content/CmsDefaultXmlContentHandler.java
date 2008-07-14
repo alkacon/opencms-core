@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2008/07/14 10:04:27 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,11 +32,13 @@
 package org.opencms.xml.content;
 
 import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.lock.CmsLock;
@@ -44,6 +46,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategory;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.site.CmsSite;
@@ -51,8 +55,11 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsCategoryWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.I_CmsWidget;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.editors.CmsXmlContentWidgetVisitor;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
@@ -84,7 +91,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 6.0.0 
  */
@@ -650,6 +657,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         content.resolveMappings(cms);
         // ensure all property mappings of deleted optional values are removed
         removeEmptyMappings(cms, content);
+        // write categories (if there is a category widget present)
+        file = writeCategories(cms, file, content);
         // return the result
         return file;
     }
@@ -871,7 +880,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         errorHandler = validateValue(cms, value, errorHandler, m_validationErrorRules, false);
         // validate the warning rules
         errorHandler = validateValue(cms, value, errorHandler, m_validationWarningRules, true);
-
+        // validate categories
+        errorHandler = validateCategories(cms, value, errorHandler);
         // return the result
         return errorHandler;
     }
@@ -1169,6 +1179,66 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             }
         }
         m_elementWidgets.put(elementName, widget);
+    }
+
+    /**
+     * Returns the default locale in the content of the given resource.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource path to get the default locale for
+     * 
+     * @return the default locale of the resource
+     */
+    protected Locale getLocaleForResource(CmsObject cms, String resource) {
+
+        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, resource);
+        if (locale == null) {
+            List locales = OpenCms.getLocaleManager().getAvailableLocales();
+            if (locales.size() > 0) {
+                locale = (Locale)locales.get(0);
+            } else {
+                locale = Locale.ENGLISH;
+            }
+        }
+        return locale;
+    }
+
+    /**
+     * Returns the category reference path for the given value.<p>
+     * 
+     * @param cms the cms context
+     * @param value the xml content value
+     * 
+     * @return the category reference path for the given value
+     */
+    protected String getReferencePath(CmsObject cms, I_CmsXmlContentValue value) {
+
+        // get the original file instead of the temp file
+        CmsFile file = value.getDocument().getFile();
+        String resourceName = cms.getSitePath(file);
+        if (CmsWorkplace.isTemporaryFile(file)) {
+            StringBuffer result = new StringBuffer(resourceName.length() + 2);
+            result.append(CmsResource.getFolderPath(resourceName));
+            result.append(CmsResource.getName(resourceName).substring(1));
+            resourceName = result.toString();
+        }
+        try {
+            List listsib = cms.readSiblings(resourceName, CmsResourceFilter.ALL);
+            for (int i = 0; i < listsib.size(); i++) {
+                CmsResource resource = (CmsResource)listsib.get(i);
+                // get the default locale of the resource and set the categories
+                Locale locale = getLocaleForResource(cms, cms.getSitePath(resource));
+                if (value.getLocale().equals(locale)) {
+                    return cms.getSitePath(resource);
+                }
+            }
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        // if the locale can not be found, just take the current file
+        return cms.getSitePath(file);
     }
 
     /**
@@ -1636,6 +1706,66 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * The errorHandler parameter is optional, if <code>null</code> is given a new error handler 
+     * instance must be created.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param value the value to resolve the validation rules for
+     * @param errorHandler (optional) an error handler instance that contains previous error or warnings
+     * 
+     * @return an error handler that contains all errors and warnings currently found
+     */
+    protected CmsXmlContentErrorHandler validateCategories(
+        CmsObject cms,
+        I_CmsXmlContentValue value,
+        CmsXmlContentErrorHandler errorHandler) {
+
+        if (!value.isSimpleType()) {
+            // do not validate complex types
+            return errorHandler;
+        }
+        I_CmsWidget widget = null;
+        try {
+            widget = value.getContentDefinition().getContentHandler().getWidget(value);
+        } catch (CmsXmlException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        if (!(widget instanceof CmsCategoryWidget)) {
+            // do not validate widget that are not category widgets
+            return errorHandler;
+        }
+        String stringValue = value.getStringValue(cms);
+        try {
+            String catPath = CmsCategoryService.getInstance().getCategory(cms, stringValue).getPath();
+            String refPath = getReferencePath(cms, value);
+            CmsCategoryService.getInstance().readCategory(cms, catPath, refPath);
+            if (((CmsCategoryWidget)widget).isOnlyLeafs()) {
+                if (!CmsCategoryService.getInstance().readCategories(cms, catPath, false, refPath).isEmpty()) {
+                    errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
+                        Messages.GUI_CATEGORY_CHECK_NOLEAF_ERROR_0));
+                }
+            }
+        } catch (CmsDataAccessException e) {
+            // expected error in case of empty/invalid value
+            // see CmsCategory#getCategoryPath(String, String)
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e.getLocalizedMessage(), e);
+            }
+            errorHandler.addError(value, Messages.get().getBundle(value.getLocale()).key(
+                Messages.GUI_CATEGORY_CHECK_EMPTY_ERROR_0));
+        } catch (CmsException e) {
+            // unexpected error
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+            errorHandler.addError(value, e.getLocalizedMessage());
+        }
+        return errorHandler;
+    }
+
+    /**
      * Validates the given rules against the given value.<p> 
      * 
      * @param cms the current users OpenCms context
@@ -1802,5 +1932,102 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         }
 
         return errorHandler;
+    }
+
+    /**
+     * Writes the categories if a category widget is present.<p>
+     * 
+     * @param cms the cms context
+     * @param file the file
+     * @param content the xml content to set the categories for
+     * 
+     * @return the perhaps modified file
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected CmsFile writeCategories(CmsObject cms, CmsFile file, CmsXmlContent content) throws CmsException {
+
+        if (CmsWorkplace.isTemporaryFile(file)) {
+            // ignore temporary files
+            return file;
+        }
+        // check the presence of a category widget
+        boolean hasCategoryWidget = false;
+        Iterator it = m_elementWidgets.values().iterator();
+        while (it.hasNext()) {
+            Object widget = it.next();
+            if (widget instanceof CmsCategoryWidget) {
+                hasCategoryWidget = true;
+                break;
+            }
+        }
+        if (!hasCategoryWidget) {
+            // nothing to do if no category widget is present
+            return file;
+        }
+        boolean modified = false;
+        // clone the cms object, and use the root site
+        CmsObject tmpCms = OpenCms.initCmsObject(cms);
+        tmpCms.getRequestContext().setSiteRoot("");
+        // read all siblings
+        try {
+            List listsib = tmpCms.readSiblings(file.getRootPath(), CmsResourceFilter.ALL);
+            for (int i = 0; i < listsib.size(); i++) {
+                CmsResource resource = (CmsResource)listsib.get(i);
+                // get the default locale of the sibling
+                Locale locale = getLocaleForResource(tmpCms, resource.getRootPath());
+                // remove all previously set categories
+                CmsCategoryService.getInstance().clearCategoriesForResource(tmpCms, resource.getRootPath());
+                // iterate over all values checking for the category widget
+                CmsXmlContentWidgetVisitor widgetCollector = new CmsXmlContentWidgetVisitor(locale);
+                content.visitAllValuesWith(widgetCollector);
+                Iterator itWidgets = widgetCollector.getValues().entrySet().iterator();
+                while (itWidgets.hasNext()) {
+                    Map.Entry entry = (Map.Entry)itWidgets.next();
+                    String xpath = (String)entry.getKey();
+                    I_CmsWidget widget = (I_CmsWidget)widgetCollector.getWidgets().get(xpath);
+                    if (!(widget instanceof CmsCategoryWidget)) {
+                        // ignore other values than categories
+                        continue;
+                    }
+                    I_CmsXmlContentValue value = (I_CmsXmlContentValue)entry.getValue();
+                    String catRootPath = value.getStringValue(tmpCms);
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(catRootPath)) {
+                        // skip empty values
+                        continue;
+                    }
+                    try {
+                        // add the file to the selected category
+                        CmsCategory cat = CmsCategoryService.getInstance().getCategory(tmpCms, catRootPath);
+                        CmsCategoryService.getInstance().addResourceToCategory(
+                            tmpCms,
+                            resource.getRootPath(),
+                            cat.getPath());
+                    } catch (CmsVfsResourceNotFoundException e) {
+                        // invalid category
+                        try {
+                            // try to remove invalid value
+                            content.removeValue(value.getName(), value.getLocale(), value.getIndex());
+                            modified = true;
+                        } catch (CmsRuntimeException ex) {
+                            // in case minoccurs prevents removing the invalid value
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(ex.getLocalizedMessage(), ex);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (CmsException ex) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getLocalizedMessage(), ex);
+            }
+        }
+        if (modified) {
+            // when an invalid category has been removed
+            file = content.correctXmlStructure(cms);
+            content.setFile(file);
+        }
+        return file;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/07/01 10:08:54 $
- * Version: $Revision: 1.627 $
+ * Date   : $Date: 2008/07/14 10:04:28 $
+ * Version: $Revision: 1.628 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,6 +77,7 @@ import org.opencms.module.CmsModule;
 import org.opencms.publish.CmsPublishEngine;
 import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.publish.CmsPublishReport;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.relations.CmsLink;
 import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
@@ -1010,30 +1011,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         if (copyAsSibling) {
             // create a sibling of the source file at the destination  
-            CmsResource resource = createSibling(dbc, source, destination, properties);
-            // copy relations
-            Iterator itRelations = getRelationsForResource(
-                dbc,
-                source,
-                CmsRelationFilter.TARGETS.filterNotDefinedInContent()).iterator();
-            while (itRelations.hasNext()) {
-                CmsRelation relation = (CmsRelation)itRelations.next();
-                CmsResource target = null;
-                try {
-                    target = readResource(dbc, relation.getTargetId(), CmsResourceFilter.ALL);
-                } catch (CmsVfsResourceNotFoundException e) {
-                    try {
-                        target = readResource(dbc, relation.getTargetPath(), CmsResourceFilter.ALL);
-                    } catch (CmsVfsResourceNotFoundException e1) {
-                        // ignore this broken relation
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(e1.getLocalizedMessage(), e1);
-                        }
-                        continue;
-                    }
-                }
-                addRelationToResource(dbc, resource, target, relation.getType(), true);
-            }
+            createSibling(dbc, source, destination, properties);
             // after the sibling is created the copy operation is finished
             return;
         }
@@ -1110,28 +1088,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // create the resource
         newResource = createResource(dbc, destination, newResource, content, properties, false);
         // copy relations
-        Iterator itRelations = getRelationsForResource(
-            dbc,
-            source,
-            CmsRelationFilter.TARGETS.filterNotDefinedInContent()).iterator();
-        while (itRelations.hasNext()) {
-            CmsRelation relation = (CmsRelation)itRelations.next();
-            CmsResource target = null;
-            try {
-                target = readResource(dbc, relation.getTargetId(), CmsResourceFilter.ALL);
-            } catch (CmsVfsResourceNotFoundException e) {
-                try {
-                    target = readResource(dbc, relation.getTargetPath(), CmsResourceFilter.ALL);
-                } catch (CmsVfsResourceNotFoundException e1) {
-                    // ignore this broken relation
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(e1.getLocalizedMessage(), e1);
-                    }
-                    continue;
-                }
-            }
-            addRelationToResource(dbc, newResource, target, relation.getType(), true);
-        }
+        copyRelations(dbc, source, newResource);
 
         // copy the access control entries to the created resource
         copyAccessControlEntries(dbc, source, newResource, false);
@@ -1915,6 +1872,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // create the resource (null content signals creation of sibling)
         newResource = createResource(dbc, destination, newResource, null, properties, false);
+
+        // copy relations
+        copyRelations(dbc, source, newResource);
 
         // clear the caches
         OpenCms.getMemoryMonitor().clearAccessControlListCache();
@@ -8609,6 +8569,56 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // parent is new, but it will not get published
         return false;
+    }
+
+    /**
+     * Copies all relations from the source resource to the target resource.<p>
+     * 
+     * @param dbc the database context
+     * @param source the source
+     * @param target the target
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private void copyRelations(CmsDbContext dbc, CmsResource source, CmsResource target) throws CmsException {
+
+        // copy relations all relations
+        CmsObject cms = new CmsObject(getSecurityManager(), dbc.getRequestContext());
+        Iterator itRelations = getRelationsForResource(
+            dbc,
+            source,
+            CmsRelationFilter.TARGETS.filterNotDefinedInContent()).iterator();
+        while (itRelations.hasNext()) {
+            CmsRelation relation = (CmsRelation)itRelations.next();
+            try {
+                CmsResource relTarget = relation.getTarget(cms, CmsResourceFilter.ALL);
+                addRelationToResource(dbc, target, relTarget, relation.getType(), true);
+            } catch (CmsVfsResourceNotFoundException e) {
+                // ignore this broken relation
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
+        }
+        // repair categories
+        repairCategories(dbc, getProjectIdForContext(dbc), target);
+    }
+
+    /**
+     * Repairs broken categories.<p>
+     * 
+     * @param dbc the database context
+     * @param projectId the project id
+     * @param resource the resource to repair the categories for
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void repairCategories(CmsDbContext dbc, CmsUUID projectId, CmsResource resource) throws CmsException {
+
+        CmsObject cms = OpenCms.initCmsObject(new CmsObject(getSecurityManager(), dbc.getRequestContext()));
+        cms.getRequestContext().setSiteRoot("");
+        cms.getRequestContext().setCurrentProject(readProject(dbc, projectId));
+        CmsCategoryService.getInstance().repairRelations(cms, resource);
     }
 
     /**

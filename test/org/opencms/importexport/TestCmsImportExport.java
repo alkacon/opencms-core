@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2008/07/14 10:04:28 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1256,7 +1256,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             // add relation
             cms.lockResource(filename);
             CmsCategoryService catService = CmsCategoryService.getInstance();
-            CmsCategory cat = catService.createCategory(cms, null, "abc", "title", "description");
+            CmsCategory cat = catService.createCategory(cms, null, "abc", "title", "description", null);
             catService.addResourceToCategory(cms, filename, cat.getPath());
 
             // now check the new relation

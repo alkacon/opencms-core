@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCategoryWidget.java,v $
- * Date   : $Date: 2008/05/23 12:48:39 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/07/14 10:04:27 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,23 +32,26 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsCategory;
+import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -57,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.3 
  */
@@ -153,18 +156,43 @@ public class CmsCategoryWidget extends A_CmsWidget {
     }
 
     /**
+     * @see org.opencms.widgets.A_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    public void setEditorValue(
+        CmsObject cms,
+        Map formParameters,
+        I_CmsWidgetDialog widgetDialog,
+        I_CmsWidgetParameter param) {
+
+        super.setEditorValue(cms, formParameters, widgetDialog, param);
+        String id = param.getStringValue(cms);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(id)) {
+            return;
+        }
+        try {
+            CmsCategory cat = CmsCategoryService.getInstance().getCategory(cms, cms.readResource(new CmsUUID(id)));
+            if (cat.getPath().startsWith(getStartingCategory(cms, cms.getSitePath(getResource(cms, param))))) {
+                param.setStringValue(cms, cat.getRootPath());
+            } else {
+                param.setStringValue(cms, "");
+            }
+        } catch (CmsException e) {
+            // invalid value
+            param.setStringValue(cms, "");
+        }
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         // get select box options from default value String
-        CmsResource selected = null;
+        CmsCategory selected = null;
         try {
             String name = param.getStringValue(cms);
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-                selected = cms.readResource(name);
-            }
-        } catch (CmsException e1) {
+            selected = CmsCategoryService.getInstance().getCategory(cms, name);
+        } catch (CmsException e) {
             // ignore
         }
 
@@ -173,49 +201,58 @@ public class CmsCategoryWidget extends A_CmsWidget {
         try {
             // write arrays of categories
             result.append("<script language='javascript'>\n");
-            CmsFolder folder = cms.readFolder("/system/categories/" + getStartingCategory(cms, param));
-            List subresources = cms.readResources(
-                cms.getSitePath(folder),
-                CmsResourceFilter.DEFAULT.addRequireFolder(),
-                true);
-            int baseLevel = CmsResource.getPathLevel(folder.getRootPath());
+            String referencePath = cms.getSitePath(getResource(cms, param));
+            String startingCat = getStartingCategory(cms, referencePath);
+            List cats = CmsCategoryService.getInstance().readCategories(cms, startingCat, true, referencePath);
+            int baseLevel;
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(startingCat)) {
+                baseLevel = 0;
+            } else {
+                baseLevel = CmsResource.getPathLevel(startingCat);
+                if (!(startingCat.startsWith("/") && startingCat.endsWith("/"))) {
+                    baseLevel++;
+                }
+            }
             int level;
+            Set done = new HashSet();
             List options = new ArrayList();
             String jsId = CmsStringUtil.substitute(param.getId(), ".", "");
-            for (level = baseLevel + 1; !subresources.isEmpty(); level++) {
+            for (level = baseLevel + 1; !cats.isEmpty(); level++) {
                 if (level != (baseLevel + 1)) {
                     result.append("var cat" + (level - baseLevel) + jsId + " = new Array(\n");
                 }
-                Iterator itSubs = subresources.iterator();
+                Iterator itSubs = cats.iterator();
                 while (itSubs.hasNext()) {
-                    CmsResource res = (CmsResource)itSubs.next();
-                    if (CmsResource.getPathLevel(res.getRootPath()) == level) {
+                    CmsCategory cat = (CmsCategory)itSubs.next();
+                    if (CmsResource.getPathLevel(cat.getPath()) + 1 == level) {
+                        itSubs.remove();
+                        if (done.contains(cat.getPath())) {
+                            continue;
+                        }
                         if (level != (baseLevel + 1)) {
                             result.append("new Array('"
-                                + res.getStructureId()
+                                + cat.getId()
                                 + "', '"
-                                + cms.readResource(CmsResource.getParentFolder(res.getRootPath())).getStructureId()
+                                + CmsCategoryService.getInstance().readCategory(
+                                    cms,
+                                    CmsResource.getParentFolder(cat.getPath()),
+                                    referencePath).getId()
                                 + "', '"
-                                + cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
-                                    CmsResource.getName(res.getRootPath()))
+                                + cat.getTitle()
                                 + "'),\n");
                         }
                         if ((level == (baseLevel + 1))
-                            || ((selected != null) && selected.getRootPath().startsWith(
-                                CmsResource.getParentFolder(res.getRootPath())))) {
+                            || ((selected != null) && selected.getPath().startsWith(
+                                CmsResource.getParentFolder(cat.getPath())))) {
                             if (levels.size() < (level - baseLevel)) {
                                 options = new ArrayList();
                                 levels.add(options);
                                 options.add(new CmsSelectWidgetOption("", true, Messages.get().getBundle(
                                     widgetDialog.getLocale()).key(Messages.GUI_CATEGORY_SELECT_0)));
                             }
-                            options.add(new CmsSelectWidgetOption(
-                                res.getStructureId().toString(),
-                                false,
-                                cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
-                                    CmsResource.getName(res.getRootPath()))));
+                            options.add(new CmsSelectWidgetOption(cat.getId().toString(), false, cat.getTitle()));
                         }
-                        itSubs.remove();
+                        done.add(cat.getPath());
                     }
                 }
                 if (level != (baseLevel + 1)) {
@@ -232,7 +269,7 @@ public class CmsCategoryWidget extends A_CmsWidget {
                 + "' name='"
                 + param.getId()
                 + "' type='hidden' value='"
-                + (selected != null ? selected.getStructureId().toString() : "")
+                + (selected != null ? selected.getId().toString() : "")
                 + "'>\n");
 
             for (int i = 1; i < level - baseLevel; i++) {
@@ -252,8 +289,10 @@ public class CmsCategoryWidget extends A_CmsWidget {
                     param.getId(),
                     i,
                     options,
-                    selected != null ? cms.readResource(CmsResource.getPathPart(selected.getRootPath(), i + baseLevel)).getStructureId().toString()
-                    : "",
+                    (selected != null ? CmsCategoryService.getInstance().readCategory(
+                        cms,
+                        CmsResource.getPathPart(selected.getPath(), i + baseLevel),
+                        referencePath).getId().toString() : ""),
                     param.hasError(),
                     (i == (level - baseLevel - 1))));
                 result.append("</span>&nbsp;");
@@ -326,75 +365,18 @@ public class CmsCategoryWidget extends A_CmsWidget {
     }
 
     /**
-     * @see org.opencms.widgets.A_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
-     */
-    public void setEditorValue(
-        CmsObject cms,
-        Map formParameters,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param) {
-
-        super.setEditorValue(cms, formParameters, widgetDialog, param);
-        String id = param.getStringValue(cms);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(id)) {
-            try {
-                CmsResource category = cms.readResource(new CmsUUID(id));
-                param.setStringValue(cms, category.getRootPath());
-            } catch (Exception e) {
-                param.setStringValue(cms, "");
-            }
-        }
-    }
-
-    /**
-     * Returns the starting category depending on the configuration options.<p>
+     * Generates html code for the category selection.<p>
      * 
-     * @param cms the cms context
-     * @param param the widget parameter
+     * @param baseId the widget id
+     * @param level the category deep level
+     * @param options the list of {@link CmsSelectWidgetOption} objects
+     * @param selected the selected option
+     * @param hasError if to display error message
+     * @param last if it is the last level
      * 
-     * @return the starting category
+     * @return html code
      */
-    protected String getStartingCategory(CmsObject cms, I_CmsWidgetParameter param) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_category) && CmsStringUtil.isEmptyOrWhitespaceOnly(m_property)) {
-            return "";
-        }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_property)) {
-            if (m_category.startsWith("/")) {
-                return m_category.substring(1);
-            }
-            return m_category;
-        }
-        // use the given property from the right file
-        I_CmsXmlContentValue value = (I_CmsXmlContentValue)param;
-        CmsFile file = value.getDocument().getFile();
-        String resourceName = cms.getSitePath(file);
-        if (CmsWorkplace.isTemporaryFile(file)) {
-            StringBuffer result = new StringBuffer(resourceName.length() + 2);
-            result.append(CmsResource.getFolderPath(resourceName));
-            result.append(CmsResource.getName(resourceName).substring(1));
-            resourceName = result.toString();
-        }
-        try {
-            List listsib = cms.readSiblings(resourceName, CmsResourceFilter.ALL);
-            for (int i = 0; i < listsib.size(); i++) {
-                CmsResource resource = (CmsResource)listsib.get(i);
-                // get the default locale of the resource
-                Locale locale = CmsCategoryXmlContentHandler.getDefaultLocale(cms, cms.getSitePath(resource));
-                if (locale.equals(value.getLocale())) {
-                    // get the property for the right locale
-                    return cms.readPropertyObject(resource, m_property, true).getValue("");
-                }
-            }
-        } catch (CmsException ex) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(ex.getLocalizedMessage(), ex);
-            }
-        }
-        return "";
-    }
-
-    private String buildSelectBox(
+    protected String buildSelectBox(
         String baseId,
         int level,
         List options,
@@ -438,5 +420,100 @@ public class CmsCategoryWidget extends A_CmsWidget {
         }
         result.append("</select>");
         return result.toString();
+    }
+
+    /**
+     * Returns the default locale in the content of the given resource.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource path to get the default locale for
+     * 
+     * @return the default locale of the resource
+     */
+    protected Locale getDefaultLocale(CmsObject cms, String resource) {
+
+        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, resource);
+        if (locale == null) {
+            List locales = OpenCms.getLocaleManager().getAvailableLocales();
+            if (locales.size() > 0) {
+                locale = (Locale)locales.get(0);
+            } else {
+                locale = Locale.ENGLISH;
+            }
+        }
+        return locale;
+    }
+
+    /**
+     * Returns the right resource, depending on the locale.<p>
+     * 
+     * @param cms the cms context
+     * @param param the widget parameter
+     * 
+     * @return the resource to get/set the categories for
+     */
+    protected CmsResource getResource(CmsObject cms, I_CmsWidgetParameter param) {
+
+        I_CmsXmlContentValue value = (I_CmsXmlContentValue)param;
+        CmsFile file = value.getDocument().getFile();
+        String resourceName = cms.getSitePath(file);
+        if (CmsWorkplace.isTemporaryFile(file)) {
+            StringBuffer result = new StringBuffer(resourceName.length() + 2);
+            result.append(CmsResource.getFolderPath(resourceName));
+            result.append(CmsResource.getName(resourceName).substring(1));
+            resourceName = result.toString();
+        }
+        try {
+            List listsib = cms.readSiblings(resourceName, CmsResourceFilter.ALL);
+            for (int i = 0; i < listsib.size(); i++) {
+                CmsResource resource = (CmsResource)listsib.get(i);
+                // get the default locale of the resource
+                Locale locale = getDefaultLocale(cms, cms.getSitePath(resource));
+                if (locale.equals(value.getLocale())) {
+                    // get the property for the right locale
+                    return resource;
+                }
+            }
+        } catch (CmsException ex) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(ex.getLocalizedMessage(), ex);
+            }
+        }
+        return file;
+    }
+
+    /**
+     * Returns the starting category depending on the configuration options.<p>
+     * 
+     * @param cms the cms context
+     * @param referencePath the right resource path
+     * 
+     * @return the starting category
+     */
+    protected String getStartingCategory(CmsObject cms, String referencePath) {
+
+        String ret = "";
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_category) && CmsStringUtil.isEmptyOrWhitespaceOnly(m_property)) {
+            ret = "/";
+        } else if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_property)) {
+            ret = m_category;
+        } else {
+            // use the given property from the right file
+            try {
+                ret = cms.readPropertyObject(referencePath, m_property, true).getValue("/");
+            } catch (CmsException ex) {
+                // should never happen
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(ex.getLocalizedMessage(), ex);
+                }
+            }
+        }
+        if (!ret.endsWith("/")) {
+            ret += "/";
+        }
+        if (ret.startsWith("/")) {
+            ret = ret.substring(1);
+        }
+        return ret;
     }
 }

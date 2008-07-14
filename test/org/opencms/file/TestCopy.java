@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2008/03/01 11:23:17 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2008/07/14 10:04:28 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  */
 public class TestCopy extends OpenCmsTestCase {
 
@@ -124,23 +124,23 @@ public class TestCopy extends OpenCmsTestCase {
         cms.createResource(resname, CmsResourceTypePlain.getStaticTypeId());
         CmsCategoryService.getInstance().addResourceToCategory(cms, resname, category);
 
-        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true).contains(
+        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true, null).contains(
             cms.readResource(resname)));
         assertTrue(CmsCategoryService.getInstance().readResourceCategories(cms, resname).contains(
-            CmsCategoryService.getInstance().readCategory(cms, category)));
+            CmsCategoryService.getInstance().readCategory(cms, category, null)));
 
         String copyname = "testCopyCategories2.txt";
         cms.copyResource(resname, copyname);
 
-        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true).contains(
+        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true, null).contains(
             cms.readResource(resname)));
         assertTrue(CmsCategoryService.getInstance().readResourceCategories(cms, resname).contains(
-            CmsCategoryService.getInstance().readCategory(cms, category)));
+            CmsCategoryService.getInstance().readCategory(cms, category, null)));
 
-        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true).contains(
+        assertTrue(CmsCategoryService.getInstance().readCategoryResources(cms, category, true, null).contains(
             cms.readResource(copyname)));
         assertTrue(CmsCategoryService.getInstance().readResourceCategories(cms, copyname).contains(
-            CmsCategoryService.getInstance().readCategory(cms, category)));
+            CmsCategoryService.getInstance().readCategory(cms, category, null)));
     }
 
     /**

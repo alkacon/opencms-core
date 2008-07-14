@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2008/04/16 12:25:31 $
- * Version: $Revision: 1.122 $
+ * Date   : $Date: 2008/07/14 10:04:28 $
+ * Version: $Revision: 1.123 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.122 $
+ * @version $Revision: 1.123 $
  * 
  * @since 6.0.0 
  */
@@ -68,6 +68,9 @@ public interface I_CmsVfsDriver {
 
     /** The internal request attribute to indicate that resource organizational units have to be retrieved. */
     String REQ_ATTR_RESOURCE_OUS = "RETRIEVE_RESOURCE_OUS";
+
+    /** Add the methods that use these constants to the interface as soon as possible. */
+    int todo = 0;
 
     /**
      * Counts the number of siblings of a resource.<p>

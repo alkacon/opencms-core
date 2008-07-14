@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/A_CmsResourceCategoriesList.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/07/14 10:04:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -48,16 +49,18 @@ import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.I_CmsListFormatter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Generalized resource categories view.<p>
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.9.2
  */
@@ -68,6 +71,9 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_ICON = "ci";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_LEAFS = "cl";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_NAME = "cn";
@@ -86,6 +92,9 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
 
     /** The current category service. */
     private CmsCategoryService m_categoryService;
+
+    /** The current resource categories. */
+    private List m_resCats;
 
     /**
      * Public constructor.<p>
@@ -124,20 +133,17 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
         Iterator itCategories = users.iterator();
         while (itCategories.hasNext()) {
             CmsListItem item = (CmsListItem)itCategories.next();
-
             String categoryPath = item.getId();
             StringBuffer html = new StringBuffer(512);
             try {
+                CmsCategory category = m_categoryService.readCategory(getCms(), categoryPath, getParamResource());
                 if (detailId.equals(LIST_DETAIL_PATH)) {
-                    html.append(categoryPath);
+                    html.append(category.getRootPath());
                 } else if (detailId.equals(LIST_DETAIL_DESCRIPTION)) {
-                    CmsCategory category = m_categoryService.readCategory(getCms(), categoryPath);
                     // Append the description if one is given
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(category.getDescription())) {
                         html.append(category.getDescription());
                     }
-                } else {
-                    continue;
                 }
             } catch (Exception e) {
                 // noop
@@ -170,12 +176,32 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
      */
     protected List getListItems() throws CmsException {
 
-        List ret = new ArrayList();
-
-        Iterator itCategories = getCategories().iterator();
+        Map ret = new HashMap();
+        Map isLeaf = new HashMap();
+        List cats = getCategories();
+        Iterator itCategories = cats.iterator();
+        while (itCategories.hasNext()) {
+            CmsCategory category = (CmsCategory)itCategories.next();
+            isLeaf.put(category.getPath(), Boolean.TRUE);
+        }
+        itCategories = cats.iterator();
+        while (itCategories.hasNext()) {
+            CmsCategory category = (CmsCategory)itCategories.next();
+            String parentPath = CmsResource.getParentFolder(category.getPath());
+            if (parentPath == null) {
+                continue;
+            }
+            if (isLeaf.get(parentPath) != null) {
+                isLeaf.put(parentPath, Boolean.FALSE);
+            }
+        }
+        itCategories = cats.iterator();
         while (itCategories.hasNext()) {
             CmsCategory category = (CmsCategory)itCategories.next();
             String categoryPath = category.getPath();
+            if (ret.get(categoryPath) != null) {
+                continue;
+            }
             CmsListItem item = getList().newItem(categoryPath);
             StringBuffer itemHtml = new StringBuffer(192);
             int pathLevel = CmsStringUtil.splitAsList(categoryPath, '/').size();
@@ -194,10 +220,11 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
             itemHtml.append(name);
             item.set(LIST_COLUMN_NAME, itemHtml.toString());
             item.set(LIST_COLUMN_PATH, categoryPath);
-            ret.add(item);
+            item.set(LIST_COLUMN_LEAFS, isLeaf.get(categoryPath));
+            ret.put(item.getId(), item);
         }
 
-        return ret;
+        return new ArrayList(ret.values());
     }
 
     /**
@@ -209,7 +236,10 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
      */
     protected List getResourceCategories() throws CmsException {
 
-        return m_categoryService.readResourceCategories(getJsp().getCmsObject(), getParamResource());
+        if (m_resCats == null) {
+            m_resCats = m_categoryService.readResourceCategories(getJsp().getCmsObject(), getParamResource());
+        }
+        return m_resCats;
     }
 
     /**
@@ -233,6 +263,13 @@ public abstract class A_CmsResourceCategoriesList extends A_CmsListDialog {
         pathCol.setVisible(false);
         // add it to the list definition
         metadata.addColumn(pathCol);
+
+        // create column for leaf
+        CmsListColumnDefinition leafCol = new CmsListColumnDefinition(LIST_COLUMN_LEAFS);
+        leafCol.setName(Messages.get().container(Messages.GUI_CATEGORIES_LIST_COLS_PATH_0));
+        leafCol.setVisible(false);
+        // add it to the list definition
+        metadata.addColumn(leafCol);
     }
 
     /**

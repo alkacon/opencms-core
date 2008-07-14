@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/collectors/TestCategoryResourceCollectors.java,v $
- * Date   : $Date: 2008/07/01 16:26:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/07/14 10:04:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the {@link CmsCategoryResourceCollector}.<p>
  * 
  * @author Raphael Schnuck 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
@@ -105,8 +105,9 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
             null,
             "business",
             "business title",
-            "business description");
-        CmsCategory catSports = service.createCategory(cms, null, "sports", "sports title", "sports description");
+            "business description",
+            null);
+        CmsCategory catSports = service.createCategory(cms, null, "sports", "sports title", "sports description", null);
 
         // business
         service.addResourceToCategory(cms, "/file1", catBusiness.getPath());
