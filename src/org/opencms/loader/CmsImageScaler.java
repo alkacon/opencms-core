@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageScaler.java,v $
- * Date   : $Date: 2008/07/10 15:13:02 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/07/15 13:07:49 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,13 +62,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.2.0
  */
 public class CmsImageScaler {
 
-    /** The name of the transparent color (for the backgound image). */
+    /** The name of the transparent color (for the background image). */
     public static final String COLOR_TRANSPARENT = "transparent";
 
     /** The name of the grayscale image filter. */
@@ -134,9 +134,6 @@ public class CmsImageScaler {
     /** The height for image cropping. */
     private int m_cropHeigt;
 
-    /** Indicates if the image should be cropped or not. */
-    private boolean m_cropImage;
-
     /** The width for image cropping. */
     private int m_cropWidth;
 
@@ -182,7 +179,8 @@ public class CmsImageScaler {
     }
 
     /**
-     * Creates a new image scaler for the given image contained in the byte array.<p>
+     * Creates a new image scaler initialized with the height and width of 
+     * the given image contained in the byte array.<p>
      * 
      * <b>Please note:</b>The image itself is not stored in the scaler, only the width and
      * height dimensions of the image. To actually scale an image, you need to use
@@ -259,11 +257,19 @@ public class CmsImageScaler {
     }
 
     /**
-     * Creates a new image scaler based on the given http request.<p>
+     * Creates a new image scaler based on the given HTTP request.<p>
      * 
-     * @param request the http request to read the parameters from
+     * The maximum scale size is checked in order to prevent DOS attacks. 
+     * Without this, it would be possible to request arbitrary huge images with a simple GET request,
+     * which would result in Out-Of-Memory errors if the image is just requested large enough.<p>
+     * 
+     * The maximum blur size is checked since this operation is know to also cause memory issues 
+     * with large images. If the original image is larger then this, no blur is applied before 
+     * scaling down, which will result in a less optimal but still usable scale result.<p>
+     * 
+     * @param request the HTTP request to read the parameters from
      * @param maxScaleSize the maximum scale size (width or height) for the image
-     * @param maxBlurSize the maximum size of the image (width * height) to apply blur (may cause "out of memory" for large images)
+     * @param maxBlurSize the maximum size of the image (width * height) to apply blur
      */
     public CmsImageScaler(HttpServletRequest request, int maxScaleSize, int maxBlurSize) {
 
@@ -484,9 +490,10 @@ public class CmsImageScaler {
      * Returns the maximum image size (width * height) to apply image blurring when down scaling images.<p>
      * 
      * Image blurring is required to achieve the best results for down scale operations when the target image size 
-     * is 2 times or more smaller then the original image size. This parameter controls the maximum size (width * height) of an 
-     * image that is blurred before it is down scaled. If the image is larger, no blurring is done. 
-     * However, image blurring is an expensive operation in both CPU usage and memory consumption. 
+     * is 2 times or more smaller then the original image size. 
+     * This parameter controls the maximum size (width * height) of an 
+     * image that is blurred before it is down scaled. If the image is larger, no blurring is done.
+     * Image blurring is an expensive operation in both CPU usage and memory consumption. 
      * Setting the blur size to large may case "out of memory" errors.<p>
      * 
      * @return the maximum image size (width * height) to apply image blurring when down scaling images
@@ -499,7 +506,7 @@ public class CmsImageScaler {
     /**
      * Returns the image pixel count, that is the image with multiplied by the image height.<p>
      * 
-     * If this scalier is not valid (see {@link #isValid()}) the result is undefined.<p>
+     * If this scaler is not valid (see {@link #isValid()}) the result is undefined.<p>
      * 
      * @return the image pixel count, that is the image with multiplied by the image height
      */
@@ -693,6 +700,19 @@ public class CmsImageScaler {
     }
 
     /**
+     * Returns <code>true</code> if all required parameters for image cropping are available.<p>
+     * 
+     * Required parameters are <code>"cx","cy"</code> (x, y start coordinate), 
+     * and <code>"ch","cw"</code> (crop height and width).<p>
+     * 
+     * @return <code>true</code> if all required cropping parameters are available
+     */
+    public boolean isCropping() {
+
+        return (m_cropX >= 0) && (m_cropY >= 0) && (m_cropHeigt > 0) && (m_cropWidth > 0);
+    }
+
+    /**
      * Returns <code>true</code> if this image scaler must be down scaled when compared to the
      * given "down scale" image scaler.<p>
      *
@@ -743,7 +763,7 @@ public class CmsImageScaler {
     /**
      * Returns <code>true</code> if all required parameters are available.<p>
      * 
-     * Required parameters are "h" (height), and "w" (width).<p>
+     * Required parameters are <code>"h"</code> (height), and <code>"w"</code> (width).<p>
      * 
      * @return <code>true</code> if all required parameters are available
      */
@@ -755,7 +775,7 @@ public class CmsImageScaler {
     /**
      * Parses the given parameters and sets the internal scaler variables accordingly.<p>
      * 
-     * The parameter String must have the format <code>"h:100,w:200,t:1"</code>,
+     * The parameter String must have a format like <code>"h:100,w:200,t:1"</code>,
      * that is a comma separated list of attributes followed by a colon ":", followed by a value.
      * As possible attributes, use the constants from this class that start with <code>SCALE_PARAM</Code>
      * for example {@link #SCALE_PARAM_HEIGHT} or {@link #SCALE_PARAM_WIDTH}.<p>
@@ -769,6 +789,10 @@ public class CmsImageScaler {
         m_position = 0;
         m_type = 0;
         m_color = Color.WHITE;
+        m_cropX = -1;
+        m_cropY = -1;
+        m_cropWidth = -1;
+        m_cropHeigt = -1;
 
         List tokens = CmsStringUtil.splitAsList(parameters, ',');
         Iterator it = tokens.iterator();
@@ -890,6 +914,14 @@ public class CmsImageScaler {
         try {
             BufferedImage image = Simapi.read(content);
 
+            if (isCropping()) {
+                // check if the crop width / height are not larger then the source image
+                if ((m_cropHeigt > image.getHeight()) || (m_cropWidth > image.getWidth())) {
+                    // crop height / width is outside of image - return image unchanged
+                    return result;
+                }
+            }
+
             Color color = getColor();
 
             if (!m_filters.isEmpty()) {
@@ -914,7 +946,7 @@ public class CmsImageScaler {
                 }
             }
 
-            if (m_cropImage) {
+            if (isCropping()) {
                 // image crop operation
                 image = scaler.cropToSize(
                     image,
@@ -1087,7 +1119,7 @@ public class CmsImageScaler {
             case Simapi.POS_STRAIGHT_UP:
             case Simapi.POS_UP_LEFT:
             case Simapi.POS_UP_RIGHT:
-                // pos is fine
+                // position is fine
                 m_position = position;
                 break;
             default:
@@ -1182,7 +1214,7 @@ public class CmsImageScaler {
         }
 
         StringBuffer result = new StringBuffer(64);
-        if (m_cropImage) {
+        if (isCropping()) {
             result.append(CmsImageScaler.SCALE_PARAM_CROP_X);
             result.append(':');
             result.append(m_cropX);
@@ -1199,8 +1231,8 @@ public class CmsImageScaler {
             result.append(':');
             result.append(m_cropHeigt);
         }
-        if (!m_cropImage || ((m_width != m_cropWidth) || (m_height != m_cropHeigt))) {
-            if (m_cropImage) {
+        if (!isCropping() || ((m_width != m_cropWidth) || (m_height != m_cropHeigt))) {
+            if (isCropping()) {
                 result.append(',');
             }
             result.append(CmsImageScaler.SCALE_PARAM_WIDTH);
@@ -1262,11 +1294,10 @@ public class CmsImageScaler {
         m_position = 0;
         m_renderMode = 0;
         m_quality = 0;
+        m_cropX = -1;
+        m_cropY = -1;
         m_cropHeigt = -1;
         m_cropWidth = -1;
-        m_cropX = Integer.MIN_VALUE;
-        m_cropY = Integer.MIN_VALUE;
-        m_cropImage = false;
         m_color = Color.WHITE;
         m_filters = new ArrayList();
         m_maxBlurSize = CmsImageLoader.getMaxBlurSize();
@@ -1281,10 +1312,9 @@ public class CmsImageScaler {
      */
     private void initCropArea() {
 
-        if ((m_cropX != Integer.MIN_VALUE) && (m_cropY != Integer.MIN_VALUE) && (m_cropHeigt > 0) && (m_cropWidth > 0)) {
+        if (isCropping()) {
             // crop area is set up correctly
-            m_cropImage = true;
-            // adjust target image height or width if reauired
+            // adjust target image height or width if required
             if (m_width < 0) {
                 m_width = m_cropWidth;
             }

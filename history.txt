@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/07/14 14:02:20 $
- * Version: $Revision: 1.1040 $
+ * Date   : $Date: 2008/07/15 13:07:48 $
+ * Version: $Revision: 1.1041 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -21,8 +21,10 @@ Legend:
 
 OpenCms 7.0.6 - xxx, 2008
 ! Added support for decentralized categories
+! Simapi and Image scaler now support image cropping
 * Fixed issue with JSP hard includes when using site relative paths
 * Fixed issue with performance when serving JSP pages
+- Updated simapi.jar to version 0.9.8
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)
