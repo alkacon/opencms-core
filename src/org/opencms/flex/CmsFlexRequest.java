@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2008/07/14 10:05:10 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2008/07/15 12:54:28 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,7 +98,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     private boolean m_isOnline;
 
     /** JSP Loader instance. */
-    private CmsJspLoader m_jspLoader;
+    private static CmsJspLoader m_jspLoader;
 
     /** The CmsFlexRequestKey for this request. */
     private CmsFlexRequestKey m_key;
@@ -448,14 +448,14 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
 
     /**
      * This is a work around for servlet containers creating a new application dispatcher 
-     * instead of using our request dispatcher, so missing RFS jsp pages are not requested to 
-     * OpenCms and the dispatcher is unable to load the included/forwarded jsp file.<p>
+     * instead of using our request dispatcher, so missing RFS JSP pages are not requested to 
+     * OpenCms and the dispatcher is unable to load the included/forwarded JSP file.<p>
      * 
      * @see javax.servlet.http.HttpServletRequestWrapper#getServletPath()
      */
     public String getServletPath() {
 
-        // unwrap the request to prevent multiple unneeded attempts to generate missing jsp files
+        // unwrap the request to prevent multiple unneeded attempts to generate missing JSP files
         // m_controller.getTopRequest() does not return the right request here when forwarding
         // this method is generally called exactly once per request on different servlet containers
         // only resin calls it twice
@@ -469,7 +469,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         } else {
             servletPath = super.getServletPath();
         }
-        // generate missing jsp file
+        // generate missing JSP file
         CmsJspLoader jspLoader = getJspLoader();
         if (jspLoader != null) {
             jspLoader.updateJspFromRequest(servletPath, this);
