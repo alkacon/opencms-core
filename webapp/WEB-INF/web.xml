@@ -9,7 +9,7 @@
     
     <description>
         OpenCms, the Open Source Content Management System. 
-        (c) 2005 Alkacon Software GmbH with contributions from the OpenCms community.
+        (c) 2008 Alkacon Software GmbH with contributions from the OpenCms community.
         For more details about OpenCms, please see http://www.opencms.org/.
         For more details about Alkacon Software GmbH, please see http://www.alkacon.com/.    
     </description>
@@ -72,7 +72,7 @@
     
     <servlet>
         <description>
-            The error handling servlet, also servers as trigger for static export requests.  
+            The error handling servlet, also serves as trigger for static export requests.  
         </description>
         <servlet-name>OpenCmsServletErrorHandler</servlet-name>
         <servlet-class>org.opencms.main.OpenCmsServletErrorHandler</servlet-class>
