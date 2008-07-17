@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2008/06/18 13:38:16 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2008/07/17 10:33:10 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -431,8 +431,10 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             // this is the initial dialog call
             if (CmsStringUtil.isNotEmpty(getParamJobid())) {
                 // edit or copy an existing job, get the job object from manager
-                o = OpenCms.getScheduleManager().getJob(getParamJobid()).clone();
-                setActive = ((CmsScheduledJobInfo)o).isActive();
+                CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(getParamJobid());
+                // clone resets the active flag!
+                o = job.clone();
+                setActive = job.isActive();
             } else {
                 // create a new job for the new job dialog
                 o = null;
