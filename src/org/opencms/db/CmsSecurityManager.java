@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2008/04/21 08:35:04 $
- * Version: $Revision: 1.120 $
+ * Date   : $Date: 2008/07/17 09:56:14 $
+ * Version: $Revision: 1.121 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2508,7 +2508,7 @@ public final class CmsSecurityManager {
             CmsRole givenRole = CmsRole.valueOf(group);
             if (hasRole(role.forOrgUnit(null), Collections.singletonList(group))) {
                 // we have the same role, now check the resource if needed
-                if (givenRole.getOuFqn() != null) {
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(givenRole.getOuFqn())) {
                     try {
                         CmsOrganizationalUnit orgUnit = m_driverManager.readOrganizationalUnit(
                             dbc,
