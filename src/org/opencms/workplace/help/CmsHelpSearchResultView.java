@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpSearchResultView.java,v $
- * Date   : $Date: 2008/02/27 12:05:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/07/17 09:06:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -329,6 +329,11 @@ public class CmsHelpSearchResultView {
         return link;
     }
 
+    /**
+     * Initialize the search for the help pages.<p>
+     * 
+     * @param search the search configuration (will be initialized)
+     */
     private void initSearch(CmsSearch search) {
 
         //  Collect the objects required to access the OpenCms VFS from the request
@@ -336,7 +341,11 @@ public class CmsHelpSearchResultView {
 
         ServletRequest request = m_jsp.getRequest();
         search.init(cmsObject);
-        search.setField(new String[] {"title", "keywords", "description", "content"});
+        search.setField(new String[] {
+            CmsSearchField.FIELD_TITLE,
+            CmsSearchField.FIELD_KEYWORDS,
+            CmsSearchField.FIELD_DESCRIPTION,
+            CmsSearchField.FIELD_CONTENT});
         search.setMatchesPerPage(5);
         search.setDisplayPages(7);
         search.setSearchRoot(new StringBuffer("/system/workplace/locales/").append(
