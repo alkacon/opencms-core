@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2008/07/17 09:56:23 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.64 $ 
+ * @version $Revision: 1.65 $ 
  * 
  * @since 6.0.0 
  */
@@ -1438,7 +1438,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             if (res.getState().isDeleted() || res.getState().isNew() || res.getState().isChanged()) {
                 if (updateResources.contains(res)) {
                     // resource may have been added as a sibling of another resource
-                    // in this case we make sure to use the value from the publih list because of the "deleted" flag
+                    // in this case we make sure to use the value from the publish list because of the "deleted" flag
                     updateResources.remove(res);
                     // "equals()" implementation of published resource only checks for path, 
                     // so the removed value may have a different "deleted" or "modified" status value
