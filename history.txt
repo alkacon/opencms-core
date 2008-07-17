@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/07/15 13:07:48 $
- * Version: $Revision: 1.1041 $
+ * Date   : $Date: 2008/07/17 15:34:21 $
+ * Version: $Revision: 1.1042 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -22,6 +22,7 @@ Legend:
 OpenCms 7.0.6 - xxx, 2008
 ! Added support for decentralized categories
 ! Simapi and Image scaler now support image cropping
+* Fixed security issue with the history handler
 * Fixed issue with JSP hard includes when using site relative paths
 * Fixed issue with performance when serving JSP pages
 - Updated simapi.jar to version 0.9.8

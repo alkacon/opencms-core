@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryResourceHandler.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/07/17 15:34:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.9.1
  */
@@ -131,8 +131,10 @@ public class CmsHistoryResourceHandler implements I_CmsResourceInit {
                             } else {
                                 resource = (CmsResource)cms.readResource(cms.readResource(uri).getStructureId(), id);
                             }
-                            // store a request attribute to indicate that this is in fact a historical version
-                            req.setAttribute(ATTRIBUTE_NAME, resource);
+                            if (res != null) {
+                                // store a request attribute to indicate that this is in fact a historical version
+                                req.setAttribute(ATTRIBUTE_NAME, resource);
+                            }
                         } catch (CmsException e) {
                             if (LOG.isErrorEnabled()) {
                                 LOG.error(Messages.get().getBundle().key(Messages.ERR_HISTORYRESOURCE_2, uri, version));
