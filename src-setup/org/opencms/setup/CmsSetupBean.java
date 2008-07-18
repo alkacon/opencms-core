@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2008/04/03 07:45:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/07/18 10:22:34 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -118,7 +118,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -1502,73 +1502,80 @@ public class CmsSetupBean implements I_CmsShellCommands {
     public boolean prepareStep8() throws CmsXmlException {
 
         if (isInitialized()) {
-            checkEthernetAddress();
-            // backup the XML configuration
-            backupConfiguration(
-                CmsImportExportConfiguration.DEFAULT_XML_FILE_NAME,
-                CmsImportExportConfiguration.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
-            backupConfiguration(
-                CmsModuleConfiguration.DEFAULT_XML_FILE_NAME,
-                CmsModuleConfiguration.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
-            backupConfiguration(
-                CmsSearchConfiguration.DEFAULT_XML_FILE_NAME,
-                CmsSearchConfiguration.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
-            backupConfiguration(
-                CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
-                CmsSystemConfiguration.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
-            backupConfiguration(CmsVfsConfiguration.DEFAULT_XML_FILE_NAME, CmsVfsConfiguration.DEFAULT_XML_FILE_NAME
-                + CmsConfigurationManager.POSTFIX_ORI);
-            backupConfiguration(
-                CmsWorkplaceConfiguration.DEFAULT_XML_FILE_NAME,
-                CmsWorkplaceConfiguration.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
-            backupConfiguration(
-                CmsConfigurationManager.DEFAULT_XML_FILE_NAME,
-                CmsConfigurationManager.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
-            // save Properties to file "opencms.properties" 
-            saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, true);
+            try {
+                checkEthernetAddress();
+                // backup the XML configuration
+                backupConfiguration(
+                    CmsImportExportConfiguration.DEFAULT_XML_FILE_NAME,
+                    CmsImportExportConfiguration.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
+                backupConfiguration(
+                    CmsModuleConfiguration.DEFAULT_XML_FILE_NAME,
+                    CmsModuleConfiguration.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
+                backupConfiguration(
+                    CmsSearchConfiguration.DEFAULT_XML_FILE_NAME,
+                    CmsSearchConfiguration.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
+                backupConfiguration(
+                    CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
+                    CmsSystemConfiguration.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
+                backupConfiguration(
+                    CmsVfsConfiguration.DEFAULT_XML_FILE_NAME,
+                    CmsVfsConfiguration.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
+                backupConfiguration(
+                    CmsWorkplaceConfiguration.DEFAULT_XML_FILE_NAME,
+                    CmsWorkplaceConfiguration.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
+                backupConfiguration(
+                    CmsConfigurationManager.DEFAULT_XML_FILE_NAME,
+                    CmsConfigurationManager.DEFAULT_XML_FILE_NAME + CmsConfigurationManager.POSTFIX_ORI);
+                // save Properties to file "opencms.properties" 
+                saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, true);
 
-            CmsSetupTestResult testResult = new CmsSetupTestSimapi().execute(this);
-            if (testResult.getResult().equals(I_CmsSetupTest.RESULT_FAILED)) {
-                // "/opencms/vfs/resources/resourceloaders/loader[@class='org.opencms.loader.CmsImageLoader']/param[@name='image.scaling.enabled']";
+                CmsSetupTestResult testResult = new CmsSetupTestSimapi().execute(this);
+                if (testResult.getResult().equals(I_CmsSetupTest.RESULT_FAILED)) {
+                    // "/opencms/vfs/resources/resourceloaders/loader[@class='org.opencms.loader.CmsImageLoader']/param[@name='image.scaling.enabled']";
+                    StringBuffer xp = new StringBuffer(256);
+                    xp.append("/").append(CmsConfigurationManager.N_ROOT);
+                    xp.append("/").append(CmsVfsConfiguration.N_VFS);
+                    xp.append("/").append(CmsVfsConfiguration.N_RESOURCES);
+                    xp.append("/").append(CmsVfsConfiguration.N_RESOURCELOADERS);
+                    xp.append("/").append(CmsVfsConfiguration.N_LOADER);
+                    xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
+                    xp.append("='").append(CmsImageLoader.class.getName());
+                    xp.append("']/").append(I_CmsXmlConfiguration.N_PARAM);
+                    xp.append("[@").append(I_CmsXmlConfiguration.A_NAME);
+                    xp.append("='").append(CmsImageLoader.CONFIGURATION_SCALING_ENABLED).append("']");
+
+                    getXmlHelper().setValue(
+                        CmsVfsConfiguration.DEFAULT_XML_FILE_NAME,
+                        xp.toString(),
+                        Boolean.FALSE.toString());
+                }
+                // /opencms/system/sites/workplace-server
                 StringBuffer xp = new StringBuffer(256);
                 xp.append("/").append(CmsConfigurationManager.N_ROOT);
-                xp.append("/").append(CmsVfsConfiguration.N_VFS);
-                xp.append("/").append(CmsVfsConfiguration.N_RESOURCES);
-                xp.append("/").append(CmsVfsConfiguration.N_RESOURCELOADERS);
-                xp.append("/").append(CmsVfsConfiguration.N_LOADER);
-                xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
-                xp.append("='").append(CmsImageLoader.class.getName());
-                xp.append("']/").append(I_CmsXmlConfiguration.N_PARAM);
-                xp.append("[@").append(I_CmsXmlConfiguration.A_NAME);
-                xp.append("='").append(CmsImageLoader.CONFIGURATION_SCALING_ENABLED).append("']");
+                xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
+                xp.append("/").append(CmsSystemConfiguration.N_SITES);
+                xp.append("/").append(CmsSystemConfiguration.N_WORKPLACE_SERVER);
 
-                getXmlHelper().setValue(
-                    CmsVfsConfiguration.DEFAULT_XML_FILE_NAME,
-                    xp.toString(),
-                    Boolean.FALSE.toString());
+                getXmlHelper().setValue(CmsSystemConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
+
+                // /opencms/system/sites/site[@uri='/sites/default/']/@server
+                xp = new StringBuffer(256);
+                xp.append("/").append(CmsConfigurationManager.N_ROOT);
+                xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
+                xp.append("/").append(CmsSystemConfiguration.N_SITES);
+                xp.append("/").append(I_CmsXmlConfiguration.N_SITE);
+                xp.append("[@").append(I_CmsXmlConfiguration.A_URI);
+                xp.append("='").append(CmsResource.VFS_FOLDER_SITES);
+                xp.append("/default/']/@").append(CmsSystemConfiguration.A_SERVER);
+
+                getXmlHelper().setValue(CmsSystemConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
+
+                getXmlHelper().writeAll();
+            } catch (Exception e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e.getLocalizedMessage(), e);
+                }
             }
-            // /opencms/system/sites/workplace-server
-            StringBuffer xp = new StringBuffer(256);
-            xp.append("/").append(CmsConfigurationManager.N_ROOT);
-            xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
-            xp.append("/").append(CmsSystemConfiguration.N_SITES);
-            xp.append("/").append(CmsSystemConfiguration.N_WORKPLACE_SERVER);
-
-            getXmlHelper().setValue(CmsSystemConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
-
-            // /opencms/system/sites/site[@uri='/sites/default/']/@server
-            xp = new StringBuffer(256);
-            xp.append("/").append(CmsConfigurationManager.N_ROOT);
-            xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
-            xp.append("/").append(CmsSystemConfiguration.N_SITES);
-            xp.append("/").append(I_CmsXmlConfiguration.N_SITE);
-            xp.append("[@").append(I_CmsXmlConfiguration.A_URI);
-            xp.append("='").append(CmsResource.VFS_FOLDER_SITES);
-            xp.append("/default/']/@").append(CmsSystemConfiguration.A_SERVER);
-
-            getXmlHelper().setValue(CmsSystemConfiguration.DEFAULT_XML_FILE_NAME, xp.toString(), getWorkplaceSite());
-
-            getXmlHelper().writeAll();
         }
         return true;
     }
