@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2008/07/18 10:21:25 $
- * Version: $Revision: 1.236 $
+ * Date   : $Date: 2008/07/18 13:26:00 $
+ * Version: $Revision: 1.237 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.236 $ 
+ * @version $Revision: 1.237 $ 
  * 
  * @since 6.0.0 
  */
@@ -1234,6 +1234,7 @@ public final class OpenCmsCore {
         String servletContainerName = context.getServerInfo();
 
         // now initialize the system info with the path and mapping information
+        // this will also set some system parameter from automatic servlet container recognition
         getSystemInfo().init(
             webInfPath,
             servletMapping,
@@ -1251,9 +1252,13 @@ public final class OpenCmsCore {
                 getSystemInfo().getConfigurationFileRfsPath()), e);
         }
 
-        // we can not check here if the servlet container settings mode is auto or manual :( 
-        getSystemInfo().getServletContainerSettings().setServletThrowsException(
-            configuration.getBoolean("servlet.exception.enabled", true));
+        String throwException = configuration.getString("servlet.exception.enabled", "auto");
+        if (!throwException.equals("auto")) {
+            // set the parameter is not automatic, the rest of the servlet container dependent parameters
+            // will be set when reading the system configuration, if not set to auto
+            boolean throwExc = Boolean.valueOf(throwException).booleanValue();
+            getSystemInfo().getServletContainerSettings().setServletThrowsException(throwExc);
+        }
 
         // check if the wizard is enabled, if so stop initialization
         if (configuration.getBoolean("wizard.enabled", true)) {
