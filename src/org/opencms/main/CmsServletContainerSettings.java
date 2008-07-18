@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsServletContainerSettings.java,v $
- * Date   : $Date: 2008/07/01 13:17:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/07/18 10:21:25 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.A_CmsModeStringEnumeration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.5 
  */
@@ -96,16 +96,6 @@ public class CmsServletContainerSettings {
         }
 
         /**
-         * Checks if this is the none mode.<p>
-         * 
-         * @return <code>true</code> if this is the none mode
-         */
-        public boolean isNone() {
-
-            return this == MODE_NONE;
-        }
-
-        /**
          * Checks if this is the auto mode.<p>
          * 
          * @return <code>true</code> if this is the auto mode
@@ -124,6 +114,16 @@ public class CmsServletContainerSettings {
 
             return this == MODE_MANUAL;
         }
+
+        /**
+         * Checks if this is the none mode.<p>
+         * 
+         * @return <code>true</code> if this is the none mode
+         */
+        public boolean isNone() {
+
+            return this == MODE_NONE;
+        }
     }
 
     /** String remote command execution return type. */
@@ -134,6 +134,9 @@ public class CmsServletContainerSettings {
 
     /** List remote command execution return type. */
     public static final CmsServletContainerCfgMode CFG_MODE_NONE = CmsServletContainerCfgMode.MODE_NONE;
+
+    /** If the servlet can throw an exception if initialization fails, for instance, Weblogic and Resin have problems with the exception. */
+    private static boolean m_servletThrowsException = true;
 
     /** 
      * The replacement request attribute for the {@link javax.servlet.http.HttpServletRequest#getPathInfo()} method, 
@@ -168,9 +171,6 @@ public class CmsServletContainerSettings {
     /** The name of the servlet container running OpenCms. */
     private String m_servletContainerName;
 
-    /** If the servlet can throw an exception if initialization fails, for instance, Weblogic and Resin have problems with the exception. */
-    private boolean m_servletThrowsException = true;
-
     /**
      * Creates a new object.<p>
      * 
@@ -203,6 +203,16 @@ public class CmsServletContainerSettings {
         m_preventResponseFlush = false;
         m_preventResponseFlush |= (m_servletContainerName.indexOf(SERVLET_CONTAINER_WEBSPHERE) > -1);
         m_preventResponseFlush |= (m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) > -1);
+    }
+
+    /**
+     * Checks if the servlet can throw an exception if initialization fails.<p>
+     *
+     * @return <code>true</code> if the servlet can throw an exception if initialization fails
+     */
+    public static boolean isServletThrowsException() {
+
+        return m_servletThrowsException;
     }
 
     /**
@@ -253,16 +263,6 @@ public class CmsServletContainerSettings {
     public boolean isReleaseTagsAfterEnd() {
 
         return m_releaseTagsAfterEnd;
-    }
-
-    /**
-     * Checks if the servlet can throw an exception if initialization fails.<p>
-     *
-     * @return <code>true</code> if the servlet can throw an exception if initialization fails
-     */
-    public boolean isServletThrowsException() {
-
-        return m_servletThrowsException;
     }
 
     /**

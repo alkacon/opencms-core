@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2008/07/01 12:00:39 $
- * Version: $Revision: 1.235 $
+ * Date   : $Date: 2008/07/18 10:21:25 $
+ * Version: $Revision: 1.236 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.235 $ 
+ * @version $Revision: 1.236 $ 
  * 
  * @since 6.0.0 
  */
@@ -1239,8 +1239,7 @@ public final class OpenCmsCore {
             servletMapping,
             webApplicationContext,
             defaultWebApplication,
-            servletContainerName,
-            true);
+            servletContainerName);
 
         // Collect the configurations 
         ExtendedProperties configuration;
@@ -1252,6 +1251,7 @@ public final class OpenCmsCore {
                 getSystemInfo().getConfigurationFileRfsPath()), e);
         }
 
+        // we can not check here if the servlet container settings mode is auto or manual :( 
         getSystemInfo().getServletContainerSettings().setServletThrowsException(
             configuration.getBoolean("servlet.exception.enabled", true));
 

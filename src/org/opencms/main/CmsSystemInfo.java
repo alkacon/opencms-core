@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2008/07/01 12:00:39 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2008/07/18 10:21:25 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 6.0.0 
  */
@@ -567,19 +567,16 @@ public class CmsSystemInfo {
      * @param webApplicationContext the name/path of the OpenCms web application context (optional, will be calculated form the path if null)
      * @param defaultWebApplication the default web application name (usually "ROOT")
      * @param servletContainerName the name of the servlet container running OpenCms
-     * @param throwException <code>true</code> if the servlet should throw an exception if initialization fails
      */
     protected void init(
         String webInfRfsPath,
         String servletMapping,
         String webApplicationContext,
         String defaultWebApplication,
-        String servletContainerName,
-        boolean throwException) {
+        String servletContainerName) {
 
         // init servlet container dependent parameters
         m_servletContainerSettings = new CmsServletContainerSettings(servletContainerName);
-        m_servletContainerSettings.setServletThrowsException(throwException);
 
         // init base path
         webInfRfsPath = webInfRfsPath.replace('\\', '/');

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2008/07/01 12:00:39 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2008/07/18 10:21:25 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 6.0.0 
  * 
@@ -239,7 +239,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             if (Messages.ERR_CRITICAL_INIT_WIZARD_0.equals(e.getMessageContainer().getKey())) {
                 // if wizard is still enabled - allow retry of initialization (required for setup wizard)
                 // this means the servlet init() call must be terminated by an exception
-                if (OpenCmsCore.getInstance().getSystemInfo().getServletContainerSettings().isServletThrowsException()) {
+                if (CmsServletContainerSettings.isServletThrowsException()) {
                     throw new ServletException(e.getMessage());
                 } else {
                     // this is needed since some servlet containers does not like the servlet to throw exceptions, 
