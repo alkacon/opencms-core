@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageScaler.java,v $
- * Date   : $Date: 2008/07/15 13:07:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/07/18 09:49:07 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.2.0
  */
@@ -375,6 +375,56 @@ public class CmsImageScaler {
             result.append(Integer.toString(m_color.getBlue(), 16));
         }
         return result.toString();
+    }
+
+    /**
+     * Returns the crop area height.<p>
+     * 
+     * Use {@link #setCropArea(int, int, int, int)} to set this value.<p>
+     *
+     * @return the crop area height
+     */
+    public int getCropHeigt() {
+
+        return m_cropHeigt;
+    }
+
+    /**
+     * Returns the crop area width.<p>
+     * 
+     * Use {@link #setCropArea(int, int, int, int)} to set this value.<p>
+     *
+     * @return the crop area width
+     */
+    public int getCropWidth() {
+
+        return m_cropWidth;
+    }
+
+    /**
+     * Returns the crop area X start coordinate.<p>
+     * 
+     * Use {@link #setCropArea(int, int, int, int)} to set this value.<p>
+     *
+     * @return the crop area X start coordinate
+     */
+    public int getCropX() {
+
+        return m_cropX;
+    }
+
+    /**
+     * Returns the crop area Y start coordinate.<p>
+     * 
+     * Use {@link #setCropArea(int, int, int, int)} to set this value.<p>
+     *
+     * @return the crop area Y start coordinate
+     * 
+     * @use {@link #setCropArea(int, int, int, int)} to set this value
+     */
+    public int getCropY() {
+
+        return m_cropY;
     }
 
     /**
