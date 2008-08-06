@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2008/08/06 10:47:20 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,17 +47,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 
 /**
- * Implementation for an indexer indexing VFS Cms resources.<p>
+ * Implementation for an indexer indexing resources from the OpenCms VFS.<p>
  * 
+ * @author Alexander Kandzior
  * @author Carsten Weinholz 
- * @author Thomas Weckert  
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,12 +75,12 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     private I_CmsReport m_report;
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#deleteResources(org.apache.lucene.index.IndexReader, java.util.List)
+     * @see org.opencms.search.I_CmsIndexer#deleteResources(org.apache.lucene.index.IndexWriter, java.util.List)
      */
-    public void deleteResources(IndexReader reader, List resourcesToDelete) {
+    public void deleteResources(IndexWriter indexWriter, List resourcesToDelete) {
 
         if ((resourcesToDelete == null) || resourcesToDelete.isEmpty()) {
-            // nothing to délete
+            // nothing to delete
             return;
         }
 
@@ -96,19 +95,8 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             if (!resourcesAlreadyDeleted.contains(rootPath)) {
                 // ensure siblings are only deleted once per update
                 resourcesAlreadyDeleted.add(rootPath);
-                // search for an exact match on the document root path
-                Term term = new Term(CmsSearchField.FIELD_PATH, rootPath);
-                try {
-                    // delete all documents with this term from the index
-                    reader.deleteDocuments(term);
-                } catch (IOException e) {
-                    if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().getBundle().key(
-                            Messages.LOG_IO_INDEX_DOCUMENT_DELETE_2,
-                            rootPath,
-                            m_index.getName()), e);
-                    }
-                }
+                // now delete the resource from the index
+                deleteResource(indexWriter, rootPath);
             }
         }
     }
@@ -140,7 +128,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                         // deleted resource just needs to be removed
                         result.addResourceToDelete(resource);
                     } else if (resource.getState().isChanged() || resource.getState().isUnchanged()) {
-                        // changed (or unchaged) resource must be removed first, and then updated
+                        // changed (or unchanged) resource must be removed first, and then updated
                         // note: unchanged resources can be siblings that have been added from the online project,
                         //       these must be treated as if the resource had changed
                         result.addResourceToDelete(resource);
@@ -250,6 +238,29 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
 
     /**
+     * Deletes a single resource from the given index.<p>
+     * 
+     * @param indexWriter the index to delete the resource from
+     * @param rootPath the root path of the resource to delete
+     */
+    protected void deleteResource(IndexWriter indexWriter, String rootPath) {
+
+        // search for an exact match on the document root path
+        Term term = new Term(CmsSearchField.FIELD_PATH, rootPath);
+        try {
+            // delete all documents with this term from the index
+            indexWriter.deleteDocuments(term);
+        } catch (IOException e) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_IO_INDEX_DOCUMENT_DELETE_2,
+                    rootPath,
+                    m_index.getName()), e);
+            }
+        }
+    }
+
+    /**
      * Checks if the published resource is inside the time window set with release and expiration date.<p>
      * 
      * @param resource the published resource to check
@@ -279,7 +290,6 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             return;
         }
         // no check for folder resources, this must be taken care of before calling this method
-
         try {
 
             if (m_report != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2008/02/27 12:05:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/08/06 10:47:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 
@@ -44,7 +45,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.0 
  */
@@ -115,6 +116,9 @@ public class CmsSearchField {
     /** Constant for the "untokenized" index setting. */
     public static final String STR_UN_TOKENIZED = "untokenized";
 
+    /** The special analyzer to use for this field. */
+    private Analyzer m_analyzer;
+
     /** The boost factor of the field. */
     private float m_boost;
 
@@ -184,6 +188,42 @@ public class CmsSearchField {
      * @param isIndexed controls if the field is indexed, see {@link #setIndexed(boolean)}
      * @param isTokenized controls if the field is tokenized, see {@link #setStored(boolean)}
      * @param isInExcerpt controls if the field is in the excerpt, see {@link #isInExcerptAndStored()}
+     * @param analyzer the Lucene analyzer to use for this field
+     * @param boost the boost factor for the field, see {@link #setBoost(float)}
+     * @param defaultValue the default value for the field, see {@link #setDefaultValue(String)}
+     */
+    public CmsSearchField(
+        String name,
+        String displayName,
+        boolean isStored,
+        boolean isIndexed,
+        boolean isTokenized,
+        boolean isInExcerpt,
+        Analyzer analyzer,
+        float boost,
+        String defaultValue) {
+
+        this();
+        setDisplayName(displayName);
+        setName(name);
+        setStored(isStored);
+        setIndexed(isIndexed);
+        setTokenized(isTokenized);
+        setInExcerpt(isInExcerpt);
+        setAnalyzer(analyzer);
+        setBoost(boost);
+        setDefaultValue(defaultValue);
+    }
+
+    /**
+     * Creates a new search field configuration.<p>
+     * 
+     * @param name the name of the field, see {@link #setName(String)}
+     * @param displayName the display name of this field, see {@link #setDisplayName(String)}
+     * @param isStored controls if the field is stored, see {@link #setStored(boolean)}
+     * @param isIndexed controls if the field is indexed, see {@link #setIndexed(boolean)}
+     * @param isTokenized controls if the field is tokenized, see {@link #setStored(boolean)}
+     * @param isInExcerpt controls if the field is in the excerpt, see {@link #isInExcerptAndStored()}
      * @param boost the boost factor for the field, see {@link #setBoost(float)}
      * @param defaultValue the default value for the field, see {@link #setDefaultValue(String)}
      */
@@ -197,15 +237,7 @@ public class CmsSearchField {
         float boost,
         String defaultValue) {
 
-        this();
-        setDisplayName(displayName);
-        setName(name);
-        setStored(isStored);
-        setIndexed(isIndexed);
-        setTokenized(isTokenized);
-        setInExcerpt(isInExcerpt);
-        setBoost(boost);
-        setDefaultValue(defaultValue);
+        this(name, displayName, isStored, isIndexed, isTokenized, isInExcerpt, null, boost, defaultValue);
     }
 
     /**
@@ -263,6 +295,16 @@ public class CmsSearchField {
             return CmsStringUtil.isEqual(m_name, ((CmsSearchField)obj).m_name);
         }
         return false;
+    }
+
+    /**
+     * Returns the analyzer used for this field.<p>
+     *
+     * @return the analyzer used for this field
+     */
+    public Analyzer getAnalyzer() {
+
+        return m_analyzer;
     }
 
     /**
@@ -474,6 +516,37 @@ public class CmsSearchField {
     }
 
     /**
+     * Sets the analyzer used for this field.<p>
+     *
+     * @param analyzer the analyzer to set
+     */
+    public void setAnalyzer(Analyzer analyzer) {
+
+        m_analyzer = analyzer;
+    }
+
+    /**
+     * Sets the analyzer used for this field.<p>
+     *
+     * The parameter must be a name of a class the implements the Lucene {@link Analyzer} interface.
+     *
+     * @param analyzer the analyzer class name to set
+     * 
+     * @throws Exception in case of problems creating the analyzer class instance
+     */
+    public void setAnalyzer(String analyzer) throws Exception {
+
+        Class analyzerClass;
+        try {
+            analyzerClass = Class.forName(analyzer);
+        } catch (ClassNotFoundException e) {
+            // allow Lucene standard classes to be written in a short form
+            analyzerClass = Class.forName("org.apache.lucene.analysis." + analyzer);
+        }
+        setAnalyzer((Analyzer)analyzerClass.newInstance());
+    }
+
+    /**
      * Sets the boost factor for this field.<p>
      *
      * The boost factor is a Lucene function that controls the "importance" of a field in the 
@@ -595,7 +668,7 @@ public class CmsSearchField {
      * The parameter can have the following values:
      * <ul>
      * <li><b>"true"</b> or <b>"tokenized"</b>: The field is indexed and tokenized.
-     * <li><b>"false"</b>: The field is not indexed and not tokenized.
+     * <li><b>"false"</b> or <b>"no"</b>: The field is not indexed and not tokenized.
      * <li><b>"untokenized"</b>: The field is indexed but not tokenized.
      * </ul>
      * 

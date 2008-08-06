@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2008/07/18 13:26:00 $
- * Version: $Revision: 1.237 $
+ * Date   : $Date: 2008/08/06 10:47:20 $
+ * Version: $Revision: 1.238 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.237 $ 
+ * @version $Revision: 1.238 $ 
  * 
  * @since 6.0.0 
  */
@@ -1614,6 +1614,15 @@ public final class OpenCmsCore {
                 } catch (Throwable e) {
                     CmsLog.INIT.error(Messages.get().getBundle().key(
                         Messages.LOG_ERROR_SESSION_MANAGER_SHUTDOWN_1,
+                        e.getMessage()), e);
+                }
+                try {
+                    if (m_searchManager != null) {
+                        m_searchManager.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERROR_SEARCH_MANAGER_SHUTDOWN_1,
                         e.getMessage()), e);
                 }
                 try {

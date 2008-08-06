@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2008/04/03 07:45:26 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2008/08/06 10:47:20 $
+ * Version: $Revision: 1.105 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.104 $
+ * @version $Revision: 1.105 $
  * 
  * @since 6.0.0
  */
@@ -1667,7 +1667,11 @@ public class OpenCmsTestCase extends TestCase {
                     + d1.getName()
                     + ", "
                     + "path = "
-                    + comparator.m_node1.getUniquePath());
+                    + comparator.m_node1.getUniquePath()
+                    + "\nNode 1:"
+                    + comparator.m_node1.asXML()
+                    + "\nNode 2:"
+                    + comparator.m_node2.asXML());
             }
         }
     }

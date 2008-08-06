@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2008/02/27 12:05:39 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/08/06 10:47:20 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.lucene.document.Field;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,7 +89,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
      * @param doc the Lucene document to extract fields from such as description, title, key words etc. pp.
      * @param excerpt the excerpt of the search result's content
      */
-    protected CmsSearchResult(int score, Document doc, String excerpt) {
+    public CmsSearchResult(int score, Document doc, String excerpt) {
 
         m_score = score;
         m_excerpt = excerpt;

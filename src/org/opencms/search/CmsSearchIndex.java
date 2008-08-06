@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2008/08/06 10:47:20 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,15 +33,12 @@ package org.opencms.search;
 
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.search.fields.CmsSearchField;
@@ -79,23 +76,22 @@ import org.apache.lucene.search.TermQuery;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  * 
- * @author Carsten Weinholz 
- * @author Thomas Weckert  
  * @author Alexander Kandzior 
+ * @author Carsten Weinholz
  * 
- * @version $Revision: 1.67 $ 
+ * @version $Revision: 1.68 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
-    /** Constant for additional param to enable excerpt creation (default: true). */
+    /** Constant for additional parameter to enable excerpt creation (default: true). */
     public static final String EXCERPT = CmsSearchIndex.class.getName() + ".createExcerpt";
 
-    /** Constant for additional param to enable permission checks (default: true). */
+    /** Constant for additional parameter to enable permission checks (default: true). */
     public static final String PERMISSIONS = CmsSearchIndex.class.getName() + ".checkPermissions";
 
-    /** Constant for additional param to set the thread priority during search. */
+    /** Constant for additional parameter to set the thread priority during search. */
     public static final String PRIORITY = CmsSearchIndex.class.getName() + ".priority";
 
     /** Automatic ("auto") index rebuild mode. */
@@ -107,9 +103,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** 
      * Special root path append token for optimized path queries.<p>
      * 
-     * @deprecated This is not longer requires since OpenCms version 7.0.2, since the implementation 
-     * of {@link CmsSearchManager#getAnalyzer(Locale)} was modified to use always 
-     * use for the {@link CmsSearchField#FIELD_ROOT} filed.
+     * @deprecated This is not longer required since OpenCms version 7.0.2, the implementation 
+     * now uses a Lucene {@link org.apache.lucene.analysis.WhitespaceAnalyzer}
+     * for the {@link CmsSearchField#FIELD_ROOT} field.
      * 
      * @see #rootPathRewrite(String)
      */
@@ -118,6 +114,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** Special root path start token for optimized path queries. */
     public static final String ROOT_PATH_TOKEN = "root";
 
+    /** Constant for additional parameter to enable time range checks (default: true). */
+    public static final String TIME_RANGE = CmsSearchIndex.class.getName() + ".checkTimeRange";
+
     /** Constant for a field list that contains the "meta" field as well as the "content" field. */
     static final String[] DOC_META_FIELDS = new String[] {CmsSearchField.FIELD_META, CmsSearchField.FIELD_CONTENT};
 
@@ -125,16 +124,22 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
 
     /** The list of configured index sources. */
-    List m_sources;
+    protected List m_sources;
+
+    /** The configured Lucene analyzer used for this index. */
+    private Analyzer m_analyzer;
+
+    /** The permission check mode for this index. */
+    private boolean m_checkPermissions;
+
+    /** The time range check mode for this index. */
+    private boolean m_checkTimeRange;
 
     /** The excerpt mode for this index. */
     private boolean m_createExcerpt;
 
-    /** Documenttypes of folders/channels. */
+    /** Document types of folders/channels. */
     private Map m_documenttypes;
-
-    /** The permission check mode for this index. */
-    private boolean m_dontCheckPermissions;
 
     /** An internal enabled flag, used to disable the index if for instance the configured project does not exist. */
     private boolean m_enabled;
@@ -163,6 +168,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The rebuild mode for this index. */
     private String m_rebuild;
 
+    /** The Lucene index searcher to use. */
+    private IndexSearcher m_searcher = null;
+
     /** The configured sources for this index. */
     private List m_sourceNames;
 
@@ -178,6 +186,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         m_sourceNames = new ArrayList();
         m_documenttypes = new HashMap();
         m_createExcerpt = true;
+        m_checkTimeRange = true;
+        m_checkPermissions = true;
         m_enabled = true;
         m_priority = -1;
     }
@@ -204,18 +214,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * This is required in order to use a Lucene "phrase query" on the resource path.
      * Using a phrase query is much, much better for the search performance then using a straightforward 
-     * "prefix query". With a "prefix query", Lucene would interally generate a huge list of boolean sub-queries,
+     * "prefix query". With a "prefix query", Lucene would internally generate a huge list of boolean sub-queries,
      * exactly one for every document in the VFS subtree of the query. So if you query on "/sites/default/*" on 
      * a large OpenCms installation, this means thousands of sub-queries.
      * Using the "phrase query", only one (or very few) queries are internally generated, and the result 
      * is just the same.<p>  
      * 
      * Since OpenCms version 7.0.2, the {@link CmsSearchField#FIELD_ROOT} field always uses a whitespace analyzer.
-     * This is ensured by the {@link CmsSearchManager#getAnalyzer(Locale)} implementation. 
+     * This is ensured by the {@link CmsSearchFieldConfiguration#getAnalyzer(Analyzer)} implementation. 
      * The Lucene whitespace analyzer uses all words as tokens, no lower case transformation or word stemming is done. 
      * So the root path is now just split along the '/' chars, which are replaced by simple space chars.<p>
      * 
-     * <i>Historical implementation sidenote:</i>
+     * <i>Historical implementation side note:</i>
      * Before 7.0.2, the {@link CmsSearchField#FIELD_ROOT} used the analyzer configured by the language. 
      * This introduced a number of issues as the language analyzer might modify the directory names, leading to potential
      * duplicates (e.g. <code>members/</code> and <code>member/</code> may both be trimmed to <code>member</code>),
@@ -278,7 +288,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public void addConfigurationParameter(String key, String value) {
 
         if (PERMISSIONS.equals(key)) {
-            m_dontCheckPermissions = !Boolean.valueOf(value).booleanValue();
+            m_checkPermissions = Boolean.valueOf(value).booleanValue();
+        } else if (TIME_RANGE.equals(key)) {
+            m_checkTimeRange = Boolean.valueOf(value).booleanValue();
         } else if (EXCERPT.equals(key)) {
             m_createExcerpt = Boolean.valueOf(value).booleanValue();
         } else if (PRIORITY.equals(key)) {
@@ -364,19 +376,32 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns the Lucene analyzer used for this index.<p>
+     *
+     * @return the Lucene analyzer used for this index
+     */
+    public Analyzer getAnalyzer() {
+
+        return m_analyzer;
+    }
+
+    /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     public Map getConfiguration() {
 
         Map result = new TreeMap();
-        if (m_priority > 0) {
+        if (getPriority() > 0) {
             result.put(PRIORITY, new Integer(m_priority));
         }
-        if (!m_createExcerpt) {
+        if (!isCreatingExcerpt()) {
             result.put(EXCERPT, Boolean.valueOf(m_createExcerpt));
         }
-        if (m_dontCheckPermissions) {
-            result.put(PERMISSIONS, Boolean.valueOf(!m_dontCheckPermissions));
+        if (!isCheckingPermissions()) {
+            result.put(PERMISSIONS, Boolean.valueOf(m_checkPermissions));
+        }
+        if (!isCheckingTimeRange()) {
+            result.put(TIME_RANGE, Boolean.valueOf(m_checkTimeRange));
         }
         return result;
     }
@@ -416,35 +441,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns a list of names (Strings) of configured document type factorys for the given resource path.<p>
-     * 
-     * @param path path of the folder 
-     * 
-     * @return a list of names (Strings) of configured document type factorys for the given resource path
-     * 
-     * @deprecated use {@link #getDocumentFactory(CmsResource)} instead to find out if this index is 'interested' in a resource
-     */
-    public List getDocumenttypes(String path) {
-
-        List documenttypes = null;
-        if (m_documenttypes != null) {
-            for (Iterator i = m_documenttypes.entrySet().iterator(); i.hasNext();) {
-                Map.Entry e = (Map.Entry)i.next();
-                String key = (String)e.getKey();
-                // NOTE: assumed that configured resource paths do not overlap, otherwise result is undefined
-                if (path.startsWith(key)) {
-                    documenttypes = (List)e.getValue();
-                    break;
-                }
-            }
-        }
-        if (documenttypes == null) {
-            documenttypes = OpenCms.getSearchManager().getDocumentTypes();
-        }
-        return documenttypes;
-    }
-
-    /**
      * Returns the search field configuration of this index.<p>
      * 
      * @return the search field configuration of this index
@@ -475,13 +471,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public IndexWriter getIndexWriter(boolean create) throws CmsIndexException {
 
         IndexWriter indexWriter;
-        Analyzer analyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
 
         try {
             File f = new File(m_path);
             if (f.exists()) {
                 // index already exists
-                indexWriter = new IndexWriter(m_path, analyzer, create);
+                indexWriter = new IndexWriter(m_path, getAnalyzer(), create);
             } else {
                 // index does not exist yet
                 f = f.getParentFile();
@@ -489,7 +484,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     // create the parent folders if required
                     f.mkdirs();
                 }
-                indexWriter = new IndexWriter(m_path, analyzer, true);
+                indexWriter = new IndexWriter(m_path, getAnalyzer(), true);
             }
 
         } catch (Exception e) {
@@ -502,9 +497,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Gets the langauge of this index.<p>
+     * Returns the language locale of this index.<p>
      * 
-     * @return the language of the index, i.e. de
+     * @return the language locale of this index, for example "en"
      */
     public Locale getLocale() {
 
@@ -512,9 +507,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns the locale of the index as a String.<p>
+     * Returns the language locale of the index as a String.<p>
      * 
-     * @return the locale of the index as a String
+     * @return the language locale of the index as a String
      * 
      * @see #getLocale()
      */
@@ -544,6 +539,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns the Thread priority for this search index.<p>
+     *
+     * @return the Thread priority for this search index
+     */
+    public int getPriority() {
+
+        return m_priority;
+    }
+
+    /**
      * Gets the project of this index.<p>
      * 
      * @return the project of the index, i.e. "online"
@@ -561,6 +566,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public String getRebuildMode() {
 
         return m_rebuild;
+    }
+
+    /**
+     * Returns the Lucene index searcher used for this search index.<p>
+     *
+     * @return the Lucene index searcher used for this search index
+     */
+    public IndexSearcher getSearcher() {
+
+        return m_searcher;
     }
 
     /**
@@ -657,6 +672,63 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 m_name,
                 m_fieldConfigurationName));
         }
+
+        // get the configured analyzer and apply the the field configuration analyzer wrapper
+        Analyzer baseAnalyzer = OpenCms.getSearchManager().getAnalyzer(getLocale());
+        setAnalyzer(m_fieldConfiguration.getAnalyzer(baseAnalyzer));
+
+        // check if this index already exists, if so create a searcher instance
+        if ((new File(m_path)).exists()) {
+            // initialize the index searcher instance
+            indexSearcherOpen();
+        }
+    }
+
+    /**
+     * Returns <code>true</code> if permissions are checked for search results by this index.<p>
+     *
+     * If permission checks are not required, they can be turned off in the index search configuration parameters
+     * in <code>opencms-search.xml</code>. Not checking permissions will improve performance.<p> 
+     * 
+     * This is can be of use in scenarios when you know that all search results are always readable,
+     * which is usually true for public websites that do not have personalized accounts.<p>
+     * 
+     * Please note that even if a result is returned where the current user has no read permissions, 
+     * the user can not actually access this document. It will only appear in the search result list,
+     * but if the user clicks the link to open the document he will get an error.<p>
+     * 
+     *
+     * @return <code>true</code> if permissions are checked for search results by this index
+     */
+    public boolean isCheckingPermissions() {
+
+        return m_checkPermissions;
+    }
+
+    /**
+     * Returns <code>true</code> if the document time range is checked for search results by this index.<p>
+     * 
+     * If time range checks are not required, they can be turned off in the index search configuration parameters
+     * in <code>opencms-search.xml</code>. Not checking the time range will improve performance.<p> 
+     * 
+     * @return <code>true</code> if the document time range is checked for search results by this index
+     */
+    public boolean isCheckingTimeRange() {
+
+        return m_checkTimeRange;
+    }
+
+    /**
+     * Returns <code>true</code> if an excerpt is generated by this index.<p>
+     *
+     * If no except is required, generation can be turned off in the index search configuration parameters
+     * in <code>opencms-search.xml</code>. Not generating an excerpt will improve performance.<p> 
+     *
+     * @return <code>true</code> if an excerpt is generated by this index
+     */
+    public boolean isCreatingExcerpt() {
+
+        return m_createExcerpt;
     }
 
     /**
@@ -695,14 +767,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         long timeResultProcessing;
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SEARCH_PARAMS_2, params, m_name));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SEARCH_PARAMS_2, params, getName()));
         }
-
-        CmsRequestContext context = cms.getRequestContext();
-        CmsProject currentProject = context.currentProject();
-
-        // the searcher to perform the operation in
-        IndexSearcher searcher = null;
 
         // the hits found during the search
         Hits hits;
@@ -713,14 +779,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         int previousPriority = Thread.currentThread().getPriority();
 
         try {
+            // copy the user OpenCms context
+            CmsObject searchCms = OpenCms.initCmsObject(cms);
 
-            if (m_priority > 0) {
+            if (getPriority() > 0) {
                 // change thread priority in order to reduce search impact on overall system performance
-                Thread.currentThread().setPriority(m_priority);
+                Thread.currentThread().setPriority(getPriority());
             }
 
             // change the project     
-            context.setCurrentProject(cms.readProject(m_project));
+            searchCms.getRequestContext().setCurrentProject(searchCms.readProject(getProject()));
 
             // complete the search root
             String[] roots;
@@ -728,18 +796,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 // add the site root to all the search root
                 roots = new String[params.getRoots().size()];
                 for (int i = 0; i < params.getRoots().size(); i++) {
-                    roots[i] = cms.getRequestContext().addSiteRoot((String)params.getRoots().get(i));
+                    roots[i] = searchCms.getRequestContext().addSiteRoot((String)params.getRoots().get(i));
                 }
             } else {
                 // just use the site root as the search root
                 // this permits searching in indexes that contain content of other sites than the current selected one?!?!
-                roots = new String[] {cms.getRequestContext().getSiteRoot()};
+                roots = new String[] {searchCms.getRequestContext().getSiteRoot()};
             }
 
             timeLucene = -System.currentTimeMillis();
-
-            // the language analyzer to use for creating the queries
-            Analyzer languageAnalyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
 
             // the main query to use, will be constructed in the next lines 
             BooleanQuery query = new BooleanQuery();
@@ -772,9 +837,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 query.add(categoryQuery, BooleanClause.Occur.MUST);
             }
 
-            // create the index searcher
-            searcher = new IndexSearcher(m_path);
-
             // store separate fields query for excerpt highlighting  
             Query fieldsQuery;
             if ((params.getFields() != null) && (params.getFields().size() > 0)) {
@@ -782,14 +844,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 // this is a "regular" query over one or more fields
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                 for (int i = 0; i < params.getFields().size(); i++) {
-                    QueryParser p = new QueryParser((String)params.getFields().get(i), languageAnalyzer);
+                    QueryParser p = new QueryParser((String)params.getFields().get(i), getAnalyzer());
                     booleanFieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
                 }
-                fieldsQuery = searcher.rewrite(booleanFieldsQuery);
+                fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
             } else {
                 // if no fields are provided, just use the "content" field by default
-                QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, languageAnalyzer);
-                fieldsQuery = searcher.rewrite(p.parse(params.getQuery()));
+                QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, getAnalyzer());
+                fieldsQuery = getSearcher().rewrite(p.parse(params.getQuery()));
             }
             // finally add the field queries to the main query
             query.add(fieldsQuery, BooleanClause.Occur.MUST);
@@ -804,15 +866,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             if (params.isCalculateCategories()) {
                 // USE THIS OPTION WITH CAUTION
                 // this may slow down searched by an order of magnitude
-                categoryCollector = new CmsSearchCategoryCollector(searcher);
+                categoryCollector = new CmsSearchCategoryCollector(getSearcher());
                 // perform a first search to collect the categories
-                searcher.search(query, categoryCollector);
+                getSearcher().search(query, categoryCollector);
                 // store the result
                 searchResults.setCategories(categoryCollector.getCategoryCountResult());
             }
 
             // perform the search operation          
-            hits = searcher.search(query, params.getSort());
+            hits = getSearcher().search(query, params.getSort());
 
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
@@ -841,15 +903,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 for (int i = 0, cnt = 0; (i < hitCount) && (cnt < end); i++) {
                     try {
                         doc = hits.doc(i);
-                        if ((isInTimeRange(doc, params)) && (hasReadPermission(cms, doc))) {
+                        if ((isInTimeRange(doc, params)) && (hasReadPermission(searchCms, doc))) {
                             // user has read permission
                             if (cnt >= start) {
                                 // do not use the resource to obtain the raw content, read it from the lucene document!
-                                // documents must not have content (i.e. images), so check if the content field exists
                                 String excerpt = null;
-                                if (m_createExcerpt) {
+                                if (isCreatingExcerpt()) {
                                     I_CmsTermHighlighter highlighter = OpenCms.getSearchManager().getHighlighter();
-                                    excerpt = highlighter.getExcerpt(doc, this, params, fieldsQuery, languageAnalyzer);
+                                    excerpt = highlighter.getExcerpt(doc, this, params, fieldsQuery, getAnalyzer());
                                 }
                                 searchResult = new CmsSearchResult(Math.round(hits.score(i) * 100f), doc, excerpt);
                                 searchResults.add(searchResult);
@@ -881,31 +942,29 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
             // re-set thread to previous priority
             Thread.currentThread().setPriority(previousPriority);
-
-            if (searcher != null) {
-                try {
-                    searcher.close();
-                } catch (IOException exc) {
-                    // noop
-                }
-            }
-
-            // switch back to the original project
-            context.setCurrentProject(currentProject);
         }
 
-        timeTotal += System.currentTimeMillis();
-
-        Object[] logParams = new Object[] {
-            new Integer(hits == null ? 0 : hits.length()),
-            new Long(timeTotal),
-            new Long(timeLucene),
-            new Long(timeResultProcessing)};
         if (LOG.isDebugEnabled()) {
+            timeTotal += System.currentTimeMillis();
+            Object[] logParams = new Object[] {
+                new Integer(hits == null ? 0 : hits.length()),
+                new Long(timeTotal),
+                new Long(timeLucene),
+                new Long(timeResultProcessing)};
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_STAT_RESULTS_TIME_4, logParams));
         }
 
         return searchResults;
+    }
+
+    /**
+     * Sets the Lucene analyzer used for this index.<p>
+     *
+     * @param analyzer the Lucene analyzer to set
+     */
+    public void setAnalyzer(Analyzer analyzer) {
+
+        m_analyzer = analyzer;
     }
 
     /**
@@ -1030,6 +1089,23 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Shuts down the search index.<p>
+     * 
+     * This will close the local Lucene index searcher instance.<p>
+     * 
+     * @throws IOException in case the index could not be closed
+     */
+    public void shutDown() throws IOException {
+
+        if (m_searcher != null) {
+            m_searcher.close();
+        }
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_INDEX_1, getName()));
+        }
+    }
+
+    /**
      * Returns the name (<code>{@link #getName()}</code>) of this search index.<p>
      *  
      * @return the name (<code>{@link #getName()}</code>) of this search index
@@ -1051,7 +1127,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     protected boolean hasReadPermission(CmsObject cms, Document doc) {
 
-        if (m_dontCheckPermissions) {
+        if (!isCheckingPermissions()) {
             // no permission check is performed at all
             return true;
         }
@@ -1064,7 +1140,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
 
         String type = typeField.stringValue();
-        if (!A_CmsVfsDocument.VFS_DOCUMENT_KEY_PREFIX.equals(type)
+        if (!CmsSearchFieldConfiguration.VFS_DOCUMENT_KEY_PREFIX.equals(type)
             && !OpenCms.getResourceManager().hasResourceType(type)) {
             // this is not a known VFS resource type (also not the generic "VFS" type of OpenCms before 7.0)
             return true;
@@ -1077,8 +1153,49 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Checks wether the document is in the time range specified in the
-     * search parameters.<p>
+     * Closes the Lucene index searcher for this index.<p>
+     * 
+     * @see #indexSearcherOpen()
+     */
+    protected synchronized void indexSearcherClose() {
+
+        // in case there is an index searcher available close it
+        if (m_searcher != null) {
+            try {
+                m_searcher.close();
+            } catch (Exception e) {
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SHUTDOWN_1, getName()), e);
+            }
+        }
+    }
+
+    /**
+     * Initializes the Lucene index searcher for this index.<p>
+     * 
+     * In case there is an index searcher still open, it is closed first.<p>
+     * 
+     * For performance reasons, one instance of the Lucene index searcher should be kept 
+     * for all searches. However, if the index is updated or changed 
+     * this searcher instance needs to be re-initialized.<p>
+     * 
+     * @return the initialized Lucene index searcher for this index
+     */
+    protected synchronized IndexSearcher indexSearcherOpen() {
+
+        // first close the current searcher instance
+        indexSearcherClose();
+
+        // create the index searcher
+        try {
+            m_searcher = new IndexSearcher(m_path);
+        } catch (IOException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_1, getName()), e);
+        }
+        return m_searcher;
+    }
+
+    /**
+     * Checks if the document is in the time range specified in the search parameters.<p>
      * 
      * The creation date and/or the last modification date are checked.<p>
      * 
@@ -1088,6 +1205,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * @return true if document is in time range or not time range set otherwise false
      */
     protected boolean isInTimeRange(Document doc, CmsSearchParameters params) {
+
+        if (!isCheckingTimeRange()) {
+            // time range check disabled
+            return true;
+        }
 
         try {
             // check the creation date of the document against the given time range

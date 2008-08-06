@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMappingType.java,v $
- * Date   : $Date: 2008/02/27 12:05:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/08/06 10:47:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,12 +37,12 @@ import org.opencms.util.CmsStringUtil;
 /**
  * Describes a possible mapping type for a piece of content used in building a search index.<p>
  * 
- * The mapping type is reponsible to select which content from the OpenCms resource is used for
+ * The mapping type is responsible to select which content from the OpenCms resource is used for
  * a field.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.0 
  */
@@ -63,6 +63,9 @@ public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
     /** The "xpath" mapping type, only for {@link org.opencms.xml.content.CmsXmlContent} resources, maps the content from the given Xpath. */
     public static final CmsSearchFieldMappingType XPATH = new CmsSearchFieldMappingType(4);
 
+    /** The "dynamic" mapping type, this is required if a special class is used to process the field mapping value. */
+    public static final CmsSearchFieldMappingType DYNAMIC = new CmsSearchFieldMappingType(5);
+
     /** ID required for safe serialization. */
     private static final long serialVersionUID = 7452814764681519516L;
 
@@ -74,6 +77,9 @@ public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
 
     /** String constant for the "property" type. */
     private static final String STR_PROPERTY = "property";
+
+    /** String constant for the "dynamic" type. */
+    private static final String STR_DYNAMIC = "dynamic";
 
     /** String constant for the "property-search" type. */
     private static final String STR_PROPERTY_SEARCH = "property-search";
@@ -110,6 +116,8 @@ public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
             return PROPERTY_SEARCH;
         } else if (STR_ITEM.equals(value)) {
             return ITEM;
+        } else if (STR_DYNAMIC.equals(value)) {
+            return DYNAMIC;
         }
         return null;
     }
@@ -126,6 +134,8 @@ public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
                 return STR_PROPERTY_SEARCH;
             case 3:
                 return STR_ITEM;
+            case 4:
+                return STR_DYNAMIC;
             case 0:
             default:
                 return STR_CONTENT;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2008/08/06 10:47:20 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,11 +60,14 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+
+    /** The "analyzer" attribute. */
+    public static final String A_ANALYZER = "analyzer";
 
     /** The "boost" attribute. */
     public static final String A_BOOST = "boost";
@@ -223,7 +226,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod(XPATH_SEARCH, "initializeFinished");
 
         // creation of the search manager        
-        digester.addObjectCreate(XPATH_SEARCH, CmsSearchManager.class);
+        digester.addObjectCreate(XPATH_SEARCH, A_CLASS, CmsSearchManager.class);
 
         // search manager finished
         digester.addSetNext(XPATH_SEARCH, "setSearchManager");
@@ -265,7 +268,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // search index rule
         xPath = XPATH_SEARCH + "/" + N_INDEXES + "/" + N_INDEX;
-        digester.addObjectCreate(xPath, CmsSearchIndex.class);
+        digester.addObjectCreate(xPath, A_CLASS, CmsSearchIndex.class);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_REBUILD, "setRebuildMode", 0);
         digester.addCallMethod(xPath + "/" + N_PROJECT, "setProjectName", 0);
@@ -286,7 +289,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // field configuration rules
         xPath = XPATH_SEARCH + "/" + N_FIELDCONFIGURATIONS + "/" + N_FIELDCONFIGURATION;
-        digester.addObjectCreate(xPath, CmsSearchFieldConfiguration.class);
+        digester.addObjectCreate(xPath, A_CLASS, CmsSearchFieldConfiguration.class);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_DESCRIPTION, "setDescription", 0);
         digester.addSetNext(xPath, "addFieldConfiguration");
@@ -301,16 +304,18 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallParam(xPath, 0, A_STORE);
         digester.addCallMethod(xPath, "setIndexed", 1);
         digester.addCallParam(xPath, 0, A_INDEX);
-        digester.addCallMethod(xPath, "setBoost", 1);
-        digester.addCallParam(xPath, 0, A_BOOST);
         digester.addCallMethod(xPath, "setInExcerpt", 1);
         digester.addCallParam(xPath, 0, A_EXCERPT);
+        digester.addCallMethod(xPath, "setAnalyzer", 1);
+        digester.addCallParam(xPath, 0, A_ANALYZER);
+        digester.addCallMethod(xPath, "setBoost", 1);
+        digester.addCallParam(xPath, 0, A_BOOST);
         digester.addCallMethod(xPath, "setDefaultValue", 1);
         digester.addCallParam(xPath, 0, A_DEFAULT);
         digester.addSetNext(xPath, "addField");
 
         xPath = xPath + "/" + N_MAPPING;
-        digester.addObjectCreate(xPath, CmsSearchFieldMapping.class);
+        digester.addObjectCreate(xPath, A_CLASS, CmsSearchFieldMapping.class);
         digester.addCallMethod(xPath, "setDefaultValue", 1);
         digester.addCallParam(xPath, 0, A_DEFAULT);
         digester.addCallMethod(xPath, "setType", 1);
@@ -337,6 +342,11 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // initialized OpenCms instance is available, use latest values
             m_searchManager = OpenCms.getSearchManager();
+        }
+
+        // add class attribute (if required)
+        if (!m_searchManager.getClass().equals(CmsSearchManager.class)) {
+            searchElement.addAttribute(A_CLASS, m_searchManager.getClass().getName());
         }
 
         // add <directory> element
@@ -414,6 +424,10 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
             CmsSearchIndex searchIndex = (CmsSearchIndex)indexIterator.next();
             // add the next <index> element
             Element indexElement = indexesElement.addElement(N_INDEX);
+            // add class attribute (if required)
+            if (!searchIndex.getClass().equals(CmsSearchIndex.class)) {
+                indexElement.addAttribute(A_CLASS, searchIndex.getClass().getName());
+            }
             // add <name> element
             indexElement.addElement(N_NAME).addText(searchIndex.getName());
             // add <rebuild> element
@@ -441,8 +455,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
                 Iterator it = indexConfiguration.entrySet().iterator();
                 while (it.hasNext()) {
                     Map.Entry entry = (Map.Entry)it.next();
-                    String name = (String)entry.getKey();
-                    String value = (String)entry.getValue();
+                    String name = entry.getKey().toString();
+                    String value = entry.getValue().toString();
                     Element paramNode = indexElement.addElement(N_PARAM);
                     paramNode.addAttribute(A_NAME, name);
                     paramNode.addText(value);
@@ -494,17 +508,21 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         // </indexsources>
 
         // <fieldconfigurations>
-        Element configurationsElement = searchElement.addElement(N_FIELDCONFIGURATIONS);
+        Element fieldConfigurationsElement = searchElement.addElement(N_FIELDCONFIGURATIONS);
         Iterator configs = m_searchManager.getFieldConfigurations().iterator();
         while (configs.hasNext()) {
-            CmsSearchFieldConfiguration config = (CmsSearchFieldConfiguration)configs.next();
-            Element configElement = configurationsElement.addElement(N_FIELDCONFIGURATION);
-            configElement.addElement(N_NAME).setText(config.getName());
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(config.getDescription())) {
-                configElement.addElement(N_DESCRIPTION).setText(config.getDescription());
+            CmsSearchFieldConfiguration fieldConfiguration = (CmsSearchFieldConfiguration)configs.next();
+            Element fieldConfigurationElement = fieldConfigurationsElement.addElement(N_FIELDCONFIGURATION);
+            // add class attribute (if required)
+            if (!fieldConfiguration.getClass().equals(CmsSearchFieldConfiguration.class)) {
+                fieldConfigurationElement.addAttribute(A_CLASS, fieldConfigurationElement.getClass().getName());
             }
-            Element fieldsElement = configElement.addElement(N_FIELDS);
-            Iterator fields = config.getFields().iterator();
+            fieldConfigurationElement.addElement(N_NAME).setText(fieldConfiguration.getName());
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fieldConfiguration.getDescription())) {
+                fieldConfigurationElement.addElement(N_DESCRIPTION).setText(fieldConfiguration.getDescription());
+            }
+            Element fieldsElement = fieldConfigurationElement.addElement(N_FIELDS);
+            Iterator fields = fieldConfiguration.getFields().iterator();
             while (fields.hasNext()) {
                 CmsSearchField field = (CmsSearchField)fields.next();
                 Element fieldElement = fieldsElement.addElement(N_FIELD);
@@ -543,6 +561,10 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
                     mappingElement.addAttribute(A_TYPE, mapping.getType().toString());
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mapping.getDefaultValue())) {
                         mappingElement.addAttribute(A_DEFAULT, mapping.getDefaultValue());
+                    }
+                    // add class attribute (if required)
+                    if (!mapping.getClass().equals(CmsSearchFieldMapping.class)) {
+                        mappingElement.addAttribute(A_CLASS, mapping.getClass().getName());
                     }
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mapping.getParam())) {
                         mappingElement.setText(mapping.getParam());

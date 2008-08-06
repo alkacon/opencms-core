@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchInDocuments.java,v $
- * Date   : $Date: 2008/02/27 12:05:27 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2008/08/06 10:47:19 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,8 +44,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.search.documents.A_CmsVfsDocument;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
@@ -64,7 +64,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
@@ -158,17 +158,17 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         CmsProperty maxBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            A_CmsVfsDocument.SEARCH_PRIORITY_MAX_VALUE,
+            CmsSearchFieldConfiguration.SEARCH_PRIORITY_MAX_VALUE,
             null,
             true);
         CmsProperty highBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            A_CmsVfsDocument.SEARCH_PRIORITY_HIGH_VALUE,
+            CmsSearchFieldConfiguration.SEARCH_PRIORITY_HIGH_VALUE,
             null,
             true);
         CmsProperty lowBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            A_CmsVfsDocument.SEARCH_PRIORITY_LOW_VALUE,
+            CmsSearchFieldConfiguration.SEARCH_PRIORITY_LOW_VALUE,
             null,
             true);
 
@@ -300,17 +300,17 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         CmsProperty maxBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            A_CmsVfsDocument.SEARCH_PRIORITY_MAX_VALUE,
+            CmsSearchFieldConfiguration.SEARCH_PRIORITY_MAX_VALUE,
             null,
             true);
         CmsProperty highBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            A_CmsVfsDocument.SEARCH_PRIORITY_HIGH_VALUE,
+            CmsSearchFieldConfiguration.SEARCH_PRIORITY_HIGH_VALUE,
             null,
             true);
         CmsProperty lowBoost = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            A_CmsVfsDocument.SEARCH_PRIORITY_LOW_VALUE,
+            CmsSearchFieldConfiguration.SEARCH_PRIORITY_LOW_VALUE,
             null,
             true);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/I_CmsIndexer.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2008/08/06 10:47:20 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.report.I_CmsReport;
 
 import java.util.List;
 
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 
 /**
@@ -45,7 +44,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,12 +53,12 @@ public interface I_CmsIndexer {
     /**
      * Incremental index update - delete the index entry for all resources in the given list.<p> 
      * 
-     * @param reader the index reader to delete the entries from
+     * @param indexWriter the writer to the index to delete the entries from
      * @param resourcesToDelete a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> instances that must be deleted
      * 
      * @throws CmsIndexException if something goes wrong
      */
-    void deleteResources(IndexReader reader, List resourcesToDelete) throws CmsIndexException;
+    void deleteResources(IndexWriter indexWriter, List resourcesToDelete) throws CmsIndexException;
 
     /**
      * Calculates the data for an incremental search index update.<p>

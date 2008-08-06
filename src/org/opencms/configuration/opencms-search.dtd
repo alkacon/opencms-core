@@ -20,6 +20,9 @@
 	indexsources,
 	fieldconfigurations?
 )>
+<!ATTLIST search
+	class CDATA #IMPLIED
+>
 
 <!--
 # the size of the search result LFU map.
@@ -116,6 +119,7 @@
 	sources,
 	param*
 )>
+<!ATTLIST index class CDATA #IMPLIED>
 
 <!--
 # Rebuild mode of the search index.
@@ -197,6 +201,9 @@
 	description?,
 	fields
 )>
+<!ATTLIST fieldconfiguration
+	class CDATA #IMPLIED
+>
 
 <!--
 # A field configuration is made up as a list of fields.
@@ -211,8 +218,9 @@
 	name CDATA #REQUIRED
 	display CDATA #IMPLIED
 	store (true|false|TRUE|FALSE) #REQUIRED
-	index (true|false|TRUE|FALSE|tokenized|untokenized) #REQUIRED
+	index (true|false|TRUE|FALSE|no|tokenized|untokenized) #REQUIRED
 	excerpt (true|false|TRUE|FALSE) #IMPLIED
+	analyzer CDATA #IMPLIED
 	boost CDATA #IMPLIED
 	default CDATA #IMPLIED
 >
@@ -222,8 +230,9 @@
 -->
 <!ELEMENT mapping (#PCDATA) >
 <!ATTLIST mapping 
-	type (content|property|property-search|item) #REQUIRED
+	type (content|property|property-search|item|dynamic) #REQUIRED
 	default CDATA #IMPLIED
+	class CDATA #IMPLIED
 >
 
 <!--

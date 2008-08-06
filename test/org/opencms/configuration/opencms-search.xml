@@ -2,7 +2,7 @@
 <!DOCTYPE opencms SYSTEM "http://www.opencms.org/dtd/6.0/opencms-search.dtd">
 
 <opencms>
-	<search>
+	<search class="org.opencms.configuration.CmsCustomSearchManager">
 		<directory>index</directory>
 		<timeout>60000</timeout>
 		<forceunlock>onlyfull</forceunlock>		
@@ -179,7 +179,10 @@
 				<configuration>standard</configuration>	
 				<sources>
 					<source>source1</source>
-				</sources>		
+				</sources>
+				<param name="org.opencms.search.CmsSearchIndex.checkPermissions">false</param>				
+				<param name="org.opencms.search.CmsSearchIndex.checkTimeRange">false</param>				
+				<param name="org.opencms.search.CmsSearchIndex.createExcerpt">false</param>				
 			</index>
 		</indexes>
 		<indexsources>				

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2008/07/17 09:56:23 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2008/08/06 10:47:20 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,8 +75,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.Similarity;
@@ -89,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.65 $ 
+ * @version $Revision: 1.66 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,16 +98,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public static final class CmsSearchForceUnlockMode extends A_CmsModeStringEnumeration {
 
-        /** Force unlock type always. */
+        /** Force unlock type "always". */
         public static final CmsSearchForceUnlockMode ALWAYS = new CmsSearchForceUnlockMode("always");
 
-        /** Force unlock type never. */
+        /** Force unlock type "never". */
         public static final CmsSearchForceUnlockMode NEVER = new CmsSearchForceUnlockMode("never");
 
-        /** Force unlock tyoe only full. */
+        /** Force unlock type "only full". */
         public static final CmsSearchForceUnlockMode ONLYFULL = new CmsSearchForceUnlockMode("onlyfull");
 
-        /** serializable version id. */
+        /** Serializable version id. */
         private static final long serialVersionUID = 74746076708908673L;
 
         /**
@@ -174,7 +172,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** The max age for extraction results to remain in the cache. */
     private float m_extractionCacheMaxAge;
 
-    /** The cache for the extration results. */
+    /** The cache for the extraction results. */
     private CmsExtractionResultCache m_extractionResultCache;
 
     /** Contains the available field configurations. */
@@ -223,6 +221,27 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_SEARCH_CONFIG_0));
+        }
+    }
+
+    /**
+     * Shuts down the search manager.<p>
+     * 
+     * This will cause all search indices to be shut down.<p>
+     */
+    public void shutDown() {
+
+        Iterator i = m_indexes.iterator();
+        while (i.hasNext()) {
+            CmsSearchIndex index = (CmsSearchIndex)i.next();
+            try {
+                index.shutDown();
+            } catch (IOException e) {
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SHUTDOWN_1, index.getName()), e);
+            }
+        }
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
         }
     }
 
@@ -1200,16 +1219,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @param locale the locale to get the analyzer for
      * @return the appropriate lucene analyzer
-     * @throws CmsIndexException if something goes wrong
+     * @throws CmsSearchException if something goes wrong
      */
-    protected Analyzer getAnalyzer(Locale locale) throws CmsIndexException {
+    public Analyzer getAnalyzer(Locale locale) throws CmsSearchException {
 
         Analyzer analyzer = null;
         String className = null;
 
         CmsSearchAnalyzer analyzerConf = (CmsSearchAnalyzer)m_analyzers.get(locale);
         if (analyzerConf == null) {
-            throw new CmsIndexException(Messages.get().container(Messages.ERR_ANALYZER_NOT_FOUND_1, locale));
+            throw new CmsSearchException(Messages.get().container(Messages.ERR_ANALYZER_NOT_FOUND_1, locale));
         }
 
         try {
@@ -1226,14 +1245,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
 
         } catch (Exception e) {
-            throw new CmsIndexException(Messages.get().container(Messages.ERR_LOAD_ANALYZER_1, className), e);
+            throw new CmsSearchException(Messages.get().container(Messages.ERR_LOAD_ANALYZER_1, className), e);
         }
 
-        // change analyzer for root path field to Whitespace analyzer
-        PerFieldAnalyzerWrapper wrapper = new PerFieldAnalyzerWrapper(analyzer);
-        wrapper.addAnalyzer(CmsSearchField.FIELD_ROOT, new WhitespaceAnalyzer());
-
-        return wrapper;
+        return analyzer;
     }
 
     /**
@@ -1617,6 +1632,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         }
                     }
                 }
+                // index has changed - initialize the index searcher instance
+                index.indexSearcherOpen();
             }
 
             // show information about indexing runtime
@@ -1646,81 +1663,60 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             }
 
+            // only start index modification if required
             if (hasResourcesToDelete || hasResourcesToUpdate) {
                 // output start information on the report
                 report.println(
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_UPDATE_BEGIN_1, index.getName()),
                     I_CmsReport.FORMAT_HEADLINE);
-            }
 
-            forceIndexUnlock(index, report, true);
+                // unlock the index
+                forceIndexUnlock(index, report, true);
 
-            if (hasResourcesToDelete) {
-                // delete the resource from the index
-                IndexReader reader = null;
+                IndexWriter writer = null;
                 try {
-                    reader = IndexReader.open(index.getPath());
-                } catch (IOException e) {
-                    LOG.error(Messages.get().getBundle().key(
-                        Messages.LOG_IO_INDEX_READER_OPEN_2,
-                        index.getPath(),
-                        index.getName()), e);
-                }
-                if (reader != null) {
-                    try {
+                    // obtain an index writer that updates the current index
+                    writer = index.getIndexWriter(false);
+
+                    if (hasResourcesToDelete) {
+                        // delete the resource from the index
                         Iterator i = updateCollections.iterator();
                         while (i.hasNext()) {
                             CmsSearchIndexUpdateData updateCollection = (CmsSearchIndexUpdateData)i.next();
                             if (updateCollection.hasResourcesToDelete()) {
                                 updateCollection.getIndexer().deleteResources(
-                                    reader,
+                                    writer,
                                     updateCollection.getResourcesToDelete());
                             }
                         }
-                    } finally {
-                        try {
-                            // close the reader after all resources have been deleted
-                            reader.close();
-                        } catch (IOException e) {
-                            LOG.error(Messages.get().getBundle().key(
-                                Messages.LOG_IO_INDEX_READER_CLOSE_2,
-                                index.getPath(),
-                                index.getName()), e);
-                        }
-                    }
-                }
-            }
-
-            if (hasResourcesToUpdate) {
-                // create a new thread manager
-                CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(m_timeout);
-
-                IndexWriter writer = null;
-                try {
-                    // create an index writer that updates the current index
-                    writer = index.getIndexWriter(false);
-
-                    Iterator i = updateCollections.iterator();
-                    while (i.hasNext()) {
-                        CmsSearchIndexUpdateData updateCollection = (CmsSearchIndexUpdateData)i.next();
-                        if (updateCollection.hasResourceToUpdate()) {
-                            updateCollection.getIndexer().updateResources(
-                                writer,
-                                threadManager,
-                                updateCollection.getResourcesToUpdate());
-                        }
                     }
 
-                    // wait for indexing threads to finish
-                    while (threadManager.isRunning()) {
-                        try {
-                            wait(1000);
-                        } catch (InterruptedException e) {
-                            // just continue with the loop after interruption
+                    if (hasResourcesToUpdate) {
+                        // create a new thread manager
+                        CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(m_timeout);
+
+                        Iterator i = updateCollections.iterator();
+                        while (i.hasNext()) {
+                            CmsSearchIndexUpdateData updateCollection = (CmsSearchIndexUpdateData)i.next();
+                            if (updateCollection.hasResourceToUpdate()) {
+                                updateCollection.getIndexer().updateResources(
+                                    writer,
+                                    threadManager,
+                                    updateCollection.getResourcesToUpdate());
+                            }
+                        }
+
+                        // wait for indexing threads to finish
+                        while (threadManager.isRunning()) {
+                            try {
+                                wait(1000);
+                            } catch (InterruptedException e) {
+                                // just continue with the loop after interruption
+                            }
                         }
                     }
-
                 } finally {
+                    // close the index writer
                     if (writer != null) {
                         try {
                             writer.close();
@@ -1731,10 +1727,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                                 index.getName()), e);
                         }
                     }
+                    // index has changed - initialize the index searcher instance
+                    index.indexSearcherOpen();
                 }
-            }
 
-            if (hasResourcesToDelete || hasResourcesToUpdate) {
                 // output finish information on the report
                 report.println(
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_UPDATE_END_1, index.getName()),
@@ -1744,7 +1740,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Checks is a given index is locked, if so waits for a numer of seconds and checks again,
+     * Checks is a given index is locked, if so waits for a number of seconds and checks again,
      * until either the index is unlocked or a limit of seconds set by <code>{@link #setIndexLockMaxWaitSeconds(int)}</code>
      * is reached and returns the lock state of the index.<p>
      * 

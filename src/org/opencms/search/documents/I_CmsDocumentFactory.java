@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2008/02/27 12:05:21 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2008/08/06 10:47:20 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,29 +57,31 @@ import org.apache.lucene.document.Document;
  * @author Thomas Weckert 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
 
     /**
-     * Creates the Lucene Document for the given index resource and the given search index.<p>
+     * Creates the Lucene Document for the given VFS resource and the given search index.<p>
      * 
-     * This triggers the indexing process for the given index resource accoring to the configuration 
+     * This triggers the indexing process for the given VFS resource according to the configuration 
      * of the provided index.<p>
      * 
      * The provided index resource contains the basic contents to index.
      * The provided search index contains the configuration what to index, such as the locale and 
      * possible special field mappings.<p>
      * 
-     * @param cms the cms object used to access the OpenCms VFS
+     * @param cms the OpenCms user context used to access the OpenCms VFS
      * @param resource the search index resource to create the Lucene document from
      * @param index the search index to create the Document for
      * 
      * @return the Lucene Document for the given index resource and the given search index
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @see org.opencms.search.fields.CmsSearchFieldConfiguration#createDocument(CmsObject, CmsResource, CmsSearchIndex, org.opencms.search.extractors.I_CmsExtractionResult)
      */
     Document createDocument(CmsObject cms, CmsResource resource, CmsSearchIndex index) throws CmsException;
 
