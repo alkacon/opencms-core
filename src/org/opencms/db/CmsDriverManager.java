@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/08/14 12:09:44 $
- * Version: $Revision: 1.629 $
+ * Date   : $Date: 2008/08/14 13:13:32 $
+ * Version: $Revision: 1.630 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -3343,8 +3343,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsProject onlineProject = readProject(dbc, CmsProject.ONLINE_PROJECT_ID);
         if (accessibleProjects.contains(onlineProject)) {
             accessibleProjects.remove(onlineProject);
-            accessibleProjects.add(0, onlineProject);
         }
+        accessibleProjects.add(0, onlineProject);
 
         return accessibleProjects;
     }
