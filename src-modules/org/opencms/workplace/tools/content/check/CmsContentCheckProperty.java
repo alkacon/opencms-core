@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckProperty.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/08/14 14:21:46 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.1.2
  */
@@ -320,7 +320,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
 
             //String value = configuration.getValue(xpath + "[" + i + "]/" + XPATH_VALUE, m_locale).getStringValue(m_cms);
 
-            // store them in the CmsContentCheckProperetyObject obejct for fürther processing
+            // store them in the CmsContentCheckProperetyObject object for further processing
             CmsContentCheckPropertyObject propObject = new CmsContentCheckPropertyObject();
 
             if (CmsStringUtil.isNotEmpty(propertyname)) {
