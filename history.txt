@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/07/17 15:34:21 $
- * Version: $Revision: 1.1042 $
+ * Date   : $Date: 2008/08/14 12:09:44 $
+ * Version: $Revision: 1.1043 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -26,6 +26,7 @@ OpenCms 7.0.6 - xxx, 2008
 * Fixed issue with JSP hard includes when using site relative paths
 * Fixed issue with performance when serving JSP pages
 - Updated simapi.jar to version 0.9.8
+! Added event which is fired after a user was modified
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)

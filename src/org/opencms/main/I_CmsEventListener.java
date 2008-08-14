@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2008/04/11 10:25:44 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2008/08/14 12:09:44 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  * 
@@ -298,6 +298,19 @@ public interface I_CmsEventListener {
      * This event is for internal use.<p>
      */
     int EVENT_UPDATE_EXPORTS = 19;
+
+    /**
+     * Event "user modified".<p>
+     * 
+     * Includes deletion of users.<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li>key "id": the uuid of the modified user</li>
+     * <li>key "name": the name of the modified user</li>
+     * </ul>
+     */
+    int EVENT_USER_MODIFIED = 29;
 
     /** Key name for passing a database context in the data map. */
     String KEY_DBCONTEXT = "dbContext";

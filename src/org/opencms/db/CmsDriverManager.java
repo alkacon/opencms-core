@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/07/14 10:04:28 $
- * Version: $Revision: 1.628 $
+ * Date   : $Date: 2008/08/14 12:09:44 $
+ * Version: $Revision: 1.629 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2880,6 +2880,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_userDriver.deleteUser(dbc, username);
         // delete user from cache
         OpenCms.getMemoryMonitor().clearUserCache(user);
+
+        // fire user modified event
+        Map eventData = new HashMap();
+        eventData.put("id", user.getId().toString());
+        eventData.put("name", user.getName());
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
 
     /**
@@ -7493,6 +7499,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_userDriver.setUsersOrganizationalUnit(dbc, orgUnit, user);
         // remove the principal from cache
         OpenCms.getMemoryMonitor().clearUserCache(user);
+
+        // fire user modified event
+        Map eventData = new HashMap();
+        eventData.put("id", user.getId().toString());
+        eventData.put("name", user.getName());
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
 
     /**
@@ -8384,6 +8396,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         OpenCms.getMemoryMonitor().clearUserCache(user);
         m_userDriver.writeUser(dbc, user);
+
+        // fire user modified event
+        Map eventData = new HashMap();
+        eventData.put("id", user.getId().toString());
+        eventData.put("name", user.getName());
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
 
     /** 
