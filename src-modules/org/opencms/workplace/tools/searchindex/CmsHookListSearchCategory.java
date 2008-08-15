@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsHookListSearchCategory.java,v $
- * Date   : $Date: 2008/02/27 12:05:40 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/08/15 14:20:33 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * This hook monitors the actions of the <code>{@link org.opencms.workplace.CmsWidgetDialog}</code>: 
  * During a request - response cycle it clears the list (prepareCommit)
- * of categories and adds all request parameters (actionCommitValue) to the list. <pü>
+ * of categories and adds all request parameters (actionCommitValue) to the list. <p>
  * 
  * The strategy here is to save all categories in a backup at "onClear" - time 
  * and then wait until all add operations are finished. This is when the iterator() 
@@ -75,7 +75,7 @@ import java.util.List;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
