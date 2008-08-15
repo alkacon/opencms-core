@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsTermHighlighterHtml.java,v $
- * Date   : $Date: 2008/02/27 12:05:21 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/08/15 16:08:21 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.lucene.search.highlight.QueryScorer;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,9 +83,9 @@ public class CmsTermHighlighterHtml implements I_CmsTermHighlighter {
         while (excerptFieldNames.hasNext()) {
             String fieldName = (String)excerptFieldNames.next();
             boolean createExcerpt = !params.isExcerptOnlySearchedFields() || params.getFields().contains(fieldName);
-            if (createExcerpt && (doc.getField(fieldName) != null)) {
+            if (createExcerpt && (doc.getFieldable(fieldName) != null)) {
                 // only generate field excerpt if the field is available in the document
-                String text = doc.getField(fieldName).stringValue();
+                String text = doc.getFieldable(fieldName).stringValue();
                 // make sure all XML in the text is escaped, otherwise excerpt HTML output may be garbled
                 text = CmsEncoder.escapeXml(text);
 

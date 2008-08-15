@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/I_CmsExtractionResult.java,v $
- * Date   : $Date: 2008/02/27 12:05:30 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/08/15 16:08:22 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,6 +89,13 @@ public interface I_CmsExtractionResult {
      * @return the extracted content combined as a String
      */
     String getContent();
+
+    /**
+     * Returns this extraction result serialized as a byte array.<p>
+     * 
+     * @return this extraction result serialized as a byte array
+     */
+    byte[] getBytes();
 
     /**
      * Returns the extracted content as individual items.<p>

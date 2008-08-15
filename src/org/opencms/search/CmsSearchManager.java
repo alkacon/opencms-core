@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2008/08/15 16:08:22 $
+ * Version: $Revision: 1.67 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.66 $ 
+ * @version $Revision: 1.67 $ 
  * 
  * @since 6.0.0 
  */
@@ -221,27 +221,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_SEARCH_CONFIG_0));
-        }
-    }
-
-    /**
-     * Shuts down the search manager.<p>
-     * 
-     * This will cause all search indices to be shut down.<p>
-     */
-    public void shutDown() {
-
-        Iterator i = m_indexes.iterator();
-        while (i.hasNext()) {
-            CmsSearchIndex index = (CmsSearchIndex)i.next();
-            try {
-                index.shutDown();
-            } catch (IOException e) {
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SHUTDOWN_1, index.getName()), e);
-            }
-        }
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
         }
     }
 
@@ -401,6 +380,45 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             default:
                 // no operation
         }
+    }
+
+    /**
+     * Returns an analyzer for the given language.<p>
+     * 
+     * The analyzer is selected according to the analyzer configuration.<p>
+     * 
+     * @param locale the locale to get the analyzer for
+     * @return the appropriate lucene analyzer
+     * @throws CmsSearchException if something goes wrong
+     */
+    public Analyzer getAnalyzer(Locale locale) throws CmsSearchException {
+
+        Analyzer analyzer = null;
+        String className = null;
+
+        CmsSearchAnalyzer analyzerConf = (CmsSearchAnalyzer)m_analyzers.get(locale);
+        if (analyzerConf == null) {
+            throw new CmsSearchException(Messages.get().container(Messages.ERR_ANALYZER_NOT_FOUND_1, locale));
+        }
+
+        try {
+            className = analyzerConf.getClassName();
+            Class analyzerClass = Class.forName(className);
+
+            // added param for snowball analyzer
+            String stemmerAlgorithm = analyzerConf.getStemmerAlgorithm();
+            if (stemmerAlgorithm != null) {
+                analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {String.class}).newInstance(
+                    new Object[] {stemmerAlgorithm});
+            } else {
+                analyzer = (Analyzer)analyzerClass.newInstance();
+            }
+
+        } catch (Exception e) {
+            throw new CmsSearchException(Messages.get().container(Messages.ERR_LOAD_ANALYZER_1, className), e);
+        }
+
+        return analyzer;
     }
 
     /**
@@ -1129,6 +1147,27 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Shuts down the search manager.<p>
+     * 
+     * This will cause all search indices to be shut down.<p>
+     */
+    public void shutDown() {
+
+        Iterator i = m_indexes.iterator();
+        while (i.hasNext()) {
+            CmsSearchIndex index = (CmsSearchIndex)i.next();
+            try {
+                index.shutDown();
+            } catch (IOException e) {
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SHUTDOWN_1, index.getName()), e);
+            }
+        }
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
+        }
+    }
+
+    /**
      * Proceed the unlocking of the given index depending on the setting of <code>m_forceUnlockMode</code> and the given mode.<p>
      * 
      * @param index the index to check the lock for
@@ -1210,45 +1249,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             }
         }
-    }
-
-    /**
-     * Returns an analyzer for the given language.<p>
-     * 
-     * The analyzer is selected according to the analyzer configuration.<p>
-     * 
-     * @param locale the locale to get the analyzer for
-     * @return the appropriate lucene analyzer
-     * @throws CmsSearchException if something goes wrong
-     */
-    public Analyzer getAnalyzer(Locale locale) throws CmsSearchException {
-
-        Analyzer analyzer = null;
-        String className = null;
-
-        CmsSearchAnalyzer analyzerConf = (CmsSearchAnalyzer)m_analyzers.get(locale);
-        if (analyzerConf == null) {
-            throw new CmsSearchException(Messages.get().container(Messages.ERR_ANALYZER_NOT_FOUND_1, locale));
-        }
-
-        try {
-            className = analyzerConf.getClassName();
-            Class analyzerClass = Class.forName(className);
-
-            // added param for snowball analyzer
-            String stemmerAlgorithm = analyzerConf.getStemmerAlgorithm();
-            if (stemmerAlgorithm != null) {
-                analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {String.class}).newInstance(
-                    new Object[] {stemmerAlgorithm});
-            } else {
-                analyzer = (Analyzer)analyzerClass.newInstance();
-            }
-
-        } catch (Exception e) {
-            throw new CmsSearchException(Messages.get().container(Messages.ERR_LOAD_ANALYZER_1, className), e);
-        }
-
-        return analyzer;
     }
 
     /**
@@ -1454,8 +1454,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if (updateResources.contains(res)) {
                     // resource may have been added as a sibling of another resource
                     // in this case we make sure to use the value from the publish list because of the "deleted" flag
-                    updateResources.remove(res);
-                    // "equals()" implementation of published resource only checks for path, 
+                    boolean hasMoved = (res.getMovedState() == CmsPublishedResource.STATE_MOVED_DESTINATION)
+                        || (res.getMovedState() == CmsPublishedResource.STATE_MOVED_SOURCE);
+                    // check it this is a moved resource with source / target info, in this case we need both entries
+                    if (!hasMoved) {
+                        // if the resource was moved, we must contain both entries
+                        updateResources.remove(res);
+                    }
+                    // "equals()" implementation of published resource checks for id, 
                     // so the removed value may have a different "deleted" or "modified" status value
                     updateResources.add(res);
                 } else {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2008/08/15 16:08:22 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,12 +51,12 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 
 /**
- * Implementation for an indexer indexing resources from the OpenCms VFS.<p>
+ * An indexer indexing {@link CmsResource} based content from the OpenCms VFS.<p>
  * 
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,13 +66,13 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     private static final Log LOG = CmsLog.getLog(CmsVfsIndexer.class);
 
     /** The OpenCms user context to use when reading resources from the VFS during indexing. */
-    private CmsObject m_cms;
+    protected CmsObject m_cms;
 
     /** The index. */
-    private CmsSearchIndex m_index;
+    protected CmsSearchIndex m_index;
 
     /** The report. */
-    private I_CmsReport m_report;
+    protected I_CmsReport m_report;
 
     /**
      * @see org.opencms.search.I_CmsIndexer#deleteResources(org.apache.lucene.index.IndexWriter, java.util.List)
@@ -112,31 +112,13 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         Iterator i = publishedResources.iterator();
         while (i.hasNext()) {
             // check all published resources if they match this indexer / source
-            CmsPublishedResource resource = (CmsPublishedResource)i.next();
+            CmsPublishedResource pubRes = (CmsPublishedResource)i.next();
             // VFS resources will always have a structure id
-            if (!resource.getStructureId().isNullUUID()) {
+            if (!pubRes.getStructureId().isNullUUID()) {
                 // use utility method from CmsProject to check if published resource is "inside" this index source
-                if (CmsProject.isInsideProject(source.getResourcesNames(), resource.getRootPath())) {
+                if (CmsProject.isInsideProject(source.getResourcesNames(), pubRes.getRootPath())) {
                     // the resource is "inside" this index source
-                    if (resource.getState().isNew()) {
-                        // new resource just needs to be updated
-                        if (isResourceInTimeWindow(resource)) {
-                            // update only if resource is in time window
-                            result.addResourceToUpdate(resource);
-                        }
-                    } else if (resource.getState().isDeleted()) {
-                        // deleted resource just needs to be removed
-                        result.addResourceToDelete(resource);
-                    } else if (resource.getState().isChanged() || resource.getState().isUnchanged()) {
-                        // changed (or unchanged) resource must be removed first, and then updated
-                        // note: unchanged resources can be siblings that have been added from the online project,
-                        //       these must be treated as if the resource had changed
-                        result.addResourceToDelete(resource);
-                        if (isResourceInTimeWindow(resource)) {
-                            // update only if resource is in time window
-                            result.addResourceToUpdate(resource);
-                        }
-                    }
+                    addResourceToUpdateData(pubRes, result);
                 }
             }
         }
@@ -233,6 +215,37 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     resourcesAlreadyUpdated.add(resource.getRootPath());
                     updateResource(writer, threadManager, resource);
                 }
+            }
+        }
+    }
+
+    /**
+     * Adds a given published resource to the provided search index update data.<p>
+     * 
+     * This method decides if the resource has to be included in the "update" or "delete" list.<p>
+     * 
+     * @param pubRes the published resource to add
+     * @param updateData the search index update data to add the resource to
+     */
+    protected void addResourceToUpdateData(CmsPublishedResource pubRes, CmsSearchIndexUpdateData updateData) {
+
+        if (pubRes.getState().isNew()) {
+            // new resource just needs to be updated
+            if (isResourceInTimeWindow(pubRes)) {
+                // update only if resource is in time window
+                updateData.addResourceToUpdate(pubRes);
+            }
+        } else if (pubRes.getState().isDeleted()) {
+            // deleted resource just needs to be removed
+            updateData.addResourceToDelete(pubRes);
+        } else if (pubRes.getState().isChanged() || pubRes.getState().isUnchanged()) {
+            // changed (or unchanged) resource must be removed first, and then updated
+            // note: unchanged resources can be siblings that have been added from the online project,
+            //       these must be treated as if the resource had changed
+            updateData.addResourceToDelete(pubRes);
+            if (isResourceInTimeWindow(pubRes)) {
+                // update only if resource is in time window
+                updateData.addResourceToUpdate(pubRes);
             }
         }
     }

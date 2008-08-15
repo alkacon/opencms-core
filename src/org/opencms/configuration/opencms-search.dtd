@@ -217,8 +217,8 @@
 <!ATTLIST field 
 	name CDATA #REQUIRED
 	display CDATA #IMPLIED
-	store (true|false|TRUE|FALSE) #REQUIRED
-	index (true|false|TRUE|FALSE|no|tokenized|untokenized) #REQUIRED
+	store (true|false|TRUE|FALSE|yes|no|YES|NO|compress|COMPRESS) #REQUIRED
+	index (true|false|TRUE|FALSE|no|NO|tokenized|untokenized) #REQUIRED
 	excerpt (true|false|TRUE|FALSE) #IMPLIED
 	analyzer CDATA #IMPLIED
 	boost CDATA #IMPLIED

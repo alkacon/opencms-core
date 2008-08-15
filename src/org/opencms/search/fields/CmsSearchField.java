@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/08/15 16:08:22 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.0 
  */
@@ -59,6 +59,12 @@ public class CmsSearchField {
 
     /** Name of the field that usually contains the complete content of the document (optional). */
     public static final String FIELD_CONTENT = "content";
+
+    /** Name of the field that contains the complete extracted content of the document as serialized object (hardcoded). */
+    public static final String FIELD_CONTENT_BLOB = "contentblob";
+
+    /** Name of the field that contains the document content date (hardcoded). */
+    public static final String FIELD_DATE_CONTENT = "contentdate";
 
     /** Name of the field that contains the document creation date (hardcoded). */
     public static final String FIELD_DATE_CREATED = "created";
@@ -110,17 +116,29 @@ public class CmsSearchField {
     /** Value of m_displayName if field should not be displayed. */
     public static final String IGNORE_DISPLAY_NAME = "-";
 
+    /** Constant for the "compress" index setting. */
+    public static final String STR_COMPRESS = "compress";
+
+    /** Constant for the "no" index setting. */
+    public static final String STR_NO = "no";
+
     /** Constant for the "tokenized" index setting. */
     public static final String STR_TOKENIZED = "tokenized";
 
     /** Constant for the "untokenized" index setting. */
     public static final String STR_UN_TOKENIZED = "untokenized";
 
+    /** Constant for the "yes" index setting. */
+    public static final String STR_YES = "yes";
+
     /** The special analyzer to use for this field. */
     private Analyzer m_analyzer;
 
     /** The boost factor of the field. */
     private float m_boost;
+
+    /** Indicates if the content of this field is compressed. */
+    private boolean m_compressed;
 
     /** A default value for the field in case the content does not provide the value. */
     private String m_defaultValue;
@@ -185,6 +203,7 @@ public class CmsSearchField {
      * @param name the name of the field, see {@link #setName(String)}
      * @param displayName the display name of this field, see {@link #setDisplayName(String)}
      * @param isStored controls if the field is stored, see {@link #setStored(boolean)}
+     * @param isCompressed controls if the filed is compressed, see {@link #setCompressed(boolean)}
      * @param isIndexed controls if the field is indexed, see {@link #setIndexed(boolean)}
      * @param isTokenized controls if the field is tokenized, see {@link #setStored(boolean)}
      * @param isInExcerpt controls if the field is in the excerpt, see {@link #isInExcerptAndStored()}
@@ -196,6 +215,7 @@ public class CmsSearchField {
         String name,
         String displayName,
         boolean isStored,
+        boolean isCompressed,
         boolean isIndexed,
         boolean isTokenized,
         boolean isInExcerpt,
@@ -207,6 +227,7 @@ public class CmsSearchField {
         setDisplayName(displayName);
         setName(name);
         setStored(isStored);
+        setCompressed(isCompressed);
         setIndexed(isIndexed);
         setTokenized(isTokenized);
         setInExcerpt(isInExcerpt);
@@ -237,7 +258,7 @@ public class CmsSearchField {
         float boost,
         String defaultValue) {
 
-        this(name, displayName, isStored, isIndexed, isTokenized, isInExcerpt, null, boost, defaultValue);
+        this(name, displayName, isStored, false, isIndexed, isTokenized, isInExcerpt, null, boost, defaultValue);
     }
 
     /**
@@ -267,15 +288,21 @@ public class CmsSearchField {
         }
         if (content != null) {
 
-            Index idx = Field.Index.NO;
+            Index index = Field.Index.NO;
             if (isIndexed()) {
                 if (isTokenizedAndIndexed()) {
-                    idx = Field.Index.TOKENIZED;
+                    index = Field.Index.TOKENIZED;
                 } else {
-                    idx = Field.Index.UN_TOKENIZED;
+                    index = Field.Index.UN_TOKENIZED;
                 }
             }
-            Field result = new Field(getName(), content, isStored() ? Field.Store.YES : Field.Store.NO, idx);
+            Field.Store store = Field.Store.NO;
+            if (isCompressed()) {
+                store = Field.Store.COMPRESS;
+            } else if (isStored()) {
+                store = Field.Store.YES;
+            }
+            Field result = new Field(getName(), content, store, index);
             if (getBoost() != BOOST_DEFAULT) {
                 result.setBoost(getBoost());
             }
@@ -421,6 +448,19 @@ public class CmsSearchField {
     public int hashCode() {
 
         return (m_name == null) ? 41 : m_name.hashCode();
+    }
+
+    /**
+     * Returns <code>true</code> if the content of this field is compressed.<p>
+     *
+     * If the field is compressed, it must also be stored, this means 
+     * {@link #isStored()} will always return <code>true</code> for compressed fields.<p>
+     *
+     * @return <code>true</code> if the content of this field is compressed
+     */
+    public boolean isCompressed() {
+
+        return m_compressed;
     }
 
     /**
@@ -597,6 +637,22 @@ public class CmsSearchField {
     }
 
     /**
+     * Controls if this field value will be stored compressed or not.<p>
+     *
+     * If this is set to <code>true</code>, the value for {@link #isStored()} will also 
+     * be set to <code>true</code>, since compressed fields are always stored.<p>
+     *
+     * @param compressed if <code>true</code>, the field value will be stored compressed
+     */
+    public void setCompressed(boolean compressed) {
+
+        m_compressed = compressed;
+        if (compressed) {
+            setStored(true);
+        }
+    }
+
+    /**
      * Sets the default value to use if no content for this field was collected.<p>
      *
      * @param defaultValue the default value to set
@@ -688,7 +744,10 @@ public class CmsSearchField {
                 isTokenized = true;
             } else if (STR_UN_TOKENIZED.equals(indexed)) {
                 isIndexed = true;
+            } else if (STR_NO.equals(indexed)) {
+                // "no", both values will be false
             } else {
+                // only "true" or "false" remain
                 isIndexed = Boolean.valueOf(indexed).booleanValue();
                 isTokenized = isIndexed;
             }
@@ -753,7 +812,23 @@ public class CmsSearchField {
      */
     public void setStored(String stored) {
 
-        setStored(Boolean.valueOf(String.valueOf(stored)).booleanValue());
+        boolean isStored = false;
+        boolean isCompressed = false;
+        if (stored != null) {
+            stored = stored.trim().toLowerCase();
+            if (STR_COMPRESS.equals(stored)) {
+                isCompressed = true;
+                isStored = true;
+            } else if (STR_YES.equals(stored)) {
+                // "yes", value will be stored but not compressed
+                isStored = true;
+            } else {
+                // only "true" or "false" remain
+                isStored = Boolean.valueOf(stored).booleanValue();
+            }
+        }
+        setStored(isStored);
+        setCompressed(isCompressed);
     }
 
     /**

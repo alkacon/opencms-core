@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2008/08/15 16:08:21 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,14 +40,19 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.CmsIndexException;
 import org.opencms.search.CmsSearchIndex;
+import org.opencms.search.extractors.CmsExtractionResult;
 import org.opencms.search.extractors.I_CmsExtractionResult;
+import org.opencms.search.fields.CmsSearchField;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Fieldable;
 
 /**
  * Base document factory class for a VFS <code>{@link org.opencms.file.CmsResource}</code>, 
@@ -58,7 +63,7 @@ import org.apache.lucene.document.Document;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -160,7 +165,38 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         CmsExtractionResultCache cache = getCache();
         if (cache != null) {
             cacheName = cache.getCacheName(resource, isLocaleDependend() ? index.getLocale() : null);
-            content = (I_CmsExtractionResult)cache.getCacheObject(cacheName);
+            content = cache.getCacheObject(cacheName);
+        }
+
+        if (content == null) {
+            // extraction result has not been found in the cache
+            // compare "date of last modification of content" from Lucene index and OpenCms VFS
+            // if this is identical, then the data from the Lucene index can be re-used 
+            Document oldDoc = index.getDocument(resource.getRootPath());
+            // first check if the document is already in the index
+            if (oldDoc != null) {
+                // first obtain content date from Lucene index
+                Fieldable fieldContentDate = oldDoc.getFieldable(CmsSearchField.FIELD_DATE_CONTENT);
+                long contentDateIndex = 0;
+                if (fieldContentDate != null) {
+                    String contentDate = fieldContentDate.stringValue();
+                    try {
+                        contentDateIndex = DateTools.stringToTime(contentDate);
+                    } catch (ParseException e) {
+                        // ignore
+                    }
+                    // now compare the date with the date stored in the resource
+                    if (contentDateIndex == resource.getDateContent()) {
+                        // date of content is identical, re-use existing content
+                        Fieldable fieldContentBlob = oldDoc.getFieldable(CmsSearchField.FIELD_CONTENT_BLOB);
+                        if (fieldContentBlob != null) {
+                            // extract stored content blob from Lucene index
+                            byte[] oldContent = fieldContentBlob.binaryValue();
+                            content = CmsExtractionResult.fromBytes(oldContent);
+                        }
+                    }
+                }
+            }
         }
 
         if (content == null) {

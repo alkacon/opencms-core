@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2008/08/15 16:08:22 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Fieldable;
 
 /**
  * Contains the data of a single item in a search result.<p>
@@ -52,7 +52,7 @@ import org.apache.lucene.document.Field;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,7 +97,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
 
         Iterator i = doc.getFields().iterator();
         while (i.hasNext()) {
-            Field field = (Field)i.next();
+            Fieldable field = (Fieldable)i.next();
             if ((field != null) && field.isStored()) {
                 // content can be displayed only if it has been stored in the field
                 String name = field.name();
@@ -112,14 +112,14 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
             }
         }
 
-        Field f = doc.getField(CmsSearchField.FIELD_PATH);
+        Fieldable f = doc.getFieldable(CmsSearchField.FIELD_PATH);
         if (f != null) {
             m_path = f.stringValue();
         } else {
             m_path = null;
         }
 
-        f = doc.getField(CmsSearchField.FIELD_DATE_CREATED);
+        f = doc.getFieldable(CmsSearchField.FIELD_DATE_CREATED);
         if (f != null) {
             try {
                 m_dateCreated = DateTools.stringToDate(f.stringValue());
@@ -130,7 +130,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
             m_dateCreated = null;
         }
 
-        f = doc.getField(CmsSearchField.FIELD_DATE_LASTMODIFIED);
+        f = doc.getFieldable(CmsSearchField.FIELD_DATE_LASTMODIFIED);
         if (f != null) {
             try {
                 m_dateLastModified = DateTools.stringToDate(f.stringValue());
@@ -141,7 +141,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
             m_dateLastModified = null;
         }
 
-        f = doc.getField(CmsSearchField.FIELD_TYPE);
+        f = doc.getFieldable(CmsSearchField.FIELD_TYPE);
         if (f != null) {
             m_documentType = f.stringValue();
         } else {
@@ -185,7 +185,10 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
      */
     public Date getDateCreated() {
 
-        return (Date)m_dateCreated.clone();
+        if (m_dateCreated != null) {
+            return (Date)m_dateCreated.clone();
+        }
+        return null;
     }
 
     /**
@@ -195,7 +198,10 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
      */
     public Date getDateLastModified() {
 
-        return (Date)m_dateLastModified.clone();
+        if (m_dateLastModified != null) {
+            return (Date)m_dateLastModified.clone();
+        }
+        return null;
     }
 
     /**

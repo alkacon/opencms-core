@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2008/08/15 16:08:22 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 6.0.0
  */
@@ -530,7 +530,11 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDisplayNameForConfiguration())) {
                     fieldElement.addAttribute(A_DISPLAY, field.getDisplayNameForConfiguration());
                 }
-                fieldElement.addAttribute(A_STORE, String.valueOf(field.isStored()));
+                if (field.isCompressed()) {
+                    fieldElement.addAttribute(A_STORE, CmsSearchField.STR_COMPRESS);
+                } else {
+                    fieldElement.addAttribute(A_STORE, String.valueOf(field.isStored()));
+                }
                 String index;
                 if (field.isIndexed()) {
                     if (field.isTokenizedAndIndexed()) {

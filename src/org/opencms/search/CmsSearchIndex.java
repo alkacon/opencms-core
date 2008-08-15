@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2008/08/15 16:08:21 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,12 @@ import org.apache.commons.logging.Log;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldSelector;
+import org.apache.lucene.document.FieldSelectorResult;
+import org.apache.lucene.document.Fieldable;
+import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.FilterIndexReader;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
@@ -79,14 +84,56 @@ import org.apache.lucene.search.TermQuery;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.68 $ 
+ * @version $Revision: 1.69 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
+    /**
+     * Lucene filter index reader implementation that will ensure the OpenCms default search index fields
+     * {@link CmsSearchField#FIELD_CONTENT} and {@link CmsSearchField#FIELD_CONTENT_BLOB}
+     * are lazy loaded.<p>
+     * 
+     * This is to optimize performance - these 2 fields will be rather large especially for extracted
+     * binary documents like PDF, MS Office etc. By using lazy fields the data is only read when it is 
+     * actually used.<p>
+     */
+    protected class LazyContentReader extends FilterIndexReader {
+
+        /**
+         * Create a new lazy content reader.<p>
+         * 
+         * @param indexReader the index reader to use this lazy content reader with
+         */
+        public LazyContentReader(IndexReader indexReader) {
+
+            super(indexReader);
+        }
+
+        /**
+         * @see org.apache.lucene.index.IndexReader#document(int)
+         */
+        public Document document(int n) throws CorruptIndexException, IOException {
+
+            return super.document(n, CONTENT_SELECTOR);
+        }
+    }
+
     /** Constant for additional parameter to enable excerpt creation (default: true). */
     public static final String EXCERPT = CmsSearchIndex.class.getName() + ".createExcerpt";
+
+    /** Constant for additional parameter for the Lucene index setting. */
+    public static final String LUCENE_MAX_MERGE_DOCS = "lucene.MaxMergeDocs";
+
+    /** Constant for additional parameter for the Lucene index setting. */
+    public static final String LUCENE_MERGE_FACTOR = "lucene.MergeFactor";
+
+    /** Constant for additional parameter for the Lucene index setting. */
+    public static final String LUCENE_RAM_BUFFER_SIZE_MB = "lucene.RAMBufferSizeMB";
+
+    /** Constant for additional parameter for the Lucene index setting. */
+    public static final String LUCENE_USE_COMPOUND_FILE = "lucene.UseCompoundFile";
 
     /** Constant for additional parameter to enable permission checks (default: true). */
     public static final String PERMISSIONS = CmsSearchIndex.class.getName() + ".checkPermissions";
@@ -116,6 +163,34 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Constant for additional parameter to enable time range checks (default: true). */
     public static final String TIME_RANGE = CmsSearchIndex.class.getName() + ".checkTimeRange";
+
+    /**
+     * Field selector for Lucene that that will ensure the OpenCms default search index fields
+     * {@link CmsSearchField#FIELD_CONTENT} and {@link CmsSearchField#FIELD_CONTENT_BLOB}
+     * are lazy loaded.<p>
+     * 
+     * This is to optimize performance - these 2 fields will be rather large especially for extracted
+     * binary documents like PDF, MS Office etc. By using lazy fields the data is only read when it is 
+     * actually used.<p>
+     */
+    protected static final FieldSelector CONTENT_SELECTOR = new FieldSelector() {
+
+        /** Required for safe serialization. */
+        private static final long serialVersionUID = 2785064181424297998L;
+
+        /**
+         * Makes the content fields lazy.<p>
+         * 
+         * @see org.apache.lucene.document.FieldSelector#accept(java.lang.String)
+         */
+        public FieldSelectorResult accept(String fieldName) {
+
+            if (CmsSearchField.FIELD_CONTENT.equals(fieldName) || CmsSearchField.FIELD_CONTENT_BLOB.equals(fieldName)) {
+                return FieldSelectorResult.LAZY_LOAD;
+            }
+            return FieldSelectorResult.LOAD;
+        }
+    };
 
     /** Constant for a field list that contains the "meta" field as well as the "content" field. */
     static final String[] DOC_META_FIELDS = new String[] {CmsSearchField.FIELD_META, CmsSearchField.FIELD_CONTENT};
@@ -150,8 +225,23 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The name of the search field configuration used by this index. */
     private String m_fieldConfigurationName;
 
+    /** Indicates if this search index has already been created. */
+    private boolean m_indexExists;
+
     /** The locale of this index. */
     private Locale m_locale;
+
+    /** The Lucene index merge factor setting, see {@link IndexWriter#setMaxMergeDocs(int)}. */
+    private Integer m_luceneMaxMergeDocs;
+
+    /** The Lucene index merge factor setting, see {@link IndexWriter#setMergeFactor(int)}. */
+    private Integer m_luceneMergeFactor;
+
+    /** The Lucene index RAM buffer size, see {@link IndexWriter#setRAMBufferSizeMB(double)}. */
+    private Double m_luceneRAMBufferSizeMB;
+
+    /** The Lucene index setting that controls, see {@link IndexWriter#setUseCompoundFile(boolean)}.  */
+    private Boolean m_luceneUseCompoundFile;
 
     /** The name of this index. */
     private String m_name;
@@ -310,6 +400,26 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     new Integer(Thread.MAX_PRIORITY)));
 
             }
+        } else if (LUCENE_MAX_MERGE_DOCS.equals(key)) {
+            try {
+                m_luceneMaxMergeDocs = Integer.valueOf(value);
+            } catch (NumberFormatException e) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_PARAM_3, value, key, getName()));
+            }
+        } else if (LUCENE_MERGE_FACTOR.equals(key)) {
+            try {
+                m_luceneMergeFactor = Integer.valueOf(value);
+            } catch (NumberFormatException e) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_PARAM_3, value, key, getName()));
+            }
+        } else if (LUCENE_RAM_BUFFER_SIZE_MB.equals(key)) {
+            try {
+                m_luceneRAMBufferSizeMB = Double.valueOf(value);
+            } catch (NumberFormatException e) {
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_PARAM_3, value, key, getName()));
+            }
+        } else if (LUCENE_USE_COMPOUND_FILE.equals(key)) {
+            m_luceneUseCompoundFile = Boolean.valueOf(value);
         }
     }
 
@@ -403,6 +513,45 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if (!isCheckingTimeRange()) {
             result.put(TIME_RANGE, Boolean.valueOf(m_checkTimeRange));
         }
+        // set the index writer parameter if required 
+        if (m_luceneMaxMergeDocs != null) {
+            result.put(LUCENE_MAX_MERGE_DOCS, m_luceneMaxMergeDocs);
+        }
+        if (m_luceneMergeFactor != null) {
+            result.put(LUCENE_MERGE_FACTOR, m_luceneMergeFactor);
+        }
+        if (m_luceneRAMBufferSizeMB != null) {
+            result.put(LUCENE_RAM_BUFFER_SIZE_MB, m_luceneRAMBufferSizeMB);
+        }
+        if (m_luceneUseCompoundFile != null) {
+            result.put(LUCENE_USE_COMPOUND_FILE, m_luceneUseCompoundFile);
+        }
+        return result;
+    }
+
+    /**
+     * Returns the Lucene document with the given root path from the index.<p>
+     * 
+     * @param rootPath the root path of the document to get 
+     * 
+     * @return the Lucene document with the given root path from the index
+     */
+    public Document getDocument(String rootPath) {
+
+        Document result = null;
+        IndexSearcher searcher = getSearcher();
+        if (searcher != null) {
+            // search for an exact match on the document root path
+            Term pathTerm = new Term(CmsSearchField.FIELD_PATH, rootPath);
+            try {
+                Hits hits = searcher.search(new TermQuery(pathTerm));
+                if (hits.length() > 0) {
+                    result = hits.doc(0);
+                }
+            } catch (IOException e) {
+                // ignore, return null and assume document was not found
+            }
+        }
         return result;
     }
 
@@ -487,10 +636,29 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 indexWriter = new IndexWriter(m_path, getAnalyzer(), true);
             }
 
+            // set the index writer parameter if required 
+            if (m_luceneMaxMergeDocs != null) {
+                indexWriter.setMaxMergeDocs(m_luceneMaxMergeDocs.intValue());
+            }
+            if (m_luceneMergeFactor != null) {
+                indexWriter.setMergeFactor(m_luceneMergeFactor.intValue());
+            }
+            if (m_luceneRAMBufferSizeMB != null) {
+                indexWriter.setRAMBufferSizeMB(m_luceneRAMBufferSizeMB.doubleValue());
+            }
+            if (m_luceneUseCompoundFile != null) {
+                indexWriter.setUseCompoundFile(m_luceneUseCompoundFile.booleanValue());
+            }
+
         } catch (Exception e) {
             throw new CmsIndexException(
                 Messages.get().container(Messages.ERR_IO_INDEX_WRITER_OPEN_2, m_path, m_name),
                 e);
+        }
+
+        // the index exists when the create flag has been set
+        if (create) {
+            m_indexExists = true;
         }
 
         return indexWriter;
@@ -677,11 +845,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         Analyzer baseAnalyzer = OpenCms.getSearchManager().getAnalyzer(getLocale());
         setAnalyzer(m_fieldConfiguration.getAnalyzer(baseAnalyzer));
 
-        // check if this index already exists, if so create a searcher instance
-        if ((new File(m_path)).exists()) {
-            // initialize the index searcher instance
-            indexSearcherOpen();
-        }
+        // check if this index already exists
+        m_indexExists = (new File(m_path)).exists();
+        // initialize the index searcher instance
+        indexSearcherOpen();
     }
 
     /**
@@ -1132,8 +1299,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             return true;
         }
 
-        Field typeField = doc.getField(CmsSearchField.FIELD_TYPE);
-        Field pathField = doc.getField(CmsSearchField.FIELD_PATH);
+        Fieldable typeField = doc.getFieldable(CmsSearchField.FIELD_TYPE);
+        Fieldable pathField = doc.getFieldable(CmsSearchField.FIELD_PATH);
         if ((typeField == null) || (pathField == null)) {
             // permission check needs only to be performed for VFS documents that contain both fields
             return true;
@@ -1172,26 +1339,30 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Initializes the Lucene index searcher for this index.<p>
      * 
+     * Use {@link #getSearcher()} in order to obtain the searcher that has been opened.<p>
+     * 
      * In case there is an index searcher still open, it is closed first.<p>
      * 
      * For performance reasons, one instance of the Lucene index searcher should be kept 
      * for all searches. However, if the index is updated or changed 
      * this searcher instance needs to be re-initialized.<p>
-     * 
-     * @return the initialized Lucene index searcher for this index
      */
-    protected synchronized IndexSearcher indexSearcherOpen() {
+    protected synchronized void indexSearcherOpen() {
+
+        if (!m_indexExists) {
+            return;
+        }
 
         // first close the current searcher instance
         indexSearcherClose();
 
         // create the index searcher
         try {
-            m_searcher = new IndexSearcher(m_path);
+            IndexReader reader = new LazyContentReader(IndexReader.open(m_path));
+            m_searcher = new IndexSearcher(reader);
         } catch (IOException e) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_1, getName()), e);
         }
-        return m_searcher;
     }
 
     /**
@@ -1213,7 +1384,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         try {
             // check the creation date of the document against the given time range
-            Date dateCreated = DateTools.stringToDate(doc.getField(CmsSearchField.FIELD_DATE_CREATED).stringValue());
+            Date dateCreated = DateTools.stringToDate(doc.getFieldable(CmsSearchField.FIELD_DATE_CREATED).stringValue());
             if ((params.getMinDateCreated() > Long.MIN_VALUE) && (dateCreated.getTime() < params.getMinDateCreated())) {
                 return false;
             }
@@ -1222,7 +1393,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             // check the last modification date of the document against the given time range
-            Date dateLastModified = DateTools.stringToDate(doc.getField(CmsSearchField.FIELD_DATE_LASTMODIFIED).stringValue());
+            Date dateLastModified = DateTools.stringToDate(doc.getFieldable(CmsSearchField.FIELD_DATE_LASTMODIFIED).stringValue());
             if ((params.getMinDateLastModified() > Long.MIN_VALUE)
                 && (dateLastModified.getTime() < params.getMinDateLastModified())) {
                 return false;

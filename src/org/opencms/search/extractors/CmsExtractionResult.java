@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractionResult.java,v $
- * Date   : $Date: 2008/02/27 12:05:30 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/08/15 16:08:22 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,10 @@ package org.opencms.search.extractors;
 
 import org.opencms.util.CmsStringUtil;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +49,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,6 +60,9 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
 
     /** The extracted individual content items. */
     private Map m_contentItems;
+
+    /** The serialized version of this object. */
+    private byte[] m_serializedVersion;
 
     /**
      * Creates a new extration result without meta information and without additional fields.<p>
@@ -69,7 +76,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     }
 
     /**
-     * Creates a new extration result.<p>
+     * Creates a new extraction result.<p>
      * 
      * @param content the extracted content
      * @param contentItems the individual extracted content items
@@ -84,6 +91,56 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
             m_contentItems.put(ITEM_CONTENT, content);
         }
+    }
+
+    /**
+     * Creates an extraction result from a serialized byte array.<p> 
+     * 
+     * @param bytes the serialized version of the extraction result
+     * 
+     * @return extraction result created from the serialized byte array  
+     */
+    public static final CmsExtractionResult fromBytes(byte[] bytes) {
+
+        Object obj = null;
+        if (bytes != null) {
+            // create an object out of the byte array
+            try {
+                ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+                ObjectInputStream oin = new ObjectInputStream(in);
+                obj = oin.readObject();
+                oin.close();
+            } catch (Exception e) {
+                // ignore, null is not an instance of CmsExtractionResult
+            }
+            if (obj instanceof CmsExtractionResult) {
+                CmsExtractionResult result = (CmsExtractionResult)obj;
+                result.m_serializedVersion = bytes;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @see org.opencms.search.extractors.I_CmsExtractionResult#getBytes()
+     */
+    public byte[] getBytes() {
+
+        // check if we have a cached version of the serialized object available
+        if (m_serializedVersion != null) {
+            return m_serializedVersion;
+        }
+        try {
+            // serialize this object and return
+            ByteArrayOutputStream out = new ByteArrayOutputStream(512);
+            ObjectOutputStream oout = new ObjectOutputStream(out);
+            oout.writeObject(this);
+            oout.close();
+            m_serializedVersion = out.toByteArray();
+        } catch (Exception e) {
+            // ignore, serialized version will be null
+        }
+        return m_serializedVersion;
     }
 
     /**
@@ -111,5 +168,6 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
             m_contentItems.clear();
         }
         m_contentItems = null;
+        m_serializedVersion = null;
     }
 }

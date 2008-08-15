@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2008/08/15 16:08:22 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -240,6 +240,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INDEXING_WITH_FACTORY_2 = "LOG_INDEXING_WITH_FACTORY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INVALID_PARAM_3 = "LOG_INVALID_PARAM_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IO_INDEX_DOCUMENT_DELETE_2 = "LOG_IO_INDEX_DOCUMENT_DELETE_2";

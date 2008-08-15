@@ -210,7 +210,7 @@
 				<name>standard</name>
 				<description>The standard OpenCms 7.0 search index field configuration.</description>
 				<fields>
-					<field name="content" store="true" index="true" excerpt="true">
+					<field name="content" store="compress" index="true" excerpt="true">
 						<mapping type="content" />
 					</field>	
 					<field name="title-key" store="true" index="untokenized" boost="0.0">

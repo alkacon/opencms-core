@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/08/15 16:08:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,13 +55,14 @@ import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Fieldable;
 
 /**
  * Describes a configuration of fields that are used in building a search index.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.0 
  */
@@ -137,7 +138,7 @@ public class CmsSearchFieldConfiguration implements Comparable {
         result.setDescription(STR_STANDARD_DESCRIPTION);
 
         CmsSearchField field;
-        // content mapping
+        // content mapping, store as compressed value
         field = new CmsSearchField(
             CmsSearchField.FIELD_CONTENT,
             "%(key.field.content)",
@@ -145,6 +146,8 @@ public class CmsSearchFieldConfiguration implements Comparable {
             true,
             true,
             true,
+            true,
+            null,
             CmsSearchField.BOOST_DEFAULT,
             null);
         field.addMapping(new CmsSearchFieldMapping(CmsSearchFieldMappingType.CONTENT, null));
@@ -254,6 +257,16 @@ public class CmsSearchFieldConfiguration implements Comparable {
 
         // create the Lucene document according to the index field configuration
         Document document = new Document();
+
+        // store the extraction result in the index
+        if (content != null) {
+            byte[] data = content.getBytes();
+            if (data != null) {
+                Fieldable field = new Field(CmsSearchField.FIELD_CONTENT_BLOB, data, Field.Store.COMPRESS);
+                document.add(field);
+            }
+        }
+
         Iterator fieldConfigs = getFields().iterator();
         while (fieldConfigs.hasNext()) {
             // check all field configurations 
@@ -277,14 +290,14 @@ public class CmsSearchFieldConfiguration implements Comparable {
             }
             if (text.length() > 0) {
                 // content is available for this field
-                Field field = fieldConfig.createField(text.toString());
+                Fieldable field = fieldConfig.createField(text.toString());
                 document.add(field);
             }
         }
 
         // now add the special OpenCms default search fields
         String value;
-        Field field;
+        Fieldable field;
         // add the category of the file (this is searched so the value can also be attached on a folder)
         value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, true).getValue();
         if (CmsStringUtil.isNotEmpty(value)) {
@@ -319,17 +332,24 @@ public class CmsSearchFieldConfiguration implements Comparable {
             Field.Store.YES,
             Field.Index.UN_TOKENIZED));
 
-        // add date of creation and last modification as keywords (for sorting)
+        // add date of creation, content and last modification
         field = new Field(CmsSearchField.FIELD_DATE_CREATED, DateTools.dateToString(
             new Date(resource.getDateCreated()),
             DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
         field.setBoost(0);
         document.add(field);
+        // add date of last modification
         field = new Field(
             CmsSearchField.FIELD_DATE_LASTMODIFIED,
             DateTools.dateToString(new Date(resource.getDateLastModified()), DateTools.Resolution.MILLISECOND),
             Field.Store.YES,
             Field.Index.UN_TOKENIZED);
+        field.setBoost(0);
+        document.add(field);
+        // add date of content
+        field = new Field(CmsSearchField.FIELD_DATE_CONTENT, DateTools.dateToString(
+            new Date(resource.getDateContent()),
+            DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
         field.setBoost(0);
         document.add(field);
 

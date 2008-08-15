@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsExtractionResultCache.java,v $
- * Date   : $Date: 2008/02/27 12:05:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/15 16:08:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,14 +34,12 @@ package org.opencms.search.documents;
 import org.opencms.cache.CmsVfsDiskCache;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
+import org.opencms.search.extractors.CmsExtractionResult;
+import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsFileUtil;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
@@ -49,7 +47,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implements a disk cache that stores text extraction results in the RFS.<p>
  * 
- * This cache operates on resource file names, plus a hashcode calculated from 
+ * This cache operates on resource file names, plus a hash code calculated from 
  * {@link org.opencms.file.CmsResource#getDateLastModified()}
  * and {@link org.opencms.file.CmsResource#getLength()}. Optional a locale can be appended to this name.<p> 
  * 
@@ -59,13 +57,13 @@ import org.apache.commons.logging.Log;
  * For these documents, all siblings must produce the exact same text extraction result.<p>
  * 
  * This cache is usable for resources from the online AND the offline project at the same time, 
- * because any change to a resource will result in a changed hashcode. This means a resource changed in the offline
- * project will have a new hashcode compared to the online project. If the resource is identical in the online and 
- * the offline project, the generated hashcodes will be the same.<p>
+ * because any change to a resource will result in a changed hash code. This means a resource changed in the offline
+ * project will have a new hash code compared to the online project. If the resource is identical in the online and 
+ * the offline project, the generated hash codes will be the same.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.2.0
  */
@@ -162,14 +160,14 @@ public class CmsExtractionResultCache {
     }
 
     /**
-     * Returns the object stored in the requested file in the disk cache, or <code>null</code> if the
-     * file is not found in the cache, or is found but outdated.<p>
+     * Returns the extraction result in the requested file in the disk cache, or <code>null</code> if the
+     * file is not found in the cache, or is found but out-dated.<p>
      * 
      * @param rfsName the file RFS name to look up in the cache 
      * 
-     * @return the object stored in the requested file in the RFS disk cache, or <code>null</code> 
+     * @return the extraction result stored in the requested file in the RFS disk cache, or <code>null</code> 
      */
-    public Object getCacheObject(String rfsName) {
+    public CmsExtractionResult getCacheObject(String rfsName) {
 
         try {
             File f = new File(rfsName);
@@ -180,19 +178,10 @@ public class CmsExtractionResultCache {
                     f.setLastModified(System.currentTimeMillis());
                 }
                 byte[] byteContent = CmsFileUtil.readFile(f);
-                if (byteContent != null) {
-                    // create an object out of the byte array
-                    ByteArrayInputStream in = new ByteArrayInputStream(byteContent);
-                    ObjectInputStream oin = new ObjectInputStream(in);
-                    Object result = oin.readObject();
-                    oin.close();
-                    return result;
-                }
+                return CmsExtractionResult.fromBytes(byteContent);
             }
         } catch (IOException e) {
             // unable to read content
-        } catch (ClassNotFoundException e) {
-            // Object class not available
         }
         // this code can be reached only in case of an error
         return null;
@@ -209,20 +198,18 @@ public class CmsExtractionResultCache {
     }
 
     /**
-     * Serializes the given object and saves it in the disk cache.<p> 
+     * Serializes the given extraction result and saves it in the disk cache.<p> 
      * 
-     * @param rfsName the RFS name of the file to save the object in
-     * @param object the object to serialize and save
+     * @param rfsName the RFS name of the file to save the extraction result in
+     * @param content the extraction result to serialize and save
      * 
      * @throws IOException in case of disk access errors
      */
-    public void saveCacheObject(String rfsName, Object object) throws IOException {
+    public void saveCacheObject(String rfsName, I_CmsExtractionResult content) throws IOException {
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream(512);
-        ObjectOutputStream oout = new ObjectOutputStream(out);
-        oout.writeObject(object);
-        oout.close();
-        byte[] byteContent = out.toByteArray();
-        CmsVfsDiskCache.saveFile(rfsName, byteContent);
+        byte[] byteContent = content.getBytes();
+        if (byteContent != null) {
+            CmsVfsDiskCache.saveFile(rfsName, byteContent);
+        }
     }
 }
