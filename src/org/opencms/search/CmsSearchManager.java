@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2008/08/15 16:08:22 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2008/08/18 14:48:01 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.67 $ 
+ * @version $Revision: 1.68 $ 
  * 
  * @since 6.0.0 
  */
@@ -771,7 +771,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
         }
         // clean up the extraction result cache
-        m_extractionResultCache.cleanCache(m_extractionCacheMaxAge);
+        cleanExtractionCache();
         if (container != null) {
             // throw stored exception
             throw new CmsSearchException(container);
@@ -793,7 +793,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         // update the index 
         updateIndex(index, report, null);
         // clean up the extraction result cache
-        m_extractionResultCache.cleanCache(m_extractionCacheMaxAge);
+        cleanExtractionCache();
     }
 
     /**
@@ -821,7 +821,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
         }
         // clean up the extraction result cache
-        m_extractionResultCache.cleanCache(m_extractionCacheMaxAge);
+        cleanExtractionCache();
     }
 
     /**
@@ -1165,6 +1165,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_MANAGER_0));
         }
+    }
+
+    /**
+     * Cleans up the extraction result cache.<p>
+     */
+    protected void cleanExtractionCache() {
+
+        // clean up the extraction result cache
+        m_extractionResultCache.cleanCache(m_extractionCacheMaxAge);
     }
 
     /**
@@ -1516,27 +1525,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             }
         }
         // clean up the extraction result cache
-        m_extractionResultCache.cleanCache(m_extractionCacheMaxAge);
-    }
-
-    /**
-     * Returns the report in the given event data, if <code>null</code>
-     * a new log report is used.<p>
-     * 
-     * @param event the event to get the report for
-     * 
-     * @return the report
-     */
-    private I_CmsReport getEventReport(CmsEvent event) {
-
-        I_CmsReport report = null;
-        if (event.getData() != null) {
-            report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
-        }
-        if (report == null) {
-            report = new CmsLogReport(Locale.ENGLISH, getClass());
-        }
-        return report;
+        cleanExtractionCache();
     }
 
     /**
@@ -1552,7 +1541,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      */
-    private void updateIndex(CmsSearchIndex index, I_CmsReport report, List resourcesToIndex) throws CmsException {
+    protected void updateIndex(CmsSearchIndex index, I_CmsReport report, List resourcesToIndex) throws CmsException {
 
         // copy the stored admin context for the indexing
         CmsObject cms = OpenCms.initCmsObject(m_adminCms);
@@ -1743,6 +1732,26 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     I_CmsReport.FORMAT_HEADLINE);
             }
         }
+    }
+
+    /**
+     * Returns the report in the given event data, if <code>null</code>
+     * a new log report is used.<p>
+     * 
+     * @param event the event to get the report for
+     * 
+     * @return the report
+     */
+    private I_CmsReport getEventReport(CmsEvent event) {
+
+        I_CmsReport report = null;
+        if (event.getData() != null) {
+            report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
+        }
+        if (report == null) {
+            report = new CmsLogReport(Locale.ENGLISH, getClass());
+        }
+        return report;
     }
 
     /**
