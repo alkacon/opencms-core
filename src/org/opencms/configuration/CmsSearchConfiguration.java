@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2008/08/15 16:08:22 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2008/08/19 12:41:39 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.search.CmsSearchManager;
 import org.opencms.search.fields.CmsSearchField;
 import org.opencms.search.fields.CmsSearchFieldConfiguration;
 import org.opencms.search.fields.CmsSearchFieldMapping;
+import org.opencms.search.fields.CmsSearchFieldMappingType;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 6.0.0
  */
@@ -521,6 +522,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fieldConfiguration.getDescription())) {
                 fieldConfigurationElement.addElement(N_DESCRIPTION).setText(fieldConfiguration.getDescription());
             }
+            // search fields
             Element fieldsElement = fieldConfigurationElement.addElement(N_FIELDS);
             Iterator fields = fieldConfiguration.getFields().iterator();
             while (fields.hasNext()) {
@@ -558,6 +560,14 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(field.getDefaultValue())) {
                     fieldElement.addAttribute(A_DEFAULT, field.getDefaultValue());
                 }
+                if (field.getAnalyzer() != null) {
+                    String className = field.getAnalyzer().getClass().getName();
+                    if (className.startsWith(CmsSearchField.LUCENE_ANALYZER)) {
+                        className = className.substring(CmsSearchField.LUCENE_ANALYZER.length());
+                    }
+                    fieldElement.addAttribute(A_ANALYZER, className);
+                }
+                // field mappings
                 Iterator mappings = field.getMappings().iterator();
                 while (mappings.hasNext()) {
                     CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)mappings.next();
@@ -567,7 +577,8 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
                         mappingElement.addAttribute(A_DEFAULT, mapping.getDefaultValue());
                     }
                     // add class attribute (if required)
-                    if (!mapping.getClass().equals(CmsSearchFieldMapping.class)) {
+                    if (!mapping.getClass().equals(CmsSearchFieldMapping.class)
+                        || (mapping.getType() == CmsSearchFieldMappingType.DYNAMIC)) {
                         mappingElement.addAttribute(A_CLASS, mapping.getClass().getName());
                     }
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(mapping.getParam())) {

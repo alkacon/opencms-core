@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMappingType.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/19 12:41:39 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.0 
  */
@@ -60,11 +60,8 @@ public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
     /** The "property-search" mapping type, maps the selected property value of the resource with search upwards. */
     public static final CmsSearchFieldMappingType PROPERTY_SEARCH = new CmsSearchFieldMappingType(2);
 
-    /** The "xpath" mapping type, only for {@link org.opencms.xml.content.CmsXmlContent} resources, maps the content from the given Xpath. */
-    public static final CmsSearchFieldMappingType XPATH = new CmsSearchFieldMappingType(4);
-
     /** The "dynamic" mapping type, this is required if a special class is used to process the field mapping value. */
-    public static final CmsSearchFieldMappingType DYNAMIC = new CmsSearchFieldMappingType(5);
+    public static final CmsSearchFieldMappingType DYNAMIC = new CmsSearchFieldMappingType(4);
 
     /** ID required for safe serialization. */
     private static final long serialVersionUID = 7452814764681519516L;

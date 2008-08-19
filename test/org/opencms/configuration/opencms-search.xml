@@ -214,7 +214,7 @@
 		<fieldconfigurations>
 			<fieldconfiguration>
 				<name>standard</name>
-				<description>The standard OpenCms 7.0 search index field configuration.</description>
+				<description>Modified OpenCms 7.0 search index field configuration for test cases.</description>
 				<fields>
 					<field name="content" store="compress" index="true" excerpt="true">
 						<mapping type="content" />
@@ -243,7 +243,10 @@
 						<mapping type="item">Teaser[3]</mapping>
 						<mapping type="property">NavText</mapping>
 						<mapping type="property-search">search.special</mapping>
-					</field>	
+					</field>
+					<field name="specialTwo" store="false" index="true" boost="0.1" analyzer="WhitespaceAnalyzer">
+						<mapping type="dynamic" class="org.opencms.search.fields.CmsSearchFieldMapping">specialTwo</mapping>
+					</field>						
 				</fields>
 			</fieldconfiguration>			
 		</fieldconfigurations>			

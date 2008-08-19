@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2008/08/15 16:08:22 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/08/19 12:41:39 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.0.0 
  */
@@ -115,6 +115,9 @@ public class CmsSearchField {
 
     /** Value of m_displayName if field should not be displayed. */
     public static final String IGNORE_DISPLAY_NAME = "-";
+
+    /** Prefix for Lucene default analyzers package (<code>org.apache.lucene.analysis.</code>). */
+    public static final String LUCENE_ANALYZER = "org.apache.lucene.analysis.";
 
     /** Constant for the "compress" index setting. */
     public static final String STR_COMPRESS = "compress";
@@ -581,7 +584,7 @@ public class CmsSearchField {
             analyzerClass = Class.forName(analyzer);
         } catch (ClassNotFoundException e) {
             // allow Lucene standard classes to be written in a short form
-            analyzerClass = Class.forName("org.apache.lucene.analysis." + analyzer);
+            analyzerClass = Class.forName(LUCENE_ANALYZER + analyzer);
         }
         setAnalyzer((Analyzer)analyzerClass.newInstance());
     }
