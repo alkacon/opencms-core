@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2008/08/19 12:41:39 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2008/08/19 13:37:59 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 6.0.0
  */
@@ -516,7 +516,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
             Element fieldConfigurationElement = fieldConfigurationsElement.addElement(N_FIELDCONFIGURATION);
             // add class attribute (if required)
             if (!fieldConfiguration.getClass().equals(CmsSearchFieldConfiguration.class)) {
-                fieldConfigurationElement.addAttribute(A_CLASS, fieldConfigurationElement.getClass().getName());
+                fieldConfigurationElement.addAttribute(A_CLASS, fieldConfiguration.getClass().getName());
             }
             fieldConfigurationElement.addElement(N_NAME).setText(fieldConfiguration.getName());
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(fieldConfiguration.getDescription())) {
