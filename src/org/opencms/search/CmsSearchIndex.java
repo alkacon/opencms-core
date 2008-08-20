@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2008/08/15 16:08:21 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2008/08/20 13:18:34 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.69 $ 
+ * @version $Revision: 1.70 $ 
  * 
  * @since 6.0.0 
  */
@@ -225,9 +225,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The name of the search field configuration used by this index. */
     private String m_fieldConfigurationName;
 
-    /** Indicates if this search index has already been created. */
-    private boolean m_indexExists;
-
     /** The locale of this index. */
     private Locale m_locale;
 
@@ -259,7 +256,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     private String m_rebuild;
 
     /** The Lucene index searcher to use. */
-    private IndexSearcher m_searcher = null;
+    private IndexSearcher m_searcher;
 
     /** The configured sources for this index. */
     private List m_sourceNames;
@@ -287,9 +284,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * @param name the system-wide unique name for the search index 
      * 
-     * @throws org.opencms.main.CmsIllegalArgumentException 
-     *   if the given name is null, empty or already taken 
-     *   by another search index. 
+     * @throws CmsIllegalArgumentException if the given name is null, empty or already taken by another search index 
      * 
      */
     public CmsSearchIndex(String name)
@@ -656,11 +651,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 e);
         }
 
-        // the index exists when the create flag has been set
-        if (create) {
-            m_indexExists = true;
-        }
-
         return indexWriter;
     }
 
@@ -845,8 +835,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         Analyzer baseAnalyzer = OpenCms.getSearchManager().getAnalyzer(getLocale());
         setAnalyzer(m_fieldConfiguration.getAnalyzer(baseAnalyzer));
 
-        // check if this index already exists
-        m_indexExists = (new File(m_path)).exists();
         // initialize the index searcher instance
         indexSearcherOpen();
     }
@@ -1191,9 +1179,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * @param name the logical key/name of this search index 
      * 
-     * @throws org.opencms.main.CmsIllegalArgumentException 
-     *   if the given name is null, empty or already taken 
-     *   by another search index. 
+     * @throws CmsIllegalArgumentException if the given name is null, empty or already taken by another search index 
      */
     public void setName(String name) throws CmsIllegalArgumentException {
 
@@ -1349,17 +1335,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     protected synchronized void indexSearcherOpen() {
 
-        if (!m_indexExists) {
-            return;
-        }
-
         // first close the current searcher instance
         indexSearcherClose();
 
         // create the index searcher
         try {
-            IndexReader reader = new LazyContentReader(IndexReader.open(m_path));
-            m_searcher = new IndexSearcher(reader);
+            if (IndexReader.indexExists(m_path)) {
+                IndexReader reader = new LazyContentReader(IndexReader.open(m_path));
+                m_searcher = new IndexSearcher(reader);
+            }
         } catch (IOException e) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_1, getName()), e);
         }
