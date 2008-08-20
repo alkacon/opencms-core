@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2008/08/20 14:11:49 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.89 $ 
+ * @version $Revision: 1.90 $ 
  * 
  * @since 6.0.0 
  * 
@@ -193,7 +193,7 @@ public abstract class A_CmsImport implements I_CmsImport {
     /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "shared" property type attribute value. */
     public static final String N_PROPERTY_ATTRIB_TYPE_SHARED = "shared";
 
-    /** Tag in the [@link #EXPORT_MANIFEST} for the "relation" node, starts a relation for a VFS resource. */
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "relation" node, starts a relation for a VFS resource. */
     public static final String N_RELATION = "relation";
 
     /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "id" relation attribute, contains the structure id of the target resource of the relation. */

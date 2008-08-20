@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditJQueryProvider.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/08/20 14:12:33 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.opencms.workplace.editors.Messages;
  * 
  * @author Anja Röttgers
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.3
  */
@@ -54,7 +54,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
     /** Default direct edit include file URI for the jQuery direct edit provider. */
     protected static final String INCLUDE_FILE_JQUERY = "/system/workplace/editors/jquery_direct_edit_include.txt";
 
-    /** Contains the close link.**/
+    /** Contains the close link. */
     private String m_closeLink;
 
     /**

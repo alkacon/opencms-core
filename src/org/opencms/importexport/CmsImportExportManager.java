@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2008/08/20 14:12:00 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  * 
@@ -230,7 +230,7 @@ public class CmsImportExportManager {
      * @deprecated Use the appropriate tag from latest import class instead*/
     public static final String N_PROPERTY_ATTRIB_TYPE_SHARED = A_CmsImport.N_PROPERTY_ATTRIB_TYPE_SHARED;
 
-    /** Tag in the [@link #EXPORT_MANIFEST} for the "relation" node, starts a relation for a VFS resource. 
+    /** Tag in the {@link #EXPORT_MANIFEST} for the "relation" node, starts a relation for a VFS resource. 
      * @deprecated Use the appropriate tag from latest import class instead*/
     public static final String N_RELATION = A_CmsImport.N_RELATION;
 
