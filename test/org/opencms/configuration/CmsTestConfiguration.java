@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,11 +42,11 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 6.0.0
  */
-public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+public class CmsTestConfiguration extends A_CmsXmlConfiguration {
 
     /** The name of the DTD for this configuration. */
     private static final String CONFIGURATION_DTD_NAME = "opencms-tests.dtd";

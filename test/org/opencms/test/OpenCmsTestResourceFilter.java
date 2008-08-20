@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceFilter.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public abstract class OpenCmsTestResourceFilter {
 
@@ -132,7 +132,7 @@ public abstract class OpenCmsTestResourceFilter {
     protected boolean m_dateCreated;
 
     /** Flag to enable/disable date created tests (rounded to seconds, for imports). */
-    protected boolean m_dateCreatedSec = false;
+    protected boolean m_dateCreatedSec;
 
     /** Flag to enable/disable date expired tests. */
     protected boolean m_dateExpired;
@@ -141,7 +141,7 @@ public abstract class OpenCmsTestResourceFilter {
     protected boolean m_dateLastModified;
 
     /** Flag to enable/disable date last modified tests (rounded to seconds, for imports). */
-    protected boolean m_dateLastModifiedSec = false;
+    protected boolean m_dateLastModifiedSec;
 
     /** Flag to enable/disable date released tests. */
     protected boolean m_dateReleased;

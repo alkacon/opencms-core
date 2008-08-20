@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2008/02/27 12:05:28 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.1.0 
  */
@@ -79,7 +79,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
     protected Map m_resCache = new HashMap();
 
     /** Cache for resource list result. */
-    protected List m_resources = null;
+    protected List m_resources;
 
     /** The workplace object where the collector is used from. */
     private A_CmsListExplorerDialog m_wp;

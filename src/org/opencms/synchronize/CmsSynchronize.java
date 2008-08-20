@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2008/02/27 12:05:52 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2008/08/20 13:20:13 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.68 $ 
+ * @version $Revision: 1.69 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public class CmsSynchronize {
     /** Flag to export a resource from the VFS to the FS. */
     static final int EXPORT_VFS = 1;
 
-    /** Filname of the synclist file on the server FS. */
+    /** File name of the synclist file on the server FS. */
     static final String SYNCLIST_FILENAME = "#synclist.txt";
 
     /** Flag to import a resource from the FS to the VFS. */
@@ -96,21 +96,21 @@ public class CmsSynchronize {
     /** The path in the "real" file system where the resources have to be synchronized to. */
     private String m_destinationPathInRfs;
 
-    /** Hashmap for the new synchronisation list of the current sync process. */
+    /** Hash map for the new synchronization list of the current sync process. */
     private HashMap m_newSyncList;
 
     /** The report to write the output to. */
     private I_CmsReport m_report;
 
-    /** Hashmap for the synchronisation list of the last sync process. */
+    /** Hash map for the synchronization list of the last sync process. */
     private HashMap m_syncList;
 
     /**
      * Creates a new CmsSynchronize object which automatically start the 
-     * synchronisation process.<p>
+     * synchronization process.<p>
      *
      * @param cms the current CmsObject
-     * @param settings the synchonization settings to use
+     * @param settings the synchronization settings to use
      * @param report the report to write the output to
      * 
      * @throws CmsException if something goes wrong
@@ -119,9 +119,9 @@ public class CmsSynchronize {
     public CmsSynchronize(CmsObject cms, CmsSynchronizeSettings settings, I_CmsReport report)
     throws CmsSynchronizeException, CmsException {
 
-        // TODO: initialize the list of file modifiaction interface implementations
+        // TODO: initialize the list of file modification interface implementations
 
-        // do the synchronization only if the synchonization folders in the VFS
+        // do the synchronization only if the synchronization folders in the VFS
         // and the FS are valid
         if ((settings != null) && (settings.isSyncEnabled())) {
 
@@ -136,7 +136,7 @@ public class CmsSynchronize {
             // get the destination folder
             m_destinationPathInRfs = settings.getDestinationPathInRfs();
 
-            // check if target folder exists and is writeable
+            // check if target folder exists and is writable
             File destinationFolder = new File(m_destinationPathInRfs);
             if (!destinationFolder.exists() || !destinationFolder.isDirectory()) {
                 // destination folder does not exist
@@ -165,7 +165,7 @@ public class CmsSynchronize {
                     org.opencms.workplace.threads.Messages.RPT_SYNCHRONIZE_FOLDERS_2,
                     sourcePathInVfs,
                     destPath), I_CmsReport.FORMAT_HEADLINE);
-                // synchronice the VFS and the RFS
+                // synchronize the VFS and the RFS
                 syncVfsToRfs(sourcePathInVfs);
             }
 
@@ -181,13 +181,23 @@ public class CmsSynchronize {
             // write the sync list
             writeSyncList();
 
-            // free mem
+            // free memory
             m_syncList = null;
             m_newSyncList = null;
             m_cms = null;
         } else {
             throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_INIT_SYNC_0));
         }
+    }
+
+    /**
+     * Returns the count.<p>
+     *
+     * @return the count
+     */
+    public int getCount() {
+
+        return m_count;
     }
 
     /**
@@ -256,7 +266,7 @@ public class CmsSynchronize {
                 // get the relative filename
                 String resname = res[i].getAbsolutePath();
                 resname = resname.substring(m_destinationPathInRfs.length());
-                // translate the folder seperator if nescessary
+                // translate the folder separator if necessary
                 resname = resname.replace(File.separatorChar, '/');
                 // now check if this resource was already processed, by looking 
                 // up the new sync list
@@ -349,9 +359,10 @@ public class CmsSynchronize {
 
     /**
      * Exports a resource from the VFS to the FS and updates the 
-     * synchronisation lists.<p>
+     * synchronization lists.<p>
      * 
      * @param res the resource to be exported
+     * 
      * @throws CmsException if something goes wrong
      */
     private void exportToRfs(CmsResource res) throws CmsException {
@@ -360,7 +371,7 @@ public class CmsSynchronize {
         File fsFile;
         String resourcename;
         // to get the name of the file in the FS, we must look it up in the
-        // sync list. This is nescessary, since the VFS could use a tranlated
+        // sync list. This is necessary, since the VFS could use a translated
         // filename.
         CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(m_cms.getSitePath(res)));
         // if no entry in the sync list was found, its a new resource and we 
@@ -372,7 +383,7 @@ public class CmsSynchronize {
             resourcename = m_cms.getSitePath(res);
 
             // the parent folder could contain a translated names as well, so 
-            // make a lookup in the sync list ot get its original 
+            // make a lookup in the sync list to get its original 
             // non-translated name
             String parent = CmsResource.getParentFolder(resourcename);
             CmsSynchronizeList parentSync = (CmsSynchronizeList)m_newSyncList.get(parent);
@@ -447,7 +458,7 @@ public class CmsSynchronize {
                     // its a folder, so create a folder in the FS
                     fsFile.mkdir();
                 }
-                // add resource to synchronisation list
+                // add resource to synchronization list
                 CmsSynchronizeList syncList = new CmsSynchronizeList(
                     resourcename,
                     translate(resourcename),
@@ -493,14 +504,14 @@ public class CmsSynchronize {
         if (res.isDirectory()) {
             resname += "/";
         }
-        // translate the folder seperator if nescessary
+        // translate the folder separator if necessary
         resname = resname.replace(File.separatorChar, '/');
         return resname.substring(m_destinationPathInRfs.length());
     }
 
     /**
      * Imports a new resource from the FS into the VFS and updates the 
-     * synchronisation lists.<p>
+     * synchronization lists.<p>
      * 
      * @param fsFile the file in the FS
      * @param resName the name of the resource in the VFS
@@ -552,7 +563,7 @@ public class CmsSynchronize {
             // we have to read the new resource again, to get the correct timestamp
             m_cms.setDateLastModified(m_cms.getSitePath(newFile), fsFile.lastModified(), false);
             CmsResource newRes = m_cms.readResource(m_cms.getSitePath(newFile));
-            // add resource to synchronisation list
+            // add resource to synchronization list
             CmsSynchronizeList syncList = new CmsSynchronizeList(
                 resName,
                 translate(resName),
@@ -571,11 +582,11 @@ public class CmsSynchronize {
     }
 
     /**
-     * Reads the synchronisation list from the last sync process form the file
+     * Reads the synchronization list from the last sync process form the file
      * system and stores the information in a HashMap. <p>
      * 
      * Filenames are stored as keys, CmsSynchronizeList objects as values.
-     * @return HashMap with synchronisation infomration of the last sync process
+     * @return HashMap with synchronization information of the last sync process
      * @throws CmsException if something goes wrong
      */
     private HashMap readSyncList() throws CmsException {
@@ -644,7 +655,7 @@ public class CmsSynchronize {
         res = rfsFile.listFiles();
         // now loop through all resources
         for (int i = 0; i < res.length; i++) {
-            // get the corrsponding name in the VFS
+            // get the corresponding name in the VFS
             String vfsFile = getFilenameInVfs(res[i]);
             // recurse if it is an directory, we must go depth first to delete 
             // files
@@ -683,8 +694,8 @@ public class CmsSynchronize {
     }
 
     /**
-     * Updates the synchroinisation lists if a resource is not used during the
-     * synchronisation process.<p>
+     * Updates the synchronization lists if a resource is not used during the
+     * synchronization process.<p>
      * 
      * @param res the resource whose entry must be updated
      */
@@ -731,11 +742,11 @@ public class CmsSynchronize {
         for (int i = 0; i < resources.size(); i++) {
             CmsResource res = (CmsResource)resources.get(i);
             // test if the resource is marked as deleted. if so,
-            // do nothing, the corrsponding file in the FS will be removed later
+            // do nothing, the corresponding file in the FS will be removed later
             if (!res.getState().isDeleted()) {
                 // do a recursion if the current resource is a folder
                 if (res.isFolder()) {
-                    // first check if this folder must be synchronised
+                    // first check if this folder must be synchronized
                     action = testSyncVfs(res);
                     // do the correct action according to the test result
                     if (action == EXPORT_VFS) {
@@ -743,7 +754,7 @@ public class CmsSynchronize {
                     } else if (action != DELETE_VFS) {
                         skipResource(res);
                     }
-                    // recurse into the subfolders. This must be done before 
+                    // recurse into the sub folders. This must be done before 
                     // the folder might be deleted!
                     syncVfsToRfs(m_cms.getSitePath(res));
                     if (action == DELETE_VFS) {
@@ -772,16 +783,16 @@ public class CmsSynchronize {
 
                     }
                 }
-                // free mem
+                // free memory
                 res = null;
             }
         }
-        //  free mem
+        //  free memory
         resources = null;
     }
 
     /**
-     * Determines the synchronisation status of a VFS resource. <p>
+     * Determines the synchronization status of a VFS resource. <p>
      *  
      * @param res the VFS resource to check
      * @return integer value for the action to be done for this VFS resource
@@ -794,7 +805,7 @@ public class CmsSynchronize {
         String resourcename = m_cms.getSitePath(res);
 
         if (m_syncList.containsKey(translate(resourcename))) {
-            // this resource was already used in a previous syncprocess
+            // this resource was already used in a previous synchronization process
             CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
             // get the corresponding resource from the FS
             fsFile = getFileInRfs(sync.getResName());
@@ -832,7 +843,7 @@ public class CmsSynchronize {
             // this is a new resource
             action = EXPORT_VFS;
         }
-        //free mem
+        //free memory
         fsFile = null;
         return action;
     }
@@ -840,7 +851,7 @@ public class CmsSynchronize {
     /**
      * Translates the resource name.  <p>
      * 
-     * This is nescessary since the server RFS does allow different naming 
+     * This is necessary since the server RFS does allow different naming 
      * conventions than the VFS.
      * 
      * @param name the resource name to be translated
@@ -871,7 +882,7 @@ public class CmsSynchronize {
 
     /**
      * Imports a resource from the FS to the VFS and updates the
-     * synchronisation lists.<p>
+     * synchronization lists.<p>
      * 
      * @param res the resource to be exported
      * 
@@ -882,7 +893,7 @@ public class CmsSynchronize {
 
         CmsFile vfsFile;
         // to get the name of the file in the FS, we must look it up in the
-        // sync list. This is nescessary, since the VFS could use a tranlated
+        // sync list. This is necessary, since the VFS could use a translated
         // filename.
         String resourcename = m_cms.getSitePath(res);
         CmsSynchronizeList sync = (CmsSynchronizeList)m_syncList.get(translate(resourcename));
@@ -925,11 +936,11 @@ public class CmsSynchronize {
             }
         }
         // everything is done now, so unlock the resource
-        // read the resource again, nescessary to get the actual timestamps
+        // read the resource again, necessary to get the actual timestamp
         m_cms.setDateLastModified(resourcename, fsFile.lastModified(), false);
         res = m_cms.readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
 
-        //add resource to synchronisation list
+        //add resource to synchronization list
         CmsSynchronizeList syncList = new CmsSynchronizeList(
             sync.getResName(),
             translate(resourcename),
@@ -947,7 +958,7 @@ public class CmsSynchronize {
 
     /**
      * This writes the byte content of a resource to the file on the server
-     * filesystem.<p>
+     * file system.<p>
      *
      * @param content the content of the file in the VFS
      * @param file the file in SFS that has to be updated with content
@@ -985,7 +996,7 @@ public class CmsSynchronize {
     }
 
     /**
-     * Writes the synchronisation list of the current sync process to the 
+     * Writes the synchronization list of the current sync process to the 
      * server file system. <p>
      * 
      * The file can be found in the synchronization folder
@@ -993,7 +1004,7 @@ public class CmsSynchronize {
      */
     private void writeSyncList() throws CmsException {
 
-        // the sync list file in the server fs
+        // the sync list file in the server file system
         File syncListFile;
         syncListFile = new File(m_destinationPathInRfs, SYNCLIST_FILENAME);
 
@@ -1005,9 +1016,9 @@ public class CmsSynchronize {
             pOut = new PrintWriter(fOut);
             pOut.println(CmsSynchronizeList.getFormatDescription());
 
-            // get all keys from the hashmap and make an iterator on it
+            // get all keys from the hash map and make an iterator on it
             Iterator values = m_newSyncList.values().iterator();
-            // loop throush all values and write them to the sync list file in 
+            // loop through all values and write them to the sync list file in 
             // a human readable format
             while (values.hasNext()) {
                 CmsSynchronizeList sync = (CmsSynchronizeList)values.next();

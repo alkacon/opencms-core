@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2008/02/27 12:05:28 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,7 +53,7 @@ public class CmsListMetadata {
 
     /** the html id for the input element of the search bar. */
     public static final String SEARCH_BAR_INPUT_ID = "listSearchFilter";
-    
+
     /** Container for column definitions. */
     private CmsIdentifiableObjectContainer m_columns = new CmsIdentifiableObjectContainer(true, false);
 
@@ -73,10 +73,10 @@ public class CmsListMetadata {
     private CmsListSearchAction m_searchAction;
 
     /** if the data is self managed (sorted and filtered by {@link A_CmsListDialog#getListItems()} method). */
-    private boolean m_selfManaged = false;
+    private boolean m_selfManaged;
 
     /** if this metadata object should not be cached.<p>. */
-    private boolean m_volatile = false;
+    private boolean m_volatile;
 
     /** The related workplace dialog object. */
     private transient A_CmsListDialog m_wp;
@@ -660,7 +660,9 @@ public class CmsListMetadata {
         StringBuffer html = new StringBuffer(1024);
         html.append("<td class='main'>\n");
         html.append("\t<div>\n");
-        html.append("\t\t<input type='text' name='listSearchFilter' id='" + SEARCH_BAR_INPUT_ID + "' value='' size='20' maxlength='245' style='vertical-align: bottom;'>\n");
+        html.append("\t\t<input type='text' name='listSearchFilter' id='"
+            + SEARCH_BAR_INPUT_ID
+            + "' value='' size='20' maxlength='245' style='vertical-align: bottom;'>\n");
         html.append(m_searchAction.buttonHtml());
         I_CmsListAction showAllAction = m_searchAction.getShowAllAction();
         if (showAllAction != null) {

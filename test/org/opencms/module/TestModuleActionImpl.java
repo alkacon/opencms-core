@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleActionImpl.java,v $
- * Date   : $Date: 2008/02/27 12:05:45 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.module;
 
 import org.opencms.configuration.CmsConfigurationManager;
@@ -43,30 +43,30 @@ import org.opencms.report.I_CmsReport;
  * Simple test implementation of the module action interface.<p> 
  */
 public class TestModuleActionImpl extends A_CmsModuleAction {
-    
-    /** Indicates the last event type catched. */
-    public static int m_cmsEvent = -1;  
+
+    /** Indicates the last event type caught. */
+    public static int m_cmsEvent = -1;
 
     /** Indicates if the initialize() method was called. */
-    public static boolean m_initialize = false;
-    
+    public static boolean m_initialize;
+
     /** Indicates if the moduleUninstall() method was called. */
-    public static boolean m_moduleUninstall = false;    
-    
+    public static boolean m_moduleUninstall;
+
     /** Indicates if the moduleUpdate() method was called. */
-    public static boolean m_moduleUpdate = false;     
+    public static boolean m_moduleUpdate;
 
     /** Indicates if the publishProject() method was called. */
-    public static boolean m_publishProject = false;   
+    public static boolean m_publishProject;
 
     /** Indicates if the shutDown() method was called. */
-    public static boolean m_shutDown = false;   
-    
+    public static boolean m_shutDown;
+
     /**
      * Default constructor.<p>
      */
     public TestModuleActionImpl() {
-    
+
         // noop
     }
 
@@ -75,10 +75,10 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
      */
     public void cmsEvent(CmsEvent event) {
 
-        super.cmsEvent(event);    
+        super.cmsEvent(event);
         m_cmsEvent = event.getType();
     }
-    
+
     /**
      * @see org.opencms.module.I_CmsModuleAction#initialize(org.opencms.file.CmsObject, CmsConfigurationManager, CmsModule)
      */
@@ -87,19 +87,19 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
         super.initialize(adminCms, configurationManager, module);
         m_initialize = true;
         m_shutDown = false;
-        
+
         // register as event listener for publish events
-        OpenCms.addCmsEventListener(this, new int[]{I_CmsEventListener.EVENT_PUBLISH_PROJECT});
+        OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_PUBLISH_PROJECT});
     }
 
     /**
      * @see org.opencms.module.I_CmsModuleAction#moduleUninstall(CmsModule)
      */
     public void moduleUninstall(CmsModule module) {
-    
+
         super.moduleUninstall(module);
         m_moduleUninstall = true;
-        
+
         // remove event listener
         OpenCms.removeCmsEventListener(this);
     }

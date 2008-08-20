@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckProperty.java,v $
- * Date   : $Date: 2008/08/14 14:21:46 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.1.2
  */
@@ -115,12 +115,12 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     private CmsObject m_cms;
 
     /** List of all configured error checks. */
-    private List m_configuredErrorChecks = null;
+    private List m_configuredErrorChecks;
 
     /** List of all configured warning checks. */
-    private List m_configuredWarningChecks = null;
+    private List m_configuredWarningChecks;
 
-    /** Locale to be used to extract xml content. */
+    /** Locale to be used to extract XML content. */
     private Locale m_locale;
 
     /**

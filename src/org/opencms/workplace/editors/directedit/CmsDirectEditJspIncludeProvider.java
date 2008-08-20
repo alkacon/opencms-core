@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditJspIncludeProvider.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,11 +67,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.2.3
  */
-public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider implements I_CmsDirectEditProvider {
+public class CmsDirectEditJspIncludeProvider extends A_CmsDirectEditProvider {
 
     /** Prefix for direct edit end elements, used on JPS pages that supply the direct edit html. */
     public static final String DIRECT_EDIT_AREA_END = "end_directedit";

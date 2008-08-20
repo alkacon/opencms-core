@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ModalDialog.java,v $
- * Date   : $Date: 2008/04/03 07:45:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import javax.swing.JPanel;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  */
 public class ModalDialog extends JDialog {
@@ -111,21 +111,11 @@ public class ModalDialog extends JDialog {
      * Creates a modal dialog.
      * <p>
      * 
-     * @param component
-     *      the parent <code>Component</code> for the dialog
-     * 
-     * @param title
-     *      the String containing the dialog's title
-     *           
-     * @param okText 
-     *      the text for the OK button 
-     *           
-     * @param cancelText 
-     *      the text for the Cancel button
-     * 
-     * @param controlComponent
-     *      the UI component that is additionally shown and returned from
-     *      {@link #showDialog()}
+     * @param component the parent <code>Component</code> for the dialog
+     * @param title the String containing the dialog's title
+     * @param okText the text for the OK button        
+     * @param cancelText the text for the Cancel button
+     * @param controlComponent the UI component that is additionally shown and returned from {@link #showDialog()}
      */
     public ModalDialog(
         final Component component,
@@ -226,8 +216,7 @@ public class ModalDialog extends JDialog {
      * @return the custom component given to the constructor with it's new
      *         settings or <code>null</code> if the user opted out.
      * 
-     * @exception HeadlessException
-     *              if GraphicsEnvironment.isHeadless() returns true.
+     * @exception HeadlessException if GraphicsEnvironment.isHeadless() returns true.
      * 
      * @see java.awt.GraphicsEnvironment#isHeadless
      */

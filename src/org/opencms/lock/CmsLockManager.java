@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:46 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2008/08/20 13:20:13 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  * 
@@ -76,10 +76,10 @@ public final class CmsLockManager {
     private CmsDriverManager m_driverManager;
 
     /** The flag to indicate if the locks should be written to the db. */
-    private boolean m_isDirty = false;
+    private boolean m_isDirty;
 
     /** The flag to indicate if the lock manager has been started in run level 4. */
-    private boolean m_runningInServlet = false;
+    private boolean m_runningInServlet;
 
     /**
      * Default constructor, creates a new lock manager.<p>

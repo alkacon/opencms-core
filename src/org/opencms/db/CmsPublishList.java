@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2008/02/27 12:05:43 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 6.0.0
  * 
@@ -101,7 +101,7 @@ public class CmsPublishList implements Externalizable {
     private List m_folderList;
 
     /** Flag to indicate if the list needs to be revived. */
-    private boolean m_needsRevive = false;
+    private boolean m_needsRevive;
 
     /** The id of the project that is to be published. */
     private CmsUUID m_projectId;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2008/02/27 12:05:46 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,14 +46,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  * 
  * @see I_CmsStaticExportHandler
  */
-public abstract class A_CmsOnDemandStaticExportHandler extends A_CmsStaticExportHandler
-implements I_CmsStaticExportHandler {
+public abstract class A_CmsOnDemandStaticExportHandler extends A_CmsStaticExportHandler {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsOnDemandStaticExportHandler.class);

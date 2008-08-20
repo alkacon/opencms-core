@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationFilter.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/08/20 13:20:13 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,19 +60,19 @@ public final class CmsRelationFilter implements Cloneable {
     public static final CmsRelationFilter TARGETS = new CmsRelationFilter(false, true);
 
     /** If set the filter extends the result to the given path and all its subresources. */
-    private boolean m_includeSubresources = false;
+    private boolean m_includeSubresources;
 
     /** To filter relations for a given source path. */
     private String m_path;
 
     /** If set the filter looks for matching targets. */
-    private boolean m_source = false;
+    private boolean m_source;
 
     /** The structure id of the resource to filter. */
     private CmsUUID m_structureId;
 
     /** If set the filter looks for matching sources. */
-    private boolean m_target = false;
+    private boolean m_target;
 
     /** The types to filter. */
     private Set m_types = new HashSet();

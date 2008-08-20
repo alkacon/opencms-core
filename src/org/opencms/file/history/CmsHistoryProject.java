@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryProject.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,11 +45,11 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  *
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.9.1
  */
-public class CmsHistoryProject extends CmsProject implements Cloneable {
+public class CmsHistoryProject extends CmsProject {
 
     /** The publishing date of this project. */
     private long m_datePublished;

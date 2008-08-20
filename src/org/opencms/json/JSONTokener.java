@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/json/JSONTokener.java,v $
- * Date   : $Date: 2008/08/14 14:21:46 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/08/20 13:20:13 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-
 /**
  * A JSONTokener takes a source string and extracts characters and tokens from
  * it.<p>
@@ -111,13 +110,13 @@ public class JSONTokener {
      */
     public static int dehexchar(char c) {
 
-        if (c >= '0' && c <= '9') {
+        if ((c >= '0') && (c <= '9')) {
             return c - '0';
         }
-        if (c >= 'A' && c <= 'F') {
+        if ((c >= 'A') && (c <= 'F')) {
             return c - ('A' - 10);
         }
-        if (c >= 'a' && c <= 'f') {
+        if ((c >= 'a') && (c <= 'f')) {
             return c - ('a' - 10);
         }
         return -1;
@@ -134,7 +133,7 @@ public class JSONTokener {
      */
     public void back() throws JSONException {
 
-        if (m_useLastChar || m_index <= 0) {
+        if (m_useLastChar || (m_index <= 0)) {
             throw new JSONException("Stepping back two steps is not supported");
         }
         m_index -= 1;
@@ -209,11 +208,10 @@ public class JSONTokener {
     /**
      * Get the next n characters.<p>
      *
-     * @param n     the number of characters to take
-     * @return      a string of n characters
-     * @throws JSONException
-     *   substring bounds error if there are not
-     *   n characters remaining in the source string
+     * @param n the number of characters to take
+     * @return a string of n characters
+     * 
+     * @throws JSONException substring bounds error if there are not n characters remaining in the source string
      */
     public String next(int n) throws JSONException {
 
@@ -265,7 +263,7 @@ public class JSONTokener {
                     case '/':
                         do {
                             c = next();
-                        } while (c != '\n' && c != '\r' && c != 0);
+                        } while ((c != '\n') && (c != '\r') && (c != 0));
                         break;
                     case '*':
                         for (;;) {
@@ -288,8 +286,8 @@ public class JSONTokener {
             } else if (c == '#') {
                 do {
                     c = next();
-                } while (c != '\n' && c != '\r' && c != 0);
-            } else if (c == 0 || c > ' ') {
+                } while ((c != '\n') && (c != '\r') && (c != 0));
+            } else if ((c == 0) || (c > ' ')) {
                 return c;
             }
         }
@@ -369,7 +367,7 @@ public class JSONTokener {
         StringBuffer sb = new StringBuffer();
         for (;;) {
             char c = next();
-            if (c == d || c == 0 || c == '\n' || c == '\r') {
+            if ((c == d) || (c == 0) || (c == '\n') || (c == '\r')) {
                 if (c != 0) {
                     back();
                 }
@@ -393,7 +391,7 @@ public class JSONTokener {
         StringBuffer sb = new StringBuffer();
         for (;;) {
             c = next();
-            if (delimiters.indexOf(c) >= 0 || c == 0 || c == '\n' || c == '\r') {
+            if ((delimiters.indexOf(c) >= 0) || (c == 0) || (c == '\n') || (c == '\r')) {
                 if (c != 0) {
                     back();
                 }
@@ -440,7 +438,7 @@ public class JSONTokener {
 
         StringBuffer sb = new StringBuffer();
         char b = c;
-        while (c >= ' ' && ",:]}/\\\"[{;=#".indexOf(c) < 0) {
+        while ((c >= ' ') && (",:]}/\\\"[{;=#".indexOf(c) < 0)) {
             sb.append(c);
             c = next();
         }
@@ -472,9 +470,9 @@ public class JSONTokener {
          * non-JSON forms as long as it accepts all correct JSON forms.
          */
 
-        if ((b >= '0' && b <= '9') || b == '.' || b == '-' || b == '+') {
+        if (((b >= '0') && (b <= '9')) || (b == '.') || (b == '-') || (b == '+')) {
             if (b == '0') {
-                if (s.length() > 2 && (s.charAt(1) == 'x' || s.charAt(1) == 'X')) {
+                if ((s.length() > 2) && ((s.charAt(1) == 'x') || (s.charAt(1) == 'X'))) {
                     try {
                         return new Integer(Integer.parseInt(s.substring(2), 16));
                     } catch (Exception e) {

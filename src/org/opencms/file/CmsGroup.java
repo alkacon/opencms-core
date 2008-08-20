@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,13 +45,13 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 6.0.0 
  * 
  * @see CmsUser
  */
-public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
+public class CmsGroup extends CmsPrincipal {
 
     /** The parent id of the group. */
     private CmsUUID m_parentId;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:53 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import javax.swing.border.Border;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0
  * 
@@ -77,7 +77,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     protected boolean m_aborted = true;
 
     /** Array of all entries. */
-    private String[] m_allList = null;
+    private String[] m_allList;
 
     /** Border. */
     private final Border m_border = BorderFactory.createEmptyBorder(C_BORDER_SIZE, C_BORDER_SIZE, 0, C_BORDER_SIZE);
@@ -92,10 +92,10 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     private final JPanel m_content = new JPanel();
 
     /** Array of by default selected items. */
-    private String[] m_defList = null;
+    private String[] m_defList;
 
     /** Label for prompt. */
-    private JLabel m_label = null;
+    private JLabel m_label;
 
     /** Ok button. */
     private final JButton m_ok = new JButton("Ok");
@@ -107,7 +107,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     private final JButton m_selAll = new JButton("All");
 
     /** Array of selection buttons, check boxes or radio buttons. */
-    private JToggleButton[] m_selections = null;
+    private JToggleButton[] m_selections;
 
     /** Select none button. */
     private final JButton m_selNone = new JButton("None");
@@ -164,7 +164,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         // layout of selection elements
         int elements = m_selections.length;
 
-        GridLayout layout = new GridLayout(elements / m_promptTask.getColumns()+1, m_promptTask.getColumns());
+        GridLayout layout = new GridLayout(elements / m_promptTask.getColumns() + 1, m_promptTask.getColumns());
         layout.setHgap(20);
         m_content.setLayout(layout);
 
@@ -238,7 +238,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
                 ret += m_selections[i].getText() + CmsAntTaskSelectionPrompt.LIST_SEPARATOR;
             }
         }
-        if (m_aborted || ret.trim().length() < CmsAntTaskSelectionPrompt.LIST_SEPARATOR.length()) {
+        if (m_aborted || (ret.trim().length() < CmsAntTaskSelectionPrompt.LIST_SEPARATOR.length())) {
             dispose();
             return null;
         }
@@ -293,7 +293,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
                     return i;
                 }
             } else {
-                if (item != null && array[i].trim().equals(item.trim())) {
+                if ((item != null) && array[i].trim().equals(item.trim())) {
                     return i;
                 }
             }
@@ -310,7 +310,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
      */
     private String[] getDefaultList() {
 
-        if (m_promptTask.getDefaultValue() == null || m_promptTask.getDefaultValue().trim().equals("")) {
+        if ((m_promptTask.getDefaultValue() == null) || m_promptTask.getDefaultValue().trim().equals("")) {
             return m_allList;
         }
         return m_promptTask.getDefaultValue().split(CmsAntTaskSelectionPrompt.LIST_SEPARATOR);

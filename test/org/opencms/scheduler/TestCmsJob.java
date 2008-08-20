@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsJob.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,10 +43,10 @@ public class TestCmsJob implements Job {
     private int m_myCount;
 
     /** Current count. */
-    static int m_count = 0;
+    static int m_count;
 
     /** Currently running instances. */
-    static int m_running = 0;
+    static int m_running;
 
     /**
      * Default constructor.<p>
@@ -62,7 +62,12 @@ public class TestCmsJob implements Job {
      */
     public void execute(JobExecutionContext context) {
 
-        System.out.println(getClass().getName() + " " + m_myCount + " is starting (running: " + TestCmsJob.m_running + ").");
+        System.out.println(getClass().getName()
+            + " "
+            + m_myCount
+            + " is starting (running: "
+            + TestCmsJob.m_running
+            + ").");
         TestCmsJob.m_running++;
         try {
             Thread.sleep(1000 + (long)(4000.0 * Math.random()));
@@ -70,6 +75,11 @@ public class TestCmsJob implements Job {
             e.printStackTrace();
         }
         TestCmsJob.m_running--;
-        System.out.println(getClass().getName() + " " + m_myCount + " is finished (running: " + TestCmsJob.m_running + ").");
+        System.out.println(getClass().getName()
+            + " "
+            + m_myCount
+            + " is finished (running: "
+            + TestCmsJob.m_running
+            + ").");
     }
 }

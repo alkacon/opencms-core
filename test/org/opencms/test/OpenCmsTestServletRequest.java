@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestServletRequest.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import javax.servlet.http.HttpSession;
  * Very incomplete implementation of <code>HttpServletRequest</code> for testing.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class OpenCmsTestServletRequest implements HttpServletRequest {
 
@@ -295,7 +295,8 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
 
     /**
      * @see javax.servlet.ServletRequest#getRealPath(java.lang.String)
-     * @deprecated 
+     * 
+     * @deprecated deprecated in Java standard, but still required to implement 
      */
     public String getRealPath(String arg0) {
 
@@ -432,7 +433,8 @@ public class OpenCmsTestServletRequest implements HttpServletRequest {
 
     /**
      * @see javax.servlet.http.HttpServletRequest#isRequestedSessionIdFromUrl()
-     * @deprecated
+     * 
+     * @deprecated deprecated in Java standard, but still required to implement
      */
     public boolean isRequestedSessionIdFromUrl() {
 

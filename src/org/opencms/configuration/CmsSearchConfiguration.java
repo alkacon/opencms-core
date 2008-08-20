@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2008/08/19 13:37:59 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,11 +61,11 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 6.0.0
  */
-public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
     /** The "analyzer" attribute. */
     public static final String A_ANALYZER = "analyzer";

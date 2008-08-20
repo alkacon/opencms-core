@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryLockInfo.java,v $
- * Date   : $Date: 2008/02/27 12:05:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.util.Date;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.2.4
  */
@@ -69,7 +69,7 @@ public class CmsRepositoryLockInfo {
     private Date m_creationDate = new Date();
 
     /** The depth the lock is valid for (0 for the resource or "Infinity" for inheriting). */
-    private int m_depth = 0;
+    private int m_depth;
 
     /** The time when the lock expires. */
     private long m_expiresAt = TIMEOUT_INFINITE_VALUE;

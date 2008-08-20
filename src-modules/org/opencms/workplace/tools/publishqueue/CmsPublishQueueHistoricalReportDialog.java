@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueHistoricalReportDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/20 13:20:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.5
  */
@@ -67,7 +67,7 @@ public class CmsPublishQueueHistoricalReportDialog extends CmsWidgetDialog {
     public static final String PARAM_ID = "id";
 
     /** The path to the underlying file. */
-    protected String m_jobId = null;
+    protected String m_jobId;
 
     /**
      * Public constructor with JSP action element.<p> 

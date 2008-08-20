@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,11 +87,11 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /** The content definition this schema type belongs to. */
     private CmsXmlContentDefinition m_contentDefinition;
 
-    /** Optional localized key prefix identificator. */
-    private String m_prefix = null;
+    /** Optional localized key prefix identifier. */
+    private String m_prefix;
 
     /**
-     * Default constructor for a xml content type 
+     * Default constructor for a XML content type 
      * that initializes some internal values.<p> 
      */
     protected A_CmsXmlContentValue() {

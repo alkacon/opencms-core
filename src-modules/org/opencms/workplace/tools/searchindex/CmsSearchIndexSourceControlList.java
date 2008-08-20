@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexSourceControlList.java,v $
- * Date   : $Date: 2008/02/27 12:05:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -226,8 +226,6 @@ public class CmsSearchIndexSourceControlList extends A_CmsListDialog {
     }
 
     /**
-     * @throws ServletException
-     * @throws IOException
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
     public void executeListSingleActions() throws IOException, ServletException {

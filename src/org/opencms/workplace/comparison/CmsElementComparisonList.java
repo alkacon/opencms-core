@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2008/02/27 12:05:55 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,7 +143,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     private String m_paramVersion2;
 
     /** flag indicating whether xml contents are compared.<p> */
-    private boolean m_xmlContentComparisonMode = false;
+    private boolean m_xmlContentComparisonMode;
 
     /**
      * Public constructor.<p>

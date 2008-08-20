@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2008/07/14 10:04:27 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 6.0.0 
  */
@@ -891,10 +891,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * 
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to add the rule to 
-     * @param invalidate 
-     *              <code>false</code>, to disable link check
-     *              <code>true</code> or <code>node</code>, to invalidate just the single node if the link is broken 
-     *              <code>parent</code>, if this rule will invalidate the whole parent node in nested content
+     * @param invalidate <code>false</code>, to disable link check /
+     *                   <code>true</code> or <code>node</code>, to invalidate just the single node if the link is broken /
+     *                   <code>parent</code>, if this rule will invalidate the whole parent node in nested content
      * @param type the relation type
      * 
      * @throws CmsXmlException in case an unknown element name is used

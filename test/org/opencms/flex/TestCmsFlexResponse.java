@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexResponse.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Jason Trump
  *  
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.1
  */
@@ -75,7 +75,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
         /** Maps {@link Method} to a {@link List} of arguments passed to each invocation of that method handled by this object. */
         HashMap m_invocations = new HashMap();
-        
+
         /** If non-null, delegate method invocations to this object when possible. */
         Object m_stub;
 
@@ -83,6 +83,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
          * Default empty construtor.<p>
          */
         public RecordingMock() {
+
             // noop
         }
 
@@ -113,7 +114,6 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
             return calls;
         }
 
-
         /**
          * Notice that the given method has been invoked.<p>
          * 
@@ -129,7 +129,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
             // record the invocation
             getCalls(method).add(args);
-            
+
             // check to see if our stub object supports this method.
             if (m_stub != null) {
                 Method stubMethod = null;
@@ -159,7 +159,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
             return null;
         }
     }
-    
+
     /** 
      * A partial implementation of {@link HttpServletRequest} which allows for the setting and getting of request attributes.<p>
      */
@@ -202,17 +202,17 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     }
 
     /** Method for setContentType(String) from the HttpServletResponse class. */
-    static Method SET_CONTENT_TYPE = null;
-    
+    static Method SET_CONTENT_TYPE;
+
     /** Flex controller to be used by the tests. */
     private CmsFlexController m_controller;
-    
+
     /** Request mockup object. */
     private RecordingMock m_reqMock;
-    
+
     /** Response mockup object. */
     private RecordingMock m_resMock;
-    
+
     /** Servlet request to use with the tests. */
     private HttpServletRequest m_request;
 
@@ -244,7 +244,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
      * Test suite for this test class.<p>
      * 
      * @return the test suite
-     */    
+     */
     public static TestSetup suite() {
 
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
@@ -373,7 +373,14 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
         m_resMock = new RecordingMock();
         m_response = createMockResponse(m_resMock);
 
-        m_controller = new CmsFlexController(cms, null, CmsFlexDummyLoader.getFlexCache(), m_request, m_response, false, true);
+        m_controller = new CmsFlexController(
+            cms,
+            null,
+            CmsFlexDummyLoader.getFlexCache(),
+            m_request,
+            m_response,
+            false,
+            true);
         CmsFlexController.setController(m_request, m_controller);
     }
 

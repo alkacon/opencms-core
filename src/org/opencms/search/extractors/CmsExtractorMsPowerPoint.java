@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsPowerPoint.java,v $
- * Date   : $Date: 2008/02/27 12:05:31 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import java.io.InputStream;
 
 import org.apache.poi.poifs.eventfilesystem.POIFSReader;
 import org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent;
-import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
 import org.apache.poi.poifs.filesystem.DocumentInputStream;
 import org.apache.poi.util.LittleEndian;
 
@@ -46,11 +45,11 @@ import org.apache.poi.util.LittleEndian;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
-public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBase implements POIFSReaderListener {
+public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBase {
 
     /** The buffer that is written with the content of the PPT. */
     private StringBuffer m_buffer;
@@ -115,25 +114,15 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
                 int type = LittleEndian.getUShort(buffer, i + 2);
                 int size = (int)LittleEndian.getUInt(buffer, i + 4) + 3;
 
-                String encoding = null;
                 switch (type) {
                     case PPT_TEXTBYTE_ATOM:
                         // this pice is single-byte encoded, let's assume Cp1252 since this is most likley
                         // anyone who knows how to find out the "right" encoding - please email me
-                        encoding = ENCODING_CP1252;
+                        i = appendTextChars(ENCODING_CP1252, i, size, buffer);
+                        break;
                     case PPT_TEXTCHAR_ATOM:
-                        if (encoding == null) {
-                            // this piece is double-byte encoded, use UTF-16
-                            encoding = ENCODING_UTF16;
-                        }
-                        int start = i + 4 + 1;
-                        int end = start + size;
-
-                        byte[] buf = new byte[size];
-                        System.arraycopy(buffer, start, buf, 0, buf.length);
-
-                        m_buffer.append(CmsEncoder.createString(buf, encoding));
-                        i = end;
+                        i = appendTextChars(ENCODING_UTF16, i, size, buffer);
+                        break;
                     default:
                         // noop                                           
                 }
@@ -144,4 +133,24 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
             // ignore
         }
     }
+
+    /**
+     * Append the next char to the result buffer.<p>
+     */
+    private int appendTextChars(String encoding, int i, int size, byte[] buffer) {
+
+        if (encoding == null) {
+            // this piece is double-byte encoded, use UTF-16
+            encoding = ENCODING_UTF16;
+        }
+        int start = i + 4 + 1;
+        int end = start + size;
+
+        byte[] buf = new byte[size];
+        System.arraycopy(buffer, start, buf, 0, buf.length);
+
+        m_buffer.append(CmsEncoder.createString(buf, encoding));
+        return end;
+    }
+
 }

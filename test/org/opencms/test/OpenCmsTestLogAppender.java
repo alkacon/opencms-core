@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestLogAppender.java,v $
- * Date   : $Date: 2008/07/14 08:52:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,14 +42,14 @@ import org.apache.log4j.spi.LoggingEvent;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0
  */
 public class OpenCmsTestLogAppender extends ConsoleAppender {
 
     // indicates if a logged error / fatal message should cause a test to fail
-    private static boolean m_breakOnError = false;
+    private static boolean m_breakOnError;
 
     /**
      * Sets the "break on error" status.<p>

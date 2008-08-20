@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlStripper.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.9.2
  * 
@@ -77,7 +77,7 @@ public final class CmsHtmlStripper {
     private CmsHtmlTagRemoveFactory m_nodeFactory;
 
     /** Flag to control whether tidy is used. */
-    private boolean m_useTidy = false;
+    private boolean m_useTidy;
 
     /**
      * Default constructor that turns echo on and uses the settings for replacing tags.
@@ -102,8 +102,7 @@ public final class CmsHtmlStripper {
     /**
      * Adds a tag that will be preserved by <code>{@link #stripHtml(String)}</code>.<p>
      *  
-     * @param tagName 
-     *      the name of the tag to keep (case insensitive) 
+     * @param tagName the name of the tag to keep (case insensitive) 
      *      
      * @return true if the tagName was added correctly to the internal engine
      */
@@ -121,9 +120,7 @@ public final class CmsHtmlStripper {
     /**
      * Convenience method for adding several tags to preserve.<p>
      * 
-     * @param preserveTags 
-     *      a <code>List&lt;String&gt;</code> with the case-insensitive tag names of 
-     *      the tags to preserve
+     * @param preserveTags a <code>List&lt;String&gt;</code> with the case-insensitive tag names of the tags to preserve
      *      
      * @see #addPreserveTag(String)
      */
@@ -136,17 +133,15 @@ public final class CmsHtmlStripper {
 
     /**
      * Convenience method for adding several tags to preserve 
-     * in form of a delimiter-seperated String.<p>
+     * in form of a delimiter-separated String.<p>
      * 
      * The String will be <code>{@link CmsStringUtil#splitAsList(String, char, boolean)}</code>
      * with <code>tagList</code> as the first argument, <code>separator</code> as the 
      * second argument and the third argument set to true (trimming - support).<p>
      * 
-     * @param tagList 
-     *      a delimiter-separated String with case-insensitive tag names to preserve by  
+     * @param tagList a delimiter-separated String with case-insensitive tag names to preserve by  
      *      <code>{@link #stripHtml(String)}</code>
-     *      
-     *      @param separator the delimiter that seperates tag names in the <code>tagList</code> argument 
+     * @param separator the delimiter that separates tag names in the <code>tagList</code> argument 
      *      
      * @see #addPreserveTag(String)
      */

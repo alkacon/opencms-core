@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDropdownAction.java,v $
- * Date   : $Date: 2008/02/27 12:05:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,7 +64,7 @@ public class CmsListDropdownAction extends CmsListIndependentAction {
     private CmsIdentifiableObjectContainer m_items = new CmsIdentifiableObjectContainer(true, false);
 
     /** The selected item id. */
-    private String m_selection = null;
+    private String m_selection;
 
     /**
      * Default Constructor.<p>

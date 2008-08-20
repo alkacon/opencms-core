@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,8 +39,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
-import java.io.Serializable;
-
 import org.apache.commons.logging.Log;
 
 /**
@@ -51,11 +49,11 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 6.0.0 
  */
-public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
+public class CmsFolder extends CmsResource {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSecurityManager.class);

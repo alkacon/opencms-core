@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/A_CmsResourceWrapper.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,14 +54,14 @@ import java.util.List;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.5.6
  */
 public abstract class A_CmsResourceWrapper implements I_CmsResourceWrapper {
 
     /** Is handled by this resource wrapper. */
-    protected boolean m_isWrappedResource = false;
+    protected boolean m_isWrappedResource;
 
     /**
      * @see org.opencms.file.wrapper.I_CmsResourceWrapper#addResourcesToFolder(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)

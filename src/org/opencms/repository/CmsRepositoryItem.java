@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryItem.java,v $
- * Date   : $Date: 2008/02/27 12:05:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.main.OpenCms;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.5.6
  */
@@ -56,10 +56,10 @@ public class CmsRepositoryItem implements I_CmsRepositoryItem {
     private CmsObjectWrapper m_cms;
 
     /** The content of the item as a byte array. */
-    private byte[] m_content = null;
+    private byte[] m_content;
 
-    /** The mime type of the item. */
-    private String m_mimeType = null;
+    /** The MIME type of the item. */
+    private String m_mimeType;
 
     /** The {@link CmsResource} the CmsRepositoryItem is for. */
     private CmsResource m_resource;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestServletResponse.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import javax.servlet.http.HttpServletResponse;
  * Very incomplete implementation of <code>HttpServletResponse</code> for testing.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class OpenCmsTestServletResponse implements HttpServletResponse {
 
@@ -88,7 +88,8 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
 
     /**
      * @see javax.servlet.http.HttpServletResponse#encodeRedirectUrl(java.lang.String)
-     * @deprecated
+     * 
+     * @deprecated deprecated in Java standard, but still required to implement
      */
     public String encodeRedirectUrl(String arg0) {
 
@@ -105,7 +106,8 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
 
     /**
      * @see javax.servlet.http.HttpServletResponse#encodeUrl(java.lang.String)
-     * @deprecated
+     * 
+     * @deprecated deprecated in Java standard, but still required to implement
      */
     public String encodeUrl(String arg0) {
 
@@ -298,7 +300,8 @@ public class OpenCmsTestServletResponse implements HttpServletResponse {
 
     /**
      * @see javax.servlet.http.HttpServletResponse#setStatus(int, java.lang.String)
-     * @deprecated
+     * 
+     * @deprecated deprecated in Java standard, but still required to implement
      */
     public void setStatus(int arg0, String arg1) {
 

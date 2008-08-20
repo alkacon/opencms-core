@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsTimeFrameCategoryCollector.java,v $
- * Date   : $Date: 2008/04/11 12:26:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/08/20 13:20:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -149,7 +149,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.0.3
  *
@@ -279,7 +279,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         private long m_timeFrameEnd = Long.MAX_VALUE;
 
         /** The start of the validity time frame.*/
-        private long m_timeFrameStart = 0;
+        private long m_timeFrameStart;
 
         /** The resource type to require. */
         private I_CmsResourceType m_type;
@@ -603,7 +603,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
 
         // Step 3: Category filtering
         List categories = data.getCategories();
-        if (categories != null && !categories.isEmpty()) {
+        if ((categories != null) && !categories.isEmpty()) {
             itResults = result.iterator();
             String categoriesProperty = data.getPropertyCategories().getName();
             List categoriesFound;

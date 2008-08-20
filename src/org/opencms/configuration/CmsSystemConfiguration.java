@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2008/07/01 13:17:16 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2008/08/20 13:20:10 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,9 +46,9 @@ import org.opencms.main.CmsEventManager;
 import org.opencms.main.CmsHttpAuthenticationSettings;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsServletContainerSettings;
-import org.opencms.main.I_CmsSessionStorageProvider;
 import org.opencms.main.I_CmsRequestHandler;
 import org.opencms.main.I_CmsResourceInit;
+import org.opencms.main.I_CmsSessionStorageProvider;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitorConfiguration;
 import org.opencms.publish.CmsPublishManager;
@@ -84,11 +84,11 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 6.0.0
  */
-public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
     /** The "error" attribute. */
     public static final String A_ERROR = "error";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryFolder.java,v $
- * Date   : $Date: 2008/02/27 12:05:25 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,18 +38,16 @@ import org.opencms.main.CmsException;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
-import java.io.Serializable;
-
 /**
  * A historical version of a file in the OpenCms VFS resource history.<p>
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.9.1
  */
-public class CmsHistoryFolder extends CmsFolder implements I_CmsHistoryResource, Cloneable, Serializable, Comparable {
+public class CmsHistoryFolder extends CmsFolder implements I_CmsHistoryResource {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -374285965677032786L;

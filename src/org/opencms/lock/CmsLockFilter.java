@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockFilter.java,v $
- * Date   : $Date: 2008/02/27 12:05:46 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/20 13:20:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.4 
  */
@@ -59,31 +59,31 @@ public final class CmsLockFilter implements Cloneable {
     public static final CmsLockFilter FILTER_NON_INHERITED = new CmsLockFilter(false);
 
     /** If set the filter restricts the result excluding locks owned by the given user. */
-    private CmsUUID m_notOwnedByUserId = null;
+    private CmsUUID m_notOwnedByUserId;
 
     /** If set the filter extends the result to non inherited locks. */
-    private boolean m_includeChildren = false;
+    private boolean m_includeChildren;
 
     /** If set the filter restricts the result including only locks owned by the given user. */
-    private CmsUUID m_ownedByUserId = null;
+    private CmsUUID m_ownedByUserId;
 
     /** If set the filter extends the result to inherited locks. */
-    private boolean m_includeParents = false;
+    private boolean m_includeParents;
 
     /** If set the filter restricts the result to the given project. */
-    private CmsUUID m_projectId = null;
+    private CmsUUID m_projectId;
 
     /** If set the filter also matches shared exclusive locks. */
-    private boolean m_sharedExclusive = false;
+    private boolean m_sharedExclusive;
 
     /** The types to filter. */
     private Set m_types = new HashSet();
 
     /** If set the filter restricts the result excluding locks not lockable by the given user. */
-    private CmsUser m_notLockableByUser = null;
+    private CmsUser m_notLockableByUser;
 
     /** If set the filter restricts the result including only locks lockable by the given user. */
-    private CmsUser m_lockableByUser = null;
+    private CmsUser m_lockableByUser;
 
     /**
      * Private constructor.<p>

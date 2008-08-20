@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorOpenOffice.java,v $
- * Date   : $Date: 2008/02/27 12:05:31 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,19 +32,19 @@
 package org.opencms.search.extractors;
 
 import java.io.InputStream;
-
-import java.util.zip.*;
-
 import java.util.ListIterator;
-import org.dom4j.io.SAXReader;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
 import org.dom4j.Node;
+import org.dom4j.io.SAXReader;
 
 /**
  * Extracts the text from OpenOffice documents (.ods, .odf).<p>
  *
  * @author Dirk Oelkers
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.4  
  */

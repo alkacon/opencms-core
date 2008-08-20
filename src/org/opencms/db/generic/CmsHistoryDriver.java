@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2008/06/12 08:14:48 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.9.1
  */
@@ -707,7 +707,9 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
 
     /**
      * @see org.opencms.db.I_CmsHistoryDriver#readFile(CmsDbContext, CmsUUID, int)
-     * @deprecated
+     * 
+     * @deprecated use {@link #readResource(CmsDbContext, CmsUUID, int)} instead
+     *             but notice that the <code>publishTag != version</code>
      */
     public I_CmsHistoryResource readFile(CmsDbContext dbc, CmsUUID structureId, int tagId)
     throws CmsDataAccessException {

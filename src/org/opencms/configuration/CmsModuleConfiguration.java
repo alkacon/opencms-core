@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsModuleConfiguration.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/08/20 13:20:10 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,11 +51,11 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0
  */
-public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+public class CmsModuleConfiguration extends A_CmsXmlConfiguration {
 
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-modules.dtd";

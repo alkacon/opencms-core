@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2008/04/03 07:27:20 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,7 +118,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     private static final String VISIBILITY_NONE = "none";
 
     /** Flag to indicate if the current ou is a webuser ou. */
-    private boolean m_webuserOu = false;
+    private boolean m_webuserOu;
 
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#getDisabledHelpText()

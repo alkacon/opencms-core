@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExportParameters.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.dom4j.Element;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.4 
  */
@@ -54,10 +54,10 @@ public class CmsExportParameters {
     private long m_contentAge;
 
     /** If the account data should be exported. */
-    private boolean m_exportAccountData = false;
+    private boolean m_exportAccountData;
 
     /** If the project data should be exported. */
-    private boolean m_exportProjectData = false;
+    private boolean m_exportProjectData;
 
     /** If the resource data should be exported. */
     private boolean m_exportResourceData = true;
@@ -69,10 +69,10 @@ public class CmsExportParameters {
     private boolean m_includeUnchangedResources = true;
 
     /** If set, only resources belonging to the current project will be exported. */
-    private boolean m_inProject = false;
+    private boolean m_inProject;
 
     /** The module informations if to export a module. */
-    private Element m_moduleInfo = null;
+    private Element m_moduleInfo;
 
     /** The file path, should be a zip file. */
     private String m_path;

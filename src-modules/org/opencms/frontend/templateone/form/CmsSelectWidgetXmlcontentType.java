@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2008/02/27 12:05:22 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,20 +31,6 @@
 
 package org.opencms.frontend.templateone.form;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
-import org.apache.commons.logging.Log;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -69,6 +55,21 @@ import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.commons.logging.Log;
 
 /**
  * 
@@ -137,7 +138,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.1.3
  * 
@@ -150,7 +151,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.11 $
+     * @version $Revision: 1.12 $
      * 
      * @since 6.1.6
      * 
@@ -165,8 +166,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
          * no help text.
          * <p>
          * 
-         * @param resource
-         *            The resource of this selection.
+         * @param resource the resource of this selection
          * 
          */
         public CmsResourceSelectWidgetOption(CmsResource resource) {
@@ -177,14 +177,10 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
 
         /**
          * Creates a select option with the resource to select, the resource's name as the display text and no help text
-         * that is potentially the default selection (argument isDefault).
-         * <p>
+         * that is potentially the default selection (argument isDefault).<p>
          * 
-         * @param resource
-         *            The resource of this selection.
-         * 
-         * @param isDefault
-         *            true, if this option is the default option (preselected.
+         * @param resource the resource of this selection
+         * @param isDefault true, if this option is the default option (preselected)
          * 
          */
         public CmsResourceSelectWidgetOption(CmsResource resource, boolean isDefault) {
@@ -199,17 +195,11 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
          * text that is potentially the default selection (argument isDefault).
          * <p>
          * 
-         * @param resource
-         *            The resource of this selection.
-         * 
-         * @param isDefault
-         *            true, if this option is the default option (preselected.
-         * 
-         * @param optionText
-         *            the text to display for this option.
+         * @param resource the resource of this selection
+         * @param isDefault true, if this option is the default option (preselected)
+         * @param optionText the text to display for this option
          */
-        public CmsResourceSelectWidgetOption(CmsResource resource, boolean isDefault,
-                String optionText) {
+        public CmsResourceSelectWidgetOption(CmsResource resource, boolean isDefault, String optionText) {
 
             this(resource, isDefault, optionText, null);
 
@@ -220,20 +210,12 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
          * help text that is potentially the default selection (argument isDefault).
          * <p>
          * 
-         * @param resource
-         *            The resource of this selection.
-         * 
-         * @param isDefault
-         *            true, if this option is the default option (preselected.
-         * 
-         * @param optionText
-         *            the text to display for this option.
-         * 
-         * @param helpText
-         *            The help text to display.
+         * @param resource the resource of this selection
+         * @param isDefault true, if this option is the default option (preselected)
+         * @param optionText the text to display for this option
+         * @param helpText the help text to display
          */
-        public CmsResourceSelectWidgetOption(CmsResource resource, boolean isDefault,
-                String optionText, String helpText) {
+        public CmsResourceSelectWidgetOption(CmsResource resource, boolean isDefault, String optionText, String helpText) {
 
             super(resource.getRootPath(), isDefault, optionText, helpText);
             m_resource = resource;
@@ -260,13 +242,12 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.11 $
+     * @version $Revision: 1.12 $
      * 
      * @since 6.1.6
      * 
      */
-    private static final class CmsResourceSelectWidgetOptionComparator implements Comparator,
-            Serializable {
+    private static final class CmsResourceSelectWidgetOptionComparator implements Comparator, Serializable {
 
         /** Serial UID required for safe serialization. */
         private static final long serialVersionUID = -4078389792834878256L;
@@ -285,23 +266,21 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
          * expression.
          * <p>
          * 
-         * @param cms
-         *            will be cloned and used for macro - resolvation.
+         * @param cms will be cloned and used for macro - resolution
+         * @param comparatorMacro the macro to use to find the resource related strings to compare.
          * 
-         * @param comparatorMacro
-         *            the macro to use to find the resource related strings to compare.
-         * 
-         * @throws CmsException
-         *             if sth. goes wrong.
+         * @throws CmsException if something goes wrong
          * 
          * @see CmsMacroResolver
          */
         CmsResourceSelectWidgetOptionComparator(CmsObject cms, String comparatorMacro)
-                throws CmsException {
+        throws CmsException {
 
             if (CmsStringUtil.isEmpty(comparatorMacro)) {
-                m_comparatorMacro = I_CmsMacroResolver.MACRO_DELIMITER + ""
-                        + I_CmsMacroResolver.MACRO_START + "opencms.filename)";
+                m_comparatorMacro = I_CmsMacroResolver.MACRO_DELIMITER
+                    + ""
+                    + I_CmsMacroResolver.MACRO_START
+                    + "opencms.filename)";
             } else {
                 m_comparatorMacro = comparatorMacro;
             }
@@ -398,8 +377,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * Creates an instance with the given configuration.
      * <p>
      * 
-     * @param configuration
-     *            see the class description for the format.
+     * @param configuration see the class description for the format
      */
     public CmsSelectWidgetXmlcontentType(String configuration) {
 
@@ -453,25 +431,19 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * Returns the list of configured select options, parsing the configuration String if required.
      * <p>
      * 
-     * @param cms
-     *            the current users OpenCms context.
-     * 
-     * @param widgetDialog
-     *            the dialog of this widget.
-     * 
-     * @param param
-     *            the widget parameter of this dialog.
+     * @param cms the current users OpenCms context
+     * @param widgetDialog the dialog of this widget
+     * @param param the widget parameter of this dialog
      * 
      * @see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(org.opencms.file.CmsObject,
      *      org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      * 
      * @return the list of configured select options.
      * 
-     * @throws CmsIllegalArgumentException
-     *             if the "folder" property of the configuration does not denote a folder within the VFS.
+     * @throws CmsIllegalArgumentException if the "folder" property of the configuration does not denote a folder within the VFS
      */
-    protected List parseSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog,
-            I_CmsWidgetParameter param) throws CmsIllegalArgumentException {
+    protected List parseSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
+    throws CmsIllegalArgumentException {
 
         Locale dialogContentLocale = ((I_CmsXmlContentValue)param).getLocale();
         Locale resourceLocale;
@@ -483,9 +455,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
-                            Messages.ERR_SELECTWIDGET_INTERNAL_CONFIGURATION_2, new Object[] {
-                                    getClass().getName(), getConfiguration()
-                            }));
+                        Messages.ERR_SELECTWIDGET_INTERNAL_CONFIGURATION_2,
+                        new Object[] {getClass().getName(), getConfiguration()}));
                 }
                 return Collections.EMPTY_LIST;
 
@@ -510,12 +481,12 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
 
                 // build the set of sorted options
                 SortedSet sortOptions = new TreeSet(new CmsResourceSelectWidgetOptionComparator(
-                        m_macroCmsObject, m_sortMacro));
+                    m_macroCmsObject,
+                    m_sortMacro));
                 CmsSelectWidgetOption option;
                 List resources;
                 // collect all subresources of resource folder
-                CmsResourceFilter filter = CmsResourceFilter.DEFAULT
-                        .addRequireType(getResourceTypeID());
+                CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(getResourceTypeID());
                 CmsRequestContext context = cms.getRequestContext();
                 String oldSiteroot = context.getSiteRoot();
                 context.setSiteRoot("/");
@@ -524,11 +495,10 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 if (resources.size() == 0) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().getBundle().key(
-                                Messages.LOG_ERR_SELECTWIDGET_NO_RESOURCES_FOUND_3,
-                                configuration,
-                                m_resourceFolder.getRootPath(),
-                                OpenCms.getResourceManager().getResourceType(getResourceTypeID())
-                                        .getTypeName()));
+                            Messages.LOG_ERR_SELECTWIDGET_NO_RESOURCES_FOUND_3,
+                            configuration,
+                            m_resourceFolder.getRootPath(),
+                            OpenCms.getResourceManager().getResourceType(getResourceTypeID()).getTypeName()));
                     }
                 }
 
@@ -543,8 +513,10 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                     // don't make resources selectable that have a different locale than the current editor language.
                     // we read the locale node of the xmlcontent instance matching the resources
                     // locale property (or top level locale).
-                    resourceLocale = CmsLocaleManager.getLocale(cms.readPropertyObject(resource,
-                            CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue());
+                    resourceLocale = CmsLocaleManager.getLocale(cms.readPropertyObject(
+                        resource,
+                        CmsPropertyDefinition.PROPERTY_LOCALE,
+                        true).getValue());
 
                     // Only show select options for resources that are in the same locale as the current
                     // editor locale (e.g. when switching to german, offer the german siblings)
@@ -568,8 +540,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                             if (CmsStringUtil.isEmptyOrWhitespaceOnly(displayName)) {
                                 // it was a "%(xpath.field)" expression only and swallowed by macro
                                 // resolver:
-                                displayName = resolveXpathMacros(cms, resource,
-                                        getDisplayOptionMacro());
+                                displayName = resolveXpathMacros(cms, resource, getDisplayOptionMacro());
                             } else {
                                 // there was more than one xpath macro: allow further replacements
                                 // within partly resolved macro:
@@ -585,8 +556,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                             if (!CmsStringUtil.isEmpty(displayName)) {
 
                                 // now everything required is there:
-                                option = new CmsResourceSelectWidgetOption(resource, false,
-                                        displayName);
+                                option = new CmsResourceSelectWidgetOption(resource, false, displayName);
                                 sortOptions.add(option);
                             }
                         }
@@ -597,8 +567,9 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().getBundle().key(
-                            Messages.ERR_SELECTWIDGET_CONFIGURATION_2, getClass(), configuration),
-                            e);
+                        Messages.ERR_SELECTWIDGET_CONFIGURATION_2,
+                        getClass(),
+                        configuration), e);
                 }
             }
 
@@ -678,8 +649,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      *             if the configuration is invalid.
      * 
      */
-    private void parseConfigurationInternal(String configuration, CmsObject cms,
-            I_CmsWidgetParameter param) {
+    private void parseConfigurationInternal(String configuration, CmsObject cms, I_CmsWidgetParameter param) {
 
         // prepare for macro resolvation of property value against the resource currently
         // rendered
@@ -699,7 +669,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             keyValue = CmsStringUtil.splitAsArray(mapping, '=');
             if (keyValue.length != 2) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEYVALUE_LENGTH_1, mapping));
+                    Messages.ERR_SELECTWIDGET_CONFIGURATION_KEYVALUE_LENGTH_1,
+                    mapping));
             }
             key = keyValue[0].trim();
             value = keyValue[1].trim();
@@ -710,8 +681,9 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             if (CONFIGURATION_OPTION_DISPLAY_MACRO.equals(key)) {
                 if (displayMacroFound) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2, key,
-                            configuration));
+                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2,
+                        key,
+                        configuration));
                 }
 
                 m_displayOptionMacro = value;
@@ -719,8 +691,9 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             } else if (CONFIGURATION_OPTION_SORT_MACRO.equals(key)) {
                 if (sortMacroFound) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2, key,
-                            configuration));
+                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2,
+                        key,
+                        configuration));
                 }
                 m_sortMacro = value;
                 sortMacroFound = true;
@@ -728,27 +701,27 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             } else if (CONFIGURATION_RESOURCETYPENAME.equals(key)) {
                 if (typeFound) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2, key,
-                            configuration));
+                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2,
+                        key,
+                        configuration));
                 }
                 // check if resource type name is OK
                 // if setResourceType will be implemented copy here and invoke that one
                 try {
-                    m_resourceTypeID = OpenCms.getResourceManager().getResourceType(value)
-                            .getTypeId();
+                    m_resourceTypeID = OpenCms.getResourceManager().getResourceType(value).getTypeId();
                 } catch (CmsLoaderException e) {
-                    throw new CmsIllegalArgumentException(
-                            org.opencms.file.Messages.get().container(
-                                    org.opencms.file.Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, value),
-                            e);
+                    throw new CmsIllegalArgumentException(org.opencms.file.Messages.get().container(
+                        org.opencms.file.Messages.ERR_UNKNOWN_RESOURCE_TYPE_1,
+                        value), e);
                 }
                 typeFound = true;
 
             } else if (CONFIGURATION_TOPFOLDER.equals(key)) {
                 if (folderFound) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2, key,
-                            configuration));
+                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2,
+                        key,
+                        configuration));
                 }
 
                 // allow collector path to contain macros relative to the current resource:
@@ -762,14 +735,16 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                     context.setSiteRoot(oldSiteRoot);
                     if (resource.isFile()) {
                         throw new CmsIllegalArgumentException(Messages.get().container(
-                                Messages.ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_NOFOLDER_2, value,
-                                configuration));
+                            Messages.ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_NOFOLDER_2,
+                            value,
+                            configuration));
                     }
                     m_resourceFolder = resource;
                 } catch (CmsException e) {
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                            Messages.ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_INVALID_2, value,
-                            configuration), e);
+                        Messages.ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_INVALID_2,
+                        value,
+                        configuration), e);
                 }
 
                 folderFound = true;
@@ -782,8 +757,9 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 } catch (CmsException e) {
 
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_UNKNOWN_2, key,
-                            getClass().getName()), e);
+                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_UNKNOWN_2,
+                        key,
+                        getClass().getName()), e);
                 }
                 if (propDef != null) {
                     // a valid property - value combination to filter resources for:
@@ -795,8 +771,9 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 } else {
 
                     throw new CmsIllegalArgumentException(Messages.get().container(
-                            Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_UNKNOWN_2, key,
-                            getClass().getName()));
+                        Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_UNKNOWN_2,
+                        key,
+                        getClass().getName()));
                 }
             }
         }
@@ -804,18 +781,24 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
         // final check wether all has been set
         if (!displayMacroFound) {
             throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3,
-                    CONFIGURATION_OPTION_DISPLAY_MACRO, configuration, getClass().getName()));
+                Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3,
+                CONFIGURATION_OPTION_DISPLAY_MACRO,
+                configuration,
+                getClass().getName()));
         }
         if (!folderFound) {
             throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3, CONFIGURATION_TOPFOLDER,
-                    configuration, getClass().getName()));
+                Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3,
+                CONFIGURATION_TOPFOLDER,
+                configuration,
+                getClass().getName()));
         }
         if (!typeFound) {
             throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3,
-                    CONFIGURATION_RESOURCETYPENAME, configuration, getClass().getName()));
+                Messages.ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3,
+                CONFIGURATION_RESOURCETYPENAME,
+                configuration,
+                getClass().getName()));
         }
     }
 
@@ -840,12 +823,13 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * @throws CmsException
      *             if somehting goes wrong
      */
-    private String resolveXpathMacros(CmsObject cms, CmsResource resource, String value)
-            throws CmsException {
+    private String resolveXpathMacros(CmsObject cms, CmsResource resource, String value) throws CmsException {
 
         StringBuffer result = new StringBuffer();
-        int startmacro = value.indexOf(I_CmsMacroResolver.MACRO_DELIMITER + ""
-                + I_CmsMacroResolver.MACRO_START + "xpath.");
+        int startmacro = value.indexOf(I_CmsMacroResolver.MACRO_DELIMITER
+            + ""
+            + I_CmsMacroResolver.MACRO_START
+            + "xpath.");
         int stopmacro = 0;
         String xpath;
         if (startmacro != -1) {
@@ -854,8 +838,10 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
             // we read the locale node of the xmlcontent instance matching the resources
             // locale property (or top level locale).
-            Locale locale = CmsLocaleManager.getLocale(cms.readPropertyObject(xmlcontent.getFile(),
-                    CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue());
+            Locale locale = CmsLocaleManager.getLocale(cms.readPropertyObject(
+                xmlcontent.getFile(),
+                CmsPropertyDefinition.PROPERTY_LOCALE,
+                true).getValue());
 
             while (startmacro != -1) {
                 stopmacro = value.indexOf(I_CmsMacroResolver.MACRO_END);
@@ -877,20 +863,22 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 } catch (Exception ex) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().getBundle().key(
-                                Messages.LOG_ERR_SELECTWIDGET_XPATH_INVALID_4,
-                                new Object[] {
-                                        xpath, locale.toString(),
-                                        xmlcontent.getFile().getRootPath(),
-                                        ex.getLocalizedMessage()
-                                }));
+                            Messages.LOG_ERR_SELECTWIDGET_XPATH_INVALID_4,
+                            new Object[] {
+                                xpath,
+                                locale.toString(),
+                                xmlcontent.getFile().getRootPath(),
+                                ex.getLocalizedMessage()}));
                     }
                 }
                 // skip over the consumed String of value:
                 value = value.substring(stopmacro + 1);
 
                 // take a new start for macro:
-                startmacro = value.indexOf(I_CmsMacroResolver.MACRO_DELIMITER + ""
-                        + I_CmsMacroResolver.MACRO_START + "xpath.");
+                startmacro = value.indexOf(I_CmsMacroResolver.MACRO_DELIMITER
+                    + ""
+                    + I_CmsMacroResolver.MACRO_START
+                    + "xpath.");
             }
         }
         // append trailing value

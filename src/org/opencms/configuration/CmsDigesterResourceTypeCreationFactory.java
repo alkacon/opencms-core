@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDigesterResourceTypeCreationFactory.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,6 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsLog;
 
 import org.apache.commons.digester.AbstractObjectCreationFactory;
-import org.apache.commons.digester.ObjectCreationFactory;
 import org.apache.commons.logging.Log;
 
 import org.xml.sax.Attributes;
@@ -51,12 +50,11 @@ import org.xml.sax.Attributes;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.2
  */
-public class CmsDigesterResourceTypeCreationFactory extends AbstractObjectCreationFactory
-implements ObjectCreationFactory {
+public class CmsDigesterResourceTypeCreationFactory extends AbstractObjectCreationFactory {
 
     /** The log object of this class. */
     private static final Log LOG = CmsLog.getLog(CmsDigesterResourceTypeCreationFactory.class);

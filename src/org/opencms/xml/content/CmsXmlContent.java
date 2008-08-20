@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2008/04/14 13:51:37 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,6 @@ import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
-import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -80,11 +79,11 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
+public class CmsXmlContent extends A_CmsXmlDocument {
 
     /** The name of the XML content auto correction runtime attribute, this must always be a Boolean. */
     public static final String AUTO_CORRECTION_ATTRIBUTE = CmsXmlContent.class.getName() + ".autoCorrectionEnabled";
@@ -347,10 +346,14 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     public void copyLocale(Locale source, Locale destination, Set elements) throws CmsXmlException {
 
         if (!hasLocale(source)) {
-            throw new CmsXmlException(Messages.get().container(org.opencms.xml.Messages.ERR_LOCALE_NOT_AVAILABLE_1, source));
+            throw new CmsXmlException(Messages.get().container(
+                org.opencms.xml.Messages.ERR_LOCALE_NOT_AVAILABLE_1,
+                source));
         }
         if (hasLocale(destination)) {
-            throw new CmsXmlException(Messages.get().container(org.opencms.xml.Messages.ERR_LOCALE_ALREADY_EXISTS_1, destination));
+            throw new CmsXmlException(Messages.get().container(
+                org.opencms.xml.Messages.ERR_LOCALE_ALREADY_EXISTS_1,
+                destination));
         }
 
         Element sourceElement = null;
@@ -370,7 +373,9 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
 
         if (sourceElement == null) {
             // should not happen since this was checked already, just to make sure...
-            throw new CmsXmlException(Messages.get().container(org.opencms.xml.Messages.ERR_LOCALE_NOT_AVAILABLE_1, source));
+            throw new CmsXmlException(Messages.get().container(
+                org.opencms.xml.Messages.ERR_LOCALE_NOT_AVAILABLE_1,
+                source));
         }
 
         // switch locale value in attribute of copied node
@@ -381,7 +386,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         // re-initialize the document bookmarks
         initDocument(m_document, m_encoding, getContentDefinition());
     }
-    
+
     /**
      * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition()
      */

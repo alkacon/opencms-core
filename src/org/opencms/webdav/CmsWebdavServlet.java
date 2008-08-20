@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavServlet.java,v $
- * Date   : $Date: 2008/02/27 12:05:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -123,7 +123,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.5.6
  */
@@ -370,7 +370,7 @@ public class CmsWebdavServlet extends HttpServlet {
     protected int m_output = 2048;
 
     /** Should we generate directory listings? */
-    private boolean m_listings = false;
+    private boolean m_listings;
 
     /** Read only flag. By default, it's set to true. */
     private boolean m_readOnly = true;
@@ -382,7 +382,7 @@ public class CmsWebdavServlet extends HttpServlet {
     private I_CmsRepositorySession m_session;
 
     /** The name of the user found in the authorization header. */
-    private String m_username = null;
+    private String m_username;
 
     static {
         URL_SAFE_CHARS = new BitSet();
@@ -2833,7 +2833,7 @@ public class CmsWebdavServlet extends HttpServlet {
 
         // check authorization
         String auth = req.getHeader(HEADER_AUTHORIZATION);
-        if (auth == null || !auth.toUpperCase().startsWith(AUTHORIZATION_BASIC_PREFIX)) {
+        if ((auth == null) || !auth.toUpperCase().startsWith(AUTHORIZATION_BASIC_PREFIX)) {
 
             // no authorization data is available
             requestAuthorization(resp);

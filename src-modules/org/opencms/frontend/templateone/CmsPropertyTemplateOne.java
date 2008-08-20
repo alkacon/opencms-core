@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2008/02/27 12:05:27 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialogSelector;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.I_CmsDialogHandler;
 import org.opencms.workplace.commons.CmsPropertyCustom;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
@@ -71,11 +70,11 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDialogHandler {
+public class CmsPropertyTemplateOne extends CmsPropertyCustom {
 
     /** 
      * Contains all properties to set with this customized dialog.<p>

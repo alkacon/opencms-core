@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlHelper.java,v $
- * Date   : $Date: 2008/02/27 12:05:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -87,7 +87,7 @@ public class CmsSetupXmlHelper {
     };
 
     /** Optional base path. */
-    private String m_basePath = null;
+    private String m_basePath;
 
     /** Document cache. */
     private Map m_cache = new HashMap();

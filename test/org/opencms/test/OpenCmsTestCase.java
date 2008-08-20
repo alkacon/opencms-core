@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.105 $
+ * @version $Revision: 1.106 $
  * 
  * @since 6.0.0
  */
@@ -136,10 +136,10 @@ public class OpenCmsTestCase extends TestCase {
         private static final long serialVersionUID = 2742216550970181832L;
 
         /** Unequal node1. */
-        public Node m_node1 = null;
+        public Node m_node1;
 
         /** Unequal node2. */
-        public Node m_node2 = null;
+        public Node m_node2;
 
         /**
          * @see org.dom4j.util.NodeComparator#compare(org.dom4j.Node, org.dom4j.Node)

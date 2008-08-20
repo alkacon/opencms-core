@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionPrompt.java,v $
- * Date   : $Date: 2008/02/27 12:05:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import javax.swing.UIManager;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -60,7 +60,7 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     /** Destination property. */
     private String m_property; // required
     /** Mode flag. */
-    private boolean m_singleSelection = false;
+    private boolean m_singleSelection;
 
     /** Title message. */
     private String m_title = "Selection Dialog";
@@ -79,7 +79,7 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
      * Sets the given property to <code>__ABORT__</code> if canceled, or to a list of selected
      * modules if not.<p>
      * 
-     * @throws org.apache.tools.ant.BuildException
+     * @throws org.apache.tools.ant.BuildException in case something goes wrong
      * 
      * @see org.apache.tools.ant.Task#execute()
      */

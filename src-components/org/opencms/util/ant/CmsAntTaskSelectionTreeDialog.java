@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionTreeDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.swing.tree.TreePath;
  * @author Michael Moossen (original non-tree version)
  * @author Achim Westermann (modified tree version)
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.1.6
  * 
@@ -84,7 +84,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
     private static final long serialVersionUID = -8439685952987222098L;
 
     /** Aborted flag. */
-    protected boolean m_aborted = false;
+    protected boolean m_aborted;
 
     /** The list of all module names. * */
     private List m_allModuleList;
@@ -102,7 +102,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
     private final JPanel m_content = new JPanel();
 
     /** Label for prompt. */
-    private JLabel m_label = null;
+    private JLabel m_label;
 
     /** Ok button. */
     private final JButton m_ok = new JButton("Ok");
@@ -280,7 +280,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
 
         }
         dispose();
-        if (m_aborted || ret.toString().trim().length() < CmsAntTaskSelectionTreePrompt.LIST_SEPARATOR.length()) {
+        if (m_aborted || (ret.toString().trim().length() < CmsAntTaskSelectionTreePrompt.LIST_SEPARATOR.length())) {
             return null;
         } else {
             return ret.toString();

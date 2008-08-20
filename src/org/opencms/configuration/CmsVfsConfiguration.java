@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2008/04/03 15:26:28 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,11 +60,11 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 6.0.0
  */
-public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /** The widget attribute. */
     public static final String A_DEFAULTWIDGET = "defaultwidget";

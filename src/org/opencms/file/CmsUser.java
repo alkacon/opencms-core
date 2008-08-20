@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2008/04/24 16:02:35 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,13 +71,13 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 6.0.0
  * 
  * @see CmsGroup 
  */
-public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
+public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /** Storage for additional user information. */
     private Map m_additionalInfo;

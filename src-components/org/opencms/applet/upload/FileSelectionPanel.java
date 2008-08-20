@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileSelectionPanel.java,v $
- * Date   : $Date: 2008/02/27 12:05:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.swing.JScrollPane;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class FileSelectionPanel extends JPanel {
 
@@ -71,7 +71,7 @@ public class FileSelectionPanel extends JPanel {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.4 $
+     * @version $Revision: 1.5 $
      */
     static class FileSelectionPane extends JPanel {
 
@@ -79,11 +79,9 @@ public class FileSelectionPanel extends JPanel {
         private static final long serialVersionUID = -3040601958000155698L;
 
         /**
-         * Displays the given paths with checkboxes. 
-         * <p>
+         * Displays the given paths with checkboxes.<p>
          * 
-         * @param paths 
-         *      List of path Strings
+         * @param paths list of path Strings
          */
         public FileSelectionPane(List paths) {
 
@@ -120,7 +118,7 @@ public class FileSelectionPanel extends JPanel {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.4 $
+     * @version $Revision: 1.5 $
      */
     static class Row extends JPanel {
 
@@ -217,11 +215,8 @@ public class FileSelectionPanel extends JPanel {
      * Creates a file selector with the given paths for selection. 
      * <p> 
      * 
-     * @param paths 
-     *      the paths to select from
-     * 
-     * @param rootPath 
-     *      the absolute path prefix of the relative file paths displayed
+     * @param paths  the paths to select from
+     * @param rootPath the absolute path prefix of the relative file paths displayed
      */
     public FileSelectionPanel(List paths, String rootPath) {
 

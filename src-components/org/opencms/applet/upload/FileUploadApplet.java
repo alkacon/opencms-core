@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2008/02/27 12:05:52 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,9 +132,9 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private String m_certificateErrorTitle = "Error initializing the OpenCms Upload Applet";
 
     /** The initial folder path for the file chooser. */
-    private String m_clientFolder = null;
+    private String m_clientFolder;
 
-    /** Color defintions. */
+    /** Color definitions. */
     private HashMap m_colors = new HashMap();
 
     private String m_errorLine1 = "An error has occurred on the server:";

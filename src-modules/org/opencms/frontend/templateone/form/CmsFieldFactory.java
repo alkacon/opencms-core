@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldFactory.java,v $
- * Date   : $Date: 2008/02/27 12:05:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * A factory to create form field instances of a specified type.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public final class CmsFieldFactory {
 
@@ -60,7 +60,7 @@ public final class CmsFieldFactory {
     private static final Log LOG = CmsLog.getLog(CmsFieldFactory.class);
 
     /** The shared instance of the field factory. */
-    private static CmsFieldFactory sharedInstance = null;
+    private static CmsFieldFactory sharedInstance;
 
     /** The registered field types keyed by their type name. */
     private Map m_registeredFieldTypes;

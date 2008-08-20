@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2008/07/01 13:46:04 $
- * Version: $Revision: 1.175 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.176 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.175 $ 
+ * @version $Revision: 1.176 $ 
  * 
  * @since 6.0.0 
  */
@@ -220,7 +220,7 @@ public abstract class CmsWorkplace {
     private CmsObject m_cms;
 
     /** Helper variable to store the id of the current project. */
-    private CmsUUID m_currentProjectId = null;
+    private CmsUUID m_currentProjectId;
 
     /** Flag for indicating that request forwarded was. */
     private boolean m_forwarded;

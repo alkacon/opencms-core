@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceParser.java,v $
- * Date   : $Date: 2008/02/27 12:05:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/08/20 13:20:13 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.workplace.tools.content;
 import org.opencms.util.CmsHtmlParser;
 import org.opencms.util.CmsHtmlTagRemoveFactory;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.I_CmsHtmlNodeVisitor;
 
 import java.util.Iterator;
 
@@ -57,12 +56,12 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.1.7
  * 
  */
-public final class CmsTagReplaceParser extends CmsHtmlParser implements I_CmsHtmlNodeVisitor {
+public final class CmsTagReplaceParser extends CmsHtmlParser {
 
     /** A tag factory that is able to make tags invisible to visitors. */
     private final NodeFactory m_nodeFactory;

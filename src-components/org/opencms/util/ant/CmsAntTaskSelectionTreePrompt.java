@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionTreePrompt.java,v $
- * Date   : $Date: 2008/02/27 12:05:53 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import javax.swing.UIManager;
  * 
  * @author Achim Westermann (modification)
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -60,7 +60,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     private String m_defaultValue = "";
 
     /** Property to force initial tree expansion for the given amount of levels. */
-    private int m_expansionLevels = 0;
+    private int m_expansionLevels;
 
     /** Prompt message. */
     private String m_prompt = "Please make your choice:";
@@ -69,7 +69,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     private String m_property; // required
 
     /** Mode flag. */
-    private boolean m_singleSelection = false;
+    private boolean m_singleSelection;
 
     /** Title message. */
     private String m_title = "Selection Dialog";
@@ -99,14 +99,12 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Run the task.
-     * <p>
+     * Run the task.<p>
      * 
      * Sets the given property to <code>__ABORT__</code> if canceled, or to a list of selected
-     * modules if not.
-     * <p>
+     * modules if not.<p>
      * 
-     * @throws org.apache.tools.ant.BuildException
+     * @throws org.apache.tools.ant.BuildException in case an error occurs
      * 
      * @see org.apache.tools.ant.Task#execute()
      */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2008/02/27 12:05:28 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,7 +94,7 @@ public class CmsListColumnDefinition {
     private boolean m_printable = true;
 
     /** Flag for text wrapping. */
-    private boolean m_textWrapping = false;
+    private boolean m_textWrapping;
 
     /** Visible Flag. */
     private boolean m_visible = true;

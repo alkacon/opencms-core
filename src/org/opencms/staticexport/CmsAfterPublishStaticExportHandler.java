@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2008/07/01 08:02:56 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2008/08/20 13:20:11 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,13 +72,13 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  * 
  * @see I_CmsStaticExportHandler
  */
-public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler implements I_CmsStaticExportHandler {
+public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler {
 
     /** Header field set-cookie constant. */
     private static final String HEADER_FIELD_SET_COOKIE = "Set-Cookie";

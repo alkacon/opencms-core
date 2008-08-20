@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2008/04/03 15:26:28 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2008/08/20 13:20:10 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,11 +71,11 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @since 6.0.0
  */
-public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The "autosetnavigation" attribute. */
     public static final String A_AUTOSETNAVIGATION = "autosetnavigation";

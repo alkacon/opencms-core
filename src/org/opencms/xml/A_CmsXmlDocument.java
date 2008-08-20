@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2008/04/14 13:51:37 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2008/08/20 13:20:12 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -678,13 +678,12 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * @param copyElements the set of paths for elements to copy
      * 
      * @return a partial deep copy of <code>element</code>
-     * @see org.opencms.xml.A_CmsXmlDocument#createDeepElementCopyInternal(String, Element, Element, Set)
      */
     protected Element createDeepElementCopy(Element element, Set copyElements) {
-        
+
         return createDeepElementCopyInternal(null, null, element, copyElements);
-    } 
-    
+    }
+
     /**
      * Returns the bookmarked value for the given bookmark,
      * which must be a valid bookmark name. 
@@ -791,29 +790,29 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * @return a partial deep copy of <code>element</code>
      */
     private Element createDeepElementCopyInternal(String parentPath, Element parent, Element element, Set copyElements) {
-        
+
         String elName = element.getName();
         if (parentPath != null) {
             Element first = element.getParent().element(elName);
-            int elIndex   = element.getParent().indexOf(element)-first.getParent().indexOf(first)+1;
-            elName = parentPath + (parentPath.length() > 0 ? "/" : "") + elName.concat("["+elIndex+"]");
+            int elIndex = element.getParent().indexOf(element) - first.getParent().indexOf(first) + 1;
+            elName = parentPath + (parentPath.length() > 0 ? "/" : "") + elName.concat("[" + elIndex + "]");
         }
-        
-        if (parentPath == null || copyElements.contains(elName)) {
+
+        if ((parentPath == null) || copyElements.contains(elName)) {
             // this is a content element we want to copy
             Element copy = element.createCopy();
             // copy.detach();
             if (parentPath != null) {
                 parent.add(copy);
             }
-            
+
             // check if we need to copy subelements, too
             boolean copyNested = (parentPath == null);
             for (Iterator i = copyElements.iterator(); !copyNested && i.hasNext();) {
                 String path = (String)i.next();
                 copyNested = !elName.equals(path) && path.startsWith(elName);
             }
-            
+
             if (copyNested) {
                 copy.clearContent();
                 for (Iterator i = element.elementIterator(); i.hasNext();) {
@@ -821,13 +820,13 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
                     createDeepElementCopyInternal((parentPath == null) ? "" : elName, copy, el, copyElements);
                 }
             }
-            
+
             return copy;
-        } else {   
+        } else {
             return null;
         }
-    } 
-    
+    }
+
     /**
      * Internal method to look up a value, requires that the name already has been 
      * "normalized" for the bookmark lookup. 
