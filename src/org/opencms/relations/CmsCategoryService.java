@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategoryService.java,v $
- * Date   : $Date: 2008/07/14 10:04:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/08/20 13:56:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.9.2
  * 
@@ -324,10 +324,8 @@ public class CmsCategoryService {
      * @param referencePath the reference path
      * 
      * @return a list of root paths
-     * 
-     * @throws CmsException if something goes wrong 
      */
-    public List getCategoryRepositories(CmsObject cms, String referencePath) throws CmsException {
+    public List getCategoryRepositories(CmsObject cms, String referencePath) {
 
         List ret = new ArrayList();
         if (referencePath == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupBean.java,v $
- * Date   : $Date: 2008/07/18 10:22:34 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/08/20 13:56:23 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,6 @@ import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.tools.CmsIdentifiableObjectContainer;
-import org.opencms.xml.CmsXmlException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -118,7 +117,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -1496,10 +1495,8 @@ public class CmsSetupBean implements I_CmsShellCommands {
      * Prepares step 8 of the setup wizard.<p>
      * 
      * @return true if the workplace should be imported
-     * 
-     * @throws CmsXmlException if something goes wrong
      */
-    public boolean prepareStep8() throws CmsXmlException {
+    public boolean prepareStep8() {
 
         if (isInitialized()) {
             try {

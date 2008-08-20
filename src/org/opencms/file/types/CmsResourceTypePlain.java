@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2008/07/14 10:05:10 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/08/20 13:56:23 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.Set;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -322,11 +322,10 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
 
     /**
      * Removes the referencing resources from the cache.<p>
-     * @param references the references to remove
      * 
-     * @throws CmsException if something goes wrong
+     * @param references the references to remove
      */
-    protected void removeReferencingFromCache(Set references) throws CmsException {
+    protected void removeReferencingFromCache(Set references) {
 
         if (m_jspLoader != null) {
             m_jspLoader.removeFromCache(references, false);
