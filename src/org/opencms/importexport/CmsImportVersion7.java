@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion7.java,v $
- * Date   : $Date: 2008/08/20 14:12:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/08/21 13:36:15 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.4
  */
@@ -204,7 +204,7 @@ public class CmsImportVersion7 implements I_CmsImport {
     /** Tag for the "property" node, starts a property for a VFS resource. */
     public static final String N_PROPERTY = "property";
 
-    /** Tag in the {@link #EXPORT_MANIFEST} for the "relation" node, starts a relation for a VFS resource. */
+    /** Tag in the {@link CmsImportExportManager#EXPORT_MANIFEST} for the "relation" node, starts a relation for a VFS resource. */
     public static final String N_RELATION = "relation";
 
     /** Tag for the "relations" node, starts the list of relations of a VFS resources. */
