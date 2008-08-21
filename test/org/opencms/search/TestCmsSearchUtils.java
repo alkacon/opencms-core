@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchUtils.java,v $
- * Date   : $Date: 2008/02/27 12:05:27 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/08/21 13:38:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,13 +31,16 @@
 
 package org.opencms.search;
 
+import org.opencms.search.fields.CmsSearchFieldConfiguration;
+
 import junit.framework.TestCase;
 
 /**
- * Tests some search utils that don't require an OpenCms context.<p>
+ * Tests some search utilities that don't require an OpenCms context.<p>
  * 
- * @author Alexander Kandzior 
- * @version $Revision: 1.9 $
+ * @author Alexander Kandzior
+ *  
+ * @version $Revision: 1.10 $
  */
 public class TestCmsSearchUtils extends TestCase {
 
@@ -52,47 +55,18 @@ public class TestCmsSearchUtils extends TestCase {
     }
 
     /**
-     * Test root path term splitting.<p>
+     * Test parent folder path term splitting.<p>
      *
      * @throws Exception if the test fails
-     * 
-     * @deprecated Since version 7.0.2, split is basically just using a space char.
      */
-    public void testRootPathTokenizer() throws Exception {
+    public void testParentFolderTokenizer() throws Exception {
 
-        String t = CmsSearchIndex.ROOT_PATH_TOKEN;
-        String s = CmsSearchIndex.ROOT_PATH_SUFFIX;
-
-        assertEquals(t, CmsSearchIndex.rootPathRewrite(null));
-        assertEquals(t, CmsSearchIndex.rootPathRewrite(""));
-        assertEquals(t, CmsSearchIndex.rootPathRewrite("/"));
-        assertEquals(t + " sites" + s, CmsSearchIndex.rootPathRewrite("/sites/"));
-        assertEquals(t + " sites" + s, CmsSearchIndex.rootPathRewrite("/sites"));
-        assertEquals(t + " sites" + s + " default" + s, CmsSearchIndex.rootPathRewrite("/sites/default/"));
-        assertEquals(t + " sites" + s + " default" + s, CmsSearchIndex.rootPathRewrite("/sites/default"));
-
-        assertStringArray(new String[] {t}, CmsSearchIndex.rootPathSplit("/"));
-        assertStringArray(new String[] {t, "sites" + s}, CmsSearchIndex.rootPathSplit("/sites/"));
-        assertStringArray(new String[] {t, "sites" + s}, CmsSearchIndex.rootPathSplit("/sites"));
-        assertStringArray(new String[] {t, "sites" + s, "default" + s}, CmsSearchIndex.rootPathSplit("/sites/default/"));
-        assertStringArray(new String[] {t, "sites" + s, "default" + s}, CmsSearchIndex.rootPathSplit("/sites/default"));
-    }
-
-    /**
-     * Asserts that 2 String arrays are equal.<p>
-     * @param a the first array to compare
-     * @param b the second array to compare
-     */
-    public void assertStringArray(String[] a, String[] b) {
-
-        if ((a == null) || (b == null)) {
-            assertTrue(a == b);
-        }
-        if (a != null) {
-            assertEquals(a.length, b.length);
-            for (int i = 0; i < a.length; i++) {
-                assertEquals(a[i], b[i]);
-            }
-        }
+        assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens(null));
+        assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens(""));
+        assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens("/"));
+        assertEquals("/ /sites/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/"));
+        assertEquals("/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites"));
+        assertEquals("/ /sites/ /sites/default/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default/"));
+        assertEquals("/ /sites/", CmsSearchFieldConfiguration.getParentFolderTokens("/sites/default"));
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2008/08/15 16:08:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/08/21 13:38:31 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.0 
  */
@@ -121,6 +121,32 @@ public class CmsSearchFieldConfiguration implements Comparable {
     public CmsSearchFieldConfiguration() {
 
         m_fields = new ArrayList();
+    }
+
+    /**
+     * Creates a space separated list of all parent folders of the given root path.<p>
+     * 
+     * @param rootPath the root path to get the parent folder list for
+     * 
+     * @return a space separated list of all parent folders of the given root path
+     */
+    public static String getParentFolderTokens(String rootPath) {
+
+        if (CmsStringUtil.isEmpty(rootPath)) {
+            return "/";
+        }
+        StringBuffer result = new StringBuffer(128);
+        String folderName = CmsResource.getFolderPath(rootPath);
+        for (int i = 0; i < folderName.length(); i++) {
+            char c = folderName.charAt(i);
+            if (c == '/') {
+                if (result.length() > 0) {
+                    result.append(' ');
+                }
+                result.append(folderName.substring(0, i + 1));
+            }
+        }
+        return result.toString();
     }
 
     /**
@@ -318,12 +344,13 @@ public class CmsSearchFieldConfiguration implements Comparable {
             document.add(field);
         }
 
-        // add the document root path, optimized for use with a phrase query
-        String rootPath = CmsSearchIndex.rootPathRewrite(resource.getRootPath());
-        field = new Field(CmsSearchField.FIELD_ROOT, rootPath, Field.Store.YES, Field.Index.TOKENIZED);
-        // set boost of 0 to root path field, since root path should have no effect on search result score 
+        // add all parent folders of the current document
+        String parentFolders = getParentFolderTokens(resource.getRootPath());
+        field = new Field(CmsSearchField.FIELD_PARENT_FOLDERS, parentFolders, Field.Store.NO, Field.Index.TOKENIZED);
+        // set boost of 0 to parent folder field, since parent folder path should have no effect on search result score 
         field.setBoost(0);
         document.add(field);
+
         // root path is stored again in "plain" format, but not for indexing since I_CmsDocumentFactory.DOC_ROOT is used for that
         // must be indexed as a keyword ONLY to be able to use this when deleting a resource from the index
         document.add(new Field(
@@ -409,7 +436,8 @@ public class CmsSearchFieldConfiguration implements Comparable {
         // first make map the default hard coded fields
         analyzer = getAnalyzerForDefaultFields(analyzer);
 
-        PerFieldAnalyzerWrapper result = analyzer instanceof PerFieldAnalyzerWrapper ? (PerFieldAnalyzerWrapper)analyzer
+        PerFieldAnalyzerWrapper result = analyzer instanceof PerFieldAnalyzerWrapper
+        ? (PerFieldAnalyzerWrapper)analyzer
         : null;
 
         Iterator i = m_fields.iterator();
@@ -569,11 +597,12 @@ public class CmsSearchFieldConfiguration implements Comparable {
      */
     protected Analyzer getAnalyzerForDefaultFields(Analyzer analyzer) {
 
-        PerFieldAnalyzerWrapper result = analyzer instanceof PerFieldAnalyzerWrapper ? (PerFieldAnalyzerWrapper)analyzer
+        PerFieldAnalyzerWrapper result = analyzer instanceof PerFieldAnalyzerWrapper
+        ? (PerFieldAnalyzerWrapper)analyzer
         : new PerFieldAnalyzerWrapper(analyzer);
 
-        // root field must use whitespace analyzer
-        result.addAnalyzer(CmsSearchField.FIELD_ROOT, new WhitespaceAnalyzer());
+        // parent folder field must use whitespace analyzer
+        result.addAnalyzer(CmsSearchField.FIELD_PARENT_FOLDERS, new WhitespaceAnalyzer());
 
         return result;
     }

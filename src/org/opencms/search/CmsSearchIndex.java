@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2008/08/20 13:18:34 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2008/08/21 13:38:31 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,6 @@ import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 
@@ -84,7 +83,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.70 $ 
+ * @version $Revision: 1.71 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,20 +145,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Manual ("manual") index rebuild mode. */
     public static final String REBUILD_MODE_MANUAL = "manual";
-
-    /** 
-     * Special root path append token for optimized path queries.<p>
-     * 
-     * @deprecated This is not longer required since OpenCms version 7.0.2, the implementation 
-     * now uses a Lucene {@link org.apache.lucene.analysis.WhitespaceAnalyzer}
-     * for the {@link CmsSearchField#FIELD_ROOT} field.
-     * 
-     * @see #rootPathRewrite(String)
-     */
-    public static final String ROOT_PATH_SUFFIX = "";
-
-    /** Special root path start token for optimized path queries. */
-    public static final String ROOT_PATH_TOKEN = "root";
 
     /** Constant for additional parameter to enable time range checks (default: true). */
     public static final String TIME_RANGE = CmsSearchIndex.class.getName() + ".checkTimeRange";
@@ -292,76 +277,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         this();
         setName(name);
-    }
-
-    /**
-     * Rewrites the a resource path for use in the {@link CmsSearchField#FIELD_ROOT} field.<p>
-     * 
-     * This is required in order to use a Lucene "phrase query" on the resource path.
-     * Using a phrase query is much, much better for the search performance then using a straightforward 
-     * "prefix query". With a "prefix query", Lucene would internally generate a huge list of boolean sub-queries,
-     * exactly one for every document in the VFS subtree of the query. So if you query on "/sites/default/*" on 
-     * a large OpenCms installation, this means thousands of sub-queries.
-     * Using the "phrase query", only one (or very few) queries are internally generated, and the result 
-     * is just the same.<p>  
-     * 
-     * Since OpenCms version 7.0.2, the {@link CmsSearchField#FIELD_ROOT} field always uses a whitespace analyzer.
-     * This is ensured by the {@link CmsSearchFieldConfiguration#getAnalyzer(Analyzer)} implementation. 
-     * The Lucene whitespace analyzer uses all words as tokens, no lower case transformation or word stemming is done. 
-     * So the root path is now just split along the '/' chars, which are replaced by simple space chars.<p>
-     * 
-     * <i>Historical implementation side note:</i>
-     * Before 7.0.2, the {@link CmsSearchField#FIELD_ROOT} used the analyzer configured by the language. 
-     * This introduced a number of issues as the language analyzer might modify the directory names, leading to potential
-     * duplicates (e.g. <code>members/</code> and <code>member/</code> may both be trimmed to <code>member</code>),
-     * so that the prefix search returns more or different results then expected. 
-     * This was avoided by a workaround where this method basically replaced the "/" of a path with "@o.c ". 
-     * Using this trick most Lucene analyzers left the directory names untouched, 
-     * and treated them like literal email addresses. However, this trick did not work with all analyzers,
-     * for example the Russian analyzer does not work as expected.
-     * An additional workaround was required to avoid problems with folders that that are different
-     * only by the upper / lower chars. Since 7.0.2, these workarounds are not longer required, since the 
-     * {@link CmsSearchField#FIELD_ROOT} field always uses a whitespace analyzer, which is a much better solution.<p>
-     * 
-     * @param path the path to rewrite
-     * 
-     * @return the re-written path
-     */
-    public static String rootPathRewrite(String path) {
-
-        StringBuffer result = new StringBuffer(256);
-        String[] elements = rootPathSplit(path);
-        for (int i = 0; i < elements.length; i++) {
-            result.append(elements[i]);
-            if ((i + 1) < elements.length) {
-                result.append(' ');
-            }
-        }
-        return result.toString();
-    }
-
-    /**
-     * Spits the a resource path into tokens for use in the <code>{@link CmsSearchField#FIELD_ROOT}</code> field
-     * and with the <code>{@link #rootPathRewrite(String)}</code> method.<p>
-     * 
-     * @param path the path to split
-     * 
-     * @return the split path
-     * 
-     * @see #rootPathRewrite(String)
-     */
-    public static String[] rootPathSplit(String path) {
-
-        if (CmsStringUtil.isEmpty(path)) {
-            return new String[] {ROOT_PATH_TOKEN};
-        }
-
-        // split the path
-        String[] elements = CmsStringUtil.splitAsArray(path, '/');
-        String[] result = new String[elements.length + 1];
-        result[0] = ROOT_PATH_TOKEN;
-        System.arraycopy(elements, 0, result, 1, elements.length);
-        return result;
     }
 
     /**
@@ -945,38 +860,22 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // change the project     
             searchCms.getRequestContext().setCurrentProject(searchCms.readProject(getProject()));
 
-            // complete the search root
-            String[] roots;
-            if ((params.getRoots() != null) && (params.getRoots().size() > 0)) {
-                // add the site root to all the search root
-                roots = new String[params.getRoots().size()];
-                for (int i = 0; i < params.getRoots().size(); i++) {
-                    roots[i] = searchCms.getRequestContext().addSiteRoot((String)params.getRoots().get(i));
-                }
-            } else {
-                // just use the site root as the search root
-                // this permits searching in indexes that contain content of other sites than the current selected one?!?!
-                roots = new String[] {searchCms.getRequestContext().getSiteRoot()};
-            }
-
             timeLucene = -System.currentTimeMillis();
 
             // the main query to use, will be constructed in the next lines 
             BooleanQuery query = new BooleanQuery();
 
-            // implementation note: 
-            // initially this was a simple PrefixQuery based on the DOC_PATH
-            // however, internally Lucene rewrote that to literally hundreds of BooleanQuery parts
-            // the following implementation will lead to just one Lucene PhraseQuery per directory and is thus much better 
+            // complete the search root
             BooleanQuery pathQuery = new BooleanQuery();
-            for (int i = 0; i < roots.length; i++) {
-                String[] paths = rootPathSplit(roots[i]);
-                PhraseQuery phrase = new PhraseQuery();
-                for (int j = 0; j < paths.length; j++) {
-                    Term term = new Term(CmsSearchField.FIELD_ROOT, paths[j]);
-                    phrase.add(term);
+            if ((params.getRoots() != null) && (params.getRoots().size() > 0)) {
+                // add the all configured search roots with will request context
+                for (int i = 0; i < params.getRoots().size(); i++) {
+                    String searchRoot = searchCms.getRequestContext().addSiteRoot((String)params.getRoots().get(i));
+                    extendPathQuery(pathQuery, searchRoot);
                 }
-                pathQuery.add(phrase, BooleanClause.Occur.SHOULD);
+            } else {
+                // just use the current site root as the search root
+                extendPathQuery(pathQuery, searchCms.getRequestContext().getSiteRoot());
             }
             // add the calculated phrase query for the root path
             query.add(pathQuery, BooleanClause.Occur.MUST);
@@ -1268,6 +1167,22 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public String toString() {
 
         return getName();
+    }
+
+    /**
+     * Extends the given path query with another term for the given search root element.<p>
+     * 
+     * @param pathQuery the path query to extend
+     * @param searchRoot the search root to add to the path query
+     */
+    protected void extendPathQuery(BooleanQuery pathQuery, String searchRoot) {
+
+        if (!CmsResource.isFolder(searchRoot)) {
+            searchRoot += "/";
+        }
+        pathQuery.add(
+            new TermQuery(new Term(CmsSearchField.FIELD_PARENT_FOLDERS, searchRoot)),
+            BooleanClause.Occur.SHOULD);
     }
 
     /**

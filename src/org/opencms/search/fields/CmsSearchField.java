@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2008/08/19 12:41:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/08/21 13:38:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.0.0 
  */
@@ -93,8 +93,8 @@ public class CmsSearchField {
      */
     public static final String FIELD_PRIORITY = "priority";
 
-    /** Name of the field that contains a special format of the document root path in the VFS for optimized searches (hardcoded). */
-    public static final String FIELD_ROOT = "root";
+    /** Name of the field that contains all VFS parent folders of a document (hardcoded). */
+    public static final String FIELD_PARENT_FOLDERS = "parent-folders";
 
     /** 
      * Name of the field that usually contains the value of the "Title" property of the document 

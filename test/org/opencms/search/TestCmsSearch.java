@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2008/02/27 12:05:27 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/08/21 13:38:31 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -514,7 +514,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
      * @param searchResult the list to print
      * @param cms the current OpenCms user context
      */
-    protected static void printResults(List searchResult, CmsObject cms) {
+    public static void printResults(List searchResult, CmsObject cms) {
 
         printResults(searchResult, cms, false);
     }
@@ -526,7 +526,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
      * @param cms the current OpenCms user context
      * @param showExcerpt if <code>true</code>, the generated excerpt is also displayed
      */
-    protected static void printResults(List searchResult, CmsObject cms, boolean showExcerpt) {
+    public static void printResults(List searchResult, CmsObject cms, boolean showExcerpt) {
 
         Iterator i = searchResult.iterator();
         int count = 0;
@@ -562,8 +562,10 @@ public class TestCmsSearch extends OpenCmsTestCase {
                 type = "";
             }
             System.out.print(CmsStringUtil.padRight(type, 10));
-            System.out.print(CmsStringUtil.padRight(""
-                + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN), 17));
+            if (res.getDateLastModified() != null) {
+                System.out.print(CmsStringUtil.padRight(""
+                    + CmsDateUtil.getDateTime(res.getDateLastModified(), DateFormat.SHORT, Locale.GERMAN), 17));
+            }
             System.out.println("score: " + res.getScore());
             if (showExcerpt) {
                 System.out.println(res.getExcerpt());
