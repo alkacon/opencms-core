@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMapping.java,v $
- * Date   : $Date: 2008/08/22 13:29:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/08/22 13:51:11 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.0 
  */
@@ -131,7 +131,9 @@ public class CmsSearchFieldMapping {
      * 
      * @param cms the OpenCms context used for building the search index
      * @param res the resource that is indexed
-     * @param extractionResult the plain text extraction result from the resource  
+     * @param extractionResult the plain text extraction result from the resource
+     * @param properties the list of all properties directly attached to the resource (not searched)
+     * @param propertiesSearched the list of all searched properties of the resource  
      * 
      * @return the String value extracted form the provided data according to the rules of this mapping type
      */
