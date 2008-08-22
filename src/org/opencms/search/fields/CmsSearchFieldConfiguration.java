@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2008/08/21 13:38:31 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/08/22 13:29:38 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.search.fields;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
@@ -62,7 +63,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.0.0 
  */
@@ -279,8 +280,6 @@ public class CmsSearchFieldConfiguration implements Comparable {
         CmsSearchIndex index,
         I_CmsExtractionResult content) throws CmsException {
 
-        String path = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-
         // create the Lucene document according to the index field configuration
         Document document = new Document();
 
@@ -293,6 +292,10 @@ public class CmsSearchFieldConfiguration implements Comparable {
             }
         }
 
+        // read all properties of the resource
+        List propertiesSearched = cms.readPropertyObjects(resource, true);
+        List properties = cms.readPropertyObjects(resource, false);
+
         Iterator fieldConfigs = getFields().iterator();
         while (fieldConfigs.hasNext()) {
             // check all field configurations 
@@ -303,12 +306,12 @@ public class CmsSearchFieldConfiguration implements Comparable {
             while (mappings.hasNext()) {
                 // walk through all mappings and check if content for this is available
                 CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)mappings.next();
-                String mapResult = mapping.getStringValue(cms, resource, content);
+                String mapResult = mapping.getStringValue(cms, resource, content, properties, propertiesSearched);
                 if (mapResult != null) {
                     // content is available for the mapping
                     // append the result of the mapping to the main result
                     if (text.length() > 0) {
-                        // this is a multiple mapped field, append a linebreak
+                        // this is a multiple mapped field, append a line break
                         text.append('\n');
                     }
                     text.append(mapResult);
@@ -325,7 +328,7 @@ public class CmsSearchFieldConfiguration implements Comparable {
         String value;
         Fieldable field;
         // add the category of the file (this is searched so the value can also be attached on a folder)
-        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, true).getValue();
+        value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_CATEGORY, propertiesSearched).getValue();
         if (CmsStringUtil.isNotEmpty(value)) {
             // all categories are internally stored lower case
             value = value.trim().toLowerCase();
@@ -391,7 +394,7 @@ public class CmsSearchFieldConfiguration implements Comparable {
         // set individual document boost factor for the search
         float boost = CmsSearchField.BOOST_DEFAULT;
         // note that the priority property IS searched, so you can easily flag whole folders as "high" or "low"
-        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, true).getValue();
+        value = CmsProperty.get(CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, propertiesSearched).getValue();
         if (value != null) {
             value = value.trim().toLowerCase();
             if (value.equals(SEARCH_PRIORITY_MAX_VALUE)) {

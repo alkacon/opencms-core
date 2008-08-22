@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2008/08/15 16:08:21 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2008/08/22 13:29:37 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.lucene.document.Fieldable;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,9 +161,11 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         I_CmsExtractionResult content = null;
 
         // check if caching is enabled for this document type
-        String cacheName = null;
         CmsExtractionResultCache cache = getCache();
-        if (cache != null) {
+        String cacheName = null;
+        if ((cache != null) && (resource.getSiblingCount() > 1)) {
+            // hard drive based caching only makes sense for resources that have siblings, 
+            // because the index will also store the content as a blob
             cacheName = cache.getCacheName(resource, isLocaleDependend() ? index.getLocale() : null);
             content = cache.getCacheObject(cacheName);
         }
@@ -200,10 +202,10 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         }
 
         if (content == null) {
-            // extraction result has not been found in the cache
+            // extraction result has not been attached to the resource
             try {
                 content = extractContent(cms, resource, index);
-                if (cache != null) {
+                if ((cache != null) && (resource.getSiblingCount() > 1)) {
                     // save extracted content to the cache
                     cache.saveCacheObject(cacheName, content);
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMapping.java,v $
- * Date   : $Date: 2008/02/27 12:05:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/08/22 13:29:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,20 +32,22 @@
 package org.opencms.search.fields;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.search.Messages;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
+
+import java.util.List;
 
 /**
  * Describes a mapping of a piece of content from an OpenCms VFS resource to a field of a search index.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.0 
  */
@@ -133,7 +135,12 @@ public class CmsSearchFieldMapping {
      * 
      * @return the String value extracted form the provided data according to the rules of this mapping type
      */
-    public String getStringValue(CmsObject cms, CmsResource res, I_CmsExtractionResult extractionResult) {
+    public String getStringValue(
+        CmsObject cms,
+        CmsResource res,
+        I_CmsExtractionResult extractionResult,
+        List properties,
+        List propertiesSearched) {
 
         String content = null;
         switch (getType().getMode()) {
@@ -146,15 +153,20 @@ public class CmsSearchFieldMapping {
             case 2: // property-search
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
                     boolean search = (getType() == CmsSearchFieldMappingType.PROPERTY_SEARCH);
-                    try {
-                        content = cms.readPropertyObject(res, getParam(), search).getValue();
-                    } catch (CmsException e) {
-                        // ignore, continue without content
+                    if (search) {
+                        content = CmsProperty.get(getParam(), propertiesSearched).getValue();
+                    } else {
+                        content = CmsProperty.get(getParam(), propertiesSearched).getValue();
                     }
+                    //                    try {
+                    //                        content = cms.readPropertyObject(res, getParam(), search).getValue();
+                    //                    } catch (CmsException e) {
+                    //                        // ignore, continue without content
+                    //                    }
                 }
                 break;
             case 3: // item
-                if (extractionResult != null && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
+                if ((extractionResult != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
                     content = (String)extractionResult.getContentItems().get(getParam());
                 }
                 break;
