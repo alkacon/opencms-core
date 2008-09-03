@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2008/08/05 10:10:43 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2008/09/03 12:59:40 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.w3c.tidy.Tidy;
  * @author Michael Emmerich 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,7 +79,7 @@ public class CmsHtmlConverter {
     public static final String PARAM_XHTML = "xhtml";
 
     /** Parameter value for replace paragraph mode. */
-    public static final String PARAM_REPLACE_PARAGRPHS = "replace-paragraphs";
+    public static final String PARAM_REPLACE_PARAGRAPHS = "replace-paragraphs";
     
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlConverter.class);
@@ -174,7 +174,7 @@ public class CmsHtmlConverter {
      * <li>{@link #PARAM_ENABLED}: Conversion is enabled without transformation, so html is pretty printed only. 
      * <li>{@link #PARAM_XHTML}: Conversion from html to xhtml is enabled.
      * <li>{@link #PARAM_WORD}: Cleanup of word like html tags is enabled.
-     * <li>{@link #PARAM_REPLACE_PARAGRPHS}: Cleanup of paragraphs and leading/trailing linebreaks is enabled.
+     * <li>{@link #PARAM_REPLACE_PARAGRAPHS}: Cleanup of paragraphs and leading/trailing linebreaks is enabled.
      * 
      * </ul>
      * Values can be combined with the <code>;</code> separator, so it's possible to convert 
@@ -500,7 +500,7 @@ public class CmsHtmlConverter {
             m_modeEnabled = true;
             m_modeWord = true;
         }
-        if (modes.contains(PARAM_REPLACE_PARAGRPHS)) {
+        if (modes.contains(PARAM_REPLACE_PARAGRAPHS)) {
             m_modeEnabled = true;
             m_modeReplaceParagraphs = true;
         }
