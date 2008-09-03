@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2008/04/04 07:47:27 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/09/03 10:19:31 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.0.2
  */
@@ -390,7 +390,7 @@ public final class CmsSiteManagerImpl {
      * {@link #getSiteForSiteRoot(String)} with the <code>fallbackSiteRoot</code> parameter,
      * and if this fails calling {@link #getDefaultSite()}.<p>
      * 
-     * @param resourcePath the resource path to get the site for
+     * @param rootPath the resource root path to get the site for
      * @param fallbackSiteRoot site root to use in case the resource path is no root path
      * 
      * @return the site for the given resource path, using the fall back site root
@@ -398,9 +398,9 @@ public final class CmsSiteManagerImpl {
      *      
      * @see #getSiteForRootPath(String)
      */
-    public CmsSite getSite(String resourcePath, String fallbackSiteRoot) {
+    public CmsSite getSite(String rootPath, String fallbackSiteRoot) {
 
-        CmsSite result = getSiteForRootPath(resourcePath);
+        CmsSite result = getSiteForRootPath(rootPath);
         if (result == null) {
             result = getSiteForSiteRoot(fallbackSiteRoot);
             if (result == null) {

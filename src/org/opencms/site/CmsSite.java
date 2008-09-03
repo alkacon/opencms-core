@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2008/09/03 10:19:31 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,7 +208,7 @@ public final class CmsSite implements Cloneable, Comparable {
 
         return m_position;
     }
-
+    
     /**
      * Returns the secure server url of this site root.<p>
      * 
@@ -304,6 +305,28 @@ public final class CmsSite implements Cloneable, Comparable {
     public CmsSiteMatcher getSiteMatcher() {
 
         return m_siteMatcher;
+    }
+
+    /**
+     * Returns the site path for the given root path in case the root path
+     * actually starts with this site root, or <code>null</code> in case 
+     * the root path does not.<p> 
+     *
+     * @param rootPath the root path to get the site path for
+     *
+     * @return the site path for the given root path in case the root path
+     *      actually starts with this site root, or <code>null</code> in case 
+     *      the root path does not
+     */
+    public String getSitePath(String rootPath) {
+        
+        String result = null;
+        if (CmsStringUtil.isNotEmpty(rootPath)) {
+            if (rootPath.startsWith(m_siteRoot)) {
+                result = rootPath.substring(m_siteRoot.length());
+            }
+        }        
+        return result;        
     }
 
     /**
