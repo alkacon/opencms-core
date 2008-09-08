@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupBean.java,v $
- * Date   : $Date: 2008/02/27 12:05:37 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/09/08 09:47:29 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -124,7 +124,7 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
             assertEquals(oldValue, newValue);
         }
 
-        // clean up - remvove generated file
+        // clean up - remove generated file
         File output = new File(outputFile);
         output.delete();
     }
