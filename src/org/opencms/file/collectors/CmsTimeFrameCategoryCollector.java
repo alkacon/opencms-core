@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsTimeFrameCategoryCollector.java,v $
- * Date   : $Date: 2008/08/20 13:20:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/09/08 09:46:37 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -149,7 +149,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 7.0.3
  *
@@ -576,7 +576,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         List result = null;
         CollectorDataPropertyBased data = new CollectorDataPropertyBased(param);
 
-        // Step 1: Read from DB, even expired resources have to be read
+        // Step 1: Read from DB, expiration is respected.
         String foldername = CmsResource.getFolderPath(data.getFileName());
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
             CmsResource.FLAG_TEMPFILE);
