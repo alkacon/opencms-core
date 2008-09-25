@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2008/08/15 16:08:22 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2008/09/25 12:47:09 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.search;
 
 import org.opencms.db.CmsPublishedResource;
+import org.opencms.db.CmsResourceState;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
@@ -56,7 +57,7 @@ import org.apache.lucene.index.Term;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,8 +96,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             if (!resourcesAlreadyDeleted.contains(rootPath)) {
                 // ensure siblings are only deleted once per update
                 resourcesAlreadyDeleted.add(rootPath);
-                // now delete the resource from the index
-                deleteResource(indexWriter, rootPath);
+                if (!res.isFolder()) {
+                    // now delete the resource from the index
+                    deleteResource(indexWriter, rootPath);
+                }
             }
         }
     }
@@ -231,9 +234,16 @@ public class CmsVfsIndexer implements I_CmsIndexer {
 
         if (pubRes.getState().isNew()) {
             // new resource just needs to be updated
+            if (pubRes.getPublishTag() < 0) {
+                // for the in offline indexes we also must delete new resources
+                updateData.addResourceToDelete(pubRes);
+            }
             if (isResourceInTimeWindow(pubRes)) {
                 // update only if resource is in time window
                 updateData.addResourceToUpdate(pubRes);
+            } else if (pubRes.getPublishTag() < 0) {
+                // for offline index state may be wrong, correct this
+                pubRes.setState(CmsResourceState.STATE_DELETED);
             }
         } else if (pubRes.getState().isDeleted()) {
             // deleted resource just needs to be removed
@@ -246,6 +256,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             if (isResourceInTimeWindow(pubRes)) {
                 // update only if resource is in time window
                 updateData.addResourceToUpdate(pubRes);
+            } else if (pubRes.getPublishTag() < 0) {
+                // for offline index state may be wrong, correct this
+                pubRes.setState(CmsResourceState.STATE_DELETED);
             }
         }
     }
@@ -261,6 +274,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         // search for an exact match on the document root path
         Term term = new Term(CmsSearchField.FIELD_PATH, rootPath);
         try {
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().getBundle().key(Messages.LOG_DELETING_FROM_INDEX_1, rootPath));
+            }
             // delete all documents with this term from the index
             indexWriter.deleteDocuments(term);
         } catch (IOException e) {
@@ -298,8 +314,8 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     protected void updateResource(IndexWriter writer, CmsIndexingThreadManager threadManager, CmsResource resource)
     throws CmsIndexException {
 
-        if (resource.isInternal()) {
-            // don't index internal resources
+        if (resource.isInternal() || resource.isFolder()) {
+            // don't index internal resources or folders
             return;
         }
         // no check for folder resources, this must be taken care of before calling this method

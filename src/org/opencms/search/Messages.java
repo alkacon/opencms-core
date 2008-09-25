@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2008/08/15 16:08:22 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2008/09/25 12:47:09 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -210,6 +210,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATING_INDEX_DOC_0 = "LOG_CREATING_INDEX_DOC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DELETING_FROM_INDEX_1 = "LOG_DELETING_FROM_INDEX_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DOCTYPE_CONFIG_FAILED_1 = "LOG_DOCTYPE_CONFIG_FAILED_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2008/08/21 13:38:31 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2008/09/25 12:47:09 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.71 $ 
+ * @version $Revision: 1.72 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,6 +145,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Manual ("manual") index rebuild mode. */
     public static final String REBUILD_MODE_MANUAL = "manual";
+
+    /** Offline ("offline") index rebuild mode. */
+    public static final String REBUILD_MODE_OFFLINE = "offline";
 
     /** Constant for additional parameter to enable time range checks (default: true). */
     public static final String TIME_RANGE = CmsSearchIndex.class.getName() + ".checkTimeRange";

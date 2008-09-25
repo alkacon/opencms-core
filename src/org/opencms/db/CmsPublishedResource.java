@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2008/09/25 12:47:09 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  * 
  * @since 6.0.0
  * 
@@ -395,6 +395,18 @@ public class CmsPublishedResource implements Serializable, Comparable {
     public boolean isVfsResource() {
 
         return !getStructureId().equals(CmsUUID.getNullUUID());
+    }
+
+    /**
+     * Sets the resource state of the published resource.<p>
+     * 
+     * This is sometimes required for offline search index generation.<p>
+     * 
+     * @param state the new state to set
+     */
+    public void setState(CmsResourceState state) {
+
+        m_resourceState = state;
     }
 
     /**
