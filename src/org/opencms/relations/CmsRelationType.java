@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationType.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/09/25 13:00:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.3.0
  */
@@ -387,7 +387,7 @@ public final class CmsRelationType implements Serializable {
             return VALUE_ARRAY[id - 1];
         }
         id -= USER_DEFINED_MODE_LIMIT;
-        if ((id >= 0) && (id <= OpenCms.getResourceManager().getRelationTypes().size())) {
+        if ((id >= 0) && (id < getAllUserDefined().size())) {
             return (CmsRelationType)getAllUserDefined().get(id);
         }
         throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(

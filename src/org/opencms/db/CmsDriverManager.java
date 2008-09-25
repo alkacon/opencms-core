@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/08/15 16:08:22 $
- * Version: $Revision: 1.631 $
+ * Date   : $Date: 2008/09/25 13:00:10 $
+ * Version: $Revision: 1.632 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1184,27 +1184,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.getValidationHandler().checkGroupName(CmsOrganizationalUnit.getSimpleName(name));
         // trim the name
         name = name.trim();
-        // check the ou
-        readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
 
-        // get the id of the parent group if necessary
-        if (CmsStringUtil.isNotEmpty(parent)) {
-            CmsGroup parentGroup = readGroup(dbc, parent);
-            if (!parentGroup.isRole()
-                && !CmsOrganizationalUnit.getParentFqn(parent).equals(CmsOrganizationalUnit.getParentFqn(name))) {
-                throw new CmsDataAccessException(Messages.get().container(
-                    Messages.ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3,
-                    CmsOrganizationalUnit.getSimpleName(name),
-                    CmsOrganizationalUnit.getParentFqn(name),
-                    parent));
+        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+            // check the OU, but only in GUI / servlet mode so that the shell can create groups before the OU if required
+            readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
+
+            // get the id of the parent group if necessary
+            if (CmsStringUtil.isNotEmpty(parent)) {
+                CmsGroup parentGroup = readGroup(dbc, parent);
+                if (!parentGroup.isRole()
+                    && !CmsOrganizationalUnit.getParentFqn(parent).equals(CmsOrganizationalUnit.getParentFqn(name))) {
+                    throw new CmsDataAccessException(Messages.get().container(
+                        Messages.ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3,
+                        CmsOrganizationalUnit.getSimpleName(name),
+                        CmsOrganizationalUnit.getParentFqn(name),
+                        parent));
+                }
             }
         }
 
         // create the group
         CmsGroup group = m_userDriver.createGroup(dbc, id, name, description, flags, parent);
 
-        // if group is virtualizing a role, initialize it
-        if (group.isVirtual()) {
+        // if the group is in fact a role, initialize it (not in shell mode)
+        if (group.isVirtual() && (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_4_SERVLET_ACCESS)) {
             // get all users that have the given role
             String groupname = CmsRole.valueOf(group).getGroupName();
             Iterator it = getUsersOfGroup(dbc, groupname, true, false, true).iterator();
@@ -1703,7 +1706,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // resource already exists. 
                 // probably the resource is a merged page file that gets overwritten during import, or it gets 
                 // overwritten by a copy operation. if so, the structure & resource state are not modified to changed.
-                int updateStates = (overwrittenResource.getState().isNew() ? CmsDriverManager.NOTHING_CHANGED
+                int updateStates = (overwrittenResource.getState().isNew()
+                ? CmsDriverManager.NOTHING_CHANGED
                 : CmsDriverManager.UPDATE_ALL);
                 m_vfsDriver.writeResource(dbc, dbc.currentProject().getUuid(), newResource, updateStates);
 
@@ -2881,12 +2885,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_userDriver.deleteUser(dbc, username);
         // delete user from cache
         m_monitor.clearUserCache(user);
-        
+
         // fire user modified event
         Map eventData = new HashMap();
         eventData.put("id", user.getId().toString());
         eventData.put("name", user.getName());
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));        
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
 
     /**
@@ -3594,13 +3598,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List groups = m_monitor.getCachedUserGroups(cacheKey);
         if (groups == null) {
             // get all groups of the user
-            List directGroups = m_userDriver.readGroupsOfUser(
-                dbc,
-                user.getId(),
-                readRoles ? "" : ouFqn,
-                readRoles ? true : includeChildOus,
-                remoteAddress,
-                readRoles);
+            List directGroups = m_userDriver.readGroupsOfUser(dbc, user.getId(), readRoles ? "" : ouFqn, readRoles
+            ? true
+            : includeChildOus, remoteAddress, readRoles);
             Set allGroups = new HashSet();
             if (!readRoles) {
                 allGroups.addAll(directGroups);
@@ -5460,7 +5460,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // try to get the sub resources from the cache
             cacheKey = getCacheKey(new String[] {
                 dbc.currentUser().getName(),
-                getFolders ? (getFiles ? CmsCacheKey.CACHE_KEY_SUBALL : CmsCacheKey.CACHE_KEY_SUBFOLDERS)
+                getFolders
+                ? (getFiles ? CmsCacheKey.CACHE_KEY_SUBALL : CmsCacheKey.CACHE_KEY_SUBFOLDERS)
                 : CmsCacheKey.CACHE_KEY_SUBFILES,
                 checkPermissions ? "+" + time : "-",
                 filter.getCacheId(),
@@ -5581,7 +5582,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List deletedResources;
         dbc.getRequestContext().setAttribute("ATTR_RESOURCE_NAME", resource.getRootPath());
         try {
-            deletedResources = m_historyDriver.readDeletedResources(dbc, resource.getStructureId(), isVfsManager ? null
+            deletedResources = m_historyDriver.readDeletedResources(dbc, resource.getStructureId(), isVfsManager
+            ? null
             : dbc.currentUser().getId());
         } finally {
             dbc.getRequestContext().removeAttribute("ATTR_RESOURCE_NAME");
@@ -6587,9 +6589,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 (readTree ? CmsDriverManager.READMODE_INCLUDE_TREE : CmsDriverManager.READMODE_EXCLUDE_TREE)
                     | (filter.excludeType() ? CmsDriverManager.READMODE_EXCLUDE_TYPE : 0)
                     | (filter.excludeState() ? CmsDriverManager.READMODE_EXCLUDE_STATE : 0)
-                    | ((filter.getOnlyFolders() != null) ? (filter.getOnlyFolders().booleanValue() ? CmsDriverManager.READMODE_ONLY_FOLDERS
-                    : CmsDriverManager.READMODE_ONLY_FILES)
-                    : 0));
+                    | ((filter.getOnlyFolders() != null) ? (filter.getOnlyFolders().booleanValue()
+                    ? CmsDriverManager.READMODE_ONLY_FOLDERS
+                    : CmsDriverManager.READMODE_ONLY_FILES) : 0));
 
             // HACK: do not take care of permissions if reading organizational units
             if (!parent.getRootPath().startsWith("/system/orgunits/")) {
@@ -7505,12 +7507,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_userDriver.setUsersOrganizationalUnit(dbc, orgUnit, user);
         // remove the principal from cache
         m_monitor.clearUserCache(user);
-        
+
         // fire user modified event
         Map eventData = new HashMap();
         eventData.put("id", user.getId().toString());
         eventData.put("name", user.getName());
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));        
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
 
     /**
@@ -8402,12 +8404,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_monitor.clearUserCache(user);
         m_userDriver.writeUser(dbc, user);
-        
+
         // fire user modified event
         Map eventData = new HashMap();
         eventData.put("id", user.getId().toString());
         eventData.put("name", user.getName());
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));        
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_USER_MODIFIED, eventData));
     }
 
     /** 
@@ -9348,7 +9350,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsResourceState newState,
         boolean moveUndone) throws CmsException {
 
-        String path = ((moveUndone || (offlineResource == null)) ? onlineResource.getRootPath()
+        String path = ((moveUndone || (offlineResource == null))
+        ? onlineResource.getRootPath()
         : offlineResource.getRootPath());
 
         // change folder or file?

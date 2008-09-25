@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXsltUtil.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/09/25 13:00:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import javax.xml.transform.stream.StreamSource;
  * 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.2.1
  */
@@ -213,11 +213,11 @@ public final class CmsXsltUtil {
     }
 
     /**
-     * Converts CSV data to xml.<p>
+     * Converts CSV data to XML.<p>
      * 
      * @return a XML representation of the CSV data
      * 
-     * @param csvData the csv data to convert
+     * @param csvData the CSV data to convert
      * @param delimiter the delimiter to separate the values with
      * 
      * @throws IOException if there is an IO problem
@@ -225,7 +225,8 @@ public final class CmsXsltUtil {
     private static String getTableHtml(String csvData, String delimiter) throws IOException {
 
         String lineSeparator = System.getProperty("line.separator");
-        String formatString = csvData.substring(0, csvData.indexOf(lineSeparator));
+        int tmpindex = csvData.indexOf(lineSeparator);
+        String formatString = (tmpindex >= 0) ? csvData.substring(0, tmpindex) : csvData;
 
         if (delimiter == null) {
             delimiter = getPreferredDelimiter(csvData);
