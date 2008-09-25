@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2008/09/25 12:47:09 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2008/09/25 12:59:21 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.69 $ 
+ * @version $Revision: 1.70 $ 
  * 
  * @since 6.0.0 
  */
@@ -353,8 +353,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     /** The default value used for keeping the extraction results in the cache (672 hours = 4 weeks). */
     public static final float DEFAULT_EXTRACTION_CACHE_MAX_AGE = 672.0f;
 
-    /** The default update frequency for offline indexes (5000 msec = 5 sec). */
-    public static final int DEFAULT_OFFLINE_UPDATE_FREQNENCY = 5000;
+    /** The default update frequency for offline indexes (15000 msec = 15 sec). */
+    public static final int DEFAULT_OFFLINE_UPDATE_FREQNENCY = 15000;
 
     /** The default timeout value used for generating a document for the search index (60000 msec = 1 min). */
     public static final int DEFAULT_TIMEOUT = 60000;
@@ -1420,7 +1420,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void shutDown() {
 
-        m_offlineIndexThread.shutDown();
+        if (m_offlineIndexThread != null) {
+            m_offlineIndexThread.shutDown();
+        }
         Iterator i = m_indexes.iterator();
         while (i.hasNext()) {
             CmsSearchIndex index = (CmsSearchIndex)i.next();

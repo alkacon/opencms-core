@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2008/08/22 13:29:37 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2008/09/25 12:59:21 $
+ * Version: $Revision: 1.108 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.107 $
+ * @version $Revision: 1.108 $
  * 
  * @since 6.0.0
  */
@@ -567,10 +567,9 @@ public class OpenCmsTestCase extends TestCase {
             CmsFileUtil.purgeDirectory(new File(path));
         }
         path = getTestDataPath("WEB-INF/index/");
-        int todo = 0;
-        //        if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
-        //            CmsFileUtil.purgeDirectory(new File(path));
-        //        }
+        if ((path != null) && !m_configuration.containsKey("test.keep.searchIndex")) {
+            CmsFileUtil.purgeDirectory(new File(path));
+        }
         path = getTestDataPath("export/");
         if (path != null) {
             CmsFileUtil.purgeDirectory(new File(path));
