@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2008/09/25 12:59:21 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2008/09/29 09:06:04 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.70 $ 
+ * @version $Revision: 1.71 $ 
  * 
  * @since 6.0.0 
  */
@@ -523,7 +523,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         m_indexes.add(searchIndex);
-        initOfflineIndexes();
+        if (m_adminCms != null) {
+            initOfflineIndexes();
+        }
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
@@ -897,6 +899,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             "/extractCache");
 
         initializeIndexes();
+        initOfflineIndexes();
 
         // register the modified default similarity implementation
         Similarity.setDefault(new CmsSearchSimilarity());
