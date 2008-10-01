@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsTimeFrameCategoryCollector.java,v $
- * Date   : $Date: 2008/09/08 09:46:37 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/10/01 08:26:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -149,7 +149,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 7.0.3
  *
@@ -459,8 +459,8 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
                         Messages.ERR_COLLECTOR_PARAM_KEY_VALUE_SYNTAX_1,
                         new Object[] {keyValuePairStr}));
                 }
-                key = keyValuePair[0];
-                value = keyValuePair[1];
+                key = String.valueOf(keyValuePair[0]).trim();
+                value = String.valueOf(keyValuePair[1]).trim();
 
                 if (PARAM_KEY_RESOURCE.equals(key)) {
                     m_fileName = value;

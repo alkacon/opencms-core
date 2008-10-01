@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/09/25 12:47:09 $
- * Version: $Revision: 1.1046 $
+ * Date   : $Date: 2008/10/01 08:26:37 $
+ * Version: $Revision: 1.1047 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -24,6 +24,7 @@ OpenCms 7.1.0 - xxx, 2008
 ! Simapi and Image scaler now support image cropping
 ! Added event which is fired after a user was modified
 ! Added support for "offline" indexes in the Lucene based full text search
+! CmsTimeFrameCategoryCollector now allows line breaks and whitespaces in param attribute. 
 - Updated simapi.jar to version 0.9.8
 * Fixed security issue with the history handler
 * Fixed issue with JSP hard includes when using site relative paths
