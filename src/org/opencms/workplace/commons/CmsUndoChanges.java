@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2008/04/03 07:45:25 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2008/10/01 14:27:19 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +74,12 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /** Value for the action: undo changes. */
     public static final int ACTION_UNDOCHANGES = 100;
+
+    /** Value for the action: check for siblings and warn in case they exist. */
+    public static final int ACTION_CHECKSIBLINGS = 101;
+
+    /** Action string constant for the check siblings dialog. */
+    public static final String DIALOG_CHECKSIBLINGS = "checksiblings";
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "undochanges";
@@ -95,6 +101,28 @@ public class CmsUndoChanges extends CmsMultiDialog {
 
     /** The undo recursively flag parameter value. */
     private String m_paramRecursive;
+
+    /**
+     * Public constructor with JSP action element.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     */
+    public CmsUndoChanges(CmsJspActionElement jsp) {
+
+        super(jsp);
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsUndoChanges(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
+    }
 
     /**
      * Returns the original path of given resource, that is the online path for the resource. 
@@ -128,25 +156,34 @@ public class CmsUndoChanges extends CmsMultiDialog {
     }
 
     /**
-     * Public constructor with JSP action element.<p>
+     * Performs the check for siblings action and returns false in case of existence.<p>
      * 
-     * @param jsp an initialized JSP action element
-     */
-    public CmsUndoChanges(CmsJspActionElement jsp) {
-
-        super(jsp);
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
+     * @return true if siblings are found. 
      * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
+     * @throws JspException if something goes wrong. 
      */
-    public CmsUndoChanges(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public boolean actionCheckSiblings() throws JspException {
 
-        this(new CmsJspActionElement(context, req, res));
+        List resourceList = this.getResourceList();
+        String resourcePath;
+        Iterator itResourcePaths = resourceList.iterator();
+        boolean foundSibling = false;
+        while (itResourcePaths.hasNext()) {
+            resourcePath = (String)itResourcePaths.next();
+            try {
+                foundSibling = this.recursiveCheckSiblings(resourcePath);
+                if (foundSibling) {
+                    break; // shortcut
+                }
+
+            } catch (CmsException e) {
+                LOG.error(Messages.get().getBundle(this.getLocale()).key(
+                    Messages.ERR_UNDO_CHANGES_1,
+                    new String[] {resourcePath}));
+            }
+
+        }
+        return foundSibling;
     }
 
     /**
@@ -194,25 +231,6 @@ public class CmsUndoChanges extends CmsMultiDialog {
             // error during deletion, show error dialog
             includeErrorpage(this, e);
         }
-    }
-
-    /**
-     * Checks if the resource operation is an operation on at least one moved resource.<p>
-     * 
-     * @return true if the operation an operation on at least one moved resource, otherwise false
-     */
-    protected boolean isOperationOnMovedResource() {
-
-        Iterator i = getResourceList().iterator();
-        while (i.hasNext()) {
-            String resName = (String)i.next();
-            String target = resourceOriginalPath(getCms(), resName);
-            if (target != null && !target.equals(resName)) {
-                // found a moved resource
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -385,6 +403,8 @@ public class CmsUndoChanges extends CmsMultiDialog {
         // set the action for the JSP switch 
         if (DIALOG_TYPE.equals(getParamAction())) {
             setAction(ACTION_UNDOCHANGES);
+        } else if (DIALOG_CHECKSIBLINGS.equals(getParamAction())) {
+            setAction(ACTION_CHECKSIBLINGS);
         } else if (DIALOG_WAIT.equals(getParamAction())) {
             setAction(ACTION_WAIT);
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
@@ -409,6 +429,25 @@ public class CmsUndoChanges extends CmsMultiDialog {
             }
         }
 
+    }
+
+    /**
+     * Checks if the resource operation is an operation on at least one moved resource.<p>
+     * 
+     * @return true if the operation an operation on at least one moved resource, otherwise false
+     */
+    protected boolean isOperationOnMovedResource() {
+
+        Iterator i = getResourceList().iterator();
+        while (i.hasNext()) {
+            String resName = (String)i.next();
+            String target = resourceOriginalPath(getCms(), resName);
+            if (target != null && !target.equals(resName)) {
+                // found a moved resource
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -472,6 +511,48 @@ public class CmsUndoChanges extends CmsMultiDialog {
     protected void setCurrentResource(CmsResource res) {
 
         m_currentResource = res;
+    }
+
+    /** 
+     * Depth first recursion for searching if a file has siblings with early termination.<p>
+     * 
+     * This avoids to read a whole resource tree (which will be hard for e.g.  /sites/).<p>
+     *   
+     * @return true if a resource which is a sibling was found. 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    private boolean recursiveCheckSiblings(String path) throws CmsException {
+
+        boolean result = false;
+        CmsObject cms = this.getCms();
+        /*
+         * No trailing slash for the multi dialogs... therefore a read resource first necessary:
+         */
+        CmsResource resource = cms.readResource(path);
+        path = cms.getSitePath(resource);
+        if (CmsResource.isFolder(path)) {
+            // only check subresources in case of recursive option checked. 
+            boolean undoRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
+            if (undoRecursive) {
+                // don't read the whole tree, this is  expensive - most likely we will find a sibling faster step by step:
+                List subResources = cms.readResources(path, CmsResourceFilter.ALL, false);
+                Iterator itSubResources = subResources.iterator();
+                while (itSubResources.hasNext()) {
+                    resource = (CmsResource)itSubResources.next();
+                    result = this.recursiveCheckSiblings(cms.getSitePath(resource));
+                    if (result) {
+                        break; // shortcut
+                    }
+                }
+            }
+
+        } else {
+            List siblings = cms.readSiblings(path, CmsResourceFilter.ALL);
+            result = siblings.size() > 1;
+
+        }
+        return result;
     }
 
 }
