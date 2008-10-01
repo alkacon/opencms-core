@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlConverter.java,v $
- * Date   : $Date: 2008/02/27 12:05:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/10/01 14:29:37 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.io.File;
 
 /** 
  * @author Michael Emmerich 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     
@@ -139,7 +139,7 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     public void testHrefWhitespaceIssue() throws Exception {
 
         System.out.println("Testing href whitespace issue");
-        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, CmsHtmlConverter.PARAM_XHTML);        
+        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, CmsHtmlConverter.PARAM_XHTML);    
         String input = CmsFileUtil.readFile("org/opencms/util/testConverter_03.html", CmsEncoder.ENCODING_ISO_8859_1);
         // the input has the right (that is no) white-spacing between the tags
         assertContains(input, "</a></code>).");
@@ -147,8 +147,7 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
         System.out.println("----------------");
         System.out.println(output);        
         System.out.println("----------------");
-        // the output should also have no whitespace between the tags
-        // but this is the case when xhtml conversion is enabled in JTidy
-        assertContains(output, "</a></code>).");
+        // PARAM_XHTML will cause closing tags on new lines 
+        assertContains(output, "</a>" + System.getProperty("line.separator") + "</code>).");
     }
 }

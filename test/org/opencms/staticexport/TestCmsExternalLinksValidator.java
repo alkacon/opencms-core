@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsExternalLinksValidator.java,v $
- * Date   : $Date: 2008/06/30 15:33:05 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/10/01 14:29:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
 
 /** 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.4
  */
@@ -105,6 +105,7 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
         list.add("http://www.energinet.dk/da/servicemenu/Bibliotek/Nyhedsbreve/Markedsrapporter/Markedsrapporter.htm#");
         list.add("http://www.deloitte.com/dtt/section_node/0,1042,sid%253D62862,00.html");
         list.add("http://www.ddc.dk/DESIGNVIDEN/DESIGNnyt#");
+        // TODO: the following link seems to be dead
         list.add("http://www.horesta.dk/Service/Om Horesta/Medier/Dialog.aspx");
         list.add("http://www.dsb.dk/servlet/Satellite?pagename=Millenium/Page/StandardForside&c=Page&cid=1002806878464");
         list.add("http://www.kbht.dk:80/Emner/klub_1_raekke/1 raekke nr 1.aspx?pagename=Millenium/Page/StandardForside&c=Page&cid=1002806878464");
