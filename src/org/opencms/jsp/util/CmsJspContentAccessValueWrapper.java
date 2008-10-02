@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2008/02/29 09:20:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/10/02 12:21:28 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.0.2
  * 
@@ -484,6 +484,9 @@ public final class CmsJspContentAccessValueWrapper {
      *     &lt;cms:contentaccess var="content" /&gt;
      *     The Link Description: ${content.value['Link'].value['Description']}
      * &lt;/cms:contentload&gt;</pre>
+     * 
+     * Please note that this example will only work if the 'Link' element is mandatory in the schema definition 
+     * of the XML content.<p>
      *  
      * @return a lazy initialized Map that provides a sub value for the current value from the XML content
      */
