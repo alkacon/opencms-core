@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2008/10/14 08:13:26 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,7 +137,7 @@ public class CmsXmlContentTypeManager {
     }
 
     /**
-     * Adds a XML content schema type class to the registerd XML content types.<p>
+     * Adds a XML content schema type class to the registered XML content types.<p>
      * 
      * @param clazz the XML content schema type class to add
      * 
@@ -367,7 +367,7 @@ public class CmsXmlContentTypeManager {
     }
 
     /** 
-     * Retruns an alphabetically sorted list of all configured XML content schema types.<p>
+     * Returns an alphabetically sorted list of all configured XML content schema types.<p>
      * 
      * @return an alphabetically sorted list of all configured XML content schema types
      */
@@ -403,7 +403,7 @@ public class CmsXmlContentTypeManager {
     }
 
     /** 
-     * Retruns an alphabetically sorted list of the class names of all configured XML widgets.<p>
+     * Returns an alphabetically sorted list of the class names of all configured XML widgets.<p>
      * 
      * @return an alphabetically sorted list of the class names of all configured XML widgets
      */
@@ -467,7 +467,7 @@ public class CmsXmlContentTypeManager {
             OpenCms.getRoleManager().checkRole(cms, CmsRole.ROOT_ADMIN);
         }
 
-        // initilaize the special entity resolver
+        // initialize the special entity resolver
         CmsXmlEntityResolver.initialize(cms, getSchemaBytes());
 
         if (CmsLog.INIT.isInfoEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2008/08/20 13:20:11 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2008/10/14 08:13:25 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,8 +117,8 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
      * Creates a new schema type descriptor for the type "OpenCmsHtml".<p>
      * 
      * @param name the name of the XML node containing the value according to the XML schema
-     * @param minOccurs minimum number of occurences of this type according to the XML schema
-     * @param maxOccurs maximum number of occurences of this type according to the XML schema
+     * @param minOccurs minimum number of occurrences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurrences of this type according to the XML schema
      */
     public CmsXmlHtmlValue(String name, String minOccurs, String maxOccurs) {
 

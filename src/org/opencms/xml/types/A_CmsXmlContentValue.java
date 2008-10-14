@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2008/08/20 13:20:11 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2008/10/14 08:13:25 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,10 +75,10 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /** The locale this value was generated for. */
     protected Locale m_locale;
 
-    /** The maximum occurences of this value according to the parent schema. */
+    /** The maximum occurrences of this value according to the parent schema. */
     protected int m_maxOccurs;
 
-    /** The minimum occurences of this value according to the parent schema. */
+    /** The minimum occurrences of this value according to the parent schema. */
     protected int m_minOccurs;
 
     /** The configured XML node name of this value. */
@@ -123,8 +123,8 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
      * Initializes the schema type descriptor values for this type descriptor.<p>
      * 
      * @param name the name of the XML node containing the value according to the XML schema
-     * @param minOccurs minimum number of occurences of this type according to the XML schema
-     * @param maxOccurs maximum number of occurences of this type according to the XML schema
+     * @param minOccurs minimum number of occurrences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurrences of this type according to the XML schema
      */
     protected A_CmsXmlContentValue(String name, String minOccurs, String maxOccurs) {
 
@@ -325,9 +325,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     }
 
     /**
-     * Returns the maximum occurences of this type.<p>
+     * Returns the maximum occurrences of this type.<p>
      *
-     * @return the maximum occurences of this type
+     * @return the maximum occurrences of this type
      */
     public int getMaxOccurs() {
 
@@ -335,9 +335,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     }
 
     /**
-     * Returns the minimum occurences of this type.<p>
+     * Returns the minimum occurrences of this type.<p>
      *
-     * @return the minimum occurences of this type
+     * @return the minimum occurrences of this type
      */
     public int getMinOccurs() {
 

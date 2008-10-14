@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueSequence.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2008/10/14 08:13:26 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,7 +56,7 @@ public class CmsXmlContentValueSequence {
     /** The locale this sequence is based on. */
     private Locale m_locale;
 
-    /** The Xpath this content value seqnence was generated for. */
+    /** The Xpath this content value sequence was generated for. */
     private String m_path;
 
     /** The XML schema type this sequence is based on. */
@@ -66,10 +66,10 @@ public class CmsXmlContentValueSequence {
     private List m_values;
 
     /**
-     * Generates a new content sequence element from the given type, content and content defintion.<p>
+     * Generates a new content sequence element from the given type, content and content definition.<p>
      * 
      * @param path the path in the document to generate the value sequence for
-     * @param schemaType the schema type to generate the seqnence element for
+     * @param schemaType the schema type to generate the sequence element for
      * @param locale the locale to get the content values from
      * @param content the XML content to generate the sequence element out of
      */
@@ -140,9 +140,9 @@ public class CmsXmlContentValueSequence {
     }
 
     /**
-     * Returns the maximum occurences of this type in the XML content schema.<p>
+     * Returns the maximum occurrences of this type in the XML content schema.<p>
      *
-     * @return the maximum occurences of this type in the XML content schema
+     * @return the maximum occurrences of this type in the XML content schema
      * 
      * @see I_CmsXmlSchemaType#getMaxOccurs()
      */
@@ -152,9 +152,9 @@ public class CmsXmlContentValueSequence {
     }
 
     /**
-     * Returns the minimum occurences of this type in the XML content schema.<p>
+     * Returns the minimum occurrences of this type in the XML content schema.<p>
      *
-     * @return the minimum occurences of this type in the XML content schema
+     * @return the minimum occurrences of this type in the XML content schema
      * 
      * @see I_CmsXmlSchemaType#getMinOccurs()
      */
@@ -176,11 +176,11 @@ public class CmsXmlContentValueSequence {
     }
 
     /**
-     * Returns the XML content values from the index position of this seqnence.<p>
+     * Returns the XML content values from the index position of this sequence.<p>
      * 
      * @param index the index position to get the value from
      * 
-     * @return the XML content values from the index position of this seqnence
+     * @return the XML content values from the index position of this sequence
      */
     public I_CmsXmlContentValue getValue(int index) {
 
@@ -245,7 +245,7 @@ public class CmsXmlContentValueSequence {
     }
 
     /**
-     * Removes the value element of the sequence type at the seleted index from XML content document.<p> 
+     * Removes the value element of the sequence type at the selected index from XML content document.<p> 
      * 
      * @param index the index where to remove the value element
      * 

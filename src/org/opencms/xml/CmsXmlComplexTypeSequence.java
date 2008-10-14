@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlComplexTypeSequence.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/10/14 08:13:26 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,7 +47,7 @@ class CmsXmlComplexTypeSequence {
     /** Indicates if this type sequence has a language attribute. */
     protected boolean m_hasLanguageAttribute;
 
-    /** The name of the complex type seqnence. */
+    /** The name of the complex type sequence. */
     protected String m_name;
 
     /** The type sequence elements. */

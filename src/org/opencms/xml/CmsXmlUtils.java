@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2008/10/14 08:13:26 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,7 +84,7 @@ public final class CmsXmlUtils {
     }
 
     /**
-     * Concats two Xpath expressions, ensuring that exactly one slash "/" is between them.<p>  
+     * Concatenates two Xpath expressions, ensuring that exactly one slash "/" is between them.<p>  
      * 
      * Use this method if it's uncertain if the given arguments are starting or ending with 
      * a slash "/".<p>
@@ -97,7 +97,7 @@ public final class CmsXmlUtils {
      * @param prefix the prefix Xpath
      * @param suffix the suffix Xpath
      * 
-     * @return the concated Xpath build from prefix and suffix
+     * @return the concatenated Xpath build from prefix and suffix
      */
     public static String concatXpath(String prefix, String suffix) {
 
@@ -663,7 +663,7 @@ public final class CmsXmlUtils {
      * Using this method ensures that the OpenCms XML entitiy resolver is used.<p>
      * 
      * @param xmlData the xml data in a String 
-     * @param resolver the XML entitiy resolver to use
+     * @param resolver the XML entity resolver to use
      * @return the base object initialized with the unmarshalled XML document
      * @throws CmsXmlException if something goes wrong
      * @see CmsXmlUtils#unmarshalHelper(InputSource, EntityResolver)
@@ -678,7 +678,7 @@ public final class CmsXmlUtils {
      * with the DTD or XML schema used by the document.<p>
      * 
      * @param xmlData a byte array containing a XML document that should be validated
-     * @param resolver the XML entitiy resolver to use
+     * @param resolver the XML entity resolver to use
      * 
      * @throws CmsXmlException if the validation fails
      */
@@ -693,7 +693,7 @@ public final class CmsXmlUtils {
      * 
      * @param document a XML document that should be validated
      * @param encoding the encoding to use when marshalling the XML document (required)
-     * @param resolver the XML entitiy resolver to use
+     * @param resolver the XML entity resolver to use
      * 
      * @throws CmsXmlException if the validation fails
      */
@@ -710,7 +710,7 @@ public final class CmsXmlUtils {
      * with the DTD or XML schema used by the document.<p>
      * 
      * @param xmlStream a source providing a XML document that should be validated
-     * @param resolver the XML entitiy resolver to use
+     * @param resolver the XML entity resolver to use
      * 
      * @throws CmsXmlException if the validation fails
      */

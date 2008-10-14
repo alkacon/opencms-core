@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlColorValue.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2008/10/14 08:13:25 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,8 +83,8 @@ public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
      * Creates a new schema type descriptor for the type "OpenCmsColor".<p>
      * 
      * @param name the name of the XML node containing the value according to the XML schema
-     * @param minOccurs minimum number of occurences of this type according to the XML schema
-     * @param maxOccurs maximum number of occurences of this type according to the XML schema
+     * @param minOccurs minimum number of occurrences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurrences of this type according to the XML schema
      */
     public CmsXmlColorValue(String name, String minOccurs, String maxOccurs) {
 

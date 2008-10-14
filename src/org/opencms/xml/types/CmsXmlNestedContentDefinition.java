@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlNestedContentDefinition.java,v $
- * Date   : $Date: 2008/08/20 13:20:11 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2008/10/14 08:13:25 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,8 +79,8 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue {
      * 
      * @param contentDefinition the content definition to nest
      * @param name the name of the XML node containing the value according to the XML schema
-     * @param minOccurs minimum number of occurences of this type according to the XML schema
-     * @param maxOccurs maximum number of occurences of this type according to the XML schema
+     * @param minOccurs minimum number of occurrences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurrences of this type according to the XML schema
      */
     public CmsXmlNestedContentDefinition(
         CmsXmlContentDefinition contentDefinition,

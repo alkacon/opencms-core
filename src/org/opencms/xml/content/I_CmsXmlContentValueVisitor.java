@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentValueVisitor.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/10/14 08:13:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,13 +36,13 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 /**
  * Visitor interface that allows looping through all the values in a XML content document.<p> 
  * 
- * An implmentation of this interface can be passed to 
+ * An implementation of this interface can be passed to 
  * {@link org.opencms.xml.content.CmsXmlContent#visitAllValuesWith(I_CmsXmlContentValueVisitor)} in 
  * order to call the {@link #visit(I_CmsXmlContentValue)} method on all values of that document.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */

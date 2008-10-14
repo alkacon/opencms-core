@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2008/02/27 12:05:55 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2008/10/14 08:13:26 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,12 +77,12 @@ import org.xml.sax.InputSource;
  * various languages. The data of each element is accessible via its name and language. 
  * 
  * The content of each element is stored as CDATA, links within the 
- * content are processed and are seperately accessible as entries of a CmsLinkTable.
+ * content are processed and are separately accessible as entries of a CmsLinkTable.
  * 
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,7 +150,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      * Creates an empty XML page in the provided locale using 
      * the provided encoding.<p>
      * 
-     * The page is initialized according to the minimal neccessary xml structure.
+     * The page is initialized according to the minimal necessary xml structure.
      * The encoding is used for marshalling the XML document later.<p>
      * 
      * @param locale the initial locale of the XML page

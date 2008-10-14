@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2008/10/14 08:13:26 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -345,7 +345,7 @@ public final class CmsXmlContentFactory {
      * 
      * @param xmlData the XML data in a String
      * @param encoding the encoding to use when marshalling the XML content later
-     * @param resolver the XML entitiy resolver to use
+     * @param resolver the XML entity resolver to use
      * 
      * @return a XML content instance unmarshalled from the String
      * 

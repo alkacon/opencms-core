@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2008/08/20 13:20:12 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2008/10/14 08:13:26 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,7 +76,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /** Maps element names to available locales. */
     protected Map m_elementLocales;
 
-    /** Maps locales to avaliable element names. */
+    /** Maps locales to available element names. */
     protected Map m_elementNames;
 
     /** The encoding to use for this xml document. */

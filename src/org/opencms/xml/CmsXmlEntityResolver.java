@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2008/10/14 08:13:26 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -200,7 +200,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     }
 
     /**
-     * Caches an XML content defintion based on the given system id and the online / offline status
+     * Caches an XML content definition based on the given system id and the online / offline status
      * of this entity resolver instance.<p>
      * 
      * @param systemId the system id to use as cache key
@@ -404,7 +404,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         Object o;
         o = m_cacheTemporary.remove(getCacheKey(systemId, false));
         if (null != o) {
-            // if an object was removed from the tomporary cache, all XML content definitions must be cleared
+            // if an object was removed from the temporary cache, all XML content definitions must be cleared
             // because this may be a nested subschema 
             m_cacheContentDefinitions.clear();
             if (LOG.isDebugEnabled()) {

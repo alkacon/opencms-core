@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlContentValue.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2008/10/14 08:13:25 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,7 +67,7 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * Returns the node index of this XML content value in the source XML document, 
      * starting with 0.<p>
      * 
-     * This is usefull in case there are more then one elements 
+     * This is useful in case there are more then one elements 
      * with the same XML node name in the source XML document.<p> 
      * 
      * @return the index of this XML content node in the source document

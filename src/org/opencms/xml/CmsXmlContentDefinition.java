@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2008/10/14 08:13:25 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -184,8 +184,8 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * Creates a new XML content definition.<p> 
      * 
-     * @param outerName the outer element name to use for the content definiton
-     * @param innerName the inner element name to use for the content definiton
+     * @param outerName the outer element name to use for the content definition
+     * @param innerName the inner element name to use for the content definition
      * @param schemaLocation the location from which the XML schema was read (system id)
      */
     public CmsXmlContentDefinition(String outerName, String innerName, String schemaLocation) {
@@ -214,7 +214,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * @param xmlData the XML data in a byte array
      * @param schemaLocation the location from which the XML schema was read (system id)
-     * @param resolver the XML entitiy resolver to use
+     * @param resolver the XML entity resolver to use
      * 
      * @return a XML content definition instance unmarshalled from the byte array
      * 
@@ -283,7 +283,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * @param source the XML InputSource to use
      * @param schemaLocation the location from which the XML schema was read (system id)
-     * @param resolver the XML entitiy resolver to use
+     * @param resolver the XML entity resolver to use
      * 
      * @return a XML content definition instance unmarshalled from the InputSource
      * 
@@ -303,11 +303,11 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * Factory method to unmarshal (read) a XML content definition instance from a given XML schema location.<p>
      * 
-     * The XML content definiton data to unmarshal will be read from the provided schema location using
+     * The XML content definition data to unmarshal will be read from the provided schema location using
      * an XML InputSource.<p>
      * 
      * @param schemaLocation the location from which to read the XML schema (system id)
-     * @param resolver the XML entitiy resolver to use
+     * @param resolver the XML entity resolver to use
      * 
      * @return a XML content definition instance unmarshalled from the InputSource
      * 
@@ -371,11 +371,11 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * Validates if a given attribute exists at the given element with an (optional) specified value.<p>
      * 
-     * If the required value is not <code>null</code>, the attribute must have excatly this 
+     * If the required value is not <code>null</code>, the attribute must have exactly this 
      * value set.<p> 
      * 
      * If no value is required, some simple validation is performed on the attribute value,
-     * like a check that the value does not have leading or trainling white spaces.<p>
+     * like a check that the value does not have leading or trailing white spaces.<p>
      * 
      * @param element the element to validate
      * @param attributeName the attribute to check for
@@ -416,7 +416,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Validates if a gicen element has exactly the required attributes set.<p>
+     * Validates if a given element has exactly the required attributes set.<p>
      * 
      * @param element the element to validate
      * @param requiredAttributes the list of required attributes
@@ -572,7 +572,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      * Looks up the given XML content definition system id in the internal content definition cache.<p> 
      * 
      * @param schemaLocation the system id of the XML content definition to look up
-     * @param resolver the XML entitiy resolver to use (contains the cache)
+     * @param resolver the XML entity resolver to use (contains the cache)
      * 
      * @return the XML content definition found, or null if no definition is cached for the given system id
      */
@@ -595,7 +595,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * @param document the XML document to generate a XML content definition from
      * @param schemaLocation the location from which the XML schema was read (system id)
-     * @param resolver the XML entitiy resolver used by the given XML document
+     * @param resolver the XML entity resolver used by the given XML document
      * 
      * @return a XML content definition instance unmarshalled from the XML document
      * 
@@ -853,7 +853,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * Please note: The default values for the annotations are read from the content definition of the given
      * document. For a nested content definitions, this means that all defaults are set in the annotations of the 
-     * "outer" or "main" content defintition.<p>
+     * "outer" or "main" content definition.<p>
      * 
      * @param cms the current users OpenCms context
      * @param document the OpenCms XML document the XML is created for

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/10/14 08:13:25 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  * 
@@ -137,16 +137,16 @@ public interface I_CmsXmlSchemaType extends Comparable {
     String getDefault(Locale locale);
 
     /**
-     * Returns the maximum occurences of this type in the current schema.<p>
+     * Returns the maximum occurrences of this type in the current schema.<p>
      *
-     * @return the maximum occurences of this type in the current schema
+     * @return the maximum occurrences of this type in the current schema
      */
     int getMaxOccurs();
 
     /**
-     * Returns the minimum occurences of this type in the current schema.<p>
+     * Returns the minimum occurrences of this type in the current schema.<p>
      *
-     * @return the minimum occurences of this type in the current schema
+     * @return the minimum occurrences of this type in the current schema
      */
     int getMinOccurs();
 
@@ -198,8 +198,8 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * Creates a new instance of this XML schema type initialized with the given values.<p>
      * 
      * @param name the name to use in the xml document
-     * @param minOccurs minimum number of occurences
-     * @param maxOccurs maximum number of occurences
+     * @param minOccurs minimum number of occurrences
+     * @param maxOccurs maximum number of occurrences
      * 
      * @return a new instance of this XML content type initialized with the given values
      */

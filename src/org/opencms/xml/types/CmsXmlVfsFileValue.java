@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/10/14 08:13:25 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 7.0.0 
  */
@@ -98,8 +98,8 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
      * Creates a new schema type descriptor for the type "OpenCmsVfsFile".<p>
      * 
      * @param name the name of the XML node containing the value according to the XML schema
-     * @param minOccurs minimum number of occurences of this type according to the XML schema
-     * @param maxOccurs maximum number of occurences of this type according to the XML schema
+     * @param minOccurs minimum number of occurrences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurrences of this type according to the XML schema
      */
     public CmsXmlVfsFileValue(String name, String minOccurs, String maxOccurs) {
 
