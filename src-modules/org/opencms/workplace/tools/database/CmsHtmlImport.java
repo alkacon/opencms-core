@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImport.java,v $
- * Date   : $Date: 2008/02/27 12:05:51 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2008/10/23 15:43:45 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -97,7 +97,7 @@ import org.apache.commons.logging.Log;
  * @author Peter Bonrad
  * @author Anja Röttgers
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -1595,7 +1595,11 @@ public class CmsHtmlImport {
             // escape the string to remove all special chars
             contentString = CmsEncoder.escapeNonAscii(contentString);
             // we must substitute all occurrences of "&#", otherwise tidy would remove them
-            contentString = CmsStringUtil.substitute(contentString, "&#", "{subst}");
+            contentString = CmsStringUtil.substitute(contentString, "&#", "{_subst1_}");
+            // we must substitute all occurrences of &lt; and &gt;  otherwise tidy would replace them with < and >
+            contentString = CmsStringUtil.substitute(contentString, "&lt;", "{_subst2_}");            
+            contentString = CmsStringUtil.substitute(contentString, "&gt;", "{_subst3_}");
+            
             // parse the content                  
             parsedHtml = m_htmlConverter.convertHTML(
                 file.getAbsolutePath(),
@@ -1604,7 +1608,9 @@ public class CmsHtmlImport {
                 m_endPattern,
                 properties);
             // resubstitute the converted HTML code
-            parsedHtml = CmsStringUtil.substitute(parsedHtml, "{subst}", "&#");
+            parsedHtml = CmsStringUtil.substitute(parsedHtml, "{_subst1_}", "&#");
+            parsedHtml = CmsStringUtil.substitute(parsedHtml, "{_subst2_}", "&lt;");
+            parsedHtml = CmsStringUtil.substitute(parsedHtml, "{_subst3_}", "&gt;");
         } catch (Exception e) {
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_HTMLIMPORT_PARSE_1,
