@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/10/23 15:43:45 $
- * Version: $Revision: 1.1049 $
+ * Date   : $Date: 2008/10/27 15:17:44 $
+ * Version: $Revision: 1.1050 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixes issue with SQL query not running on MS SQL server
 * Fixed issue with cleaning up threads for publish progress dialog
 * Fixed issue with &lt; and &gt; in extended HTML import 
+* Fixed issue with deleting historical versions when date is specified 
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbSqlException.java,v $
- * Date   : $Date: 2008/02/27 12:05:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/10/27 15:17:44 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0
  */
@@ -66,8 +66,8 @@ public class CmsDbSqlException extends CmsDbException {
 
         super(container);
         // log all sql exceptions
-        if (LOG.isWarnEnabled()) {
-            LOG.warn(container.key(), this);
+        if (LOG.isErrorEnabled()) {
+            LOG.error(container.key(), this);
         }
     }
 
