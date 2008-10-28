@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/10/28 10:33:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,10 @@ package org.opencms.security;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Defines general authorization methods.<p>
@@ -42,12 +45,58 @@ import javax.servlet.http.HttpServletRequest;
  * One of the application scenarios for this interface is a personalized SSO implementation.<p>
  * 
  * @author Michael Moossen
+ * @author Carsten Weinholz
  *
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.4 
  */
 public interface I_CmsAuthorizationHandler {
+
+    /**
+     * Class providing the privileged login action.<p>
+     */
+    interface I_PrivilegedLoginAction {
+        /**
+         * Used to provide an initial cms object.<p>
+         * 
+         * @param cms an initial cms object
+         */
+        void setCmsObject(CmsObject cms);
+        /**
+         * Performs a privileged login action and returns a cms object initialized for the principal.<p>
+         * 
+         * @param request the current request
+         * @param principal the principal to login
+         * 
+         * @return a cms object initialized for the principal
+         * @throws CmsException if the login action fails
+         */
+        CmsObject doLogin(HttpServletRequest request, String principal) throws CmsException;
+    }
+    
+    /**
+     * Returns the full URL used to call a login form with additional parameters and a callbackURL.<p> 
+     * 
+     * @param loginFormURL the form URL specified in the cms (either as a property or system-wide)
+     * @param params additional parameters to provide to the login form
+     * @param callbackURL the call-back URL to redirect after a successful login
+     * 
+     * @return the full URL used to call a login form
+     */
+    String getLoginFormURL (String loginFormURL, String params, String callbackURL);
+    
+    /**
+     * Creates a new cms object from the given request object.<p>
+     * 
+     * This method is called by OpenCms every time a resource is requested
+     * and the session can not automatically be authenticated.<p>
+     * 
+     * @param request the HTTP request to authenticate
+     * 
+     * @return the cms context object associated to the current session
+     */
+    CmsObject initCmsObject(HttpServletRequest request);
 
     /**
      * Creates a new cms object from the given request object.<p>
@@ -55,18 +104,19 @@ public interface I_CmsAuthorizationHandler {
      * This method is called by OpenCms every time a resource is requested
      * and the session can not automatically be authenticated.<p>
      * 
-     * @param request the http request to authenticate
+     * @param request the HTTP request to authenticate
+     * @param loginAction the privileged login action
      * 
      * @return the cms context object associated to the current session
      */
-    CmsObject initCmsObject(HttpServletRequest request);
-
+    CmsObject initCmsObject(HttpServletRequest request, I_PrivilegedLoginAction loginAction);
+    
     /**
      * Authenticates the current request with additional user information.<p>
      * 
      * You have to call this method by your own.<p>
      * 
-     * @param request the http request to authenticate
+     * @param request the HTTP request to authenticate
      * @param userName the user name to authenticate
      * @param pwd the user password to authenticate with
      * 
@@ -75,4 +125,16 @@ public interface I_CmsAuthorizationHandler {
      * @throws CmsException if something goes wrong 
      */
     CmsObject initCmsObject(HttpServletRequest request, String userName, String pwd) throws CmsException;
+    
+    /**
+     * This method sends a request to the client to display a login form,
+     * it is needed for HTTP-Authentication.<p>
+     *
+     * @param req the client request
+     * @param res the response
+     * @param loginFormURL the full URL used for form based authentication
+     * 
+     * @throws IOException if something goes wrong
+     */
+    void requestAuthorization(HttpServletRequest req, HttpServletResponse res, String loginFormURL) throws IOException;
 }
