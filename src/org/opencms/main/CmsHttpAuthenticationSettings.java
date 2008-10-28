@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsHttpAuthenticationSettings.java,v $
- * Date   : $Date: 2008/02/27 12:05:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2008/10/28 10:30:54 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.workplace.CmsWorkplace;
 /**
  * Contains the settings to handle HTTP basic authentication.<p>
  * 
- * These settings control wheter a browser-based popup dialog should be used for
+ * These settings control whether a browser-based pop-up dialog should be used for
  * authentication, or of the user should be redirected to an OpenCms URI for a
  * form-based authentication.<p>
  * 
@@ -44,14 +44,21 @@ import org.opencms.workplace.CmsWorkplace;
  * are able to specify different authentication forms in a property "login-form" on
  * resources that require authentication.<p>
  * 
- * @author Thomas Weckert  
+ * @author Thomas Weckert
+ * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHttpAuthenticationSettings {
 
+    /** The mechanism name for basic HTTP authentication. */
+    public static final String AUTHENTICATION_BASIC = "BASIC";
+    
+    /** The mechanism name for form based authentication. */
+    public static final String AUTHENTICATION_FORM = "FORM";
+    
     /** The URI of the default authentication form. */
     public static final String DEFAULT_AUTHENTICATION_URI = CmsWorkplace.VFS_PATH_WORKPLACE
         + "action/authenticate.html";
@@ -59,6 +66,9 @@ public class CmsHttpAuthenticationSettings {
     /** The URI of the system wide login form if browser-based HTTP basic authentication is disabled. */
     private String m_formBasedHttpAuthenticationUri;
 
+    /** The mechanism used in browser-based HTTP authentication. */
+    private String m_browserBasedAuthenticationMechanism;
+    
     /** Boolean flag to enable or disable browser-based HTTP basic authentication. */
     private boolean m_useBrowserBasedHttpAuthentication;
 
@@ -69,9 +79,28 @@ public class CmsHttpAuthenticationSettings {
 
         super();
         m_useBrowserBasedHttpAuthentication = true;
+        m_browserBasedAuthenticationMechanism = null;
         m_formBasedHttpAuthenticationUri = null;
     }
 
+    /**
+     * Returns the browser based authentication mechanism or <code>null</code> if unused.
+     * 
+     * @return "BASIC" in case of browser based basic authentication, "FORM" in case of form based authentication or the alternative mechanism or <code>null</code> if unused.
+     */
+    public String getBrowserBasedAuthenticationMechanism() {
+        
+        if (m_useBrowserBasedHttpAuthentication) {
+            return AUTHENTICATION_BASIC;
+        } else if (m_browserBasedAuthenticationMechanism != null) {
+            return m_browserBasedAuthenticationMechanism;
+        } else if (m_formBasedHttpAuthenticationUri != null) {
+            return AUTHENTICATION_FORM;
+        } else {
+            return null;
+        }
+    }
+    
     /**
      * Returns the URI of the system wide login form if browser-based HTTP basic authentication is disabled.<p>
      *
@@ -100,16 +129,25 @@ public class CmsHttpAuthenticationSettings {
     public void setUseBrowserBasedHttpAuthentication(boolean value) {
 
         m_useBrowserBasedHttpAuthentication = value;
+        m_browserBasedAuthenticationMechanism = null;
     }
 
     /**
      * Sets if browser-based HTTP basic authentication is enabled or disabled.<p>
      *
-     * @param value a string {<code>"true"</code>|<code>"false"</code>} to specify if browser-based HTTP basic authentication should be enabled
+     * @param value a string {<code>"true"</code>|<code>"false"</code>} to specify if browser-based HTTP basic authentication should be enabled;
+     *        if another string is provided, the flag for browser based basic authentication is disabled and the value is stored as authentication mechanism.
      */
     public void setUseBrowserBasedHttpAuthentication(String value) {
 
         m_useBrowserBasedHttpAuthentication = Boolean.valueOf(value).booleanValue();
+        if (!m_useBrowserBasedHttpAuthentication && !value.equalsIgnoreCase(Boolean.FALSE.toString())) {
+            if (value.equalsIgnoreCase(AUTHENTICATION_BASIC)) {
+                m_useBrowserBasedHttpAuthentication = true;
+            } else {
+                m_browserBasedAuthenticationMechanism = value;
+            }
+        }
     }
 
     /**
