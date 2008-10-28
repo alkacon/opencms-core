@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/A_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2008/02/27 12:05:39 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/10/28 10:30:14 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,17 +38,23 @@ import org.opencms.util.CmsUUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Abstract class to grant the needed access to the session manager.<p>
  * 
  * @author Michael Moossen
+ * @author Carsten Weinholz
  *
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.4 
  */
 public abstract class A_CmsAuthorizationHandler implements I_CmsAuthorizationHandler {
 
+    /** The static log object for this class. */
+    protected static final Log LOG = CmsLog.getLog(A_CmsAuthorizationHandler.class);
+    
     /**
      * Initializes a new cms object from the session data of the request.<p>
      * 
