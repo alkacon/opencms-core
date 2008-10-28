@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultAuthorizationHandler.java,v $
- * Date   : $Date: 2008/10/28 10:32:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/10/28 11:31:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.4 
  */
@@ -71,14 +71,15 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
     
         if (loginFormURL != null) {
                         
-            StringBuffer fullURL = new StringBuffer(loginFormURL);          
+            StringBuffer fullURL = new StringBuffer(loginFormURL);
             if (callbackURL != null) {
+                fullURL.append("?");
                 fullURL.append(CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
                 fullURL.append("=");
                 fullURL.append(callbackURL);
             }
             if (params != null) {
-                fullURL.append("&");
+                fullURL.append((callbackURL != null) ? "&" : "?");
                 fullURL.append(params);
             }
             
