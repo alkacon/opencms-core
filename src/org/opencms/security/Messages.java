@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:29 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2008/10/28 10:34:20 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,6 +127,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UNSUPPORTED_ALGORITHM_1 = "ERR_UNSUPPORTED_ALGORITHM_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNSUPPORTED_AUTHENTICATION_MECHANISM_1 = "ERR_UNSUPPORTED_AUTHENTICATION_MECHANISM_1";
+    
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_UNSUPPORTED_PASSWORD_ENCODING_1 = "ERR_UNSUPPORTED_PASSWORD_ENCODING_1";
 
     /** Message constant for key in the resource bundle. */
@@ -207,6 +210,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ROLENAME_WORKPLACE_USER_0 = "GUI_ROLENAME_WORKPLACE_USER_0";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_AUTHENTICATE_PROPERTY_2 = "LOG_AUTHENTICATE_PROPERTY_2";
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INIT_CONFIG_CALLED_1 = "LOG_INIT_CONFIG_CALLED_1";
 
