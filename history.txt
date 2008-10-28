@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/10/27 15:17:44 $
- * Version: $Revision: 1.1050 $
+ * Date   : $Date: 2008/10/28 10:37:06 $
+ * Version: $Revision: 1.1051 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -26,6 +26,7 @@ OpenCms 7.1.0 - xxx, 2008
 ! Added support for "offline" indexes in the Lucene based full text search
 ! CmsTimeFrameCategoryCollector now allows line breaks and whitespaces in param attribute 
 ! Undo changes operation now shows an additional warning dialog with option to cancel in case siblings are found
+! Extended authorization configuration and handling in order to allow support of alternative mechanisms
 - Updated simapi.jar to version 0.9.8
 * Fixed security issue with the history handler
 * Fixed issue with JSP hard includes when using site relative paths
