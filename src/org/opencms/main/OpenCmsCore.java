@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2008/08/06 10:47:20 $
- * Version: $Revision: 1.238 $
+ * Date   : $Date: 2008/10/28 10:31:58 $
+ * Version: $Revision: 1.239 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.238 $ 
+ * @version $Revision: 1.239 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,7 +151,7 @@ public final class OpenCmsCore {
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(OpenCmsCore.class);
 
-    /** Indicates if the configuration was sucessfully finished or not. */
+    /** Indicates if the configuration was successfully finished or not. */
     private static CmsMessageContainer m_errorCondition;
 
     /** One instance to rule them all, one instance to find them... */
@@ -1853,7 +1853,8 @@ public final class OpenCmsCore {
             // access error - display login dialog
             if (canWrite) {
                 try {
-                    requestAuthorization(req, res);
+                    m_authorizationHandler.requestAuthorization(req, res, 
+                        getLoginFormURL(req, res));
                 } catch (IOException ioe) {
                     // there is nothing we can do about this
                 }
@@ -1909,6 +1910,76 @@ public final class OpenCmsCore {
         }
     }
 
+    /**
+     * Reads the login form which should be used for authenticating th ecurrent request.<p>
+     * 
+     * @param req current request
+     * @param res current response
+     * 
+     * @return the URL of the login form or <code>null</code> if not set
+     * 
+     * @throws IOException
+     */
+    private String getLoginFormURL (HttpServletRequest req, HttpServletResponse res) throws IOException {
+
+        CmsHttpAuthenticationSettings httpAuthenticationSettings = OpenCms.getSystemInfo().getHttpAuthenticationSettings();
+        String loginFormURL = null;
+        
+        // this will create an admin user with the "right" site root already set
+        CmsObject adminCms;
+        try {
+            adminCms = initCmsObject(req, res, OpenCms.getDefaultUsers().getUserAdmin(), null, null);
+        } catch (CmsException e) {
+            // this should never happen, if it does we can't continue
+            throw new IOException(Messages.get().getBundle().key(
+                Messages.ERR_INVALID_INIT_USER_2,
+                OpenCms.getDefaultUsers().getUserAdmin(),
+                null));
+        }
+        // get the requested resource
+        String path = adminCms.getRequestContext().getUri();
+        CmsProperty propertyLoginForm = null;
+        try {
+            propertyLoginForm = adminCms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true);
+        } catch (Throwable t) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_ERROR_READING_AUTH_PROP_2,
+                    CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
+                    path), t);
+            }
+        }            
+        
+        String params = null;
+        if ((propertyLoginForm != null)
+            && (propertyLoginForm != CmsProperty.getNullProperty())
+            && CmsStringUtil.isNotEmpty(propertyLoginForm.getValue())) {
+            // login form property value was found            
+            // build a redirect URL using the value of the property
+            // "__loginform" is a dummy request parameter that could be used in a JSP template to trigger
+            // if the template should display a login formular or not
+            loginFormURL = propertyLoginForm.getValue();
+            params = "__loginform=true";             
+        } else if (!httpAuthenticationSettings.useBrowserBasedHttpAuthentication()
+            && CmsStringUtil.isNotEmpty(httpAuthenticationSettings.getFormBasedHttpAuthenticationUri())) {
+            // login form property value not set, but form login set in configuration
+            // build a redirect URL to the default login form URI configured in opencms.properties
+            loginFormURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri();
+        }
+ 
+        String callbackURL = CmsRequestUtil.encodeParamsWithUri(path, req);
+        if (loginFormURL != null) {
+            if (!loginFormURL.startsWith("http")) {
+                loginFormURL = m_linkManager.substituteLink(adminCms, loginFormURL, null, true);
+            } else {
+                callbackURL = m_linkManager.getServerLink(adminCms, path);
+                callbackURL = CmsRequestUtil.encodeParamsWithUri(callbackURL, req);
+            }
+        }
+        
+        return m_authorizationHandler.getLoginFormURL(loginFormURL, params, callbackURL);
+    }
+    
     /**
      * Initializes a CmsObject with the given context information.<p>
      * 
@@ -2076,21 +2147,39 @@ public final class OpenCmsCore {
      * @throws CmsException in case something goes wrong
      */
     private CmsObject initCmsObject(HttpServletRequest req, HttpServletResponse res) throws IOException, CmsException {
-
+        
         // first try to restore a stored session
         CmsObject cms = initCmsObjectFromSession(req);
         if (cms != null) {
             return cms;
         }
-        // if does not work, try to authorizate the request
-        cms = m_authorizationHandler.initCmsObject(req);
+        
+        // if does not work, try to authorize the request
+        CmsSite site = getSiteManager().matchRequest(req);
+        I_CmsAuthorizationHandler.I_PrivilegedLoginAction loginAction = new I_CmsAuthorizationHandler.I_PrivilegedLoginAction() {
+            private CmsObject m_adminCms;
+            public void setCmsObject(CmsObject adminCms) {
+                m_adminCms = adminCms;
+            }
+            public CmsObject doLogin(HttpServletRequest request, String principal) throws CmsException {
+                try {
+                    CmsContextInfo contextInfo = new CmsContextInfo(m_adminCms.getRequestContext());
+                    contextInfo.setUserName(principal);
+                    return initCmsObject(m_adminCms, contextInfo);
+                } finally {
+                    m_adminCms = null;
+                }
+            }
+        };
+        loginAction.setCmsObject(initCmsObject(req, res, OpenCms.getDefaultUsers().getUserAdmin(), null, null));
+        cms = m_authorizationHandler.initCmsObject(req, loginAction);
         if (cms != null) {
             return cms;
         }
-        // initialize the requested site root
-        CmsSite site = getSiteManager().matchRequest(req);
+        
         // authentification failed, so display a login screen
-        requestAuthorization(req, res);
+        m_authorizationHandler.requestAuthorization(req, res, getLoginFormURL(req, res));
+        
         cms = initCmsObject(
             req,
             m_securityManager.readUser(null, OpenCms.getDefaultUsers().getUserGuest()),
@@ -2149,84 +2238,6 @@ public final class OpenCmsCore {
             cms.loginUser(user, password, CmsContextInfo.LOCALHOST);
         }
         return cms;
-    }
-
-    /**
-     * This method sends a request to the client to display a login form,
-     * it is needed for HTTP-Authentification.<p>
-     *
-     * @param req the client request
-     * @param res the response
-     * @throws IOException if something goes wrong
-     */
-    private void requestAuthorization(HttpServletRequest req, HttpServletResponse res) throws IOException {
-
-        // this will create an admin user with the "right" site root already set
-        CmsObject adminCms;
-        try {
-            adminCms = initCmsObject(req, res, getDefaultUsers().getUserAdmin(), null, null);
-        } catch (CmsException e) {
-            // this should never happen, if it does we can't continue
-            throw new IOException(Messages.get().getBundle().key(
-                Messages.ERR_INVALID_INIT_USER_2,
-                getDefaultUsers().getUserAdmin(),
-                null));
-        }
-        // get the requested resource
-        String path = adminCms.getRequestContext().getUri();
-        CmsProperty propertyLoginForm = null;
-        String redirectURL = null;
-        try {
-            propertyLoginForm = adminCms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_LOGIN_FORM, true);
-        } catch (Throwable t) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().getBundle().key(
-                    Messages.LOG_ERROR_READING_AUTH_PROP_2,
-                    CmsPropertyDefinition.PROPERTY_LOGIN_FORM,
-                    path), t);
-            }
-        }
-
-        CmsHttpAuthenticationSettings httpAuthenticationSettings = getSystemInfo().getHttpAuthenticationSettings();
-        String pathWithParams = CmsRequestUtil.encodeParamsWithUri(path, req);
-        if ((propertyLoginForm != null)
-            && (propertyLoginForm != CmsProperty.getNullProperty())
-            && CmsStringUtil.isNotEmpty(propertyLoginForm.getValue())) {
-            // login form property value was found            
-            // build a redirect URL using the value of the property
-            // "__loginform" is a dummy request parameter that could be used in a JSP template to trigger
-            // if the template should display a login formular or not  
-            redirectURL = propertyLoginForm.getValue()
-                + "?__loginform=true&"
-                + CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE
-                + "="
-                + pathWithParams;
-        } else if (!httpAuthenticationSettings.useBrowserBasedHttpAuthentication()
-            && CmsStringUtil.isNotEmpty(httpAuthenticationSettings.getFormBasedHttpAuthenticationUri())) {
-            // login form property value not set, but form login set in configuration
-            // build a redirect URL to the default login form URI configured in opencms.properties
-            redirectURL = httpAuthenticationSettings.getFormBasedHttpAuthenticationUri()
-                + "?"
-                + CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE
-                + "="
-                + pathWithParams;
-        }
-
-        if (redirectURL == null) {
-            // HTTP basic authentication is used
-            res.setHeader(CmsRequestUtil.HEADER_WWW_AUTHENTICATE, "BASIC realm=\""
-                + getSystemInfo().getOpenCmsContext()
-                + "\"");
-            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        } else {
-            // resolve the login form link using the link manager
-            redirectURL = m_linkManager.substituteLink(adminCms, redirectURL, null, true);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(Messages.LOG_AUTHENTICATE_PROPERTY_2, redirectURL, path));
-            }
-            // finally redirect to the login form
-            res.sendRedirect(redirectURL);
-        }
     }
 
     /**       
