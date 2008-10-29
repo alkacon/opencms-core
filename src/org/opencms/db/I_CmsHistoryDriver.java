@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2008/03/27 13:22:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import java.util.List;
  * @author Thomas Weckert
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.9.1
  */
@@ -114,31 +114,27 @@ public interface I_CmsHistoryDriver {
     void destroy() throws Throwable;
 
     /**
-     * Returns all historical resources (of deleted resources) in the subtree
-     * of the folder identified by the given structure id.<p> 
+     * Returns all historical resources (of deleted resources).<p> 
      * 
      * @param dbc the current database context
-     * @param structureId the structrue id of the folder to get the historical resources for
      *  
      * @return a list of {@link I_CmsHistoryResource} objects
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    List getAllDeletedEntries(CmsDbContext dbc, CmsUUID structureId) throws CmsDataAccessException;
+    List getAllDeletedEntries(CmsDbContext dbc) throws CmsDataAccessException;
 
     /**
-     * Returns all historical resources (of not deleted resources) in the subtree
-     * of the folder identified by the given structure id.<p> 
+     * Returns all historical resources (of not deleted resources).<p> 
      * 
      * @param dbc the current database context
-     * @param structureId the structrue id of the folder to get the historical resources for
      *  
      * @return a list of {@link I_CmsHistoryResource} objects
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    List getAllNotDeletedEntries(CmsDbContext dbc, CmsUUID structureId) throws CmsDataAccessException;
-
+    List getAllNotDeletedEntries(CmsDbContext dbc) throws CmsDataAccessException;
+    
     /**
      * Returns the SqlManager of this driver.<p>
      * 

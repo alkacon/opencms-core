@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2008/07/17 09:56:14 $
- * Version: $Revision: 1.121 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.122 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1211,7 +1211,6 @@ public final class CmsSecurityManager {
      * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
      * 
      * @param context the current request context
-     * @param folder the folder (with subresources) to delete historical versions for 
      * @param versionsToKeep number of versions to keep, is ignored if negative 
      * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
      * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
@@ -1222,7 +1221,6 @@ public final class CmsSecurityManager {
      */
     public void deleteHistoricalVersions(
         CmsRequestContext context,
-        CmsFolder folder,
         int versionsToKeep,
         int versionsDeleted,
         long timeDeleted,
@@ -1230,14 +1228,15 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
+            CmsFolder root = readFolder(dbc, "/", CmsResourceFilter.ALL);
             checkRole(dbc, CmsRole.WORKPLACE_MANAGER.forOrgUnit(null));
-            checkPermissions(dbc, folder, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
-            m_driverManager.deleteHistoricalVersions(dbc, folder, versionsToKeep, versionsDeleted, timeDeleted, report);
+            checkPermissions(dbc, root, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
+            m_driverManager.deleteHistoricalVersions(dbc, versionsToKeep, versionsDeleted, timeDeleted, report);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_DELETE_HISTORY_4,
                 new Object[] {
-                    dbc.removeSiteRoot(folder.getRootPath()),
+                    "/",
                     new Integer(versionsToKeep),
                     new Integer(versionsDeleted),
                     new Date(timeDeleted)}), e);

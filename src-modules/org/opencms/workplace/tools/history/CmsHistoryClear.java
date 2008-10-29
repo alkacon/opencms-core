@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/CmsHistoryClear.java,v $
- * Date   : $Date: 2008/02/27 12:05:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,14 +39,14 @@ import org.opencms.main.OpenCms;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.9.1
  */
 public class CmsHistoryClear {
 
-    /** Flag if to clear the versions of the deleted resources too. */
-    private boolean m_clearDeleted;
+    /** Mode for clearing the versions of the deleted resources too. */
+    private String m_clearDeletedMode;
 
     /** The date versions older than will be cleared. */
     private long m_clearOlderThan;
@@ -60,7 +60,7 @@ public class CmsHistoryClear {
     public CmsHistoryClear() {
 
         m_keepVersions = OpenCms.getSystemInfo().getHistoryVersions();
-        m_clearDeleted = true;
+        m_clearDeletedMode = CmsHistoryClearDialog.MODE_CLEANDELETED_KEEP_RESTORE_VERSION;
     }
 
     /**
@@ -84,23 +84,23 @@ public class CmsHistoryClear {
     }
 
     /**
-     * Returns if to clear the versions of the deleted resources.<p>
+     * Returns the clear deleted mode.<p>
      *
-     * @return true if to clear the versions of the deleted resources
+     * @return the clear deleted mode
      */
-    public boolean isClearDeleted() {
+    public String getClearDeletedMode() {
 
-        return m_clearDeleted;
+        return m_clearDeletedMode;
     }
 
     /**
-     * Sets if to clear the versions of the deleted resources.<p>
+     * Sets the clear deleted mode.<p>
      *
-     * @param clearDeleted if to clear the versions of the deleted resources
+     * @param clearDeletedMode the clear deleted mode 
      */
-    public void setClearDeleted(boolean clearDeleted) {
+    public void setClearDeletedMode(String clearDeletedMode) {
 
-        m_clearDeleted = clearDeleted;
+        m_clearDeletedMode = clearDeletedMode;
     }
 
     /**

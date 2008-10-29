@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2008/08/20 13:20:12 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,11 +66,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 
@@ -82,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.9.1
  */
@@ -310,10 +308,11 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         }
     }
 
+   
     /**
-     * @see org.opencms.db.I_CmsHistoryDriver#getAllDeletedEntries(CmsDbContext, CmsUUID)
+     * @see org.opencms.db.I_CmsHistoryDriver#getAllDeletedEntries(org.opencms.db.CmsDbContext)
      */
-    public List getAllDeletedEntries(CmsDbContext dbc, CmsUUID parentId) throws CmsDataAccessException {
+    public List getAllDeletedEntries(CmsDbContext dbc) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -338,14 +337,13 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-        return internalFilterParentId(parentId, entries);
+        return entries;
     }
 
     /**
-     * @see org.opencms.db.I_CmsHistoryDriver#getAllNotDeletedEntries(CmsDbContext, CmsUUID)
+     * @see org.opencms.db.I_CmsHistoryDriver#getAllNotDeletedEntries(org.opencms.db.CmsDbContext)
      */
-    public List getAllNotDeletedEntries(CmsDbContext dbc, CmsUUID parentId) throws CmsDataAccessException {
-
+    public List getAllNotDeletedEntries(CmsDbContext dbc) throws CmsDataAccessException {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -369,8 +367,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, res);
         }
-        return internalFilterParentId(parentId, entries);
-
+        return entries;
     }
 
     /**
@@ -1798,39 +1795,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
                 resourceVersion,
                 structureVersion);
         }
-    }
-
-    /**
-     * Filters all resources in the subtree of the folder identified by the given id.<p>
-     * 
-     * @param parentId the id of the folder to filter
-     * @param resources the resources to filter
-     * 
-     * @return the filtered list of resource
-     */
-    protected List internalFilterParentId(CmsUUID parentId, List resources) {
-
-        List result = new ArrayList();
-
-        // filter the parent id
-        Set ids = new HashSet();
-        ids.add(parentId);
-
-        boolean modified = true;
-        while (modified) {
-            modified = false;
-            Iterator it = resources.iterator();
-            while (it.hasNext()) {
-                I_CmsHistoryResource resource = (I_CmsHistoryResource)it.next();
-                if (ids.contains(resource.getParentId())) {
-                    ids.add(resource.getStructureId());
-                    result.add(resource);
-                    modified = true;
-                    it.remove();
-                }
-            }
-        }
-        return result;
     }
 
     /**

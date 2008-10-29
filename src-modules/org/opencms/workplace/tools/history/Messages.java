@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,12 +39,21 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_CLEAR_DELETED_DELETENONE_0 = "GUI_HISTORY_CLEAR_DELETED_DELETENONE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_CLEAR_DELETED_DELETEALL_0 = "GUI_HISTORY_CLEAR_DELETED_DELETEALL_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_CLEAR_DELETED_KEEPRESTORE_0 = "GUI_HISTORY_CLEAR_DELETED_KEEPRESTORE_0";
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CLEARHISTORY_HISTORY_ADMIN_TOOL_GROUP_0 = "GUI_CLEARHISTORY_HISTORY_ADMIN_TOOL_GROUP_0";
 

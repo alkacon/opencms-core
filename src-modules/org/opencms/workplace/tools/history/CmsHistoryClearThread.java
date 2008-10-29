@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/CmsHistoryClearThread.java,v $
- * Date   : $Date: 2008/02/27 12:05:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,21 +81,24 @@ public class CmsHistoryClearThread extends A_CmsReportThread {
 
         // get the necessary parameters from the map
         int versions = m_historyClear.getKeepVersions();
-        int versionsDeleted = m_historyClear.getKeepVersions();
+        int versionsDeleted;
         long timeDeleted = m_historyClear.getClearOlderThan();
-        String folderName = "/";
 
         if (timeDeleted == 0) {
             timeDeleted = -1;
         }
-        
-        if (!m_historyClear.isClearDeleted()) {
+
+        if (m_historyClear.getClearDeletedMode().equals(CmsHistoryClearDialog.MODE_CLEANDELETED_DELETE_NONE)) {
             versionsDeleted = -1;
+        } else if (m_historyClear.getClearDeletedMode().equals(CmsHistoryClearDialog.MODE_CLEANDELETED_DELETE_ALL)) {
+            versionsDeleted = 0;
+        } else {
+            versionsDeleted = 1;
         }
-        
+
         // delete the historical files
         try {
-            getCms().deleteHistoricalVersions(folderName, versions, versionsDeleted, timeDeleted, getReport());
+            getCms().deleteHistoricalVersions(versions, versionsDeleted, timeDeleted, getReport());
         } catch (CmsException e) {
             getReport().println(e);
         }

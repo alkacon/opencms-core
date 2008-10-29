@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/09/25 13:00:10 $
- * Version: $Revision: 1.632 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.633 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -318,6 +318,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
     /** The VFS driver. */
     private I_CmsVfsDriver m_vfsDriver;
+
+    /** Local reference to the memory monitor to avoid multiple lookups through the OpenCms singelton. */
+    private CmsMemoryMonitor m_monitor;
 
     /**
      * Private constructor, initializes some required member variables.<p> 
@@ -2137,13 +2140,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_monitor.flushACLs();
     }
 
+
     /**
      * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
      * 
      * if the <code>cleanUp</code> option is set, additionally versions of deleted resources will be removed.<p>
      * 
      * @param dbc the current database context
-     * @param folder the folder (with subresources) to delete historical versions for 
      * @param versionsToKeep number of versions to keep, is ignored if negative 
      * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
      * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
@@ -2153,7 +2156,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void deleteHistoricalVersions(
         CmsDbContext dbc,
-        CmsFolder folder,
         int versionsToKeep,
         int versionsDeleted,
         long timeDeleted,
@@ -2165,7 +2167,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 Messages.RPT_START_DELETE_ACT_VERSIONS_1,
                 new Integer(versionsToKeep)), I_CmsReport.FORMAT_HEADLINE);
 
-            List resources = m_historyDriver.getAllNotDeletedEntries(dbc, folder.getStructureId());
+            List resources = m_historyDriver.getAllNotDeletedEntries(dbc);
             if (resources.isEmpty()) {
                 report.println(Messages.get().container(Messages.RPT_DELETE_NOTHING_0), I_CmsReport.FORMAT_OK);
             }
@@ -2222,7 +2224,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     Messages.RPT_START_DELETE_DEL_VERSIONS_1,
                     new Integer(versionsDeleted)), I_CmsReport.FORMAT_HEADLINE);
             }
-            List resources = m_historyDriver.getAllDeletedEntries(dbc, folder.getStructureId());
+            List resources = m_historyDriver.getAllDeletedEntries(dbc);
             if (resources.isEmpty()) {
                 report.println(Messages.get().container(Messages.RPT_DELETE_NOTHING_0), I_CmsReport.FORMAT_OK);
             }
@@ -4469,9 +4471,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             ""));
         getUserDriver().createRootOrganizationalUnit(dbc);
     }
-
-    /** Local reference to the memory monitor to avoid multiple lookups through the OpenCms singelton. */
-    private CmsMemoryMonitor m_monitor;
 
     /**
      * Checks if the specified resource is inside the current project.<p>
@@ -7027,6 +7026,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Repairs broken categories.<p>
+     * 
+     * @param dbc the database context
+     * @param projectId the project id
+     * @param resource the resource to repair the categories for
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void repairCategories(CmsDbContext dbc, CmsUUID projectId, CmsResource resource) throws CmsException {
+
+        CmsObject cms = OpenCms.initCmsObject(new CmsObject(getSecurityManager(), dbc.getRequestContext()));
+        cms.getRequestContext().setSiteRoot("");
+        cms.getRequestContext().setCurrentProject(readProject(dbc, projectId));
+        CmsCategoryService.getInstance().repairRelations(cms, resource);
+    }
+
+    /**
      * Replaces the content, type and properties of a resource.<p>
      * 
      * @param dbc the current database context
@@ -8628,23 +8644,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         // repair categories
         repairCategories(dbc, getProjectIdForContext(dbc), target);
-    }
-
-    /**
-     * Repairs broken categories.<p>
-     * 
-     * @param dbc the database context
-     * @param projectId the project id
-     * @param resource the resource to repair the categories for
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void repairCategories(CmsDbContext dbc, CmsUUID projectId, CmsResource resource) throws CmsException {
-
-        CmsObject cms = OpenCms.initCmsObject(new CmsObject(getSecurityManager(), dbc.getRequestContext()));
-        cms.getRequestContext().setSiteRoot("");
-        cms.getRequestContext().setCurrentProject(readProject(dbc, projectId));
-        CmsCategoryService.getInstance().repairRelations(cms, resource);
     }
 
     /**

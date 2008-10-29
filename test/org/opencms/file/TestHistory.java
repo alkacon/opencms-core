@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestHistory.java,v $
- * Date   : $Date: 2008/07/01 16:26:56 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.9.1
  */
@@ -485,7 +485,7 @@ public class TestHistory extends OpenCmsTestCase {
         assertEquals(0 + counter + 1 + counterSibl + 0 + counterSibl2 + 0 + 0 - 3, allFiles.size());
 
         //Delete historical entries, keep only 3 latest versions. 
-        cms.deleteHistoricalVersions("/", 3, 3, -1, new CmsShellReport(cms.getRequestContext().getLocale()));
+        cms.deleteHistoricalVersions(3, 3, -1, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         allFiles = cms.readAllAvailableVersions(siblingname);
         // 3 the number of versions that should remain for the sibling

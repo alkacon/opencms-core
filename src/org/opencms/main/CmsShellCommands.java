@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2008/02/27 12:05:39 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.92 $ 
+ * @version $Revision: 1.93 $ 
  * 
  * @since 6.0.0 
  */
@@ -299,31 +299,29 @@ class CmsShellCommands implements I_CmsShellCommands {
      * 
      * @throws Exception if something goes wrong
      * 
-     * @see CmsObject#deleteHistoricalVersions(String, int, int, long, I_CmsReport)
+     * @see CmsObject#deleteHistoricalVersions(int, int, long, I_CmsReport)
      * 
-     * @deprecated Use {@link #deleteHistoricalVersions(String, int, int, long)} instead
+     * @deprecated Use {@link #deleteHistoricalVersions(int, int, long)} instead
      */
     public void deleteBackups(int versionsToKeep) throws Exception {
 
-        deleteHistoricalVersions("/", versionsToKeep, versionsToKeep, -1);
+        deleteHistoricalVersions(versionsToKeep, versionsToKeep, -1);
     }
 
     /**
      * Deletes the versions from the history tables that are older then the given number of versions.<p>
      * 
-     * @param folderName the name of the folder (with subresources) to delete historical versions for 
      * @param versionsToKeep number of versions to keep, is ignored if negative 
      * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
      * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
      * 
      * @throws Exception if something goes wrong
      * 
-     * @see CmsObject#deleteHistoricalVersions(String, int, int, long, I_CmsReport)
+     * @see CmsObject#deleteHistoricalVersions( int, int, long, I_CmsReport)
      */
-    public void deleteHistoricalVersions(String folderName, int versionsToKeep, int versionsDeleted, long timeDeleted)
-    throws Exception {
+    public void deleteHistoricalVersions(int versionsToKeep, int versionsDeleted, long timeDeleted) throws Exception {
 
-        m_cms.deleteHistoricalVersions(folderName, versionsToKeep, versionsDeleted, timeDeleted, new CmsShellReport(
+        m_cms.deleteHistoricalVersions(versionsToKeep, versionsDeleted, timeDeleted, new CmsShellReport(
             m_cms.getRequestContext().getLocale()));
     }
 

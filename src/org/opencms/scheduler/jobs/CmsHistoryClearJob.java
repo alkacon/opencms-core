@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsHistoryClearJob.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.Map;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.0
  */
@@ -98,15 +98,13 @@ public class CmsHistoryClearJob implements I_CmsScheduledJob {
 
         // calculate the date from where to clear deleted versions
         long timeDeleted = -1;
+        int keepDeletedVersions;
         if (clearDeleted) {
+            keepDeletedVersions = 1;
             GregorianCalendar cal = new GregorianCalendar();
             cal.add(Calendar.DAY_OF_YEAR, (keepTimeRange) * -1);
             timeDeleted = cal.getTimeInMillis();
-        }
-
-        // check the clear deleted value
-        int keepDeletedVersions = keepVersions;
-        if (!clearDeleted) {
+        } else {
             keepDeletedVersions = -1;
         }
 
@@ -114,7 +112,7 @@ public class CmsHistoryClearJob implements I_CmsScheduledJob {
         CmsLogReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsHistoryClearJob.class);
 
         // delete the versions
-        cms.deleteHistoricalVersions(cms.getRequestContext().getUri(), keepVersions, keepDeletedVersions, timeDeleted, report);
+        cms.deleteHistoricalVersions(keepVersions, keepDeletedVersions, timeDeleted, report);
 
         return null;
     }

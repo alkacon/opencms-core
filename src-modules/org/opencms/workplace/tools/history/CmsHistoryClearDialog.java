@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/CmsHistoryClearDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCalendarWidget;
-import org.opencms.widgets.CmsCheckboxWidget;
+import org.opencms.widgets.CmsRadioSelectWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.9.1
  */
@@ -77,6 +77,18 @@ public class CmsHistoryClearDialog extends CmsWidgetDialog {
 
     /** The history clear object that is edited on this dialog. */
     protected CmsHistoryClear m_historyClear;
+
+    /** Widget value. */
+    private String m_clearDeletedMode = MODE_CLEANDELETED_KEEP_RESTORE_VERSION;
+
+    /** Cleanup deleted history files setting. */
+    public static final String MODE_CLEANDELETED_KEEP_RESTORE_VERSION = "keeprestore";
+
+    /** Cleanup deleted history files setting. */
+    public static final String MODE_CLEANDELETED_DELETE_ALL = "deleteall";
+
+    /** Cleanup deleted history files setting. */
+    public static final String MODE_CLEANDELETED_DELETE_NONE = "deletenone";
 
     /**
      * Public constructor with JSP action element.<p>
@@ -133,6 +145,31 @@ public class CmsHistoryClearDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the cleanDeletedmode.<p>
+     *
+     * @return the clearDeletedmode
+     */
+    public final String getClearDeletedMode() {
+
+        // m_clearDeletedMode will be null in initial display because constructor triggers this before member initialization
+        String result = this.m_clearDeletedMode;
+        if (result == null) {
+            result = MODE_CLEANDELETED_KEEP_RESTORE_VERSION;
+        }
+        return result;
+    }
+
+    /**
+     * Sets the cleanDeletedmode.<p>
+     *
+     * @param clearDeletedmode the cleanDeletedmode to set
+     */
+    public final void setClearDeletedMode(String clearDeletedmode) {
+
+        m_clearDeletedMode = clearDeletedmode;
+    }
+
+    /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
     protected String createDialogHtml(String dialog) {
@@ -149,7 +186,8 @@ public class CmsHistoryClearDialog extends CmsWidgetDialog {
             // create the widgets for the first dialog page
             result.append(createWidgetBlockStart(key(Messages.GUI_HISTORY_CLEAR_BLOCK_LABEL_0)));
 
-            Object versionStr = (OpenCms.getSystemInfo().getHistoryVersions() == -1) ? key(Messages.GUI_HISTORY_SETTINGS_VERSIONS_UNLIMITED_0)
+            Object versionStr = (OpenCms.getSystemInfo().getHistoryVersions() == -1)
+            ? key(Messages.GUI_HISTORY_SETTINGS_VERSIONS_UNLIMITED_0)
             : String.valueOf(OpenCms.getSystemInfo().getHistoryVersions());
             result.append(key(Messages.GUI_HISTORY_CLEAR_VERSIONINFO_1, new Object[] {versionStr}));
             result.append("<p>");
@@ -172,7 +210,8 @@ public class CmsHistoryClearDialog extends CmsWidgetDialog {
 
         addWidget(new CmsWidgetDialogParameter(m_historyClear, "keepVersions", PAGES[0], new CmsSelectWidget(
             getVersions())));
-        addWidget(new CmsWidgetDialogParameter(m_historyClear, "clearDeleted", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_historyClear, "clearDeletedMode", PAGES[0], new CmsRadioSelectWidget(
+            getClearDeletedModes())));
         addWidget(new CmsWidgetDialogParameter(m_historyClear, "clearOlderThan", PAGES[0], new CmsCalendarWidget()));
     }
 
@@ -219,6 +258,25 @@ public class CmsHistoryClearDialog extends CmsWidgetDialog {
 
         // add default resource bundles
         super.initMessages();
+    }
+
+    /**
+     * Returns a list with the possible modes for the clean deleted action.<p>
+     * 
+     * @return a list with the possible modes for the clean deleted action
+     */
+    private List getClearDeletedModes() {
+
+        ArrayList ret = new ArrayList();
+
+        ret.add(new CmsSelectWidgetOption(MODE_CLEANDELETED_KEEP_RESTORE_VERSION, getClearDeletedMode().equals(
+            MODE_CLEANDELETED_KEEP_RESTORE_VERSION), key(Messages.GUI_HISTORY_CLEAR_DELETED_KEEPRESTORE_0)));
+        ret.add(new CmsSelectWidgetOption(MODE_CLEANDELETED_DELETE_ALL, getClearDeletedMode().equals(
+            MODE_CLEANDELETED_DELETE_ALL), key(Messages.GUI_HISTORY_CLEAR_DELETED_DELETEALL_0)));
+        ret.add(new CmsSelectWidgetOption(MODE_CLEANDELETED_DELETE_NONE, getClearDeletedMode().equals(
+            MODE_CLEANDELETED_DELETE_NONE), key(Messages.GUI_HISTORY_CLEAR_DELETED_DELETENONE_0)));
+
+        return ret;
     }
 
     /**

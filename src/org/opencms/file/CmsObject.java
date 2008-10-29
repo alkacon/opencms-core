@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2008/07/04 15:21:25 $
- * Version: $Revision: 1.164 $
+ * Date   : $Date: 2008/10/29 14:41:52 $
+ * Version: $Revision: 1.165 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.164 $
+ * @version $Revision: 1.165 $
  * 
  * @since 6.0.0 
  */
@@ -808,7 +808,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @deprecated use {@link #deleteHistoricalVersions(String, int, int, long, I_CmsReport)} instead,
+     * @deprecated use {@link #deleteHistoricalVersions(int, int, long, I_CmsReport)} instead,
      *             notice that there is no longer possible to delete historical versions by date
      */
     public void deleteBackups(long timestamp, int versions, I_CmsReport report) throws CmsException {
@@ -819,7 +819,7 @@ public final class CmsObject {
                 versions = OpenCms.getSystemInfo().getHistoryVersions();
             }
         }
-        deleteHistoricalVersions("/", versions, versions, timestamp, report);
+        deleteHistoricalVersions(versions, versions, timestamp, report);
     }
 
     /**
@@ -853,7 +853,10 @@ public final class CmsObject {
     /**
      * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
      * 
-     * @param folderName the name of the folder (with sub resources) to delete historical versions for 
+     * @deprecated this method has been replaced by <code>{@link #deleteHistoricalVersions(int, int, long, I_CmsReport)}</code> 
+     *      because it works globally (not site - dependent) and the folder argument is misleading. 
+     * 
+     * @param folderName will not be used as this operation is global (this method is deprecated due to the misleading signature) 
      * @param versionsToKeep number of versions to keep, is ignored if negative 
      * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
      * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
@@ -868,10 +871,27 @@ public final class CmsObject {
         long timeDeleted,
         I_CmsReport report) throws CmsException {
 
-        CmsFolder folder = readFolder(folderName);
+       deleteHistoricalVersions(versionsToKeep, versionsDeleted, timeDeleted, report);
+    }
+    
+    /**
+     * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
+     * 
+     * @param versionsToKeep number of versions to keep, is ignored if negative 
+     * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
+     * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
+     * @param report the report for output logging
+     * 
+     * @throws CmsException if operation was not successful
+     */
+    public void deleteHistoricalVersions(
+        int versionsToKeep,
+        int versionsDeleted,
+        long timeDeleted,
+        I_CmsReport report) throws CmsException {
+
         m_securityManager.deleteHistoricalVersions(
             m_context,
-            folder,
             versionsToKeep,
             versionsDeleted,
             timeDeleted,
