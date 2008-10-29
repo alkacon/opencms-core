@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2008/09/29 09:06:04 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2008/10/29 18:37:47 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.71 $ 
+ * @version $Revision: 1.72 $ 
  * 
  * @since 6.0.0 
  */
@@ -271,7 +271,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             I_CmsReport report = new CmsLogReport(m_adminCms.getRequestContext().getLocale(), CmsSearchManager.class);
             try {
                 while (m_isAlive) {
-                    List resourcesToIndex = getResourcesToIndex();
+                    List resourcesToIndex = optimizeResourcesToIndex(getResourcesToIndex());
                     if (resourcesToIndex.size() > 0) {
                         // only start indexing if there is at least one resource
                         updateIndexOffline(report, resourcesToIndex);
@@ -302,27 +302,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         /**
          * Adds a list of {@link CmsPublishedResource} objects to be indexed.<p>
          * 
-         * @param resourceToIndex the list of {@link CmsPublishedResource} objects to be indexed
+         * @param resourcesToIndex the list of {@link CmsPublishedResource} objects to be indexed
          */
-        protected synchronized void addResourcesToIndex(List resourceToIndex) {
+        protected synchronized void addResourcesToIndex(List resourcesToIndex) {
 
-            Iterator i = resourceToIndex.iterator();
-            while (i.hasNext()) {
-                CmsPublishedResource pubRes = (CmsPublishedResource)i.next();
-                int pos = m_resourcesToIndex.indexOf(pubRes);
-                if (pos < 0) {
-                    // resource not already contained in the update list
-                    m_resourcesToIndex.add(pubRes);
-                } else {
-                    CmsPublishedResource curRes = (CmsPublishedResource)m_resourcesToIndex.get(pos);
-                    if ((pubRes.getState() != curRes.getState())
-                        || (pubRes.getMovedState() != curRes.getMovedState())
-                        || !pubRes.getRootPath().equals(curRes.getRootPath())) {
-                        // resource already in the update list but new state is different, so also add this
-                        m_resourcesToIndex.add(pubRes);
-                    }
-                }
-            }
+            // just add all resources, optimization is done later
+            m_resourcesToIndex.addAll(resourcesToIndex);
         }
 
         /**
@@ -332,9 +317,42 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          */
         protected synchronized List getResourcesToIndex() {
 
-            List temp = m_resourcesToIndex;
+            List result = m_resourcesToIndex;
             m_resourcesToIndex = new ArrayList();
-            return temp;
+            return result;
+        }
+
+        /**
+         * Removes duplicate resources from the update queue.<p>
+         *
+         * The trick here is that this method is not synchronized, since the 
+         * list that is being optimized is used in the update thread only.<p> 
+         * 
+         * @param resourcesToIndex the list of resources to update
+         * 
+         * @return the optimized list of resources to update
+         */
+        protected List optimizeResourcesToIndex(List resourcesToIndex) {
+
+            List result = new ArrayList();
+            Iterator i = resourcesToIndex.iterator();
+            while (i.hasNext()) {
+                CmsPublishedResource pubRes = (CmsPublishedResource)i.next();
+                int pos = result.indexOf(pubRes);
+                if (pos < 0) {
+                    // resource not already contained in the update list
+                    result.add(pubRes);
+                } else {
+                    CmsPublishedResource curRes = (CmsPublishedResource)result.get(pos);
+                    if ((pubRes.getState() != curRes.getState())
+                        || (pubRes.getMovedState() != curRes.getMovedState())
+                        || !pubRes.getRootPath().equals(curRes.getRootPath())) {
+                        // resource already in the update list but new state is different, so also add this
+                        result.add(pubRes);
+                    }
+                }
+            }
+            return result;
         }
 
         /**
