@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/10/29 09:21:53 $
- * Version: $Revision: 1.1052 $
+ * Date   : $Date: 2008/10/29 12:46:48 $
+ * Version: $Revision: 1.1053 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -27,6 +27,7 @@ OpenCms 7.1.0 - xxx, 2008
 ! CmsTimeFrameCategoryCollector now allows line breaks and whitespaces in param attribute 
 ! Undo changes operation now shows an additional warning dialog with option to cancel in case siblings are found
 ! Extended authorization configuration and handling in order to allow support of alternative mechanisms
+! Added support for alternative lib folder structure of tomcat on windows for cmsshell
 - Updated simapi.jar to version 0.9.8
 * Fixed security issue with the history handler
 * Fixed issue with JSP hard includes when using site relative paths
