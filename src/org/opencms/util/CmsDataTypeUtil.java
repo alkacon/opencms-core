@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDataTypeUtil.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/10/29 09:21:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.5.6 
  */
@@ -348,6 +348,9 @@ public final class CmsDataTypeUtil {
         }
         if (clazz.equals(short.class) || clazz.equals(Short.class)) {
             return parseShort(data);
+        }
+        if (clazz.equals(long.class) || clazz.equals(Long.class)) {
+            return parseLong(data);
         }
         if (clazz.equals(int.class) || clazz.equals(Integer.class)) {
             return parseInt(data);
