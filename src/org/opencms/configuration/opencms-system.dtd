@@ -365,7 +365,7 @@ Each job can have an optional list of parameters.
 # Enable or disable browser-based HTTP authentication.
 # Values are:
 # - true|basic: enable browser based basic HTTP authentication
-# - false: disable browser based HTTP authentication, use form based if a from url is set
+# - false: disable browser based HTTP authentication, use form based if a form url is set
 # - other values: enable browser based HTTP authentication with an alternative mechanism specified by the value (must be supported by authorization handler)
 -->
 <!ELEMENT browser-based (#PCDATA)>
