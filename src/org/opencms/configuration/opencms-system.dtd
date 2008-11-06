@@ -493,7 +493,7 @@ Each job can have an optional list of parameters.
 # Provides methods for SSO.
 # See the JavaDoc of interface org.opencms.security.I_CmsAuthorizationHandler for more details.
 -->
-<!ELEMENT authorizationhandler EMPTY>
+<!ELEMENT authorizationhandler (parameters?)>
 <!ATTLIST authorizationhandler class CDATA #REQUIRED>
 
 <!--

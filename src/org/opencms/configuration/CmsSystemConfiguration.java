@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2008/08/20 13:20:10 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2008/11/06 09:28:40 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 6.0.0
  */
@@ -1443,6 +1443,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                     Messages.INIT_AUTHORIZATION_HANDLER_CLASS_SUCCESS_1,
                     m_authorizationHandler));
             }
+            authorizationHandler.setParameters(m_runtimeProperties);
             return authorizationHandler;
         } catch (Throwable t) {
             LOG.error(Messages.get().getBundle().key(

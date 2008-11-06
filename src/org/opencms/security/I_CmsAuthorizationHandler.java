@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsAuthorizationHandler.java,v $
- * Date   : $Date: 2008/10/28 10:33:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/11/06 09:28:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +48,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Michael Moossen
  * @author Carsten Weinholz
  *
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.4 
  */
@@ -137,4 +138,11 @@ public interface I_CmsAuthorizationHandler {
      * @throws IOException if something goes wrong
      */
     void requestAuthorization(HttpServletRequest req, HttpServletResponse res, String loginFormURL) throws IOException;
+    
+    /**
+     * Sets parameters which can be configured additionally for an authorization handler.<p>
+     * 
+     * @param parameters the map of parameters
+     */
+    void setParameters(Map parameters);
 }
