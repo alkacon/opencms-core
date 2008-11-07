@@ -6,10 +6,7 @@
 
 	EditArea.prototype.check_line_selection= function(timer_checkup){
 		//if(do_highlight==false){
-		/*if(this.once!=1){
-			alert("ONCE a"+ this.isResizing);
-			this.once=1;
-		}*/
+
 		if(!editAreas[this.id])
 			return false;
 		
@@ -57,7 +54,7 @@
 					else
 						this.selection_field.innerHTML=content;
 						
-					if(this.reload_highlight || (infos["full_text"] != this.last_text_to_highlight && (this.last_selection["line_start"]!=infos["line_start"] || this.last_selection["line_nb"]!=infos["line_nb"] || this.last_selection["nb_line"]!=infos["nb_line"]) ) )
+					if(this.reload_highlight || (infos["full_text"] != this.last_text_to_highlight && (this.last_selection["line_start"]!=infos["line_start"] || this.show_line_colors || this.last_selection["line_nb"]!=infos["line_nb"] || this.last_selection["nb_line"]!=infos["nb_line"]) ) )
 						this.maj_highlight(infos);
 				}		
 			}
@@ -98,10 +95,8 @@
 		//this.debug.value="tps total: "+ (tend-t1) + " tps get_infos: "+ (t2-t1)+ " tps jaune: "+ (t3-t2) +" tps cursor: "+ (tend-t3)+" "+typeof(infos);
 		
 		if(timer_checkup){
-			if(this.do_highlight==true)	//can slow down check speed when highlight mode is on
-				setTimeout("editArea.check_line_selection(true)", 50);
-			else
-				setTimeout("editArea.check_line_selection(true)", 50);
+			//if(this.do_highlight==true)	//can slow down check speed when highlight mode is on
+			setTimeout("editArea.check_line_selection(true)", this.check_line_selection_timer);
 		}
 	};
 
@@ -363,7 +358,6 @@
 		return true;
 		
 	};
-	
 	
 	EditArea.prototype.findEndBracket= function(infos, bracket){
 			

@@ -28,7 +28,7 @@
 	};
 	
 	EditArea.prototype.disable_highlight= function(displayOnly){		
-		$("selection_field").innerHTML="";
+		this.selection_field.innerHTML="";
 		this.content_highlight.style.visibility="hidden";
 		// replacing the node is far more faster than deleting it's content in firefox
 		var new_Obj= this.content_highlight.cloneNode(false);
@@ -237,7 +237,6 @@
 		tps2=date.getTime();
 		//updated_highlight= "<div class='keywords'>"+updated_highlight+"</div>";
 		var hightlighted_text= stay_begin + updated_highlight + stay_end;
-		//parent.$("test_pre").innerHTML="<div class='keywords'>"+hightlighted_text+"</div>";
 		//this.previous_hightlight_content= tab_text.join("<br>");
 		
 		date= new Date();

@@ -22,8 +22,10 @@
 		this.last_hightlighted_text= "";
 		this.syntax_list= new Array();
 		this.allready_used_syntax= new Object();
+		this.check_line_selection_timer= 50;	// the timer delay for modification and/or selection change detection
 		
 		this.textareaFocused= false;
+		this.highlight_selection_line= null;
 		this.previous= new Array();
 		this.next= new Array();
 		this.last_undo="";
@@ -134,6 +136,8 @@
 		if(!this.settings['is_editable'])
 			this.set_editable(false);
 		
+		this.set_show_line_colors( this.settings['show_line_colors'] );
+		
 		if(syntax_selec= $("syntax_selection"))
 		{
 			// set up syntax selection lsit in the toolbar
@@ -195,10 +199,7 @@
 			$("editor").onkeypress= keyDown;
 		else
 			$("editor").onkeydown= keyDown;
-	/*	if(this.nav['isIE'] || this.nav['isFirefox'])
-			this.textarea.onkeydown= keyDown;
-		else if
-			this.textarea.onkeypress= keyDown;*/
+
 		for(var i=0; i<this.inlinePopup.length; i++){
 			if(this.nav['isIE'] || this.nav['isFirefox'])
 				$(this.inlinePopup[i]["popup_id"]).onkeydown= keyDown;
@@ -234,26 +235,30 @@
 			this.textarea.spellcheck= this.settings["gecko_spellcheck"];
 		}
 		
+		/** Browser specific style fixes **/
+		
+		// fix rendering bug for highlighted lines beginning with no tabs
+		if( this.nav['isFirefox'] >= '3' )
+			this.content_highlight.style.borderLeft= "solid 1px transparent";
+		
+		if(this.nav['isIE']){
+			this.textarea.style.marginTop= "-1px";
+		}
+		/*
 		if(this.nav['isOpera']){
 			this.editor_area.style.position= "absolute";
-			this.selection_field.style.marginTop= "-1pt";			
-			this.selection_field.style.paddingTop= "1pt";
-			$("cursor_pos").style.marginTop= "-1pt";
-			$("end_bracket").style.marginTop= "-1pt";
-			this.content_highlight.style.marginTop= "-1pt";
-			/*$("end_bracket").style.marginTop="1px";*/
+		}*/
+		
+		if(this.nav['isSafari'] ){
+			this.editor_area.style.position= "absolute";
+			this.textarea.style.marginLeft="-3px";
+			this.textarea.style.marginTop="1px";
 		}
 		
-		if(this.nav['isSafari']){
+		if( this.nav['isChrome'] ){
 			this.editor_area.style.position= "absolute";
-			this.selection_field.style.marginTop= "-1pt";			
-			this.selection_field.style.paddingTop= "1pt";
-			this.selection_field.style.marginLeft= "3px";			
-			this.content_highlight.style.marginTop= "-1pt";
-			this.content_highlight.style.marginLeft= "3px";
-			$("cursor_pos").style.marginLeft= "3px";	
-			$("end_bracket").style.marginLeft= "3px";	
-			
+			this.textarea.style.marginLeft="0px";
+			this.textarea.style.marginTop="0px";
 		}
 		
 		// si le textarea n'est pas grand, un click sous le textarea doit provoquer un focus sur le textarea
@@ -262,6 +267,7 @@
 		if(this.settings['is_multi_files']!=false)
 			this.open_file({'id': this.curr_file, 'text': ''});
 	
+		this.set_wrap_text( this.settings['wrap_text'] );
 		
 		setTimeout("editArea.focus();editArea.manage_size();editArea.execCommand('EA_load');", 10);		
 		//start checkup routine
@@ -296,29 +302,25 @@
 			
 			//1) Manage display width
 			//1.1) Calc the new width to use for display
-			var area_width= this.textarea.scrollWidth;
-			var area_height= this.textarea.scrollHeight;
-			if(this.nav['isOpera']){
-				area_height= this.last_selection['nb_line']*this.lineHeight;
-				area_width=10000; /* TODO: find a better way to fix the width problem */								
+			if( this.settings['wrap_text'] )
+			{
+				//	var area_width= this.result.offsetWidth -50;
+			}
+			else
+			{
+				var area_width= this.textarea.scrollWidth;
+				var area_height= this.textarea.scrollHeight;
+				if(this.nav['isOpera']){
+					area_width=10000; /* TODO: find a better way to fix the width problem */								
+				}
 			}
 			
-			if(this.nav['isIE']>=7)
-				area_width-=45;
-	
-			if(this.nav['isGecko'] && this.smooth_selection && this.last_selection["nb_line"])
-				area_height= this.last_selection["nb_line"]*this.lineHeight;
 			
 			//1.2) the width is not the same, we must resize elements
 			if(this.textarea.previous_scrollWidth!=area_width)
 			{	
-				if(!this.nav['isOpera'] && this.textarea.style.width && (this.textarea.style.width.replace("px","") < area_width))
-					area_width+=50;
-			
-				if(this.nav['isGecko'] || this.nav['isOpera'])
-					this.container.style.width= (area_width+45)+"px";
-				else
-					this.container.style.width= area_width+"px";
+				
+				this.container.style.width= area_width+"px";
 				this.textarea.style.width= area_width+"px";
 				this.content_highlight.style.width= area_width+"px";	
 				this.textarea.previous_scrollWidth=area_width;

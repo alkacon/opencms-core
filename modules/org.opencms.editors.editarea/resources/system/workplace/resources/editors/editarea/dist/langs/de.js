@@ -12,7 +12,7 @@ match_case: "passt auf den Begriff<br />",
 not_found: "Nicht gefunden.",
 occurrence_replaced: "Die Vorkommen wurden ersetzt.",
 search_field_empty: "Leeres Suchfeld",
-restart_search_at_begin: "Ende des zu durchsuchenden Bereiches erreicht. Die Suche wird von Anfang an fortgesetzt.", //find a shorter translation
+restart_search_at_begin: "Ende des zu durchsuchenden Bereiches erreicht. Es wird die Suche von Anfang an fortgesetzt.", //find a shorter translation
 move_popup: "Suchfenster bewegen",
 font_size: "--Schriftgr&ouml;&szlig;e--",
 go_to_line: "Gehe zu Zeile",
@@ -58,5 +58,9 @@ syntax_pas: "Pascal",
 syntax_brainfuck: "Brainfuck",
 syntax_sql: "SQL",
 syntax_ruby: "Ruby",
+syntax_robotstxt: "Robots txt",
+syntax_tsql: "T-SQL",
+syntax_perl: "Perl",
+syntax_coldfusion: "Coldfusion",
 close_tab: "Close file"
 };

@@ -13,14 +13,14 @@ body, html, table, form, textarea{
 }
 
 #editor{
-	border: solid WindowFrame 1px;
+	border: none;
 	overflow: visible;
- /*	position: absolute;*/
 }
 
 #result{
 	z-index: 4;
-	overflow: auto;
+	overflow-x: auto;
+	overflow-y: scroll;
 	border-top: solid ButtonShadow 1px;
 	border-bottom: solid ButtonShadow 1px;
 	position: relative;
@@ -33,27 +33,25 @@ body, html, table, form, textarea{
 
 #container{
 	overflow: hidden;
-	border: solid blue 0px;
+	border: solid blue 0;
 	position: relative;
 	z-index: 10;
-	padding: 0 5px 0px 0;
+	padding: 0 5px 0 45px;
 	/*padding-right: 5px;*/
 }
 
 #textarea{
-	position: relative;
-	top: 0px;
-	left: 0px;
-	padding: 0px 0px 0px 45px;
+	position: relative; 
+	top: 0; 
+	left: 0;
+	margin: 0;
+	padding: 0;
 	width: 100%;
-	height: 100%;
-	/*position: absolute;*/
-	overflow: hidden;
-	z-index: 7;
-	border: solid green 0px;
+	height: 100%; 
+	overflow: hidden;  
+	z-index: 7; 
+	border-width: 0;
 	background-color: transparent;
-/*	background: none;
-	*/
 }
 
 #textarea, #textarea:hover{
@@ -62,26 +60,41 @@ body, html, table, form, textarea{
 
 #content_highlight{
 	white-space: pre;
-	/*background-color: #FFFFFF;*/
-	padding: 1px 0 0 45px;
-	position : absolute;
-	z-index: 4;
+	margin: 0;
+	padding: 0;
+	position : absolute; 
+	z-index: 4; 
 	overflow: visible;
-	border: solid yellow 0px;
 }
 
 
 #selection_field{
-	padding: 0px 0px 0 45px;
-	background-color: #E1F2F9;
-	height: 1px;
+	margin: 0; 
+	background-color: #E1F2F9; 
+	height: 1px;  
 	position: absolute;
 	z-index: 5;
 	top: -100px;
-	margin: 1px 0 0 0px;
+	padding: 0;
 	white-space: pre;
 	overflow: hidden;
 }
+
+#selection_field.show_colors{
+	z-index: 3;
+	background-color:#EDF9FC;
+	color:transparent;
+}
+
+#container.wrap_text #content_highlight, #container.wrap_text #selection_field{
+	white-space: pre-wrap;       /* css-3 */
+	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	width: 99%;
+}
+
 
 #line_number{
 	position: absolute;
@@ -89,7 +102,8 @@ body, html, table, form, textarea{
 	border-right: solid ButtonShadow 1px;
 	z-index:8;
 	width: 38px;
-	padding-right: 5px;
+	padding: 0 5px 0 0;
+	margin: 0 0 0 -45px;
 	text-align: right;
 	color: ButtonText;
 	background-color: ButtonFace;
@@ -118,7 +132,7 @@ pre{
 	z-index:6;
 	background-color: ButtonFace;
 	top: -100px;
-	margin: 1px 0 0 0px;
+	margin: 1px 0 0 0;
 }
 
 #result .edit_area_selection_field .overline{
@@ -151,13 +165,13 @@ pre{
 .editarea_popup .close_popup{
 	float: right;
 	line-height: 16px;
-	border: 0px;
-	padding: 0px;
+	border: 0;
+	padding: 0;
 }
 
 .editarea_popup h1,.editarea_popup h2,.editarea_popup h3,.editarea_popup h4,.editarea_popup h5,.editarea_popup h6{
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 }
 
 .editarea_popup .copyright{
@@ -231,8 +245,8 @@ div#area_search_replace  #area_search_msg{
 	/*font: 11px sans-serif;*/
 	width: 100%;
 	/*height: 21px; */
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 	background-color: ButtonFace;
 
 }
@@ -242,13 +256,13 @@ div#area_search_replace  #area_search_msg{
 }
 
 .area_toolbar img{
-	border: 0px;
+	border: 0;
 	vertical-align: middle;
 }
 
 .area_toolbar input{
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 }
 
 .area_toolbar select{
@@ -297,10 +311,10 @@ table.statusbar{
 
 /* toolbar buttons */
 .editAreaButtonNormal, .editAreaButtonOver, .editAreaButtonDown, .editAreaSeparator, .editAreaSeparatorLine, .editAreaButtonDisabled, .editAreaButtonSelected {
-	border: 0px; margin: 0px; padding: 0px; background: transparent;
-	margin-top: 0px;
+	border: 0; margin: 0; padding: 0; background: transparent;
+	margin-top: 0;
 	margin-left: 1px;
-	padding: 0px;
+	padding: 0;
 }
 
 .editAreaButtonNormal {
@@ -347,7 +361,7 @@ table.statusbar{
 	margin: 1px 2px;
 	background-color: ButtonShadow;
 	border-right: 1px solid ButtonHighlight !important;
-	width: 1px;
+	width: 1x;
 	height: 18px;
 }
 
@@ -355,7 +369,7 @@ table.statusbar{
 #processing{
 	display: none;
 	background-color:#ECE9D8;
-	border: solid #888888 1px;
+	border: solid #888 1px;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -410,8 +424,8 @@ table.statusbar{
 	display: block;
 	color: #000;
 	background: #ECE9D8;
-	border:	1px solid #888888;
-	border-width: 1px 1px 0px;
+	border:	1px solid #888;
+	border-width: 1px 1px 0;
 	text-align: center;
 	padding: 2px 2px 1px 4px;
 	position: relative;	/*IE 6 hack */
@@ -468,4 +482,47 @@ table.statusbar{
 .non_editable .area_toolbar
 {
 	display: none;
+}
+
+/*** Auto completion ***/
+#auto_completion_area
+{
+	background:	#FFF;
+	border:		solid 1px #888;
+	position:	absolute;
+	z-index:	15;
+	width:	280px;
+	height:	180px;
+	overflow: auto;
+	display:none;
+}
+
+#auto_completion_area a, #auto_completion_area a:visited
+{
+	display:	block;
+	padding:	0 2px 1px;
+	color:		#000;
+	text-decoration:none;
+}
+
+#auto_completion_area a:hover, #auto_completion_area a:focus, #auto_completion_area a.focus
+{
+	background:	#D6E1FE;
+	text-decoration:none;
+}
+
+#auto_completion_area ul
+{
+	margin:	0;
+	padding: 0;
+	list-style: none inside;
+}
+#auto_completion_area li
+{
+	padding:	0;
+}
+#auto_completion_area .prefix
+{
+	font-style: italic;
+	padding: 0 3px;
 }

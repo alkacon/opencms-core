@@ -38,7 +38,7 @@ case CmsEditor.ACTION_SAVE:
 
 	wp.actionSave();
 	if (wp.getAction() == CmsDialog.ACTION_CANCEL) {
-		// an error occurred during save
+		// an error occured during save
 		break;
 	}
 
@@ -103,7 +103,7 @@ default:
 		,save_callback: "my_save"
 		,plugins: "charmap,opencms"
 		,charmap_default: "arrows"
-
+		,show_line_colors: true
 	});
 
 	// callback functions
