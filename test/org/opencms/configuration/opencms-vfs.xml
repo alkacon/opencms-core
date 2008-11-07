@@ -88,7 +88,7 @@
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsImageGallery</param>
-					<param name="folder.class.params">w:120,h:90,c:dddddd</param>
+					<param name="folder.class.params">w:120,h:90,c:D4D0C8</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="downloadgallery" id="9">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsDownloadGallery</param>
@@ -662,7 +662,8 @@
 				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
                 <widget class="org.opencms.widgets.CmsTextareaWidgetPlaintext" alias="TextareaWidgetPlaintext" />                
 				<widget class="org.opencms.widgets.CmsUserWidget" alias="UserWidget"/>
-				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>                
+				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
+				<widget class="org.opencms.widgets.CmsVfsImageWidget" alias="VfsImageWidget"/>
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
@@ -673,6 +674,7 @@
 				<schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
                 <schematype class="org.opencms.xml.types.CmsXmlVarLinkValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlVfsImageValue" defaultwidget="org.opencms.widgets.CmsVfsImageWidget" />
 			</schematypes>
 		</xmlcontent>		
 	</vfs>
