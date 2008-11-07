@@ -1,8 +1,7 @@
 <%@ page import="
 	org.opencms.util.*,
 	org.opencms.workplace.*,
-	org.opencms.workplace.editors.*,
-	com.bayer.copylanguage.*
+	org.opencms.workplace.editors.*
 "%><%	
 
 	// initialize the workplace class
