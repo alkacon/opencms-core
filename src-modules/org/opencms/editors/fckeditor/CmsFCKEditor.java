@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditor.java,v $
- * Date   : $Date: 2008/02/27 12:05:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/11/07 15:51:21 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsSimplePageEditor;
 import org.opencms.workplace.galleries.A_CmsGallery;
+import org.opencms.workplace.galleries.CmsImageGallery;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +71,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.1.7
  */
@@ -110,6 +111,9 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
         while (i.hasNext()) {
             Map.Entry entry = (Map.Entry)i.next();
             String key = (String)entry.getKey();
+            if (CmsImageGallery.GALLERYTYPE_NAME.equals(key)) {
+                continue;
+            }
             A_CmsGallery currGallery = (A_CmsGallery)entry.getValue();
             galleries.add(currGallery);
             // put the type name to the type Map
@@ -143,6 +147,9 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
 
         while (i.hasNext()) {
             String galleryType = (String)i.next();
+            if (CmsImageGallery.GALLERYTYPE_NAME.equals(galleryType)) {
+                continue;
+            }
             String galleryName = CmsStringUtil.substitute(galleryType, "gallery", "");
 
             result.append("\n\nvar ").append(galleryType).append("Command = function() { this.Name = \"").append(

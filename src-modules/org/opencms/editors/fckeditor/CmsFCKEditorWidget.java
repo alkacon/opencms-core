@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2008/02/27 12:05:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/11/07 15:51:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditor;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.workplace.galleries.A_CmsGallery;
+import org.opencms.workplace.galleries.CmsImageGallery;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.1.7
  */
@@ -174,6 +175,9 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
             while (i.hasNext()) {
                 Map.Entry entry = (Map.Entry)i.next();
                 String key = (String)entry.getKey();
+                if (CmsImageGallery.GALLERYTYPE_NAME.equals(key)) {
+                    continue;
+                }
                 A_CmsGallery currGallery = (A_CmsGallery)entry.getValue();
                 galleries.add(currGallery);
                 // put the type name to the type Map
@@ -210,11 +214,11 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
             }
 
             // show image button if configured
-            if (option.showImageDialog()) {
+            if (option.getDisplayGalleries().contains(CmsImageGallery.GALLERYTYPE_NAME) || option.showImageDialog()) {
                 if (buttonRendered) {
                     custom.append(",\"-\",");
                 }
-                custom.append("\"OcmsImage\"");
+                custom.append("\"OcmsImageGallery\"");
                 buttonRendered = true;
             }
 

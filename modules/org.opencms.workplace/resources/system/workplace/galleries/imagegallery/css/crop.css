@@ -1,0 +1,49 @@
+html {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	background-color: AppWorkspace;
+	color: WindowText;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+div.head {
+	padding: 6px 0 6px 4px;
+	font-size: 12px;
+	font-weight: bold;
+	background-color: Caption;
+	color: CaptionText;
+}
+
+div.imgbg {
+	background-color: ButtonFace;
+	height: 450px;
+	text-align: center;
+}
+
+div.container {
+}
+
+div.selection {
+	background-color: InfoBackground;
+	color: InfoText;
+	font-size: 12px;
+	padding: 6px 0 6px 4px;
+}
+
+div.width, div.height {
+	padding-bottom: 2px;
+}
+
+div.buttons {
+	padding-top: 6px;
+	border-top: 1px solid ButtonShadow;
+	text-align: center;
+}
+
+button {
+	margin: 0 6px 0 4px;
+}

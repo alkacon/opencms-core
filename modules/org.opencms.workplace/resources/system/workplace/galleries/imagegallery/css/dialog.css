@@ -1,0 +1,463 @@
+html {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	overflow: hidden;
+}
+
+input, textarea, select {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+button {
+	width: auto;
+	overflow: visible;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+body {
+	color: WindowText;
+	background-color: Window;
+	margin: 0 4px;
+	padding: 0;
+}
+
+img {
+	border: none;
+}
+
+.btnreset {
+	float: left;
+	background-position: center center;
+	background-image: url(../img/reset.gif);
+	width: 16px;
+	height: 16px;
+	background-repeat: no-repeat;
+	font-size: 1px;
+	cursor: pointer;
+}
+
+.btnlocked, .btnunlocked {
+	float: left;
+	background-position: center center;
+	background-image: url(../img/locked.gif);
+	width: 16px;
+	height: 16px;
+	background-repeat: no-repeat;
+	font-size: 1px;
+	cursor: pointer;
+}
+
+.btnunlocked {
+	background-image: url(../img/unlocked.gif);
+}
+
+.invisible {
+	visibility: hidden;
+}
+
+#dialogbuttons {
+	clear: left;
+	text-align: center;
+	padding-top: 6px;
+}
+
+#closebutton {
+	text-align: center;
+	padding: 8px 0 0 0;
+	background-color: Window;
+	color: WindowText;
+	display: none;
+}
+
+#preview #imagename, #advancedhead, #galleryfolders div.head, #categoryfolders div.head  {
+	color: ButtonText;
+	background-color: ButtonFace;
+	border-bottom: 1px solid ButtonShadow;
+	padding: 6px 4px;
+	font-size: 12px;
+	font-weight: bold;
+	white-space: nowrap;
+	height: 16px;
+	overflow: hidden;
+}
+
+#preview #imagename #toggleInfo {
+	width: 16px;
+	height: 16px;
+	float: left;
+	vertical-align: middle;
+	margin-right: 6px;
+	background-position: center center;
+	cursor: pointer;
+}
+
+#preview #imagename div.hideinfo {
+	background-image: url(../../../buttons/move_up.png);
+}
+
+#preview #imagename div.showinfo {
+	background-image: url(../../../buttons/move_down.png);
+}
+
+#preview #previewwrapper {
+	height: 450px;
+	padding: 0 6px;
+	background-color: ButtonFace;
+	border-bottom: 1px solid ButtonShadow;
+}
+
+#preview #imgpreview {
+	text-align: center;
+}
+
+#preview #imgdetails {
+	padding: 6px 4px;
+	border-bottom: 1px solid ButtonShadow;
+}
+
+#preview #imgdetails table.wrapper  {
+	width: 100%;
+}
+
+#preview #imgdetails td.wrapper  {
+	width: 50%;
+	vertical-align: top;
+}
+
+#preview #imgdetails .head {
+	font-size: 12px;
+	font-weight: bold;
+	padding-bottom: 4px;
+}
+
+#preview #imgdetails a {
+	text-decoration: none;
+}
+
+#preview #imgdetails img {
+	vertical-align: middle;
+	margin-right: 6px;
+}
+
+#preview #imgdetails #formatoptions td {
+	padding: 2px 2px 0 0;
+}
+
+#preview #imgdetails #croplink {
+	float: left;
+	margin-right: 6px;
+}
+
+#preview #imgdetails #cropremove {
+}
+
+#preview #imgdetails #cropinfo {
+	clear: left;
+}
+
+input.showborder, select.showborder {
+	border: 1px solid ButtonShadow;
+}
+
+#preview #dialogbuttons #cancelbutton {
+	margin-left: 4px;
+}
+
+#preview, #galleries, #categories {
+	background-color: InfoBackground;
+	overflow: hidden;
+}
+
+#galleryfolderlist, #categoryfolderlist {
+	padding: 6px 4px;
+	height: 570px;
+	overflow: auto;
+}
+
+#galleryfolderlist div, #categoryfolderlist div {
+	margin-bottom: 6px;
+	padding: 4px;
+	background-color: Window;
+	border: 1px solid ButtonShadow;
+	cursor: pointer;
+}
+
+#galleryfolderlist div:hover, #categoryfolderlist div:hover, #galleryfolderlist div.active:hover, #categoryfolderlist div.active:hover {
+	background-color: Background;
+}
+
+#galleryfolderlist div.active, #categoryfolderlist div.active {
+	background-color: Highlight;
+}
+
+#galleryfolderlist div span.title, #categoryfolderlist div span.title {
+	display: block;
+	font-size: 12px;
+	font-weight: bold;
+	color: InfoText;
+	padding-bottom: 2px;
+}
+
+#galleryfolderlist div span.path, #categoryfolderlist div span.path {
+	display: block;
+	color: GrayText;
+	font-size: 11px;
+	font-style: italic;
+	width: 100%;
+	overflow: hidden;
+}
+
+#galleryfolderlist div:hover span.title, #categoryfolderlist div:hover span.title, #galleryfolderlist div:hover span.path, #categoryfolderlist div:hover span.path,
+#galleryfolderlist div.active span.title, #categoryfolderlist div.active span.title, #galleryfolderlist div.active span.path, #categoryfolderlist div.active span.path {
+	color: HighlightText;
+}
+
+#galleryimagebuttons, #categoryimagebuttons {
+	background-color: InfoBackground;
+	color: InfoText;
+	padding: 6px 4px;
+}
+
+#gallerypublishbutton {
+	margin-left: 4px;
+}
+
+#galleryuploadbutton {
+	float: right;
+}
+
+#galleryimages, #categoryimages {
+	display: none;
+}
+
+#galleryimagelist, #categoryimagelist {
+	background-color: ButtonFace;
+	border-bottom: 1px solid ButtonShadow;
+	height: 486px;
+}
+
+#galleryimagelistinner, #categoryimagelistinner {
+	position: relative;
+	overflow: auto;
+	height: 415px;
+	background-color: #D4D0C8;
+	border-top: 1px solid ButtonShadow;
+}
+
+#galleryname, #categoryname {
+	border-top: 1px solid ButtonShadow;
+	background-color: ButtonFace;
+	padding: 6px 4px;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+#galleryname span, #categoryname span {
+	display: block;
+	font-size: 11px;
+	font-weight: normal;
+	padding-top: 2px;
+	color: Window;
+}
+
+#galleryimageinfo, #categoryimageinfo {
+	background-color: InfoBackground;
+	color: InfoText;
+	padding: 6px 4px 0 4px;
+}
+
+#galleryimageinfo table, #categoryimageinfo table {
+	width: 100%;
+}
+
+#detailinfo {
+	width: 90%;
+	margin-top: 0;
+	position: absolute;
+	z-index: 6;
+	filter: alpha(opacity=90);
+	opacity: 0.90;
+	background-color: InfoBackground;
+	border-right: 1px solid ButtonShadow;
+	border-bottom: 1px solid ButtonShadow;
+	border-left: 1px solid ButtonShadow;
+	color: InfoText;
+	display: none;
+}
+
+#galleryimageinfo table td, #categoryimageinfo table td, #detailinfo td {
+	padding: 2px 0;
+	white-space: nowrap;
+}
+
+#detailinfo td {
+	padding: 2px;
+}
+
+td.imageinfoheadline, td.imageinfostate {
+	font-size: 12px !important;
+	line-height: 15px;
+	height: 20px;
+	padding: 4px 0 0 0;
+}
+
+td.imageinfoheadline {
+	font-weight: bold;
+}
+
+td.imageinfostate {
+	font-style: italic;
+}
+
+#galleryimageselectbutton, #categoryimageselectbutton, #galleryimagepublishbutton, #categoryimagepublishbutton {
+	display: none;
+	width: 28px;
+	height: 18px;
+	margin-left: 4px;
+	margin-top: -4px;
+	vertical-align: middle;
+}
+
+#galleryimageselectbutton img, #categoryimageselectbutton img, #galleryimagepublishbutton img, #categoryimagepublishbutton img {
+	margin-top: -4px;
+	margin-left: -2px;
+}
+
+td.galleryimageinfotitle, td.categoryimageinfotitle {
+	font-size: 12px !important;
+	padding: 0;
+	margin: 0;
+	height: 22px;
+	vertical-align: middle;
+}
+
+#galleryimagetitle, #categoryimagetitle {
+	padding-top: 0px;
+	height: 16px;
+}
+
+#galleryimagetitle.editable, #categoryimagetitle.editable {
+	cursor: pointer;
+	padding-left: 24px;
+	background-image: url("../../../buttons/edit.png");
+	background-position: center left;
+	background-repeat: no-repeat;
+}
+
+#galleryimagetitle form.edittitle, #categoryimagetitle form.edittitle {
+	height: 18px;
+	margin: -1px 0 0 0;
+	padding: 0;
+}
+
+#galleryimagetitle input, #categoryimagetitle input {
+	margin-bottom: 2px;
+	font-size: 12px !important;
+	border: none;
+	width: 75% !important;
+}
+
+#galleryimagetitle button, #categoryimagetitle button {
+	height: 18px;
+	margin-bottom: 1px;
+	font-size: 9px;
+	margin-left: 4px;
+}
+
+div.imgitem, div.imgitemhover, div.imgitemactive {
+	float: left;
+	padding: 2px 10px;
+	margin: 3px 4px;
+	text-align: center;
+	vertical-align: top;
+	width: 120px;
+	height: 90px;
+}
+
+div.imgitem {
+	border: 1px solid Window;
+}
+
+div.imgitemhover {
+	border: 1px solid ButtonShadow;
+}
+
+div.imgitemactive {
+	border: 1px solid Highlight;
+	background-color: ActiveCaption;
+}
+
+div.imgitemwrapper {
+	position: relative;
+}
+
+img.imgthumb {
+	cursor: pointer;	
+}
+
+span.imglayer {
+	top: 0;
+	left: 0;
+	position: absolute;
+	z-index: 5;
+	cursor: pointer;
+}
+
+span.imglayer img {
+	display: block;
+	margin-bottom: 4px;
+	width: 24px;
+	height: 24px;
+}
+
+#jHelperTipAttrContainer{ 
+	background: InfoBackground;
+	border: 1px solid ButtonShadow;
+	color: Infotext;
+	padding: 2px;
+	white-space: nowrap;
+	display: none;
+}
+
+span.stateinfonew {
+	color: #00A;
+}
+
+span.stateinfochanged {
+	color: #B40000;
+}
+
+#imagegallery-paginationwrapper, #imagecategory-paginationwrapper {
+	height: 24px;
+	font-weight: bold;
+	text-align: center;
+}
+
+#imagegallery-pagination, #imagecategory-pagination {
+	height: 24px;
+	padding-top: 3px;
+	display: block;
+}
+
+#imagegallery-pagination a, #imagecategory-pagination a, #imagegallery-pagination span.current, #imagecategory-pagination span.current {
+	margin-right: 6px;
+	padding: 2px 3px;
+	text-decoration: none;
+	display: inline-block;
+}
+
+#imagegallery-pagination a, #imagecategory-pagination a {
+	border: 1px solid Window;
+	color: ThreeDShadow;
+}
+
+#imagegallery-pagination a:hover, #imagecategory-pagination a:hover {
+	border: 1px solid ButtonShadow;
+}
+
+#imagegallery-pagination span.current, #imagecategory-pagination span.current {
+	border: 1px solid ButtonShadow;
+	color: Window;
+}

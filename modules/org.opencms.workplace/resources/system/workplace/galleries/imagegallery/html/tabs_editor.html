@@ -1,0 +1,254 @@
+	<div id="preview">
+
+		<div id="imagename">
+			<div id="toggleInfo" class="showinfo" onclick="toggleDetailInfo();" title="<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_DETAILS_0) %>"></div><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_IMAGE_0) %> <span id="previmgname"></span>
+		</div>
+		<div id="previewwrapper">
+			<table cellspacing="0" cellpadding="0" border="0" id="detailinfo">
+				<tr>
+					<td colspan="2" class="imageinfoheadline">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_HEADLINE_0) %>
+					</td>
+					<td colspan="2" class="imageinfostate">
+						<span id="detailimagestate"></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="categoryimageinfotitle">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_TITLE_0) %>
+					</td>
+					<td class="categoryimageinfotitle" colspan="3"><span id="detailimagetitle"></span></td>
+				</tr>
+				<tr>
+					<td valign="top" width="14%">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_NAME_0) %>
+					</td>
+					<td valign="top" width="45%" id="detailimagename"></td>
+					<td valign="top" width="14%">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_DATE_CREATED_0) %>
+					</td>
+					<td valign="top" width="26%" id="detailimagedc"></td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_TYPE_0) %>
+					</td>
+					<td valign="top" id="detailimagetype"></td>
+					<td valign="top">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_DATE_MODIFIED_0) %>
+					</td>
+					<td valign="top" id="detailimagedm"></td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_FORMAT_0) %>
+					</td>
+					<td valign="top" id="detailimageformat"></td>
+					<td valign="top">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_SIZE_0) %>
+					</td>
+					<td valign="top" id="detailimagesize"></td>
+				</tr>
+			</table>
+			<div id="imgpreview"></div>
+		</div>
+		
+		<div id="imgoptions">
+			<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+				<tr>
+					<td style="width: 100%;" colspan="3">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_DESCRIPTION_0) %>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 50%;">
+						<input id="txtAlt" style="width: 98%" type="text" class="showborder" />
+					</td>
+					<td style="width: 28%; white-space: nowrap;" id="enhAltCheck" style="display: none;">
+						&nbsp;<input id="insertAlt" type="checkbox" value="true" />
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_SUBTITLE_0) %>
+					</td>
+					<td style="width: 22%; text-align: right;" id="enhAltBt" style="display: none;">
+						<button type="button" id="btnSetAlt" onclick="resetAltText();" style="width: 95%"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_TITLE_RESET_0) %></button>
+					</td>
+				</tr>
+			</table>
+			
+			<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;" id="enhCopy" style="display: none;">
+				<tr>
+					<td style="width: 100%;" colspan="3">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_COPYRIGHT_0) %>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 50%;">
+						<input id="txtCopyright" style="width: 98%" type="text" class="showborder" />
+					</td>
+					<td style="width: 28%; white-space: nowrap;">
+						&nbsp;<input id="insertCopyright" type="checkbox" value="true" />
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_COPY_INSERT_0) %>
+					</td>
+					<td style="width: 22%; text-align: right;">
+						<button type="button" id="btnSetCopy" onclick="resetCopyrightText();" style="width: 95%"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_COPY_RESET_0) %></button>
+					</td>
+				</tr>
+			</table>
+			
+			<table cellspacing="0" cellpadding="0" border="0" style="width: 100%;" id="imgalign">
+				<tr>
+					<td style="width: 25%;">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_IMAGE_SPACING_0) %>
+					</td>
+					<td style="width: 25%;">
+						<input id="imageBorder" type="checkbox" value="true" onclick="setImageBorder();">
+					</td>
+					<td style="width: 50%;">
+						&nbsp;&nbsp;<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_ALIGNMENT_0) %>&nbsp;&nbsp;<select id="cmbAlign" style="width: 60px;" class="showborder">
+							<option value="" selected="selected"></option>
+							<option value="left"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_ALIGN_LEFT_0) %></option>
+							<option value="right"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_ALIGN_RIGHT_0) %></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_SPACING_H_0) %>&nbsp;</td>
+					<td>
+						&nbsp;<input type="text" size="2" id="txtHSpace" class="showborder" />
+					</td>
+					<td id="enhOrig" style="display: none;">
+						&nbsp;<input id="linkOriginal" type="checkbox" value="true">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_LINK_ORIGINAL_0) %>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGOPTIONS_SPACING_V_0) %>&nbsp;</td>
+					<td colspan="2">
+						&nbsp;<input type="text" size="2" id="txtVSpace" class="showborder" /></td>
+				</tr>
+			</table>
+		</div>
+
+		<div id="imgdetails">
+			<table border="0" cellpadding="0" cellspacing="0" class="wrapper">
+			<tr>
+				<td class="wrapper">
+					<div class="head"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_HL_FORMAT_0) %></div>
+					<div id="formatoptions">
+						<select id="formatselect" onchange="changeFormat();" class="showborder"></select>
+						<table cellspacing="0" cellpadding="0" border="0">
+							
+							<tr>
+								<td width="35" nowrap="nowrap">
+									<span><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_WIDTH_0) %></span>&nbsp;</td>
+								<td width="50">
+									<input type="text" size="4" id="txtWidth" onblur="onSizeChanged('Width',this.value);" class="showborder" />
+								</td>
+								<td rowspan="2" width="22">
+									<div id="locksizes" title="<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_UNLOCK_0) %>" class="btnlocked" onclick="switchLock();"></div>
+								</td>
+								<td rowspan="2" width="22">
+									<div id="resetsize" title="<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_RESET_0) %>" class="btnreset" onclick="resetSizes();"></div>
+								</td>
+							</tr>
+							<tr>
+								<td nowrap="nowrap">
+									<span><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_HEIGHT_0) %></span>&nbsp;</td>
+								<td>
+									<input type="text" size="4" id="txtHeight" onblur="onSizeChanged('Height',this.value);" class="showborder" />
+								</td>
+								
+							</tr>
+						</table>
+				</div>
+				</td>
+				<td class="wrapper">
+					<div class="head"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_HL_CROP_0) %></div>
+					<div id="croplink">
+						<a href="crop.jsp?TB_iframe=true&amp;width=580&amp;height=560&amp;modal=true" class="thickbox">
+							<button type="button">
+								<img src="<%= galleryResourcePath %>img/crop.png" /> <%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_CROP_0) %>
+							</button>
+						</a>
+					</div>
+					<div id="cropremove" onclick="setCropActive(false);checkResetSizes();">
+						<button type="button">
+							<img src="<%= galleryResourcePath %>img/cropremove.png" /> <%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_CROP_REMOVE_0) %>
+						</button>
+					</div>
+					<div id="cropinfo"></div>
+				</td>
+			</tr>
+			</table>
+		</div>
+	</div>
+	
+	<%-- ################################################### Advanced tab ################################################### --%>
+	<div id="advanced">
+		<div id="advancedhead">
+			<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ADV_HL_0) %>
+		</div>
+		<div id="advlink">
+			<div class="head"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_LINK_HL_0) %></div>
+			<div>
+				<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_LINK_URL_0) %><br />
+				<input id="txtLnkUrl" style="width: 99%;" type="text" class="showborder" />
+			</div>
+			<div id="btbrowseserver">
+				<button type="button" onclick="LnkBrowseServer();"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_LINK_BT_BROWSE_0) %></button>
+			</div>
+			<div class="advinput">
+				<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_LINK_TARGET_0) %><br />
+				<select id="cmbLnkTarget" class="showborder">
+					<option value="" selected="selected"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_NOTSET_0) %></option>
+					<option value="_blank"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_NEW_0) %></option>
+					<option value="_top"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_TOP_0) %></option>
+					<option value="_self"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_SELF_0) %></option>
+					<option value="_parent"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_PARENT_0) %></option>
+				</select>
+			</div>
+		</div>
+		<div id="advattrs">
+			<div class="head"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_HL_0) %></div>
+			<div>
+				<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_ID_0) %><br />
+				<input id="txtAttId" style="width: 99%;" type="text" class="showborder" />
+			</div>
+			
+			<div class="advinput">
+				<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_CLASS_0) %><br />
+				<input id="txtAttClasses" style="width: 99%;" type="text" class="showborder" />
+			</div>
+			
+			<div class="advinput">
+				<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_STYLE_0) %><br />
+				<input id="txtAttStyle" style="width: 99%;" type="text" class="showborder" />
+			</div>
+			
+			<div class="advinput">
+				<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LONGDESC_0) %><br />
+				<input id="txtLongDesc" style="width: 99%;" type="text" class="showborder" />
+			</div>
+			
+			<div class="advinput">
+				<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_ADVTITLE_0) %><br />
+				<input id="txtAttTitle" style="width: 99%;" type="text" class="showborder" />
+			</div>
+			
+			<div class="advinput">
+				<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_0) %><br />
+				<select id="cmbAttLangDir" style="width: 100%;" class="showborder">
+					<option value="" selected="selected"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_NOTSET_0) %></option>
+					<option value="ltr"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_LTR_0) %></option>
+					<option value="rtl"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_RTL_0) %></option>
+				</select>
+			</div>
+			
+			<div class="advinput">
+				<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGCODE_0) %><br />
+				<input id="txtAttLangCode" style="width: 99%;" type="text" class="showborder" />
+			</div>
+
+		</div>
+	</div>

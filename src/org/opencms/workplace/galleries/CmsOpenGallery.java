@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsOpenGallery.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2008/11/07 15:51:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,8 @@ package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.json.JSONException;
+import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -58,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,25 +113,54 @@ public class CmsOpenGallery extends CmsDialog {
                 }
                 // get the matching gallery type name
                 galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-                String galleryUri = A_CmsGallery.PATH_GALLERIES
-                    + A_CmsGallery.OPEN_URI_SUFFIX
-                    + "?"
-                    + A_CmsGallery.PARAM_GALLERY_TYPENAME
-                    + "="
-                    + galleryType;
+                StringBuffer galleryUri = new StringBuffer(256);
+                galleryUri.append(A_CmsGallery.PATH_GALLERIES);
+                String width = "650";
+                String height = "700";
+                if (CmsImageGallery.GALLERYTYPE_NAME.equals(galleryType)) {
+                    // image gallery, open new image gallery dialog
+                    galleryUri.append("imagegallery/index.jsp?");
+                    galleryUri.append(A_CmsGallery.PARAM_DIALOGMODE);
+                    galleryUri.append("=");
+                    galleryUri.append(A_CmsGallery.MODE_VIEW);
+                    galleryUri.append("&");
+                    galleryUri.append(CmsImageGalleryExtended.PARAM_PARAMS);
+                    galleryUri.append("=");
+                    JSONObject jsonObj = new JSONObject();
+                    try {
+                        jsonObj.putOpt(CmsImageGalleryExtended.PARAM_STARTUPFOLDER, galleryPath);
+                        jsonObj.putOpt(CmsImageGalleryExtended.PARAM_STARTUPTYPE, CmsImageGalleryExtended.LISTMODE_GALLERY);
+                    } catch (JSONException e) {
+                        // ignore, because it should not happen!
+                    }
+                    galleryUri.append(jsonObj.toString());
+                    height = "750";
+                } else {
+                    // other gallery type, create link to common gallery
+                    galleryUri.append(A_CmsGallery.OPEN_URI_SUFFIX);
+                    galleryUri.append("?");
+                    galleryUri.append(A_CmsGallery.PARAM_GALLERY_TYPENAME);
+                    galleryUri.append("=");
+                    galleryUri.append(galleryType);
+                    galleryUri.append("&");
+                    galleryUri.append(A_CmsGallery.PARAM_DIALOGMODE);
+                    galleryUri.append("=");
+                    galleryUri.append(A_CmsGallery.MODE_VIEW);
+                    galleryUri.append("&");
+                    galleryUri.append(A_CmsGallery.PARAM_GALLERYPATH);
+                    galleryUri.append("=");
+                    galleryUri.append(galleryPath);
+                }
                 jsOpener.append("window.open('");
-                jsOpener.append(getJsp().link(galleryUri));
-                jsOpener.append("&");
-                jsOpener.append(A_CmsGallery.PARAM_DIALOGMODE);
-                jsOpener.append("=");
-                jsOpener.append(A_CmsGallery.MODE_VIEW);
-                jsOpener.append("&");
-                jsOpener.append(A_CmsGallery.PARAM_GALLERYPATH);
-                jsOpener.append("=");
-                jsOpener.append(galleryPath);
+                jsOpener.append(getJsp().link(galleryUri.toString()));
+                
                 jsOpener.append("', '");
                 jsOpener.append(galleryType);
-                jsOpener.append("','width=650, height=700, resizable=yes, top=100, left=270, status=yes');");
+                jsOpener.append("','width=");
+                jsOpener.append(width);
+                jsOpener.append(", height=");
+                jsOpener.append(height);
+                jsOpener.append(", resizable=yes, top=100, left=270, status=yes');");
             }
         } catch (CmsException e) {
             // requested type is not configured

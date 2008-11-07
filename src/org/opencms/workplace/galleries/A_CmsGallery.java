@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2008/11/07 15:51:21 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -840,7 +840,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     }
                     m_galleryItems = getCms().readResources(getParamGalleryPath(), filter, false);
                 } catch (CmsException e) {
-                    // error reading reaources
+                    // error reading resources
                     LOG.error(e.getLocalizedMessage(), e);
                 } catch (NullPointerException e) {
                     // ignore this exception    

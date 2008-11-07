@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2008/11/07 15:51:21 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,12 +54,15 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsImageGallery extends A_CmsGallery {
 
+    /** Type name of the image gallery. */
+    public static final String GALLERYTYPE_NAME = "imagegallery";
+    
     /** URI of the image gallery popup dialog. */
     public static final String URI_GALLERY = PATH_GALLERIES + "img_fs.jsp";
 

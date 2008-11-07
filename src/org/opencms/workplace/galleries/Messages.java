@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/11/07 15:51:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,6 +68,265 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_PREVIEW_0 = "GUI_BUTTON_PREVIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_BUTTON_CANCEL_0 = "GUI_IMAGEGALLERY_BUTTON_CANCEL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_BUTTON_CLOSE_0 = "GUI_IMAGEGALLERY_BUTTON_CLOSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_BUTTON_OK_0 = "GUI_IMAGEGALLERY_BUTTON_OK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_CATEGORIES_BUTTON_SHOW_0 = "GUI_IMAGEGALLERY_CATEGORIES_BUTTON_SHOW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_CATEGORIES_HL_AVAILABLE_0 = "GUI_IMAGEGALLERY_CATEGORIES_HL_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_CROP_HEADLINE_0 = "GUI_IMAGEGALLERY_CROP_HEADLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_CROP_HEIGHT_0 = "GUI_IMAGEGALLERY_CROP_HEIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_CROP_RATIO_0 = "GUI_IMAGEGALLERY_CROP_RATIO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_CROP_WIDTH_0 = "GUI_IMAGEGALLERY_CROP_WIDTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_EDITOR_TITLE_0 = "GUI_IMAGEGALLERY_EDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_EDITOR_TOOLTIP_0 = "GUI_IMAGEGALLERY_EDITOR_TOOLTIP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_FORMAT_FREECROP_0 = "GUI_IMAGEGALLERY_FORMAT_FREECROP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_FORMAT_LARGE_0 = "GUI_IMAGEGALLERY_FORMAT_LARGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_FORMAT_ORIGINAL_0 = "GUI_IMAGEGALLERY_FORMAT_ORIGINAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_FORMAT_SMALL_0 = "GUI_IMAGEGALLERY_FORMAT_SMALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_FORMAT_USER_0 = "GUI_IMAGEGALLERY_FORMAT_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_GALLERIES_BUTTON_PUBLISH_0 = "GUI_IMAGEGALLERY_GALLERIES_BUTTON_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_GALLERIES_BUTTON_SHOW_0 = "GUI_IMAGEGALLERY_GALLERIES_BUTTON_SHOW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_GALLERIES_BUTTON_UPLOAD_0 = "GUI_IMAGEGALLERY_GALLERIES_BUTTON_UPLOAD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_GALLERIES_HL_AVAILABLE_0 = "GUI_IMAGEGALLERY_GALLERIES_HL_AVAILABLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ADV_HL_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ADV_HL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_ADVTITLE_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_ADVTITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_CLASS_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_CLASS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_HL_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_HL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_ID_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_ID_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGCODE_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGCODE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_LTR_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_LTR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_NOTSET_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_NOTSET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_RTL_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LANGDIR_RTL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LONGDESC_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_LONGDESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_STYLE_0 = "GUI_IMAGEGALLERY_IMGADVANCED_ATTRS_STYLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_LINK_BT_BROWSE_0 = "GUI_IMAGEGALLERY_IMGADVANCED_LINK_BT_BROWSE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_LINK_HL_0 = "GUI_IMAGEGALLERY_IMGADVANCED_LINK_HL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_LINK_TARGET_0 = "GUI_IMAGEGALLERY_IMGADVANCED_LINK_TARGET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_NEW_0 = "GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_NOTSET_0 = "GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_NOTSET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_PARENT_0 = "GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_PARENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_SELF_0 = "GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_SELF_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_TOP_0 = "GUI_IMAGEGALLERY_IMGADVANCED_LINK_TG_TOP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGADVANCED_LINK_URL_0 = "GUI_IMAGEGALLERY_IMGADVANCED_LINK_URL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_DATE_CREATED_0 = "GUI_IMAGEGALLERY_IMGDETAIL_DATE_CREATED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_DATE_MODIFIED_0 = "GUI_IMAGEGALLERY_IMGDETAIL_DATE_MODIFIED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_EDIT_HELP_0 = "GUI_IMAGEGALLERY_IMGDETAIL_EDIT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_FORMAT_0 = "GUI_IMAGEGALLERY_IMGDETAIL_FORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_HEADLINE_0 = "GUI_IMAGEGALLERY_IMGDETAIL_HEADLINE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_NAME_0 = "GUI_IMAGEGALLERY_IMGDETAIL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_PUBLISH_0 = "GUI_IMAGEGALLERY_IMGDETAIL_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_SELECT_0 = "GUI_IMAGEGALLERY_IMGDETAIL_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_SIZE_0 = "GUI_IMAGEGALLERY_IMGDETAIL_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_STATE_CHANGED_0 = "GUI_IMAGEGALLERY_IMGDETAIL_STATE_CHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_STATE_NEW_0 = "GUI_IMAGEGALLERY_IMGDETAIL_STATE_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_TITLE_0 = "GUI_IMAGEGALLERY_IMGDETAIL_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGDETAIL_TYPE_0 = "GUI_IMAGEGALLERY_IMGDETAIL_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGITEM_LOCKSTATE_LOCKED_0 = "GUI_IMAGEGALLERY_IMGITEM_LOCKSTATE_LOCKED_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGITEM_STATE_CHANGED_0 = "GUI_IMAGEGALLERY_IMGITEM_STATE_CHANGED_0";
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGITEM_STATE_NEW_0 = "GUI_IMAGEGALLERY_IMGITEM_STATE_NEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_ALIGN_LEFT_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_ALIGN_LEFT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_ALIGN_RIGHT_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_ALIGN_RIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_ALIGNMENT_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_ALIGNMENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_COPY_INSERT_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_COPY_INSERT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_COPY_RESET_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_COPY_RESET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_COPYRIGHT_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_COPYRIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_DESCRIPTION_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_DESCRIPTION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_IMAGE_SPACING_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_IMAGE_SPACING_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_LINK_ORIGINAL_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_LINK_ORIGINAL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_SPACING_H_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_SPACING_H_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_SPACING_V_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_SPACING_V_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_SUBTITLE_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_SUBTITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGOPTIONS_TITLE_RESET_0 = "GUI_IMAGEGALLERY_IMGOPTIONS_TITLE_RESET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGPREVIEW_CROP_0 = "GUI_IMAGEGALLERY_IMGPREVIEW_CROP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGPREVIEW_CROP_REMOVE_0 = "GUI_IMAGEGALLERY_IMGPREVIEW_CROP_REMOVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGPREVIEW_DETAILS_0 = "GUI_IMAGEGALLERY_IMGPREVIEW_DETAILS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGPREVIEW_HEIGHT_0 = "GUI_IMAGEGALLERY_IMGPREVIEW_HEIGHT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGPREVIEW_HL_CROP_0 = "GUI_IMAGEGALLERY_IMGPREVIEW_HL_CROP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGPREVIEW_HL_FORMAT_0 = "GUI_IMAGEGALLERY_IMGPREVIEW_HL_FORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGPREVIEW_IMAGE_0 = "GUI_IMAGEGALLERY_IMGPREVIEW_IMAGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_LOCK_0 = "GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_LOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_RESET_0 = "GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_RESET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_UNLOCK_0 = "GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_UNLOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_IMGPREVIEW_WIDTH_0 = "GUI_IMAGEGALLERY_IMGPREVIEW_WIDTH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_PAGINATION_NEXT_0 = "GUI_IMAGEGALLERY_PAGINATION_NEXT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_PAGINATION_PREVIOUS_0 = "GUI_IMAGEGALLERY_PAGINATION_PREVIOUS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_TAB_ADVANCED_0 = "GUI_IMAGEGALLERY_TAB_ADVANCED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_TAB_CATEGORIES_0 = "GUI_IMAGEGALLERY_TAB_CATEGORIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_TAB_GALLERIES_0 = "GUI_IMAGEGALLERY_TAB_GALLERIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMAGEGALLERY_TAB_PREVIEW_0 = "GUI_IMAGEGALLERY_TAB_PREVIEW_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_DATELASTMODIFIED_0 = "GUI_INPUT_DATELASTMODIFIED_0";

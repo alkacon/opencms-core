@@ -1,0 +1,113 @@
+	<div id="preview">
+
+		<div id="imagename">
+			<div id="toggleInfo" class="showinfo" onclick="toggleDetailInfo();" title="<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_DETAILS_0) %>"></div><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_IMAGE_0) %> <span id="previmgname"></span>
+		</div>
+		<div id="previewwrapper">
+			<table cellspacing="0" cellpadding="0" border="0" id="detailinfo">
+				<tr>
+					<td colspan="2" class="imageinfoheadline">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_HEADLINE_0) %>
+					</td>
+					<td colspan="2" class="imageinfostate">
+						<span id="detailimagestate"></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="categoryimageinfotitle">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_TITLE_0) %>
+					</td>
+					<td class="categoryimageinfotitle" colspan="3"><span id="detailimagetitle"></span></td>
+				</tr>
+				<tr>
+					<td valign="top" width="14%">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_NAME_0) %>
+					</td>
+					<td valign="top" width="45%" id="detailimagename"></td>
+					<td valign="top" width="14%">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_DATE_CREATED_0) %>
+					</td>
+					<td valign="top" width="26%" id="detailimagedc"></td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_TYPE_0) %>
+					</td>
+					<td valign="top" id="detailimagetype"></td>
+					<td valign="top">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_DATE_MODIFIED_0) %>
+					</td>
+					<td valign="top" id="detailimagedm"></td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_FORMAT_0) %>
+					</td>
+					<td valign="top" id="detailimageformat"></td>
+					<td valign="top">
+						<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_SIZE_0) %>
+					</td>
+					<td valign="top" id="detailimagesize"></td>
+				</tr>
+			</table>
+			<div id="imgpreview"></div>
+		</div>
+		<div id="imgdetails">
+			<table border="0" cellpadding="0" cellspacing="0" class="wrapper">
+			<tr>
+				<td class="wrapper">
+					<div class="head"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_HL_FORMAT_0) %></div>
+					<div id="formatoptions">
+						<select id="formatselect" onchange="changeFormat();" class="showborder"></select>
+						<table cellspacing="0" cellpadding="0" border="0">
+							
+							<tr>
+								<td width="35" nowrap="nowrap">
+									<span><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_WIDTH_0) %></span>&nbsp;</td>
+								<td width="50">
+									<input type="text" size="4" id="txtWidth" onblur="onSizeChanged('Width',this.value);" class="showborder" />
+								</td>
+								<td rowspan="2" width="22">
+									<div id="locksizes" title="<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_UNLOCK_0) %>" class="btnlocked" onclick="switchLock();"></div>
+								</td>
+								<td rowspan="2" width="22">
+									<div id="resetsize" title="<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_RESET_0) %>" class="btnreset" onclick="resetSizes();"></div>
+								</td>
+							</tr>
+							<tr>
+								<td nowrap="nowrap">
+									<span><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_HEIGHT_0) %></span>&nbsp;</td>
+								<td>
+									<input type="text" size="4" id="txtHeight" onblur="onSizeChanged('Height',this.value);" class="showborder" />
+								</td>
+								
+							</tr>
+						</table>
+				</div>
+				</td>
+				<td class="wrapper">
+					<div class="head"><%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_HL_CROP_0) %></div>
+					<div id="croplink">
+						<a href="crop.jsp?TB_iframe=true&amp;width=580&amp;height=560&amp;modal=true" class="thickbox">
+							<button type="button">
+								<img src="<%= galleryResourcePath %>img/crop.png" /> <%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_CROP_0) %>
+							</button>
+						</a>
+					</div>
+					<div id="cropremove" onclick="setCropActive(false);checkResetSizes();">
+						<button type="button">
+							<img src="<%= galleryResourcePath %>img/cropremove.png" /> <%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_CROP_REMOVE_0) %>
+						</button>
+					</div>
+					<div id="cropinfo"></div>
+				</td>
+			</tr>
+			</table>
+		</div>
+		
+		<div id="dialogbuttons">
+			<button type="button" onclick="okPressed();"><%= wp.key(Messages.GUI_IMAGEGALLERY_BUTTON_OK_0) %></button>
+			<button type="button" id="cancelbutton" onclick="window.close();"><%= wp.key(Messages.GUI_IMAGEGALLERY_BUTTON_CANCEL_0) %></button>
+		</div>
+
+	</div>

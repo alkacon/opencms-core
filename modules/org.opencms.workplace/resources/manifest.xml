@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace base files.</p>
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.5</version>
+		<version>7.0.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -73,6 +73,7 @@
 			<resource uri="/system/workplace/resources/commons/error.png"/>
 			<resource uri="/system/workplace/resources/commons/favicon.ico"/>
 			<resource uri="/system/workplace/resources/commons/help.png"/>
+			<resource uri="/system/workplace/resources/commons/json2.js"/>
 			<resource uri="/system/workplace/resources/commons/login.png"/>
 			<resource uri="/system/workplace/resources/commons/login_logo.png"/>
 			<resource uri="/system/workplace/resources/commons/ok.png"/>
@@ -80,6 +81,7 @@
 			<resource uri="/system/workplace/resources/commons/wait.gif"/>
 			<resource uri="/system/workplace/resources/commons/warning.png"/>
 			<resource uri="/system/workplace/resources/commons/workplace.png"/>
+			<resource uri="/system/workplace/resources/components/imagegallery/"/>
 			<resource uri="/system/workplace/resources/components/js_calendar/"/>
 			<resource uri="/system/workplace/resources/components/js_colorpicker/"/>
 			<resource uri="/system/workplace/resources/components/widgets/category.js"/>
@@ -96,6 +98,7 @@
 			<resource uri="/system/workplace/resources/components/widgets/principalselector.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/tablegallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/userselector.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/vfsimage.js"/>
 			<resource uri="/system/workplace/resources/filetypes/binary.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/downloadgallery.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/folder.gif"/>
@@ -1165,6 +1168,442 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/galleries/imagegallery</destination>
+			<type>folder</type>
+			<uuidstructure>c9379be7-4f47-11dd-848f-55b439b85a0e</uuidstructure>
+			<datelastmodified>Fri, 11 Jul 2008 12:49:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 11 Jul 2008 12:49:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/ajaxcalls.jsp</source>
+			<destination>system/workplace/galleries/imagegallery/ajaxcalls.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>6904fecd-5310-11dd-8ad6-55b439b85a0e</uuidstructure>
+			<uuidresource>6904fece-5310-11dd-8ad6-55b439b85a0e</uuidresource>
+			<datelastmodified>Tue, 14 Oct 2008 09:27:42 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Jul 2008 08:23:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Handles Ajax requests]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/crop.jsp</source>
+			<destination>system/workplace/galleries/imagegallery/crop.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>96d2cd31-51b9-11dd-a68b-55b439b85a0e</uuidstructure>
+			<uuidresource>96d2cd32-51b9-11dd-a68b-55b439b85a0e</uuidresource>
+			<datelastmodified>Fri, 17 Oct 2008 14:03:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Jul 2008 15:29:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Crop dialog]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/fckplugin.js</source>
+			<destination>system/workplace/galleries/imagegallery/fckplugin.js</destination>
+			<type>jsp</type>
+			<uuidstructure>9354e532-99f3-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>9354e533-99f3-11dd-b497-55b439b85a0e</uuidresource>
+			<datelastmodified>Thu, 06 Nov 2008 08:49:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 14 Oct 2008 13:25:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Plugin JS for FCKeditor]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/index.jsp</source>
+			<destination>system/workplace/galleries/imagegallery/index.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>fc964789-4f5e-11dd-ac91-55b439b85a0e</uuidstructure>
+			<uuidresource>fc96478a-4f5e-11dd-ac91-55b439b85a0e</uuidresource>
+			<datelastmodified>Fri, 07 Nov 2008 13:09:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 11 Jul 2008 15:35:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image gallery window]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/publish.jsp</source>
+			<destination>system/workplace/galleries/imagegallery/publish.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>3854654e-96a8-11dd-a07e-55b439b85a0e</uuidstructure>
+			<uuidresource>3854654f-96a8-11dd-a07e-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 13 Oct 2008 15:44:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Oct 2008 08:48:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Publishes gallery item(s)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/upload.jsp</source>
+			<destination>system/workplace/galleries/imagegallery/upload.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>14f0014d-8658-11dd-b4e5-55b439b85a0e</uuidstructure>
+			<uuidresource>14f0014e-8658-11dd-b4e5-55b439b85a0e</uuidresource>
+			<datelastmodified>Tue, 14 Oct 2008 09:39:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 19 Sep 2008 14:34:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Generates the upload applet]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/galleries/imagegallery/css</destination>
+			<type>folder</type>
+			<uuidstructure>f10fc51d-4f60-11dd-ac91-55b439b85a0e</uuidstructure>
+			<datelastmodified>Fri, 11 Jul 2008 15:49:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 11 Jul 2008 15:49:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/css/crop.css</source>
+			<destination>system/workplace/galleries/imagegallery/css/crop.css</destination>
+			<type>plain</type>
+			<uuidstructure>38cd79c9-9474-11dd-b5a2-55b439b85a0e</uuidstructure>
+			<uuidresource>38cd79ca-9474-11dd-b5a2-55b439b85a0e</uuidresource>
+			<datelastmodified>Tue, 07 Oct 2008 14:30:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Oct 2008 13:31:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/css/dialog.css</source>
+			<destination>system/workplace/galleries/imagegallery/css/dialog.css</destination>
+			<type>plain</type>
+			<uuidstructure>6eb7635a-5187-11dd-957b-55b439b85a0e</uuidstructure>
+			<uuidresource>6eb7635b-5187-11dd-957b-55b439b85a0e</uuidresource>
+			<datelastmodified>Fri, 07 Nov 2008 13:33:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Jul 2008 09:30:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/css/editor.css</source>
+			<destination>system/workplace/galleries/imagegallery/css/editor.css</destination>
+			<type>plain</type>
+			<uuidstructure>98ce86a1-a4cf-11dd-939a-55b439b85a0e</uuidstructure>
+			<uuidresource>434bd617-a438-11dd-893f-55b439b85a0e</uuidresource>
+			<datelastmodified>Fri, 07 Nov 2008 13:34:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Oct 2008 15:02:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/css/ie.css</source>
+			<destination>system/workplace/galleries/imagegallery/css/ie.css</destination>
+			<type>plain</type>
+			<uuidstructure>74abbe81-9f52-11dd-815e-55b439b85a0e</uuidstructure>
+			<uuidresource>74abbe82-9f52-11dd-815e-55b439b85a0e</uuidresource>
+			<datelastmodified>Tue, 21 Oct 2008 09:31:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Oct 2008 09:27:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[CSS for IE]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/galleries/imagegallery/html</destination>
+			<type>folder</type>
+			<uuidstructure>aa507ac8-a42c-11dd-a77f-55b439b85a0e</uuidstructure>
+			<datelastmodified>Mon, 27 Oct 2008 13:39:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Oct 2008 13:39:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[HTML parts]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/html/tabs_editor.html</source>
+			<destination>system/workplace/galleries/imagegallery/html/tabs_editor.html</destination>
+			<type>plain</type>
+			<uuidstructure>453c7b4e-a430-11dd-a77f-55b439b85a0e</uuidstructure>
+			<uuidresource>453c7b4f-a430-11dd-a77f-55b439b85a0e</uuidresource>
+			<datelastmodified>Fri, 07 Nov 2008 09:16:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Oct 2008 14:05:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Tabs for editor dialog mode]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/html/tabs_widget.html</source>
+			<destination>system/workplace/galleries/imagegallery/html/tabs_widget.html</destination>
+			<type>plain</type>
+			<uuidstructure>bb9bf84b-a42c-11dd-a77f-55b439b85a0e</uuidstructure>
+			<uuidresource>bb9bf84c-a42c-11dd-a77f-55b439b85a0e</uuidresource>
+			<datelastmodified>Thu, 30 Oct 2008 15:41:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Oct 2008 13:39:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Tabs for widget dialog mode]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/galleries/imagegallery/js</destination>
+			<type>folder</type>
+			<uuidstructure>d79659ba-4f47-11dd-848f-55b439b85a0e</uuidstructure>
+			<datelastmodified>Fri, 11 Jul 2008 12:49:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 11 Jul 2008 12:49:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JavaScript]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/js/formatselections.js</source>
+			<destination>system/workplace/galleries/imagegallery/js/formatselections.js</destination>
+			<type>plain</type>
+			<uuidstructure>22c0728c-8307-11dd-9b73-55b439b85a0e</uuidstructure>
+			<uuidresource>22c0728d-8307-11dd-9b73-55b439b85a0e</uuidresource>
+			<datelastmodified>Fri, 07 Nov 2008 13:54:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Sep 2008 09:17:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[JS for the format select options]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/js/galleryfunctions.js</source>
+			<destination>system/workplace/galleries/imagegallery/js/galleryfunctions.js</destination>
+			<type>plain</type>
+			<uuidstructure>b1049a3a-67a0-11dd-9955-55b439b85a0e</uuidstructure>
+			<uuidresource>b1049a3b-67a0-11dd-9955-55b439b85a0e</uuidresource>
+			<datelastmodified>Fri, 07 Nov 2008 13:54:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Aug 2008 12:26:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Main gallery functions JS]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/js/integrator_editor.js</source>
+			<destination>system/workplace/galleries/imagegallery/js/integrator_editor.js</destination>
+			<type>jsp</type>
+			<uuidstructure>0ea736fc-a419-11dd-926e-55b439b85a0e</uuidstructure>
+			<uuidresource>0ea736fd-a419-11dd-926e-55b439b85a0e</uuidresource>
+			<datelastmodified>Thu, 06 Nov 2008 15:33:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Oct 2008 11:19:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editor integrator JS]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/js/integrator_view.js</source>
+			<destination>system/workplace/galleries/imagegallery/js/integrator_view.js</destination>
+			<type>jsp</type>
+			<uuidstructure>e3dc03b6-a418-11dd-926e-55b439b85a0e</uuidstructure>
+			<uuidresource>e3dc03b7-a418-11dd-926e-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 27 Oct 2008 13:52:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Oct 2008 11:17:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[View integrator JS]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/js/integrator_widget.js</source>
+			<destination>system/workplace/galleries/imagegallery/js/integrator_widget.js</destination>
+			<type>jsp</type>
+			<uuidstructure>f9833a39-a418-11dd-926e-55b439b85a0e</uuidstructure>
+			<uuidresource>f9833a3a-a418-11dd-926e-55b439b85a0e</uuidresource>
+			<datelastmodified>Wed, 05 Nov 2008 09:28:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Oct 2008 11:18:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Widget integrator JS]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/imagegallery/js/localization.js</source>
+			<destination>system/workplace/galleries/imagegallery/js/localization.js</destination>
+			<type>jsp</type>
+			<uuidstructure>b6d5e764-95d4-11dd-95c8-55b439b85a0e</uuidstructure>
+			<uuidresource>b6d5e765-95d4-11dd-95c8-55b439b85a0e</uuidresource>
+			<datelastmodified>Thu, 06 Nov 2008 10:39:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Oct 2008 07:34:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Gallery localization]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
 			<uuidstructure>82c16052-11b7-11db-91cd-fdbae480bac9</uuidstructure>
@@ -1187,6 +1626,485 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components/imagegallery</destination>
+			<type>folder</type>
+			<uuidstructure>73eda9e7-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<datelastmodified>Tue, 14 Oct 2008 09:28:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 14 Oct 2008 09:28:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components/imagegallery/css</destination>
+			<type>folder</type>
+			<uuidstructure>8397d379-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<datelastmodified>Tue, 14 Oct 2008 09:28:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 14 Oct 2008 09:28:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components/imagegallery/css/crop.css</destination>
+			<type>plain</type>
+			<uuidstructure>839eff6b-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>38cd79ca-9474-11dd-b5a2-55b439b85a0e</uuidresource>
+			<datelastmodified>Tue, 07 Oct 2008 14:30:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Oct 2008 13:31:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components/imagegallery/css/dialog.css</destination>
+			<type>plain</type>
+			<uuidstructure>83a89c5c-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>6eb7635b-5187-11dd-957b-55b439b85a0e</uuidresource>
+			<datelastmodified>Fri, 07 Nov 2008 13:33:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Jul 2008 09:30:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components/imagegallery/css/editor.css</destination>
+			<type>plain</type>
+			<uuidstructure>434bd616-a438-11dd-893f-55b439b85a0e</uuidstructure>
+			<uuidresource>434bd617-a438-11dd-893f-55b439b85a0e</uuidresource>
+			<datelastmodified>Fri, 07 Nov 2008 13:34:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Oct 2008 15:02:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components/imagegallery/css/ie.css</destination>
+			<type>plain</type>
+			<uuidstructure>e16bdcd4-9f52-11dd-815e-55b439b85a0e</uuidstructure>
+			<uuidresource>74abbe82-9f52-11dd-815e-55b439b85a0e</uuidresource>
+			<datelastmodified>Tue, 21 Oct 2008 09:31:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Oct 2008 09:27:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[CSS for IE]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/css/imgselector_hack_ie7.css</source>
+			<destination>system/workplace/resources/components/imagegallery/css/imgselector_hack_ie7.css</destination>
+			<type>plain</type>
+			<uuidstructure>83ad574d-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>468223c6-5253-11dd-a353-55b439b85a0e</uuidresource>
+			<datelastmodified>Tue, 15 Jul 2008 09:49:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 15 Jul 2008 09:49:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/css/tabs.css</source>
+			<destination>system/workplace/resources/components/imagegallery/css/tabs.css</destination>
+			<type>plain</type>
+			<uuidstructure>83b2123e-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>f7c91d30-4f60-11dd-ac91-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 13 Oct 2008 13:11:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 11 Jul 2008 15:49:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components/imagegallery/img</destination>
+			<type>folder</type>
+			<uuidstructure>83b4833f-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<datelastmodified>Tue, 14 Oct 2008 09:28:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 14 Oct 2008 09:28:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Images for dialog]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/img/crop.png</source>
+			<destination>system/workplace/resources/components/imagegallery/img/crop.png</destination>
+			<type>image</type>
+			<uuidstructure>83b6cd32-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>b42478a2-953f-11dd-8595-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 27 Oct 2008 15:01:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Oct 2008 13:47:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/img/cropremove.png</source>
+			<destination>system/workplace/resources/components/imagegallery/img/cropremove.png</destination>
+			<type>image</type>
+			<uuidstructure>83b93e34-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>b47a39c6-953f-11dd-8595-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 27 Oct 2008 15:01:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Oct 2008 13:47:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/img/img_chg.png</source>
+			<destination>system/workplace/resources/components/imagegallery/img/img_chg.png</destination>
+			<type>image</type>
+			<uuidstructure>b9ff8095-abe6-11dd-8a5b-55b439b85a0e</uuidstructure>
+			<uuidresource>b9ff8096-abe6-11dd-8a5b-55b439b85a0e</uuidresource>
+			<datelastmodified>Thu, 06 Nov 2008 11:53:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Nov 2008 09:38:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/img/img_locked.png</source>
+			<destination>system/workplace/resources/components/imagegallery/img/img_locked.png</destination>
+			<type>image</type>
+			<uuidstructure>ba0dd879-abe6-11dd-8a5b-55b439b85a0e</uuidstructure>
+			<uuidresource>ba0dd87a-abe6-11dd-8a5b-55b439b85a0e</uuidresource>
+			<datelastmodified>Thu, 06 Nov 2008 11:54:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Nov 2008 09:38:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/img/img_new.png</source>
+			<destination>system/workplace/resources/components/imagegallery/img/img_new.png</destination>
+			<type>image</type>
+			<uuidstructure>ba10226d-abe6-11dd-8a5b-55b439b85a0e</uuidstructure>
+			<uuidresource>ba10226e-abe6-11dd-8a5b-55b439b85a0e</uuidresource>
+			<datelastmodified>Thu, 06 Nov 2008 11:53:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Nov 2008 09:38:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:24,h:24]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/img/locked.gif</source>
+			<destination>system/workplace/resources/components/imagegallery/img/locked.gif</destination>
+			<type>image</type>
+			<uuidstructure>83bdf926-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>bb8b9544-951d-11dd-8595-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 27 Oct 2008 15:01:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Oct 2008 09:44:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:11,h:12]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/img/reset.gif</source>
+			<destination>system/workplace/resources/components/imagegallery/img/reset.gif</destination>
+			<type>image</type>
+			<uuidstructure>83c06a28-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>bb9c3718-951d-11dd-8595-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 27 Oct 2008 15:01:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Oct 2008 09:44:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:12,h:12]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/img/tabs.png</source>
+			<destination>system/workplace/resources/components/imagegallery/img/tabs.png</destination>
+			<type>image</type>
+			<uuidstructure>83c5251a-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>2c55191a-5179-11dd-98cb-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 27 Oct 2008 15:01:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Jul 2008 07:47:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:300,h:50]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/img/tabs_editor.png</source>
+			<destination>system/workplace/resources/components/imagegallery/img/tabs_editor.png</destination>
+			<type>image</type>
+			<uuidstructure>2006e7c5-a438-11dd-893f-55b439b85a0e</uuidstructure>
+			<uuidresource>2006e7c6-a438-11dd-893f-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 27 Oct 2008 15:32:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Oct 2008 15:01:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:300,h:50]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/img/unlocked.gif</source>
+			<destination>system/workplace/resources/components/imagegallery/img/unlocked.gif</destination>
+			<type>image</type>
+			<uuidstructure>83c7961c-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>bba5d40c-951d-11dd-8595-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 27 Oct 2008 15:02:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Oct 2008 09:44:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:11,h:12]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components/imagegallery/js</destination>
+			<type>folder</type>
+			<uuidstructure>83cc510e-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<datelastmodified>Tue, 14 Oct 2008 09:28:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 14 Oct 2008 09:28:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JavaScript]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components/imagegallery/js/formatselections.js</destination>
+			<type>plain</type>
+			<uuidstructure>83cec211-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>22c0728d-8307-11dd-9b73-55b439b85a0e</uuidresource>
+			<datelastmodified>Fri, 07 Nov 2008 13:54:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 15 Sep 2008 09:17:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS for the format select options]]></value>
+				</property>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[JS for the format select options]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components/imagegallery/js/galleryfunctions.js</destination>
+			<type>plain</type>
+			<uuidstructure>83d10c03-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>b1049a3b-67a0-11dd-9955-55b439b85a0e</uuidresource>
+			<datelastmodified>Fri, 07 Nov 2008 13:54:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Aug 2008 12:26:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS with all gallery functions]]></value>
+				</property>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Main gallery functions JS]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/js/jquery.imgareaselect-0.5.1.min.js</source>
+			<destination>system/workplace/resources/components/imagegallery/js/jquery.imgareaselect-0.5.1.min.js</destination>
+			<type>plain</type>
+			<uuidstructure>83d37d04-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>3d5f085c-96b8-11dd-a533-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 20 Oct 2008 10:09:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Oct 2008 10:43:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Image area select v0.5.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/js/jquery.jeditable.pack.js</source>
+			<destination>system/workplace/resources/components/imagegallery/js/jquery.jeditable.pack.js</destination>
+			<type>plain</type>
+			<uuidstructure>83d5ee06-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>8c6a51c2-96c3-11dd-a533-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 20 Oct 2008 10:08:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 10 Oct 2008 12:04:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[jEditable v1.6.1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/js/jquery.jHelperTip.1.0.min.js</source>
+			<destination>system/workplace/resources/components/imagegallery/js/jquery.jHelperTip.1.0.min.js</destination>
+			<type>plain</type>
+			<uuidstructure>83daa8f8-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>4343a08e-9933-11dd-93f5-55b439b85a0e</uuidresource>
+			<datelastmodified>Mon, 13 Oct 2008 15:04:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 13 Oct 2008 14:28:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[jHelperTip v1.0]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/imagegallery/js/jquery.ui.all.packed.js</source>
+			<destination>system/workplace/resources/components/imagegallery/js/jquery.ui.all.packed.js</destination>
+			<type>plain</type>
+			<uuidstructure>83df63ea-99d2-11dd-b497-55b439b85a0e</uuidstructure>
+			<uuidresource>4251b802-5178-11dd-98cb-55b439b85a0e</uuidresource>
+			<datelastmodified>Wed, 08 Oct 2008 09:30:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Jul 2008 07:41:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[UI v1.5.2]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -2888,6 +3806,26 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/commons/json2.js</source>
+			<destination>system/workplace/resources/commons/json2.js</destination>
+			<type>plain</type>
+			<uuidstructure>4ebf4915-a011-11dd-a683-55b439b85a0e</uuidstructure>
+			<uuidresource>4ebf4916-a011-11dd-a683-55b439b85a0e</uuidresource>
+			<datelastmodified>Wed, 22 Oct 2008 08:13:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 22 Oct 2008 08:13:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JSON helper functions]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/commons/login.png</source>
 			<destination>system/workplace/resources/commons/login.png</destination>
 			<type>image</type>
@@ -3327,6 +4265,26 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[JS to open User selector]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/vfsimage.js</source>
+			<destination>system/workplace/resources/components/widgets/vfsimage.js</destination>
+			<type>plain</type>
+			<uuidstructure>e9a01da1-58c1-11dd-ad4b-55b439b85a0e</uuidstructure>
+			<uuidresource>e9a01da2-58c1-11dd-ad4b-55b439b85a0e</uuidresource>
+			<datelastmodified>Wed, 29 Oct 2008 16:06:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 23 Jul 2008 14:16:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS for VFS image widget]]></value>
 				</property>
 			</properties>
 			<relations/>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2008/11/07 15:51:21 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.galleries.A_CmsGallery;
+import org.opencms.workplace.galleries.CmsImageGallery;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,6 +117,9 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         for (int k = 0; k < galleries.size(); k++) {
             A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
             String galleryType = (String)typeMap.get(currGallery);
+            if (CmsImageGallery.GALLERYTYPE_NAME.equals(galleryType)) {
+                continue;
+            }
             String galleryName = CmsStringUtil.substitute(galleryType, "gallery", "");
             if (options.showElement("gallery." + galleryName, displayOptions)) {
                 // gallery is shown, create button code

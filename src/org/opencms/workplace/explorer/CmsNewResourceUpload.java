@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2008/06/26 15:01:57 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2008/11/07 15:51:21 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,6 +63,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,9 +132,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /** The name for the resource form submission action. */
     public static final String DIALOG_SUBMITFORM2 = "submitform2";
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsNewResourceUpload.class);
-
     /** Request parameter name for the upload folder name. */
     public static final String PARAM_CLIENTFOLDER = "clientfolder";
 
@@ -157,6 +155,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
     /** Request parameter name for the upload folder name. */
     public static final String PARAM_UPLOADFOLDER = "uploadfolder";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewResourceUpload.class);
 
     /** The configurable colors for the applet window (content frame JSP). */
     private Map m_appletWindowColors = DEFAULT_APPLET_WINDOW_COLORS;
@@ -295,6 +296,230 @@ public class CmsNewResourceUpload extends CmsNewResource {
                 dialog.getParamResource()));
         }
         return result.toString();
+    }
+
+    /**
+     * Creates the HTML code of the file upload applet with all required parameters.<p>
+     * 
+     * @param jsp an initialized action element
+     * @param locale the locale to use for the applet
+     * @param currentFolder the folder to upload the resources to
+     * @param redirectUrl the URL to redirect to after uploading
+     * @param targetFrame the name of the target frame to redirect to after uploading
+     * @param appletWindowColors the colors to use for the applet, if not provided, the default colors will be used
+     * @return string containing the applet HTML code
+     */
+    public static String createAppletCode(
+        CmsJspActionElement jsp,
+        Locale locale,
+        String currentFolder,
+        String redirectUrl,
+        String targetFrame,
+        Map appletWindowColors) {
+
+        StringBuffer applet = new StringBuffer(2048);
+
+        // collect some required server data first
+        String scheme = jsp.getRequest().getScheme();
+        String host = jsp.getRequest().getServerName();
+        String path = OpenCms.getStaticExportManager().getVfsPrefix();
+        int port = jsp.getRequest().getServerPort();
+        String webapp = scheme + "://" + host + ":" + port + OpenCms.getSystemInfo().getContextPath();
+
+        // get all file extensions
+        String fileExtensions = "";
+        Map extensions = OpenCms.getResourceManager().getExtensionMapping();
+        Iterator keys = extensions.entrySet().iterator();
+        while (keys.hasNext()) {
+            Map.Entry entry = (Map.Entry)keys.next();
+            String key = (String)entry.getKey();
+            String value = (String)entry.getValue();
+            fileExtensions += key + "=" + value + ",";
+        }
+        fileExtensions = fileExtensions.substring(0, fileExtensions.length() - 1);
+
+        // get the file size upload limitation value (value is in bytes for the applet)
+        long maxFileSize = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(jsp.getCmsObject());
+
+        // get the current session id
+        HttpSession session = jsp.getRequest().getSession(false);
+        // we assume we always have a session here, otherwise an unhandled NPE will occur
+        String sessionId = ((CmsUUID)session.getAttribute(CmsSessionInfo.ATTRIBUTE_SESSION_ID)).getStringValue();
+
+        // define the required colors.
+        // these are configurable via set
+        StringBuffer colors = new StringBuffer();
+        if (appletWindowColors == null || appletWindowColors.size() == 0) {
+            appletWindowColors = DEFAULT_APPLET_WINDOW_COLORS;
+        }
+        Iterator it = appletWindowColors.entrySet().iterator();
+        Map.Entry color;
+        while (it.hasNext()) {
+            color = (Map.Entry)it.next();
+            colors.append(color.getKey()).append('=').append(color.getValue());
+            if (it.hasNext()) {
+                colors.append(',');
+            }
+        }
+
+        // create the upload applet html code
+        applet.append("<applet code=\"org.opencms.applet.upload.FileUploadApplet.class\" archive=\"");
+        applet.append(webapp);
+        applet.append("/resources/components/upload_applet/upload.jar\" width=\"500\" height=\"100\">\n");
+        applet.append("<param name=\"opencms\" value=\"");
+        applet.append(scheme);
+        applet.append("://");
+        applet.append(host);
+        applet.append(":");
+        applet.append(port);
+        applet.append(getSkinUri());
+        applet.append("filetypes/\">\n");
+        applet.append("<param name=\"target\" value=\"");
+        applet.append(scheme);
+        applet.append("://");
+        applet.append(host);
+        applet.append(":");
+        applet.append(port);
+        applet.append(path);
+        applet.append("/system/workplace/commons/newresource_upload.jsp\">\n");
+        applet.append("<param name=\"redirect\" value=\"");
+        applet.append(scheme);
+        applet.append("://");
+        applet.append(host);
+        applet.append(":");
+        applet.append(port);
+        applet.append(path);
+        // check if the redirect url is given by request parameter. if not use the default
+        if (CmsStringUtil.isEmpty(redirectUrl)) {
+            applet.append(CmsWorkplace.FILE_EXPLORER_FILELIST);
+        } else {
+            applet.append(redirectUrl);
+        }
+        // append some parameters to prevent caching of URL by Applet
+        applet.append("?time=").append(System.currentTimeMillis());
+        applet.append("\">\n");
+        applet.append("<param name=\"targetframe\" value=\"");
+        applet.append(targetFrame);
+        applet.append("\">\n");
+        applet.append("<param name=\"error\" value=\"");
+        applet.append(scheme);
+        applet.append("://");
+        applet.append(host);
+        applet.append(":");
+        applet.append(port);
+        applet.append(path);
+        applet.append("/system/workplace/views/explorer/explorer_files.jsp\">\n");
+        applet.append("<param name=\"sessionId\" value=\"");
+        applet.append(sessionId);
+        applet.append("\">\n");
+        applet.append("<param name=\"filelist\" value=\"");
+        applet.append(currentFolder);
+        applet.append("\">\n");
+        applet.append("<param name=\"filefilterselection\" value=\"");
+        applet.append(getAppletFileFilterPreselectionConstant(jsp.getCmsObject(), currentFolder));
+        applet.append("\">\n");
+        applet.append("<param name=\"colors\" value=\"");
+        applet.append(colors.toString());
+        applet.append("\">\n");
+        applet.append("<param name=\"fileExtensions\" value=\"");
+        applet.append(fileExtensions);
+        applet.append("\">\n\n");
+        applet.append("<param name=\"maxsize\" value=\"");
+        applet.append(maxFileSize);
+        applet.append("\">\n");
+        applet.append("<param name=\"actionOutputSelect\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_ACTION_SELECT_0));
+        applet.append("\">\n");
+        applet.append("<param name=\"actionOutputCount\"value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_ACTION_COUNT_0));
+        applet.append("\">\n");
+        applet.append("<param name=\"actionOutputCreate\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_ACTION_CREATE_0));
+        applet.append("\">\n");
+        applet.append("<param name=\"actionOutputUpload\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_ACTION_UPLOAD_0));
+        applet.append("\">\n");
+        applet.append("<param name=\"actionOverwriteCheck\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_ACTION_OVERWRITECHECK_0));
+        applet.append("\">\n");
+        applet.append("<param name=\"messageOutputUpload\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_MESSAGE_UPLOAD_0));
+        applet.append("\">\n");
+        applet.append("<param name=\"messageOutputErrorZip\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_MESSAGE_ERROR_ZIP_0));
+        applet.append("\">\n");
+        applet.append("<param name=\"messageOutputErrorSize\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_MESSAGE_ERROR_SIZE_0));
+        applet.append("\">\n");
+        applet.append("<param name=\"messageNoPreview\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_MESSAGE_NOPREVIEW_0));
+        applet.append("\">\n");
+        applet.append("<param name=\"messageOutputAdding\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_MESSAGE_ADDING_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"errorTitle\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_ERROR_TITLE_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"errorLine1\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_ERROR_LINE1_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"certificateErrorTitle\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_TITLE_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogTitle\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_TITLE_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogIntro\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_INTRO_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogOk\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_OK_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogCancel\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_CANCEL_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"overwriteDialogLocale\" value=\"");
+        applet.append(locale.toString());
+        applet.append(" \">\n");
+        applet.append("<param name=\"certificateErrorMessage\" value=\"");
+        applet.append(Messages.get().getBundle(locale).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_MESSAGE_0));
+        applet.append(" \">\n");
+        applet.append("<param name=\"clientFolder\" value=\"");
+        applet.append(new CmsUserSettings(jsp.getCmsObject()).getUploadAppletClientFolder());
+        applet.append(" \">\n");
+        applet.append("</applet>\n");
+
+        return applet.toString();
+
+    }
+
+    /**
+     * Returns the proper constant for preselection of a file filter of the upload applet depending on the current 
+     * folder to upload to. <p>
+     * 
+     * @param cms the current users context
+     * @param currentFolder the folder to upload to 
+     * @return one of <code>{@link #APPLET_FILEFILTER_IMAGES}</code>, <code>{@link #APPLET_FILEFILTER_OFFICE}</code>, 
+     *      <code>{@link #APPLET_FILEFILTER_WEB}</code>
+     */
+    private static String getAppletFileFilterPreselectionConstant(CmsObject cms, String currentFolder) {
+
+        String result = "";
+        try {
+            CmsResource res = cms.readResource(currentFolder, CmsResourceFilter.IGNORE_EXPIRATION);
+            result = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+            if ("imagegallery".equals(result)) {
+                result = APPLET_FILEFILTER_IMAGES;
+            } else if ("htmlgallery".equals(result)) {
+                result = APPLET_FILEFILTER_WEB;
+            } else if ("downloadgallery".equals(result)) {
+                result = APPLET_FILEFILTER_OFFICE;
+            }
+        } catch (CmsException e) {
+            System.err.println(e);
+            // ignore this, gallery type will simply not be supported for pre selection of the file type selector in the upload applet 
+        }
+        return result;
     }
 
     /**
@@ -542,207 +767,13 @@ public class CmsNewResourceUpload extends CmsNewResource {
      */
     public String createAppletCode() {
 
-        StringBuffer applet = new StringBuffer(2048);
-
-        // collect some required server data first
-        String scheme = getJsp().getRequest().getScheme();
-        String host = getJsp().getRequest().getServerName();
-        String path = OpenCms.getStaticExportManager().getVfsPrefix();
-        int port = getJsp().getRequest().getServerPort();
-        String webapp = scheme + "://" + host + ":" + port + OpenCms.getSystemInfo().getContextPath();
-
-        // get all file extensions
-        String fileExtensions = "";
-        Map extensions = OpenCms.getResourceManager().getExtensionMapping();
-        Iterator keys = extensions.entrySet().iterator();
-        while (keys.hasNext()) {
-            Map.Entry entry = (Map.Entry)keys.next();
-            String key = (String)entry.getKey();
-            String value = (String)entry.getValue();
-            fileExtensions += key + "=" + value + ",";
-        }
-        fileExtensions = fileExtensions.substring(0, fileExtensions.length() - 1);
-
-        // get the file size upload limitation value (value is in bytes for the applet)
-        long maxFileSize = OpenCms.getWorkplaceManager().getFileBytesMaxUploadSize(getCms());
-
-        // get the current folder
-        String currentFolder = getParamCurrentFolder();
-
-        // get the current session id
-        HttpSession session = getJsp().getRequest().getSession(false);
-        // we assume we always have a session here, otherwise an unhandled NPE will occur
-        String sessionId = ((CmsUUID)session.getAttribute(CmsSessionInfo.ATTRIBUTE_SESSION_ID)).getStringValue();
-
-        // define the required colors.
-        // these are configurable via set
-        StringBuffer colors = new StringBuffer();
-        Iterator it = m_appletWindowColors.entrySet().iterator();
-        Map.Entry color;
-        while (it.hasNext()) {
-            color = (Map.Entry)it.next();
-            colors.append(color.getKey()).append('=').append(color.getValue());
-            if (it.hasNext()) {
-                colors.append(',');
-            }
-        }
-
-        // create the upload applet html code
-        applet.append("<applet code=\"org.opencms.applet.upload.FileUploadApplet.class\" archive=\"");
-        applet.append(webapp);
-        applet.append("/resources/components/upload_applet/upload.jar\" width=\"500\" height=\"100\">\n");
-        applet.append("<param name=\"opencms\" value=\"");
-        applet.append(scheme);
-        applet.append("://");
-        applet.append(host);
-        applet.append(":");
-        applet.append(port);
-        applet.append(getSkinUri());
-        applet.append("filetypes/\">\n");
-        applet.append("<param name=\"target\" value=\"");
-        applet.append(scheme);
-        applet.append("://");
-        applet.append(host);
-        applet.append(":");
-        applet.append(port);
-        applet.append(path);
-        applet.append("/system/workplace/commons/newresource_upload.jsp\">\n");
-        applet.append("<param name=\"redirect\" value=\"");
-        applet.append(scheme);
-        applet.append("://");
-        applet.append(host);
-        applet.append(":");
-        applet.append(port);
-        applet.append(path);
-        // check if the redirect url is given by request parameter. if not use the default
-        if (CmsStringUtil.isEmpty(getParamRedirectUrl())) {
-            applet.append(CmsWorkplace.FILE_EXPLORER_FILELIST);
-        } else {
-            applet.append(getParamRedirectUrl());
-        }
-        // append some parameters to prevent caching of URL by Applet
-        applet.append("?time=" + System.currentTimeMillis());
-        applet.append("\">\n");
-        applet.append("<param name=\"targetframe\" value=\"");
-        applet.append(getParamTargetFrame());
-        applet.append("\">\n");
-        applet.append("<param name=\"error\" value=\"");
-        applet.append(scheme);
-        applet.append("://");
-        applet.append(host);
-        applet.append(":");
-        applet.append(port);
-        applet.append(path);
-        applet.append("/system/workplace/views/explorer/explorer_files.jsp\">\n");
-        applet.append("<param name=\"sessionId\" value=\"");
-        applet.append(sessionId);
-        applet.append("\">\n");
-        applet.append("<param name=\"filelist\" value=\"");
-        applet.append(currentFolder);
-        applet.append("\">\n");
-        applet.append("<param name=\"filefilterselection\" value=\"");
-        applet.append(getAppletFileFilterPreselectionConstant());
-        applet.append("\">\n");
-        applet.append("<param name=\"colors\" value=\"");
-        applet.append(colors.toString());
-        applet.append("\">\n");
-        applet.append("<param name=\"fileExtensions\" value=\"");
-        applet.append(fileExtensions);
-        applet.append("\">\n\n");
-        applet.append("<param name=\"maxsize\" value=\"");
-        applet.append(maxFileSize);
-        applet.append("\">\n");
-        applet.append("<param name=\"actionOutputSelect\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_SELECT_0));
-        applet.append("\">\n");
-        applet.append("<param name=\"actionOutputCount\"value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_COUNT_0));
-        applet.append("\">\n");
-        applet.append("<param name=\"actionOutputCreate\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_CREATE_0));
-        applet.append("\">\n");
-        applet.append("<param name=\"actionOutputUpload\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_UPLOAD_0));
-        applet.append("\">\n");
-        applet.append("<param name=\"actionOverwriteCheck\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ACTION_OVERWRITECHECK_0));
-        applet.append("\">\n");
-        applet.append("<param name=\"messageOutputUpload\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_UPLOAD_0));
-        applet.append("\">\n");
-        applet.append("<param name=\"messageOutputErrorZip\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_ERROR_ZIP_0));
-        applet.append("\">\n");
-        applet.append("<param name=\"messageOutputErrorSize\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_ERROR_SIZE_0));
-        applet.append("\">\n");
-        applet.append("<param name=\"messageNoPreview\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_NOPREVIEW_0));
-        applet.append("\">\n");
-        applet.append("<param name=\"messageOutputAdding\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_MESSAGE_ADDING_0));
-        applet.append(" \">\n");
-        applet.append("<param name=\"errorTitle\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_TITLE_0));
-        applet.append(" \">\n");
-        applet.append("<param name=\"errorLine1\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_LINE1_0));
-        applet.append(" \">\n");
-        applet.append("<param name=\"certificateErrorTitle\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_TITLE_0));
-        applet.append(" \">\n");
-        applet.append("<param name=\"overwriteDialogTitle\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_TITLE_0));
-        applet.append(" \">\n");
-        applet.append("<param name=\"overwriteDialogIntro\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_INTRO_0));
-        applet.append(" \">\n");
-        applet.append("<param name=\"overwriteDialogOk\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_OK_0));
-        applet.append(" \">\n");
-        applet.append("<param name=\"overwriteDialogCancel\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_OVERWRITE_DIALOG_CANCEL_0));
-        applet.append(" \">\n");
-        applet.append("<param name=\"overwriteDialogLocale\" value=\"");
-        applet.append(getLocale().toString());
-        applet.append(" \">\n");
-        applet.append("<param name=\"certificateErrorMessage\" value=\"");
-        applet.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_UPLOADAPPLET_ERROR_CERT_MESSAGE_0));
-        applet.append(" \">\n");
-        applet.append("<param name=\"clientFolder\" value=\"");
-        applet.append(new CmsUserSettings(getCms()).getUploadAppletClientFolder());
-        applet.append(" \">\n");
-        applet.append("</applet>\n");
-
-        return applet.toString();
-
-    }
-
-    /**
-     * Returns the proper constant for preselection of a file filter of the upload applet depending on the current 
-     * folder to upload to. <p>
-     * 
-     * @return one of <code>{@link #APPLET_FILEFILTER_IMAGES}</code>, <code>{@link #APPLET_FILEFILTER_OFFICE}</code>, 
-     *      <code>{@link #APPLET_FILEFILTER_WEB}</code>
-     */
-    private String getAppletFileFilterPreselectionConstant() {
-
-        String result = "";
-        try {
-            CmsResource res = getCms().readResource(getParamCurrentFolder(), CmsResourceFilter.IGNORE_EXPIRATION);
-            result = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-            if ("imagegallery".equals(result)) {
-                result = APPLET_FILEFILTER_IMAGES;
-            } else if ("htmlgallery".equals(result)) {
-                result = APPLET_FILEFILTER_WEB;
-            } else if ("downloadgallery".equals(result)) {
-                result = APPLET_FILEFILTER_OFFICE;
-            }
-        } catch (CmsException e) {
-            System.err.println(e);
-            // ignore this, gallery type will simply not be supported for pre selection of the file type selector in the upload applet 
-        }
-        return result;
+        return createAppletCode(
+            getJsp(),
+            getLocale(),
+            getParamCurrentFolder(),
+            getParamRedirectUrl(),
+            getParamTargetFrame(),
+            m_appletWindowColors);
     }
 
     /**
@@ -866,55 +897,6 @@ public class CmsNewResourceUpload extends CmsNewResource {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
-     */
-    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
-
-        String siteRoot = jsp.getRequestContext().getSiteRoot();
-        // In case of the upload applet the site stored in the user preferences must NOT be made the current 
-        // site even if we have a new session! Since the upload applet will create a new session for the upload itself, 
-        // we must make sure to use the site of the request, NOT the site stored in the user preferences.
-        // The default logic will erase the request site in case of a new session.
-        // With this workaround the site from the request is made the current site as required.
-        super.initWorkplaceMembers(jsp);
-        if (!siteRoot.equals(getSettings().getSite())) {
-            getSettings().setSite(siteRoot);
-            jsp.getRequestContext().setSiteRoot(siteRoot);
-        }
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        // fill the parameter values in the get/set methods
-        fillParamValues(request);
-        // set the dialog type
-        setParamDialogtype(DIALOG_TYPE);
-        // set the action for the JSP switch 
-        if (DIALOG_OK.equals(getParamAction())) {
-            setAction(ACTION_OK);
-        } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
-            setAction(ACTION_SUBMITFORM);
-        } else if (DIALOG_SUBMITFORM2.equals(getParamAction())) {
-            setAction(ACTION_SUBMITFORM2);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {
-            setAction(ACTION_CANCEL);
-        } else if (DIALOG_CHECK_OVERWRITE.equals(getParamAction())) {
-            setAction(ACTION_APPLET_CHECK_OVERWRITE);
-        } else {
-            if (getSettings().getUserSettings().useUploadApplet()) {
-                setAction(ACTION_APPLET);
-            } else {
-                setAction(ACTION_DEFAULT);
-            }
-            // build title for new resource dialog     
-            setParamTitle(key(Messages.GUI_NEWRESOURCE_UPLOAD_0));
-        }
-    }
-
-    /**
      * Sets the configurable colors for the applet window (content frame JSP).<p>
      *
      * @param appletWindowColors the configurable colors for the applet window (content frame JSP).
@@ -1012,5 +994,54 @@ public class CmsNewResourceUpload extends CmsNewResource {
     public boolean unzipUpload() {
 
         return Boolean.valueOf(getParamUnzipFile()).booleanValue();
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
+     */
+    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
+
+        String siteRoot = jsp.getRequestContext().getSiteRoot();
+        // In case of the upload applet the site stored in the user preferences must NOT be made the current 
+        // site even if we have a new session! Since the upload applet will create a new session for the upload itself, 
+        // we must make sure to use the site of the request, NOT the site stored in the user preferences.
+        // The default logic will erase the request site in case of a new session.
+        // With this workaround the site from the request is made the current site as required.
+        super.initWorkplaceMembers(jsp);
+        if (!siteRoot.equals(getSettings().getSite())) {
+            getSettings().setSite(siteRoot);
+            jsp.getRequestContext().setSiteRoot(siteRoot);
+        }
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        // fill the parameter values in the get/set methods
+        fillParamValues(request);
+        // set the dialog type
+        setParamDialogtype(DIALOG_TYPE);
+        // set the action for the JSP switch 
+        if (DIALOG_OK.equals(getParamAction())) {
+            setAction(ACTION_OK);
+        } else if (DIALOG_SUBMITFORM.equals(getParamAction())) {
+            setAction(ACTION_SUBMITFORM);
+        } else if (DIALOG_SUBMITFORM2.equals(getParamAction())) {
+            setAction(ACTION_SUBMITFORM2);
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
+            setAction(ACTION_CANCEL);
+        } else if (DIALOG_CHECK_OVERWRITE.equals(getParamAction())) {
+            setAction(ACTION_APPLET_CHECK_OVERWRITE);
+        } else {
+            if (getSettings().getUserSettings().useUploadApplet()) {
+                setAction(ACTION_APPLET);
+            } else {
+                setAction(ACTION_DEFAULT);
+            }
+            // build title for new resource dialog     
+            setParamTitle(key(Messages.GUI_NEWRESOURCE_UPLOAD_0));
+        }
     }
 }
