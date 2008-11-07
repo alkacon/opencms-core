@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Messages.java,v $
- * Date   : $Date: 2008/07/14 10:04:27 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2008/11/07 15:50:20 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,6 +108,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_BUTTON_TABLELIST_0 = "GUI_EDITOR_BUTTON_TABLELIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_IMAGE_DESC_0 = "GUI_EDITOR_LABEL_IMAGE_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_IMAGE_FORMAT_0 = "GUI_EDITOR_LABEL_IMAGE_FORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_LABEL_IMAGE_PATH_0 = "GUI_EDITOR_LABEL_IMAGE_PATH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_FALSE_0 = "GUI_LABEL_FALSE_0";
