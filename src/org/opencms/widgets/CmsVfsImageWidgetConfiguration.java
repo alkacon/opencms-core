@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsImageWidgetConfiguration.java,v $
- * Date   : $Date: 2008/11/07 15:44:14 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/11/07 16:02:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.6 
  */
@@ -79,7 +79,7 @@ public class CmsVfsImageWidgetConfiguration {
     public static final String CONFIG_KEY_USEFORMAT = "useformat";
 
     /** Configuration value name for a dynamic configuration. */
-    public static final String CONFIG_VALUE_DYNAMIC = "dynemic";
+    public static final String CONFIG_VALUE_DYNAMIC = "dynamic";
 
     /** The type "category" for the initial image list to load. */
     public static final String TYPE_CATEGORY = "category";
