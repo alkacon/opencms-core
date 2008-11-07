@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2008 Frederico Caldeira Knabben
  *
  * == BEGIN LICENSE ==
  *
@@ -30,7 +30,7 @@ FCKSelection.GetType = function()
 	// Check if the actual selection is a Control (IMG, TABLE, HR, etc...).
 
 	var sel ;
-	try { sel = FCK.EditorWindow.getSelection() ; } catch (e) {}
+	try { sel = this.GetSelection() ; } catch (e) {}
 
 	if ( sel && sel.rangeCount == 1 )
 	{
@@ -51,30 +51,19 @@ FCKSelection.GetType = function()
 // element (object like and image or a table) is selected.
 FCKSelection.GetSelectedElement = function()
 {
-	var selectedElement = null ;
+	var selection = !!FCK.EditorWindow && this.GetSelection() ;
+	if ( !selection || selection.rangeCount < 1 )
+		return null ;
 
-	var selection = !!FCK.EditorWindow && FCK.EditorWindow.getSelection() ;
+	var range = selection.getRangeAt( 0 ) ;
+	if ( range.startContainer != range.endContainer || range.startContainer.nodeType != 1 || range.startOffset != range.endOffset - 1 )
+		return null ;
 
-	if ( selection && selection.anchorNode && selection.anchorNode.nodeType == 1 )
-	{
-		if ( this.GetType() == 'Control' )
-		{
-			// This one is good for all browsers, expect Safari Mac.
-			selectedElement = selection.anchorNode.childNodes[ selection.anchorOffset ] ;
+	var node = range.startContainer.childNodes[ range.startOffset ] ;
+	if ( node.nodeType != 1 )
+		return null ;
 
-			// For Safari (Mac only), the anchor node for a control selection is
-			// the control itself, which seams logic. FF and Opera use the parent
-			// as the anchor node, pointing to the control with the offset.
-			// As FF created the selection "standard", Safari would do better by
-			// following their steps.
-			if ( !selectedElement )
-				selectedElement = selection.anchorNode ;
-			else if ( selectedElement.nodeType != 1 )
-				return null ;
-		}
-	}
-
-	return selectedElement ;
+	return node ;
 }
 
 FCKSelection.GetParentElement = function()
@@ -83,12 +72,20 @@ FCKSelection.GetParentElement = function()
 		return FCKSelection.GetSelectedElement().parentNode ;
 	else
 	{
-		var oSel = FCK.EditorWindow.getSelection() ;
+		var oSel = this.GetSelection() ;
 		if ( oSel )
 		{
-			// make the common case fast - for collapsed/nearly collapsed selections just return anchor.parent.
+			// if anchorNode == focusNode, see if the selection is text only or including nodes.
+			// if text only, return the parent node.
+			// if the selection includes DOM nodes, then the anchorNode is the nearest container.
 			if ( oSel.anchorNode && oSel.anchorNode == oSel.focusNode )
-				return oSel.anchorNode.parentNode ;
+			{
+				var oRange = oSel.getRangeAt( 0 ) ;
+				if ( oRange.collapsed || oRange.startContainer.nodeType == 3 )
+					return oSel.anchorNode.parentNode ;
+				else
+					return oSel.anchorNode ;
+			}
 
 			// looks like we're having a large selection here. To make the behavior same as IE's TextRange.parentElement(),
 			// we need to find the nearest ancestor node which encapsulates both the beginning and the end of the selection.
@@ -128,7 +125,7 @@ FCKSelection.GetBoundaryParentElement = function( startBoundary )
 		return FCKSelection.GetSelectedElement().parentNode ;
 	else
 	{
-		var oSel = FCK.EditorWindow.getSelection() ;
+		var oSel = this.GetSelection() ;
 		if ( oSel && oSel.rangeCount > 0 )
 		{
 			var range = oSel.getRangeAt( startBoundary ? 0 : ( oSel.rangeCount - 1 ) ) ;
@@ -146,14 +143,14 @@ FCKSelection.SelectNode = function( element )
 	var oRange = FCK.EditorDocument.createRange() ;
 	oRange.selectNode( element ) ;
 
-	var oSel = FCK.EditorWindow.getSelection() ;
+	var oSel = this.GetSelection() ;
 	oSel.removeAllRanges() ;
 	oSel.addRange( oRange ) ;
 }
 
 FCKSelection.Collapse = function( toStart )
 {
-	var oSel = FCK.EditorWindow.getSelection() ;
+	var oSel = this.GetSelection() ;
 
 	if ( toStart == null || toStart === true )
 		oSel.collapseToStart() ;
@@ -167,13 +164,13 @@ FCKSelection.HasAncestorNode = function( nodeTagName )
 	var oContainer = this.GetSelectedElement() ;
 	if ( ! oContainer && FCK.EditorWindow )
 	{
-		try		{ oContainer = FCK.EditorWindow.getSelection().getRangeAt(0).startContainer ; }
+		try		{ oContainer = this.GetSelection().getRangeAt(0).startContainer ; }
 		catch(e){}
 	}
 
 	while ( oContainer )
 	{
-		if ( oContainer.nodeType == 1 && oContainer.tagName == nodeTagName ) return true ;
+		if ( oContainer.nodeType == 1 && oContainer.nodeName.IEquals( nodeTagName ) ) return true ;
 		oContainer = oContainer.parentNode ;
 	}
 
@@ -187,11 +184,11 @@ FCKSelection.MoveToAncestorNode = function( nodeTagName )
 
 	var oContainer = this.GetSelectedElement() ;
 	if ( ! oContainer )
-		oContainer = FCK.EditorWindow.getSelection().getRangeAt(0).startContainer ;
+		oContainer = this.GetSelection().getRangeAt(0).startContainer ;
 
 	while ( oContainer )
 	{
-		if ( oContainer.nodeName == nodeTagName )
+		if ( oContainer.nodeName.IEquals( nodeTagName ) )
 			return oContainer ;
 
 		oContainer = oContainer.parentNode ;
@@ -202,7 +199,7 @@ FCKSelection.MoveToAncestorNode = function( nodeTagName )
 FCKSelection.Delete = function()
 {
 	// Gets the actual selection.
-	var oSel = FCK.EditorWindow.getSelection() ;
+	var oSel = this.GetSelection() ;
 
 	// Deletes the actual selection contents.
 	for ( var i = 0 ; i < oSel.rangeCount ; i++ )
@@ -212,3 +209,20 @@ FCKSelection.Delete = function()
 
 	return oSel ;
 }
+
+/**
+ * Returns the native selection object.
+ */
+FCKSelection.GetSelection = function()
+{
+	return FCK.EditorWindow.getSelection() ;
+}
+
+// The following are IE only features (we don't need then in other browsers
+// currently).
+FCKSelection.Save = function()
+{}
+FCKSelection.Restore = function()
+{}
+FCKSelection.Release = function()
+{}

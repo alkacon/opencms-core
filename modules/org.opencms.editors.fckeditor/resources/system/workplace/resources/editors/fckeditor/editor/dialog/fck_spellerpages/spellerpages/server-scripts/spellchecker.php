@@ -62,7 +62,7 @@ function escape_quote( $str ) {
 
 # handle a server-side error.
 function error_handler( $err ) {
-	echo "error = '" . escape_quote( $err ) . "';\n";
+	echo "error = '" . preg_replace( "/['\\\\]/", "\\\\$0", $err ) . "';\n";
 }
 
 ## get the list of misspelled words. Put the results in the javascript words array
@@ -170,7 +170,7 @@ wordWindowObj.suggestions = suggs;
 wordWindowObj.textInputs = textinputs;
 
 function init_spell() {
-	// check if any error occurred during server-side processing
+	// check if any error occured during server-side processing
 	if( error ) {
 		alert( error );
 	} else {
@@ -197,5 +197,3 @@ wordWindowObj.writeBody();
 
 </body>
 </html>
-
-

@@ -122,7 +122,7 @@ wordWindowObj.suggestions = suggs;
 wordWindowObj.textInputs = textinputs;
 
 function init_spell() {
-	// check if any error occurred during server-side processing
+	// check if any error occured during server-side processing
 	if( error ) {
 		alert( error );
 	} else {

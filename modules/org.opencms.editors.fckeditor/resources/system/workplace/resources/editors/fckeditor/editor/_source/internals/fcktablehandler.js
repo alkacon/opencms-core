@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2008 Frederico Caldeira Knabben
  *
  * == BEGIN LICENSE ==
  *
@@ -366,8 +366,8 @@ FCKTableHandler.MergeCells = function()
 
 	var baseColIdx = colIdx - selectionGeometry.x ;
 	var baseRowIdx = rowIdx - selectionGeometry.y ;
-	var cellContents = refCell.ownerDocument.createDocumentFragment() ;
-	for ( var i = 0 ; i < selectionGeometry.height ; i++ ) 
+	var cellContents = FCKTools.GetElementDocument( refCell ).createDocumentFragment() ;
+	for ( var i = 0 ; i < selectionGeometry.height ; i++ )
 	{
 		var rowChildNodesCount = 0 ;
 		for ( var j = 0 ; j < selectionGeometry.width ; j++ )
@@ -376,7 +376,7 @@ FCKTableHandler.MergeCells = function()
 			while ( currentCell.childNodes.length > 0 )
 			{
 				var node = currentCell.removeChild( currentCell.firstChild ) ;
-				if ( node.nodeType != 1 
+				if ( node.nodeType != 1
 					|| ( node.getAttribute( 'type', 2 ) != '_moz' && node.getAttribute( '_moz_dirty' ) != null ) )
 				{
 					cellContents.appendChild( node ) ;
@@ -385,14 +385,14 @@ FCKTableHandler.MergeCells = function()
 			}
 		}
 		if ( rowChildNodesCount > 0 )
-			cellContents.appendChild( refCell.ownerDocument.createElement( 'br' ) ) ;
+			cellContents.appendChild( FCKTools.GetElementDocument( refCell ).createElement( 'br' ) ) ;
 	}
 
 	this._ReplaceCellsByMarker( tableMap, '_SelectedCells', refCell ) ;
 	this._UnmarkCells( cells, '_SelectedCells' ) ;
 	this._InstallTableMap( tableMap, refCell.parentNode.parentNode ) ;
 	refCell.appendChild( cellContents ) ;
-	
+
 	if ( FCKBrowserInfo.IsGeckoLike && ( ! refCell.firstChild ) )
 		FCKTools.AppendBogusBr( refCell ) ;
 
@@ -406,7 +406,7 @@ FCKTableHandler.MergeRight = function()
 		return ;
 	var refCell = target.refCell ;
 	var tableMap = target.tableMap ;
-	var nextCell = target.nextCell ; 
+	var nextCell = target.nextCell ;
 
 	var cellContents = FCK.EditorDocument.createDocumentFragment() ;
 	while ( nextCell && nextCell.childNodes && nextCell.childNodes.length > 0 )
@@ -430,11 +430,11 @@ FCKTableHandler.MergeDown = function()
 	var tableMap = target.tableMap ;
 	var nextCell = target.nextCell ;
 
-	var cellContents = refCell.ownerDocument.createDocumentFragment() ;
+	var cellContents = FCKTools.GetElementDocument( refCell ).createDocumentFragment() ;
 	while ( nextCell && nextCell.childNodes && nextCell.childNodes.length > 0 )
 		cellContents.appendChild( nextCell.removeChild( nextCell.firstChild ) ) ;
 	if ( cellContents.firstChild )
-		cellContents.insertBefore( nextCell.ownerDocument.createElement( 'br' ), cellContents.firstChild ) ;
+		cellContents.insertBefore( FCKTools.GetElementDocument( nextCell ).createElement( 'br' ), cellContents.firstChild ) ;
 	refCell.appendChild( cellContents ) ;
 	this._MarkCells( [nextCell], '_Replace' ) ;
 	this._ReplaceCellsByMarker( tableMap, '_Replace', refCell ) ;
@@ -460,7 +460,7 @@ FCKTableHandler.HorizontalSplitCell = function()
 		// Splittng a multi-column cell - original cell gets ceil(colSpan/2) columns,
 		// new cell gets floor(colSpan/2).
 		var newCellSpan = Math.ceil( cellSpan / 2 ) ;
-		var newCell = refCell.ownerDocument.createElement( 'td' ) ;
+		var newCell = FCKTools.GetElementDocument( refCell ).createElement( 'td' ) ;
 		if ( FCKBrowserInfo.IsGeckoLike )
 			FCKTools.AppendBogusBr( newCell ) ;
 		var startIdx = colIdx + newCellSpan ;
@@ -474,10 +474,10 @@ FCKTableHandler.HorizontalSplitCell = function()
 	}
 	else
 	{
-		// Splitting a single-column cell - add a new cell, and expand 
+		// Splitting a single-column cell - add a new cell, and expand
 		// cells crossing the same column.
 		var newTableMap = [] ;
-		for ( var i = 0 ; i < tableMap.length ; i++ ) 
+		for ( var i = 0 ; i < tableMap.length ; i++ )
 		{
 			var newRow = tableMap[i].slice( 0, colIdx ) ;
 			if ( tableMap[i].length <= colIdx )
@@ -488,7 +488,7 @@ FCKTableHandler.HorizontalSplitCell = function()
 			if ( tableMap[i][colIdx] == refCell )
 			{
 				newRow.push( refCell ) ;
-				newRow.push( refCell.ownerDocument.createElement( 'td' ) ) ;
+				newRow.push( FCKTools.GetElementDocument( refCell ).createElement( 'td' ) ) ;
 				if ( FCKBrowserInfo.IsGeckoLike )
 					FCKTools.AppendBogusBr( newRow[newRow.length - 1] ) ;
 			}
@@ -550,8 +550,12 @@ FCKTableHandler.VerticalSplitCell = function()
 		// 1. Insert a new row.
 		var newCellRowIndex = currentRowIndex + 1 ;
 		var newRow = FCK.EditorDocument.createElement( 'tr' ) ;
-		currentCell.parentNode.parentNode.insertBefore( newRow, currentCell.parentNode.parentNode.rows[newCellRowIndex] ) ;
-		
+		var tBody = currentCell.parentNode.parentNode ;
+		if ( tBody.rows.length > newCellRowIndex )
+			tBody.insertBefore( newRow, tBody.rows[newCellRowIndex] ) ;
+		else
+			tBody.appendChild( newRow ) ;
+
 		// 2. +1 to rowSpan for all cells crossing currentCell's row.
 		for ( var i = 0 ; i < tableMap[currentRowIndex].length ; )
 		{
@@ -677,6 +681,11 @@ FCKTableHandler._CreateTableMap = function( table )
 // This function is the inverse of _CreateTableMap - it takes in a table map and converts it to an HTML table.
 FCKTableHandler._InstallTableMap = function( tableMap, table )
 {
+	// Workaround for #1917 : MSIE will always report a cell's rowSpan as 1 as long
+	// as the cell is not attached to a row. So we'll need an alternative attribute
+	// for storing the calculated rowSpan in IE.
+	var rowSpanAttr = FCKBrowserInfo.IsIE ? "_fckrowspan" : "rowSpan" ;
+
 	// Clear the table of all rows first.
 	while ( table.rows.length > 0 )
 	{
@@ -692,7 +701,7 @@ FCKTableHandler._InstallTableMap = function( tableMap, table )
 			var cell = tableMap[i][j] ;
 			if ( cell.parentNode )
 				cell.parentNode.removeChild( cell ) ;
-			cell.colSpan = cell.rowSpan = 1 ;
+			cell.colSpan = cell[rowSpanAttr] = 1 ;
 		}
 	}
 
@@ -727,7 +736,7 @@ FCKTableHandler._InstallTableMap = function( tableMap, table )
 			if ( ! cell || cell._rowScanned === true )
 				continue ;
 			if ( tableMap[j-1] && tableMap[j-1][i] == cell )
-				cell.rowSpan++ ;
+				cell[rowSpanAttr]++ ;
 			if ( ! tableMap[j+1] || tableMap[j+1][i] != cell )
 				cell._rowScanned = true ;
 		}
@@ -755,7 +764,7 @@ FCKTableHandler._InstallTableMap = function( tableMap, table )
 	// Insert physical rows and columns to the table.
 	for ( var i = 0 ; i < tableMap.length ; i++ )
 	{
-		var rowObj = table.ownerDocument.createElement( 'tr' ) ;
+		var rowObj = FCKTools.GetElementDocument( table ).createElement( 'tr' ) ;
 		for ( var j = 0 ; j < tableMap[i].length ; )
 		{
 			var cell = tableMap[i][j] ;
@@ -765,6 +774,11 @@ FCKTableHandler._InstallTableMap = function( tableMap, table )
 				continue ;
 			}
 			rowObj.appendChild( cell ) ;
+			if ( rowSpanAttr != 'rowSpan' )
+			{
+				cell.rowSpan = cell[rowSpanAttr] ;
+				cell.removeAttribute( rowSpanAttr ) ;
+			}
 			j += cell.colSpan ;
 			if ( cell.colSpan == 1 )
 				cell.removeAttribute( 'colspan' ) ;

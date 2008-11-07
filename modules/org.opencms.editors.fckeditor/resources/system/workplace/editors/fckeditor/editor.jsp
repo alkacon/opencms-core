@@ -95,6 +95,9 @@ var linkEditorPrefix = "<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
 // Path to the style sheet used in the editor
 var cssPath = "<%= wp.getUriStyleSheet() %>";
 
+// Path to the currently edited resource
+var editedResource = "<%= wp.getParamResource() %>";
+
 // saves the editors contents
 function saveContent() {
     document.EDITOR.content.value = encodeURIComponent(FCKeditorAPI.GetInstance("fckeditor").GetXHTML(true));
@@ -312,8 +315,8 @@ out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", org.openc
 	editor.Width = "100%";
 	editor.Height = "100%";
 	editor.ToolbarSet = "OpenCms";
-	editor.Value = decodeURIComponent("<%= wp.getParamContent() %>");   
-	editor.Create() ;
+	editor.Value = decodeURIComponent("<%= wp.getParamContent() %>");  
+	editor.Create();
 //-->
 </script>
 </div>

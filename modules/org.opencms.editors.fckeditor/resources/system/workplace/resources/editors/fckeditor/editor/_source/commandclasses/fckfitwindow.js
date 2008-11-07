@@ -1,6 +1,6 @@
 ﻿/*
  * FCKeditor - The text editor for Internet - http://www.fckeditor.net
- * Copyright (C) 2003-2007 Frederico Caldeira Knabben
+ * Copyright (C) 2003-2008 Frederico Caldeira Knabben
  *
  * == BEGIN LICENSE ==
  *
@@ -36,6 +36,11 @@ FCKFitWindow.prototype.Execute = function()
 	var eBody				= eMainWindow.document.body ;
 	var eBodyStyle			= eBody.style ;
 	var eParent ;
+
+	// Save the current selection and scroll position.
+	var oRange = new FCKDomRange( FCK.EditorWindow ) ;
+	oRange.MoveToSelection() ;
+	var oEditorScrollPos = FCKTools.GetScrollPosition( FCK.EditorWindow ) ;
 
 	// No original style properties known? Go fullscreen.
 	if ( !this.IsMaximized )
@@ -83,6 +88,7 @@ FCKFitWindow.prototype.Execute = function()
 		var oViewPaneSize = FCKTools.GetViewPaneSize( eMainWindow ) ;
 
 		eEditorFrameStyle.position	= "absolute";
+		eEditorFrame.offsetLeft ;		// Kludge for Safari 3.1 browser bug, do not remove. See #2066.
 		eEditorFrameStyle.zIndex	= FCKConfig.FloatingPanelsZIndex - 1;
 		eEditorFrameStyle.left		= "0px";
 		eEditorFrameStyle.top		= "0px";
@@ -155,10 +161,14 @@ FCKFitWindow.prototype.Execute = function()
 	//lost, so we must reset it. Also, the cursor position and selection are
 	//also lost, even if you comment the following line (MakeEditable).
 	// if ( FCKBrowserInfo.IsGecko10 )	// Initially I thought it was a FF 1.0 only problem.
-	if ( FCK.EditMode == FCK_EDITMODE_WYSIWYG ) 
+	if ( FCK.EditMode == FCK_EDITMODE_WYSIWYG )
 		FCK.EditingArea.MakeEditable() ;
 
 	FCK.Focus() ;
+
+	// Restore the selection and scroll position of inside the document.
+	oRange.Select() ;
+	FCK.EditorWindow.scrollTo( oEditorScrollPos.X, oEditorScrollPos.Y ) ;
 }
 
 FCKFitWindow.prototype.GetState = function()

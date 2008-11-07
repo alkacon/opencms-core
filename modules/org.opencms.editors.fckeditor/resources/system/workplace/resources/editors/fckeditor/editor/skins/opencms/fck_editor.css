@@ -23,8 +23,8 @@
 
 body
 {
-    padding: 0px 0px 0px 0px;
-    margin: 0px 0px 0px 0px;
+    padding: 0;
+	margin: 0;
 }
 
 #xEditingArea
@@ -417,7 +417,7 @@ body
     background-repeat: no-repeat;
 }
 
-.SC_FieldDisabled .SC_FieldButton, .SC_FieldDisabled .SC_FieldCaption
+.SC_FieldDisabled .SC_FieldButton, .SC_FieldDisabled .SC_FieldCaption, .SC_FieldDisabled .TB_ButtonType_Text
 {
     opacity: 0.30; /* Safari, Opera and Mozilla */
     filter: gray() alpha(opacity=30); /* IE */ /* -moz-opacity: 0.30; Mozilla (Old) */
