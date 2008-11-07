@@ -613,4 +613,48 @@
             org.opencms.util.CmsUUID convertUUID(java.lang.Object)
         </function-signature>
     </function>
+    
+    <function>
+        <description>
+            Returns the value of a parameter from a String that is formatted for a GET request.
+        </description>    
+        <name>getRequestParam</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String getRequestParam(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+            Returns the link without parameters from a String that is formatted for a GET request.
+        </description>    
+        <name>getRequestLink</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String getRequestLink(java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+            Encodes a String in a way that is compatible with the JavaScript escape function.
+        </description>    
+        <name>escape</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String escape(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
+    
+    <function>
+        <description>
+            Decodes a String in a way that is compatible with the JavaScript unescape function.
+        </description>    
+        <name>unescape</name>
+        <function-class>org.opencms.jsp.util.CmsJspElFunctions</function-class>
+        <function-signature>
+            java.lang.String unescape(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
 </taglib>

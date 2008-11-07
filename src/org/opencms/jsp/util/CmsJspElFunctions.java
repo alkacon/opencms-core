@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspElFunctions.java,v $
- * Date   : $Date: 2008/02/27 12:05:49 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2008/11/07 15:42:48 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,18 +34,22 @@ package org.opencms.jsp.util;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtml2TextConverter;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -55,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.2
  * 
@@ -251,6 +255,19 @@ public final class CmsJspElFunctions {
     }
 
     /**
+     * Encodes a String in a way that is compatible with the JavaScript escape function.
+     * 
+     * @param source The text to be encoded
+     * @param encoding the encoding type
+     * 
+     * @return The JavaScript escaped string
+     */
+    public static String escape(String source, String encoding) {
+
+        return CmsEncoder.escape(source, encoding);
+    }
+
+    /**
      * Returns the current OpenCms user context from the given page context.<p>
      * 
      * @param input the input to create a CmsObject from
@@ -260,6 +277,40 @@ public final class CmsJspElFunctions {
     public static CmsObject getCmsObject(Object input) {
 
         return convertCmsObject(input);
+    }
+
+    /**
+     * Returns the link without parameters from a String that is formatted for a GET request.<p>
+     * 
+     * @param url the URL to remove the parameters from
+     * @return the link without parameters
+     */
+    public static String getRequestLink(String url) {
+
+        return CmsRequestUtil.getRequestLink(url);
+    }
+
+    /**
+     * Returns the value of a parameter from a String that is formatted for a GET request.<p>
+     * 
+     * @param url the URL to get the parameter value from
+     * @param paramName the request parameter name
+     * @return the value of the parameter
+     */
+    public static String getRequestParam(String url, String paramName) {
+
+        Map params = Collections.EMPTY_MAP;
+        if (CmsStringUtil.isNotEmpty(url)) {
+            int pos = url.indexOf(CmsRequestUtil.URL_DELIMITER);
+            if (pos >= 0) {
+                params = CmsRequestUtil.createParameterMap(url.substring(pos + 1));
+            }
+        }
+        String[] result = (String[])params.get(paramName);
+        if (result != null) {
+            return result[0];
+        }
+        return null;
     }
 
     /**
@@ -319,5 +370,19 @@ public final class CmsJspElFunctions {
     public static String trimToSize(String input, int length) {
 
         return CmsStringUtil.trimToSize(input, length, " ...");
+    }
+
+    /**
+     * Decodes a String in a way that is compatible with the JavaScript 
+     * unescape function.<p>
+     * 
+     * @param source The String to be decoded
+     * @param encoding the encoding type
+     * 
+     * @return The JavaScript unescaped String
+     */
+    public static String unescape(String source, String encoding) {
+
+        return CmsEncoder.unescape(source, encoding);
     }
 }

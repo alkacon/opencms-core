@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2008/03/01 14:40:26 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2008/11/07 15:42:48 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -516,6 +516,25 @@ public final class CmsRequestUtil {
             result = null;
         }
         return result;
+    }
+    
+    /**
+     * Returns the link without parameters from a String that is formatted for a GET request.<p>
+     * 
+     * @param url the URL to remove the parameters from
+     * @return the URL without any parameters
+     */
+    public static String getRequestLink(String url) {
+        
+        if (CmsStringUtil.isEmpty(url)) {
+            return null;
+        }
+        int pos = url.indexOf(URL_DELIMITER);
+        if (pos >= 0) {
+            return url.substring(0, pos);
+        }
+        return url;
+        
     }
 
     /**
