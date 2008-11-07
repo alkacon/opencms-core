@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsImageWidgetConfiguration.java,v $
- * Date   : $Date: 2008/11/07 16:02:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/11/07 16:03:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.6 
  */
@@ -245,7 +245,7 @@ public class CmsVfsImageWidgetConfiguration {
         try {
             jsonObj = new JSONObject(configuration);
         } catch (JSONException e) {
-            // TODO: error handling
+            // initialization failed
             return;
         }
         // determine the class name that fills in values dynamically
@@ -255,7 +255,7 @@ public class CmsVfsImageWidgetConfiguration {
             try {
                 dynConf = (I_CmsImageWidgetDynamicConfiguration)Class.forName(getClassName()).newInstance();
             } catch (Exception e) {
-                // TODO: error handling 
+                // class not found
             }
         }
         // determine if the description field should be shown
