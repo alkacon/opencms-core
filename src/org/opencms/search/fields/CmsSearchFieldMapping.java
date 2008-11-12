@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMapping.java,v $
- * Date   : $Date: 2008/08/22 13:51:11 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/11/12 16:48:58 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 7.0.0 
  */
@@ -158,13 +158,8 @@ public class CmsSearchFieldMapping {
                     if (search) {
                         content = CmsProperty.get(getParam(), propertiesSearched).getValue();
                     } else {
-                        content = CmsProperty.get(getParam(), propertiesSearched).getValue();
+                        content = CmsProperty.get(getParam(), properties).getValue();
                     }
-                    //                    try {
-                    //                        content = cms.readPropertyObject(res, getParam(), search).getValue();
-                    //                    } catch (CmsException e) {
-                    //                        // ignore, continue without content
-                    //                    }
                 }
                 break;
             case 3: // item
