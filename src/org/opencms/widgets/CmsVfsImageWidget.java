@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsImageWidget.java,v $
- * Date   : $Date: 2008/11/07 16:02:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2008/11/26 15:57:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.6 
  */
@@ -141,6 +141,9 @@ public class CmsVfsImageWidget extends A_CmsWidget {
         // cast parameter to xml value to access the specific methods
         CmsXmlVfsImageValue value = (CmsXmlVfsImageValue)param;
         String imageLink = value.getRequestLink(cms);
+        if (imageLink == null) {
+            imageLink = "";
+        }
 
         StringBuffer result = new StringBuffer(4096);
 
@@ -277,6 +280,9 @@ public class CmsVfsImageWidget extends A_CmsWidget {
         }
 
         String description = value.getDescription(cms);
+        if (description == null) {
+            description = "";
+        }
 
         if (configuration.isShowDescription()) {
             result.append("<tr>");

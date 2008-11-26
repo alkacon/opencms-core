@@ -64,7 +64,6 @@ function onSizeChanged(dimension, value, refreshImage, refreshSelect) {
 	}
 	activeImage.newwidth = parseInt($('#txtWidth').get(0).value);
 	activeImage.newheight = parseInt($('#txtHeight').get(0).value);
-	
 	if (refreshSelect == null || refreshSelect == true) {
 		refreshSelectBox();
 	}
@@ -128,7 +127,6 @@ function changeFormat() {
 	var selected = $("#formatselect").get(0).selectedIndex;
 	
 	formatSelected = formatSelections[selected];
-	
 	if (formatSelected.type == "original") {
 		// reset to original sizes
 		resetSizes();
@@ -246,31 +244,31 @@ function initFormatSelectBox() {
 /* Refreshes the selected option of the format select box. */
 function refreshSelectBox() {
 	var selectedIndex = -1;
-	for (var i=0; i<formatSelections.length; i++) {
-		// check if the values match a format selection
-		var currSelect = formatSelections[i];
-		if (currSelect.type == "user") {
-			selectedIndex = i;
-			$("#croplink").show();
+	if (initValues.useformats != true) {
+		for (var i=0; i<formatSelections.length; i++) {
+			// check if the values match a format selection
+			var currSelect = formatSelections[i];
+			if (currSelect.type == "user") {
+				selectedIndex = i;
+				$("#croplink").show();
+			}
+			if (currSelect.type == "free" && activeImage.isCropped == true) {
+				selectedIndex = i;
+				$("#croplink").show();
+			} else if (currSelect.type == "original" && activeImage.newwidth == activeImage.width && activeImage.newheight == activeImage.height) {
+				selectedIndex = i;
+				$("#croplink").hide();
+				break;
+			} else if (currSelect.width == activeImage.newwidth && (currSelect.height == -1 || currSelect.height == activeImage.newheight)) {
+				selectedIndex = i;
+				$("#croplink").show();
+				break;
+			} else if (currSelect.height == activeImage.newheight && (currSelect.width == -1 || currSelect.width == activeImage.newwidth)) {
+				selectedIndex = i;
+				$("#croplink").show();
+				break;
+			}
 		}
-		if (currSelect.type == "free" && activeImage.isCropped == true) {
-			selectedIndex = i;
-			$("#croplink").show();
-		}
-		if (currSelect.type == "original" && activeImage.newwidth == activeImage.width && activeImage.newheight == activeImage.height) {
-			selectedIndex = i;
-			$("#croplink").hide();
-			break;
-		} else if (currSelect.width == activeImage.newwidth && (currSelect.height == -1 || currSelect.height == activeImage.newheight)) {
-			selectedIndex = i;
-			$("#croplink").show();
-			break;
-		} else if (currSelect.height == activeImage.newheight && (currSelect.width == -1 || currSelect.width == activeImage.newwidth)) {
-			selectedIndex = i;
-			$("#croplink").show();
-			break;
-		}
-		
 	}
 	if (selectedIndex != -1) {
 		if (formatSelections[selectedIndex].type == "user" && formatSelected != null && formatSelected.type == "free") {

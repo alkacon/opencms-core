@@ -452,7 +452,9 @@ function loadActiveImage(data, isInitial) {
 		$tabs.tabs("select", 0);
 		resetSizes();
 		setCropActive(false);
-		$("#croplink").hide();
+		if (initValues.useformats != true) {
+			$("#croplink").hide();
+		}
 	}
 	try {
 		// do additional stuff with the active image if necessary

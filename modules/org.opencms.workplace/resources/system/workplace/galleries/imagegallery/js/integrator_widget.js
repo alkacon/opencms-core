@@ -23,7 +23,7 @@ function initPopup() {
 		$tabs.tabs("disable", 0);
 	}
 	window.resizeTo(sizeX, sizeY);
-	if (initValues.startupfolder != null) {
+	if (initValues.startupfolder != null && initValues.startupfolder != "null") {
 		initStartup();
 	} else {
 		setTimeout("getGalleries();", 50);
