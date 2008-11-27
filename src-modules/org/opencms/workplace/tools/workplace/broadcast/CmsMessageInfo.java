@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsMessageInfo.java,v $
- * Date   : $Date: 2008/02/27 12:05:53 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2008/11/27 16:58:03 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,14 +47,16 @@ import javax.mail.SendFailedException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.mail.EmailException;
+
 /**
  * Bean class for message information.<p>
  * 
- * @author Michael Moossen 
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $
  * 
- * @since 6.0.0 
+ * @since 6.0.0
  */
 public class CmsMessageInfo {
 
@@ -74,7 +76,7 @@ public class CmsMessageInfo {
     private String m_to = "";
 
     /**
-     * Default Constructor.<p> 
+     * Default Constructor.<p>
      */
     public CmsMessageInfo() {
 
@@ -153,26 +155,32 @@ public class CmsMessageInfo {
         // send the mail
         try {
             theMail.send();
-        } catch (SendFailedException sf) {
-            // don't try to resend to successful Addresses: construct a new string with all unsent
-            StringBuffer newTo = new StringBuffer();
-            Address[] unsent = sf.getValidUnsentAddresses();
-            if (unsent != null) {
-                for (int i = unsent.length - 1; i >= 0; i--) {
-                    newTo.append(unsent[i].toString()).append(';');
+        } catch (EmailException e) {
+            // check if original Exception is of type SendFailedException which
+            // should have been thrown by javax.mail.Transport.send()
+            if (e.getCause() instanceof SendFailedException) {
+                SendFailedException sfe = (SendFailedException)e.getCause();
+                // don't try to resend to successful Addresses: construct a new
+                // string with all unsent
+                StringBuffer newTo = new StringBuffer();
+                Address[] unsent = sfe.getValidUnsentAddresses();
+                if (unsent != null) {
+                    for (int i = unsent.length - 1; i >= 0; i--) {
+                        newTo.append(unsent[i].toString()).append(';');
+                    }
                 }
-            }
-            if (unsent != null) {
-                unsent = sf.getInvalidAddresses();
-                for (int i = unsent.length - 1; i >= 0; i--) {
-                    newTo.append(unsent[i].toString()).append(';');
+                if (unsent != null) {
+                    unsent = sfe.getInvalidAddresses();
+                    for (int i = unsent.length - 1; i >= 0; i--) {
+                        newTo.append(unsent[i].toString()).append(';');
+                    }
                 }
+
+                setTo(newTo.toString());
+                // use the message of the internal cause: this is a localized
+                // CmsRuntimeException
+                throw (Exception)sfe.getCause();
             }
-
-            setTo(newTo.toString());
-            // use the message of the internal cause: this is a localizes CmsRuntimeException
-            throw (Exception)sf.getCause();
-
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThreadPool.java,v $
- * Date   : $Date: 2008/02/27 12:05:33 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2008/11/27 16:58:02 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.quartz.spi.ThreadPool;
  * @author James House
  * @author Juergen Donnerstag
  *
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,6 +149,16 @@ public class CmsSchedulerThreadPool implements ThreadPool {
         m_maxThreadCount = maxThreadCount;
         m_threadPriority = threadPriority;
     }
+
+    /**
+     * 
+     * @see org.quartz.spi.ThreadPool#blockForAvailableThreads()
+     */
+    public int blockForAvailableThreads() {
+        // Waiting will be done in runInThread so we always return 1
+        return 1;
+    }
+
 
     /**
      * @see org.quartz.spi.ThreadPool#getPoolSize()

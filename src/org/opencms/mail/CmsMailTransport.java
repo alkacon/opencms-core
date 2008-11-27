@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailTransport.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/11/27 16:58:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,9 @@ package org.opencms.mail;
 
 import org.opencms.main.CmsLog;
 
-import javax.mail.MessagingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
 
 /**
  * Sends an email using a Thread, so that the application can 
@@ -44,7 +43,7 @@ import org.apache.commons.mail.Email;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,7 +72,7 @@ public class CmsMailTransport extends Thread {
 
         try {
             m_email.send();
-        } catch (MessagingException e) {
+        } catch (EmailException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_SEND_MAIL_ERR_0), e);
             }

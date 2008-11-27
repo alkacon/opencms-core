@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2008/11/07 15:42:48 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2008/11/27 16:58:03 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -51,10 +52,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.logging.Log;
 
 /**
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -568,16 +569,17 @@ public final class CmsRequestUtil {
      */
     public static List readMultipartFileItems(HttpServletRequest request) {
 
-        if (!FileUploadBase.isMultipartContent(request)) {
+        if (!ServletFileUpload.isMultipartContent(request)) {
             return null;
         }
-        DiskFileUpload fu = new DiskFileUpload();
+        DiskFileItemFactory factory = new DiskFileItemFactory();
+        // maximum size that will be stored in memory
+        factory.setSizeThreshold(4096);
+        // the location for saving data that is larger than getSizeThreshold()
+        factory.setRepository(new File(OpenCms.getSystemInfo().getPackagesRfsPath()));
+        ServletFileUpload fu = new ServletFileUpload(factory);
         // set encoding to correctly handle special chars (e.g. in filenames)
         fu.setHeaderEncoding(request.getCharacterEncoding());
-        // maximum size that will be stored in memory
-        fu.setSizeThreshold(4096);
-        // the location for saving data that is larger than getSizeThreshold()
-        fu.setRepositoryPath(OpenCms.getSystemInfo().getPackagesRfsPath());
         List result = new ArrayList();
         try {
             List items = fu.parseRequest(request);

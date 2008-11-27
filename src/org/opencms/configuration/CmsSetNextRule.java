@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSetNextRule.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2008/11/27 16:58:03 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.xml.sax.Attributes;
  * @author Craig McClanahan 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -189,7 +189,7 @@ public class CmsSetNextRule extends Rule {
     public void begin(java.lang.String namespace, java.lang.String name, Attributes attributes) throws Exception {
 
         // not now: 6.0.0
-        //digester.setLogger(CmsLog.getLog(digester.getClass()));
+        // digester.setLogger(CmsLog.getLog(digester.getClass()));
 
         // Push an array to capture the parameter values if necessary
         if (m_paramCount > 0) {
@@ -294,7 +294,12 @@ public class CmsSetNextRule extends Rule {
                 || ((parameters[i] instanceof String) && !String.class.isAssignableFrom(m_paramTypes[i]))) {
                 // convert nulls and convert stringy parameters 
                 // for non-stringy param types
-                paramValues[i] = ConvertUtils.convert((String)parameters[i], m_paramTypes[i]);
+                if (parameters[i] == null) {
+                    paramValues[i] = null;
+                } else {
+                    paramValues[i] = ConvertUtils.convert((String)parameters[i], m_paramTypes[i]);
+                }
+
             } else {
                 paramValues[i] = parameters[i];
             }
@@ -440,7 +445,7 @@ public class CmsSetNextRule extends Rule {
 
     /**
      * Subclasses may override this method to perform additional processing of the 
-     * invoked method's result.
+     * invoked method's result.<p>
      *
      * @param result the Object returned by the method invoked, possibly null
      */

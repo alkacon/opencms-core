@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsNotificationCandidates.java,v $
- * Date   : $Date: 2008/02/27 12:05:49 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/11/27 16:58:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,9 +55,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-import javax.mail.MessagingException;
-
 import org.apache.commons.logging.Log;
+import org.apache.commons.mail.EmailException;
 
 /**
  * The basic class for the content notification feature in OpenCms. Collects all resources that require a notification,
@@ -190,7 +189,7 @@ public class CmsNotificationCandidates {
                 }
                 try {
                     contentNotification.send();
-                } catch (MessagingException e) {
+                } catch (EmailException e) {
                     LOG.error(e.getLocalizedMessage(), e);
                 }
             }

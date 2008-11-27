@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/A_CmsNotification.java,v $
- * Date   : $Date: 2008/02/27 12:05:49 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/11/27 16:58:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import java.util.Locale;
 import javax.mail.MessagingException;
 
 import org.apache.commons.logging.Log;
+import org.apache.commons.mail.EmailException;
 
 /**
  * Abstract class to create a notfication which will be send as a html mail to
@@ -56,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.5.3
  */
@@ -139,13 +140,14 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
     /**
      * @see org.apache.commons.mail.Email#send()
      */
-    public void send() throws MessagingException {
+    public String send() throws EmailException {
 
+        String messageID = null;
         try {
             // check if user is valid and has a mail address specified
             if (CmsStringUtil.isEmpty(m_receiver.getEmail())) {
                 LOG.error(Messages.get().getBundle().key(Messages.LOG_NOTIFICATION_NO_ADDRESS_1, m_receiver.getName()));
-                return;
+                return null;
             }
 
             if (LOG.isInfoEnabled()) {
@@ -205,9 +207,16 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
 
             // send mail
             super.send();
+
+            // get MIME message ID
+            messageID = this.getMimeMessage().getMessageID();
+
         } catch (CmsException e) {
             LOG.error(Messages.get().getBundle().key(Messages.LOG_NOTIFICATION_SEND_ERROR_0), e);
+        } catch (MessagingException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_NOTIFICATION_SEND_ERROR_0), e);
         }
+        return messageID;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsSimpleMail.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/11/27 16:58:03 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,20 +41,21 @@ import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
 
 import org.apache.commons.logging.Log;
+import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 
 /**
  * This class is used to send simple text internet email messages without
  * attachments.<p>
- *
- * It uses the Apache Commons Email API and extends the provided classes
- * to conveniently generate emails using the OpenCms configuration.<p> 
- *
- * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * It uses the Apache Commons Email API and extends the provided classes to
+ * conveniently generate emails using the OpenCms configuration.<p>
  * 
- * @since 6.0.0 
+ * @author Andreas Zahner
+ * 
+ * @version $Revision: 1.13 $
+ * 
+ * @since 6.0.0
  */
 public class CmsSimpleMail extends SimpleEmail {
 
@@ -85,7 +86,7 @@ public class CmsSimpleMail extends SimpleEmail {
         try {
             // set default mail from address
             setFrom(OpenCms.getSystemInfo().getMailSettings().getMailFromDefault());
-        } catch (MessagingException e) {
+        } catch (EmailException e) {
             // default email address is not valid, log error
             LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_SENDER_ADDRESS_0), e);
         }
@@ -94,44 +95,53 @@ public class CmsSimpleMail extends SimpleEmail {
     /**
      * Overrides to add a layer for localization of exception / logging.<p>
      * 
-     * Please note that in case of a <code>{@link SendFailedException}</code> 
-     * the cause of this message will contain a  <code>{@link CmsRuntimeException}</code> 
-     * as cause. The information of the <code>SendFaileException</code> should be used outside 
-     * to remove recipients (e.g. from the beans that store them) in order to avoid duplicate 
-     * sending of emails. The internal cause then just should be rethrown to allow localized 
-     * output about the cause.<p>
+     * Please note that in case of a <code>{@link SendFailedException}</code>
+     * the cause of this message will contain a
+     * <code>{@link CmsRuntimeException}</code> as cause. The information of
+     * the <code>SendFailedException</code> should be used outside to remove
+     * recipients (e.g. from the beans that store them) in order to avoid
+     * duplicate sending of emails. The internal cause then just should be
+     * rethrown to allow localized output about the cause.<p>
      * 
-     *  
+     * 
      * @see org.apache.commons.mail.Email#send()
      * 
-     * @throws MessagingException if something goes wrong
-     * @throws SendFailedException if sending failed, please look at the possibility to use this type to remove 
-     *         recepients from a mass mail where sending suceeded. 
+     * @throws EmailException if something goes wrong
      */
-    public void send() throws MessagingException, SendFailedException {
+    public String send() throws EmailException {
 
+        String messageID = null;
         try {
             super.send();
-        } catch (SendFailedException sf) {
-            // The specialized exception types (authentication, wrong host) are wrapped in this type:
-            MessagingException me = (MessagingException)sf.getNextException();
-            CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
-            if (me instanceof AuthenticationFailedException) {
-                // wrong user credentials in opencms-system.xml
+            messageID = this.getMimeMessage().getMessageID();
+        } catch (EmailException e) {
+            // check if original Exception is of type SendFailedException which
+            // should have been thrown by javax.mail.Transport.send()
+            if (e.getCause() instanceof SendFailedException) {
+                SendFailedException sfe = (SendFailedException)e.getCause();
+                // The specialized exception types (authentication, wrong host) are
+                // wrapped in this type:
+                MessagingException me = (MessagingException)sfe.getNextException();
+                CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
+                if (me instanceof AuthenticationFailedException) {
+                    // wrong user credentials in opencms-system.xml
+                    CmsRuntimeException rte = new CmsRuntimeException(Messages.get().container(
+                        Messages.ERR_SEND_EMAIL_AUTHENTICATE_2,
+                        host.getUsername(),
+                        host.getHostname()));
+                    sfe.initCause(rte);
+                    throw new EmailException(sfe);
+                }
+                // wrong hostname in opencms-system.xml
                 CmsRuntimeException rte = new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_SEND_EMAIL_AUTHENTICATE_2,
-                    host.getUsername(),
-                    host.getHostname()));
-                sf.initCause(rte);
-                throw sf;
+                    Messages.ERR_SEND_EMAIL_HOSTNAME_1,
+                    host.getHostname()), me);
+                sfe.initCause(rte);
+                throw new EmailException(sfe);
             }
-            // wrong hostname in opencms-system.xml
-            CmsRuntimeException rte = new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_SEND_EMAIL_HOSTNAME_1,
-                host.getHostname()), me);
-            sf.initCause(rte);
-            throw sf;
-
+        } catch (MessagingException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_MESSAGE_ID_ERR_0), e);
         }
+        return messageID;
     }
 }

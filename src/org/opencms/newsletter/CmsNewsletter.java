@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsNewsletter.java,v $
- * Date   : $Date: 2008/02/27 12:05:33 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/11/27 16:58:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.mail.CmsHtmlMail;
 import org.opencms.mail.CmsSimpleMail;
 import org.opencms.mail.CmsVfsDataSource;
+import org.opencms.mail.Messages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
@@ -49,25 +51,33 @@ import java.util.List;
 
 import javax.mail.MessagingException;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
 
-/** 
- * Basic implementation of the interface {@link I_CmsNewsletter}.<p>
+/**
+ * Basic implementation of the interface {@link I_CmsNewsletter}.
+ * <p>
  * 
  * @author Jan Baudisch
  */
 public class CmsNewsletter implements I_CmsNewsletter {
 
-    /** The attachments, a list of {@link org.opencms.file.CmsResource} objects.<p> */
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsNewsletter.class);
+
+    /** The attachments, a list of {@link org.opencms.file.CmsResource} objects. */
     private List m_attachments;
 
-    /** The contents, a list of {@link CmsNewsletterContent} objects.<p> */
+    /** The contents, a list of {@link CmsNewsletterContent} objects. */
     private List m_contents;
 
-    /** The subject of the newsletter.<p> */
+    /** The subject of the newsletter. */
     private String m_subject;
 
-    /** Creates a new newsletter instance.<p> */
+    /**
+     * Creates a new newsletter instance.<p>
+     */
     public CmsNewsletter() {
 
         m_contents = new ArrayList();
@@ -75,7 +85,6 @@ public class CmsNewsletter implements I_CmsNewsletter {
     }
 
     /**
-     * 
      * @see org.opencms.newsletter.I_CmsNewsletter#addAttachment(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
     public void addAttachment(CmsObject cms, CmsResource resource) {
@@ -84,7 +93,6 @@ public class CmsNewsletter implements I_CmsNewsletter {
     }
 
     /**
-     * 
      * @see org.opencms.newsletter.I_CmsNewsletter#addContent(org.opencms.newsletter.I_CmsNewsletterContent)
      */
     public void addContent(I_CmsNewsletterContent content) {
@@ -92,7 +100,7 @@ public class CmsNewsletter implements I_CmsNewsletter {
         m_contents.add(content);
     }
 
-    /** 
+    /**
      * Returns the e-mail for the newsletter.<p>
      * 
      * @param recipient the recipient to whom the newsletter is sent
@@ -118,47 +126,51 @@ public class CmsNewsletter implements I_CmsNewsletter {
                 }
             }
         }
-        Email email;
-        if ((htmlMsg.length() > 0) || !m_attachments.isEmpty()) {
-            // we need to create a HTML mail
-            CmsHtmlMail htmlMail = new CmsHtmlMail();
-            htmlMail.setHtmlMsg(replaceMacros(htmlMsg.toString(), recipient));
-            Iterator attachments = m_attachments.iterator();
-            while (attachments.hasNext()) {
-                CmsResource resource = (CmsResource)attachments.next();
-                // set the description of the attachment either to the property description, if it is set, or 
-                // to the property title
-                String description = "";
-                String propertyDescription = cms.readPropertyObject(
-                    cms.getSitePath(resource),
-                    CmsPropertyDefinition.PROPERTY_DESCRIPTION,
-                    true).getValue();
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(propertyDescription)) {
-                    description = propertyDescription;
-                } else {
-                    String propertyTitle = cms.readPropertyObject(
+        Email email = null;
+        try {
+            if ((htmlMsg.length() > 0) || !m_attachments.isEmpty()) {
+                // we need to create a HTML mail
+                CmsHtmlMail htmlMail = new CmsHtmlMail();
+                htmlMail.setHtmlMsg(replaceMacros(htmlMsg.toString(), recipient));
+                Iterator attachments = m_attachments.iterator();
+                while (attachments.hasNext()) {
+                    CmsResource resource = (CmsResource)attachments.next();
+                    // set the description of the attachment either to the
+                    // property description, if it is set, or
+                    // to the property title
+                    String description = "";
+                    String propertyDescription = cms.readPropertyObject(
                         cms.getSitePath(resource),
-                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        CmsPropertyDefinition.PROPERTY_DESCRIPTION,
                         true).getValue();
-                    description = propertyTitle;
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(propertyDescription)) {
+                        description = propertyDescription;
+                    } else {
+                        String propertyTitle = cms.readPropertyObject(
+                            cms.getSitePath(resource),
+                            CmsPropertyDefinition.PROPERTY_TITLE,
+                            true).getValue();
+                        description = propertyTitle;
+                    }
+                    htmlMail.attach(new CmsVfsDataSource(cms, resource), resource.getName(), description);
                 }
-                htmlMail.attach(new CmsVfsDataSource(cms, resource), resource.getName(), description);
+                htmlMail.setTextMsg(replaceMacros(txtMsg.toString(), recipient));
+                email = htmlMail;
+            } else {
+                // only text content, return text mail
+                CmsSimpleMail textMail = new CmsSimpleMail();
+                textMail.setMsg(replaceMacros(txtMsg.toString(), recipient));
+                email = textMail;
             }
-            htmlMail.setTextMsg(replaceMacros(txtMsg.toString(), recipient));
-            email = htmlMail;
-        } else {
-            // only text content, return text mail
-            CmsSimpleMail textMail = new CmsSimpleMail();
-            textMail.setMsg(replaceMacros(txtMsg.toString(), recipient));
-            email = textMail;
+            email.addTo(recipient.getEmail());
+            email.setSubject(m_subject);
+        } catch (EmailException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_COMPOSE_MAIL_ERR_0), e);
         }
-        email.addTo(recipient.getEmail());
-        email.setSubject(m_subject);
         return email;
     }
 
     /**
-     * 
      * @see org.opencms.newsletter.I_CmsNewsletter#setSubject(java.lang.String)
      */
     public void setSubject(String subject) {

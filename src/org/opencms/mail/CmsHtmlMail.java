@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsHtmlMail.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/11/27 16:58:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,9 +35,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
-import javax.mail.MessagingException;
-
 import org.apache.commons.logging.Log;
+import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.HtmlEmail;
 
 /**
@@ -51,7 +50,7 @@ import org.apache.commons.mail.HtmlEmail;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,7 +83,7 @@ public class CmsHtmlMail extends HtmlEmail {
         try {
             // set default mail from address
             setFrom(OpenCms.getSystemInfo().getMailSettings().getMailFromDefault());
-        } catch (MessagingException e) {
+        } catch (EmailException e) {
             // default email address is not valid, log error
             LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_SENDER_ADDRESS_0), e);
         }

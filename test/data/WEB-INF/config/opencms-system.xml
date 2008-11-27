@@ -16,7 +16,7 @@
 		</internationalization>
 		<mail>
 			<mailfrom>nobody@nowhere.com</mailfrom>
-			<mailhost name="my.smtp.server" protocol="smtp" user="username" password="secure"/>
+			<mailhost name="localhost" protocol="smtp"/>
 			<mailhost name="alternative.smtp.server"/>
 			<mailhost name="another.alternative.smtp.server"/>
 		</mail>

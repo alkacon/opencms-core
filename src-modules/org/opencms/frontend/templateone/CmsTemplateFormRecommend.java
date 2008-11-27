@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormRecommend.java,v $
- * Date   : $Date: 2008/02/27 12:05:27 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/11/27 16:58:03 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,16 +154,20 @@ public class CmsTemplateFormRecommend extends CmsTemplateForm {
      */
     public boolean sendMail() {
 
-        // create the new mail message
-        CmsHtmlMail theMail = new CmsHtmlMail();
-        theMail.setSubject(key("recommend.mail.subject.prefix") + getPageTitle());
-        theMail.setCharset(getRequestContext().getEncoding());
-        theMail.setHtmlMsg(getContent("recommend_mail.html", "html", getRequestContext().getLocale()));
-        theMail.setTextMsg(getContent("recommend_mail.html", "text", getRequestContext().getLocale()));
         try {
+         // create the new mail message
+            CmsHtmlMail theMail = new CmsHtmlMail();
+            theMail.setSubject(key("recommend.mail.subject.prefix")
+                    + getPageTitle());
+            theMail.setCharset(getRequestContext().getEncoding());
+            theMail.setHtmlMsg(getContent("recommend_mail.html", "html",
+                    getRequestContext().getLocale()));
+            theMail.setTextMsg(getContent("recommend_mail.html", "text",
+                    getRequestContext().getLocale()));
             // set the recipient and the reply to address
             theMail.addTo(getEmailRecipient());
-            String sender = OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();
+            String sender = OpenCms.getSystemInfo().getMailSettings()
+                    .getMailFromDefault();
             String replyTo = getEmailSender();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(replyTo)) {
                 replyTo = sender;

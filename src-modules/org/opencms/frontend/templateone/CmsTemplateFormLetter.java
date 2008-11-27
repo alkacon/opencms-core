@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormLetter.java,v $
- * Date   : $Date: 2008/02/27 12:05:27 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2008/11/27 16:58:03 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -328,11 +328,12 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
 
         // create the new mail message
         CmsHtmlMail theMail = new CmsHtmlMail();
-        theMail.setSubject(key("letter.mail.subject.prefix") + getPageTitle());
-        theMail.setCharset(getRequestContext().getEncoding());
-        theMail.setHtmlMsg(getContent("letter_mail.html", "html", getRequestContext().getLocale()));
-        theMail.setTextMsg(getContent("letter_mail.html", "text", getRequestContext().getLocale()));
         try {
+            // set mail fields
+            theMail.setSubject(key("letter.mail.subject.prefix") + getPageTitle());
+            theMail.setCharset(getRequestContext().getEncoding());
+            theMail.setHtmlMsg(getContent("letter_mail.html", "html", getRequestContext().getLocale()));
+            theMail.setTextMsg(getContent("letter_mail.html", "text", getRequestContext().getLocale()));
             // store the uri
             String uri = getRequestContext().getUri();
             // set the recipient from imprint information

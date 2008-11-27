@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/11/27 16:58:02 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,6 +55,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ADD_HOST_1 = "LOG_ADD_HOST_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_COMPOSE_MAIL_ERR_0 = "LOG_COMPOSE_MAIL_ERR_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_DEFAULT_SENDER_1 = "LOG_DEFAULT_SENDER_1";
 
     /** Message constant for key in the resource bundle. */
@@ -62,6 +65,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INVALID_SENDER_ADDRESS_0 = "LOG_INVALID_SENDER_ADDRESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_MESSAGE_ID_ERR_0 = "LOG_MESSAGE_ID_ERR_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SEND_MAIL_ERR_0 = "LOG_SEND_MAIL_ERR_0";
