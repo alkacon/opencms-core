@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultAuthorizationHandler.java,v $
- * Date   : $Date: 2008/10/28 11:31:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/11/27 10:45:18 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.codec.binary.Base64;
  * 
  * @author Michael Moossen
  *
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.5.4 
  */
@@ -188,6 +188,9 @@ public class CmsDefaultAuthorizationHandler extends A_CmsAuthorizationHandler {
      */
     protected CmsObject checkBasicAuthorization(HttpServletRequest req) {
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Checking for basic authorization.");
+        }
         try {
             CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
             // no user identified from the session and basic authentication is enabled
