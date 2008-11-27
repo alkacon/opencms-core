@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2008/10/28 10:31:58 $
- * Version: $Revision: 1.239 $
+ * Date   : $Date: 2008/11/27 10:44:54 $
+ * Version: $Revision: 1.240 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.239 $ 
+ * @version $Revision: 1.240 $ 
  * 
  * @since 6.0.0 
  */
@@ -865,10 +865,16 @@ public final class OpenCmsCore {
      */
     protected CmsObject initCmsObjectFromSession(HttpServletRequest req) throws CmsException {
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Trying to init cms object from session for request \"" + req.toString() + "\".");
+        }
         // try to get an OpenCms user session info object for this request
         CmsSessionInfo sessionInfo = m_sessionManager.getSessionInfo(req);
 
         if (sessionInfo == null) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("No session info found.");
+            }
             return null;
         }
 
@@ -890,9 +896,16 @@ public final class OpenCmsCore {
         if (siteroot == null) {
             siteroot = site.getSiteRoot();
         }
+        
+        // initialize user from request
+        CmsUser user = m_securityManager.readUser(null, sessionInfo.getUserId());        
+        
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Initializing cms object with user \"" + user.getName() + "\".");
+        }
         return initCmsObject(
             req,
-            m_securityManager.readUser(null, sessionInfo.getUserId()),
+            user,
             siteroot,
             project,
             sessionInfo.getOrganizationalUnitFqn());
@@ -2163,6 +2176,12 @@ public final class OpenCmsCore {
             }
             public CmsObject doLogin(HttpServletRequest request, String principal) throws CmsException {
                 try {
+                    CmsUser user = m_adminCms.readUser(principal);
+                    if (!user.isEnabled()) {
+                        throw new CmsException(Messages.get().container(Messages.ERR_INVALID_INIT_USER_2,
+                            user.getName(), "-"));
+                    }
+                    
                     CmsContextInfo contextInfo = new CmsContextInfo(m_adminCms.getRequestContext());
                     contextInfo.setUserName(principal);
                     return initCmsObject(m_adminCms, contextInfo);
