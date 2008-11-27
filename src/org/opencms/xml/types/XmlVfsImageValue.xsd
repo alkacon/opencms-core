@@ -1,0 +1,27 @@
+<xsd:complexType name="OpenCmsVfsImage">
+    <xsd:sequence>
+        <xsd:element name="link" type="OpenCmsReference" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="description" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="format" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+        <xsd:element name="scale" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+    </xsd:sequence>
+    <xsd:attribute name="name" type="xsd:string" use="optional" />
+    <xsd:attribute name="enabled" type="xsd:boolean" use="optional" />
+</xsd:complexType>
+
+<xsd:complexType name="OpenCmsReference">
+	<xsd:sequence>
+		<xsd:element name="target" type="xsd:string" />
+		<xsd:element name="uuid" type="xsd:string" minOccurs="0" />
+		<xsd:element name="anchor" type="xsd:string" minOccurs="0" />
+		<xsd:element name="query" type="xsd:string" minOccurs="0" />
+	</xsd:sequence>
+    <xsd:attribute name="internal" type="xsd:boolean" use="optional" />	
+	<xsd:attribute name="type" type="OpenCmsDefaultAppinfoRelationType" use="optional" />
+</xsd:complexType>
+
+<xsd:simpleType name="OpenCmsDefaultAppinfoRelationType">
+	<xsd:restriction base="xsd:string">
+		<xsd:pattern value="attachment|ATTACHMENT|reference|REFERENCE|weak|WEAK|strong|STRONG" />
+	</xsd:restriction>
+</xsd:simpleType>

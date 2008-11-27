@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsImageValue.java,v $
- * Date   : $Date: 2008/11/07 15:44:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/11/27 16:54:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,11 +52,14 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
- * @since 7.0.0 
+ * @since 7.0.6 
  */
 public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
+
+    /** Node name for the scale element. */
+    public static final String NODE_SCALE = "scale";
 
     /** Request parameter name for the description parameter. */
     public static final String PARAM_DESCRIPTION = "description";
@@ -67,8 +70,20 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
     /** The name of this type as used in the XML schema. */
     public static final String TYPE_NAME_IMAGE = "OpenCmsVfsImage";
 
+    /** The schema definition String is located in a text for easier editing. */
+    private static String m_schemaDefinition;
+
+    /** The description text of the image. */
+    private String m_description;
+
+    /** The selected image format. */
+    private String m_format;
+
     /** Holds the parameters of the URL. */
     private Map m_parameters;
+
+    /** The scale options of the image. */
+    private String m_scaleOptions;
 
     /**
      * Creates a new, empty schema type descriptor of type "OpenCmsVfsImage".<p>
@@ -95,8 +110,8 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
      * Creates a new schema type descriptor for the type "OpenCmsVfsImage".<p>
      * 
      * @param name the name of the XML node containing the value according to the XML schema
-     * @param minOccurs minimum number of occurences of this type according to the XML schema
-     * @param maxOccurs maximum number of occurences of this type according to the XML schema
+     * @param minOccurs minimum number of occurrences of this type according to the XML schema
+     * @param maxOccurs maximum number of occurrences of this type according to the XML schema
      */
     public CmsXmlVfsImageValue(String name, String minOccurs, String maxOccurs) {
 
@@ -119,8 +134,16 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
      */
     public String getDescription(CmsObject cms) {
 
-        String result = getParameterValue(cms, PARAM_DESCRIPTION);
-        return CmsEncoder.unescape(result, CmsEncoder.ENCODING_UTF_8);
+        if (m_description == null) {
+            if (m_element.element(PARAM_DESCRIPTION) != null) {
+                m_description = m_element.element(PARAM_DESCRIPTION).getText();
+            }
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_description)) {
+                m_description = getParameterValue(cms, PARAM_DESCRIPTION);
+                m_description = CmsEncoder.unescape(m_description, CmsEncoder.ENCODING_UTF_8);
+            }
+        }
+        return m_description;
     }
 
     /**
@@ -131,7 +154,15 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
      */
     public String getFormat(CmsObject cms) {
 
-        return getParameterValue(cms, PARAM_FORMAT);
+        if (m_format == null) {
+            if (m_element.element(PARAM_FORMAT) != null) {
+                m_format = m_element.element(PARAM_FORMAT).getText();
+            }
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_format)) {
+                m_format = getParameterValue(cms, PARAM_FORMAT);
+            }
+        }
+        return m_format;
     }
 
     /**
@@ -153,7 +184,27 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
      */
     public String getScaleOptions(CmsObject cms) {
 
-        return getParameterValue(cms, CmsImageScaler.PARAM_SCALE);
+        if (m_scaleOptions == null) {
+            if (m_element.element(NODE_SCALE) != null) {
+                m_scaleOptions = m_element.element(NODE_SCALE).getText();
+            }
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_scaleOptions)) {
+                m_scaleOptions = getParameterValue(cms, CmsImageScaler.PARAM_SCALE);
+            }
+        }
+        return m_scaleOptions;
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#getSchemaDefinition()
+     */
+    public String getSchemaDefinition() {
+
+        // the schema definition is located in a separate file for easier editing
+        if (m_schemaDefinition == null) {
+            m_schemaDefinition = readSchemaDefinition("org/opencms/xml/types/XmlVfsImageValue.xsd");
+        }
+        return m_schemaDefinition;
     }
 
     /**
@@ -180,7 +231,13 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
      */
     public void setDescription(CmsObject cms, String description) {
 
-        if (CmsStringUtil.isNotEmpty(description)) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(description)) {
+            m_description = "";
+            if (m_element.element(PARAM_DESCRIPTION) != null) {
+                m_element.remove(m_element.element(PARAM_DESCRIPTION));
+            }
+        } else {
+            m_description = description;
             description = CmsEncoder.escapeWBlanks(description, CmsEncoder.ENCODING_UTF_8);
         }
         setParameterValue(cms, PARAM_DESCRIPTION, description);
@@ -194,6 +251,14 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
      */
     public void setFormat(CmsObject cms, String format) {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(format)) {
+            m_format = "";
+            if (m_element.element(PARAM_FORMAT) != null) {
+                m_element.remove(m_element.element(PARAM_FORMAT));
+            }
+        } else {
+            m_format = format;
+        }
         setParameterValue(cms, PARAM_FORMAT, format);
     }
 
@@ -205,6 +270,14 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
      */
     public void setScaleOptions(CmsObject cms, String scaleOptions) {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(scaleOptions)) {
+            m_scaleOptions = "";
+            if (m_element.element(NODE_SCALE) != null) {
+                m_element.remove(m_element.element(NODE_SCALE));
+            }
+        } else {
+            m_scaleOptions = scaleOptions;
+        }
         setParameterValue(cms, CmsImageScaler.PARAM_SCALE, scaleOptions);
     }
 
@@ -215,8 +288,36 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
 
         // call the super implementation to set the value
         super.setStringValue(cms, value);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+            // no valid value given
+            return;
+        }
+
+        // get the request parameters from the provided value
+        Map params = getParameterMap(value);
+
+        // create description element if present as parameter
+        String desc = getParameterValue(cms, params, PARAM_DESCRIPTION);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(desc)) {
+            desc = CmsEncoder.unescape(desc, CmsEncoder.ENCODING_UTF_8);
+            m_element.addElement(PARAM_DESCRIPTION).addCDATA(desc);
+        }
+        // create format name element if present as parameter
+        String format = getParameterValue(cms, params, PARAM_FORMAT);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(format)) {
+            m_element.addElement(PARAM_FORMAT).addCDATA(format);
+        }
+        // create scale element if present as parameter
+        String scale = getParameterValue(cms, params, CmsImageScaler.PARAM_SCALE);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(scale)) {
+            m_element.addElement(NODE_SCALE).addCDATA(scale);
+        }
         // reset the parameter map
         m_parameters = null;
+        // reset the members containing the element values
+        m_format = null;
+        m_description = null;
+        m_scaleOptions = null;
     }
 
     /**
@@ -238,7 +339,28 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
     }
 
     /**
-     * Returns the value of the given parameter name.<p>
+     * Returns the value of the given parameter name from a parameter map.<p>
+     * 
+     * @param cms the current users context
+     * @param parameterMap the map containing the parameters 
+     * @param key the parameter name
+     * @return the value of the parameter or an empty String
+     */
+    private String getParameterValue(CmsObject cms, Map parameterMap, String key) {
+
+        String result = null;
+        String[] params = ((String[])parameterMap.get(key));
+        if (params != null && params.length > 0) {
+            result = params[0];
+        }
+        if (result == null) {
+            return "";
+        }
+        return result;
+    }
+
+    /**
+     * Returns the value of the given parameter name from the current parameter map.<p>
      * 
      * @param cms the current users context
      * @param key the parameter name
@@ -249,15 +371,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
         if (m_parameters == null) {
             m_parameters = getParameterMap(getStringValue(cms));
         }
-        String result = null;
-        String[] params = ((String[])m_parameters.get(key));
-        if (params != null && params.length > 0) {
-            result = params[0];
-        }
-        if (result == null) {
-            return "";
-        }
-        return result;
+        return getParameterValue(cms, m_parameters, key);
     }
 
     /**
@@ -275,7 +389,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(value) && m_parameters.containsKey(key)) {
             m_parameters.remove(key);
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-            m_parameters.put(key, value);
+            m_parameters.put(key, new String[] {value});
         }
         String result = CmsRequestUtil.getRequestLink(getStringValue(cms));
         result = CmsRequestUtil.appendParameters(result, m_parameters, false);
