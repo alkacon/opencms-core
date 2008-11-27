@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsDefaultLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2008/11/07 15:42:07 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2008/11/27 16:52:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.2
  * 
@@ -246,10 +246,6 @@ public class CmsDefaultLinkSubstitutionHandler implements I_CmsLinkSubstitutionH
 
         } else {
             // offline project, no export or secure handling required
-            if (CmsStringUtil.isEmpty(cms.getRequestContext().getSiteRoot()) && !vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
-                // current site is root site, re-add site path
-                vfsName = targetSite.getSiteRoot() + vfsName;
-            }
             if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
                 // in unit test this code would fail otherwise
                 resultLink = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
