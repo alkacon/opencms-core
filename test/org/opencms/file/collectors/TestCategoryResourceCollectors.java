@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/collectors/TestCategoryResourceCollectors.java,v $
- * Date   : $Date: 2008/07/14 10:04:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/11/28 15:25:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,8 +40,14 @@ import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsStringUtil;
 
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -51,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test for the {@link CmsCategoryResourceCollector}.<p>
  * 
  * @author Raphael Schnuck 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
@@ -72,33 +78,31 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
      * 
      * @throws Exception if something goes wrong
      */
-    public static synchronized void initResources(CmsObject cms) throws Exception {
+    public static void initResources(CmsObject cms) throws Exception {
 
-        synchronized (cms) {
-            cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
-            cms.wait(100); // this is needed for testing the date sorting collector
+        cms.createResource("/folder1", CmsResourceTypeFolder.getStaticTypeId());
+        Thread.sleep(100); // this is needed for testing the date sorting collector
 
-            // jsps
-            cms.createResource("/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-            cms.wait(100);
-            cms.createResource("/folder1/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-            cms.wait(100);
-            cms.createResource("/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-            cms.wait(100);
-            cms.createResource("/folder1/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-            cms.wait(100);
-            cms.createResource("/file5", CmsResourceTypeJsp.getStaticTypeId(), null, null);
-            cms.wait(100);
+        // jsps
+        cms.createResource("/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+        Thread.sleep(100);
+        cms.createResource("/folder1/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+        Thread.sleep(100);
+        cms.createResource("/file3", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+        Thread.sleep(100);
+        cms.createResource("/folder1/file1", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+        Thread.sleep(100);
+        cms.createResource("/file5", CmsResourceTypeJsp.getStaticTypeId(), null, null);
+        Thread.sleep(100);
 
-            // plains
-            cms.createResource("/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
-            cms.wait(100);
-            cms.createResource("/folder1/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
-            cms.wait(100);
-            cms.createResource("/folder1/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
-            cms.wait(100);
-            cms.createResource("/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
-        }
+        // plains
+        cms.createResource("/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
+        Thread.sleep(100);
+        cms.createResource("/folder1/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
+        Thread.sleep(100);
+        cms.createResource("/folder1/file2", CmsResourceTypePlain.getStaticTypeId(), null, null);
+        Thread.sleep(100);
+        cms.createResource("/file4", CmsResourceTypePlain.getStaticTypeId(), null, null);
         CmsCategoryService service = CmsCategoryService.getInstance();
         CmsCategory catBusiness = service.createCategory(
             cms,
@@ -107,20 +111,31 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
             "business title",
             "business description",
             null);
+        Thread.sleep(100);
         CmsCategory catSports = service.createCategory(cms, null, "sports", "sports title", "sports description", null);
+        Thread.sleep(100);
 
         // business
         service.addResourceToCategory(cms, "/file1", catBusiness.getPath());
+        Thread.sleep(100);
         service.addResourceToCategory(cms, "/file5", catBusiness.getPath());
+        Thread.sleep(100);
         service.addResourceToCategory(cms, "/folder1/file3", catBusiness.getPath());
+        Thread.sleep(100);
         service.addResourceToCategory(cms, "/file4", catBusiness.getPath());
+        Thread.sleep(100);
         service.addResourceToCategory(cms, "/folder1/file4", catBusiness.getPath());
+        Thread.sleep(100);
 
         // sports
         service.addResourceToCategory(cms, "/file3", catSports.getPath());
+        Thread.sleep(100);
         service.addResourceToCategory(cms, "/folder1/file1", catSports.getPath());
+        Thread.sleep(100);
         service.addResourceToCategory(cms, "/file2", catSports.getPath());
+        Thread.sleep(100);
         service.addResourceToCategory(cms, "/folder1/file2", catSports.getPath());
+        Thread.sleep(100);
     }
 
     /**
@@ -242,6 +257,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
         CmsResource res;
 
+        printResults(resources);
         assertEquals(4, resources.size());
 
         res = (CmsResource)resources.get(0);
@@ -252,6 +268,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
             "allKeyValuePairFiltered",
             "resource=/folder1/|categoryTypes=business/,sports/|sortBy=date|sortAsc=false");
 
+        printResults(resources);
         assertEquals(4, resources.size());
 
         res = (CmsResource)resources.get(0);
@@ -262,10 +279,32 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
             "allKeyValuePairFiltered",
             "resource=/folder1/|categoryTypes=business/,sports/|sortBy=date|sortAsc=true");
 
+        printResults(resources);
         assertEquals(4, resources.size());
 
         res = (CmsResource)resources.get(0);
         assertEquals("/sites/default/folder1/file2", res.getRootPath());
+    }
+
+    /**
+     * Prints the given list of search results to STDOUT.<p>
+     * 
+     * @param resources the list to print
+     */
+    public static void printResults(List resources) {
+
+        Iterator i = resources.iterator();
+        int count = 0;
+        i = resources.iterator();
+        System.out.println("\n\n--------------------------");
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            count++;
+            System.out.print(CmsStringUtil.padRight("" + count, 4));
+            System.out.print(CmsStringUtil.padRight(res.getRootPath(), 40));
+            System.out.println(CmsStringUtil.padRight(""
+                + CmsDateUtil.getDateTime(new Date(res.getDateLastModified()), DateFormat.LONG, Locale.GERMAN), 17));
+        }
     }
 
     /**
@@ -395,6 +434,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
             "allKeyValuePairFiltered",
             "categoryTypes=business/,sports/|sortBy=date");
 
+        printResults(resources);
         assertEquals(9, resources.size());
 
         CmsResource res = (CmsResource)resources.get(0);
@@ -405,6 +445,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
             "allKeyValuePairFiltered",
             "categoryTypes=business/,sports/|sortBy=date|sortAsc=false");
 
+        printResults(resources);
         assertEquals(9, resources.size());
 
         res = (CmsResource)resources.get(0);
@@ -415,6 +456,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
             "allKeyValuePairFiltered",
             "categoryTypes=business/,sports/|sortBy=date|sortAsc=true");
 
+        printResults(resources);
         assertEquals(9, resources.size());
 
         res = (CmsResource)resources.get(0);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/monitor/TestMemoryMonitor.java,v $
- * Date   : $Date: 2008/02/27 12:05:53 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2008/11/28 15:25:52 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -109,6 +109,15 @@ public class TestMemoryMonitor extends OpenCmsTestCase {
         jobInfo.setClassName(CmsMemoryMonitor.class.getName());
         jobInfo.setReuseInstance(true);
         jobInfo.setCronExpression("0/4 * * * * ?");
+
+        // wait until we are close to a first job execution in order to have the required count in the end
+        do {
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                // NOOP - Test might still work
+            }
+        } while ((System.currentTimeMillis() % 4000) > 1000);
 
         // add the job to the manager
         OpenCms.getScheduleManager().scheduleJob(getCmsObject(), jobInfo);

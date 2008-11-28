@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2008/07/14 10:04:28 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2008/11/28 15:25:52 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1969,9 +1969,13 @@ public class TestCmsImportExport extends OpenCmsTestCase {
             Iterator itPath = CmsStringUtil.splitAsList(site + filename, "/").iterator();
             while (itPath.hasNext()) {
                 String pathPart = (String)itPath.next();
-                path += pathPart + "/";
-                assertTrue(cms.existsResource(path)); // the old file
-                assertFalse(cms.existsResource(site + path)); // the new file
+                path += pathPart;
+                if (itPath.hasNext()) {
+                    // dont add slash after the file name
+                    path += "/";
+                }
+                assertTrue("Path " + path + " does not exist as expected", cms.existsResource(path)); // the old file
+                assertFalse("Path " + site + path + " should not exist", cms.existsResource(site + path)); // the new file
             }
         } finally {
             try {
