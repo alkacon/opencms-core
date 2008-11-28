@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2008/10/14 08:13:25 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2008/11/28 15:24:10 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -169,6 +169,9 @@ public class CmsXmlContentDefinition implements Cloneable {
 
     /** The type sequence. */
     private List m_typeSequence;
+
+    /** The XML document from which the schema was unmarshalled. */
+    private Document m_schemaDocument;
 
     /**
      * Creates a new XML content definition.<p> 
@@ -674,6 +677,8 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         // set the nested definitions
         result.m_includes = nestedDefinitions;
+        // set the schema document
+        result.m_schemaDocument = document;
 
         List complexTypeData = new ArrayList();
         Iterator ct = complexTypes.iterator();
@@ -1007,58 +1012,62 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public Document getSchema() {
 
-        Document schema = DocumentHelper.createDocument();
+        Document result;
 
-        Element root = schema.addElement(XSD_NODE_SCHEMA);
-        root.addAttribute(XSD_ATTRIBUTE_ELEMENT_FORM_DEFAULT, XSD_ATTRIBUTE_VALUE_QUALIFIED);
+        if (m_schemaDocument == null) {
+            result = DocumentHelper.createDocument();
+            Element root = result.addElement(XSD_NODE_SCHEMA);
+            root.addAttribute(XSD_ATTRIBUTE_ELEMENT_FORM_DEFAULT, XSD_ATTRIBUTE_VALUE_QUALIFIED);
 
-        Element include = root.addElement(XSD_NODE_INCLUDE);
-        include.addAttribute(XSD_ATTRIBUTE_SCHEMA_LOCATION, XSD_INCLUDE_OPENCMS);
+            Element include = root.addElement(XSD_NODE_INCLUDE);
+            include.addAttribute(XSD_ATTRIBUTE_SCHEMA_LOCATION, XSD_INCLUDE_OPENCMS);
 
-        if (m_includes.size() > 0) {
-            Iterator i = m_includes.iterator();
-            while (i.hasNext()) {
-                CmsXmlContentDefinition definition = (CmsXmlContentDefinition)i.next();
-                root.addElement(XSD_NODE_INCLUDE).addAttribute(
-                    XSD_ATTRIBUTE_SCHEMA_LOCATION,
-                    definition.m_schemaLocation);
+            if (m_includes.size() > 0) {
+                Iterator i = m_includes.iterator();
+                while (i.hasNext()) {
+                    CmsXmlContentDefinition definition = (CmsXmlContentDefinition)i.next();
+                    root.addElement(XSD_NODE_INCLUDE).addAttribute(
+                        XSD_ATTRIBUTE_SCHEMA_LOCATION,
+                        definition.m_schemaLocation);
+                }
             }
+
+            String outerTypeName = createTypeName(getOuterName());
+            String innerTypeName = createTypeName(getInnerName());
+
+            Element content = root.addElement(XSD_NODE_ELEMENT);
+            content.addAttribute(XSD_ATTRIBUTE_NAME, getOuterName());
+            content.addAttribute(XSD_ATTRIBUTE_TYPE, outerTypeName);
+
+            Element list = root.addElement(XSD_NODE_COMPLEXTYPE);
+            list.addAttribute(XSD_ATTRIBUTE_NAME, outerTypeName);
+
+            Element listSequence = list.addElement(XSD_NODE_SEQUENCE);
+            Element listElement = listSequence.addElement(XSD_NODE_ELEMENT);
+            listElement.addAttribute(XSD_ATTRIBUTE_NAME, getInnerName());
+            listElement.addAttribute(XSD_ATTRIBUTE_TYPE, innerTypeName);
+            listElement.addAttribute(XSD_ATTRIBUTE_MIN_OCCURS, XSD_ATTRIBUTE_VALUE_ZERO);
+            listElement.addAttribute(XSD_ATTRIBUTE_MAX_OCCURS, XSD_ATTRIBUTE_VALUE_UNBOUNDED);
+
+            Element main = root.addElement(XSD_NODE_COMPLEXTYPE);
+            main.addAttribute(XSD_ATTRIBUTE_NAME, innerTypeName);
+
+            Element mainSequence = main.addElement(XSD_NODE_SEQUENCE);
+
+            Iterator i = m_typeSequence.iterator();
+            while (i.hasNext()) {
+                I_CmsXmlSchemaType schemaType = (I_CmsXmlSchemaType)i.next();
+                schemaType.appendXmlSchema(mainSequence);
+            }
+
+            Element language = main.addElement(XSD_NODE_ATTRIBUTE);
+            language.addAttribute(XSD_ATTRIBUTE_NAME, XSD_ATTRIBUTE_VALUE_LANGUAGE);
+            language.addAttribute(XSD_ATTRIBUTE_TYPE, CmsXmlLocaleValue.TYPE_NAME);
+            language.addAttribute(XSD_ATTRIBUTE_USE, XSD_ATTRIBUTE_VALUE_OPTIONAL);
+        } else {
+            result = (Document)m_schemaDocument.clone();
         }
-
-        String outerTypeName = createTypeName(getOuterName());
-        String innerTypeName = createTypeName(getInnerName());
-
-        Element content = root.addElement(XSD_NODE_ELEMENT);
-        content.addAttribute(XSD_ATTRIBUTE_NAME, getOuterName());
-        content.addAttribute(XSD_ATTRIBUTE_TYPE, outerTypeName);
-
-        Element list = root.addElement(XSD_NODE_COMPLEXTYPE);
-        list.addAttribute(XSD_ATTRIBUTE_NAME, outerTypeName);
-
-        Element listSequence = list.addElement(XSD_NODE_SEQUENCE);
-        Element listElement = listSequence.addElement(XSD_NODE_ELEMENT);
-        listElement.addAttribute(XSD_ATTRIBUTE_NAME, getInnerName());
-        listElement.addAttribute(XSD_ATTRIBUTE_TYPE, innerTypeName);
-        listElement.addAttribute(XSD_ATTRIBUTE_MIN_OCCURS, XSD_ATTRIBUTE_VALUE_ZERO);
-        listElement.addAttribute(XSD_ATTRIBUTE_MAX_OCCURS, XSD_ATTRIBUTE_VALUE_UNBOUNDED);
-
-        Element main = root.addElement(XSD_NODE_COMPLEXTYPE);
-        main.addAttribute(XSD_ATTRIBUTE_NAME, innerTypeName);
-
-        Element mainSequence = main.addElement(XSD_NODE_SEQUENCE);
-
-        Iterator i = m_typeSequence.iterator();
-        while (i.hasNext()) {
-            I_CmsXmlSchemaType schemaType = (I_CmsXmlSchemaType)i.next();
-            schemaType.appendXmlSchema(mainSequence);
-        }
-
-        Element language = main.addElement(XSD_NODE_ATTRIBUTE);
-        language.addAttribute(XSD_ATTRIBUTE_NAME, XSD_ATTRIBUTE_VALUE_LANGUAGE);
-        language.addAttribute(XSD_ATTRIBUTE_TYPE, CmsXmlLocaleValue.TYPE_NAME);
-        language.addAttribute(XSD_ATTRIBUTE_USE, XSD_ATTRIBUTE_VALUE_REQUIRED);
-
-        return schema;
+        return result;
     }
 
     /**

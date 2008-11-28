@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessValueWrapper.java,v $
- * Date   : $Date: 2008/10/02 12:21:28 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2008/11/28 15:24:10 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,8 @@ import java.util.Map;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 
+import org.dom4j.Node;
+
 /**
  * Allows direct access to XML content values, with possible iteration of sub-nodes.<p>
  * 
@@ -57,7 +59,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.0.2
  * 
@@ -126,6 +128,25 @@ public final class CmsJspContentAccessValueWrapper {
         }
     }
 
+    /**
+     * Provides a Map which lets the user directly access sub-nodes of the XML represented by the current value,
+     * the input is assumed to be a String that represents an xpath in the XML content.<p>
+     */
+    public class CmsXmlValueTransformer implements Transformer {
+
+        /**
+         * @see org.apache.commons.collections.Transformer#transform(java.lang.Object)
+         */
+        public Object transform(Object input) {
+
+            Node node = obtainContentValue().getElement().selectSingleNode(input.toString());
+            if (node != null) {
+                return node.getStringValue();
+            }
+            return "";
+        }
+    }
+
     /** Constant for the null (non existing) value. */
     protected static final CmsJspContentAccessValueWrapper NULL_VALUE_WRAPPER = new CmsJspContentAccessValueWrapper();
 
@@ -149,6 +170,9 @@ public final class CmsJspContentAccessValueWrapper {
 
     /** The lazy initialized value list Map. */
     private Map m_valueList;
+
+    /** The lazy initialized XML element Map. */
+    private Map m_xml;
 
     /**
      * Private constructor, used for creation of NULL constant value, use factory method to create instances.<p>
@@ -413,6 +437,18 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
+     * Short form of {@link #getResolveMacros()}.<p>
+     * 
+     * @return a value wrapper with macro resolving turned on
+     * 
+     * @see #getResolveMacros()
+     */
+    public CmsJspContentAccessValueWrapper getResolve() {
+
+        return getResolveMacros();
+    }
+
+    /**
      * Turn on macro resolving for the wrapped value.<p> 
      * 
      * Macro resolving is turned off by default. 
@@ -442,18 +478,6 @@ public final class CmsJspContentAccessValueWrapper {
         }
         // macro resolving is already turned on
         return this;
-    }
-
-    /**
-     * Short form of {@link #getResolveMacros()}.<p>
-     * 
-     * @return a value wrapper with macro resolving turned on
-     * 
-     * @see #getResolveMacros()
-     */
-    public CmsJspContentAccessValueWrapper getResolve() {
-
-        return getResolveMacros();
     }
 
     /**
@@ -527,6 +551,20 @@ public final class CmsJspContentAccessValueWrapper {
     }
 
     /**
+     * Returns a lazy initialized Map that provides direct access to the XML element 
+     * for the current value from the XML content.<p>
+     * 
+     * @return a lazy initialized Map that provides direct access to the XML element for the current value from the XML content
+     */
+    public Map getXmlText() {
+
+        if (m_xml == null) {
+            m_xml = LazyMap.decorate(new HashMap(), new CmsXmlValueTransformer());
+        }
+        return m_xml;
+    }
+
+    /**
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
@@ -563,7 +601,7 @@ public final class CmsJspContentAccessValueWrapper {
      * 
      * Note that this will return <code>null</code> when {@link #getExists()} returns <code>false</code><p>.
      * 
-     * Method name does not start with "get" to prevend using it in the expression language.<p>
+     * Method name does not start with "get" to prevent using it in the expression language.<p>
      * 
      * @return the wrapped content value
      */
