@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/10/29 14:41:52 $
- * Version: $Revision: 1.1054 $
+ * Date   : $Date: 2008/11/28 15:26:49 $
+ * Version: $Revision: 1.1055 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -29,7 +29,11 @@ OpenCms 7.1.0 - xxx, 2008
 ! Extended authorization configuration and handling in order to allow support of alternative mechanisms
 ! Added support for alternative lib folder structure of tomcat on windows for cmsshell
 ! Extended dialog for cleaning historical versions with an option to clean all versions of deleted files
+! New feature in EL XML Content wrapper allows accessing the raw XML of a value using .xmlText(...)
 - Updated simapi.jar to version 0.9.8
+- Updated quartz.jar to version 1.6.3
+- Multiple other .jar updates
+- New property read strategy - always read all properties of a resource, even if only one is needed
 * Fixed security issue with the history handler
 * Fixed issue with JSP hard includes when using site relative paths
 * Fixed issue with performance when serving JSP pages
@@ -39,6 +43,7 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue with deleting historical versions when date is specified 
 * Fixed issue with cmsshell commands that have arguments of type long not working
 * Fixed issue with historical versions of deleted files never being deleted 
+* Fixed issue with VFS driver where a file like "xy.html" could be read like a folder "xy.html/"
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)
