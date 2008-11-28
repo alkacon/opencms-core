@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/10/29 14:41:52 $
- * Version: $Revision: 1.633 $
+ * Date   : $Date: 2008/11/28 15:21:21 $
+ * Version: $Revision: 1.634 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -1188,29 +1188,27 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // trim the name
         name = name.trim();
 
-        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
-            // check the OU, but only in GUI / servlet mode so that the shell can create groups before the OU if required
-            readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
+        // check the OU
+        readOrganizationalUnit(dbc, CmsOrganizationalUnit.getParentFqn(name));
 
-            // get the id of the parent group if necessary
-            if (CmsStringUtil.isNotEmpty(parent)) {
-                CmsGroup parentGroup = readGroup(dbc, parent);
-                if (!parentGroup.isRole()
-                    && !CmsOrganizationalUnit.getParentFqn(parent).equals(CmsOrganizationalUnit.getParentFqn(name))) {
-                    throw new CmsDataAccessException(Messages.get().container(
-                        Messages.ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3,
-                        CmsOrganizationalUnit.getSimpleName(name),
-                        CmsOrganizationalUnit.getParentFqn(name),
-                        parent));
-                }
+        // get the id of the parent group if necessary
+        if (CmsStringUtil.isNotEmpty(parent)) {
+            CmsGroup parentGroup = readGroup(dbc, parent);
+            if (!parentGroup.isRole()
+                && !CmsOrganizationalUnit.getParentFqn(parent).equals(CmsOrganizationalUnit.getParentFqn(name))) {
+                throw new CmsDataAccessException(Messages.get().container(
+                    Messages.ERR_PARENT_GROUP_MUST_BE_IN_SAME_OU_3,
+                    CmsOrganizationalUnit.getSimpleName(name),
+                    CmsOrganizationalUnit.getParentFqn(name),
+                    parent));
             }
         }
 
         // create the group
         CmsGroup group = m_userDriver.createGroup(dbc, id, name, description, flags, parent);
 
-        // if the group is in fact a role, initialize it (not in shell mode)
-        if (group.isVirtual() && (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_4_SERVLET_ACCESS)) {
+        // if the group is in fact a role, initialize it
+        if (group.isVirtual()) {
             // get all users that have the given role
             String groupname = CmsRole.valueOf(group).getGroupName();
             Iterator it = getUsersOfGroup(dbc, groupname, true, false, true).iterator();
@@ -2139,7 +2137,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_monitor.flushUserGroups();
         m_monitor.flushACLs();
     }
-
 
     /**
      * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
@@ -6220,69 +6217,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsProperty readPropertyObject(CmsDbContext dbc, CmsResource resource, String key, boolean search)
     throws CmsException {
 
-        CmsUUID projectId = getProjectIdForContext(dbc);
-        String cacheKey = getCacheKey(key, search, projectId, resource.getRootPath());
-        CmsProperty value = m_monitor.getCachedProperty(cacheKey);
-
-        if ((value == null) || !dbc.getProjectId().isNullUUID()) {
-            // check if the map of all properties for this resource is already cached
-            String cacheKey2 = getCacheKey(CACHE_ALL_PROPERTIES, search, projectId, resource.getRootPath());
-
-            List allProperties = m_monitor.getCachedPropertyList(cacheKey2);
-
-            if ((allProperties != null) && dbc.getProjectId().isNullUUID()) {
-                // list of properties already read, look up value there 
-                for (int i = 0; i < allProperties.size(); i++) {
-                    CmsProperty property = (CmsProperty)allProperties.get(i);
-                    if (property.getName().equals(key)) {
-                        value = property;
-                        break;
-                    }
-                }
-            } else if (search) {
-                // result not cached, look it up recursively with search enabled
-                String cacheKey3 = getCacheKey(key, search, projectId, resource.getRootPath());
-                value = m_monitor.getCachedProperty(cacheKey3);
-
-                if ((value == null) || value.isNullProperty() || !dbc.getProjectId().isNullUUID()) {
-                    boolean cont;
-                    do {
-                        try {
-                            value = readPropertyObject(dbc, resource, key, false);
-                            cont = value.isNullProperty() && (resource.getRootPath().length() > 1);
-                        } catch (CmsSecurityException se) {
-                            // a security exception (probably no read permission) we return the current result                      
-                            cont = false;
-                        }
-                        if (cont) {
-                            // no permission check on parent folder is required since we must have "read" 
-                            // permissions to read the child resource anyway
-                            resource = readResource(
-                                dbc,
-                                CmsResource.getParentFolder(resource.getRootPath()),
-                                CmsResourceFilter.ALL);
-                        }
-                    } while (cont);
-                }
-            } else {
-                // result not cached, look it up in the DB without search
-                value = m_vfsDriver.readPropertyObject(dbc, key, dbc.currentProject(), resource);
-            }
-            if (value == null) {
-                value = CmsProperty.getNullProperty();
-            }
-
-            // freeze the value
-            value.setFrozen(true);
-
-            if ((search || m_monitor.isCacheProperty()) && dbc.getProjectId().isNullUUID()) {
-                // store the result in the cache only if needed
-                m_monitor.cacheProperty(cacheKey, value);
-            }
+        // use the list reading method to obtain all properties for the resource
+        List properties = readPropertyObjects(dbc, resource, search);
+        // create a lookup propertry object and look this up in the result map
+        int i = properties.indexOf(new CmsProperty(key, null, null));
+        CmsProperty result;
+        if (i >= 0) {
+            // property has been found in the map
+            result = (CmsProperty)properties.get(i);
+        } else {
+            // property is not defined, return NULL property
+            result = CmsProperty.getNullProperty();
         }
-
         // ensure the result value is not frozen
-        return value.cloneAsProperty();
+        return result.cloneAsProperty();
     }
 
     /**
