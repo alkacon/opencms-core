@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2008/09/25 12:47:09 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2008/11/28 15:26:37 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -71,11 +72,16 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.CachingWrapperFilter;
+import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.FilterClause;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TermsFilter;
 
 /**
  * Implements the search within an index and the management of the index configuration.<p>
@@ -83,7 +89,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.72 $ 
+ * @version $Revision: 1.73 $ 
  * 
  * @since 6.0.0 
  */
@@ -200,6 +206,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** The excerpt mode for this index. */
     private boolean m_createExcerpt;
+
+    /** Map of display query filters to use. */
+    private Map m_displayFilters;
 
     /** Document types of folders/channels. */
     private Map m_documenttypes;
@@ -865,35 +874,32 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
             timeLucene = -System.currentTimeMillis();
 
-            // the main query to use, will be constructed in the next lines 
-            BooleanQuery query = new BooleanQuery();
-
+            // several search options are searched using filters
+            BooleanFilter filter = new BooleanFilter();
             // complete the search root
-            BooleanQuery pathQuery = new BooleanQuery();
+            TermsFilter pathFilter = new TermsFilter();
             if ((params.getRoots() != null) && (params.getRoots().size() > 0)) {
                 // add the all configured search roots with will request context
                 for (int i = 0; i < params.getRoots().size(); i++) {
                     String searchRoot = searchCms.getRequestContext().addSiteRoot((String)params.getRoots().get(i));
-                    extendPathQuery(pathQuery, searchRoot);
+                    extendPathFilter(pathFilter, searchRoot);
                 }
             } else {
                 // just use the current site root as the search root
-                extendPathQuery(pathQuery, searchCms.getRequestContext().getSiteRoot());
+                extendPathFilter(pathFilter, searchCms.getRequestContext().getSiteRoot());
             }
             // add the calculated phrase query for the root path
-            query.add(pathQuery, BooleanClause.Occur.MUST);
+            filter.add(new FilterClause(pathFilter, BooleanClause.Occur.MUST));
 
             if ((params.getCategories() != null) && (params.getCategories().size() > 0)) {
                 // add query categories (if required)
-                BooleanQuery categoryQuery = new BooleanQuery();
-                for (int i = 0; i < params.getCategories().size(); i++) {
-                    Term term = new Term(CmsSearchField.FIELD_CATEGORY, (String)params.getCategories().get(i));
-                    TermQuery termQuery = new TermQuery(term);
-                    categoryQuery.add(termQuery, BooleanClause.Occur.SHOULD);
-                }
-                query.add(categoryQuery, BooleanClause.Occur.MUST);
+                filter.add(new FilterClause(getMultiTermQueryFilter(
+                    CmsSearchField.FIELD_CATEGORY,
+                    params.getCategories()), BooleanClause.Occur.MUST));
             }
 
+            // the search query to use, will be constructed in the next lines 
+            BooleanQuery query = new BooleanQuery();
             // store separate fields query for excerpt highlighting  
             Query fieldsQuery;
             if ((params.getFields() != null) && (params.getFields().size() > 0)) {
@@ -925,13 +931,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 // this may slow down searched by an order of magnitude
                 categoryCollector = new CmsSearchCategoryCollector(getSearcher());
                 // perform a first search to collect the categories
-                getSearcher().search(query, categoryCollector);
+                getSearcher().search(query, filter, categoryCollector);
                 // store the result
                 searchResults.setCategories(categoryCollector.getCategoryCountResult());
             }
 
             // perform the search operation          
-            hits = getSearcher().search(query, params.getSort());
+            hits = getSearcher().search(query, filter, params.getSort());
 
             timeLucene += System.currentTimeMillis();
             timeResultProcessing = -System.currentTimeMillis();
@@ -1175,17 +1181,90 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Extends the given path query with another term for the given search root element.<p>
      * 
-     * @param pathQuery the path query to extend
+     * @param pathFilter the path filter to extend
      * @param searchRoot the search root to add to the path query
      */
-    protected void extendPathQuery(BooleanQuery pathQuery, String searchRoot) {
+    protected void extendPathFilter(TermsFilter pathFilter, String searchRoot) {
 
         if (!CmsResource.isFolder(searchRoot)) {
             searchRoot += "/";
         }
-        pathQuery.add(
-            new TermQuery(new Term(CmsSearchField.FIELD_PARENT_FOLDERS, searchRoot)),
-            BooleanClause.Occur.SHOULD);
+        pathFilter.addTerm(new Term(CmsSearchField.FIELD_PARENT_FOLDERS, searchRoot));
+    }
+
+    /**
+     * Returns a cached Lucene term query filter for the given field and terms.<p>
+     * 
+     * @param field the field to use
+     * @param terms the term to use
+     * 
+     * @return a cached Lucene term query filter for the given field and terms
+     */
+    protected Filter getMultiTermQueryFilter(String field, List terms) {
+
+        return getMultiTermQueryFilter(field, null, terms);
+    }
+
+    /**
+     * Returns a cached Lucene term query filter for the given field and terms.<p>
+     * 
+     * @param field the field to use
+     * @param terms the term to use
+     * 
+     * @return a cached Lucene term query filter for the given field and terms
+     */
+    protected Filter getMultiTermQueryFilter(String field, String terms) {
+
+        return getMultiTermQueryFilter(field, terms, null);
+    }
+
+    /**
+     * Returns a cached Lucene term query filter for the given field and terms.<p>
+     * 
+     * @param field the field to use
+     * @param termsStr the terms to use as a String separated by a space ' ' char
+     * @param termsList the list of terms to use
+     * 
+     * @return a cached Lucene term query filter for the given field and terms
+     */
+    protected Filter getMultiTermQueryFilter(String field, String termsStr, List termsList) {
+
+        if (termsStr == null) {
+            StringBuffer buf = new StringBuffer(64);
+            for (int i = 0; i < termsList.size(); i++) {
+                if (i > 0) {
+                    buf.append(' ');
+                }
+                buf.append(termsList.get(i));
+            }
+            termsStr = buf.toString();
+        }
+        Filter result = (Filter)m_displayFilters.get((new StringBuffer(64)).append(field).append('|').append(termsStr).toString());
+        if (result == null) {
+            TermsFilter filter = new TermsFilter();
+            if (termsList == null) {
+                termsList = CmsStringUtil.splitAsList(termsStr, ' ');
+            }
+            for (int i = 0; i < termsList.size(); i++) {
+                filter.addTerm(new Term(field, (String)termsList.get(i)));
+            }
+            result = new CachingWrapperFilter(filter);
+            m_displayFilters.put(field + termsStr, result);
+        }
+        return result;
+    }
+
+    /**
+     * Returns a cached Lucene term query filter for the given field and term.<p>
+     * 
+     * @param field the field to use
+     * @param term the term to use
+     * 
+     * @return a cached Lucene term query filter for the given field and term
+     */
+    protected Filter getTermQueryFilter(String field, String term) {
+
+        return getMultiTermQueryFilter(field, term, Collections.singletonList(term));
     }
 
     /**
@@ -1261,6 +1340,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             if (IndexReader.indexExists(m_path)) {
                 IndexReader reader = new LazyContentReader(IndexReader.open(m_path));
                 m_searcher = new IndexSearcher(reader);
+                m_displayFilters = new HashMap();
             }
         } catch (IOException e) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_1, getName()), e);
