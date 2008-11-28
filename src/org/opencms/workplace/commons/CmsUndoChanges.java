@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2008/10/01 14:27:19 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2008/11/28 15:22:24 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,11 +158,9 @@ public class CmsUndoChanges extends CmsMultiDialog {
     /**
      * Performs the check for siblings action and returns false in case of existence.<p>
      * 
-     * @return true if siblings are found. 
-     * 
-     * @throws JspException if something goes wrong. 
+     * @return true if siblings are found.
      */
-    public boolean actionCheckSiblings() throws JspException {
+    public boolean actionCheckSiblings() {
 
         List resourceList = this.getResourceList();
         String resourcePath;
@@ -209,7 +207,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
             while (it.hasNext()) {
                 String res = (String)it.next();
                 String target = resourceOriginalPath(getCms(), res);
-                if (target != null && !target.equals(res)) {
+                if ((target != null) && !target.equals(res)) {
                     CmsResource resource = getCms().readResource(res, CmsResourceFilter.ALL);
                     if (resource.isFolder()) {
                         folderList.add(CmsResource.getParentFolder(target));
@@ -442,7 +440,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
         while (i.hasNext()) {
             String resName = (String)i.next();
             String target = resourceOriginalPath(getCms(), resName);
-            if (target != null && !target.equals(resName)) {
+            if ((target != null) && !target.equals(resName)) {
                 // found a moved resource
                 return true;
             }

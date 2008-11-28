@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsContentNotification.java,v $
- * Date   : $Date: 2008/02/27 12:05:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/11/28 15:22:24 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -211,18 +211,18 @@ public class CmsContentNotification extends A_CmsNotification {
     /** 
      * Appends a link to confirm a resource, so that the responsible will not be notified any more.<p>
      * 
-     * @param html the StringBuffer to append the html code to
+     * @param buf the StringBuffer to append the html code to
      * @param notificationCause the information for specific resource
      */
-    private void appendConfirmLink(StringBuffer html, CmsExtendedNotificationCause notificationCause) {
+    private void appendConfirmLink(StringBuffer buf, CmsExtendedNotificationCause notificationCause) {
 
         Map params = new HashMap();
-        html.append("<td>");
+        buf.append("<td>");
         try {
             String resourcePath = notificationCause.getResource().getRootPath();
             String siteRoot = OpenCms.getSiteManager().getSiteRoot(resourcePath);
             resourcePath = resourcePath.substring(siteRoot.length());
-            html.append("[<a href=\"");
+            buf.append("[<a href=\"");
             StringBuffer wpStartUri = new StringBuffer(m_uriWorkplace);
             wpStartUri.append("commons/confirm_content_notification.jsp?userId=");
             wpStartUri.append(m_responsible.getId());
@@ -235,27 +235,27 @@ public class CmsContentNotification extends A_CmsNotification {
             params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
             CmsUUID projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getUuid();
             params.put(CmsWorkplace.PARAM_WP_PROJECT, String.valueOf(projectId));
-            html.append(CmsRequestUtil.appendParameters(m_uriWorkplaceJsp, params, true));
-            html.append("\">");
-            html.append(m_messages.key(Messages.GUI_CONFIRM_0));
-            html.append("</a>]");
+            buf.append(CmsRequestUtil.appendParameters(m_uriWorkplaceJsp, params, true));
+            buf.append("\">");
+            buf.append(m_messages.key(Messages.GUI_CONFIRM_0));
+            buf.append("</a>]");
         } catch (CmsException e) {
             if (LOG.isInfoEnabled()) {
                 LOG.info(e);
             }
         }
-        html.append("</td>");
+        buf.append("</td>");
     }
 
     /** 
      * Appends a link to edit the resource to a StringBuffer.<p>
      * 
-     * @param html the StringBuffer to append the html code to.
+     * @param buf the StringBuffer to append the html code to.
      * @param notificationCause the information for specific resource.
      */
-    private void appendEditLink(StringBuffer html, CmsExtendedNotificationCause notificationCause) {
+    private void appendEditLink(StringBuffer buf, CmsExtendedNotificationCause notificationCause) {
 
-        html.append("<td>");
+        buf.append("<td>");
         if (existsEditor(notificationCause.getResource())) {
             try {
                 String resourcePath = notificationCause.getResource().getRootPath();
@@ -267,32 +267,32 @@ public class CmsContentNotification extends A_CmsNotification {
                 params.put(CmsWorkplace.PARAM_WP_EXPLORER_RESOURCE, CmsResource.getParentFolder(resourcePath));
                 params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
                 params.put(CmsDialog.PARAM_RESOURCE, resourcePath);
-                html.append("[<a href=\"");
-                html.append(CmsRequestUtil.appendParameters(m_uriWorkplace + "editors/editor.jsp", params, false));
-                html.append("\">");
-                html.append(m_messages.key(Messages.GUI_EDIT_0));
-                html.append("</a>]");
+                buf.append("[<a href=\"");
+                buf.append(CmsRequestUtil.appendParameters(m_uriWorkplace + "editors/editor.jsp", params, false));
+                buf.append("\">");
+                buf.append(m_messages.key(Messages.GUI_EDIT_0));
+                buf.append("</a>]");
             } catch (CmsException e) {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e);
                 }
             }
         }
-        html.append("</td>");
+        buf.append("</td>");
     }
 
     /** 
      * Appends a link to edit the notification settings of a resource to a StringBuffer.<p>
      * 
-     * @param html the StringBuffer to append the html code to.
+     * @param buf the StringBuffer to append the html code to.
      * @param notificationCause the information for specific resource.
      */
-    private void appendModifyLink(StringBuffer html, CmsExtendedNotificationCause notificationCause) {
+    private void appendModifyLink(StringBuffer buf, CmsExtendedNotificationCause notificationCause) {
 
         Map params = new HashMap();
-        html.append("<td>");
+        buf.append("<td>");
         try {
-            html.append("[<a href=\"");
+            buf.append("[<a href=\"");
             String resourcePath = notificationCause.getResource().getRootPath();
             String siteRoot = OpenCms.getSiteManager().getSiteRoot(resourcePath);
             resourcePath = resourcePath.substring(siteRoot.length());
@@ -304,16 +304,16 @@ public class CmsContentNotification extends A_CmsNotification {
             params.put(CmsWorkplace.PARAM_WP_SITE, siteRoot);
             CmsUUID projectId = getCmsObject().readProject(OpenCms.getSystemInfo().getNotificationProject()).getUuid();
             params.put(CmsWorkplace.PARAM_WP_PROJECT, String.valueOf(projectId));
-            html.append(CmsRequestUtil.appendParameters(m_uriWorkplaceJsp, params, true));
-            html.append("\">");
-            html.append(m_messages.key(Messages.GUI_MODIFY_0));
-            html.append("</a>]");
+            buf.append(CmsRequestUtil.appendParameters(m_uriWorkplaceJsp, params, true));
+            buf.append("\">");
+            buf.append(m_messages.key(Messages.GUI_MODIFY_0));
+            buf.append("</a>]");
         } catch (CmsException e) {
             if (LOG.isInfoEnabled()) {
                 LOG.info(e);
             }
         }
-        html.append("</td>");
+        buf.append("</td>");
     }
 
     /**

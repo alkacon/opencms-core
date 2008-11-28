@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsNewsletter.java,v $
- * Date   : $Date: 2008/11/27 16:58:03 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2008/11/28 15:22:24 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,8 +48,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.mail.MessagingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.Email;
@@ -109,9 +107,8 @@ public class CmsNewsletter implements I_CmsNewsletter {
      * @return the e-mail for the newsletter
      * 
      * @throws CmsException if something goes wrong
-     * @throws MessagingException if there is an error attaching resources
      */
-    public Email getEmail(CmsObject cms, I_CmsNewsletterRecipient recipient) throws MessagingException, CmsException {
+    public Email getEmail(CmsObject cms, I_CmsNewsletterRecipient recipient) throws CmsException {
 
         StringBuffer htmlMsg = new StringBuffer(1024);
         StringBuffer txtMsg = new StringBuffer(1024);
