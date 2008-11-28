@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2008/07/14 10:04:28 $
- * Version: $Revision: 1.282 $
+ * Date   : $Date: 2008/11/28 15:21:40 $
+ * Version: $Revision: 1.283 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.282 $
+ * @version $Revision: 1.283 $
  * 
  * @since 6.0.0 
  */
@@ -544,7 +544,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     projectId,
                     existingResource,
                     false);
-                int propertyDeleteOption = (existingResource.getSiblingCount() > 1) ? CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_VALUES
+                int propertyDeleteOption = (existingResource.getSiblingCount() > 1)
+                ? CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_VALUES
                 : CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES;
                 deletePropertyObjects(dbc, projectId, existingResource, propertyDeleteOption);
                 removeFile(dbc, projectId, existingResource);
@@ -765,7 +766,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 // remove the existing file and it's properties
                 List modifiedResources = readSiblings(dbc, project.getUuid(), existingSibling, false);
-                int propertyDeleteOption = (existingSibling.getSiblingCount() > 1) ? CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_VALUES
+                int propertyDeleteOption = (existingSibling.getSiblingCount() > 1)
+                ? CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_VALUES
                 : CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES;
                 deletePropertyObjects(dbc, project.getUuid(), existingSibling, propertyDeleteOption);
                 removeFile(dbc, project.getUuid(), existingSibling);
@@ -1907,8 +1909,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         Connection conn = null;
 
         // must remove trailing slash
+        int len = path.length();
         path = CmsFileUtil.removeTrailingSeparator(path);
-        boolean endsWithSlash = path.endsWith("/");
+        boolean endsWithSlash = (len != path.length());
 
         try {
             conn = m_sqlManager.getConnection(dbc);
