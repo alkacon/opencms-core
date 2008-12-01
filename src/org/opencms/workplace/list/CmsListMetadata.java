@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2008/08/20 13:20:11 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2008/12/01 13:28:21 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -578,8 +578,13 @@ public class CmsListMetadata {
         Iterator itDet = m_itemDetails.elementList().iterator();
         while (itDet.hasNext()) {
             CmsListItemDetails lid = (CmsListItemDetails)itDet.next();
-            if (lid.isVisible()
-                && (item.get(lid.getId()) != null)
+            if (!lid.isVisible() && !isPrintable) {
+                continue;
+            }
+            if (!lid.isPrintable() && isPrintable) {
+                continue;
+            }
+            if ((item.get(lid.getId()) != null)
                 && CmsStringUtil.isNotEmptyOrWhitespaceOnly(item.get(lid.getId()).toString())) {
                 int padCols = 0;
                 itCols = m_columns.elementList().iterator();

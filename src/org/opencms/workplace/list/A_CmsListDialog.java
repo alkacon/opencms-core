@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:28 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2008/12/01 13:28:21 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -957,8 +957,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void initializeDetail(String detailId) {
 
-        // if detail column visible
-        if (getList().getMetadata().getItemDetailDefinition(detailId).isVisible()) {
+        // if detail column visible or printable
+        CmsListItemDetails details = getList().getMetadata().getItemDetailDefinition(detailId);
+        if (details.isVisible() || details.isPrintable()) {
             // if the list is not empty
             if (getList().getTotalSize() > 0) {
                 // if the detail column has not been previously initialized

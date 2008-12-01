@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsList.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2008/12/01 13:28:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.5.5 
  */
@@ -70,6 +70,9 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
 
     /** list action id constant. */
     public static final String LIST_DETAIL_RELATIONS = "dr";
+
+    /** list action id constant. */
+    public static final String LIST_DETAIL_RELATIONS_PRINT = "drp";
 
     /** list action id constant. */
     public static final String LIST_DETAIL_RELATIONS_HIDE = "drh";
@@ -184,7 +187,9 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
                     if (relationName.startsWith(infoEntry.getSiteRoot())) {
                         // same site
                         relationName = relationName.substring(infoEntry.getSiteRoot().length());
-                        relationName = CmsStringUtil.formatResourceName(relationName, 50);
+                        if (detailId.equals(LIST_DETAIL_RELATIONS)) {
+                            relationName = CmsStringUtil.formatResourceName(relationName, 50);
+                        }
                     } else {
                         // other site
                         String site = OpenCms.getSiteManager().getSiteRoot(relationName);
@@ -195,7 +200,9 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
                         } else {
                             siteName = "/";
                         }
-                        relationName = CmsStringUtil.formatResourceName(relationName, 50);
+                        if (detailId.equals(LIST_DETAIL_RELATIONS)) {
+                            relationName = CmsStringUtil.formatResourceName(relationName, 50);
+                        }
                         relationName = key(Messages.GUI_PUBLISH_SITE_RELATION_2, new Object[] {siteName, relationName});
                     }
                     html.append(relationName);
@@ -369,6 +376,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
         };
         relationsDetails.setAtColumn(LIST_COLUMN_NAME);
         relationsDetails.setVisible(true);
+        relationsDetails.setPrintable(false);
         relationsDetails.setFormatter(new CmsPublishBrokenRelationFormatter());
         relationsDetails.setShowActionName(Messages.get().container(
             Messages.GUI_PUBLISH_BROKENRELATIONS_DETAIL_SHOW_RELATIONS_NAME_0));
@@ -381,6 +389,34 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
 
         // add resources info item detail to meta data
         metadata.addItemDetails(relationsDetails);
+
+        // create list item detail for print view
+        CmsListItemDetails relationsDetailsPrint = new CmsListItemDetails(LIST_DETAIL_RELATIONS_PRINT) {
+
+            /**
+             * @see org.opencms.workplace.list.CmsListItemDetails#getAction()
+             */
+            public I_CmsListAction getAction() {
+
+                return new CmsListIndependentAction("hide") {
+
+                    /**
+                     * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
+                     */
+                    public String buttonHtml(CmsWorkplace wp) {
+
+                        return "";
+                    }
+                };
+            }
+        };
+        relationsDetailsPrint.setAtColumn(LIST_COLUMN_ROOT_PATH);
+        relationsDetailsPrint.setVisible(false);
+        relationsDetailsPrint.setPrintable(true);
+        relationsDetailsPrint.setFormatter(new CmsPublishBrokenRelationFormatter());
+
+        // add resources info item detail to meta data
+        metadata.addItemDetails(relationsDetailsPrint);
     }
 
     /**
