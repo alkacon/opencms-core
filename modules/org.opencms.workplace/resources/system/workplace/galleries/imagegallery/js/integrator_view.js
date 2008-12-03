@@ -16,6 +16,11 @@ function initPopup() {
 	var sizeX = 650;
 	var sizeY = 750;
 	window.resizeTo(sizeX, sizeY);
+	try {
+		if (!isNaN(window.innerHeight) && window.innerHeight < (sizeY - 50)) {
+			window.innerHeight = sizeY - 50;
+		}
+	} catch (e) {}
 	$("#closebutton").show();
 
 	if (initValues.startupfolder != null) {

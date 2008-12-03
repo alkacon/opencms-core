@@ -185,7 +185,7 @@ function getImages(vfsPath, isGallery) {
 		modeName = "category";
 	}
 	$("#" + modeName + "imagelist").empty();
-	$.post(vfsPathAjaxJsp, { action: "getimages", gallerypath: vfsPath, listmode: modeName}, function(data) { fillImages(data, modeName) });
+	$.post(vfsPathAjaxJsp, { action: "getimages", gallerypath: vfsPath, listmode: modeName, resource: initValues.editedresource}, function(data) { fillImages(data, modeName) });
 }
 
 /* Creates the HTML for the images from the given JSON array data. */

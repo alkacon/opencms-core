@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGalleryExtended.java,v $
- * Date   : $Date: 2008/11/07 15:51:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2008/12/03 15:20:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -572,9 +572,9 @@ public class CmsImageGalleryExtended extends CmsDialog {
             try {
                 CmsCategoryService service = CmsCategoryService.getInstance();
                 // get the edited resource if present
-                String editedResource = null;
+                String editedResource = "/";
                 if (CmsStringUtil.isNotEmpty(getParamResource())) {
-                    editedResource = getParamResource();
+                    editedResource = CmsResource.getFolderPath(getParamResource());
                 }
                 // read the matching resources for the category
                 result = service.readCategoryResources(

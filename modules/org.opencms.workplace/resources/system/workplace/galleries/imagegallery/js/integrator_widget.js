@@ -15,6 +15,11 @@ initValues.viewonly = false;
 function initPopup() {
 	var sizeX = 650;
 	var sizeY = 700;
+	try {
+		if (!isNaN(window.innerHeight) && window.innerHeight < (sizeY - 50)) {
+			window.innerHeight = sizeY - 50;
+		}
+	} catch (e) {}
 	var collectCategories = true;
 	if (initValues.imagepath != null && initValues.imagepath != "") {
 		$.post(vfsPathAjaxJsp, { action: "getactiveimage", imagepath: initValues.imagepath}, function(data){ loadActiveImage(data, true); });
