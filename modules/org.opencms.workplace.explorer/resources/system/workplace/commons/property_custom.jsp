@@ -60,7 +60,14 @@ default:
 <!--
 
 function resizeWindow() {
-	var wantedHeight = document.body.offsetHeight + 20;
+	var deltaHeight = 30;
+	try {
+		var realHeight = window.outerHeight;
+		if (!isNaN(realHeight)) {
+			deltaHeight = realHeight - window.innerHeight;
+		}
+	} catch (e) {}
+	var wantedHeight = document.body.offsetHeight + deltaHeight;
 	if (wantedHeight > screen.availHeight) {
 		wantedHeight = screen.availHeight;
 	}
