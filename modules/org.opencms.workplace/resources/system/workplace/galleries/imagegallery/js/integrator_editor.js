@@ -17,6 +17,7 @@ var FCKBrowserInfo	= oEditor.FCKBrowserInfo;
 
 /* Enables or disables the enhanced image dialog options. */
 var showEnhancedOptions = false;
+var useTbForLinkOriginal = false;
 
 /* The selected image (if available). */
 var oImage = null;
@@ -222,12 +223,14 @@ function loadSelection() {
 	}
 
 	if (oLink) {
-		var sUrl = oLink.getAttribute("_fcksavedurl");
-		if (sUrl == null) {
-			sUrl = oLink.getAttribute("href", 2);
+		var lnkUrl = oLink.getAttribute("_fcksavedurl");
+		if (lnkUrl == null) {
+			lnkUrl = oLink.getAttribute("href", 2);
 		}
-		GetE("txtLnkUrl").value = sUrl;
-		GetE("cmbLnkTarget").value = oLink.target;
+		if (lnkUrl != sUrl) {
+			GetE("txtLnkUrl").value = lnkUrl;
+			GetE("cmbLnkTarget").value = oLink.target;
+		}
 		var idAttr = oLink.id;
 		if (idAttr != null && idAttr.indexOf("limg_") == 0) {
 			GetE("linkOriginal").checked = true;
@@ -371,11 +374,13 @@ function Ok() {
 
 		if (sLnkUrl.length == 0) {
 			if (oLink) {
+				oLink.removeAttribute("class");
 				FCK.ExecuteNamedCommand("Unlink");
 			}
 		} else {
 			if (oLink) {  
 				// remove an existing link and create it newly, because otherwise the "onclick" attribute does not vanish in Mozilla
+				oLink.removeAttribute("class");
 				FCK.ExecuteNamedCommand("Unlink");
 				oLink = oEditor.FCK.CreateLink(sLnkUrl)[0];
 			} else {
@@ -384,7 +389,7 @@ function Ok() {
 					oEditor.FCKSelection.SelectNode(oImage);
 				}
 
-				oLink = oEditor.FCK.CreateLink(sLnkUrl)[0];  
+				oLink = oEditor.FCK.CreateLink(sLnkUrl)[0];
 
 				if (!bHasImage)	{
 					oEditor.FCKSelection.SelectNode(oLink);
@@ -395,8 +400,15 @@ function Ok() {
 			if (linkOri != "") {
 				// set the necessary attributes for the link to original image
 				try {
+					if (useTbForLinkOriginal == true) {
+						oLink.setAttribute("href", linkOri);
+						oLink.setAttribute("title", activeImage.title);
+						oLink.setAttribute("class", "thickbox");
+						sLnkUrl = linkOri;
+					} else {
+						oLink.setAttribute("onclick", linkOri);
+					}
 					oLink.setAttribute("id", "limg_" + activeImage.hash);
-					oLink.setAttribute("onclick", linkOri);
 					oImage.setAttribute("border", "0");
 				} catch (e) {}
 			}
@@ -437,8 +449,14 @@ function createEnhancedImage() {
 		// insert the image
 		if (insertLinkToOriginal()) {
 			var oLinkOrig = oEditor.FCK.EditorDocument.createElement("A");
-			oLinkOrig.href = "#";
-			oLinkOrig.setAttribute("onclick", getLinkToOriginal());
+			if (useTbForLinkOriginal == true) {
+				oLinkOrig.href = getLinkToOriginal();
+				oLinkOrig.setAttribute("title", activeImage.title);
+				oLinkOrig.setAttribute("class", "thickbox");
+			} else {
+				oLinkOrig.href = "#";
+				oLinkOrig.setAttribute("onclick", getLinkToOriginal());
+			}
 			oLinkOrig.setAttribute("id", "limg_" + activeImage.hash);
 			oImage.setAttribute("border", "0");
 			oLinkOrig.appendChild(oImage);
@@ -486,15 +504,20 @@ function createEnhancedImage() {
 
 /* Creates the link to the original image. */
 function getLinkToOriginal() {
-	var linkUri = "javascript:window.open('";
-	linkUri += vfsPopupUri;
-	linkUri += "?uri=";
-	linkUri += activeImage.linkpath;
-	linkUri += "', 'original', 'width=";
-	linkUri += activeImage.width;
-	linkUri += ",height=";
-	linkUri += activeImage.height;
-	linkUri += ",location=no,menubar=no,status=no,toolbar=no');";
+	var linkUri = "";
+	if (useTbForLinkOriginal == true) {
+		linkUri += activeImage.linkpath;
+	} else {
+		linkUri += "javascript:window.open('";
+		linkUri += vfsPopupUri;
+		linkUri += "?uri=";
+		linkUri += activeImage.linkpath;
+		linkUri += "', 'original', 'width=";
+		linkUri += activeImage.width;
+		linkUri += ",height=";
+		linkUri += activeImage.height;
+		linkUri += ",location=no,menubar=no,status=no,toolbar=no');";
+	}
 	return linkUri;
 }
 
