@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/principalselector.js,v $
- * Date   : $Date: 2008/02/27 12:05:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2008/12/12 13:56:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,16 @@ function openPrincipalWin(url, formName, fieldName, curDoc, flags) {
 	if (flags != null) {
 		paramString += "&flags=";
 		paramString += flags;
-	}	
+	}
+	if (curDoc.forms[principalForm].elements[typeField]) {
+		var selVal = curDoc.forms[principalForm].elements[typeField].value;
+		paramString += "&action=listindependentaction&listaction=";
+		if (selVal == "1") {
+			paramString += "iau";
+		} else {
+			paramString += "iag";
+		}
+	}
 	var principalWin = window.open(url + paramString, 'opencms', 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=150,left=260,width=650,height=450');
 	if(principalWin != null) {
 		if (principalWin.opener == null) {
