@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/11/28 15:26:49 $
- * Version: $Revision: 1.1055 $
+ * Date   : $Date: 2008/12/19 14:50:49 $
+ * Version: $Revision: 1.1056 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -30,6 +30,7 @@ OpenCms 7.1.0 - xxx, 2008
 ! Added support for alternative lib folder structure of tomcat on windows for cmsshell
 ! Extended dialog for cleaning historical versions with an option to clean all versions of deleted files
 ! New feature in EL XML Content wrapper allows accessing the raw XML of a value using .xmlText(...)
+! Added definition of exclude links for internal link check. Internal liks defined this way are handled like external links.
 - Updated simapi.jar to version 0.9.8
 - Updated quartz.jar to version 1.6.3
 - Multiple other .jar updates

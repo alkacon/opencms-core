@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.0</opencms_version>
-		<createdate>Mon, 25 Jun 2007 14:19:22 GMT</createdate>
+		<opencms_version>7.0.5</opencms_version>
+		<createdate>Thu, 18 Dec 2008 08:20:56 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for validating links in xml documents and pointer links.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.0</version>
+		<version>7.0.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -31,6 +31,7 @@
 			<resource uri="/system/workplace/admin/linkvalidation/"/>
 			<resource uri="/system/workplace/resources/tools/linkvalidation/"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.link/"/>
+			<resource uri="/system/shared/linkexcludes"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -38,28 +39,46 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>0a0c1bea-2325-11dc-8245-53aeb3024788</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>36493b9d-c5e3-11dd-a1fc-53ec2a4a9072</uuidstructure>
+			<datelastmodified>Tue, 09 Dec 2008 11:19:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 25 Jun 2007 14:04:50 GMT</datecreated>
+			<datecreated>Tue, 09 Dec 2008 11:19:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>82515fe7-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<uuidstructure>36af9ec6-c5e3-11dd-a1fc-53ec2a4a9072</uuidstructure>
+			<datelastmodified>Tue, 09 Dec 2008 11:19:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 09 Dec 2008 11:19:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<relations/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.workplace.tools.link</destination>
@@ -99,6 +118,39 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.tools.link/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>9663eff5-cc29-11dd-8fb7-53ec2a4a9072</uuidstructure>
+			<datelastmodified>Wed, 17 Dec 2008 10:58:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 17 Dec 2008 10:58:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.link/schemas/links.xsd</source>
+			<destination>system/modules/org.opencms.workplace.tools.link/schemas/links.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>ab09bc07-cc29-11dd-8fb7-53ec2a4a9072</uuidstructure>
+			<uuidresource>ab09bc08-cc29-11dd-8fb7-53ec2a4a9072</uuidresource>
+			<datelastmodified>Wed, 17 Dec 2008 11:05:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 17 Dec 2008 10:58:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for link definitions]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -648,6 +700,48 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/shared</destination>
+			<type>folder</type>
+			<uuidstructure>8253d0e9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/linkexcludes</source>
+			<destination>system/shared/linkexcludes</destination>
+			<type>xmlcontent</type>
+			<uuidstructure>d8bb01d2-cc2a-11dd-8fb7-53ec2a4a9072</uuidstructure>
+			<uuidresource>d8bb01d3-cc2a-11dd-8fb7-53ec2a4a9072</uuidresource>
+			<datelastmodified>Thu, 18 Dec 2008 08:19:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 17 Dec 2008 11:07:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link excludes for internal link check]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
 				</property>
 			</properties>
 			<relations/>
