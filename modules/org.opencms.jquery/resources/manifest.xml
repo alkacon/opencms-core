@@ -14,7 +14,7 @@
 		<group>OpenCms frontend</group>
 		<class/>
 		<description><![CDATA[This modules includes the JQuery javascript libraries as well as several plugins used by OpenCms]]></description>
-		<version>7.0.5</version>
+		<version>7.0.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -118,6 +118,14 @@
 			<properties/>
 			<relations/>
 			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ALL_OTHERS</uuidprincipal>
+					<flags>134</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
 				<accessentry>
 					<uuidprincipal>GROUP.Guests</uuidprincipal>
 					<flags>38</flags>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/12/19 14:50:49 $
- * Version: $Revision: 1.1056 $
+ * Date   : $Date: 2008/12/30 09:40:31 $
+ * Version: $Revision: 1.1057 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue with cmsshell commands that have arguments of type long not working
 * Fixed issue with historical versions of deleted files never being deleted 
 * Fixed issue with VFS driver where a file like "xy.html" could be read like a folder "xy.html/"
+* Fixed issue with <cms:jquery> not working for authenticated web users. 
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)
