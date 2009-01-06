@@ -28,6 +28,9 @@
 $(document).ready(function(){   
 	tb_init('a.thickbox, area.thickbox, input.thickbox');//pass where to apply thickbox
 	imgLoader = new Image();// preload image
+	try {
+		imgLoader.src = tb_pathToImage;
+	} catch (e) {}
 });
 
 //add thickbox to href & area elements that have a class of .thickbox
