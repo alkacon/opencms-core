@@ -75,7 +75,9 @@ function onSizeChanged(dimension, value, refreshImage, refreshSelect) {
 /* Checks if the image sizes should be reset when clicking on the "remove crop" button. */
 function checkResetSizes() {
 	if (activeImage.isCropped == false && !initValues.useformats == true) {
-		resetSizes();
+		if (formatSelected.type != "user") {
+			resetSizes();
+		}
 	}
 }
 
