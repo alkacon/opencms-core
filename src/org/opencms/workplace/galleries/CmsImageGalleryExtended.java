@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGalleryExtended.java,v $
- * Date   : $Date: 2008/12/03 15:20:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/01/09 15:59:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -712,6 +712,9 @@ public class CmsImageGalleryExtended extends CmsDialog {
             // 16: image copyright
             String copyright = getJsp().property(PROPERTY_COPYRIGHT, sitePath, "");
             jsonObj.put("copyright", CmsStringUtil.escapeJavaScript(copyright));
+            // 17: image description
+            String desc = getJsp().property(CmsPropertyDefinition.PROPERTY_DESCRIPTION, sitePath, "");
+            jsonObj.put("description", CmsStringUtil.escapeJavaScript(desc));
         } catch (JSONException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e.getLocalizedMessage(), e);

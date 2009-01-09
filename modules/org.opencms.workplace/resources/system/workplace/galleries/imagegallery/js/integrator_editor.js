@@ -77,7 +77,11 @@ function initPopup() {
 function activeImageAdditionalActions(isInitial) {
 	if (!isInitial == true) {
 		resetCopyrightText();
-		GetE("txtAlt").value = activeImage.title;
+		var imgTitle = activeImage.title;
+		if (activeImage.description != "") {
+			imgTitle = activeImage.description;
+		}
+		GetE("txtAlt").value = imgTitle;
 	}
 	// activate the "OK" button of the dialog
 	window.parent.SetOkButton(true);
@@ -113,6 +117,7 @@ function loadSelection() {
 	var imgBorder =	false;
 	var imgHSp = "";
 	var imgVSp = "";
+	var imgAlign = GetAttribute(oImage, "align", "");;
 	if (dialog.Selection.GetSelection().HasAncestorNode("SPAN") || dialog.Selection.GetSelection().HasAncestorNode("TABLE")) {
 		if (FCK.Selection.HasAncestorNode("SPAN")) {
 			oSpan =	dialog.Selection.GetSelection().MoveToAncestorNode("SPAN");
@@ -136,21 +141,51 @@ function loadSelection() {
 				}
 				var divElem = oEditor.FCK.EditorDocument.getElementById("a" + idPart);
 				imgHSp = divElem.style.marginLeft;
-				imgVSp = divElem.style.marginTop;
-				if (imgHSp.indexOf("px") != -1)	{	
-					imgHSp = imgHSp.substring(0, imgHSp.length - 2);
-				}
-				if (imgVSp.indexOf("px") != -1)	{	
-					imgVSp = imgVSp.substring(0, imgVSp.length - 2);
-				}
+				if (imgAlign == "left") {
+			 		imgHSp = divElem.style.marginRight;
+			 	} else if (imgAlign == "right") {
+			 		imgHSp = divElem.style.marginLeft;
+			 	}
+				imgVSp = divElem.style.marginBottom;
 			}
 		} catch	(e) {}
 	 } else	{
-		imgHSp = GetAttribute(oImage, "hspace", "");
-		imgVSp = GetAttribute(oImage, "vspace", "");
+	 	if (imgAlign == "left") {
+	 		imgHSp = oImage.style.marginRight;
+			imgVSp = oImage.style.marginBottom;
+			if (imgHSp == "") {
+				imgHSp = GetAttribute(oImage, "hspace", "");
+			}
+			if (imgVSp == "") {
+				imgVSp = GetAttribute(oImage, "vspace", "");
+			}
+	 	} else if (imgAlign == "right") {
+	 		imgHSp = oImage.style.marginLeft;
+	 		imgVSp = oImage.style.marginBottom;
+	 		if (imgHSp == "") {
+				imgHSp = GetAttribute(oImage, "hspace", "");
+			}
+			if (imgVSp == "") {
+				imgVSp = GetAttribute(oImage, "vspace", "");
+			}
+	 	} else {
+			imgHSp = GetAttribute(oImage, "hspace", "");
+			imgVSp = GetAttribute(oImage, "vspace", "");
+		}
 	}
+	var cssTxt = oImage.style.cssText;
+	if (showEnhancedOptions) {
+		if (imgAlign == "left") {
+			cssTxt = cssTxt.replace(/margin-right:\s*\d+px;/, "");
+			cssTxt = cssTxt.replace(/margin-bottom:\s*\d+px;/, "");
+	 	} else if (imgAlign == "right") {
+			cssTxt = cssTxt.replace(/margin-left:\s*\d+px;/, "");
+			cssTxt = cssTxt.replace(/margin-bottom:\s*\d+px;/, "");
+	 	}
+ 	}
+	
 	if (altText == "") {
-		altText	= GetAttribute(	oImage,	"alt", "");
+		altText	= GetAttribute(oImage,	"alt", "");
 	}
 
 	var sUrl = oImage.getAttribute("_fcksavedurl");
@@ -169,9 +204,16 @@ function loadSelection() {
 	if (copyText !=	"")	{
 		GetE("txtCopyright").value = copyText;
 	}
+	
+	if (imgHSp.indexOf("px") != -1)	{	
+		imgHSp = imgHSp.substring(0, imgHSp.length - 2);
+	}
+	if (imgVSp.indexOf("px") != -1)	{	
+		imgVSp = imgVSp.substring(0, imgVSp.length - 2);
+	}
 
 	if (imgHSp != "" || imgVSp != "") {
-		imgBorder =true;
+		imgBorder = true;
 	}
 
 	if (imgBorder) {
@@ -180,7 +222,7 @@ function loadSelection() {
 		GetE("imageBorder").checked = true;
 	}
 
-	GetE("cmbAlign").value = GetAttribute(oImage, "align", "");
+	GetE("cmbAlign").value = imgAlign;
 
 	var iWidth, iHeight;
 
@@ -215,12 +257,7 @@ function loadSelection() {
 	GetE("txtAttTitle").value = oImage.title;
 	GetE("txtAttClasses").value = oImage.getAttribute("class", 2) || "";
 	GetE("txtLongDesc").value = oImage.longDesc;
-
-	if (oEditor.FCKBrowserInfo.IsIE) {
-		GetE("txtAttStyle").value = oImage.style.cssText;
-	} else {
-		GetE("txtAttStyle").value = oImage.getAttribute("style", 2);
-	}
+	GetE("txtAttStyle").value = cssTxt;
 
 	if (oLink) {
 		var lnkUrl = oLink.getAttribute("_fcksavedurl");
@@ -238,9 +275,13 @@ function loadSelection() {
 	}
 }
 
-/* Resets the image title text to the original value. */
+/* Resets the image alternative text to the original value. */
 function resetAltText() {
-	GetE("txtAlt").value = activeImage.title;
+	var imgTitle = activeImage.title;
+	if (activeImage.description != "") {
+		imgTitle = activeImage.description;
+	}
+	GetE("txtAlt").value = imgTitle;
 }
 
 /* Resets the image copyright text to the original value. */
@@ -402,7 +443,7 @@ function Ok() {
 				try {
 					if (useTbForLinkOriginal == true) {
 						oLink.setAttribute("href", linkOri);
-						oLink.setAttribute("title", activeImage.title);
+						oLink.setAttribute("title", GetE("txtAlt").value);
 						oLink.setAttribute("class", "thickbox");
 						sLnkUrl = linkOri;
 					} else {
@@ -441,7 +482,15 @@ function createEnhancedImage() {
 			if (imgHSp == "") {
 				imgHSp = "0";
 			}
-			st += "margin: " + imgVSp + "px " + imgHSp + "px " + imgVSp + "px " + imgHSp + "px;";
+			if (showEnhancedOptions && al != "") {
+				var marginH = "right";
+				if (al == "right") {
+					marginH = "left";
+				}
+				st += "margin-bottom: " + imgVSp + "px; margin-" + marginH + ": " + imgHSp + "px;";
+			} else {
+				st += "margin: " + imgVSp + "px " + imgHSp + "px " + imgVSp + "px " + imgHSp + "px";
+			}
 		}
 		oNewElement.style.cssText = st;
 		SetAttribute(oNewElement, "id", "aimg_" + activeImage.hash);
@@ -527,7 +576,7 @@ function updateImage(e) {
 	var newWidth = activeImage.width;
 	var newHeight = activeImage.height;
 	if (initValues.scale == null || initValues.scale == "") {
-		initValues.scale = "c:transparent,t:4";
+		initValues.scale = "c:transparent,t:4,r=0,q=70";
 	} else {
 		if (initValues.scale.lastIndexOf(",") == initValues.scale.length - 1) {
 			initValues.scale = initValues.scale.substring(0, initValues.scale.length - 1);
@@ -583,18 +632,33 @@ function updateImage(e) {
 	SetAttribute(e, "height", newHeight);
 	SetAttribute(e, "border", "");
 
-	if (isEnhancedPreview()) {
-	        SetAttribute( e, "vspace", "" );
-	        SetAttribute( e, "hspace", "" );
-    	} else {
-		SetAttribute(e, "vspace", GetE("txtVSpace").value);
-		SetAttribute(e, "hspace", GetE("txtHSpace").value);
+	SetAttribute(e, "align" , GetE("cmbAlign").value);
+
+	var styleAttr = "";
+	SetAttribute(e, "vspace", "");
+	SetAttribute(e, "hspace", "");
+	if (!isEnhancedPreview()) {
+    		var imgAlign = GetE("cmbAlign").value;
+    		var vSp = GetE("txtVSpace").value;
+    		var hSp = GetE("txtHSpace").value;
+    		if (vSp == "") {
+			vSp = "0";
+		}
+		if (hSp == "") {
+			hSp = "0";
+		}
+    		if (showEnhancedOptions && imgAlign == "left") {
+    			styleAttr = "margin-bottom: " + vSp + "px; margin-right: " + hSp + "px;";
+    		} else if (showEnhancedOptions && imgAlign == "right") {
+    			styleAttr = "margin-bottom: " + vSp + "px; margin-left: " + hSp + "px;";
+    		} else {
+			SetAttribute(e, "vspace", GetE("txtVSpace").value);
+			SetAttribute(e, "hspace", GetE("txtHSpace").value);
+		}
 		if (insertLinkToOriginal()) {
 			SetAttribute(e, "border", "0");
 		}
 	}
-
-	SetAttribute(e, "align" , GetE("cmbAlign").value);
 
 	// advanced attributes
 
@@ -610,9 +674,10 @@ function updateImage(e) {
 	SetAttribute(e, "class", GetE("txtAttClasses").value);
 	SetAttribute(e, "longDesc", GetE("txtLongDesc").value);
 
+	styleAttr += GetE("txtAttStyle").value;
 	if (oEditor.FCKBrowserInfo.IsIE) {
-		e.style.cssText = GetE("txtAttStyle").value;
+		e.style.cssText = styleAttr;
 	} else {
-		SetAttribute(e, "style", GetE("txtAttStyle").value);
+		SetAttribute(e, "style", styleAttr);
 	}
 }
