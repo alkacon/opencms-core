@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/01/22 11:55:24 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,11 +39,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_EXPIRED_UNPUBLISHED_0 = "RPT_DELETE_EXPIRED_UNPUBLISHED_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_EXPIRED_END_0 = "RPT_DELETE_EXPIRED_END_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMAGE_CACHE_BAD_MAXAGE_2 = "LOG_IMAGE_CACHE_BAD_MAXAGE_2";
@@ -70,6 +76,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_PUBLISH_SEND_NOTIFICATION_FAILED_0 = "LOG_PUBLISH_SEND_NOTIFICATION_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_EXPIRED_FAILED_1 = "RPT_DELETE_EXPIRED_FAILED_1";
+    
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_IMAGE_SIZE_END_0 = "RPT_IMAGE_SIZE_END_0";
 
     /** Message constant for key in the resource bundle. */
@@ -83,7 +92,22 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMAGE_SIZE_START_0 = "RPT_IMAGE_SIZE_START_0";
-
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_EXPIRED_START_0 = "RPT_DELETE_EXPIRED_START_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_EXPIRED_LOCKED_0 = "RPT_DELETE_EXPIRED_LOCKED_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_EXPIRED_PROCESSING_1 = "RPT_DELETE_EXPIRED_PROCESSING_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_EXPIRED_PROPERTY_NEVER_0 = "RPT_DELETE_EXPIRED_PROPERTY_NEVER_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_EXPIRED_NOT_EXPIRED_1 = "RPT_DELETE_EXPIRED_NOT_EXPIRED_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMAGE_SIZE_UNABLE_TO_CALCULATE_0 = "RPT_IMAGE_SIZE_UNABLE_TO_CALCULATE_0";
 

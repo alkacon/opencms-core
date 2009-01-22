@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/01/22 11:55:24 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0 
  */
@@ -111,6 +111,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property for the content conversion. */
     public static final String PROPERTY_CONTENT_CONVERSION = "content-conversion";
+
+    /** Property for the days a resource has to be expired to be deleted by the <code>{@link  org.opencms.scheduler.jobs.CmsDeleteExpiredResourcesJob}</code>. */
+    public static final String PROPERTY_DELETE_EXPIRED = "delete.expired";
 
     /** Property for the content encoding. */
     public static final String PROPERTY_CONTENT_ENCODING = "content-encoding";

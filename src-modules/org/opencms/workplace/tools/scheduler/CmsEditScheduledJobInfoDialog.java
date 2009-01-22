@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2008/07/17 10:33:10 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2009/01/22 11:55:24 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.relations.CmsExternalLinksValidator;
 import org.opencms.relations.CmsInternalRelationsValidationJob;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.jobs.CmsCreateImageSizeJob;
+import org.opencms.scheduler.jobs.CmsDeleteExpiredResourcesJob;
 import org.opencms.scheduler.jobs.CmsHistoryClearJob;
 import org.opencms.scheduler.jobs.CmsImageCacheCleanupJob;
 import org.opencms.scheduler.jobs.CmsPublishJob;
@@ -75,7 +76,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -359,6 +360,11 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             false,
             null,
             key(Messages.GUI_EDITOR_CRONCLASS_CLEARHISTORY_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsDeleteExpiredResourcesJob.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_DELETEEXPIRED_0)));
         return result;
     }
 
