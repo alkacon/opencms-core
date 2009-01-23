@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2008/11/27 10:44:54 $
- * Version: $Revision: 1.240 $
+ * Date   : $Date: 2009/01/23 16:44:36 $
+ * Version: $Revision: 1.241 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.240 $ 
+ * @version $Revision: 1.241 $ 
  * 
  * @since 6.0.0 
  */
@@ -1423,9 +1423,7 @@ public final class OpenCmsCore {
                                 Messages.ERR_REQUEST_SECURE_RESOURCE_0));
                         } else {
                             // redirect
-                            String uri = req.getRequestURL().toString();
-                            String target = site.getSecureUrl()
-                                + uri.substring(uri.indexOf("/", uri.indexOf("//") + 2));
+                            String target = OpenCms.getLinkManager().getOnlineLink(cms, cms.getRequestContext().getUri());
                             try {
                                 res.sendRedirect(target);
                             } catch (Exception e) {
