@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2009/02/04 16:27:29 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 6.0.0 
  */
@@ -280,7 +280,7 @@ public final class CmsRequestContext {
      * Returns the file name translator this context was initialized with.<p>
      * 
      * The file name translator is used to translate filenames from uploaded files  
-     * to valid OpenCms filenames. Example: <code>Wüste Wörter.doc --> Wueste_Woerter.doc</code>.<p>
+     * to valid OpenCms filenames. Example: <code>W&uuml;ste W&ouml;rter.doc --> Wueste_Woerter.doc</code>.<p>
      * 
      * @return the file name translator this context was initialized with
      */
