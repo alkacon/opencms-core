@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2008/04/17 14:30:37 $
- * Version: $Revision: 1.67 $
+ * Date   : $Date: 2009/02/10 16:55:29 $
+ * Version: $Revision: 1.68 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.67 $ 
+ * @version $Revision: 1.68 $ 
  * 
  * @since 6.0.0 
  */
@@ -2087,7 +2087,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     private String getLimit(Object obj) {
 
         if (obj instanceof CmsLruCache) {
-            return Integer.toString(((CmsLruCache)obj).getMaxCacheCosts());
+            return Long.toString(((CmsLruCache)obj).getMaxCacheCosts());
         }
         if (obj instanceof LRUMap) {
             return Integer.toString(((LRUMap)obj).maxSize());

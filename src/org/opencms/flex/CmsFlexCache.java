@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2008/06/18 07:27:53 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2009/02/10 16:55:29 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  * 
@@ -256,8 +256,8 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         m_enabled = configuration.isCacheEnabled();
         m_cacheOffline = configuration.isCacheOffline();
 
-        int maxCacheBytes = configuration.getMaxCacheBytes();
-        int avgCacheBytes = configuration.getAvgCacheBytes();
+        long maxCacheBytes = configuration.getMaxCacheBytes();
+        long avgCacheBytes = configuration.getAvgCacheBytes();
         int maxEntryBytes = configuration.getMaxEntryBytes();
         int maxKeys = configuration.getMaxKeys();
 

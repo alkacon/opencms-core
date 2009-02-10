@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/02/10 16:55:29 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 6.0.0
  */
@@ -65,8 +65,8 @@ public class CmsLruCache extends java.lang.Object {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLruCache.class);
 
-    /** The avg. sum of costs the cached objects. */
-    private int m_avgCacheCosts;
+    /** The average sum of costs the cached objects. */
+    private long m_avgCacheCosts;
 
     /** The head of the list of double linked LRU cache objects. */
     private I_CmsLruCacheObject m_listHead;
@@ -74,10 +74,10 @@ public class CmsLruCache extends java.lang.Object {
     /** The tail of the list of double linked LRU cache objects. */
     private I_CmsLruCacheObject m_listTail;
 
-    /** The max. sum of costs the cached objects might reach. */
-    private int m_maxCacheCosts;
+    /** The maximum sum of costs the cached objects might reach. */
+    private long m_maxCacheCosts;
 
-    /** The max. costs of cacheable objects. */
+    /** The maximum costs of cacheable objects. */
     private int m_maxObjectCosts;
 
     /** The costs of all cached objects. */
@@ -89,11 +89,11 @@ public class CmsLruCache extends java.lang.Object {
     /**
      * The constructor with all options.<p>
      *
-     * @param theMaxCacheCosts the max. cache costs of all cached objects
-     * @param theAvgCacheCosts the avg. cache costs of all cached objects
-     * @param theMaxObjectCosts the max. allowed cache costs per object. Set theMaxObjectCosts to -1 if you don't want to limit the max. allowed cache costs per object
+     * @param theMaxCacheCosts the maximum cache costs of all cached objects
+     * @param theAvgCacheCosts the average cache costs of all cached objects
+     * @param theMaxObjectCosts the maximum allowed cache costs per object. Set theMaxObjectCosts to -1 if you don't want to limit the max. allowed cache costs per object
      */
-    public CmsLruCache(int theMaxCacheCosts, int theAvgCacheCosts, int theMaxObjectCosts) {
+    public CmsLruCache(long theMaxCacheCosts, long theAvgCacheCosts, int theMaxObjectCosts) {
 
         m_maxCacheCosts = theMaxCacheCosts;
         m_avgCacheCosts = theAvgCacheCosts;
@@ -166,7 +166,7 @@ public class CmsLruCache extends java.lang.Object {
      * 
      * @return the average costs of all cached objects
      */
-    public int getAvgCacheCosts() {
+    public long getAvgCacheCosts() {
 
         return m_avgCacheCosts;
     }
@@ -176,7 +176,7 @@ public class CmsLruCache extends java.lang.Object {
      * 
      * @return the max costs of all cached objects
      */
-    public int getMaxCacheCosts() {
+    public long getMaxCacheCosts() {
 
         return m_maxCacheCosts;
     }

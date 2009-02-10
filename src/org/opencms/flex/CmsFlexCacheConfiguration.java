@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheConfiguration.java,v $
- * Date   : $Date: 2008/02/27 12:05:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/02/10 16:55:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,13 +36,13 @@ package org.opencms.flex;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsFlexCacheConfiguration {
 
-    private int m_avgCacheBytes;
+    private long m_avgCacheBytes;
 
     /** Indicates if the cache is enabled or not. */
     private boolean m_cacheEnabled;
@@ -58,7 +58,7 @@ public class CmsFlexCacheConfiguration {
      * The default is 2mb memory for the cached pages _or_ a maximum of 4000
      * cached page variations in total. 
      */
-    private int m_maxCacheBytes;
+    private long m_maxCacheBytes;
 
     private int m_maxEntryBytes;
 
@@ -77,7 +77,7 @@ public class CmsFlexCacheConfiguration {
      *
      * @return the average cache bytes
      */
-    public int getAvgCacheBytes() {
+    public long getAvgCacheBytes() {
 
         return m_avgCacheBytes;
     }
@@ -87,7 +87,7 @@ public class CmsFlexCacheConfiguration {
      *
      * @return the maxCacheBytes
      */
-    public int getMaxCacheBytes() {
+    public long getMaxCacheBytes() {
 
         return m_maxCacheBytes;
     }
@@ -132,8 +132,8 @@ public class CmsFlexCacheConfiguration {
 
         setCacheEnabled(Boolean.valueOf(enabled).booleanValue());
         setCacheOffline(Boolean.valueOf(offline).booleanValue());
-        setMaxCacheBytes(Integer.parseInt(maxCacheBytes));
-        setAvgCacheBytes(Integer.parseInt(avgCacheBytes));
+        setMaxCacheBytes(Long.parseLong(maxCacheBytes));
+        setAvgCacheBytes(Long.parseLong(avgCacheBytes));
         setMaxEntryBytes(Integer.parseInt(maxEntryBytes));
         setMaxKeys(Integer.parseInt(maxKeys));
     }
@@ -163,7 +163,7 @@ public class CmsFlexCacheConfiguration {
      *
      * @param avgCacheBytes the avgCacheBytes to set
      */
-    public void setAvgCacheBytes(int avgCacheBytes) {
+    public void setAvgCacheBytes(long avgCacheBytes) {
 
         m_avgCacheBytes = avgCacheBytes;
     }
@@ -193,7 +193,7 @@ public class CmsFlexCacheConfiguration {
      *
      * @param maxCacheBytes the maxCacheBytes to set
      */
-    public void setMaxCacheBytes(int maxCacheBytes) {
+    public void setMaxCacheBytes(long maxCacheBytes) {
 
         m_maxCacheBytes = maxCacheBytes;
     }
