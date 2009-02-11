@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishEngine.java,v $
- * Date   : $Date: 2008/07/14 10:05:10 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/02/11 15:38:33 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.5.5
  */
@@ -162,14 +162,25 @@ public final class CmsPublishEngine implements Runnable {
             throw new CmsPublishException(Messages.get().container(Messages.ERR_PUBLISH_ENGINE_DISABLED_0));
         }
 
-        // get the state before enqueuing the job
+        // get the state before putting the job in the queue
         boolean isRunning = isRunning();
         // create the publish job
         CmsPublishJobInfoBean publishJob = new CmsPublishJobInfoBean(cms, publishList, report);
-        // enqueue it and 
-        m_publishQueue.add(publishJob);
-        // notify all listeners
-        m_listeners.fireEnqueued(new CmsPublishJobBase(publishJob));
+        try {
+            // enqueue it and 
+            m_publishQueue.add(publishJob);
+            // notify all listeners
+            m_listeners.fireEnqueued(new CmsPublishJobBase(publishJob));
+        } catch (Throwable t) {
+            // we really really need to catch everything here, or else the queue status is broken
+            if (m_publishQueue.contains(publishJob)) {
+                m_publishQueue.remove(publishJob);
+            }
+            // throw the exception again
+            throw new CmsException(Messages.get().container(
+                Messages.ERR_PUBLISH_ENGINE_QUEUE_1,
+                publishJob.getPublishHistoryId()), t);
+        }
         // start publish job immediately if possible
         if (!isRunning) {
             run();

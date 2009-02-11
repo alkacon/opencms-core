@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/Messages.java,v $
- * Date   : $Date: 2008/07/14 10:05:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/02/11 15:38:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.5 
  */
@@ -66,6 +66,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_ENGINE_PERM_DENIED_1 = "ERR_PUBLISH_ENGINE_PERM_DENIED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISH_ENGINE_QUEUE_1 = "ERR_PUBLISH_ENGINE_QUEUE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_JOB_ABORT_ERROR_1 = "ERR_PUBLISH_JOB_ABORT_ERROR_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2008/07/14 10:05:10 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/02/11 15:38:33 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.5.5
  */
@@ -130,20 +130,23 @@ public class CmsPublishQueue {
      */
     protected void add(CmsPublishJobInfoBean publishJob) throws CmsException {
 
+        // set the queue status in the publish job
         publishJob.enqueue();
-
-        // add publish job to cache
-        OpenCms.getMemoryMonitor().cachePublishJob(publishJob);
 
         // add job to database if necessary
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
             CmsDbContext dbc = m_publishEngine.getDbContextFactory().getDbContext();
             try {
+                // this operation may in rare circumstances fail with a DB exception 
+                // if this is the case the publish job must NOT be in the queue
                 m_publishEngine.getDriverManager().createPublishJob(dbc, publishJob);
             } finally {
                 dbc.clear();
             }
         }
+
+        // add publish job to cache
+        OpenCms.getMemoryMonitor().cachePublishJob(publishJob);
     }
 
     /**
@@ -161,6 +164,27 @@ public class CmsPublishQueue {
             result.add(new CmsPublishJobEnqueued(publishJob));
         }
         return Collections.unmodifiableList(result);
+    }
+
+    /**
+     * Checks if the given job is already in the queue, this does only check for the identical job.<p>
+     * 
+     * @param publishJob the publish job to check for
+     * 
+     * @return true if the given job is already in the queue
+     */
+    protected boolean contains(CmsPublishJobInfoBean publishJob) {
+
+        List l = OpenCms.getMemoryMonitor().getAllCachedPublishJobs();
+        if (l != null) {
+            for (int i = 0; i < l.size(); i++) {
+                CmsPublishJobInfoBean b = (CmsPublishJobInfoBean)l.get(i);
+                if (b == publishJob) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -259,11 +283,13 @@ public class CmsPublishQueue {
      */
     protected void remove(CmsPublishJobInfoBean publishJob) throws CmsException {
 
-        // signalizes that job will be removed
-        m_publishEngine.publishJobRemoved(publishJob);
-
-        // remove publish job from cache
-        OpenCms.getMemoryMonitor().uncachePublishJob(publishJob);
+        try {
+            // signalizes that job will be removed
+            m_publishEngine.publishJobRemoved(publishJob);
+        } finally {
+            // remove publish job from cache
+            OpenCms.getMemoryMonitor().uncachePublishJob(publishJob);
+        }
 
         // remove job from database if necessary
         if (OpenCms.getMemoryMonitor().requiresPersistency()) {
