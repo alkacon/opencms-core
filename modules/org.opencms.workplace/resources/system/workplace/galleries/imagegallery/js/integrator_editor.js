@@ -205,10 +205,10 @@ function loadSelection() {
 		GetE("txtCopyright").value = copyText;
 	}
 	
-	if (imgHSp.indexOf("px") != -1)	{	
+	if (isNaN(imgHSp) && imgHSp.indexOf("px") != -1)	{	
 		imgHSp = imgHSp.substring(0, imgHSp.length - 2);
 	}
-	if (imgVSp.indexOf("px") != -1)	{	
+	if (isNaN(imgVSp) && imgVSp.indexOf("px") != -1)	{	
 		imgVSp = imgVSp.substring(0, imgVSp.length - 2);
 	}
 
