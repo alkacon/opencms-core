@@ -11,7 +11,7 @@ FCKCommands.RegisterCommand(
 		"<%= wp.key(Messages.GUI_IMAGEGALLERY_EDITOR_TITLE_0) %>",
 		imageGalleryDialogUrl(),
 		680,
-		750
+		630
 	)
 );
 

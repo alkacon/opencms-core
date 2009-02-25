@@ -15,6 +15,10 @@ CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, r
 <script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.dimensions.js"></script>
 <script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/imagegallery/js/jquery.imgareaselect-0.5.1.min.js"></script>
 <script type="text/javascript">
+	var imgPreviewHeight = 450;
+	if (parent.initValues.dialogmode == "editor") {
+		imgPreviewHeight = 390;
+	}
 
 	/* The image to crop. */
 	var img = parent.activeImage;
@@ -73,6 +77,8 @@ CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, r
 		// display the updated information
 		$w.text(shownW);
 		$h.text(shownH);
+		//$w.text(shownW + ", W: " + selW + ", X: " + selX);
+		//$h.text(shownH + ", H: " + selH + ", Y: " + selY);
 		updateRatio();
 	}
 	
@@ -124,6 +130,7 @@ CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, r
 				parent.activeImage.newheight = selH;
 			}
 			parent.setCropActive(true, true);
+			//alert(cropParams);
 		}
 		parent.tb_remove();
 	}
@@ -142,7 +149,8 @@ CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, r
 	$(document).ready(function () {
 		// show the image to crop, downscale it if necessary
 		var srcAttr = img.linkpath;
-		var newDimensions = parent.calculateDimensions(img.width, img.height, 600, 450);
+		$(".imgbg").css("height", imgPreviewHeight + "px");
+		var newDimensions = parent.calculateDimensions(img.width, img.height, 600, imgPreviewHeight);
 		scaleFactor = newDimensions.scaleFactor;
 		if (scaleFactor != 1) {
 			srcAttr += "?__scale=w:" + Math.round(newDimensions.width) + ",h:" + Math.round(newDimensions.height) + ",c:transparent,q:70";

@@ -21,7 +21,7 @@ td {
 }
 
 #preview #previewwrapper {
-	height: 330px;
+	height: 230px;
 }
 
 #preview #imgoptions {
@@ -31,7 +31,7 @@ td {
 }
 
 #preview #imgdetails {
-	padding: 6px 4px;
+	padding: 3px 4px 6px 4px;
 	border-bottom: none;
 }
 
@@ -76,4 +76,29 @@ td {
 
 div.advinput {
 	margin-top: 8px;
+}
+
+div.imgitem, div.imgitemhover, div.imgitemactive {
+	padding: 1px 10px;
+	margin: 2px 4px;
+}
+
+#galleryfolderlist, #categoryfolderlist {
+	height: 460px;
+}
+
+#galleryimagelist, #categoryimagelist {
+	height: 376px;
+}
+
+#galleryimagelistinner, #categoryimagelistinner {
+	height: 305px;
+}
+
+.ui-tabs-nav {
+    padding: 0 0 0 3px;
+}
+
+.ui-tabs-panel {
+	height: 503px;
 }

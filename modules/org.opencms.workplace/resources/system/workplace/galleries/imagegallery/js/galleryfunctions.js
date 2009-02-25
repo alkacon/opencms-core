@@ -24,6 +24,8 @@ var imgDetailTimeout;
 var previewX = 600;
 var previewY = 450;
 
+var itemsPerPage = 16;
+
 $(document).ready(function(){
 	$tabs = $("#tabs > ul").tabs({
 	});
@@ -191,7 +193,6 @@ function getImages(vfsPath, isGallery) {
 /* Creates the HTML for the images from the given JSON array data. */
 function fillImages(data, modeName) {
 	currentPage = 0;
-	var itemsPerPage = 16;
 	var foundImages = eval(data);
 	var publishInfo = foundImages.shift();
 	if (modeName == "category") {

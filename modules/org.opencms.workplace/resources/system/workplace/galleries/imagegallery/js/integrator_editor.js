@@ -33,7 +33,9 @@ var vfsPopupUri = "<%= wp.getJsp().link("/system/workplace/editors/fckeditor/plu
 
 /* Size of the preview area. */
 previewX = 600;
-previewY = 330;
+previewY = 230;
+
+itemsPerPage = 12;
 
 /* Initialize the dialog values. */
 initValues = {};
@@ -55,8 +57,8 @@ function initPopup() {
 		$("#enhAltBt").hide();
 		$("#enhCopy").hide();
 		$("#enhOrig").hide();
-		previewY = 370;
-		$("#previewwrapper").height(370);
+		previewY = 270;
+		$("#previewwrapper").height(270);
 		$("#imgoptions").height(108);
 	}
 	// load eventually selected image and information
@@ -109,6 +111,10 @@ function loadSelection() {
 
 	if (!oImage) {
 		// no image selected, nothing to do...
+		GetE('cmbAlign').value = "left";
+		GetE("txtHSpace").value = "5";
+		GetE("txtVSpace").value = "5";
+		GetE("imageBorder").checked = true;
 		return;
 	}
 
@@ -215,6 +221,7 @@ function loadSelection() {
 	if (imgHSp != "" || imgVSp != "") {
 		imgBorder = true;
 	}
+	
 
 	if (imgBorder) {
 		GetE("txtVSpace").value	= imgVSp;
