@@ -23,7 +23,7 @@
 
 body
 {
-    padding: 0;
+    padding: 1px;
 	margin: 0;
 }
 
@@ -301,7 +301,7 @@ body
 
 .MN_ConnectionLine
 {
-    background-color: Window;
+    background-color: pink;
 }
 
 .Menu .TB_Button_On, .Menu .TB_Button_On_Over
