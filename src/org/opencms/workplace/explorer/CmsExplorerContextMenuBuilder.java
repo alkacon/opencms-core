@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuBuilder.java,v $
- * Date   : $Date: 2008/09/18 10:08:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/02/26 15:07:58 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.5.6 
  */
@@ -136,7 +136,7 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
             } catch (Throwable e) {
                 return "";
             }
-            if (settings == null || !settings.isEditable(getCms(), resUtil[0].getResource())) {
+            if ((settings == null) || !settings.isEditable(getCms(), resUtil[0].getResource())) {
                 // the user has no access to this resource type
                 return "";
             }
@@ -403,14 +403,24 @@ public class CmsExplorerContextMenuBuilder extends CmsWorkplace {
                         StringBuffer link = new StringBuffer(128);
                         if (isSingleSelection) {
                             // create link for single resource context menu
-                            link.append("href=\"javascript:top.submitSingleAction('");
+                            link.append("onmouseup=\"top.submitSingleAction('");
+                            link.append(itemLink);
+                            link.append("', '");
+                            link.append(itemTarget);
+                            link.append("');\"");
+                            // the href attribute still has to be used because of IE 6
+                            link.append(" href=\"javascript:top.submitSingleAction('");
                             link.append(itemLink);
                             link.append("', '");
                             link.append(itemTarget);
                             link.append("');\"");
                         } else {
                             // create link for multi resource context menu
-                            link.append("href=\"javascript:top.submitMultiAction('");
+                            link.append("onmouseup=\"top.submitMultiAction('");
+                            link.append(itemLink);
+                            link.append("');\"");
+                            // the href attribute still has to be used because of IE 6
+                            link.append(" href=\"javascript:top.submitMultiAction('");
                             link.append(itemLink);
                             link.append("');\"");
                         }
