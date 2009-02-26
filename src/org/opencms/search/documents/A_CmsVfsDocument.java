@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2008/08/22 13:29:37 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/02/26 11:59:18 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.lucene.document.Fieldable;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -160,58 +160,62 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         // extract the content from the resource
         I_CmsExtractionResult content = null;
 
-        // check if caching is enabled for this document type
-        CmsExtractionResultCache cache = getCache();
-        String cacheName = null;
-        if ((cache != null) && (resource.getSiblingCount() > 1)) {
-            // hard drive based caching only makes sense for resources that have siblings, 
-            // because the index will also store the content as a blob
-            cacheName = cache.getCacheName(resource, isLocaleDependend() ? index.getLocale() : null);
-            content = cache.getCacheObject(cacheName);
-        }
+        if (index.isExtractingContent()) {
+            // do full text content extraction only if required
 
-        if (content == null) {
-            // extraction result has not been found in the cache
-            // compare "date of last modification of content" from Lucene index and OpenCms VFS
-            // if this is identical, then the data from the Lucene index can be re-used 
-            Document oldDoc = index.getDocument(resource.getRootPath());
-            // first check if the document is already in the index
-            if (oldDoc != null) {
-                // first obtain content date from Lucene index
-                Fieldable fieldContentDate = oldDoc.getFieldable(CmsSearchField.FIELD_DATE_CONTENT);
-                long contentDateIndex = 0;
-                if (fieldContentDate != null) {
-                    String contentDate = fieldContentDate.stringValue();
-                    try {
-                        contentDateIndex = DateTools.stringToTime(contentDate);
-                    } catch (ParseException e) {
-                        // ignore
-                    }
-                    // now compare the date with the date stored in the resource
-                    if (contentDateIndex == resource.getDateContent()) {
-                        // date of content is identical, re-use existing content
-                        Fieldable fieldContentBlob = oldDoc.getFieldable(CmsSearchField.FIELD_CONTENT_BLOB);
-                        if (fieldContentBlob != null) {
-                            // extract stored content blob from Lucene index
-                            byte[] oldContent = fieldContentBlob.binaryValue();
-                            content = CmsExtractionResult.fromBytes(oldContent);
+            // check if caching is enabled for this document type
+            CmsExtractionResultCache cache = getCache();
+            String cacheName = null;
+            if ((cache != null) && (resource.getSiblingCount() > 1)) {
+                // hard drive based caching only makes sense for resources that have siblings, 
+                // because the index will also store the content as a blob
+                cacheName = cache.getCacheName(resource, isLocaleDependend() ? index.getLocale() : null);
+                content = cache.getCacheObject(cacheName);
+            }
+
+            if (content == null) {
+                // extraction result has not been found in the cache
+                // compare "date of last modification of content" from Lucene index and OpenCms VFS
+                // if this is identical, then the data from the Lucene index can be re-used 
+                Document oldDoc = index.getDocument(resource.getRootPath());
+                // first check if the document is already in the index
+                if (oldDoc != null) {
+                    // first obtain content date from Lucene index
+                    Fieldable fieldContentDate = oldDoc.getFieldable(CmsSearchField.FIELD_DATE_CONTENT);
+                    long contentDateIndex = 0;
+                    if (fieldContentDate != null) {
+                        String contentDate = fieldContentDate.stringValue();
+                        try {
+                            contentDateIndex = DateTools.stringToTime(contentDate);
+                        } catch (ParseException e) {
+                            // ignore
+                        }
+                        // now compare the date with the date stored in the resource
+                        if (contentDateIndex == resource.getDateContent()) {
+                            // date of content is identical, re-use existing content
+                            Fieldable fieldContentBlob = oldDoc.getFieldable(CmsSearchField.FIELD_CONTENT_BLOB);
+                            if (fieldContentBlob != null) {
+                                // extract stored content blob from Lucene index
+                                byte[] oldContent = fieldContentBlob.binaryValue();
+                                content = CmsExtractionResult.fromBytes(oldContent);
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if (content == null) {
-            // extraction result has not been attached to the resource
-            try {
-                content = extractContent(cms, resource, index);
-                if ((cache != null) && (resource.getSiblingCount() > 1)) {
-                    // save extracted content to the cache
-                    cache.saveCacheObject(cacheName, content);
+            if (content == null) {
+                // extraction result has not been attached to the resource
+                try {
+                    content = extractContent(cms, resource, index);
+                    if ((cache != null) && (resource.getSiblingCount() > 1)) {
+                        // save extracted content to the cache
+                        cache.saveCacheObject(cacheName, content);
+                    }
+                } catch (Exception e) {
+                    // text extraction failed for document - continue indexing meta information only
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
                 }
-            } catch (Exception e) {
-                // text extraction failed for document - continue indexing meta information only
-                LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
             }
         }
 

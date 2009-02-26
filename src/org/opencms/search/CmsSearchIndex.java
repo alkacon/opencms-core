@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2008/11/28 15:26:37 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2009/02/26 11:59:17 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,6 +82,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermsFilter;
+import org.apache.lucene.store.FSDirectory;
 
 /**
  * Implements the search within an index and the management of the index configuration.<p>
@@ -89,7 +90,7 @@ import org.apache.lucene.search.TermsFilter;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.73 $ 
+ * @version $Revision: 1.74 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,6 +128,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Constant for additional parameter to enable excerpt creation (default: true). */
     public static final String EXCERPT = CmsSearchIndex.class.getName() + ".createExcerpt";
+
+    /** Constant for additional parameter for index content extraction. */
+    public static final String EXTRACT_CONTENT = CmsSearchIndex.class.getName() + ".extractContent";
+
+    /** Constant for additional parameter for the Lucene index setting. */
+    public static final String LUCENE_AUTO_COMMIT = "lucene.AutoCommit";
 
     /** Constant for additional parameter for the Lucene index setting. */
     public static final String LUCENE_MAX_MERGE_DOCS = "lucene.MaxMergeDocs";
@@ -207,6 +214,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The excerpt mode for this index. */
     private boolean m_createExcerpt;
 
+    /** The content extraction mode for this index. */
+    private boolean m_extractContent;
+
     /** Map of display query filters to use. */
     private Map m_displayFilters;
 
@@ -224,6 +234,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** The locale of this index. */
     private Locale m_locale;
+
+    /** The Lucene index auto commit setting, see {@link IndexWriter} constructors. */
+    private Boolean m_luceneAutoCommit;
 
     /** The Lucene index merge factor setting, see {@link IndexWriter#setMaxMergeDocs(int)}. */
     private Integer m_luceneMaxMergeDocs;
@@ -270,6 +283,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         m_sourceNames = new ArrayList();
         m_documenttypes = new HashMap();
         m_createExcerpt = true;
+        m_extractContent = true;
         m_checkTimeRange = true;
         m_checkPermissions = true;
         m_enabled = true;
@@ -305,6 +319,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             m_checkTimeRange = Boolean.valueOf(value).booleanValue();
         } else if (EXCERPT.equals(key)) {
             m_createExcerpt = Boolean.valueOf(value).booleanValue();
+        } else if (EXTRACT_CONTENT.equals(key)) {
+            m_extractContent = Boolean.valueOf(value).booleanValue();
         } else if (PRIORITY.equals(key)) {
             m_priority = Integer.parseInt(value);
             if (m_priority < Thread.MIN_PRIORITY) {
@@ -342,6 +358,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
         } else if (LUCENE_USE_COMPOUND_FILE.equals(key)) {
             m_luceneUseCompoundFile = Boolean.valueOf(value);
+        } else if (LUCENE_AUTO_COMMIT.equals(key)) {
+            m_luceneAutoCommit = Boolean.valueOf(value);
         }
     }
 
@@ -429,6 +447,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if (!isCreatingExcerpt()) {
             result.put(EXCERPT, Boolean.valueOf(m_createExcerpt));
         }
+        if (!isExtractingContent()) {
+            result.put(EXTRACT_CONTENT, Boolean.valueOf(m_extractContent));
+        }
         if (!isCheckingPermissions()) {
             result.put(PERMISSIONS, Boolean.valueOf(m_checkPermissions));
         }
@@ -447,6 +468,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
         if (m_luceneUseCompoundFile != null) {
             result.put(LUCENE_USE_COMPOUND_FILE, m_luceneUseCompoundFile);
+        }
+        if (m_luceneAutoCommit != null) {
+            result.put(LUCENE_AUTO_COMMIT, m_luceneAutoCommit);
         }
         return result;
     }
@@ -544,19 +568,27 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         IndexWriter indexWriter;
 
         try {
+
+            // check if the target directory already exists
             File f = new File(m_path);
-            if (f.exists()) {
-                // index already exists
-                indexWriter = new IndexWriter(m_path, getAnalyzer(), create);
-            } else {
+            if (!f.exists()) {
                 // index does not exist yet
                 f = f.getParentFile();
                 if ((f != null) && !f.exists()) {
                     // create the parent folders if required
                     f.mkdirs();
                 }
-                indexWriter = new IndexWriter(m_path, getAnalyzer(), true);
+                // create must be true if the directory does not exist
+                create = true;
             }
+
+            // auto commit status, according to Lucene experts setting this to 
+            // false increases performance
+            boolean autoCommit = (m_luceneAutoCommit == null) ? true : m_luceneAutoCommit.booleanValue();
+            // open file directory for Lucene
+            FSDirectory dir = FSDirectory.getDirectory(m_path);
+            // index already exists
+            indexWriter = new IndexWriter(dir, autoCommit, getAnalyzer(), create);
 
             // set the index writer parameter if required 
             if (m_luceneMaxMergeDocs != null) {
@@ -821,6 +853,20 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public boolean isEnabled() {
 
         return m_enabled;
+    }
+
+    /**
+     * Returns <code>true</code> if full text is extracted by this index.<p>
+     *
+     * Full text content extraction can be turned off in the index search configuration parameters
+     * in <code>opencms-search.xml</code>. 
+     * Not extraction the full text information will highly improve performance.<p> 
+     *
+     * @return <code>true</code> if full text is extracted by this index
+     */
+    public boolean isExtractingContent() {
+
+        return m_extractContent;
     }
 
     /**
