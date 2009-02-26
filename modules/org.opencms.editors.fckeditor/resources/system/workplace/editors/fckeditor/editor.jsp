@@ -306,7 +306,7 @@ out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", org.openc
 
 <tr>
 <td style="width:100%; height:100%;">
-<div style="width:100%; height:100%; background-color: ButtonFace;">
+<div style="width:100%; height:100%; background-color: Window;">
 <script type="text/javascript">
 <!--
 	var editor = new FCKeditor("fckeditor");
