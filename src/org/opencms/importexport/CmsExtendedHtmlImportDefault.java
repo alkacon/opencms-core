@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExtendedHtmlImportDefault.java,v $
- * Date   : $Date: 2008/02/27 12:05:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/02/26 15:08:08 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,9 +38,9 @@ package org.opencms.importexport;
  * 
  * @see org.opencms.importexport.CmsImportExportManager#getExtendedHtmlImportDefault()
  *
- * @author Anja Röttgers
+ * @author Anja Roettgers
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 7.0.2
  */
