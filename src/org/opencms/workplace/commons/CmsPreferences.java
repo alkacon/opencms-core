@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2008/04/10 14:36:59 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2009/03/02 14:44:50 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 6.0.0
  */
@@ -756,7 +756,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         List sites = OpenCms.getSiteManager().getAvailableSites(getCms(), true);
         String wpSite = getParamTabWpSite();
-        if (!wpSite.endsWith("/")) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(wpSite) && !wpSite.endsWith("/")) {
             wpSite += "/";
         }
 
@@ -775,6 +775,21 @@ public class CmsPreferences extends CmsTabDialog {
                 selectedIndex = pos;
             }
             pos++;
+        }
+
+        if (sites.size() < 1) {
+            // no site found, assure that at least the current site is shown in the selector
+            String siteRoot = getCms().getRequestContext().getSiteRoot();
+            CmsSite site = OpenCms.getSiteManager().getSiteForSiteRoot(siteRoot);
+            if (!siteRoot.endsWith("/")) {
+                siteRoot += "/";
+            }
+            String title = "";
+            if (site != null) {
+                title = site.getTitle();
+            }
+            values.add(siteRoot);
+            options.add(title);
         }
 
         return buildSelect(htmlAttributes, options, values, selectedIndex);
