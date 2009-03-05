@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2008/02/27 12:05:23 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2009/03/05 13:02:41 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -492,6 +492,12 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
         try {
             CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+            if (res.isFolder()) {
+                if (!getParamResource().endsWith("/")) {
+                    // append folder separator to resource name
+                    setParamResource(getParamResource() + "/");
+                }
+            }
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
             // get settings for resource type
             setExplorerTypeSettings(getSettingsForType(resTypeName));
