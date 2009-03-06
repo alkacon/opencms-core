@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2008/06/23 10:27:24 $
- * Version: $Revision: 1.818.2.9 $
+ * Date   : $Date: 2009/03/06 13:38:01 $
+ * Version: $Revision: 1.818.2.10 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.2.4 - xxxx, 2007
+OpenCms 6.2.4 - xxxx, 2009
 
 ! Added option in export to export only those files modifed in the current project
 * Static export works with links containing a "&amp;"
@@ -52,6 +52,7 @@ OpenCms 6.2.4 - xxxx, 2007
 ! Several attempts are made to connect to database during startup.
 - Allowed ' in email adresses
 * Trailing "/" is handled correctly when reading resources in the VFSDriver.
+* If the availability of a resource has changed the current project changes now too.
 
 
 OpenCms 6.2.3 - November 30, 2006
