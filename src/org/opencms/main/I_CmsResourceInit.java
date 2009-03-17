@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsResourceInit.java,v $
- * Date   : $Date: 2008/02/27 12:05:39 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/03/17 08:57:41 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.main;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.security.CmsSecurityException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,7 +45,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,9 +62,12 @@ public interface I_CmsResourceInit {
      * @param req the current request
      * @param res the current response
      * @return a resource in the OpenCms VFS
+     * 
      * @throws CmsResourceInitException if other implementations of the interface should not be executed
+     * @throws CmsSecurityException if other implementations of the interface should not be executed, 
+     *      and the security exception should be escalated
      */
     CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
-    throws CmsResourceInitException;
+    throws CmsResourceInitException, CmsSecurityException;
 
 }
