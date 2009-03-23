@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/03/23 09:09:22 $
- * Version: $Revision: 1.1063 $
+ * Date   : $Date: 2009/03/23 13:42:47 $
+ * Version: $Revision: 1.1064 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue with wrong redirect for http - requests to https secured resources 
 * Fixed issue with publish queue hanging up if the connection to the database is lost
 * Fixed issue with moved files where the previous folder was deleted
+* Fixed issue #1665: CmsExtractorPdf does not remove control characters
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)
