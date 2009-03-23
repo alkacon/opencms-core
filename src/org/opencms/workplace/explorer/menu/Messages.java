@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/03/23 09:04:57 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,6 +95,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONTEXTMENU_TITLE_INACTIVE_UNCHANGED_0 = "GUI_CONTEXTMENU_TITLE_INACTIVE_UNCHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTEXTMENU_TITLE_INACTIVE_MOVED_0 = "GUI_CONTEXTMENU_TITLE_INACTIVE_MOVED_0";
 
     /** Name of the resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.explorer.menu.messages";

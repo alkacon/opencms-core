@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2008/11/28 15:21:21 $
- * Version: $Revision: 1.634 $
+ * Date   : $Date: 2009/03/23 09:04:10 $
+ * Version: $Revision: 1.635 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2724,11 +2724,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 allSiblingsRemoved = false;
             } else {
                 // write access to sibling granted                 
-                boolean existsOnline = m_vfsDriver.validateStructureIdExists(
+                boolean existsOnline = (m_vfsDriver.validateStructureIdExists(
                     dbc,
                     CmsProject.ONLINE_PROJECT_ID,
-                    currentResource.getStructureId());
-
+                    currentResource.getStructureId()) || !(currentResource.getState().equals(CmsResource.STATE_NEW)));
                 if (!existsOnline) {
                     // the resource does not exist online => remove the resource
                     // this means the resource is "new" (blue) in the offline project                
