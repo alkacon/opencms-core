@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/02/25 09:08:26 $
- * Version: $Revision: 1.1062 $
+ * Date   : $Date: 2009/03/23 09:09:22 $
+ * Version: $Revision: 1.1063 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -30,7 +30,7 @@ OpenCms 7.1.0 - xxx, 2008
 ! Added support for alternative lib folder structure of tomcat on windows for cmsshell
 ! Extended dialog for cleaning historical versions with an option to clean all versions of deleted files
 ! New feature in EL XML Content wrapper allows accessing the raw XML of a value using .xmlText(...)
-! Added definition of exclude links for internal link check. Internal liks defined this way are handled like external links.
+! Added definition of exclude links for internal link check. Internal links defined this way are handled like external links.
 ! New scheduled job to delete expired resources
 ! Removed 2GB size limit for average and maximum flex cache size
 ! New image gallery with advanced AJAX features available in structured content and free page editor
@@ -49,8 +49,9 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue with historical versions of deleted files never being deleted 
 * Fixed issue with VFS driver where a file like "xy.html" could be read like a folder "xy.html/"
 * Fixed issue with <cms:jquery> not working for authenticated web users 
-* Fixed issue with wrong redirect for http - requests to https secured resources
+* Fixed issue with wrong redirect for http - requests to https secured resources 
 * Fixed issue with publish queue hanging up if the connection to the database is lost
+* Fixed issue with moved files where the previous folder was deleted
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)
