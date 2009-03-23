@@ -346,7 +346,7 @@
     </target>
     
 
-    <target name="tomcat.copy" 
+    <target name="tomcat.copy" depends="jar" 
     	description="Copy updated files to Tomcat directorys">
 
        	<copy todir="${tomcat.home}/webapps/${app.name}/WEB-INF/lib">
