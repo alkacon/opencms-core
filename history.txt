@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/03/23 13:42:47 $
- * Version: $Revision: 1.1064 $
+ * Date   : $Date: 2009/04/06 16:04:06 $
+ * Version: $Revision: 1.1065 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ OpenCms 7.1.0 - xxx, 2008
 ! New scheduled job to delete expired resources
 ! Removed 2GB size limit for average and maximum flex cache size
 ! New image gallery with advanced AJAX features available in structured content and free page editor
+! Improved logging for static export 
+! Improved file size display for flex cache administration
 - Updated FCKeditor to version 2.6.4
 - Updated simapi.jar to version 0.9.8
 - Multiple other .jar updates
