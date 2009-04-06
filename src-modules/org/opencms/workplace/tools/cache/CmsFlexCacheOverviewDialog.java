@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/cache/CmsFlexCacheOverviewDialog.java,v $
- * Date   : $Date: 2008/04/17 13:49:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/04/06 12:18:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,11 +35,13 @@ import org.opencms.cache.CmsLruCache;
 import org.opencms.flex.CmsFlexCache;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.5
  */
@@ -295,9 +297,10 @@ public class CmsFlexCacheOverviewDialog extends CmsWidgetDialog {
         CmsLruCache entryLruCache = cache.getEntryLruCache();
 
         if (entryLruCache != null) {
-            setMaxSize("" + (entryLruCache.getMaxCacheCosts() / 1024) + "Kb");
-            setAvgSize("" + (entryLruCache.getAvgCacheCosts() / 1024) + "Kb");
-            setCurSize("" + (entryLruCache.getObjectCosts() / 1024) + "Kb");
+            Locale locale = getLocale();
+            setMaxSize(CmsFileUtil.formatFilesize(entryLruCache.getMaxCacheCosts(), locale));
+            setAvgSize(CmsFileUtil.formatFilesize(entryLruCache.getAvgCacheCosts(), locale));
+            setCurSize(CmsFileUtil.formatFilesize(entryLruCache.getObjectCosts(), locale));
         }
     }
 

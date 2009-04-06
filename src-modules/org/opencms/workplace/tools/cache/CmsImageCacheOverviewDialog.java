@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/cache/CmsImageCacheOverviewDialog.java,v $
- * Date   : $Date: 2008/04/17 13:49:13 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/04/06 12:18:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.cache;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
@@ -47,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.0.5
  */
@@ -238,7 +239,7 @@ public class CmsImageCacheOverviewDialog extends CmsWidgetDialog {
         CmsImageCacheHelper helper = new CmsImageCacheHelper(getCms(), false, false, true);
         setKeys("" + helper.getFilesCount());
         setVariations("" + helper.getVariationsCount());
-        setCurSize("" + (helper.getVariationsSize() / 1024) + "Kb");
+        setCurSize(CmsFileUtil.formatFilesize(helper.getVariationsSize(), getLocale()));
     }
 
     /**
