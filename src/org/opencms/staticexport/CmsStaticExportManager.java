@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:46 $
- * Version: $Revision: 1.132 $
+ * Date   : $Date: 2009/04/06 15:11:59 $
+ * Version: $Revision: 1.133 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.132 $ 
+ * @version $Revision: 1.133 $ 
  * 
  * @since 6.0.0 
  */
@@ -1833,7 +1833,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             while (it.hasNext()) {
                 CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)it.next();
                 if (rule.getSource().matcher(vfsName).matches()) {
-                    return rule.getUseRelativeLinks() != null ? rule.getUseRelativeLinks().booleanValue()
+                    return rule.getUseRelativeLinks() != null
+                    ? rule.getUseRelativeLinks().booleanValue()
                     : m_exportRelativeLinks;
                 }
             }
@@ -2211,7 +2212,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     try {
                         resource = cms.readResource(vfsName);
                     } catch (CmsException e) {
-                        // the resource has probably been deleted
+                        // static export fails, because the guest user has no permission: 
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().getBundle().key(
+                                Messages.ERR_EXPORT_FILE_FAILED_1,
+                                new String[] {vfsName}), e);
+                        }
                         return null;
                     }
                     // valid cache entry, return export data object
@@ -2228,6 +2234,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         resource = cms.readResource(vfsName);
                     } catch (Exception e) {
                         // ignore, still not found
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().getBundle().key(
+                                Messages.ERR_EXPORT_FILE_FAILED_1,
+                                new String[] {vfsName}), e);
+                        }
                     }
                 }
                 if (resource == null) {
@@ -2258,6 +2269,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         }
                     } catch (CmsException e) {
                         // ignore, resource does not exist
+                        if (LOG.isWarnEnabled()) {
+                            LOG.warn(Messages.get().getBundle().key(
+                                Messages.ERR_EXPORT_FILE_FAILED_1,
+                                new String[] {vfsName}), e);
+                        }
                     }
                     // no match found, nothing to export
                     cacheExportUri(rfsName, CACHEVALUE_404, null);
@@ -2326,7 +2342,10 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             vfsName = rfsName;
             match = true;
         } catch (Throwable t) {
-            // resource not found                   
+            // resource not found          
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().getBundle().key(Messages.ERR_EXPORT_FILE_FAILED_1, new String[] {rfsName}), t);
+            }
         }
 
         if (!match) {
