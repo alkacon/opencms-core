@@ -4,24 +4,24 @@
   <LinkBox language="de">
     <Title><![CDATA[Beliebte Artikel]]></Title>
     <Links>
-      <Title><![CDATA[Die große Wurstparade]]></Title>
+      <Title><![CDATA[Die große Blumenparade]]></Title>
       <Link>
         <link internal="true" type="WEAK">
-          <target><![CDATA[/sites/default/demo_de/imblick/wurstparade.html]]></target>
+          <target><![CDATA[/sites/default/demo_de/imblick/blumenparade.html]]></target>
           <uuid>56f19ee2-dee3-11dc-b46f-9f7a6a6ce285</uuid>
         </link>
       </Link>
-      <Description><![CDATA[Erfreuen Sie sich am Anblick einer leckeren Wurst!]]></Description>
+      <Description><![CDATA[Erfreuen Sie sich am Anblick einer schönen Blume!]]></Description>
     </Links>
     <Links>
-      <Title><![CDATA[Herstellungsverfahren]]></Title>
+      <Title><![CDATA[Pflanze ist nicht gleich Blume!]]></Title>
       <Link>
         <link internal="true" type="WEAK">
-          <target><![CDATA[/sites/default/demo_de/imblick/verfahren/index.html]]></target>
-          <uuid>382914e3-e521-11dc-8457-51cb880fd12a</uuid>
+          <target><![CDATA[/sites/default/demo_de/imblick/unterschiede/]]></target>
+          <uuid>4b31582f-e15f-11dc-a180-9f7a6a6ce285</uuid>
         </link>
       </Link>
-      <Description><![CDATA[Herstellungsverfahren im Überblick]]></Description>
+      <Description><![CDATA[Erläuterungen der feinen Unterschiede in der Botanikwelt]]></Description>
     </Links>
   </LinkBox>
 </LinkBoxes>

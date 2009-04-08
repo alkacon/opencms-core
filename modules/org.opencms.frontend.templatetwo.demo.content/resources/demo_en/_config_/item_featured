@@ -2,19 +2,23 @@
 
 <TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
   <TextBox language="en">
-    <Title><![CDATA[The sausage parade]]></Title>
+    <Title><![CDATA[The flower parade]]></Title>
     <Content name="Content0">
       <links>
         <link name="link0" internal="true" type="A">
-          <target><![CDATA[/sites/default/demo_en/view/sausageparade.html]]></target>
+          <target><![CDATA[/sites/default/demo_en/view/flowerparade.html]]></target>
+          <uuid>8c111e73-e479-11dc-abe7-51cb880fd12a</uuid>
+        </link>
+        <link name="link1" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_en/view/flowerparade.html]]></target>
           <uuid>8c111e73-e479-11dc-abe7-51cb880fd12a</uuid>
         </link>
       </links>
-      <content><![CDATA[<p>Visit our large <a href="%(link0)" target="_self" title="Sausage parade">sausage parade</a>!</p>
+      <content><![CDATA[<p>Visit our large <a href="%(link0)" target="_self" title="Flower parade">flower</a><a href="%(link1)" target="_self" title="Flower parade"> parade</a>!</p>
 <p>&nbsp;</p>]]></content>
     </Content>
     <JspFile>
-      <link type="WEAK">
+      <link type="STRONG">
         <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/elements/featureditem.jsp]]></target>
         <uuid>6330f924-e451-11dc-add5-9f7a6a6ce285</uuid>
         <query><![CDATA[path=/demo_en/dictionary/]]></query>

@@ -5,10 +5,10 @@
     <Title><![CDATA[Login]]></Title>
     <Content name="Content0">
       <links/>
-      <content><![CDATA[]]></content>
+      <content/>
     </Content>
     <JspFile>
-      <link type="WEAK">
+      <link type="STRONG">
         <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/elements/login.jsp]]></target>
         <uuid>d37ff040-deeb-11dc-b46f-9f7a6a6ce285</uuid>
         <query><![CDATA[path=/demo_en/extra/login.html]]></query>

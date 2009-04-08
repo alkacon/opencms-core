@@ -10,7 +10,7 @@
       </link>
     </Links>
     <Collector><![CDATA[allInFolderPriorityDateDesc]]></Collector>
-    <Parameter><![CDATA[%(link1)news_%(number).html|ttnews]]></Parameter>
+    <Parameter><![CDATA[%(link1)news_%(number).html|ttnews|8]]></Parameter>
     <More><![CDATA[Weiter]]></More>
     <PositionAuthor><![CDATA[Top]]></PositionAuthor>
     <PositionDate><![CDATA[Top]]></PositionDate>

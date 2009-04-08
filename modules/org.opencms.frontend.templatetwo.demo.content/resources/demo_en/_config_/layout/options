@@ -4,19 +4,19 @@
   <TemplateOption language="en">
     <Header name="Header0">
       <links>
-        <link name="link3" internal="true" type="IMG">
-          <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/resources/images/logo_opencms_png24.png]]></target>
-          <uuid>f29980eb-e6d9-11dc-ada5-d3bbbb60c354</uuid>
+        <link name="link4" internal="true" type="A">
+          <target><![CDATA[/sites/default/demo_en/search.html]]></target>
+          <uuid>2779f37d-e609-11dc-9761-fdaca0868585</uuid>
         </link>
         <link name="link2" internal="false" type="A">
           <target><![CDATA[http://www.opencms.org]]></target>
         </link>
+        <link name="link3" internal="true" type="IMG">
+          <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/resources/images/logo_opencms_png24.png]]></target>
+          <uuid>f29980eb-e6d9-11dc-ada5-d3bbbb60c354</uuid>
+        </link>
         <link name="link0" internal="false" type="A">
           <target><![CDATA[http://www.alkacon.com]]></target>
-        </link>
-        <link name="link4" internal="true" type="A">
-          <target><![CDATA[/sites/default/demo_en/search.html]]></target>
-          <uuid>2779f37d-e609-11dc-9761-fdaca0868585</uuid>
         </link>
         <link name="link1" internal="true" type="IMG">
           <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/resources/images/logo_alkacon_png24.png]]></target>

@@ -2,19 +2,19 @@
 
 <TextBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/textbox.xsd">
   <TextBox language="de">
-    <Title><![CDATA[Die Wurstparade]]></Title>
+    <Title><![CDATA[Die Blumenparade]]></Title>
     <Content name="Content0">
       <links>
         <link name="link0" internal="true" type="A">
-          <target><![CDATA[/sites/default/demo_de/imblick/wurstparade.html]]></target>
+          <target><![CDATA[/sites/default/demo_de/imblick/blumenparade.html]]></target>
           <uuid>56f19ee2-dee3-11dc-b46f-9f7a6a6ce285</uuid>
         </link>
       </links>
-      <content><![CDATA[<p>Besuchen Sie unsere große <a href="%(link0)" title="Wurstparade">Wurstparade </a>!</p>
+      <content><![CDATA[<p>Besuchen Sie unsere große <a title="Blumenparade" href="%(link0)">Blumenparade</a>!</p>
 <p>&nbsp;</p>]]></content>
     </Content>
     <JspFile>
-      <link type="WEAK">
+      <link type="STRONG">
         <target><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/elements/featureditem.jsp]]></target>
         <uuid>6330f924-e451-11dc-add5-9f7a6a6ce285</uuid>
         <query><![CDATA[path=/demo_de/lexikon/]]></query>

@@ -4,24 +4,24 @@
   <LinkBox language="en">
     <Title><![CDATA[Popular articles]]></Title>
     <Links>
-      <Title><![CDATA[The large sausage parade]]></Title>
+      <Title><![CDATA[The huge flower parade]]></Title>
       <Link>
         <link internal="true" type="WEAK">
-          <target><![CDATA[/sites/default/demo_en/view/sausageparade.html]]></target>
+          <target><![CDATA[/sites/default/demo_en/view/flowerparade.html]]></target>
           <uuid>8c111e73-e479-11dc-abe7-51cb880fd12a</uuid>
         </link>
       </Link>
-      <Description><![CDATA[Get hungry by looking at a tasty piece of sausage!]]></Description>
+      <Description><![CDATA[Enjoy the view on a beautiful flower.]]></Description>
     </Links>
     <Links>
-      <Title><![CDATA[Sausage making]]></Title>
+      <Title><![CDATA[Plant isn't equal to flower!]]></Title>
       <Link>
         <link internal="true" type="WEAK">
-          <target><![CDATA[/sites/default/demo_en/view/procedure/en/index.html]]></target>
+          <target><![CDATA[/sites/default/demo_en/view/differences/en/index.html]]></target>
           <uuid>bb9aface-e52c-11dc-8457-51cb880fd12a</uuid>
         </link>
       </Link>
-      <Description><![CDATA[An overview about sausage making]]></Description>
+      <Description><![CDATA[Description of the differences in botany.]]></Description>
     </Links>
   </LinkBox>
 </LinkBoxes>

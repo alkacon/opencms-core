@@ -4,24 +4,23 @@
   <LinkBox language="en">
     <Title><![CDATA[Available documents in the extranet]]></Title>
     <Links>
-      <Title><![CDATA[Recipes: Bigos]]></Title>
+      <Title><![CDATA[Rare plants and flowers]]></Title>
       <Link>
         <link internal="true" type="WEAK">
-          <target><![CDATA[/sites/default/demo_en/extra/extranet/bigos.html]]></target>
+          <target><![CDATA[/sites/default/demo_en/extra/extranet/rare.html]]></target>
           <uuid>2b3eb85f-e54f-11dc-8457-51cb880fd12a</uuid>
         </link>
       </Link>
-      <Description><![CDATA[A tasty recipe with sausage]]></Description>
     </Links>
     <Links>
-      <Title><![CDATA[Wurst globally: UTF-8]]></Title>
+      <Title><![CDATA[Flowerglobally: UTF-8]]></Title>
       <Link>
         <link internal="true" type="WEAK">
           <target><![CDATA[/sites/default/demo_en/extra/extranet/utf-8.html]]></target>
           <uuid>6713f36a-e54f-11dc-8457-51cb880fd12a</uuid>
         </link>
       </Link>
-      <Description><![CDATA[Bake sausage pages with UTF-8 encoding]]></Description>
+      <Description><![CDATA[Plant flower pages with UTF-8 encoding]]></Description>
     </Links>
     <Links>
       <Title><![CDATA[OpenCms Services von Alkacon Software]]></Title>
