@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersCsvDownloadDialog.java,v $
- * Date   : $Date: 2008/07/01 07:33:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/04/09 15:01:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -176,9 +176,12 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
                         buffer.append(curOutput);
                     }
                 } catch (NoSuchMethodException e) {
-                    String curOutput = (String)exportUser.getAdditionalInfo(curValue);
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(curOutput)) {
-                        buffer.append(curOutput);
+                    Object obj = exportUser.getAdditionalInfo(curValue);
+                    if (obj != null) {
+                        String curOutput = String.valueOf(obj);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(curOutput)) {
+                            buffer.append(curOutput);
+                        }
                     }
                 } catch (IllegalAccessException e) {
                     throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ILLEGAL_ACCESS_0), e);
