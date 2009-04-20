@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/09 15:11:59 $
- * Version: $Revision: 1.1066 $
+ * Date   : $Date: 2009/04/20 12:07:19 $
+ * Version: $Revision: 1.1067 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -34,8 +34,6 @@ OpenCms 7.1.0 - xxx, 2008
 ! New scheduled job to delete expired resources
 ! Removed 2GB size limit for average and maximum flex cache size
 ! New image gallery with advanced AJAX features available in structured content and free page editor
-! Improved logging for static export 
-! Improved file size display for flex cache administration
 - Updated FCKeditor to version 2.6.4
 - Updated simapi.jar to version 0.9.8
 - Multiple other .jar updates
@@ -52,12 +50,9 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue with VFS driver where a file like "xy.html" could be read like a folder "xy.html/"
 * Fixed issue with <cms:jquery> not working for authenticated web users 
 * Fixed issue with wrong redirect for http - requests to https secured resources 
-* Fixed issue with object other than String in user.additionalInfo causing the csv export to fail.
 * Fixed issue with publish queue hanging up if the connection to the database is lost
 * Fixed issue with moved files where the previous folder was deleted
-* Fixed issue #1665: CmsExtractorPdf does not remove control characters
-
-
+* Fixed issue with advanced properties
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)

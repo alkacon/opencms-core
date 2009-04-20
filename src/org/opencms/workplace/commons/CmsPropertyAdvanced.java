@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2008/04/10 14:35:31 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2009/04/20 12:07:37 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -884,17 +884,18 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                     }
                     valueStructure = currentProperty.getStructureValue();
                     valueResource = currentProperty.getResourceValue();
-                    // check values for null
-                    if (propValue == null) {
-                        propValue = "";
-                    }
-                    if (valueStructure == null) {
-                        valueStructure = "";
-                    }
-                    if (valueResource == null) {
-                        valueResource = "";
-                    }
                 }
+                // check values for null
+                if (propValue == null) {
+                    propValue = "";
+                }
+                if (valueStructure == null) {
+                    valueStructure = "";
+                }
+                if (valueResource == null) {
+                    valueResource = "";
+                }
+
                 // remove unnecessary blanks from values
                 propValue = propValue.trim();
                 valueStructure = valueStructure.trim();
