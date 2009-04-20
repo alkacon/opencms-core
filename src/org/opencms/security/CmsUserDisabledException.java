@@ -1,12 +1,12 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAuthentificationException.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsUserDisabledException.java,v $
  * Date   : $Date: 2009/04/20 13:26:16 $
- * Version: $Revision: 1.9 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (C) 2002 - 2009 Alkacon Software (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,7 +18,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
  *
- * For further information about Alkacon Software GmbH, please see the
+ * For further information about Alkacon Software, please see the
  * company website: http://www.alkacon.com
  *
  * For further information about OpenCms, please see the
@@ -35,29 +35,28 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 
 /**
- * Signals that an attempt to authenticate (login) has a user has failed.<p> 
- * 
- * Usually this means that a proper password / user name combination was not provided.
- * However, there are also other possible explanations, for example a user could be disabled.<p>
+ * Signals that an attempt to authenticate (login) a user has failed because the user had to many invalid logins.<p> 
  * 
  * 
- * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @author Tobias Herrmann
  * 
- * @since 6.0.0 
+ * @version 1.0
+ * 
+ * @since 7.0.6
+ * 
  */
-public class CmsAuthentificationException extends CmsSecurityException {
+public class CmsUserDisabledException extends CmsAuthentificationException {
 
     /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = 1419722344149667453L;
+    private static final long serialVersionUID = 8675541203342229828L;
 
     /**
      * Creates a new localized Exception.<p>
      * 
      * @param container the localized message container to use
      */
-    public CmsAuthentificationException(CmsMessageContainer container) {
+    public CmsUserDisabledException(CmsMessageContainer container) {
 
         super(container);
     }
@@ -68,7 +67,7 @@ public class CmsAuthentificationException extends CmsSecurityException {
      * @param container the localized message container to use
      * @param cause the Exception root cause
      */
-    public CmsAuthentificationException(CmsMessageContainer container, Throwable cause) {
+    public CmsUserDisabledException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
     }
@@ -78,6 +77,7 @@ public class CmsAuthentificationException extends CmsSecurityException {
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
-        return new CmsAuthentificationException(container, cause);
+        return new CmsUserDisabledException(container, cause);
     }
+
 }

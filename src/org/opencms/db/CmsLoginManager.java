@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsLoginManager.java,v $
- * Date   : $Date: 2008/02/27 12:05:42 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/04/20 13:26:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAuthentificationException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.security.CmsUserDisabledException;
 import org.opencms.security.Messages;
 
 import java.util.Date;
@@ -49,13 +50,13 @@ import java.util.Hashtable;
  * 
  * The invalid login attempt storage operates on a combination of user name, login remote IP address and 
  * user type. This means that a user can be disabled for one remote IP, but still be enabled for
- * another rempte IP.<p>
+ * another remote IP.<p>
  * 
- * Also allows to temporarily disallow logins (for example in case of maintainance work on the system).<p>
+ * Also allows to temporarily disallow logins (for example in case of maintenance work on the system).<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -197,7 +198,7 @@ public class CmsLoginManager {
      * In case the configured threshold is reached, an Exception is thrown.<p>
      * 
      * @param userName the name of the user
-     * @param remoteAddress the remore address (IP) from which the login attempt was made
+     * @param remoteAddress the remote address (IP) from which the login attempt was made
      * 
      * @throws CmsAuthentificationException in case the threshold of invalid login attempts has been reached
      */
@@ -213,7 +214,7 @@ public class CmsLoginManager {
         CmsUserData userData = (CmsUserData)m_storage.get(key);
         if ((userData != null) && (userData.isDisabled())) {
             // threshold of invalid logins is reached
-            throw new CmsAuthentificationException(Messages.get().container(
+            throw new CmsUserDisabledException(Messages.get().container(
                 Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_4,
                 new Object[] {userName, remoteAddress, userData.getReleaseDate(), userData.getInvalidLoginCount()}));
         }
