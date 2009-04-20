@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2008/10/29 14:41:52 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2009/04/20 15:13:56 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,6 +60,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -80,7 +81,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.93 $ 
+ * @version $Revision: 1.94 $ 
  * 
  * @since 6.0.0 
  */
@@ -1160,7 +1161,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     throws Exception, CmsIllegalArgumentException {
 
         int t = OpenCms.getResourceManager().getResourceType(type).getTypeId();
-        return m_cms.createResource(folder + filename, t, CmsFileUtil.readFile(localfile), null);
+        return m_cms.createResource(folder + filename, t, CmsFileUtil.readFile(new File(localfile)), null);
     }
 
     /**

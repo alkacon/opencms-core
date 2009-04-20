@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/20 13:26:16 $
- * Version: $Revision: 1.1068 $
+ * Date   : $Date: 2009/04/20 15:13:56 $
+ * Version: $Revision: 1.1069 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -51,9 +51,12 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue with VFS driver where a file like "xy.html" could be read like a folder "xy.html/"
 * Fixed issue with <cms:jquery> not working for authenticated web users 
 * Fixed issue with wrong redirect for http - requests to https secured resources 
+* Fixed issue with object other than String in user.additionalInfo causing the csv export to fail.
 * Fixed issue with publish queue hanging up if the connection to the database is lost
 * Fixed issue with moved files where the previous folder was deleted
 * Fixed issue with advanced properties
+* Fixed issue #1665: CmsExtractorPdf does not remove control characters 
+* Fixed issue #1738: CmsShellCommands.uploadFile(...) not working
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)
