@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsMultiSelectWidget.java,v $
- * Date   : $Date: 2008/02/27 12:05:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/04/22 09:11:14 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Map;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,6 +130,9 @@ public class CmsMultiSelectWidget extends A_CmsSelectWidget {
             }
             // set the value
             param.setStringValue(cms, value.toString());
+        } else {
+            // erase:
+            param.setStringValue(cms, "");
         }
     }
 
