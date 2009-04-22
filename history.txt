@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/22 09:11:14 $
- * Version: $Revision: 1.1070 $
+ * Date   : $Date: 2009/04/22 13:02:38 $
+ * Version: $Revision: 1.1071 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -58,6 +58,7 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue #1665: CmsExtractorPdf does not remove control characters 
 * Fixed issue #1738: CmsShellCommands.uploadFile(...) not working 
 * Fixed issue with CmsMultiselectWidget keeping previous values when trying to unselect every entry 
+* Fixed issue with copy locale dialog of XML content editor being too small for Internet Explorer on Vista
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)
