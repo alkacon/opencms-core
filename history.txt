@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/23 16:04:42 $
- * Version: $Revision: 1.1073 $
+ * Date   : $Date: 2009/04/23 20:03:53 $
+ * Version: $Revision: 1.1074 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -40,9 +40,19 @@ OpenCms 7.1.0 - xxx, 2008
 - Multiple other .jar updates
 - New property read strategy - always read all properties of a resource, even if only one is needed
 * Fixed security issue with the history handler
+* Fixed issue #1016: JSP send mail example out of order
+* Fixed issue #1122: JSTL Examples do not work in Alkacon Docs
+* Fixed issue #1125: Admin user in Guest Group causes issues 
+* Fixed issue #1144: Prevent jsp files to be cached in setup
+* Fixed issue #1177: Language selector in editor shows too much entries for certain locales
+* Fixed issue #1182: Import of pure user data fails 
+* Fixed issue #1209: Webusers should be able to delete themselves from the system 
+* Fixed issue #1210: Changing ACL to a resource does not set the "last modified" date
+* Fixed issue #1665: CmsExtractorPdf does not remove control characters
+* Fixed issue #1738: CmsShellCommands.uploadFile(...) not working
 * Fixed issue with JSP hard includes when using site relative paths
 * Fixed issue with performance when serving JSP pages
-* Fixes issue with SQL query not running on MS SQL server
+* Fixed issue with SQL query not running on MS SQL server
 * Fixed issue with cleaning up threads for publish progress dialog
 * Fixed issue with &lt; and &gt; in extended HTML import 
 * Fixed issue with deleting historical versions when date is specified 
@@ -55,19 +65,8 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue with publish queue hanging up if the connection to the database is lost
 * Fixed issue with moved files where the previous folder was deleted
 * Fixed issue with advanced properties
-* Fixed issue #1665: CmsExtractorPdf does not remove control characters 
-* Fixed issue #1738: CmsShellCommands.uploadFile(...) not working 
 * Fixed issue with CmsMultiselectWidget keeping previous values when trying to unselect every entry 
 * Fixed issue with copy locale dialog of XML content editor being too small for Internet Explorer on Vista
-* Fixed issue #1016: JSP send mail example out of order
-* Fixed issue #1122: JSTL Examples do not work in Alkacon Docs
-* Fixed issue #1125: Admin user in Guest Group causes issues 
-* Fixed issue #1144: Prevent jsp files to be cached in setup
-* Fixed issue #1060: Table Lock with LDAP user login 
-* Fixed issue #1177: Language selector in editor shows too much entries for certain locales
-* Fixed issue #1182: Import of pure user data fails 
-* Fixed issue #1209: Webusers should be able to delete themself from the system 
-* Fixed issue #1210: Changing ACL to a resource does not set the "last modified" date
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)
