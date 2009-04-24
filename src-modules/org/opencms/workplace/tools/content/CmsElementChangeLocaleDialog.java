@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementChangeLocaleDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:37 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/04/24 13:04:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,12 +70,12 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.1 
  */
 public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
-    
+
     /** Localized message keys prefix. */
     public static final String KEY_PREFIX = "changelocale";
 
@@ -83,8 +83,9 @@ public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
     public static final String[] PAGES = {"page1"};
 
     /** The import JSP report workplace URI. */
-    protected static final String CHANGELOCALE_ACTION_REPORT = PATH_WORKPLACE + "admin/contenttools/reports/changelocale.jsp";
-    
+    protected static final String CHANGELOCALE_ACTION_REPORT = PATH_WORKPLACE
+        + "admin/contenttools/reports/changelocale.jsp";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementChangeLocaleDialog.class);
 
@@ -120,12 +121,13 @@ public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
 
         List errors = new ArrayList();
         setDialogObject(m_settings);
-        
+
         try {
-            
+
             if (m_settings.getOldLocale().equals(m_settings.getNewLocale())) {
                 // old Locale is equals to new one, show error
-                throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_CHANGEELEMENTLOCALE_LOCALE_EQUAL_0));
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_CHANGEELEMENTLOCALE_LOCALE_EQUAL_0));
             }
 
             Map params = new HashMap();
@@ -137,36 +139,36 @@ public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
             params.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/contenttools"));
             // redirect to the report output JSP
             getToolManager().jspForwardPage(this, CHANGELOCALE_ACTION_REPORT, params);
-        
+
         } catch (CmsIllegalArgumentException e) {
-            errors.add(e);    
+            errors.add(e);
         }
         // set the list of errors to display when saving failed
         setCommitErrors(errors);
     }
-    
+
     /**
      * Returns the selector widget options to build a Locale selector widget.<p>
      * 
      * @return the selector widget options to build a Locale selector widget
      */
     public List getLocaleConfigOptions() {
-        
+
         List result = new ArrayList();
-        
+
         List locales = OpenCms.getLocaleManager().getAvailableLocales();
         Iterator i = locales.iterator();
         while (i.hasNext()) {
             Locale locale = (Locale)i.next();
-            String language = locale.toString();
-            String displayLanguage = locale.getDisplayLanguage(getLocale());
-            
-            result.add(new CmsSelectWidgetOption(language, false, displayLanguage));
+            String localeStr = locale.toString();
+            String localeDisplayStr = locale.getDisplayName(getLocale());
+
+            result.add(new CmsSelectWidgetOption(localeStr, false, localeDisplayStr));
         }
 
         return result;
     }
-    
+
     /**
      * returns the selector widget options to build a template selector widget.<p>
      * 
@@ -176,7 +178,7 @@ public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
 
         List result = new ArrayList();
         result.add(new CmsSelectWidgetOption("", true, key(Messages.GUI_CHANGEELEMENTLOCALE_DIALOG_TEMPLATE_ALL_0)));
-        
+
         TreeMap templates = null;
         try {
             // get all available templates
@@ -231,7 +233,7 @@ public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
 
         // initialize the export object to use for the dialog
         initSettingsObject();
-        
+
         // set localized key prefix
         setKeyPrefix(KEY_PREFIX);
 
@@ -240,8 +242,9 @@ public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
             getCms().getRequestContext().getSiteRoot()), 1, 1));
 
         addWidget(new CmsWidgetDialogParameter(m_settings, "includeSubFolders", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_settings, "template", PAGES[0], new CmsSelectWidget(getTemplateConfigOptions())));
-        
+        addWidget(new CmsWidgetDialogParameter(m_settings, "template", PAGES[0], new CmsSelectWidget(
+            getTemplateConfigOptions())));
+
         List localeSelections = getLocaleConfigOptions();
         addWidget(new CmsWidgetDialogParameter(m_settings, "oldLocale", PAGES[0], new CmsSelectWidget(localeSelections)));
         addWidget(new CmsWidgetDialogParameter(m_settings, "newLocale", PAGES[0], new CmsSelectWidget(localeSelections)));

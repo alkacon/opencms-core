@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/23 20:03:53 $
- * Version: $Revision: 1.1074 $
+ * Date   : $Date: 2009/04/24 13:04:42 $
+ * Version: $Revision: 1.1075 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -39,17 +39,19 @@ OpenCms 7.1.0 - xxx, 2008
 - Updated simapi.jar to version 0.9.8
 - Multiple other .jar updates
 - New property read strategy - always read all properties of a resource, even if only one is needed
-* Fixed security issue with the history handler
 * Fixed issue #1016: JSP send mail example out of order
-* Fixed issue #1122: JSTL Examples do not work in Alkacon Docs
+* Fixed issue #1122: JSTL Examples do not work in the Alkacon Documentation 
+* Fixed issue #1173: Misuse of saveSiteRoot causes synchronizing to fail but is wider problem
 * Fixed issue #1125: Admin user in Guest Group causes issues 
 * Fixed issue #1144: Prevent jsp files to be cached in setup
-* Fixed issue #1177: Language selector in editor shows too much entries for certain locales
+* Fixed issue #1177: Language selector in editor shows too much entries for certain locales 
+* Fixed issue #1181: Change Element Locale - Content Tool does not display country locale variants
 * Fixed issue #1182: Import of pure user data fails 
 * Fixed issue #1209: Webusers should be able to delete themselves from the system 
 * Fixed issue #1210: Changing ACL to a resource does not set the "last modified" date
 * Fixed issue #1665: CmsExtractorPdf does not remove control characters
 * Fixed issue #1738: CmsShellCommands.uploadFile(...) not working
+* Fixed security issue with the history handler
 * Fixed issue with JSP hard includes when using site relative paths
 * Fixed issue with performance when serving JSP pages
 * Fixed issue with SQL query not running on MS SQL server
