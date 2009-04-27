@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Messages.java,v $
- * Date   : $Date: 2008/04/11 10:25:00 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/04/27 14:32:39 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -256,8 +256,11 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTEXPORT_UNABLE_TO_UNLOCK_RESOURCE_1 = "LOG_IMPORTEXPORT_UNABLE_TO_UNLOCK_RESOURCE_1";
 
-    /** Message constant for key in the resource bundle.<p> */
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTEXPORT_WARN_DELETE_RELATIONS_1 = "LOG_IMPORTEXPORT_WARN_DELETE_RELATIONS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMPORTEXPORT_WARN_DELETED_RELATIONS_2 = "LOG_IMPORTEXPORT_WARN_DELETED_RELATIONS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMPORTING_4 = "LOG_IMPORTING_4";

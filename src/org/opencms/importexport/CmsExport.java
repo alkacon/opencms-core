@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2008/07/04 15:21:25 $
- * Version: $Revision: 1.96 $
+ * Date   : $Date: 2009/04/27 14:32:40 $
+ * Version: $Revision: 1.97 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
@@ -96,7 +97,7 @@ import org.xml.sax.SAXException;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.96 $ 
+ * @version $Revision: 1.97 $ 
  * 
  * @since 6.0.0 
  */
@@ -377,7 +378,8 @@ public class CmsExport {
             for (int i = 0; i < subFiles.size(); i++) {
                 CmsResource file = (CmsResource)subFiles.get(i);
                 CmsResourceState state = file.getState();
-                long age = file.getDateLastModified() < file.getDateCreated() ? file.getDateCreated()
+                long age = file.getDateLastModified() < file.getDateCreated()
+                ? file.getDateCreated()
                 : file.getDateLastModified();
 
                 if (getCms().getRequestContext().currentProject().isOnlineProject()
@@ -409,7 +411,8 @@ public class CmsExport {
                     String export = getCms().getSitePath(folder);
                     if (checkExportResource(export)) {
 
-                        long age = folder.getDateLastModified() < folder.getDateCreated() ? folder.getDateCreated()
+                        long age = folder.getDateLastModified() < folder.getDateCreated()
+                        ? folder.getDateCreated()
                         : folder.getDateLastModified();
                         // export this folder only if age is above selected age
                         // default for selected age (if not set by user) is <code>long 0</code> (i.e. 1970)
@@ -707,15 +710,24 @@ public class CmsExport {
                 CmsRelationFilter.TARGETS.filterNotDefinedInContent());
             CmsRelation relation = null;
             Element relationsElement = fileElement.addElement(CmsImportVersion7.N_RELATIONS);
-            // iterate over the relations
+            // iterate over the relations 
             for (Iterator iter = relations.iterator(); iter.hasNext();) {
                 relation = (CmsRelation)iter.next();
-                CmsResource target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
-                String structureId = target.getStructureId().toString();
-                String sitePath = getCms().getSitePath(target);
-                String relationType = relation.getType().getName();
-
-                addRelationNode(relationsElement, structureId, sitePath, relationType);
+                // relation may be broken already: 
+                try {
+                    CmsResource target = relation.getTarget(getCms(), CmsResourceFilter.ALL);
+                    String structureId = target.getStructureId().toString();
+                    String sitePath = getCms().getSitePath(target);
+                    String relationType = relation.getType().getName();
+                    addRelationNode(relationsElement, structureId, sitePath, relationType);
+                } catch (CmsVfsResourceNotFoundException crnfe) {
+                    // skip this relation: 
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().getBundle().key(
+                            Messages.LOG_IMPORTEXPORT_WARN_DELETED_RELATIONS_2,
+                            new String[] {relation.getTargetPath(), resource.getRootPath()}), crnfe);
+                    }
+                }
             }
 
             // append the nodes for access control entries
@@ -910,7 +922,8 @@ public class CmsExport {
                     throw new CmsImportExportException(message, e);
                 }
                 CmsResourceState state = folder.getState();
-                long age = folder.getDateLastModified() < folder.getDateCreated() ? folder.getDateCreated()
+                long age = folder.getDateLastModified() < folder.getDateCreated()
+                ? folder.getDateCreated()
                 : folder.getDateLastModified();
 
                 if (getCms().getRequestContext().currentProject().isOnlineProject()
