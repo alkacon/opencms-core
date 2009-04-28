@@ -5,8 +5,6 @@
 	CmsTemplateLayout cms = new CmsTemplateLayout(pageContext, request, response);
 	pageContext.setAttribute("cms", cms);
 %>
-@charset "UTF-8";
-
 @media all
 {
   /**

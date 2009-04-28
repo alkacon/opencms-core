@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/27 14:32:40 $
- * Version: $Revision: 1.1077 $
+ * Date   : $Date: 2009/04/28 10:52:40 $
+ * Version: $Revision: 1.1078 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -71,6 +71,7 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue with CmsMultiselectWidget keeping previous values when trying to unselect every entry 
 * Fixed issue with copy locale dialog of XML content editor being too small for Internet Explorer on Vista 
 * Fixed issue with failing database export in case of deleted relation / category
+* Fixed rendering issue of template two in webkit based browsers (Konqueror, Chrome, ...)
 
 OpenCms 7.0.5 - July 2, 2008
 ! Added editor with syntax highlighting functionality for all text based files (e.g. XML, HTML, JSP)
