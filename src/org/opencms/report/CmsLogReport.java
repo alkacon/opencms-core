@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/04/28 10:03:14 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Jan Baudisch 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,6 +110,7 @@ public class CmsLogReport extends A_CmsReport {
             default:
                 m_buffer.append(value);
         }
+        setLastEntryTime(System.currentTimeMillis());
     }
 
     /**
@@ -121,6 +122,7 @@ public class CmsLogReport extends A_CmsReport {
             CmsLog.getLog(m_clazz).info(m_buffer.toString());
         }
         m_buffer = new StringBuffer();
+        setLastEntryTime(System.currentTimeMillis());
     }
 
     /**
@@ -137,5 +139,6 @@ public class CmsLogReport extends A_CmsReport {
             CmsLog.getLog(m_clazz).info(m_buffer.toString(), t);
         }
         m_buffer = new StringBuffer();
+        setLastEntryTime(System.currentTimeMillis());
     }
 }

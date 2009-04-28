@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2009/04/28 10:03:13 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,7 +138,7 @@ public class CmsHtmlReport extends A_CmsReport {
      * @return <code>true</code> if the report writes html, and <code>false</code> if the report writes javascript code
      */
     public boolean isWriteHtml() {
-        
+
         return m_writeHtml;
     }
 
@@ -241,6 +241,7 @@ public class CmsHtmlReport extends A_CmsReport {
             }
             m_content.add(buf.toString());
         }
+        setLastEntryTime(System.currentTimeMillis());
     }
 
     /**
@@ -258,8 +259,9 @@ public class CmsHtmlReport extends A_CmsReport {
 
         addError(t.getMessage());
         m_content.add(t);
+        setLastEntryTime(System.currentTimeMillis());
     }
-    
+
     /**
      * Returns the correct line break notation depending on the output style of this report.
      * 

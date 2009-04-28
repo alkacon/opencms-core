@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsPrintStreamReport.java,v $
- * Date   : $Date: 2008/02/27 12:05:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/04/28 10:03:13 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.5 
  */
@@ -142,6 +142,7 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
             default:
                 m_printStream.print(value);
         }
+        setLastEntryTime(System.currentTimeMillis());
     }
 
     /**
@@ -181,7 +182,9 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
 
         if (m_writeHtml) {
             try {
-                m_printStream.println(CmsReport.generatePageStartExtended(OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest()), OpenCms.getSystemInfo().getDefaultEncoding()));
+                m_printStream.println(CmsReport.generatePageStartExtended(
+                    OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest()),
+                    OpenCms.getSystemInfo().getDefaultEncoding()));
             } catch (CmsException e) {
                 // ignore
             }
