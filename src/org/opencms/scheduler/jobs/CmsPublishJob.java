@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishJob.java,v $
- * Date   : $Date: 2008/02/27 12:05:38 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/04/28 10:03:43 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,7 +83,7 @@ public class CmsPublishJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
      */
-    public String launch(CmsObject cms, Map parameters) throws Exception {
+    public synchronized String launch(CmsObject cms, Map parameters) throws Exception {
 
         Date jobStart = new Date();
         String finishMessage;
@@ -122,6 +122,14 @@ public class CmsPublishJob implements I_CmsScheduledJob {
             // add error to report
             report.addError(finishMessage);
         } finally {
+            //wait for other processes that may add entries to the report
+            long lastTime = report.getLastEntryTime();
+            long beforeLastTime = 0;
+            while (lastTime != beforeLastTime) {
+                wait(300000);
+                beforeLastTime = lastTime;
+                lastTime = report.getLastEntryTime();
+            }
 
             // send publish notification
             if (report.hasWarning() || report.hasError()) {
