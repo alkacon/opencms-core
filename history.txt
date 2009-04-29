@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/29 14:20:56 $
- * Version: $Revision: 1.1080 $
+ * Date   : $Date: 2009/04/29 14:38:09 $
+ * Version: $Revision: 1.1081 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -51,6 +51,7 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue #1209: Webusers should be able to delete themselves from the system 
 * Fixed issue #1210: Changing ACL to a resource does not set the "last modified" date
 * Fixed issue #1220: CmsJspTagContentLoad cannot be constructed with PageIndex nor PageSize
+* Fixed issue #1231: Blocking scenario for simultanious content editing using direct edit
 * Fixed issue #1232: Intermittent template JSP compile error
 * Fixed issue #1665: CmsExtractorPdf does not remove control characters
 * Fixed issue #1738: CmsShellCommands.uploadFile(...) not working
