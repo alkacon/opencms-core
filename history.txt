@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/29 15:58:14 $
- * Version: $Revision: 1.1085 $
+ * Date   : $Date: 2009/04/29 16:03:31 $
+ * Version: $Revision: 1.1086 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,7 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue #1665: CmsExtractorPdf does not remove control characters 
 * Fixed issue #1268: Trouble getting AdditionalInfo for user
 * Fixed issue #1269: FileChooser manipulation replaces servleturl AND path
+* Fixed issue #1270: Can not embed Flash animation for Firefox
 * Fixed issue #1738: CmsShellCommands.uploadFile(...) not working
 * Fixed security issue with the history handler
 * Fixed issue with JSP hard includes when using site relative paths
