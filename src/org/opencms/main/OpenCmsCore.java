@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/03/17 08:57:41 $
- * Version: $Revision: 1.242 $
+ * Date   : $Date: 2009/04/29 08:55:49 $
+ * Version: $Revision: 1.243 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.242 $ 
+ * @version $Revision: 1.243 $ 
  * 
  * @since 6.0.0 
  */
@@ -1407,8 +1407,18 @@ public final class OpenCmsCore {
                     // resource is secure, check site config
                     CmsSite site = OpenCms.getSiteManager().getCurrentSite(cms);
                     // check the secure url
-                    boolean usingSec = req.getRequestURL().toString().toUpperCase().startsWith(
-                        site.getSecureUrl().toUpperCase());
+                    String secureUrl = null;
+                    try {
+                        secureUrl = site.getSecureUrl();
+                    } catch (Exception e) {
+                        LOG.error(
+                            Messages.get().getBundle().key(Messages.ERR_SECURE_SITE_NOT_CONFIGURED, resourceName),
+                            e);
+                        throw new CmsException(Messages.get().container(
+                            Messages.ERR_SECURE_SITE_NOT_CONFIGURED,
+                            resourceName), e);
+                    }
+                    boolean usingSec = req.getRequestURL().toString().toUpperCase().startsWith(secureUrl.toUpperCase());
                     if (site.isExclusiveUrl() && !usingSec) {
                         resource = null;
                         // secure resource without secure protocol, check error config
