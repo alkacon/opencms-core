@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/29 14:55:20 $
- * Version: $Revision: 1.1083 $
+ * Date   : $Date: 2009/04/29 15:17:48 $
+ * Version: $Revision: 1.1084 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,8 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue #1231: Blocking scenario for simultaneous content editing using direct edit
 * Fixed issue #1232: Intermittent template JSP compile error 
 * Fixed issue #1258: No logging if secure page is requested without a secure site configured
-* Fixed issue #1665: CmsExtractorPdf does not remove control characters
+* Fixed issue #1665: CmsExtractorPdf does not remove control characters 
+* Fixed issue #1268: Trouble getting AdditionalInfo for user
 * Fixed issue #1738: CmsShellCommands.uploadFile(...) not working
 * Fixed security issue with the history handler
 * Fixed issue with JSP hard includes when using site relative paths
