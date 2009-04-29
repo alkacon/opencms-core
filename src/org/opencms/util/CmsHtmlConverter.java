@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2008/09/03 12:59:40 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2009/04/29 12:14:56 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.w3c.tidy.Tidy;
  * @author Michael Emmerich 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +80,7 @@ public class CmsHtmlConverter {
 
     /** Parameter value for replace paragraph mode. */
     public static final String PARAM_REPLACE_PARAGRAPHS = "replace-paragraphs";
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlConverter.class);
 
@@ -122,21 +122,18 @@ public class CmsHtmlConverter {
 
     /** Regular expressions for paragraph replacements -- additionally remove leading and trailing breaks. */
     String[] m_replaceParagraphPatterns = {
+        "</ul>\n<br />",
+        "</ol>\n<br />",
+        "<p><br />",
         "<p>",
+        "<br />(\\s)*&nbsp;(\\s)*</p>",
+        "<br /></p>",
         "</p>",
-        "^<br/><br/>",
-        "^<br(\\s*)/>",
-        "<br(\\s*)/>$"
-    };
-    
+        "^<br />",
+        "<br />$"};
+
     /** Values for paragraph replacements. */
-    String[] m_replaceParagraphValues = {
-        "<br/><br/>",
-        "",
-        "",
-        "",
-        ""
-    };
+    String[] m_replaceParagraphValues = {"</ul>", "</ol>", "<br />", "<br />", "<br />", "<br />", "<br />", "", ""};
 
     /** The tidy to use. */
     Tidy m_tidy;
@@ -155,7 +152,7 @@ public class CmsHtmlConverter {
 
     /** Indicates if paragraph replacement mode is enabled or not. */
     private boolean m_modeReplaceParagraphs;
-    
+
     /**
      * Constructor, creates a new CmsHtmlConverter.<p>
      * 
@@ -504,7 +501,7 @@ public class CmsHtmlConverter {
             m_modeEnabled = true;
             m_modeReplaceParagraphs = true;
         }
-        
+
         // set the encoding
         m_encoding = encoding;
 
@@ -573,13 +570,23 @@ public class CmsHtmlConverter {
                 String[] newPatterns = new String[m_replacePatterns.length + m_replaceParagraphPatterns.length];
                 String[] newValues = new String[m_replacePatterns.length + m_replaceParagraphPatterns.length];
                 System.arraycopy(m_replacePatterns, 0, newPatterns, 0, m_replacePatterns.length);
-                System.arraycopy(m_replaceParagraphPatterns, 0, newPatterns, m_replacePatterns.length, m_replaceParagraphPatterns.length);
+                System.arraycopy(
+                    m_replaceParagraphPatterns,
+                    0,
+                    newPatterns,
+                    m_replacePatterns.length,
+                    m_replaceParagraphPatterns.length);
                 System.arraycopy(m_replaceValues, 0, newValues, 0, m_replacePatterns.length);
-                System.arraycopy(m_replaceParagraphValues, 0, newValues, m_replacePatterns.length, m_replaceParagraphPatterns.length);
+                System.arraycopy(
+                    m_replaceParagraphValues,
+                    0,
+                    newValues,
+                    m_replacePatterns.length,
+                    m_replaceParagraphPatterns.length);
                 m_replacePatterns = newPatterns;
                 m_replaceValues = newValues;
             }
-            
+
             // create the regexp for replace
             m_replaceStyle = new Pattern[m_replacePatterns.length];
             for (int i = 0; i < m_replacePatterns.length; i++) {
