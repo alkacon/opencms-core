@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2008/08/20 13:20:11 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2009/04/30 14:26:12 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 6.0.0 
  */
@@ -175,7 +175,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "relations" appinfo element name. */
     public static final String APPINFO_RELATIONS = "relations";
 
-    /** Constant for the "searchexclusions" appinfo element name. */
+    /** Constant for the "resourcebundle" appinfo element name. */
     public static final String APPINFO_RESOURCEBUNDLE = "resourcebundle";
 
     /** Constant for the "rule" appinfo element name. */
