@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/30 13:45:27 $
- * Version: $Revision: 1.1095 $
+ * Date   : $Date: 2009/04/30 13:54:04 $
+ * Version: $Revision: 1.1096 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,8 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue #1284: Use short name by default in Admin view
 * Fixed issue #1285/1310: Scroll position lost in XML content editor (IE)
 * Fixed issue #1295: Gallery widgets should not allow specifying target in XML editor
-* Fixed issue #1297: Rendering of top bar in XML editor can fail
+* Fixed issue #1297: Rendering of top bar in XML editor can fail 
+* Fixed issue #1298: Tab key in FCK widget behaves badly in IE
 * Fixed issue #1311: editoptions in opencms-modules.xml inhibits the import
 * Fixed issue #1738: CmsShellCommands.uploadFile(...) not working
 * Fixed issue with JSP hard includes when using site relative paths
