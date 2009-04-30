@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/30 10:31:16 $
- * Version: $Revision: 1.1091 $
+ * Date   : $Date: 2009/04/30 10:45:19 $
+ * Version: $Revision: 1.1092 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -64,6 +64,7 @@ OpenCms 7.1.0 - xxx, 2008
 * Fixed issue #1282: Problem with duplicate "exportname" properties 
 * Fixed issue #1283: Link button missing in FCK widget 
 * Fixed issue #1284: Use short name by default in Admin view
+* Fixed issue #1285/1310: Scroll position lost in XML content editor (IE)
 * Fixed issue #1738: CmsShellCommands.uploadFile(...) not working
 * Fixed issue with JSP hard includes when using site relative paths
 * Fixed issue with performance when serving JSP pages
