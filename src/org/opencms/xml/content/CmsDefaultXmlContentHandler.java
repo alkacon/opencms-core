@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/04/30 14:26:12 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2009/04/30 14:50:05 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.61 $ 
+ * @version $Revision: 1.62 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,6 +99,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "appinfo" element name itself. */
     public static final String APPINFO_APPINFO = "appinfo";
+
+    /** Constant for the "collapse" appinfo attribute name. */
+    public static final String APPINFO_ATTR_COLLAPSE = "collapse";
 
     /** Constant for the "configuration" appinfo attribute name. */
     public static final String APPINFO_ATTR_CONFIGURATION = "configuration";
@@ -138,6 +141,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "uri" appinfo attribute name. */
     public static final String APPINFO_ATTR_URI = "uri";
+
+    /** Constant for the "useall" appinfo attribute name. */
+    public static final String APPINFO_ATTR_USEALL = "useall";
 
     /** Constant for the "value" appinfo attribute name. */
     public static final String APPINFO_ATTR_VALUE = "value";
@@ -201,6 +207,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "searchsettings" appinfo element name. */
     public static final String APPINFO_SEARCHSETTINGS = "searchsettings";
 
+    /** Constant for the "tab" appinfo element name. */
+    public static final String APPINFO_TAB = "tab";
+
+    /** Constant for the "tabs" appinfo element name. */
+    public static final String APPINFO_TABS = "tabs";
+
     /** Constant for the "validationrule" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULE = "validationrule";
 
@@ -254,6 +266,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The search settings. */
     protected Map m_searchSettings;
+
+    /** The configured tabs. */
+    protected List m_tabs;
 
     /** The messages for the error validation rules. */
     protected Map m_validationErrorMessages;
@@ -520,6 +535,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     initResourceBundle(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_SEARCHSETTINGS)) {
                     initSearchSettings(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_TABS)) {
+                    initTabs(element, contentDefinition);
                 }
             }
         }
@@ -1304,6 +1321,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_relations = new HashMap();
         m_previewLocation = null;
         m_modelFolder = null;
+        m_tabs = new ArrayList();
     }
 
     /**
@@ -1526,6 +1544,56 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 addSearchSetting(contentDefinition, elementName, Boolean.valueOf(include));
             }
         }
+    }
+
+    /**
+     * Initializes the tabs for this content handler.<p>
+     * 
+     * .<p>
+     * 
+     * @param root the "tabs" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the tabs belong to
+     */
+    protected void initTabs(Element root, CmsXmlContentDefinition contentDefinition) {
+
+        if (Boolean.valueOf(root.attributeValue(APPINFO_ATTR_USEALL, CmsStringUtil.FALSE)).booleanValue()) {
+            // all first level elements should be treated as tabs
+            Iterator i = contentDefinition.getTypeSequence().iterator();
+            while (i.hasNext()) {
+                // get the type
+                I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
+                m_tabs.add(new CmsXmlContentTab(type.getName()));
+            }
+        } else {
+            // manual definition of tabs
+            Iterator i = root.elementIterator(APPINFO_TAB);
+            while (i.hasNext()) {
+                // iterate all "tab" elements in the "tabs" node
+                Element element = (Element)i.next();
+                // this is a tab node
+                String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
+                String collapseValue = element.attributeValue(APPINFO_ATTR_COLLAPSE, CmsStringUtil.TRUE);
+                String tabName = element.attributeValue(APPINFO_ATTR_NAME, elementName);
+                if (elementName != null) {
+                    // add the element tab 
+                    m_tabs.add(new CmsXmlContentTab(elementName, Boolean.valueOf(collapseValue).booleanValue(), tabName));
+                }
+            }
+            // check if first element has been defined as tab
+            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)contentDefinition.getTypeSequence().get(0);
+            CmsXmlContentTab tab = new CmsXmlContentTab(type.getName());
+            if (!m_tabs.contains(tab)) {
+                m_tabs.add(0, tab);
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getTabs()
+     */
+    public List getTabs() {
+
+        return m_tabs;
     }
 
     /**

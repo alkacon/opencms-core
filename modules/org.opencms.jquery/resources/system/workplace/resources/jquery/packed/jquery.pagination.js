@@ -2,7 +2,7 @@
  * This jQuery plugin displays pagination links inside the selected elements.
  *
  * @author Gabriel Birke (birke *at* d-scribe *dot* de)
- * @version 1.1
+ * @version 1.2
  * @param {int} maxentries Number of entries to paginate
  * @param {Object} opts Several options (see README for documentation)
  * @return {Object} jQuery Object
@@ -74,16 +74,16 @@ jQuery.fn.pagination = function(maxentries, opts){
 			var getClickHandler = function(page_id) {
 				return function(evt){ return pageSelected(page_id,evt); }
 			}
-			// Helper function for generating a single link (or a span tag if it'S the current page)
+			// Helper function for generating a single link (or a span tag if it's the current page)
 			var appendItem = function(page_id, appendopts){
 				page_id = page_id<0?0:(page_id<np?page_id:np-1); // Normalize page id to sane value
 				appendopts = jQuery.extend({text:page_id+1, classes:""}, appendopts||{});
 				if(page_id == current_page){
-					var lnk = $("<span class='current'>"+(appendopts.text)+"</span>");
+					var lnk = jQuery("<span class='current'>"+(appendopts.text)+"</span>");
 				}
 				else
 				{
-					var lnk = $("<a>"+(appendopts.text)+"</a>")
+					var lnk = jQuery("<a>"+(appendopts.text)+"</a>")
 						.bind("click", getClickHandler(page_id))
 						.attr('href', opts.link_to.replace(/__id__/,page_id));
 						
@@ -160,6 +160,8 @@ jQuery.fn.pagination = function(maxentries, opts){
 		}
 		// When all initialisation is done, draw the links
 		drawLinks();
+        // call callback function
+        opts.callback(current_page, this);
 	});
 }
 

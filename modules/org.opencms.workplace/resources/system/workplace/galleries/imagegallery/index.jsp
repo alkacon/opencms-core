@@ -27,9 +27,9 @@ String jsIntegratorQuery = "";
 <script type="text/javascript" src="<%= jQueryResourcePath %>packed/jquery.js"></script>
 <script type="text/javascript" src="<%= jQueryResourcePath %>packed/jquery.pagination.js"></script>
 <script type="text/javascript" src="<%= jQueryResourcePath %>packed/thickbox.js"></script>
+<script type="text/javascript" src="<%= jQueryResourcePath %>packed/jquery.ui.js"></script>
 
 <script type="text/javascript" src="<%= wp.getJsp().link("js/localization.js?locale=" + wp.getLocale()) %>"></script>
-<script type="text/javascript" src="<%= galleryResourcePath %>js/jquery.ui.all.packed.js"></script>
 <script type="text/javascript" src="<%= galleryResourcePath %>js/jquery.jeditable.pack.js"></script>
 <script type="text/javascript" src="<%= galleryResourcePath %>js/jquery.jHelperTip.1.0.min.js"></script>
 <script type="text/javascript" src="<%= galleryResourcePath %>js/formatselections.js"></script>
@@ -62,7 +62,6 @@ var initValues;
                 <li><a href="#advanced"><span><%= wp.key(Messages.GUI_IMAGEGALLERY_TAB_ADVANCED_0) %></span></a></li>
                 <% } %>
             </ul>
-</div>
 	<%
 	if (wp.isModeWidget()) { %>
 		<%@ include file="%(link.strong:/system/workplace/galleries/imagegallery/html/tabs_widget.html:bb9bf84b-a42c-11dd-a77f-55b439b85a0e)" %><%
@@ -181,6 +180,7 @@ var initValues;
 			</div>
 		</div>
 	</div>
+</div>
 	<%
 	}
 	%>

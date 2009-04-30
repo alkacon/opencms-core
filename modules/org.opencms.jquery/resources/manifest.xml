@@ -1653,6 +1653,327 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/resources/jquery/css/ui-ocms</destination>
+			<type>folder</type>
+			<uuidstructure>d3e8b49e-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<datelastmodified>Thu, 26 Mar 2009 14:31:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/jquery.ui.css</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/jquery.ui.css</destination>
+			<type>plain</type>
+			<uuidstructure>da10a156-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>da10a157-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 30 Apr 2009 09:42:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/jquery.ui.ocms.css</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/jquery.ui.ocms.css</destination>
+			<type>plain</type>
+			<uuidstructure>8c2e5677-3556-11de-b9a6-03821fc5d684</uuidstructure>
+			<uuidresource>8c2e5678-3556-11de-b9a6-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 30 Apr 2009 09:41:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 30 Apr 2009 07:14:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Changes for UI CSS]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images</destination>
+			<type>folder</type>
+			<uuidstructure>d9a7a720-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<datelastmodified>Thu, 26 Mar 2009 14:31:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_flat_0_aaaaaa_40x100.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_flat_0_aaaaaa_40x100.png</destination>
+			<type>image</type>
+			<uuidstructure>d9aed312-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>d9aed313-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:40,h:100]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_flat_75_ffffff_40x100.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_flat_75_ffffff_40x100.png</destination>
+			<type>image</type>
+			<uuidstructure>d9b5ff06-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>d9b5ff07-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:40,h:100]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_glass_55_fbf9ee_1x400.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_glass_55_fbf9ee_1x400.png</destination>
+			<type>image</type>
+			<uuidstructure>d9bd2afa-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>d9bd2afb-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:400]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_glass_65_ffffff_1x400.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_glass_65_ffffff_1x400.png</destination>
+			<type>image</type>
+			<uuidstructure>d9c456ee-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>d9c456ef-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:400]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_glass_75_dadada_1x400.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_glass_75_dadada_1x400.png</destination>
+			<type>image</type>
+			<uuidstructure>d9cb81e2-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>d9cb81e3-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:400]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_glass_75_e6e6e6_1x400.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_glass_75_e6e6e6_1x400.png</destination>
+			<type>image</type>
+			<uuidstructure>d9d286c6-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>d9d286c7-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:400]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_glass_95_fef1ec_1x400.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_glass_95_fef1ec_1x400.png</destination>
+			<type>image</type>
+			<uuidstructure>d9d768ca-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>d9d768cb-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:400]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_highlight-soft_75_cccccc_1x100.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-bg_highlight-soft_75_cccccc_1x100.png</destination>
+			<type>image</type>
+			<uuidstructure>d9e0deae-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>d9e0deaf-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:100]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-icons_222222_256x240.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-icons_222222_256x240.png</destination>
+			<type>image</type>
+			<uuidstructure>d9e80aa2-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>d9e80aa3-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:256,h:240]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-icons_2e83ff_256x240.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-icons_2e83ff_256x240.png</destination>
+			<type>image</type>
+			<uuidstructure>d9f1a796-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>d9f1a797-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:256,h:240]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-icons_454545_256x240.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-icons_454545_256x240.png</destination>
+			<type>image</type>
+			<uuidstructure>d9fb1d7a-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>d9fb1d7b-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:256,h:240]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-icons_888888_256x240.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-icons_888888_256x240.png</destination>
+			<type>image</type>
+			<uuidstructure>da02496e-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>da02496f-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:256,h:240]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/jquery/css/ui-ocms/images/ui-icons_cd0a0a_256x240.png</source>
+			<destination>system/workplace/resources/jquery/css/ui-ocms/images/ui-icons_cd0a0a_256x240.png</destination>
+			<type>image</type>
+			<uuidstructure>da097562-1a12-11de-83c7-03821fc5d684</uuidstructure>
+			<uuidresource>da097563-1a12-11de-83c7-03821fc5d684</uuidresource>
+			<datelastmodified>Thu, 26 Mar 2009 14:32:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 26 Mar 2009 14:31:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:256,h:240]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/jquery/packed</destination>
 			<type>folder</type>
 			<uuidstructure>8fe6820e-20e9-11dd-a08e-111d34530985</uuidstructure>
@@ -1724,7 +2045,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery 1.2.3]]></value>
+					<value><![CDATA[JQuery 1.3.2]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1744,7 +2065,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery Pagination 1.1]]></value>
+					<value><![CDATA[JQuery Pagination 1.2]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1764,7 +2085,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery UI 1.5b2]]></value>
+					<value><![CDATA[JQuery UI 1.7.1]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1862,7 +2183,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery 1.2.3]]></value>
+					<value><![CDATA[JQuery 1.3.2]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1882,7 +2203,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery Pagination 1.1]]></value>
+					<value><![CDATA[JQuery Pagination 1.2]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -1902,7 +2223,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery UI 1.5b2]]></value>
+					<value><![CDATA[JQuery UI 1.7.1]]></value>
 				</property>
 			</properties>
 			<relations/>

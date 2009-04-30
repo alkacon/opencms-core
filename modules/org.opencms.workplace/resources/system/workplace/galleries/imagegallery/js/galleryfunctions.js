@@ -27,7 +27,7 @@ var previewY = 450;
 var itemsPerPage = 16;
 
 $(document).ready(function(){
-	$tabs = $("#tabs > ul").tabs({
+	$tabs = $("#tabs").tabs({
 	});
 	initPopup();
 	initFormatSelectBox();
@@ -323,18 +323,16 @@ function fillImages(data, modeName) {
 
 /* Callback function of the pagination, shows the clicked page. */
 function showImagePagegallery(page_id, jq) {
-	$("#galleryimagepage" + galleryImages.currentPage).fadeOut("fast", function () {
-        	$("#galleryimagepage" + page_id).fadeIn("fast");
-		galleryImages.currentPage = page_id;
-	});
+	$("#galleryimagepage" + galleryImages.currentPage).hide();
+	$("#galleryimagepage" + page_id).fadeIn("fast");
+	galleryImages.currentPage = page_id;
 }
 
 /* Callback function of the pagination, shows the clicked page. */
 function showImagePagecategory(page_id, jq) {
-	$("#categoryimagepage" + categoryImages.currentPage).fadeOut("fast", function () {
-        	$("#categoryimagepage" + page_id).fadeIn("fast");
-		categoryImages.currentPage = page_id;
-	});
+	$("#categoryimagepage" + categoryImages.currentPage).hide();
+	$("#categoryimagepage" + page_id).fadeIn("fast");
+	categoryImages.currentPage = page_id;
 }
 
 

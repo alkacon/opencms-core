@@ -2,6 +2,19 @@
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 
+	<xsd:complexType name="OpenCmsDefaultAppinfoTabs">
+		<xsd:sequence>
+			<xsd:element name="tab" type="OpenCmsDefaultAppinfoTab" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="useall" type="xsd:string" use="optional" />
+	</xsd:complexType>
+	
+	<xsd:complexType name="OpenCmsDefaultAppinfoTab">
+		<xsd:attribute name="element" type="xsd:string" use="required" />
+		<xsd:attribute name="collapse" type="xsd:string" use="optional" />
+		<xsd:attribute name="name" type="xsd:string" use="optional" />
+	</xsd:complexType>
+
 	<xsd:complexType name="OpenCmsDefaultAppinfoHandler">
 		<xsd:attribute name="class" type="xsd:string" />
 	</xsd:complexType>

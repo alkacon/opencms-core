@@ -13,7 +13,7 @@ CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, r
 <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/imagegallery/css/crop.css" />
 <script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.js"></script>
 <script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.dimensions.js"></script>
-<script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/imagegallery/js/jquery.imgareaselect-0.5.1.min.js"></script>
+<script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/imagegallery/js/jquery.imgareaselect.min.js"></script>
 <script type="text/javascript">
 	var imgPreviewHeight = 450;
 	if (parent.initValues.dialogmode == "editor") {

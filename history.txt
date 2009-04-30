@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/04/30 13:54:04 $
- * Version: $Revision: 1.1096 $
+ * Date   : $Date: 2009/04/30 14:50:06 $
+ * Version: $Revision: 1.1097 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ OpenCms 7.1.0 - xxx, 2008
 ! New image gallery with advanced AJAX features available in structured content and free page editor
 ! Improved exception handling on login of disabled users
 ! Improved handling of secure site configuration errors.
+! Tabs can now be defined for the structured content editor to improve usability
 - Updated FCKeditor to version 2.6.4
 - Updated simapi.jar to version 0.9.8
 - Multiple other .jar updates

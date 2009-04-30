@@ -85,7 +85,6 @@
 }
 .ui-tabs-panel {
     border: 1px solid ButtonShadow;
-    height: 613px;
     padding: 0;
     background: Window; /* declare background color for container to avoid distorted fonts in IE while fading */
 }

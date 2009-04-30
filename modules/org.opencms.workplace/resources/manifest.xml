@@ -2029,20 +2029,20 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/components/imagegallery/js/jquery.imgareaselect-0.5.1.min.js</source>
-			<destination>system/workplace/resources/components/imagegallery/js/jquery.imgareaselect-0.5.1.min.js</destination>
+			<source>system/workplace/resources/components/imagegallery/js/jquery.imgareaselect.min.js</source>
+			<destination>system/workplace/resources/components/imagegallery/js/jquery.imgareaselect.min.js</destination>
 			<type>plain</type>
-			<uuidstructure>83d37d04-99d2-11dd-b497-55b439b85a0e</uuidstructure>
-			<uuidresource>3d5f085c-96b8-11dd-a533-55b439b85a0e</uuidresource>
-			<datelastmodified>Mon, 20 Oct 2008 10:09:23 GMT</datelastmodified>
+			<uuidstructure>b0bc8ee3-1932-11de-a17f-03821fc5d684</uuidstructure>
+			<uuidresource>b0bc8ee4-1932-11de-a17f-03821fc5d684</uuidresource>
+			<datelastmodified>Wed, 25 Mar 2009 11:47:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 10 Oct 2008 10:43:13 GMT</datecreated>
+			<datecreated>Wed, 25 Mar 2009 11:47:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Image area select v0.5.1]]></value>
+					<value><![CDATA[Image area select v0.7]]></value>
 				</property>
 			</properties>
 			<relations/>

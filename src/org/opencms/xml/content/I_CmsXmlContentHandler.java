@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/04/30 14:50:05 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -170,6 +170,13 @@ public interface I_CmsXmlContentHandler {
      * @throws CmsXmlException if something goes wrong
      */
     I_CmsWidget getWidget(I_CmsXmlContentValue value) throws CmsXmlException;
+
+    /**
+     * Returns the tabs to be displayed in the editor.<p>
+     * 
+     * @return the tabs to be displayed in the editor
+     */
+    List getTabs();
 
     /**
      * Initializes this content handler for the given XML content definition by
