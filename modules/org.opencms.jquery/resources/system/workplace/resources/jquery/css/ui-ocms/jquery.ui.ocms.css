@@ -4,10 +4,11 @@
 .ui-widget-header { color: WindowText; }
 .ui-widget-header a { color: WindowText; }
 
+.ui-tabs .ui-tabs-panel { padding: 0; background-color: ButtonFace; }
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected { background-color: ButtonFace !important; }
+
 .ui-state-active, .ui-widget-content .ui-state-active { background: none !important; background-color: ButtonFace; color: WindowText; }
 .ui-state-error, .ui-widget-content .ui-state-error {border: 1px solid #cd0a0a !important; background: #fef1ec url(images/ui-bg_glass_95_fef1ec_1x400.png) 50% 50% repeat-x !important; }
 
 .ui-state-warning, .ui-widget-content .ui-state-warning{border: 1px solid #EE7700 !important; color: #EE7700; background: #fbf9ee url(images/ui-bg_glass_95_fef1ec_1x400.png) 50% 50% repeat-x !important; }
 .ui-state-warning a, .ui-widget-content .ui-state-warning a { color: #EE7700;  }
-
-.ui-tabs .ui-tabs-panel { padding: 0; background-color: ButtonFace; }
