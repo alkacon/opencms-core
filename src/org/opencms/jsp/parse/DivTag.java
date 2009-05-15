@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/parse/Attic/DivTag.java,v $
- * Date   : $Date: 2008/02/27 12:05:50 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/05/15 08:28:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.htmlparser.tags.Div;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.2.2
  *
@@ -48,7 +48,7 @@ import org.htmlparser.tags.Div;
 public class DivTag extends TagNode {
 
     /** 
-     * Mimick the same behviour (except nesting of tags) as the tag this one replaces. Caution this field has to be 
+     * Mimick the same behavior (except nesting of tags) as the tag this one replaces. Caution this field has to be 
      * static or NPE will happen (getIds is called earlier). 
      */
     private static Div m_mimicked = new Div();

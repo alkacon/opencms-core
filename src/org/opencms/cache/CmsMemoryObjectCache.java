@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsMemoryObjectCache.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/05/15 08:30:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,11 +42,11 @@ import org.apache.commons.logging.Log;
 /**
  * A singleton memory cache, that stores objects related with keys.<p>
  * 
- * This cache listens the a {@link I_CmsEventListener#EVENT_CLEAR_CACHES} event only.<p>
+ * This cache listens to the {@link I_CmsEventListener#EVENT_CLEAR_CACHES} event only.<p>
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.2.3
  */
