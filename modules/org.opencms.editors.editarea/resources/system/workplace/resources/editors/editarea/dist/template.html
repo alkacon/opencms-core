@@ -4,6 +4,7 @@
 <head>
 	<title>EditArea</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
 	[__CSSRULES__]
 	[__JSCODE__]
 </head>
@@ -20,6 +21,7 @@
 				<div id='line_number' selec='none'></div>
 				<div id='content_highlight'></div>
 				<div id='test_font_size'></div>
+				<div id='selection_field_text'></div>
 				<textarea id='textarea' wrap='off' onchange='editArea.execCommand("onchange");' onfocus='javascript:editArea.textareaFocused=true;' onblur='javascript:editArea.textareaFocused=false;'>
 				</textarea>
 				
@@ -91,9 +93,8 @@
 				{$accesskey} E: {$toggle}<br />
 			<br />
 			<em>{$about_notice}</em>
-			<br /><div class='copyright'>&copy; Christophe Dolivet - 2007</div>
+			<br /><div class='copyright'>&copy; Christophe Dolivet 2007-2009</div>
 		</div>
-	</div>
 	</div>
 </body>
 </html>

@@ -17,16 +17,16 @@
 	
 	
 	EditAreaLoader.prototype.get_escaped_regexp= function(str){
-		return str.replace(/(\.|\?|\*|\+|\\|\(|\)|\[|\]|\}|\{|\$|\^|\|)/g, "\\$1");
+		return str.toString().replace(/(\.|\?|\*|\+|\\|\(|\)|\[|\]|\}|\{|\$|\^|\|)/g, "\\$1");
 	};
 	
 	EditAreaLoader.prototype.init_syntax_regexp= function(){
-		var lang_style= new Object();	
+		var lang_style= {};	
 		for(var lang in this.load_syntax){
 			if(!this.syntax[lang])	// init the regexp if not already initialized
 			{
-				this.syntax[lang]= new Object();
-				this.syntax[lang]["keywords_reg_exp"]= new Object();
+				this.syntax[lang]= {};
+				this.syntax[lang]["keywords_reg_exp"]= {};
 				this.keywords_reg_exp_nb=0;
 			
 				if(this.load_syntax[lang]['KEYWORDS']){
@@ -70,24 +70,26 @@
 				
 				
 		//		/(("(\\"|[^"])*"?)|('(\\'|[^'])*'?)|(//(.|\r|\t)*\n)|(/\*(.|\n|\r|\t)*\*/)|(<!--(.|\n|\r|\t)*-->))/gi
-				var syntax_trace=new Array();
+				var syntax_trace=[];
 				
 		//		/("(?:[^"\\]*(\\\\)*(\\"?)?)*("|$))/g
 				
-				this.syntax[lang]["quotes"]=new Object();
-				var quote_tab= new Array();
+				this.syntax[lang]["quotes"]={};
+				var quote_tab= [];
 				if(this.load_syntax[lang]['QUOTEMARKS']){
 					for(var i in this.load_syntax[lang]['QUOTEMARKS']){	
 						if(typeof(this.load_syntax[lang]['QUOTEMARKS'][i])=="function") continue;			
 						var x=this.get_escaped_regexp(this.load_syntax[lang]['QUOTEMARKS'][i]);
 						this.syntax[lang]["quotes"][x]=x;
 						//quote_tab[quote_tab.length]="("+x+"(?:\\\\"+x+"|[^"+x+"])*("+x+"|$))";
-						quote_tab[quote_tab.length]="("+x+"(?:[^"+x+"\\\\]*(\\\\\\\\)*(\\\\"+x+"?)?)*("+x+"|$))";
+						//previous working : quote_tab[quote_tab.length]="("+x+"(?:[^"+x+"\\\\]*(\\\\\\\\)*(\\\\"+x+"?)?)*("+x+"|$))";
+						quote_tab[quote_tab.length]="("+ x +"(\\\\.|[^"+ x +"])*(?:"+ x +"|$))";
+						
 						syntax_trace.push(x);			
 					}			
 				}
 						
-				this.syntax[lang]["comments"]=new Object();
+				this.syntax[lang]["comments"]={};
 				if(this.load_syntax[lang]['COMMENT_SINGLE']){
 					for(var i in this.load_syntax[lang]['COMMENT_SINGLE']){	
 						if(typeof(this.load_syntax[lang]['COMMENT_SINGLE'][i])=="function") continue;						
@@ -116,27 +118,27 @@
 					this.syntax[lang]["syntax_trace_regexp"]= new RegExp("((.|\n)*?)(\\\\*("+ syntax_trace.join("|") +"|$))", "gmi");
 				
 				if(this.load_syntax[lang]['SCRIPT_DELIMITERS']){
-					this.syntax[lang]["script_delimiters"]= new Object();
+					this.syntax[lang]["script_delimiters"]= {};
 					for(var i in this.load_syntax[lang]['SCRIPT_DELIMITERS']){
 						if(typeof(this.load_syntax[lang]['SCRIPT_DELIMITERS'][i])=="function") continue;							
 						this.syntax[lang]["script_delimiters"][i]= this.load_syntax[lang]['SCRIPT_DELIMITERS'];
 					}			
 				}
 				
-				this.syntax[lang]["custom_regexp"]= new Object();
+				this.syntax[lang]["custom_regexp"]= {};
 				if(this.load_syntax[lang]['REGEXPS']){
 					for(var i in this.load_syntax[lang]['REGEXPS']){
 						if(typeof(this.load_syntax[lang]['REGEXPS'][i])=="function") continue;
 						var val= this.load_syntax[lang]['REGEXPS'][i];
 						if(!this.syntax[lang]["custom_regexp"][val['execute']])
-							this.syntax[lang]["custom_regexp"][val['execute']]= new Object();
+							this.syntax[lang]["custom_regexp"][val['execute']]= {};
 						this.syntax[lang]["custom_regexp"][val['execute']][i]={'regexp' : new RegExp(val['search'], val['modifiers'])
 																			, 'class' : val['class']};
 					}
 				}
 				
 				if(this.load_syntax[lang]['STYLES']){							
-					lang_style[lang]= new Object();
+					lang_style[lang]= {};
 					for(var i in this.load_syntax[lang]['STYLES']){
 						if(typeof(this.load_syntax[lang]['STYLES'][i])=="function") continue;
 						if(typeof(this.load_syntax[lang]['STYLES'][i]) != "string"){

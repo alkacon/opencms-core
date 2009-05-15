@@ -97,7 +97,7 @@ default:
 		,language: "<%= wp.getEditorLanguage() %>"
 		,syntax: "<%= wp.getStartHighlight() %>"
 		,syntax_selection_allow: "css,html,js,jsp,xml"
-		,toolbar: "|, charmap, |, search, go_to_line, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, |, help"
+		,toolbar: "|, charmap, |, search, go_to_line, |, undo, redo, |, select_font, |, syntax_selection, |, change_smooth_selection, highlight, reset_highlight, word_wrap, |, help"
 		,begin_toolbar: "|, ocms_save_exit, ocms_save"
 		,end_toolbar: "|, ocms_exit"
 		,save_callback: "my_save"

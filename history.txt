@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/05/08 13:39:49 $
- * Version: $Revision: 1.1098 $
+ * Date   : $Date: 2009/05/15 08:19:19 $
+ * Version: $Revision: 1.1099 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ OpenCms 7.1.0 - xxx, 2008
 ! Improved handling of secure site configuration errors.
 ! Tabs can now be defined for the structured content editor to improve usability
 - Updated FCKeditor to version 2.6.4
+- Updated EditArea syntax highlighting editor to 0.8.1.1
 - Updated simapi.jar to version 0.9.8
 - Multiple other .jar updates
 - New property read strategy - always read all properties of a resource, even if only one is needed

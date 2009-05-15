@@ -1,4 +1,4 @@
-editAreaLoader.lang["ru"]={
+﻿editAreaLoader.lang["ru"]={
 new_document: "новый пустой документ",
 search_button: "поиск и замена",
 search_command: "искать следующий / открыть панель поиска",
@@ -22,6 +22,7 @@ redo: "вернуть",
 change_smooth_selection: "включить/отключить некоторые функции просмотра (более красиво, но больше использует процессор)",
 highlight: "переключить подсветку синтаксиса включена/выключена",
 reset_highlight: "восстановить подсветку (если разсинхронизирована от текста)",
+word_wrap: "toggle word wrapping mode",
 help: "о программе",
 save: "сохранить",
 load: "загрузить",
@@ -62,5 +63,6 @@ syntax_robotstxt: "Robots txt",
 syntax_tsql: "T-SQL",
 syntax_perl: "Perl",
 syntax_coldfusion: "Coldfusion",
+syntax_java: "Java",
 close_tab: "Закрыть файл"
 };

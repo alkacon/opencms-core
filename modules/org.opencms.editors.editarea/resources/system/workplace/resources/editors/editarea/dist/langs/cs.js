@@ -1,4 +1,4 @@
-editAreaLoader.lang["cs"]={
+﻿editAreaLoader.lang["cs"]={
 new_document: "Nový dokument",
 search_button: "Najdi a nahraď",
 search_command: "Hledej další / otevři vyhledávací pole",
@@ -22,6 +22,7 @@ redo: "znovu",
 change_smooth_selection: "Povolit nebo zakázat některé ze zobrazených funkcí (účelnější zobrazení požaduje větší zatížení procesoru)",
 highlight: "Zvýrazňování syntaxe zap./vyp.",
 reset_highlight: "Obnovit zvýraznění (v případě nesrovnalostí)",
+word_wrap: "toggle word wrapping mode",
 help: "O programu",
 save: "Uložit",
 load: "Otevřít",
@@ -62,5 +63,6 @@ syntax_robotstxt: "Robots txt",
 syntax_tsql: "T-SQL",
 syntax_perl: "Perl",
 syntax_coldfusion: "Coldfusion",
+syntax_java: "Java",
 close_tab: "Close file"
 };

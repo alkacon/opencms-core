@@ -1,4 +1,4 @@
-editAreaLoader.lang["pl"]={
+﻿editAreaLoader.lang["pl"]={
 new_document: "nowy dokument",
 search_button: "znajdź i zamień",
 search_command: "znajdź następny",
@@ -22,6 +22,7 @@ redo: "przywróć",
 change_smooth_selection: "włącz/wyłącz niektóre opcje wyglądu (zaawansowane opcje wyglądu obciążają procesor)",
 highlight: "włącz/wyłącz podświetlanie składni",
 reset_highlight: "odśwież podświetlanie składni (jeśli rozsynchronizowało się z tekstem)",
+word_wrap: "toggle word wrapping mode",
 help: "o programie",
 save: "zapisz",
 load: "otwórz",
@@ -62,5 +63,6 @@ syntax_robotstxt: "Robots txt",
 syntax_tsql: "T-SQL",
 syntax_perl: "Perl",
 syntax_coldfusion: "Coldfusion",
+syntax_java: "Java",
 close_tab: "Close file"
 };

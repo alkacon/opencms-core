@@ -1,4 +1,4 @@
-editAreaLoader.lang["sk"]={
+﻿editAreaLoader.lang["sk"]={
 new_document: "nový prázdy dokument",
 search_button: "vyhľadaj a nahraď",
 search_command: "hľadaj ďalsšie / otvor vyhľadávacie pole",
@@ -22,6 +22,7 @@ redo: "prepracovať",
 change_smooth_selection: "povoliť/zamietnúť niektoré zo zobrazených funkcií (účelnejšie zobrazenie vyžaduje  väčšie zaťaženie procesora CPU)",
 highlight: "prepnúť zvýrazňovanie syntaxe zap/vyp",
 reset_highlight: "zrušiť zvýrazňovanie (ak je nesynchronizované s textom)",
+word_wrap: "toggle word wrapping mode",
 help: "o programe",
 save: "uložiť",
 load: "načítať",
@@ -62,5 +63,6 @@ syntax_robotstxt: "Robots txt",
 syntax_tsql: "T-SQL",
 syntax_perl: "Perl",
 syntax_coldfusion: "Coldfusion",
+syntax_java: "Java",
 close_tab: "Close file"
 };

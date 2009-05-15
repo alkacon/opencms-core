@@ -1,4 +1,4 @@
-editAreaLoader.lang["dk"]={
+﻿editAreaLoader.lang["dk"]={
 new_document: "nyt tomt dokument",
 search_button: "s&oslash;g og erstat",
 search_command: "find n&aelig;ste / &aring;ben s&oslash;gefelt",
@@ -22,6 +22,7 @@ redo: "gentag",
 change_smooth_selection: "sl&aring; display funktioner til/fra (smartere display men mere CPU kr&aelig;vende)",
 highlight: "sl&aring; syntax highlight til/fra",
 reset_highlight: "nulstil highlight (hvis den er desynkroniseret fra teksten)",
+word_wrap: "toggle word wrapping mode",
 help: "om",
 save: "gem",
 load: "hent",
@@ -62,5 +63,6 @@ syntax_robotstxt: "Robots txt",
 syntax_tsql: "T-SQL",
 syntax_perl: "Perl",
 syntax_coldfusion: "Coldfusion",
+syntax_java: "Java",
 close_tab: "Close file"
 };

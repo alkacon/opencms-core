@@ -1,19 +1,19 @@
 	EditArea.prototype.show_search = function(){
-		if($("area_search_replace").style.visibility=="visible"){
+		if(_$("area_search_replace").style.visibility=="visible"){
 			this.hidden_search();
 		}else{
 			this.open_inline_popup("area_search_replace");
 			var text= this.area_get_selection();
 			var search= text.split("\n")[0];
-			$("area_search").value= search;
-			$("area_search").focus();
+			_$("area_search").value= search;
+			_$("area_search").focus();
 		}
 	};
 	
 	EditArea.prototype.hidden_search= function(){
-		/*$("area_search_replace").style.visibility="hidden";
+		/*_$("area_search_replace").style.visibility="hidden";
 		this.textarea.focus();
-		var icon= $("search");
+		var icon= _$("search");
 		setAttribute(icon, "class", getAttribute(icon, "class").replace(/ selected/g, "") );*/
 		this.close_inline_popup("area_search_replace");
 	};
@@ -22,8 +22,8 @@
 		
 		if(!mode)
 			mode="search";
-		$("area_search_msg").innerHTML="";		
-		var search=$("area_search").value;		
+		_$("area_search_msg").innerHTML="";		
+		var search=_$("area_search").value;		
 		
 		this.textarea.focus();		
 		this.textarea.textareaFocused=true;
@@ -34,27 +34,27 @@
 		var pos_begin=-1;
 		var length=search.length;
 		
-		if($("area_search_replace").style.visibility!="visible"){
+		if(_$("area_search_replace").style.visibility!="visible"){
 			this.show_search();
 			return;
 		}
 		if(search.length==0){
-			$("area_search_msg").innerHTML=this.get_translation("search_field_empty");
+			_$("area_search_msg").innerHTML=this.get_translation("search_field_empty");
 			return;
 		}
 		// advance to the next occurence if no text selected
 		if(mode!="replace" ){
-			if($("area_search_reg_exp").checked)
+			if(_$("area_search_reg_exp").checked)
 				start++;
 			else
 				start+= search.length;
 		}
 		
 		//search
-		if($("area_search_reg_exp").checked){
+		if(_$("area_search_reg_exp").checked){
 			// regexp search
 			var opt="m";
-			if(!$("area_search_match_case").checked)
+			if(!_$("area_search_match_case").checked)
 				opt+="i";
 			var reg= new RegExp(search, opt);
 			pos= infos["full_text"].substr(start).search(reg);
@@ -66,7 +66,7 @@
 				length=infos["full_text"].match(reg)[0].length;
 			}
 		}else{
-			if($("area_search_match_case").checked){
+			if(_$("area_search_match_case").checked){
 				pos= infos["full_text"].indexOf(search, start); 
 				pos_begin= infos["full_text"].indexOf(search); 
 			}else{
@@ -77,21 +77,21 @@
 		
 		// interpret result
 		if(pos==-1 && pos_begin==-1){
-			$("area_search_msg").innerHTML="<strong>"+search+"</strong> "+this.get_translation("not_found");
+			_$("area_search_msg").innerHTML="<strong>"+search+"</strong> "+this.get_translation("not_found");
 			return;
 		}else if(pos==-1 && pos_begin != -1){
 			begin= pos_begin;
-			$("area_search_msg").innerHTML=this.get_translation("restart_search_at_begin");
+			_$("area_search_msg").innerHTML=this.get_translation("restart_search_at_begin");
 		}else
 			begin= pos;
 		
-		//$("area_search_msg").innerHTML+="<strong>"+search+"</strong> found at "+begin+" strat at "+start+" pos "+pos+" curs"+ infos["indexOfCursor"]+".";
+		//_$("area_search_msg").innerHTML+="<strong>"+search+"</strong> found at "+begin+" strat at "+start+" pos "+pos+" curs"+ infos["indexOfCursor"]+".";
 		if(mode=="replace" && pos==infos["indexOfCursor"]){
-			var replace= $("area_replace").value;
+			var replace= _$("area_replace").value;
 			var new_text="";			
-			if($("area_search_reg_exp").checked){
+			if(_$("area_search_reg_exp").checked){
 				var opt="m";
-				if(!$("area_search_match_case").checked)
+				if(!_$("area_search_match_case").checked)
 					opt+="i";
 				var reg= new RegExp(search, opt);
 				new_text= infos["full_text"].substr(0, begin) + infos["full_text"].substr(start).replace(reg, replace);
@@ -114,25 +114,25 @@
 	
 	EditArea.prototype.area_replace_all= function(){
 	/*	this.area_select(0, 0);
-		$("area_search_msg").innerHTML="";
-		while($("area_search_msg").innerHTML==""){
+		_$("area_search_msg").innerHTML="";
+		while(_$("area_search_msg").innerHTML==""){
 			this.area_replace();
 		}*/
 	
 		var base_text= this.textarea.value;
-		var search= $("area_search").value;		
-		var replace= $("area_replace").value;
+		var search= _$("area_search").value;		
+		var replace= _$("area_replace").value;
 		if(search.length==0){
-			$("area_search_msg").innerHTML=this.get_translation("search_field_empty");
+			_$("area_search_msg").innerHTML=this.get_translation("search_field_empty");
 			return ;
 		}
 		
 		var new_text="";
 		var nb_change=0;
-		if($("area_search_reg_exp").checked){
+		if(_$("area_search_reg_exp").checked){
 			// regExp
 			var opt="mg";
-			if(!$("area_search_match_case").checked)
+			if(!_$("area_search_match_case").checked)
 				opt+="i";
 			var reg= new RegExp(search, opt);
 			nb_change= infos["full_text"].match(reg).length;
@@ -140,7 +140,7 @@
 			
 		}else{
 			
-			if($("area_search_match_case").checked){
+			if(_$("area_search_match_case").checked){
 				var tmp_tab=base_text.split(search);
 				nb_change= tmp_tab.length -1 ;
 				new_text= tmp_tab.join(replace);
@@ -161,10 +161,10 @@
 			}
 		}			
 		if(new_text==base_text){
-			$("area_search_msg").innerHTML="<strong>"+search+"</strong> "+this.get_translation("not_found");
+			_$("area_search_msg").innerHTML="<strong>"+search+"</strong> "+this.get_translation("not_found");
 		}else{
 			this.textarea.value= new_text;
-			$("area_search_msg").innerHTML="<strong>"+nb_change+"</strong> "+this.get_translation("occurrence_replaced");
+			_$("area_search_msg").innerHTML="<strong>"+nb_change+"</strong> "+this.get_translation("occurrence_replaced");
 			// firefox and opera doesn't manage with the focus if it's done directly
 			//editArea.textarea.focus();editArea.textarea.textareaFocused=true;
 			setTimeout("editArea.textarea.focus();editArea.textarea.textareaFocused=true;", 100);

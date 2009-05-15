@@ -3,7 +3,7 @@
 	 *
 	 *	EditArea PHP compressor
 	 * 	Developped by Christophe Dolivet
-	 *	Released under LGPL and Apache licenses
+	 *	Released under LGPL, Apache and BSD licenses
 	 *	v1.1.3 (2007/01/18)	 
 	 *
 	******/
@@ -143,11 +143,11 @@
 			$loader= $this->get_content("edit_area_loader.js")."\n";
 			
 			// get the list of other files to load
-	    	$loader= preg_replace("/(this\.scripts_to_load= new Array)\(([^\)]*)\);/e"
+	    	$loader= preg_replace("/(t\.scripts_to_load=\s*)\[([^\]]*)\];/e"
 						, "\$this->replace_scripts('script_list', '\\1', '\\2')"
 						, $loader);
 		
-			$loader= preg_replace("/(this\.sub_scripts_to_load= new Array)\(([^\)]*)\);/e"
+			$loader= preg_replace("/(t\.sub_scripts_to_load=\s*)\[([^\]]*)\];/e"
 						, "\$this->replace_scripts('sub_script_list', '\\1', '\\2')"
 						, $loader);
 
@@ -332,7 +332,7 @@
 				// add line break before "else" otherwise navigators can't manage to parse the file
 				$code= preg_replace('/(\b(else)\b)/', "\n$1", $code);
 				// remove unnecessary spaces
-				$code= preg_replace('/( |\t|\r)?(;|\{|\}|=|==|\-|\+|,|\(|\)|\|\||&\&|\:)( |\t|\r)+/', "$2", $code);
+				$code= preg_replace('/( |\t|\r)*(;|\{|\}|=|==|\-|\+|,|\(|\)|\|\||&\&|\:)( |\t|\r)*/', "$2", $code);
 			}
 		}
 		
@@ -372,7 +372,7 @@
 		function replace_scripts($var, $param1, $param2)
 		{
 			$this->$var=stripslashes($param2);
-	        return $param1."();";
+	        return $param1."[];";
 		}
 
 		/* for php version that have not thoses functions */

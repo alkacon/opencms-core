@@ -14,7 +14,7 @@ body, html, table, form, textarea{
 
 #editor{
 	border: none;
-	overflow: visible;
+	overflow: hidden;
 }
 
 #result{
@@ -52,6 +52,7 @@ body, html, table, form, textarea{
 	z-index: 7; 
 	border-width: 0;
 	background-color: transparent;
+	resize: none;
 }
 
 #textarea, #textarea:hover{
@@ -68,10 +69,10 @@ body, html, table, form, textarea{
 }
 
 
-#selection_field{
+#selection_field, #selection_field_text{
 	margin: 0; 
 	background-color: #E1F2F9; 
-	height: 1px;  
+/*	height: 1px;  */
 	position: absolute;
 	z-index: 5;
 	top: -100px;
@@ -83,10 +84,31 @@ body, html, table, form, textarea{
 #selection_field.show_colors{
 	z-index: 3;
 	background-color:#EDF9FC;
-	color:transparent;
 }
 
-#container.wrap_text #content_highlight, #container.wrap_text #selection_field{
+#selection_field strong{
+	font-weight:normal;
+}
+
+#selection_field.show_colors *, #selection_field_text * {
+	visibility: hidden;
+}
+
+#selection_field_text{
+	background-color:transparent;
+}
+
+#selection_field_text strong{
+	font-weight:normal;
+	background-color:#3399FE;
+	color: #FFF;
+	visibility:visible;
+}
+
+#container.word_wrap #content_highlight,
+#container.word_wrap #selection_field,
+#container.word_wrap #selection_field_text,
+#container.word_wrap #test_font_size{
 	white-space: pre-wrap;       /* css-3 */
 	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
 	white-space: -pre-wrap;      /* Opera 4-6 */
@@ -132,7 +154,7 @@ pre{
 	z-index:6;
 	background-color: ButtonFace;
 	top: -100px;
-	margin: 1px 0 0 0;
+	margin: 0;
 }
 
 #result .edit_area_selection_field .overline{
@@ -184,7 +206,7 @@ div#area_search_replace{
 }
 
 div#area_search_replace img{
-	border: 0px;
+	border: 0;
 }
 
 div#area_search_replace div.button{
@@ -398,7 +420,7 @@ table.statusbar{
 	background-color: #CCC9A8;
 	border-top: 1px solid #888888;
 	text-align: left;
-	margin: 0px;
+	margin: 0;
 }
 
 #tab_browsing_list {

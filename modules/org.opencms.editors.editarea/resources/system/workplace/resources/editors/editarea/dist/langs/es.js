@@ -1,4 +1,4 @@
-editAreaLoader.lang["es"]={
+﻿editAreaLoader.lang["es"]={
 new_document: "nuevo documento vacío",
 search_button: "buscar y reemplazar",
 search_command: "buscar siguiente / abrir área de búsqueda",
@@ -22,6 +22,7 @@ redo: "rehacer",
 change_smooth_selection: "activar/desactivar algunas características de visualización (visualización más inteligente pero más carga de CPU)",
 highlight: "intercambiar resaltado de sintaxis",
 reset_highlight: "reinicializar resaltado (si no esta sincronizado con el texto)",
+word_wrap: "toggle word wrapping mode",
 help: "acerca",
 save: "guardar",
 load: "cargar",
@@ -59,5 +60,6 @@ syntax_brainfuck: "Brainfuck",
 syntax_sql: "SQL",
 syntax_ruby: "Ruby",
 syntax_coldfusion: "Coldfusion",
+syntax_java: "Java",
 close_tab: "Close file"
 };

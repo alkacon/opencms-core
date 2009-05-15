@@ -11,7 +11,7 @@ function keyDown(e){
 	for(var i in editArea.plugins){
 		if(typeof(editArea.plugins[i].onkeydown)=="function"){
 			if(editArea.plugins[i].onkeydown(e)===false){ // stop propaging
-				if(editArea.nav['isIE'])
+				if(editArea.isIE)
 					e.keyCode=0;
 				return false;
 			}
@@ -27,10 +27,10 @@ function keyDown(e){
 	
 	var low_letter= letter.toLowerCase();
 			
-	if(letter=="Page up" && !editArea.nav['isOpera']){
+	if(letter=="Page up" && !editArea.isOpera){
 		editArea.execCommand("scroll_page", {"dir": "up", "shift": ShiftPressed(e)});
 		use=true;
-	}else if(letter=="Page down" && !editArea.nav['isOpera']){
+	}else if(letter=="Page down" && !editArea.isOpera){
 		editArea.execCommand("scroll_page", {"dir": "down", "shift": ShiftPressed(e)});
 		use=true;
 	}else if(editArea.is_editable==false){
@@ -43,7 +43,7 @@ function keyDown(e){
 			editArea.execCommand("tab_selection");
 		
 		use=true;
-		if(editArea.nav['isOpera'] || (editArea.nav['isFirefox'] && editArea.nav['isMacOS']) )	// opera && firefox mac can't cancel tabulation events...
+		if(editArea.isOpera || (editArea.isFirefox && editArea.isMac) )	// opera && firefox mac can't cancel tabulation events...
 			setTimeout("editArea.execCommand('focus');", 1);
 	}else if(letter=="Entrer" && target_id=="textarea"){
 		if(editArea.press_enter())
@@ -103,7 +103,7 @@ function keyDown(e){
 	
 	if(use){
 		// in case of a control that sould'nt be used by IE but that is used => THROW a javascript error that will stop key action
-		if(editArea.nav['isIE'])
+		if(editArea.isIE)
 			e.keyCode=0;
 		return false;
 	}
