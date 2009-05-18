@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/05/15 08:19:19 $
- * Version: $Revision: 1.1099 $
+ * Date   : $Date: 2009/05/18 14:17:16 $
+ * Version: $Revision: 1.1100 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.1.0 - xxx, 2008
+OpenCms 7.3.0 - May 18, 2009
 ! Added support for decentralized categories
 ! Simapi and Image scaler now support image cropping
 ! Added event which is fired after a user was modified
