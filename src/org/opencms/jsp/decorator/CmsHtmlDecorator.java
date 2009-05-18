@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2009/05/18 13:22:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/05/18 13:24:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.1.3 
  */
@@ -101,7 +101,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         "&amp;",
         "%",
         "§",
-        "&sect;",};
+        "&sect;"};
 
     /** Steps for forward lookup in workd list. */
     private static final int FORWARD_LOOKUP = 7;
