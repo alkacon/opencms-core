@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsImageWidget.java,v $
- * Date   : $Date: 2008/11/26 15:57:51 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/05/18 09:08:52 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
+import org.opencms.loader.CmsImageScaler;
+import org.opencms.main.CmsException;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -48,7 +50,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.6 
  */
@@ -65,6 +67,9 @@ public class CmsVfsImageWidget extends A_CmsWidget {
 
     /** Input field prefix for the image field. */
     private static final String PREFIX_IMAGE = "img.";
+
+    /** Input field prefix for the image ratio field. */
+    private static final String PREFIX_IMAGERATIO = "imgrat.";
 
     /** Input field prefix for the hidden scale field. */
     private static final String PREFIX_SCALE = "scale.";
@@ -263,6 +268,22 @@ public class CmsVfsImageWidget extends A_CmsWidget {
             result.append("<input type=\"hidden\" value=\"").append(selectedFormat).append("\" name=\"");
             result.append(PREFIX_FORMATVALUE).append(id).append("\" id=\"");
             result.append(PREFIX_FORMATVALUE).append(id).append("\" />");
+            // create hidden field to store image ratio
+            String ratio = "";
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(imageLink)) {
+                // an image is specified, calculate ratio
+                try {
+                    CmsImageScaler scaler = new CmsImageScaler(cms, cms.readResource(imageLink));
+                    float r = scaler.getWidth() / (float)scaler.getHeight();
+                    ratio = String.valueOf(r);
+                } catch (CmsException e) {
+                    // ignore, image not found in VFS
+                }
+            }
+            result.append("<input type=\"hidden\" value=\"").append(ratio).append("\" name=\"");
+            result.append(PREFIX_IMAGERATIO).append(id).append("\" id=\"");
+            result.append(PREFIX_IMAGERATIO).append(id).append("\" />");
+            // add possible format names and values as JS variables to access them from image gallery window
             result.append("\n<script type=\"text/javascript\">");
             JSONArray formatsJson = new JSONArray(configuration.getFormatValues());
             result.append("\nvar imgFmts").append(idHash).append(" = ").append(formatsJson).append(";");
@@ -315,7 +336,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
 
         String scale = value.getScaleOptions(cms);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getScaleParams())
-            && scale.indexOf(configuration.getScaleParams()) == -1) {
+            && (scale.indexOf(configuration.getScaleParams()) == -1)) {
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(scale)) {
                 scale += ",";
             }

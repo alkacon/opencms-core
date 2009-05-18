@@ -72,7 +72,7 @@ function okPressed() {
 		imgField.value = activeImage.sitepath;
 		if (activeImage.isCropped) {
 			var newScale = "";
-			if (initValues.scale != null && initValues.scale != "") {
+			if (initValues.scale != null && initValues.scale != "" && initValues.scale.charAt(initValues.scale.length - 1) != ",") {
 				newScale += ",";
 			}
 			newScale += "cx:" + activeImage.cropx;
@@ -87,36 +87,35 @@ function okPressed() {
 			initValues.scale = removeScaleValue(initValues.scale, "ch");
 		}
 		if (initValues.useformats == true) {
-			initValues.scale = removeScaleValue(initValues.scale, "w");
-			initValues.scale = removeScaleValue(initValues.scale, "h");
 			var formatBox = window.opener.document.getElementById("format." + initValues.fieldid);
 			if (formatBox.selectedIndex != $("#formatselect").get(0).selectedIndex) {
 				formatBox.selectedIndex = $("#formatselect").get(0).selectedIndex;
 				window.opener.setImageFormat(initValues.fieldid, "imgFmts" + initValues.hashid);
 			}
-		} else {
-			initValues.scale = removeScaleValue(initValues.scale, "w");
-			initValues.scale = removeScaleValue(initValues.scale, "h");
-			var newScale = "";
-			var sizeChanged = false;
-			if (initValues.scale != null && initValues.scale != "") {
+		}
+		initValues.scale = removeScaleValue(initValues.scale, "w");
+		initValues.scale = removeScaleValue(initValues.scale, "h");
+		var newScale = "";
+		var sizeChanged = false;
+		if (initValues.scale != null && initValues.scale != "" && initValues.scale.charAt(initValues.scale.length - 1) != ",") {
+			newScale += ",";
+		}
+		if (activeImage.newwidth > 0 && activeImage.width != activeImage.newwidth) {
+			sizeChanged = true;
+			newScale += "w:" + activeImage.newwidth;
+		}
+		if (activeImage.newheight > 0 && activeImage.height != activeImage.newheight ) {
+			if (sizeChanged == true) {
 				newScale += ",";
 			}
-			if (activeImage.newwidth > 0 && activeImage.width != activeImage.newwidth) {
-				sizeChanged = true;
-				newScale += "w:" + activeImage.newwidth;
-			}
-			if (activeImage.newheight > 0 && activeImage.height != activeImage.newheight ) {
-				if (sizeChanged == true) {
-					newScale += ",";
-				}
-				sizeChanged = true;
-				newScale += "h:" + activeImage.newheight;
-			}
-			initValues.scale += newScale;
+			sizeChanged = true;
+			newScale += "h:" + activeImage.newheight;
 		}
+		initValues.scale += newScale;
 		var scaleField = window.opener.document.getElementById("scale." + initValues.fieldid);
 		scaleField.value = initValues.scale;
+		var ratioField = window.opener.document.getElementById("imgrat." + initValues.fieldid);
+		ratioField.value = activeImage.width / activeImage.height;
 	}
 	window.close();
 }

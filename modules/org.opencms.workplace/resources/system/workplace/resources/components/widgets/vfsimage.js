@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/vfsimage.js,v $
- * Date   : $Date: 2008/11/07 15:51:21 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/05/18 09:08:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,6 +57,37 @@ function setImageFormat(valId, idHash) {
 			scale = removeScaleValue(scale, "cw");
 			scale = removeScaleValue(scale, "ch");
 		}
+		if (field != null) {
+			var ratioField = document.getElementById("imgrat." + valId);
+	  		formatValue = field.value;
+	  		var pos = formatValue.indexOf("x");
+	  		if (pos != -1) {
+	  			imgWidth = formatValue.substring(0, pos);
+	  			imgHeight = formatValue.substring(pos + 1);
+	  			var widthInt = 0;
+	  			var heightInt = 0;
+	  			var rat = 1;
+		  		try {
+		  			rat = parseFloat(ratioField.value);
+		  		} catch (e) {}
+		  		if (imgWidth == "?") {
+		  			heightInt = parseInt(imgHeight);
+		  			widthInt = Math.round(heightInt * rat);
+		  		} else if (imgHeight == "?") {
+		  			widthInt = parseInt(imgWidth);
+		  			heightInt = Math.round(widthInt / rat);
+		  		} else {
+		  			heightInt = parseInt(imgHeight);
+		  			widthInt = parseInt(imgWidth);
+		  		}
+		  		scale = removeScaleValue(scale, "w");
+		  		scale = removeScaleValue(scale, "h");
+		  		if (scale != "" && scale.charAt(scale.length - 1) != ",") {
+		  			scale += ",";
+		  		}
+		  		scale += "w:" + widthInt + ",h:" + heightInt;
+	  		}
+	  	}
 		scaleEl.value = scale;
 	}
 }
