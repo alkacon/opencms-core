@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2008/03/14 14:29:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/05/18 13:22:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.1.3 
  */
@@ -79,7 +79,29 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         "\n"};
 
     /** Delimiters for second level string seperation. */
-    private static final String[] DELIMITERS_SECOND_LEVEL = {"-", "@", "/", ".", ","};
+    private static final String[] DELIMITERS_SECOND_LEVEL = {
+        "-",
+        "@",
+        "/",
+        "&frasl;",
+        ".",
+        ",",
+        "(",
+        ")",
+        "{",
+        "}",
+        "[",
+        "]",
+        "\"",
+        "&quot;",
+        "!",
+        "?",
+        ";",
+        "&",
+        "&amp;",
+        "%",
+        "§",
+        "&sect;",};
 
     /** Steps for forward lookup in workd list. */
     private static final int FORWARD_LOOKUP = 7;
@@ -169,10 +191,10 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
 
         while (n != -1) {
             // zero - length items are not seen as tokens at start or end
-            if ((i < n) || (i > 0) && (i < l)) {
+            if ((i < n) || ((i > 0) && (i < l))) {
                 result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
                 // add the delimiter to the list as well
-                if (includeDelimiters && n + delimiter.length() <= l) {
+                if (includeDelimiters && (n + delimiter.length() <= l)) {
                     result.add(source.substring(n, n + delimiter.length()));
                 }
             } else {
@@ -351,7 +373,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                                             Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
                                             decObj.getContentDecoration(
                                                 m_config,
-                                                decKey.toString(), 
+                                                decKey.toString(),
                                                 m_cms.getRequestContext().getLocale().toString())));
                                     }
                                     // decorate the current word with the following delimiter
@@ -379,7 +401,10 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
-                            decObj.getContentDecoration(m_config, word, m_cms.getRequestContext().getLocale().toString())));
+                            decObj.getContentDecoration(
+                                m_config,
+                                word,
+                                m_cms.getRequestContext().getLocale().toString())));
                     }
                     // decorate the current word
                     m_result.append(decObj.getContentDecoration(
@@ -438,7 +463,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         }
         // test if the current word contains a "&" and the following with a ";"
         // if so, we must not decode the word
-        if (nextWord != null && word.indexOf("&") > -1 && nextWord.startsWith(";")) {
+        if ((nextWord != null) && (word.indexOf("&") > -1) && nextWord.startsWith(";")) {
             return false;
         } else {
             // now scheck if the word matches one of the non decoder tokens
