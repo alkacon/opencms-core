@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrgUnitManager.java,v $
- * Date   : $Date: 2008/03/27 13:22:44 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/05/18 12:56:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.5.6
  */
@@ -199,7 +199,7 @@ public class CmsOrgUnitManager {
      * 
      * @return a list of <code>{@link CmsOrganizationalUnit}</code> objects
      * 
-     * @throws CmsException if operation was not succesful
+     * @throws CmsException if operation was not successful
      */
     public List getOrganizationalUnits(CmsObject cms, String ouFqn, boolean includeChildren) throws CmsException {
 
