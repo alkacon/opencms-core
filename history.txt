@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/05/19 07:38:37 $
- * Version: $Revision: 1.1101 $
+ * Date   : $Date: 2009/05/19 08:45:50 $
+ * Version: $Revision: 1.1102 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ OpenCms 7.3.0 (aka 7.5 beta 1) - May 18, 2009
 - Updated simapi.jar to version 0.9.8
 - Multiple other .jar updates
 - New property read strategy - always read all properties of a resource, even if only one is needed
+* Fixed issue with HTML-decorator when tagging the second level
 * Fixed security issue with the history handler
 * Fixed issue #1016: JSP send mail example out of order
 * Fixed issue #1122: JSTL Examples do not work in the Alkacon Documentation 
