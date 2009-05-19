@@ -1,6 +1,6 @@
 <%@ page import="org.opencms.util.CmsStringUtil, org.opencms.workplace.galleries.*" %><%
 
-String params = request.getParameter(CmsImageGalleryExtended.PARAM_PARAMS);
+String params = request.getParameter(A_CmsAjaxGallery.PARAM_PARAMS);
 if (CmsStringUtil.isNotEmpty(params)) {
 	params = CmsStringUtil.substitute(params, "\r\n", "\\n");
         params = CmsStringUtil.substitute(params, "\n", "\\n");
@@ -8,10 +8,10 @@ if (CmsStringUtil.isNotEmpty(params)) {
 
 %>
 initValues = <% if (CmsStringUtil.isEmpty(params)) { out.print("{}"); } else { out.print(params); } %>;
-initValues.dialogmode = "<% if (CmsStringUtil.isEmpty(request.getParameter(A_CmsGallery.PARAM_DIALOGMODE))) { out.print(""); } else { out.print(request.getParameter(A_CmsGallery.PARAM_DIALOGMODE)); } %>";
+initValues.dialogmode = "<% if (CmsStringUtil.isEmpty(request.getParameter(A_CmsAjaxGallery.PARAM_DIALOGMODE))) { out.print(""); } else { out.print(request.getParameter(A_CmsAjaxGallery.PARAM_DIALOGMODE)); } %>";
 initValues.viewonly = true;
 
-/* Initializes the image gallery popup window. */
+/* Initializes the item gallery popup window. bin hier ;-)*/
 function initPopup() {
 	var sizeX = 650;
 	var sizeY = 750;
@@ -21,14 +21,16 @@ function initPopup() {
 			window.innerHeight = sizeY - 50;
 		}
 	} catch (e) {}
+	$("#dialogbuttons").hide();
 	$("#closebutton").show();
 
 	if (initValues.startupfolder != null) {
 		// start gallery folder specified, load gallery first
-		$("#galleryfolders").hide();
-		$("#galleryimages").show();
+		$("#galleryfolders").hide();  //hide
+		$("#galleryitems").show();   //show
 		$.post(vfsPathAjaxJsp, { action: "getgallery", gallerypath: initValues.startupfolder}, function(data){ initStartGallery(data); });
 	}
+
 }
 
 /* initializes start gallery, loads list of available galleries afterwards. */

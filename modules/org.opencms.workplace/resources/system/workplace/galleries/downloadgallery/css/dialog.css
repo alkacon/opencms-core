@@ -61,6 +61,7 @@ img {
 	clear: left;
 	text-align: center;
 	padding-top: 6px;
+	visibility: visible;
 }
 
 #closebutton {
@@ -69,6 +70,12 @@ img {
 	background-color: Window;
 	color: WindowText;
 	display: none;
+}
+
+#galleryiteminfo #dialogbuttons #cancelbutton ,
+#categoryiteminfo #dialogbuttons #cancelbutton  {
+	margin-left: 4px;
+
 }
 
 #preview #imagename, #advancedhead, #galleryfolders div.head, #categoryfolders div.head  {
@@ -101,7 +108,7 @@ img {
 	background-image: url(../../../buttons/move_down.png);
 }
 
-#preview #previewwrapper {
+#preview #previewwrapper, #preview #previewdetailinfo {
 	height: 450px;
 	padding: 0 6px;
 	background-color: ButtonFace;
@@ -126,7 +133,7 @@ img {
 	vertical-align: top;
 }
 
-#preview #imgdetails .head {
+#preview #imgdetails.head {
 	font-size: 12px;
 	font-weight: bold;
 	padding-bottom: 4px;
@@ -170,9 +177,10 @@ input.showborder, select.showborder {
 	overflow: hidden;
 }
 
+/* gallery folder list for all galleries --------------------------- */
 #galleryfolderlist, #categoryfolderlist {
 	padding: 6px 4px;
-	height: 570px;
+	height: 570px;		/* overwritten in editor.css */
 	overflow: auto;
 }
 
@@ -214,7 +222,61 @@ input.showborder, select.showborder {
 	color: HighlightText;
 }
 
-#galleryimagebuttons, #categoryimagebuttons {
+/* ----------------------------------------------------------------- */
+
+/* downloadgallery item list --------------------------------------- */
+
+#galleryitemlistinner, #categoryitemlistinner {
+	height: 415px;
+}
+
+
+#galleryitemlistinner div div, #categoryitemlistinner div div {
+	margin-bottom: 6px;
+	padding: 4px;
+	background-color: Window;
+	border: 1px solid ButtonShadow;
+	cursor: pointer;
+	width: 100%;
+}
+
+#galleryitemlistinner div  div:hover, #galleryitemlistinner div  div.active:hover,
+#categoryitemlistinner div  div:hover, #categoryitemlistinner div  div.active:hover {
+	background-color: Background;
+}
+
+#galleryitemlistinner div div.active, #categoryitemlistinner div div.active {
+	background-color: Highlight;
+}
+
+#galleryitemlistinner div div span.title, #categoryitemlistinner  div div span.title {
+	display: block;
+	font-size: 12px;
+	font-weight: bold;
+	color: InfoText;
+	padding-bottom: 2px;
+}
+
+#galleryitemlistinner div div span.filename, #categoryitemlistinner div div span.filename {
+	display: block;
+	color: GrayText;
+	font-size: 11px;
+	font-style: italic;
+	width: 100%;
+	overflow: hidden;
+}
+
+#galleryitemlistinner div div:hover span.title, #galleryitemlistinner div div:hover span.filename ,
+#galleryitemlistinner div div.active span.title, #galleryitemlistinner div div.active span.filename,
+#categoryitemlistinner div div:hover span.title, #categoryitemlistinner div div:hover span.filename ,
+#categoryitemlistinner div div.active span.title, #categoryitemlistinner div div.active span.filename {
+	color: HighlightText;
+}
+
+
+/* ----------------------------------------------------------------- */
+
+#gallerybuttons, #categorybuttons {
 	background-color: InfoBackground;
 	color: InfoText;
 	padding: 6px 4px;
@@ -228,20 +290,33 @@ input.showborder, select.showborder {
 	float: right;
 }
 
-#galleryimages, #categoryimages {
+#galleryitemlist, #categoryitemlist {
+	background-color: ButtonFace;
+	border-bottom: 1px solid ButtonShadow; 
+	height: 486px;		/* overwritten in editor.css */
+}
+
+#galleryitems, #categoryitems {
 	display: none;
 }
 
-#galleryimagelist, #categoryimagelist {
+#galleryitemlist.withoutinfo, #categoryitemlist.withoutinfo {
 	background-color: ButtonFace;
-	border-bottom: 1px solid ButtonShadow;
-	height: 486px;
+	border-bottom: 1px solid ButtonShadow; 
+	height: 570px;
 }
+
+#galleryitemlist.withinfo, #categoryitemlist.withinfo {
+	background-color: ButtonFace;
+	border-bottom: 1px solid ButtonShadow; 
+	height: 486px;		/* overwritten in editor.css */
+}
+
 
 #galleryimagelistinner, #categoryimagelistinner {
 	position: relative;
 	overflow: auto;
-	height: 415px;
+	height: 415px;		/* overwritten in editor.css */
 	background-color: #D4D0C8;
 	border-top: 1px solid ButtonShadow;
 }
@@ -262,24 +337,24 @@ input.showborder, select.showborder {
 	color: Window;
 }
 
-#galleryimageinfo, #categoryimageinfo {
+#galleryiteminfo, #categoryiteminfo {
 	background-color: InfoBackground;
 	color: InfoText;
 	padding: 6px 4px 0 4px;
 }
 
-#galleryimageinfo table, #categoryimageinfo table {
+#galleryiteminfo table, #categoryiteminfo table {
 	width: 100%;
 }
 
-#detailinfo {
+#detailinfo{
 	width: 90%;
 	margin-top: 0;
 	position: absolute;
 	z-index: 6;
 	filter: alpha(opacity=90);
 	opacity: 0.90;
-	background-color: InfoBackground;
+	background-color: InfoBackground; 
 	border-right: 1px solid ButtonShadow;
 	border-bottom: 1px solid ButtonShadow;
 	border-left: 1px solid ButtonShadow;
@@ -287,7 +362,18 @@ input.showborder, select.showborder {
 	display: none;
 }
 
-#galleryimageinfo table td, #categoryimageinfo table td, #detailinfo td {
+#detailinfodownload {
+	width: 100%;
+	margin-top: 0;
+	position: relative;
+	z-index: 6;
+	background-color: ButtonFace;
+	border: none;
+	color: InfoText;
+	display: none;
+}
+
+#galleryiteminfo table td, #categoryiteminfo table td, #detailinfo td{
 	padding: 2px 0;
 	white-space: nowrap;
 }
@@ -296,22 +382,48 @@ input.showborder, select.showborder {
 	padding: 2px;
 }
 
-td.imageinfoheadline, td.imageinfostate {
+
+td.iteminfoheadline, td.iteminfostate {
 	font-size: 12px !important;
 	line-height: 15px;
 	height: 20px;
 	padding: 4px 0 0 0;
 }
 
-td.imageinfoheadline {
+
+
+
+td.imageinfoheadline, td.iteminfoheadline {
 	font-weight: bold;
 }
 
-td.imageinfostate {
+td.imageinfostate, td.iteminfostate {
 	font-style: italic;
 }
 
-#galleryimageselectbutton, #categoryimageselectbutton, #galleryimagepublishbutton, #categoryimagepublishbutton {
+
+#detailinfodownload td {
+	padding: 4px;
+	white-space: nowrap;
+}
+
+#detailinfodownload td.iteminfoheadline, td.iteminfostate {
+	font-size: 12px !important;
+	line-height: 15px;
+	height: 20px;
+	padding: 20px 4px 10px 4px;
+}
+
+#detailinfodownload td.previewiteminfotitle {
+	font-size: 12px !important;
+	padding: 4px 4px;
+	margin: 0;
+	height: 22px;
+	vertical-align: middle;
+}
+
+#galleryitemselectbutton, #categoryitemselectbutton, 
+#galleryitempublishbutton, #categoryitempublishbutton {
 	display: none;
 	width: 28px;
 	height: 18px;
@@ -320,12 +432,13 @@ td.imageinfostate {
 	vertical-align: middle;
 }
 
-#galleryimageselectbutton img, #categoryimageselectbutton img, #galleryimagepublishbutton img, #categoryimagepublishbutton img {
+#galleryitemselectbutton img, #categoryitemselectbutton img, 
+#galleryitempublishbutton img, #categoryitempublishbutton img {
 	margin-top: -4px;
 	margin-left: -2px;
 }
 
-td.galleryimageinfotitle, td.categoryimageinfotitle {
+td.galleryiteminfotitle, td.categoryiteminfotitle{
 	font-size: 12px !important;
 	padding: 0;
 	margin: 0;
@@ -333,12 +446,14 @@ td.galleryimageinfotitle, td.categoryimageinfotitle {
 	vertical-align: middle;
 }
 
-#galleryimagetitle, #categoryimagetitle {
+
+
+#galleryitemtitle, #categoryitemtitle {
 	padding-top: 0px;
 	height: 16px;
 }
 
-#galleryimagetitle.editable, #categoryimagetitle.editable {
+#galleryitemtitle.editable, #categoryitemtitle.editable {
 	cursor: pointer;
 	padding-left: 24px;
 	background-image: url("../../../buttons/edit.png");
@@ -346,20 +461,20 @@ td.galleryimageinfotitle, td.categoryimageinfotitle {
 	background-repeat: no-repeat;
 }
 
-#galleryimagetitle form.edittitle, #categoryimagetitle form.edittitle {
+#galleryitemtitle form.edittitle, #categoryitemtitle form.edittitle {
 	height: 18px;
 	margin: -1px 0 0 0;
 	padding: 0;
 }
 
-#galleryimagetitle input, #categoryimagetitle input {
+#galleryitemtitle input, #categoryitemtitle input {
 	margin-bottom: 2px;
 	font-size: 12px !important;
 	border: none;
 	width: 75% !important;
 }
 
-#galleryimagetitle button, #categoryimagetitle button {
+#galleryitemtitle button, #categoryitemtitle button {
 	height: 18px;
 	margin-bottom: 1px;
 	font-size: 9px;
@@ -412,6 +527,28 @@ span.imglayer img {
 	height: 24px;
 }
 
+/* download gallery: show change icon */
+/* span.imgitemwrapper0 { */
+span.changeiconwrapper {
+	position: relative;
+}
+
+span.changeiconlayer {
+	top: 0;
+	left: 0;
+	position: absolute;
+	z-index: 5;
+	cursor: pointer;
+}
+
+span.changeiconlayer img {
+	display: block;
+	margin-bottom: 4px;
+	width: 16px;
+	height: 16px;
+	float: left;
+}
+
 #jHelperTipAttrContainer{ 
 	background: InfoBackground;
 	border: 1px solid ButtonShadow;
@@ -429,35 +566,35 @@ span.stateinfochanged {
 	color: #B40000;
 }
 
-#imagegallery-paginationwrapper, #imagecategory-paginationwrapper {
+#itemgallery-paginationwrapper, #itemcategory-paginationwrapper {
 	height: 24px;
 	font-weight: bold;
 	text-align: center;
 }
 
-#imagegallery-pagination, #imagecategory-pagination {
+#itemgallery-pagination, #itemcategory-pagination {
 	height: 24px;
 	padding-top: 3px;
 	display: block;
 }
 
-#imagegallery-pagination a, #imagecategory-pagination a, #imagegallery-pagination span.current, #imagecategory-pagination span.current {
+#itemgallery-pagination a, #itemcategory-pagination a, #itemgallery-pagination span.current, #itemcategory-pagination span.current {
 	margin-right: 6px;
 	padding: 2px 3px;
 	text-decoration: none;
 	display: inline-block;
 }
 
-#imagegallery-pagination a, #imagecategory-pagination a {
+#itemgallery-pagination a, #itemcategory-pagination a {
 	border: 1px solid Window;
 	color: ThreeDShadow;
 }
 
-#imagegallery-pagination a:hover, #imagecategory-pagination a:hover {
+#itemgallery-pagination a:hover, #itemcategory-pagination a:hover {
 	border: 1px solid ButtonShadow;
 }
 
-#imagegallery-pagination span.current, #imagecategory-pagination span.current {
+#itemgallery-pagination span.current, #itemcategory-pagination span.current {
 	border: 1px solid ButtonShadow;
 	color: Window;
 }

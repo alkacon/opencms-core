@@ -1,7 +1,8 @@
 <%@ page import="org.opencms.workplace.galleries.*" buffer="none" %><%
 
-CmsImageGalleryExtended cms = new CmsImageGalleryExtended(pageContext, request, response);
+A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 
-cms.displayDialog();
+//ajax call of the displayDialog() method of the gallery with the appropriate parameters
+wp.displayDialog();
 
 %>

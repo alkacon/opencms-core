@@ -1,4 +1,4 @@
-#imgdialog input, #imgdialog textarea, #imgdialog select, #imgdialog td {
+#gallerydialog input, #gallerydialog textarea, #gallerydialog select, #gallerydialog td {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 }
@@ -87,8 +87,12 @@ div.imgitem, div.imgitemhover, div.imgitemactive {
 	height: 460px;
 }
 
-#galleryimagelist, #categoryimagelist {
+#galleryitemlist, #categoryitemlist {
 	height: 376px;
+}
+
+#galleryitemlistinner, #categoryitemlistinner {
+	height: 305px; /*  overwritten in editor.css */
 }
 
 #galleryimagelistinner, #categoryimagelistinner {

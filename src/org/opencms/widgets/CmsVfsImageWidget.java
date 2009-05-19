@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsImageWidget.java,v $
- * Date   : $Date: 2009/05/18 09:08:52 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/05/19 15:53:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,8 @@ import org.opencms.main.CmsException;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.galleries.A_CmsGallery;
+import org.opencms.workplace.galleries.A_CmsAjaxGallery;
+import org.opencms.workplace.galleries.CmsAjaxImageGallery;
 import org.opencms.xml.types.CmsXmlVfsImageValue;
 
 import java.util.List;
@@ -50,7 +51,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.6 
  */
@@ -101,8 +102,6 @@ public class CmsVfsImageWidget extends A_CmsWidget {
         StringBuffer result = new StringBuffer(256);
         // import the JavaScript for the image widget
         result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/vfsimage.js"));
-        // import the JavaScript for JSON helper functions
-        result.append(getJSIncludeFile(CmsWorkplace.getSkinUri() + "commons/json2.js"));
         return result.toString();
     }
 
@@ -123,8 +122,8 @@ public class CmsVfsImageWidget extends A_CmsWidget {
         result.append("function initVfsImageGallery() {\n");
         result.append("\t");
         result.append("vfsImageGalleryPath = \"");
-        result.append(A_CmsGallery.PATH_GALLERIES);
-        result.append("imagegallery/index.jsp");
+        result.append(A_CmsAjaxGallery.PATH_GALLERIES);
+        result.append(CmsAjaxImageGallery.OPEN_URI_SUFFIX);
         result.append("\";\n");
         result.append("}\n");
         return result.toString();

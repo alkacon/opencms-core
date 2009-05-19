@@ -33,16 +33,28 @@
  * When using this script to open the download gallery dialog, be sure to
  * initialize the context path (e.g. "/opencms/opencms") and gallery path in the opener properly:
  *
- * - downloadGalleryPath= "<%= A_CmsGallery.PATH_GALLERIES + A_CmsGallery.OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=downloadgallery" %>";
+ * - downloadGalleryPath for CmsDownloadGallery= "<%= A_CmsGallery.PATH_GALLERIES + A_CmsGallery.OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=downloadgallery" %>";
+ * - downloadGalleryPath for CmsAjaxDownloadGallery= "<%= A_CmsAjaxGallery.PATH_GALLERIES + A_CmsAjaxDownloadGallery.OPEN_URI_SUFFIX + "?" %>";
  */
 
 var downloadGalleryPath;
+var galleryInfo;
 
-// opens the download gallery popup window, dialog mode has to be "widget" (as defined in A_CmsGallery.MODE_WIDGET)
-function openDownloadGallery(dialogMode, fieldId) {
+// opens the download gallery popup window, dialog mode has to be "widget" (as defined in A_CmsAjaxGallery.MODE_WIDGET)
+function openDownloadGallery(dialogMode, fieldId, idHash) {
+	
+	//parameter from the xml configuration
+	var startupFolder = eval('startupFolder' + idHash);
+	var startupType = eval('startupType' + idHash);
+	galleryInfo = {
+		"startupfolder": startupFolder,
+		"startuptype": startupType
+	};
+	
 	var paramString = "&dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
-	treewin = window.open(contextPath + downloadGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
+	paramString += "&params=" + JSON.stringify(galleryInfo);
+	treewin = window.open(contextPath + downloadGalleryPath + paramString , "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=750');
 }
 
 // opens a preview popup window to display the currently selected download

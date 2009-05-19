@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/vfsimage.js,v $
- * Date   : $Date: 2009/05/18 09:08:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/05/19 15:53:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,12 +33,12 @@
  * When using this script to open the image gallery dialog, be sure to
  * initialize the context path (e.g. "/opencms/opencms") and gallery path in the opener properly:
  *
- * - vfsImageGalleryPath = "<%= A_CmsGallery.PATH_GALLERIES %>";
+ * - vfsImageGalleryPath = "<%= A_CmsAjaxGallery.PATH_GALLERIES + CmsAjaxImageGallery.OPEN_URI_SUFFIX%>";
  */
 
 var vfsImageGalleryPath;
 
-var galleryInfo;
+var vfsImageGalleryInfo;
 
 /* Triggered when the image format selector changes, removes the crop parameters if present. */
 function setImageFormat(valId, idHash) {
@@ -92,8 +92,8 @@ function setImageFormat(valId, idHash) {
 	}
 }
 
-/* Fills all available image information in a galleryInfo object. */
-function setGalleryInfo(valId, idHash) {
+/* Fills all available image information in a vfsImageGalleryInfo object. */
+function setVfsImageGalleryInfo(valId, idHash) {
 	// get form elements
 	var imageEl = document.getElementById("img." +valId);
 	var formatNameEl = document.getElementById("format." + valId);
@@ -131,7 +131,7 @@ function setGalleryInfo(valId, idHash) {
 		// the description is currently not used in the gallery
 		desc = descEl.value;	
 	}
-	
+
 	if (scaleEl != null) {
 		scale = scaleEl.value;
 		if (formatValue != null && formatValue.length > 0) {
@@ -150,9 +150,7 @@ function setGalleryInfo(valId, idHash) {
 	var startupFolder = eval('startupFolder' + idHash);
 	var startupType = eval('startupType' + idHash);
 	
-	
-	
-	galleryInfo = {
+	vfsImageGalleryInfo = {
 		"fieldid": valId,
 		"hashid": idHash,
 		"imagepath": imagePath,
@@ -229,10 +227,12 @@ function removeScaleValue(scale, valueName) {
 
 /* Opens the image gallery popup window, dialog mode has to be "xml". */
 function openVfsImageGallery(fieldId, idHash) {
-	setGalleryInfo(fieldId, idHash);
+
+	setVfsImageGalleryInfo(fieldId, idHash);
 	var params = "?dialogmode=widget";
-	params += "&params=" + JSON.stringify(galleryInfo);
+	params += "&params=" + JSON.stringify(vfsImageGalleryInfo);
 	treewin = window.open(contextPath + vfsImageGalleryPath + params, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
+	
 }
 
 /* Checks is the preview button is enabled or disabled depending on the image value. */

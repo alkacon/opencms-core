@@ -1,3 +1,7 @@
-#galleryimagetitle form.edittitle, #categoryimagetitle form.edittitle {
+#galleryitemetitle form.edittitle, #categoryitemtitle form.edittitle {
 	margin-top: -3px;
+}
+
+span.changeiconlayer {
+	top: -10px;
 }

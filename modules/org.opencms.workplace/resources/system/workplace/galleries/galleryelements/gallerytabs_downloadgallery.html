@@ -1,0 +1,8 @@
+		<ul>
+                	<!-- The only tab in view mode -->
+	                <li><a href="#galleries"><span><%= wp.key(org.opencms.workplace.galleries.Messages.GUI_GALLERY_TAB_GALLERIES_0) %></span></a></li>          
+                	<% 
+			if (wp.isModeEditor() || wp.isModeWidget()) { %>
+                		<li><a href="#categories"><span><%= wp.key(org.opencms.workplace.galleries.Messages.GUI_GALLERY_TAB_CATEGORIES_0) %></span></a></li>
+                	<% } %>
+            	</ul>            

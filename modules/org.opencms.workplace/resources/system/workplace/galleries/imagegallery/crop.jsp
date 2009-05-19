@@ -1,6 +1,6 @@
 <%@ page import="org.opencms.workplace.galleries.*" %><%
 
-CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, response);
+A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 
 %><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -8,12 +8,13 @@ CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, r
 
 <head>
 <!--[if IE 7]>
-  <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/imagegallery/css/imgselector_hack_ie7.css" />
+  <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/css/imgselector_hack_ie7.css" />
   <![endif]-->
-<link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/imagegallery/css/crop.css" />
+<link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/css/crop.css" />
 <script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.js"></script>
 <script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.dimensions.js"></script>
-<script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/imagegallery/js/jquery.imgareaselect.min.js"></script>
+<script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/js/jquery.imgareaselect.min.js"></script>
+<!-- New vesion does not work for now <script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/js/jquery.imgareaselect-0.8.min.js"></script> -->
 <script type="text/javascript">
 	var imgPreviewHeight = 450;
 	if (parent.initValues.dialogmode == "editor") {
@@ -21,7 +22,7 @@ CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, r
 	}
 
 	/* The image to crop. */
-	var img = parent.activeImage;
+	var img = parent.activeItem;
 	
 	/* The scale factor of the image. Initial value of 1 means that now downscaling is necessary. */
 	var scaleFactor = 1;
@@ -108,26 +109,26 @@ CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, r
 		if (!isNaN(selX)) {
 			if (variableWidth == true) {
 				var factor = selH / targetSizeH;
-				parent.activeImage.newwidth = Math.round(selW / factor); 
+				parent.activeItem.newwidth = Math.round(selW / factor); 
 			} else if (variableHeight == true) {
 				var factor = selW / targetSizeW;
-				parent.activeImage.newheight = Math.round(selH / factor);
+				parent.activeItem.newheight = Math.round(selH / factor);
 			} else if (parent.formatSelected.type != "free") {
-				parent.activeImage.newwidth = targetSizeW;
-				parent.activeImage.newheight = targetSizeH;
+				parent.activeItem.newwidth = targetSizeW;
+				parent.activeItem.newheight = targetSizeH;
 			}
 			var cropParams = "cx:" + selX;
 			cropParams += ",cy:" + selY;
 			cropParams += ",cw:" + selW;
 			cropParams += ",ch:" + selH;
-			parent.activeImage.crop = cropParams;
-			parent.activeImage.cropx = selX;
-			parent.activeImage.cropy = selY;
-			parent.activeImage.cropw = selW;
-			parent.activeImage.croph = selH;
+			parent.activeItem.crop = cropParams;
+			parent.activeItem.cropx = selX;
+			parent.activeItem.cropy = selY;
+			parent.activeItem.cropw = selW;
+			parent.activeItem.croph = selH;
 			if (parent.formatSelected.type == "free") {
-				parent.activeImage.newwidth = selW;
-				parent.activeImage.newheight = selH;
+				parent.activeItem.newwidth = selW;
+				parent.activeItem.newheight = selH;
 			}
 			parent.setCropActive(true, true);
 			//alert(cropParams);
@@ -236,8 +237,8 @@ CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, r
 </div>
 
 <div class="buttons">
-	<button onclick="okPressed();"><%= wp.key(Messages.GUI_IMAGEGALLERY_BUTTON_OK_0) %></button>
-	<button onclick="parent.tb_remove();"><%= wp.key(Messages.GUI_IMAGEGALLERY_BUTTON_CANCEL_0) %></button>
+	<button onclick="okPressed();"><%= wp.key(Messages.GUI_GALLERY_BUTTON_OK_0) %></button>
+	<button onclick="parent.tb_remove();"><%= wp.key(Messages.GUI_GALLERY_BUTTON_CANCEL_0) %></button>
 </div>
 
 </body>

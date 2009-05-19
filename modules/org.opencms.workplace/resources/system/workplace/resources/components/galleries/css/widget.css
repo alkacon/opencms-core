@@ -1,0 +1,11 @@
+#galleryitemlist, #categoryitemlist {
+	height: 450px;  /*  overwrites editor.css */
+}
+
+#galleryitemlistinner, #categoryitemlistinner {
+	height: 370px; /*  overwrites editor.css */
+}
+
+.ui-tabs-panel {
+	height: 600px;   /*  overwrites tab.css */
+}

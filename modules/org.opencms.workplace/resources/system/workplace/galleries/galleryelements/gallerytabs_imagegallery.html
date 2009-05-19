@@ -1,0 +1,12 @@
+            	<ul>
+            		<% if (wp.isModeWidget() || wp.isModeEditor()) { %>
+                	<li><a href="#preview"><span><%= wp.key(Messages.GUI_GALLERY_TAB_PREVIEW_0) %></span></a></li>
+                	<% } %>
+                	<li><a href="#galleries"><span><%= wp.key(Messages.GUI_GALLERY_TAB_GALLERIES_0) %></span></a></li>
+                	<% if (wp.isModeWidget() || wp.isModeEditor()) { %>
+                	<li><a href="#categories"><span><%= wp.key(Messages.GUI_GALLERY_TAB_CATEGORIES_0) %></span></a></li>
+                	<% } %>
+                	<% if (wp.isModeEditor()) { %>
+                	<li><a href="#advanced"><span><%= wp.key(Messages.GUI_GALLERY_TAB_ADVANCED_0) %></span></a></li>
+                	<% } %>
+            	</ul>

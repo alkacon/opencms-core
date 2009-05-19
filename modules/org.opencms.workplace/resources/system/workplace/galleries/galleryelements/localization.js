@@ -1,14 +1,15 @@
 <%@ page import="org.opencms.workplace.galleries.*" %><%
 
-CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, response);
+A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 
 %>
 var LANG = {
 
-	"IMGDETAIL_SIZE"		: "<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_SIZE_0) %>",
+	"DETAIL_SIZE"			: "<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_SIZE_0) %>",
+	"DETAIL_EDIT_HELP"		: "<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_EDIT_HELP_0) %>",
+	"DETAIL_DM"			: "<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_DATE_MODIFIED_0) %>",
 	"IMGDETAIL_STATE_NEW"		: "<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_STATE_NEW_0) %>",
 	"IMGDETAIL_STATE_CHANGED"	: "<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_STATE_CHANGED_0) %>",
-	"IMGDETAIL_EDIT_HELP"		: "<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGDETAIL_EDIT_HELP_0) %>",
 
 	"IMGPREVIEW_SIZE_LOCK"		: "<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_LOCK_0) %>",
 	"IMGPREVIEW_SIZE_UNLOCK"	: "<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGPREVIEW_SIZE_UNLOCK_0) %>",
@@ -17,9 +18,19 @@ var LANG = {
 	"IMGITEM_STATE_CHANGED"		: "<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGITEM_STATE_CHANGED_0) %>",
 
 	"IMGITEM_LOCKSTATE_LOCKED"	: "<%= wp.key(Messages.GUI_IMAGEGALLERY_IMGITEM_LOCKSTATE_LOCKED_0) %>",
+	
+	"DETAIL_STATE_NEW"		: "<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_STATE_NEW_0) %>",
+	"DETAIL_STATE_CHANGED"		: "<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_STATE_CHANGED_0) %>",
 
-	"PAGINATION_NEXT"		: "<%= wp.key(Messages.GUI_IMAGEGALLERY_PAGINATION_NEXT_0) %>",
-	"PAGINATION_PREVIOUS"		: "<%= wp.key(Messages.GUI_IMAGEGALLERY_PAGINATION_PREVIOUS_0) %>",
+	"ITEM_STATE_NEW"		: "<%= wp.key(Messages.GUI_GALLERY_ITEM_STATE_NEW_0) %>",
+	"ITEM_STATE_CHANGED"		: "<%= wp.key(Messages.GUI_GALLERY_ITEM_STATE_CHANGED_0) %>",
+
+	"ITEM_LOCKSTATE_LOCKED"		: "<%= wp.key(Messages.GUI_GALLERY_ITEM_LOCKSTATE_LOCKED_0) %>",
+
+
+	"PAGINATION_NEXT"		: "<%= wp.key(Messages.GUI_GALLERY_PAGINATION_NEXT_0) %>",
+	"PAGINATION_PREVIOUS"		: "<%= wp.key(Messages.GUI_GALLERY_PAGINATION_PREVIOUS_0) %>",
+
 
 	"FORMAT_ORIGINAL"		: "<%= wp.key(Messages.GUI_IMAGEGALLERY_FORMAT_ORIGINAL_0) %>",
 	"FORMAT_USER"			: "<%= wp.key(Messages.GUI_IMAGEGALLERY_FORMAT_USER_0) %>",
@@ -27,7 +38,7 @@ var LANG = {
 	"FORMAT_SMALL"			: "<%= wp.key(Messages.GUI_IMAGEGALLERY_FORMAT_SMALL_0) %>",
 	"FORMAT_LARGE"			: "<%= wp.key(Messages.GUI_IMAGEGALLERY_FORMAT_LARGE_0) %>",
 
-	"BUTTON_OK"			: "<%= wp.key(Messages.GUI_IMAGEGALLERY_BUTTON_OK_0) %>",
-	"BUTTON_CANCEL"			: "<%= wp.key(Messages.GUI_IMAGEGALLERY_BUTTON_CANCEL_0) %>"
+	"BUTTON_OK"			: "<%= wp.key(Messages.GUI_GALLERY_BUTTON_OK_0) %>",
+	"BUTTON_CANCEL"			: "<%= wp.key(Messages.GUI_GALLERY_BUTTON_CANCEL_0) %>"
 
 };

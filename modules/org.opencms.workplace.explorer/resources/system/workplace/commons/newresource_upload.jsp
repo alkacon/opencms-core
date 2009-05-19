@@ -130,17 +130,23 @@ case CmsNewResourceUpload.ACTION_NEWFORM2:
 <input type="hidden" name="<%= wp.PARAM_TITLE %>" value="<%= wp.getParamTitle() %>">
 <input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
 <input type="hidden" name="<%= wp.PARAM_DIALOGTYPE %>" value="<%= wp.getParamDialogtype() %>">
+<input type="hidden" name="<%= wp.PARAM_CLOSELINK %>" value="<%= wp.getParamCloseLink() %>">
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <table border="0" width="100%">
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_RESOURCE_NAME_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCENAME %>" id="newresfield" type="text" value="<%= wp.getParamNewResourceName() %>" class="maxwidth" onkeyup="checkValue();"></td>
-</tr> 
+</tr>
+<% 
+if (wp.getParamCloseLink() != null) { %>
+<input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" style="display: none;">
+<% } else { %> 
 <tr>
 	<td>&nbsp;</td>
 	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key(Messages.GUI_NEWFILE_EDITPROPERTIES_0) %></td>    
 </tr>
+<% } %>
 </table>
 
 
@@ -161,6 +167,13 @@ case CmsNewResourceUpload.ACTION_NEWFORM2:
 <%= wp.dialogButtonsNextCancel("id=\"nextButton\"", null) %>
 
 </form>
+
+<% 
+if (wp.getParamCloseLink() != null) { %>
+<script type="text/javascript">
+	toggleButtonLabel();
+</script>
+<% } %> 
 
 <%= wp.dialogEnd() %>
 

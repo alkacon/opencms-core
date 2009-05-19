@@ -1,6 +1,6 @@
 <%@ page import="org.opencms.workplace.galleries.*" %><%
 
-CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, response);
+A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 
 %>
 // register the related commands

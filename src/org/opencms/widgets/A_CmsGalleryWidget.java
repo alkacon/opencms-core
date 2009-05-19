@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2008/02/27 12:05:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/05/19 15:53:55 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,11 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.json.JSONArray;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.workplace.galleries.A_CmsGallery;
 
 /**
@@ -41,7 +45,7 @@ import org.opencms.workplace.galleries.A_CmsGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +75,13 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
      */
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
-        return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/" + getNameLower() + "gallery.js");
+        StringBuffer result = new StringBuffer(256);
+        // import the JavaScript for the gallery widget
+        result.append(getJSIncludeFile(CmsWorkplace.getSkinUri()
+            + "components/widgets/"
+            + getNameLower()
+            + "gallery.js"));
+        return result.toString();
     }
 
     /**
@@ -93,15 +103,22 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
         result.append("Gallery() {\n");
         result.append("\t");
         result.append(getNameLower());
-        result.append("GalleryPath = \"");
-        result.append(A_CmsGallery.PATH_GALLERIES);
-        result.append(A_CmsGallery.OPEN_URI_SUFFIX);
-        result.append("?");
-        result.append(A_CmsGallery.PARAM_GALLERY_TYPENAME);
-        result.append("=");
-        result.append(getNameLower());
-        result.append("gallery");
-        result.append("\";\n");
+        result.append("GalleryPath = '");
+        result.append(A_CmsAjaxGallery.PATH_GALLERIES);
+        // path to download or image gallery
+        if (getNameLower().equals("download") || getNameLower().equals("image")) {
+            result.append(getNameLower());
+            result.append("gallery/index.jsp?");
+        } else {
+            // path to another galleries
+            result.append(A_CmsGallery.OPEN_URI_SUFFIX);
+            result.append("?");
+            result.append(A_CmsGallery.PARAM_GALLERY_TYPENAME);
+            result.append("=");
+            result.append(getNameLower());
+            result.append("gallery");
+        }
+        result.append("';\n");
         result.append("}\n");
         return result.toString();
     }
@@ -112,6 +129,13 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String id = param.getId();
+        long idHash = id.hashCode();
+        if (idHash < 0) {
+            // negative hash codes will not work as JS variable names, so convert them
+            idHash = -idHash;
+            // add 2^32 to the value to ensure that it is unique
+            idHash += 4294967296L;
+        }
         StringBuffer result = new StringBuffer(128);
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr><td>");
@@ -133,7 +157,15 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
         result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
 
         result.append(widgetDialog.button(
-            "javascript:open" + getNameUpper() + "Gallery('" + A_CmsGallery.MODE_WIDGET + "',  '" + id + "');return false;",
+            "javascript:open"
+                + getNameUpper()
+                + "Gallery('"
+                + A_CmsAjaxGallery.MODE_WIDGET
+                + "',  '"
+                + id
+                + "',  '"
+                + idHash
+                + "');return false;",
             null,
             getNameLower() + "gallery",
             Messages.getButtonName(getNameLower()),
@@ -164,6 +196,64 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
         result.append("</tr></table>");
 
         result.append("</td>");
+
+        if (getNameLower().equals("download")) {
+            // reads the configuration String for this widget
+            CmsGalleryWidgetConfiguration configuration = new CmsGalleryWidgetConfiguration(
+                cms,
+                widgetDialog,
+                param,
+                getConfiguration());
+
+            result.append("\n<script type=\"text/javascript\">");
+            result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
+                "\";");
+            result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
+                "\";");
+            result.append("\n</script>");
+
+        } else if (getNameLower().equals("image")) {
+
+            CmsVfsImageWidgetConfiguration configuration = new CmsVfsImageWidgetConfiguration(
+                cms,
+                widgetDialog,
+                param,
+                getConfiguration());
+
+            result.append("\n<script type=\"text/javascript\">");
+            result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
+                "\";");
+            result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
+                "\";");
+            result.append("\n</script>");
+
+            if (configuration.isShowFormat()) {
+                // create hidden field to store the matching image format value
+                result.append("\n<script type=\"text/javascript\">");
+                JSONArray formatsJson = new JSONArray(configuration.getFormatValues());
+                result.append("\nvar imgFmts").append(idHash).append(" = ").append(formatsJson).append(";");
+                result.append("\nvar imgFmtNames").append(idHash).append(" = \"").append(
+                    CmsEncoder.escape(configuration.getSelectFormatString(), CmsEncoder.ENCODING_UTF_8)).append("\";");
+                result.append("\nvar useFmts").append(idHash).append(" = true;");
+                result.append("\n</script>");
+            } else {
+                result.append("\n<script type=\"text/javascript\">");
+                result.append("\nvar useFmts").append(idHash).append(" = false;");
+                result.append("\n</script>");
+            }
+
+            String scale = "";
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getScaleParams())
+                && (scale.indexOf(configuration.getScaleParams()) == -1)) {
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(scale)) {
+                    scale += ",";
+                }
+                scale += configuration.getScaleParams();
+            }
+            result.append("\n<script type=\"text/javascript\">");
+            result.append("\nvar scale").append(idHash).append(" = ").append(scale).append(";");
+            result.append("\n</script>");
+        }
 
         return result.toString();
     }

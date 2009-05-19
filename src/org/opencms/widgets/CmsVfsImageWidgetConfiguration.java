@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsImageWidgetConfiguration.java,v $
- * Date   : $Date: 2008/11/27 16:53:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/05/19 15:53:55 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,14 +73,11 @@ import java.util.List;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.6 
  */
-public class CmsVfsImageWidgetConfiguration {
-
-    /** Configuration key name for the class configuration. */
-    public static final String CONFIG_KEY_CLASS = "class";
+public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguration {
 
     /** Configuration key name for the formatnames configuration. */
     public static final String CONFIG_KEY_FORMATNAMES = "formatnames";
@@ -91,29 +88,17 @@ public class CmsVfsImageWidgetConfiguration {
     /** Configuration key name for the scaleparams configuration. */
     public static final String CONFIG_KEY_SCALEPARAMS = "scaleparams";
 
-    /** Configuration key name for the startup configuration. */
-    public static final String CONFIG_KEY_STARTUP = "startup";
-
-    /** Configuration key name for the type configuration. */
-    public static final String CONFIG_KEY_TYPE = "type";
-
     /** Configuration key name for the usedescription configuration. */
     public static final String CONFIG_KEY_USEDESCRIPTION = "usedescription";
 
     /** Configuration key name for the useformat configuration. */
     public static final String CONFIG_KEY_USEFORMAT = "useformat";
 
-    /** Configuration value name for a dynamic configuration. */
-    public static final String CONFIG_VALUE_DYNAMIC = "dynamic";
-
     /** The type "category" for the initial image list to load. */
     public static final String TYPE_CATEGORY = "category";
 
     /** The type "gallery" for the initial image list to load. */
     public static final String TYPE_GALLERY = "gallery";
-
-    /** The optional class name for generating dynamic configurations, must implement {@link I_CmsImageWidgetDynamicConfiguration}. */
-    private String m_className;
 
     /** The list of image format values matching the options for the format select box. */
     private List m_formatValues;
@@ -133,12 +118,6 @@ public class CmsVfsImageWidgetConfiguration {
     /** The flag if the format select box should be shown. */
     private boolean m_showFormat;
 
-    /** The required information for the initial image list to load. */
-    private String m_startup;
-
-    /** The type of the initial image list to load, either gallery or category. */
-    private String m_type;
-
     /**
      * Generates an initialized configuration for the image widget using the given configuration string.<p>
      * 
@@ -153,17 +132,8 @@ public class CmsVfsImageWidgetConfiguration {
         I_CmsWidgetParameter param,
         String configuration) {
 
+        super();
         init(cms, widgetDialog, param, configuration);
-    }
-
-    /**
-     * Returns the optional class name for generating dynamic configurations, must implement {@link I_CmsImageWidgetDynamicConfiguration}.<p>
-     * 
-     * @return the optional class name for generating dynamic configurations
-     */
-    public String getClassName() {
-
-        return m_className;
     }
 
     /**
@@ -206,29 +176,6 @@ public class CmsVfsImageWidgetConfiguration {
     public String getSelectFormatString() {
 
         return m_selectFormatString;
-    }
-
-    /**
-     * Returns the required information for the initial image list to load.<p>
-     * 
-     * If a gallery should be shown, the path to the gallery must be specified,
-     * for a category the category path.<p>
-     * 
-     * @return the required information for the initial image list to load
-     */
-    public String getStartup() {
-
-        return m_startup;
-    }
-
-    /**
-     * Returns the type of the initial image list to load, either gallery or category.<p>
-     * 
-     * @return the type of the initial image list to load
-     */
-    public String getType() {
-
-        return m_type;
     }
 
     /**
@@ -307,25 +254,15 @@ public class CmsVfsImageWidgetConfiguration {
         }
         // determine the initial image list settings
         setType(jsonObj.optString(CONFIG_KEY_TYPE));
-        if ((CONFIG_VALUE_DYNAMIC.equals(getType()) || CmsStringUtil.isEmpty(getType())) && dynConf != null) {
+        if ((CONFIG_VALUE_DYNAMIC.equals(getType()) || CmsStringUtil.isEmpty(getType())) && (dynConf != null)) {
             setType(dynConf.getType(cms, widgetDialog, param));
         }
         setStartup(jsonObj.optString(CONFIG_KEY_STARTUP));
-        if ((CONFIG_VALUE_DYNAMIC.equals(getStartup()) || CmsStringUtil.isEmpty(getStartup())) && dynConf != null) {
+        if ((CONFIG_VALUE_DYNAMIC.equals(getStartup()) || CmsStringUtil.isEmpty(getStartup())) && (dynConf != null)) {
             setStartup(dynConf.getStartup(cms, widgetDialog, param));
         }
         // determine the scale parameters
         setScaleParams(jsonObj.optString(CONFIG_KEY_SCALEPARAMS));
-    }
-
-    /**
-     * Sets the optional class name for generating dynamic configurations, must implement {@link I_CmsImageWidgetDynamicConfiguration}.<p>
-     * 
-     * @param className the optional class name for generating dynamic configurations
-     */
-    private void setClassName(String className) {
-
-        m_className = className;
     }
 
     /**
@@ -386,29 +323,6 @@ public class CmsVfsImageWidgetConfiguration {
     private void setShowFormat(boolean showFormat) {
 
         m_showFormat = showFormat;
-    }
-
-    /**
-     * Sets the required information for the initial image list to load.<p>
-     * 
-     * If a gallery should be shown, the path to the gallery must be specified,
-     * for a category the category path.<p>
-     * 
-     * @param startup the required information for the initial image list to load
-     */
-    private void setStartup(String startup) {
-
-        m_startup = startup;
-    }
-
-    /**
-     * Sets the type of the initial image list to load, either gallery or category.<p>
-     * 
-     * @param type the type of the initial image list to load
-     */
-    private void setType(String type) {
-
-        m_type = type;
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2008/11/07 15:51:21 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/05/19 15:53:56 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,8 +101,26 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     /** Request parameter value for the action: edit property value. */
     public static final String DIALOG_EDITPROPERTY = "editproperty";
 
+    /** Request parameter value for the action: get a specific gallery. */
+    public static final String DIALOG_GETGALLERY = "getgallery";
+
     /** Request parameter value for the action: list gallery items. */
     public static final String DIALOG_LIST = "list";
+
+    /** The list mode name "category" for getting the images. */
+    public static final String LISTMODE_CATEGORY = "category";
+
+    /** The list mode name "gallery" for getting the images. */
+    public static final String LISTMODE_GALLERY = "gallery";
+
+    /** Request parameter value for the action: get the images for a gallery or category. */
+    public static final String DIALOG_GETITEMS = "getitems";
+
+    /** Request parameter value for the action: list gallery items. */
+    public static final String DIALOG_GETGALLERIES = "getgalleries";
+
+    /** Request parameter value for the action: get the category selection list. */
+    public static final String DIALOG_GETCATEGORIES = "getcategories";
 
     /** Request parameter value for the action: search gallery items. */
     public static final String DIALOG_SEARCH = "search";
@@ -199,6 +217,9 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
 
     /** The gallery base resource type. */
     private CmsResourceTypeFolderExtended m_resourceType;
+
+    /** The list mode to get the images either from a gallery or by a category. */
+    private String m_paramListMode;
 
     /**
      * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
@@ -836,7 +857,8 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                         filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireTimerange().addRequireFile();
                     } else {
                         // filter all resources of the required type
-                        filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireTimerange().addRequireType(resTypeId);
+                        filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireTimerange().addRequireType(
+                            resTypeId);
                     }
                     m_galleryItems = getCms().readResources(getParamGalleryPath(), filter, false);
                 } catch (CmsException e) {
@@ -1053,6 +1075,26 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     public CmsResourceTypeFolderExtended getResourceType() {
 
         return m_resourceType;
+    }
+
+    /**
+     * Returns the list mode for getting the images, either {@link #LISTMODE_CATEGORY} or {@link #LISTMODE_GALLERY}.<p>
+     * 
+     * @return the list mode for getting the images
+     */
+    public String getParamListMode() {
+
+        return m_paramListMode;
+    }
+
+    /**
+     * Sets the list mode for getting the images, either {@link #LISTMODE_CATEGORY} or {@link #LISTMODE_GALLERY}.<p>
+     * 
+     * @param paramListMode the list mode for getting the images
+     */
+    public void setParamListMode(String paramListMode) {
+
+        m_paramListMode = paramListMode;
     }
 
     /**

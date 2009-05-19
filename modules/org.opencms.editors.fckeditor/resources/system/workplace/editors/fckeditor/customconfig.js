@@ -61,6 +61,7 @@ FCKConfig.SkinPath = FCKConfig.BasePath + "skins/opencms/";
 FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");
 // replaced by image gallery: FCKConfig.Plugins.Add("ocmsimage", null, "<%= cms.link("plugins/") %>");
 FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+FCKConfig.Plugins.Add("downloadgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
 <%
 
 boolean showTableOptions = options.showElement("option.table", displayOptions);
@@ -115,6 +116,10 @@ if (options.showElement("option.flash", displayOptions)) {
 if (options.showElement("option.images", displayOptions)) {
 	// replaced by image gallery: toolbar.append(",'-', 'OcmsImage'");
 	toolbar.append(",'-', 'OcmsImageGallery'");
+}
+
+if (options.showElement("gallery.download", displayOptions)) {
+	toolbar.append(",'-', 'OcmsDownloadGallery'");
 }
 
 // insert rule button

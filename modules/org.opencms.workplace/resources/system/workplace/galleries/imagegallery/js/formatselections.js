@@ -34,8 +34,8 @@ function setCropActive(isCropped, forceRefreshPreview) {
 		$('#cropremove').hide();
 		$('#cropinfo').hide();
 	}
-	if (isCropped != activeImage.isCropped || (forceRefreshPreview != null && forceRefreshPreview == true)) {
-		activeImage.isCropped = isCropped;
+	if (isCropped != activeItem.isCropped || (forceRefreshPreview != null && forceRefreshPreview == true)) {
+		activeItem.isCropped = isCropped;
 		refreshActiveImagePreview();
 	}
 }
@@ -51,8 +51,8 @@ function onSizeChanged(dimension, value, refreshImage, refreshSelect) {
 			return;
 		}
 	
-		var imgHeight = activeImage.height;
-		var imgWidth = activeImage.width;
+		var imgHeight = activeItem.height;
+		var imgWidth = activeItem.width;
 				
 		if ( dimension == 'Width' ) {
 			value = value == 0 ? 0 : Math.round( imgHeight * ( value  / imgWidth ) );
@@ -62,8 +62,8 @@ function onSizeChanged(dimension, value, refreshImage, refreshSelect) {
 		if ( !isNaN( value ) )
 			e.value = value ;
 	}
-	activeImage.newwidth = parseInt($('#txtWidth').get(0).value);
-	activeImage.newheight = parseInt($('#txtHeight').get(0).value);
+	activeItem.newwidth = parseInt($('#txtWidth').get(0).value);
+	activeItem.newheight = parseInt($('#txtHeight').get(0).value);
 	if (refreshSelect == null || refreshSelect == true) {
 		refreshSelectBox();
 	}
@@ -74,7 +74,7 @@ function onSizeChanged(dimension, value, refreshImage, refreshSelect) {
 
 /* Checks if the image sizes should be reset when clicking on the "remove crop" button. */
 function checkResetSizes() {
-	if (activeImage.isCropped == false && !initValues.useformats == true) {
+	if (activeItem.isCropped == false && !initValues.useformats == true) {
 		if (formatSelected.type != "user") {
 			resetSizes();
 		}
@@ -83,8 +83,8 @@ function checkResetSizes() {
 
 /* Fired when the reset size button is clicked. */
 function resetSizes() {
-	activeImage.newwidth = -1;
-	activeImage.newheight = -1;
+	activeItem.newwidth = -1;
+	activeItem.newheight = -1;
 	if (initValues.useformats == true) {
 		// using formats, calculate image for currently selected size
 		changeFormat();
@@ -93,8 +93,8 @@ function resetSizes() {
 		lockRatio = true;
 		$('#locksizes').attr("title", LANG.IMGPREVIEW_SIZE_UNLOCK);
 		$('#locksizes').attr("class", "btnlocked");
-		$('#txtWidth').get(0).value  = activeImage.width;
-		$('#txtHeight').get(0).value  = activeImage.height;
+		$('#txtWidth').get(0).value  = activeItem.width;
+		$('#txtHeight').get(0).value  = activeItem.height;
 		$("#formatselect").get(0).selectedIndex = 0;
 		refreshActiveImagePreview();
 	}
@@ -254,18 +254,18 @@ function refreshSelectBox() {
 				selectedIndex = i;
 				$("#croplink").show();
 			}
-			if (currSelect.type == "free" && activeImage.isCropped == true) {
+			if (currSelect.type == "free" && activeItem.isCropped == true) {
 				selectedIndex = i;
 				$("#croplink").show();
-			} else if (currSelect.type == "original" && activeImage.newwidth == activeImage.width && activeImage.newheight == activeImage.height) {
+			} else if (currSelect.type == "original" && activeItem.newwidth == activeItem.width && activeItem.newheight == activeItem.height) {
 				selectedIndex = i;
 				$("#croplink").hide();
 				break;
-			} else if (currSelect.width == activeImage.newwidth && (currSelect.height == -1 || currSelect.height == activeImage.newheight)) {
+			} else if (currSelect.width == activeItem.newwidth && (currSelect.height == -1 || currSelect.height == activeItem.newheight)) {
 				selectedIndex = i;
 				$("#croplink").show();
 				break;
-			} else if (currSelect.height == activeImage.newheight && (currSelect.width == -1 || currSelect.width == activeImage.newwidth)) {
+			} else if (currSelect.height == activeItem.newheight && (currSelect.width == -1 || currSelect.width == activeItem.newwidth)) {
 				selectedIndex = i;
 				$("#croplink").show();
 				break;

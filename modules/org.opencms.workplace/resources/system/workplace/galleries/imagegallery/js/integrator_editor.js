@@ -1,6 +1,6 @@
 <%@ page import="org.opencms.util.CmsStringUtil, org.opencms.workplace.galleries.*" %><%
 
-CmsImageGalleryExtended wp = new CmsImageGalleryExtended(pageContext, request, response);
+A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 
 String editedResource = "";
 if (CmsStringUtil.isNotEmpty(wp.getParamResource())) {
@@ -39,7 +39,8 @@ itemsPerPage = 12;
 
 /* Initialize the dialog values. */
 initValues = {};
-initValues.dialogmode = "editor";
+initValues.dialogmode = "<% if (CmsStringUtil.isEmpty(request.getParameter(A_CmsAjaxGallery.PARAM_DIALOGMODE))) { out.print(""); } else { out.print(request.getParameter(A_CmsAjaxGallery.PARAM_DIALOGMODE)); } %>";
+//initValues.dialogmode = "editor";
 initValues.viewonly = false;
 initValues.editedresource = "<%= editedResource %>";
 
@@ -63,8 +64,8 @@ function initPopup() {
 	}
 	// load eventually selected image and information
 	loadSelection();
-	if (initValues.imagepath != null && initValues.imagepath != "") {
-		$.post(vfsPathAjaxJsp, { action: "getactiveimage", imagepath: initValues.imagepath}, function(data){ loadActiveImage(data, true); });
+	if (initValues.itempath != null && initValues.itempath != "") {
+		$.post(vfsPathAjaxJsp, { action: "getactiveitem", itempath: initValues.itempath}, function(data){ loadActiveItem(data, true); });
 	} else {
 		$tabs.tabs("select", 1);
 		$tabs.tabs("disable", 0);
@@ -79,9 +80,9 @@ function initPopup() {
 function activeImageAdditionalActions(isInitial) {
 	if (!isInitial == true) {
 		resetCopyrightText();
-		var imgTitle = activeImage.title;
-		if (activeImage.description != "") {
-			imgTitle = activeImage.description;
+		var imgTitle = activeItem.title;
+		if (activeItem.description != "") {
+			imgTitle = activeItem.description;
 		}
 		GetE("txtAlt").value = imgTitle;
 	}
@@ -204,7 +205,7 @@ function loadSelection() {
 		sUrl = sUrl.substring(0, paramIndex);
 	}
 
-	initValues.imagepath = sUrl;
+	initValues.itempath = sUrl;
 
 	GetE("txtAlt").value = altText;
 	if (copyText !=	"")	{
@@ -284,16 +285,16 @@ function loadSelection() {
 
 /* Resets the image alternative text to the original value. */
 function resetAltText() {
-	var imgTitle = activeImage.title;
-	if (activeImage.description != "") {
-		imgTitle = activeImage.description;
+	var imgTitle = activeItem.title;
+	if (activeItem.description != "") {
+		imgTitle = activeItem.description;
 	}
 	GetE("txtAlt").value = imgTitle;
 }
 
 /* Resets the image copyright text to the original value. */
 function resetCopyrightText() {
-	var copyText = activeImage.copyright;
+	var copyText = activeItem.copyright;
 	if (copyText == null || copyText == "") {
 		copyText = "";
 	} else {
@@ -456,7 +457,7 @@ function Ok() {
 					} else {
 						oLink.setAttribute("onclick", linkOri);
 					}
-					oLink.setAttribute("id", "limg_" + activeImage.hash);
+					oLink.setAttribute("id", "limg_" + activeItem.hash);
 					oImage.setAttribute("border", "0");
 				} catch (e) {}
 			}
@@ -500,20 +501,20 @@ function createEnhancedImage() {
 			}
 		}
 		oNewElement.style.cssText = st;
-		SetAttribute(oNewElement, "id", "aimg_" + activeImage.hash);
+		SetAttribute(oNewElement, "id", "aimg_" + activeItem.hash);
 
 		// insert the image
 		if (insertLinkToOriginal()) {
 			var oLinkOrig = oEditor.FCK.EditorDocument.createElement("A");
 			if (useTbForLinkOriginal == true) {
 				oLinkOrig.href = getLinkToOriginal();
-				oLinkOrig.setAttribute("title", activeImage.title);
+				oLinkOrig.setAttribute("title", activeItem.title);
 				oLinkOrig.setAttribute("class", "thickbox");
 			} else {
 				oLinkOrig.href = "#";
 				oLinkOrig.setAttribute("onclick", getLinkToOriginal());
 			}
-			oLinkOrig.setAttribute("id", "limg_" + activeImage.hash);
+			oLinkOrig.setAttribute("id", "limg_" + activeItem.hash);
 			oImage.setAttribute("border", "0");
 			oLinkOrig.appendChild(oImage);
 			oNewElement.appendChild(oLinkOrig);
@@ -526,12 +527,12 @@ function createEnhancedImage() {
 			// insert the 2nd span with the copyright information
 			var copyText = GetE("txtCopyright").value;
 			if (copyText == "") {
-				copyText = "&copy; " + activeImage.copyright;
+				copyText = "&copy; " + activeItem.copyright;
 			}
 			var oSpan2 = oEditor.FCK.EditorDocument.createElement("SPAN");
 			oSpan2.style.cssText = "display: block; clear: both;";
 			oSpan2.className = "imgCopyright";
-			oSpan2.id = "cimg_" + activeImage.hash;
+			oSpan2.id = "cimg_" + activeItem.hash;
 			oSpan2.innerHTML = copyText;
 			oNewElement.appendChild(oSpan2);
 		}
@@ -540,12 +541,12 @@ function createEnhancedImage() {
 			// insert the 3rd span with the subtitle
 			var altText = GetE("txtAlt").value;
 			if (altText == "") {
-				altText = activeImage.title;
+				altText = activeItem.title;
 			}
 			var oSpan3 = oEditor.FCK.EditorDocument.createElement("SPAN");
 			oSpan3.style.cssText = "display: block; clear: both;";
 			oSpan3.className = "imgSubtitle";
-			oSpan3.id = "simg_" + activeImage.hash;
+			oSpan3.id = "simg_" + activeItem.hash;
 			oSpan3.innerHTML = altText;
 			oNewElement.appendChild(oSpan3);
 		}
@@ -562,16 +563,16 @@ function createEnhancedImage() {
 function getLinkToOriginal() {
 	var linkUri = "";
 	if (useTbForLinkOriginal == true) {
-		linkUri += activeImage.linkpath;
+		linkUri += activeItem.linkpath;
 	} else {
 		linkUri += "javascript:window.open('";
 		linkUri += vfsPopupUri;
 		linkUri += "?uri=";
-		linkUri += activeImage.linkpath;
+		linkUri += activeItem.linkpath;
 		linkUri += "', 'original', 'width=";
-		linkUri += activeImage.width;
+		linkUri += activeItem.width;
 		linkUri += ",height=";
-		linkUri += activeImage.height;
+		linkUri += activeItem.height;
 		linkUri += ",location=no,menubar=no,status=no,toolbar=no');";
 	}
 	return linkUri;
@@ -579,9 +580,9 @@ function getLinkToOriginal() {
 
 /* Updates the image element with the values of the input fields. */
 function updateImage(e) {
-	var txtUrl = activeImage.linkpath;
-	var newWidth = activeImage.width;
-	var newHeight = activeImage.height;
+	var txtUrl = activeItem.linkpath;
+	var newWidth = activeItem.width;
+	var newHeight = activeItem.height;
 	if (initValues.scale == null || initValues.scale == "") {
 		initValues.scale = "c:transparent,t:4,r=0,q=70";
 	} else {
@@ -590,15 +591,15 @@ function updateImage(e) {
 		}
 	}
 
-	if (activeImage.isCropped) {
+	if (activeItem.isCropped) {
 		var newScale = "";
 		if (initValues.scale != null && initValues.scale != "") {
 			newScale += ",";
 		}
-		newScale += "cx:" + activeImage.cropx;
-		newScale += ",cy:" + activeImage.cropy;
-		newScale += ",cw:" + activeImage.cropw;
-		newScale += ",ch:" + activeImage.croph;
+		newScale += "cx:" + activeItem.cropx;
+		newScale += ",cy:" + activeItem.cropy;
+		newScale += ",cw:" + activeItem.cropw;
+		newScale += ",ch:" + activeItem.croph;
 		initValues.scale += newScale;
 	} else if (getScaleValue(initValues.scale, "cx") != "") {
 		initValues.scale = removeScaleValue(initValues.scale, "cx");
@@ -614,21 +615,21 @@ function updateImage(e) {
 	if (initValues.scale != null && initValues.scale != "") {
 		newScale += ",";
 	}
-	if (activeImage.newwidth > 0 && activeImage.width != activeImage.newwidth) {
+	if (activeItem.newwidth > 0 && activeItem.width != activeItem.newwidth) {
 		sizeChanged = true;
-		newScale += "w:" + activeImage.newwidth;
-		newWidth = activeImage.newwidth;
+		newScale += "w:" + activeItem.newwidth;
+		newWidth = activeItem.newwidth;
 	}
-	if (activeImage.newheight > 0 && activeImage.height != activeImage.newheight ) {
+	if (activeItem.newheight > 0 && activeItem.height != activeItem.newheight ) {
 		if (sizeChanged == true) {
 			newScale += ",";
 		}
 		sizeChanged = true;
-		newScale += "h:" + activeImage.newheight;
-		newHeight = activeImage.newheight;
+		newScale += "h:" + activeItem.newheight;
+		newHeight = activeItem.newheight;
 	}
 	initValues.scale += newScale;
-	if (activeImage.isCropped || sizeChanged) {
+	if (activeItem.isCropped || sizeChanged) {
 		txtUrl += "?__scale=" + initValues.scale;
 	}
 
@@ -671,7 +672,7 @@ function updateImage(e) {
 
 	var idVal = GetE("txtAttId").value;
 	if (idVal == "" || idVal.substring(0, 5) == "iimg_") {
-		idVal = "iimg_" + activeImage.hash;
+		idVal = "iimg_" + activeItem.hash;
 	}
 	SetAttribute(e, "id", idVal);
 
