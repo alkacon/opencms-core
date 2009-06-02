@@ -59,7 +59,7 @@
 			</table>
 			<div id="dialogbuttons">
 			 	<button id="galleryokbutton" type="button" onclick="setActiveItem(galleryItems.markedItem, 'gallery', false);"><%= wp.key(Messages.GUI_GALLERY_BUTTON_OK_0) %></button>
-				<button type="button" id="cancelbutton" onclick="window.close();"><%= wp.key(Messages.GUI_GALLERY_BUTTON_CANCEL_0) %></button>
+				<button type="button" id="gallerycancelbutton" onclick="window.close();"><%= wp.key(Messages.GUI_GALLERY_BUTTON_CANCEL_0) %></button>
 			</div>
 		</div> 	
 	</div>	

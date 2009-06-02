@@ -55,7 +55,7 @@
 				</table>
 				<div id="dialogbuttons">
 					<button id="categoryokbutton" type="button" onclick="setActiveItem(categoryItems.markedItem, 'category', false);"><%= wp.key(Messages.GUI_GALLERY_BUTTON_OK_0) %></button>
-					<button type="button" id="cancelbutton" onclick="window.close();"><%= wp.key(Messages.GUI_GALLERY_BUTTON_CANCEL_0) %></button>
+					<button type="button" id="categorycancelbutton" onclick="window.close();"><%= wp.key(Messages.GUI_GALLERY_BUTTON_CANCEL_0) %></button>
 				</div>
 			</div>
 		</div>

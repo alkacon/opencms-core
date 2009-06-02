@@ -26,6 +26,10 @@ var ItemSitepath = function(){
 }
 var loadItemSitepath = null;
 
+/* this flag is to be set in the appropriate gallery to "true" */
+var isLinkGallery = false;
+var isTableGallery = false;
+
 /* Stores the hide image info timeout to interrupt it on a mouseover. */
 var imgDetailTimeout;
 
@@ -123,6 +127,7 @@ function refreshGallery() {
 	if (activeGallery != -1) {
 		getItems(galleries[activeGallery].path, true);
 		$("#galleryitemtitle").removeClass();
+
 	} else if (startGallery != null) {
 		getItems(startGallery.path, true);
 		$("#galleryitemtitle").removeClass();
@@ -140,16 +145,30 @@ function selectGallery(vfsPath, galleryIndex) {
 		}
 		activeGallery = galleryIndex;
 	}
-	// fill required data in upload link
-	var uploadLink = "../galleryelements/upload.jsp?gallery=";
-	uploadLink += vfsPath;
-	if ( isAppletUsed == true ) {
-		uploadLink += "&amp;TB_iframe=true&amp;width=480&amp;height=95&amp;modal=true";
-	} else {
+	if (isLinkGallery == true){
+		// fill required data to create new link
+		var newLink = "createlink.jsp?createlink=";
+		newLink += vfsPath;
+		newLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
+		$("#gallerynewlink").attr("href", newLink);
+		
+	} else if (isTableGallery == true) {
+		// fill required data in upload link
+		var uploadLink = "upload.jsp?gallery=";
+		uploadLink += vfsPath;
 		uploadLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
+		$("#galleryitemuploadlink").attr("href", uploadLink);
+	} else {
+		// fill required data in upload link
+		var uploadLink = "../galleryelements/upload.jsp?gallery=";
+		uploadLink += vfsPath;
+		if ( isAppletUsed == true ) {
+			uploadLink += "&amp;TB_iframe=true&amp;width=480&amp;height=95&amp;modal=true";
+		} else {
+			uploadLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
+		}
+		$("#galleryitemuploadlink").attr("href", uploadLink);
 	}
-	
-	$("#galleryitemuploadlink").attr("href", uploadLink);
 	// fill required data in publish link
 	$("#gallerypublishlink").attr("href", createPublishLink(vfsPath));
 	$("#galleryfolders").slideUp("fast", function(){ $("#galleryitems").slideDown("fast"); });
@@ -246,6 +265,19 @@ function setItemTitle(newTitle, modeName) {
 	}
 	if (checkItem.title != newTitle) {
 		$.post(vfsPathAjaxJsp, { action: "changeitemtitle", itempath: checkItem.sitepath, propertyvalue: newTitle}, function(data){ refreshMarkedItem(data, modeName); });
+	}
+}
+
+/* Sets the new link url property value of the marked item. */
+function setItemLinkurl(newLinkurl, modeName) {
+	var checkItem;
+	if (modeName == "gallery") {
+		checkItem = galleryItems.items[galleryItems.markedItem];
+	} else {
+		checkItem = categoryItems.items[categoryItems.markedItem];
+	}
+	if (checkItem.pointer != newLinkurl) {
+		$.post(vfsPathAjaxJsp, { action: "changeitemlinkurl", itempath: checkItem.sitepath, propertyvalue: newLinkurl}, function(data){ refreshMarkedItem(data, modeName); });
 	}
 }
 

@@ -32,10 +32,10 @@ var modeType = "";
 
 /* Initializes the download gallery popup window. */
 function initPopup() {
-	$("#categoryiteminfo > #dialogbuttons").hide();
-	$("#galleryiteminfo > #dialogbuttons").hide();
-
-	//$("#dialogbuttons").hide();
+	$("#gallerycancelbutton").remove();
+	$("#categorycancelbutton").remove();
+	$("#galleryokbutton").remove();
+	$("#categoryokbutton").remove();
 	
 	if (hasSelectedText() == true) {
 		loadItemSitepath = getSelectedLinkUri();

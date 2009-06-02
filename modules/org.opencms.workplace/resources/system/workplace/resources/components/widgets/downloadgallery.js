@@ -40,15 +40,21 @@
 var downloadGalleryPath;
 var galleryInfo;
 
-// opens the download gallery popup window, dialog mode has to be "widget" (as defined in A_CmsAjaxGallery.MODE_WIDGET)
+//opens the download gallery popup window, dialog mode has to be "widget" (as defined in A_CmsAjaxGallery.MODE_WIDGET)
 function openDownloadGallery(dialogMode, fieldId, idHash) {
 	
 	//parameter from the xml configuration
 	var startupFolder = eval('startupFolder' + idHash);
 	var startupType = eval('startupType' + idHash);
+	//edited resource has to be provided to use custom categories
+	var editedResource = "";
+	try {
+		editedResource = document.forms["EDITOR"].elements["resource"].value;
+	} catch (e) {};
 	galleryInfo = {
-		"startupfolder": startupFolder,
-		"startuptype": startupType
+		"startupfolder": 	startupFolder,
+		"startuptype": 		startupType,
+		"editedresource": 	editedResource
 	};
 	
 	var paramString = "&dialogmode=" + dialogMode;

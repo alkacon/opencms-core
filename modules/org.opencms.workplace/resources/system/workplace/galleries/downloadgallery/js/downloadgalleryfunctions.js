@@ -20,9 +20,12 @@ function fillItems(data, modeName) {
 			+ categories[activeCategory].path
 			+ "</span></div>");
 		$("#" + modeName + "itemselectbutton").fadeOut();
-		$("#" + modeName + "itemtitle").removeClass();
 		$("#" + modeName + "itempublishbutton").fadeOut();
-		$("#" + modeName + "okbutton").fadeOut();
+		if (initValues.dialogmode == "widget") {
+			$("#" + modeName + "okbutton").fadeOut();
+		}
+		$("#" + modeName + "itemtitle").removeClass();
+		$("#" + modeName + "itemtitle").unbind();
 	} else {
 		galleryItems = new ItemList();
 		galleryItems.items = foundItems;
@@ -46,10 +49,13 @@ function fillItems(data, modeName) {
 			+ "</span></div>");
 		//remove buttons to be not seen
 		$("#" + modeName + "itemselectbutton").fadeOut();
-		$("#" + modeName + "itemtitle").removeClass();
 		$("#" + modeName + "itempublishbutton").fadeOut();
-		$("#" + modeName + "okbutton").fadeOut();
-	}
+		if (initValues.dialogmode == "widget") {
+			$("#" + modeName + "okbutton").fadeOut();
+		}
+		$("#" + modeName + "itemtitle").unbind();
+		$("#" + modeName + "itemtitle").removeClass();
+		}
 	var innerListId = modeName + "itemlistinner";
 	$("#" + modeName + "itemlist").append("<div id=\"" + innerListId  + "\"></div>");
 	innerListId = "#" + innerListId;
@@ -317,8 +323,8 @@ function markItem(itemIndex, idPrefix) {
 		$("#" + idPrefix + "fileitem" + itemIndex).addClass("active");
 		markedIndex = itemIndex;
 		
-		if (initValues.dialogmode == "editor") {
-			//set activeItem to provide the active item for the dialog ok button
+		//set the active item onclick in editor mode
+		if (initValues.dialogmode == "editor" && itemIndex != -1) {
 			setActiveItem(itemIndex, idPrefix, true);
 		}	
 	} else {
@@ -369,7 +375,9 @@ function markItem(itemIndex, idPrefix) {
 		showItemInfo(markedIndex, idPrefix);
 		if (initValues.viewonly == false) {
 			$("#" + idPrefix + "itemselectbutton").fadeIn();
-			$("#" + idPrefix + "okbutton").fadeIn();
+			if(initValues.dialogmode == "widget") {
+				$("#" + idPrefix + "okbutton").fadeIn();
+			}
 			if (initValues.dialogmode == "editor") {
 				try {
 					// do additional stuff with the active item if necessary
@@ -381,7 +389,9 @@ function markItem(itemIndex, idPrefix) {
 		$("#" + idPrefix + "itemselectbutton").fadeOut();
 		$("#" + idPrefix + "itemtitle").removeClass();
 		$("#" + idPrefix + "itempublishbutton").fadeOut();
-		$("#" + idPrefix + "okbutton").fadeOut();
+		if (initValues.dialogmode == "widget") {
+			$("#" + idPrefix + "okbutton").fadeOut();
+		}
 	}
 }
 
