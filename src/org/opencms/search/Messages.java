@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2008/09/25 12:47:09 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/06/03 08:20:31 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -273,6 +273,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PARSE_TIMEOUT_FAILED_2 = "LOG_PARSE_TIMEOUT_FAILED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_PARSE_OFFLINE_UPDATE_FAILED_2 = "LOG_PARSE_OFFLINE_UPDATE_FAILED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_CATEGORY_FAILED_1 = "LOG_READ_CATEGORY_FAILED_1";

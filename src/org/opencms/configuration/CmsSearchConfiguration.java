@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2008/08/20 13:20:11 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/06/03 08:20:31 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 6.0.0
  */
@@ -200,6 +200,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
     public static final String N_TIMEOUT = "timeout";
 
     /** Node name constant. */
+    public static final String N_OFFLINE_UPDATE_FREQUENCY = "offlineUpdateFrequency";
+
+    /** Node name constant. */
     private static final String XPATH_SEARCH = "*/" + N_SEARCH;
 
     /** The configured search manager. */
@@ -237,6 +240,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
 
         // timeout rule
         digester.addCallMethod(XPATH_SEARCH + "/" + N_TIMEOUT, "setTimeout", 0);
+
+        // offline update rule
+        digester.addCallMethod(XPATH_SEARCH + "/" + N_OFFLINE_UPDATE_FREQUENCY, "setOfflineUpdateFrequency", 0);
 
         // forceunlock rule
         digester.addCallMethod(XPATH_SEARCH + "/" + N_FORCEUNLOCK, "setForceunlock", 0);
@@ -354,6 +360,9 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration {
         searchElement.addElement(N_DIRECTORY).addText(m_searchManager.getDirectory());
         // add <timeout> element
         searchElement.addElement(N_TIMEOUT).addText(String.valueOf(m_searchManager.getTimeout()));
+        //add <offlineUpdateFrequency> element
+        searchElement.addElement(N_OFFLINE_UPDATE_FREQUENCY).addText(
+            String.valueOf(m_searchManager.getOfflineUpdateFrequency()));
         // add <forceunlock> element
         if (m_searchManager.getForceunlock() != null) {
             searchElement.addElement(N_FORCEUNLOCK).addText(m_searchManager.getForceunlock().toString());

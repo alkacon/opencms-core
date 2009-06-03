@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/02/26 11:59:17 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2009/06/03 08:20:31 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.73 $ 
+ * @version $Revision: 1.74 $ 
  * 
  * @since 6.0.0 
  */
@@ -1414,6 +1414,24 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public void setOfflineUpdateFrequency(long offlineUpdateFrequency) {
 
         m_offlineUpdateFrequency = offlineUpdateFrequency;
+    }
+
+    /**
+     * Sets the update frequency of the offline indexer in milliseconds.<p>
+     *
+     * @param offlineUpdateFrequency the update frequency in milliseconds to set
+     */
+    public void setOfflineUpdateFrequency(String offlineUpdateFrequency) {
+
+        try {
+            setOfflineUpdateFrequency(Long.parseLong(offlineUpdateFrequency));
+        } catch (Exception e) {
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_PARSE_OFFLINE_UPDATE_FAILED_2,
+                offlineUpdateFrequency,
+                new Long(DEFAULT_OFFLINE_UPDATE_FREQNENCY)), e);
+            setOfflineUpdateFrequency(DEFAULT_OFFLINE_UPDATE_FREQNENCY);
+        }
     }
 
     /**

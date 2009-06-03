@@ -10,6 +10,7 @@
 	cache?,
 	directory,
 	timeout,
+	offlineUpdateFrequency?,
 	forceunlock?,
 	excerpt,
 	extractionCacheMaxAge?,
@@ -38,6 +39,11 @@
 # Timeout in milliseconds to abandon indexing threads.
 -->
 <!ELEMENT timeout (#PCDATA)>
+
+<!--
+# Time in milliseconds to update offline indexes.
+-->
+<!ELEMENT offlineUpdateFrequency (#PCDATA)>
 
 <!--
 # The state of unlocking during the indexing threads (always|never|onlyfull), 
