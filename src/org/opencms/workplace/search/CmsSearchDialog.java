@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/06/03 07:31:33 $
+ * Version: $Revision: 1.7 $
  *
  * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.2.0 
  */
@@ -132,7 +132,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
                         params.put(A_CmsListDialog.PARAM_LIST_ACTION, CmsSearchResultsList.LIST_DETAIL_EXCERPT);
                     }
                 } else {
-                    // toogle excerpts
+                    // toggle excerpts
                     metadata.getItemDetailDefinition(CmsSearchResultsList.LIST_DETAIL_EXCERPT).setVisible(withExcerpts);
                 }
                 params.put(A_CmsListExplorerDialog.PARAM_SHOW_EXPLORER, Boolean.FALSE);
