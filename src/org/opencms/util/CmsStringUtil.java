@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2008/06/20 15:38:03 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2009/06/03 17:12:30 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
@@ -1088,7 +1088,7 @@ public final class CmsStringUtil {
      * This is the form of the String that had to be written into source code 
      * using the unicode escape sequence for special characters. <p> 
      * 
-     * Example: "Ä" would be transformed to "\\u00C4".<p>
+     * Example: "&Auml" would be transformed to "\\u00C4".<p>
      * 
      * @param s a string that may contain non-ascii characters 
      * 

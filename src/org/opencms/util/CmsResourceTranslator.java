@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2008/02/27 12:05:36 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2009/06/03 17:12:30 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,13 +67,13 @@ import org.apache.oro.text.regex.MalformedPatternException;
  * &lt;filetranslations enabled="true"&gt;
  *    &lt;translation&gt;s#[\s]+#_#g&lt;/translation&gt;
  *    &lt;translation&gt;s#\\#/#g&lt;/translation&gt;
- *    &lt;translation&gt;s#ä#ae#g&lt;/translation&gt;
- *    &lt;translation&gt;s#Ä#Ae#g&lt;/translation&gt;
- *    &lt;translation&gt;s#ö#oe#g&lt;/translation&gt;
- *    &lt;translation&gt;s#Ö#Oe#g&lt;/translation&gt;
- *    &lt;translation&gt;s#ü#ue#g&lt;/translation&gt;
- *    &lt;translation&gt;s#Ü#Ue#g&lt;/translation&gt;
- *    &lt;translation&gt;s#ß#ss#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#&auml;#ae#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#&Auml;#Ae#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#&ouml;#oe#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#&Ouml;#Oe#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#&uuml;#ue#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#&Uuml;#Ue#g&lt;/translation&gt;
+ *    &lt;translation&gt;s#&szlig;#ss#g&lt;/translation&gt;
  *    &lt;translation&gt;s#[^0-9a-zA-Z_$~\.\-\/]#!#g&lt;/translation&gt;
  *    &lt;translation&gt;s#!+#x#g&lt;/translation&gt;
  * &lt;/filetranslations&gt;
@@ -95,7 +95,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */

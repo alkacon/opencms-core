@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsNewResourceExtendedHtmlImport.java,v $
- * Date   : $Date: 2008/02/27 12:05:51 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/06/03 17:11:41 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,9 +58,9 @@ import javax.servlet.jsp.PageContext;
  * 
  * @see CmsHtmlImportDialog <p>
  * 
- * @author Anja Röttgers
+ * @author Anja Roettgers
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  */
 public class CmsNewResourceExtendedHtmlImport extends CmsHtmlImportDialog {

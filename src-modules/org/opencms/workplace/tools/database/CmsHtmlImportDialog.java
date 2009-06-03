@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImportDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/06/03 17:11:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -102,9 +102,9 @@ import org.apache.commons.fileupload.FileItem;
  * </ul>
  * 
  * @author Peter Bonrad
- * @author Anja Röttgers
+ * @author Anja Roettgers
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  */
 public class CmsHtmlImportDialog extends CmsWidgetDialog {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditJQueryProvider.java,v $
- * Date   : $Date: 2008/08/20 14:12:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/06/03 17:11:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,9 +43,9 @@ import org.opencms.workplace.editors.Messages;
  * 
  * This provider DOES NOT support {@link CmsDirectEditMode#MANUAL} mode.<p>
  * 
- * @author Anja Röttgers
+ * @author Anja Roettgers
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.0.3
  */

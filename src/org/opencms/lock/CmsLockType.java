@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockType.java,v $
- * Date   : $Date: 2008/02/27 12:05:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/06/03 17:12:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.A_CmsModeIntEnumeration;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.0
  */
@@ -59,8 +59,8 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
     public static final CmsLockType PUBLISH = new CmsLockType(7);
 
     /**
-     * A lock that allows the user to edit the resource’s structure record only, 
-     * but not it’s resource record nor content record.<p>
+     * A lock that allows the user to edit the resource's structure record only, 
+     * but not it's resource record nor content record.<p>
      * 
      * This lock is assigned to files if a sibling of the resource record has
      * already an exclusive lock. 
@@ -68,8 +68,8 @@ public final class CmsLockType extends A_CmsModeIntEnumeration {
     public static final CmsLockType SHARED_EXCLUSIVE = new CmsLockType(2);
 
     /**
-     * A lock that allows the user to edit the resource’s structure record only, 
-     * but not it’s resource record nor content record.<p>
+     * A lock that allows the user to edit the resource's structure record only, 
+     * but not it's resource record nor content record.<p>
      * 
      * This lock is assigned to resources that already have a shared exclusive lock,
      * and then inherit a lock because one if it's parent folders gets locked.
