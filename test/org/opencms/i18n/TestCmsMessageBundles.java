@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2008/06/12 10:47:39 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/06/03 08:12:59 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0
  */
@@ -149,7 +149,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
                 return "Bundle '" + className + "' has no input for locale '" + locale + "'.\n";
             }
         }
-        // in case of no errors, return the emtpy String 
+        // in case of no errors, return the empty String 
         return "";
     }
 
@@ -222,8 +222,13 @@ public abstract class TestCmsMessageBundles extends TestCase {
                         && !key.startsWith(KEY_PREFIX_LOG) && !key.startsWith(KEY_PREFIX_RPT))) {
                     errorMessages.add("Key '" + key + "' must have the form {ERR|LOG|INIT|GUI|RPT}_KEYNAME_{0-9}.");
                 }
-                int argCount = Integer.valueOf(key.substring(key.length() - 1)).intValue();
-
+                int argCount = 0;
+                try {
+                    argCount = Integer.valueOf(key.substring(key.length() - 1)).intValue();
+                } catch (Exception e) {
+                    System.out.println(bundle.getBundleName());
+                    throw e;
+                }
                 if (testKeyValue && isPresent) {
                     for (int j = 0; j < argCount; j++) {
                         String arg = "{" + j;
@@ -331,7 +336,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
             }
             return msg + "\n";
         }
-        // in case there was no error, return an emtpy String
+        // in case there was no error, return an empty String
         return "";
     }
 
@@ -468,7 +473,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
         if (Locale.ENGLISH.equals(locale)) {
             return bundle.getBundleName();
         }
-        // substitute the last occuring "." of the bundle name with "/" to build the correct filename
+        // substitute the last occurring "." of the bundle name with "/" to build the correct filename
         String packageName = bundle.getBundleName().substring(0, bundle.getBundleName().lastIndexOf('.'));
         packageName += "/";
         String source = "modules/"
