@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsTextareaField.java,v $
- * Date   : $Date: 2008/07/01 13:29:42 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/06/03 07:20:57 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsStringUtil;
  * Represents a text area.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class CmsTextareaField extends A_CmsField {
 
@@ -104,7 +104,7 @@ public class CmsTextareaField extends A_CmsField {
             messages.key("form.html.multiline.label.end")).append("\n");
 
         // line #3
-        buf.append(messages.key("form.html.multiline.field.start")).append("<textarea rows=\"5\" cols=\"5\" name=\"").append(getName()).append(
+        buf.append(messages.key("form.html.multiline.field.start")).append("<textarea name=\"").append(getName()).append(
             "\"").append(formHandler.getFormConfiguration().getFormFieldAttributes()).append(">").append(
             CmsEncoder.escapeXml(getValue())).append("</textarea>").append(errorMessage).append(
             messages.key("form.html.multiline.field.end")).append("\n");
