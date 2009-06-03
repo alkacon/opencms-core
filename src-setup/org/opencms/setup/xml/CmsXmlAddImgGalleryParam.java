@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddImgGalleryParam.java,v $
- * Date   : $Date: 2008/02/27 12:05:37 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/06/03 12:37:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -84,11 +84,13 @@ public class CmsXmlAddImgGalleryParam extends A_CmsSetupXmlUpdate {
                     document,
                     xpath + "/@" + I_CmsXmlConfiguration.A_NAME,
                     CmsResourceTypeFolderExtended.CONFIGURATION_FOLDER_CLASS_PARAMS);
-                CmsSetupXmlHelper.setValue(document, xpath, "w:120,h:90,c:dddddd,t:1,r:2");
+                CmsSetupXmlHelper.setValue(document, xpath, "w:120,h:90,c:D4D0C8,t:1,r:2");
             }
-            return true;
+
+        } else {
+            node.setText("w:120,h:90,c:D4D0C8,t:1,r:2");
         }
-        return false;
+        return true;
     }
 
     /**
