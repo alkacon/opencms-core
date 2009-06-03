@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/04/29 08:55:49 $
- * Version: $Revision: 1.243 $
+ * Date   : $Date: 2009/06/03 10:27:32 $
+ * Version: $Revision: 1.244 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.243 $ 
+ * @version $Revision: 1.244 $ 
  * 
  * @since 6.0.0 
  */
@@ -1412,10 +1412,10 @@ public final class OpenCmsCore {
                         secureUrl = site.getSecureUrl();
                     } catch (Exception e) {
                         LOG.error(
-                            Messages.get().getBundle().key(Messages.ERR_SECURE_SITE_NOT_CONFIGURED, resourceName),
+                            Messages.get().getBundle().key(Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1, resourceName),
                             e);
                         throw new CmsException(Messages.get().container(
-                            Messages.ERR_SECURE_SITE_NOT_CONFIGURED,
+                            Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
                             resourceName), e);
                     }
                     boolean usingSec = req.getRequestURL().toString().toUpperCase().startsWith(secureUrl.toUpperCase());
