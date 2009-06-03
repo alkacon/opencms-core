@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCategoryResourceCollector.java,v $
- * Date   : $Date: 2008/07/01 16:00:57 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/06/03 07:30:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 7.0.0
  */
@@ -403,7 +403,10 @@ public class CmsCategoryResourceCollector extends A_CmsResourceCollector {
                 // categories are sort by their paths
                 Iterator itCategoryTypes = categoryTypes.iterator();
                 while (itCategoryTypes.hasNext()) {
-                    result.addAll((List)sortCategories.get(itCategoryTypes.next()));
+                    List categoryListToAdd = (List)sortCategories.get(itCategoryTypes.next());
+                    if (categoryListToAdd != null) {
+                        result.addAll(categoryListToAdd);
+                    }
                 }
             }
             return shrinkToFit(result, data.getCount());
