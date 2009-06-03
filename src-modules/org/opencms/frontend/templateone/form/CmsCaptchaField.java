@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaField.java,v $
- * Date   : $Date: 2008/02/27 12:05:22 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/06/03 07:43:17 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Locale;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
@@ -49,8 +50,6 @@ import org.apache.commons.logging.Log;
 
 import com.octo.captcha.CaptchaException;
 import com.octo.captcha.service.image.ImageCaptchaService;
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
  * Creates captcha images and validates the pharses submitted by a request parameter.
@@ -60,7 +59,7 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class CmsCaptchaField extends A_CmsField {
 
@@ -256,9 +255,7 @@ public class CmsCaptchaField extends A_CmsField {
         } while (captchaImage == null && maxTries > 0);
         try {
 
-            JPEGImageEncoder jpegEncoder = JPEGCodec.createJPEGEncoder(captchaImageOutput);
-            jpegEncoder.encode(captchaImage);
-
+            ImageIO.write(captchaImage, "jpg", captchaImageOutput);
             CmsFlexController controller = CmsFlexController.getController(cms.getRequest());
             HttpServletResponse response = controller.getTopResponse();
             response.setHeader("Cache-Control", "no-store");

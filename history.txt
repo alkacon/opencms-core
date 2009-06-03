@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/06/03 07:30:52 $
- * Version: $Revision: 1.1103 $
+ * Date   : $Date: 2009/06/03 07:43:17 $
+ * Version: $Revision: 1.1104 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -74,6 +74,7 @@ OpenCms 7.3.0 (aka 7.5 beta 1) - May 18, 2009
 * Fixed issue #1311: editoptions in opencms-modules.xml inhibits the import
 * Fixed issue #1738: CmsShellCommands.uploadFile(...) not working
 * Fixed issue #1696: Categories collector throws unexpected nullpointer exception
+* Fixed issue #1697: Fixed incompatibility of templateone form with OpenJDK 1.6 (Fedora 10)
 * Fixed issue with JSP hard includes when using site relative paths
 * Fixed issue with performance when serving JSP pages
 * Fixed issue with SQL query not running on MS SQL server
