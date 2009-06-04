@@ -33,7 +33,7 @@
 				<mapping element="Name" mapto="property:Title" />
 			</mappings>
 			<layouts>
-				<layout element="Category" widget="CategoryWidget" configuration="category=wurstsorten|keyprefix=itemcategory" />
+				<layout element="Category" widget="CategoryWidget" configuration="category=gewaechsarten|keyprefix=itemcategory" />
 				<layout element="ShortDescription" widget="HtmlWidget" configuration="height:100px,link"/>
 				<layout element="LongDescription" widget="HtmlWidget" configuration="link,source"/>
 			</layouts>
@@ -42,6 +42,10 @@
 			<relations>
 				<relation element="Images/Image" invalidate="parent" />
 			</relations>
+			<tabs>
+				<tab element="Name" name="TabItem" collapse="false" />
+				<tab element="Config" collapse="true" />
+			</tabs>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

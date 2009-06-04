@@ -51,6 +51,10 @@
 			<relations>
 				<relation element="Paragraph/Image/Image" invalidate="parent" />
 			</relations>
+			<tabs>
+				<tab element="Title" name="TabEvent" collapse="false" />
+				<tab element="Config" collapse="true" />
+			</tabs>
 		</xsd:appinfo>
 
 	</xsd:annotation>  
