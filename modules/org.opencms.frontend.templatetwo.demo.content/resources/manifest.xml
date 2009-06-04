@@ -4042,19 +4042,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>demo_de/widgetdemo</destination>
-			<type>folder</type>
-			<uuidstructure>2821613c-4132-11de-b909-f9441ff21e44</uuidstructure>
-			<datelastmodified>Fri, 15 May 2009 09:25:39 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 15 May 2009 09:24:14 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>demo_en</destination>
 			<type>folder</type>
 			<uuidstructure>84cd3042-e448-11dc-add5-9f7a6a6ce285</uuidstructure>
@@ -7961,19 +7948,6 @@
 					<value><![CDATA[/system/modules/org.opencms.frontend.layoutpage/pages/detail-layoutpage.html]]></value>
 				</property>
 			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>demo_en/widgetdemo</destination>
-			<type>folder</type>
-			<uuidstructure>44b3fc51-4132-11de-b909-f9441ff21e44</uuidstructure>
-			<datelastmodified>Fri, 15 May 2009 13:09:32 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 15 May 2009 09:25:02 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
