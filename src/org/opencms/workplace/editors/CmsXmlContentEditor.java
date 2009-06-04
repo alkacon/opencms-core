@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2009/05/19 15:53:57 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2009/06/04 09:15:44 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.82 $ 
+ * @version $Revision: 1.83 $ 
  * 
  * @since 6.0.0 
  */
@@ -1798,7 +1798,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                             String newPath = CmsXmlUtils.createXpathElement(value.getName(), value.getIndex() + 1);
                             result.append("<td class=\"maxwidth\">");
                             boolean showHelp = (j == 0);
-                            superTabOpened = !nested && tabOpened;
+                            superTabOpened = !nested && tabOpened && collapseLabel;
                             result.append(getXmlEditorForm(
                                 nestedContentDefinition,
                                 pathPrefix + newPath + "/",
