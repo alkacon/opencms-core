@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsUserDisabledException.java,v $
- * Date   : $Date: 2009/04/20 13:26:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/06/04 14:29:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.main.CmsException;
  * 
  * @version 1.0
  * 
- * @since 7.0.6
+ * @since 7.5.0
  * 
  */
 public class CmsUserDisabledException extends CmsAuthentificationException {

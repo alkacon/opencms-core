@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.editarea/resources/system/workplace/editors/editarea/edit.js,v $
- * Date   : $Date: 2008/03/18 15:45:24 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/06/04 14:39:24 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

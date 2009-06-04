@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/06/03 08:21:49 $
- * Version: $Revision: 1.1105 $
+ * Date   : $Date: 2009/06/04 14:43:11 $
+ * Version: $Revision: 1.1106 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  */
 
 History of changes for the OpenCms project.
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.3.0 (aka 7.5 beta 1) - May 18, 2009
+OpenCms 7.5.0 - May 18, 2009
 ! Added configuration of offline update frequency
 ! Added support for decentralized categories
 ! Simapi and Image scaler now support image cropping

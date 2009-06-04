@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/notification/TestResponsibles.java,v $
- * Date   : $Date: 2008/02/27 12:05:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/06/04 14:35:32 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the "readResponsibleUsers" method of the CmsObject.<p>
  * 
  * @author Jan Baudisch 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestResponsibles extends OpenCmsTestCase {
   

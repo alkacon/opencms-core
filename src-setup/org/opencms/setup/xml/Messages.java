@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/Messages.java,v $
- * Date   : $Date: 2008/02/27 12:05:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/06/04 14:31:32 $
+ * Version: $Revision: 1.4 $
  *
- * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
  * 
  * This source code is the intellectual property of Alkacon Software GmbH.
@@ -36,7 +36,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.2.0 
  */

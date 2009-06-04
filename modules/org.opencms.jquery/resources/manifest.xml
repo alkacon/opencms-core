@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.6</opencms_version>
+		<opencms_version>7.5.0</opencms_version>
 		<createdate>Mon, 09 Jun 2008 15:46:01 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -14,7 +14,7 @@
 		<group>OpenCms frontend</group>
 		<class/>
 		<description><![CDATA[This modules includes the JQuery javascript libraries as well as several plugins used by OpenCms]]></description>
-		<version>7.0.6</version>
+		<version>7.5.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>

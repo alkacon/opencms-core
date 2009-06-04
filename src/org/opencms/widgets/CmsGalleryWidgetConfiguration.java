@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsGalleryWidgetConfiguration.java,v $
- * Date   : $Date: 2009/05/19 15:53:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/06/04 14:29:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,9 +58,9 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author  
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
- * @since 7.0.6 
+ * @since 7.5.0 
  */
 public class CmsGalleryWidgetConfiguration {
 

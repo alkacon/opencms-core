@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsDifferenceDialog.java,v $
- * Date   : $Date: 2008/02/27 12:05:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/06/04 14:29:34 $
+ * Version: $Revision: 1.8 $
  *
- * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
  * 
  * This source code is the intellectual property of Alkacon Software GmbH.
@@ -39,7 +39,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */

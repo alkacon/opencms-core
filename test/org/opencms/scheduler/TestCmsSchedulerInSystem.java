@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsSchedulerInSystem.java,v $
- * Date   : $Date: 2008/02/27 12:05:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/06/04 14:35:34 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -44,7 +44,7 @@ import junit.framework.TestSuite;
  * Unit test for the OpenCms scheduler in a running system.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestCmsSchedulerInSystem extends OpenCmsTestCase {
   
