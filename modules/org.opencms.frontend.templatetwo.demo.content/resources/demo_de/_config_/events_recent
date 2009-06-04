@@ -22,7 +22,7 @@
     <Mapping>
       <Field><![CDATA[Text]]></Field>
       <XmlNode><![CDATA[Teaser]]></XmlNode>
-      <MaxLength><![CDATA[150]]></MaxLength>
+      <MaxLength><![CDATA[400]]></MaxLength>
     </Mapping>
     <Mapping>
       <Field><![CDATA[Image]]></Field>

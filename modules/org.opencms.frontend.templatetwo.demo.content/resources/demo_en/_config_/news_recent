@@ -3,6 +3,7 @@
 <ListBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/listbox.xsd">
   <ListBox language="en">
     <Title><![CDATA[Recent news]]></Title>
+    <Image/>
     <Links>
       <link type="WEAK">
         <target><![CDATA[/sites/default/demo_en/today/news/]]></target>
@@ -14,7 +15,7 @@
     <More/>
     <PositionAuthor><![CDATA[Top]]></PositionAuthor>
     <PositionDate><![CDATA[Top]]></PositionDate>
-    <PositionImage><![CDATA[Top]]></PositionImage>
+    <PositionImage><![CDATA[Left]]></PositionImage>
     <Mapping>
       <Field><![CDATA[Title]]></Field>
       <XmlNode><![CDATA[Title]]></XmlNode>
@@ -22,11 +23,15 @@
     <Mapping>
       <Field><![CDATA[Text]]></Field>
       <XmlNode><![CDATA[Teaser]]></XmlNode>
-      <MaxLength><![CDATA[150]]></MaxLength>
+      <MaxLength><![CDATA[500]]></MaxLength>
     </Mapping>
     <Mapping>
       <Field><![CDATA[Date]]></Field>
       <XmlNode><![CDATA[Date]]></XmlNode>
+    </Mapping>
+    <Mapping>
+      <Field><![CDATA[Image]]></Field>
+      <XmlNode><![CDATA[Paragraph/Image/Image]]></XmlNode>
     </Mapping>
   </ListBox>
 </ListBoxes>
