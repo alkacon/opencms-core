@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadUtils.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/06/05 14:48:14 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.io.File;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,13 +102,12 @@ public final class FileUploadUtils {
     /**
      * Returns <code>true</code> in case the given extension is one of the known office file extensions.<p>
      * 
-     * Known extensions are: <code>.pdf, .odt, .ods, .odp, .odg, .doc, .xls, .ppt, .vsd</code>.<p>
-     * 
      * @param extension the extension to check, must start with a dot '.'
      * @return <code>true</code> in case the given extension is one of the known office file extensions
      */
     public static boolean isOfficeExtension(String extension) {
 
+        // TODO: next modification move this to a static sorted map for faster lookup:
         if (extension != null) {
             return (extension.equals(".odt")
                 || extension.equals(".ods")
@@ -117,7 +116,27 @@ public final class FileUploadUtils {
                 || extension.equals(".pdf")
                 || extension.equals(".doc")
                 || extension.equals(".xls")
-                || extension.equals(".vsd") || extension.equals(".ppt"));
+                || extension.equals(".vsd")
+                || extension.equals(".ppt")
+                || extension.equals(".docx")
+                || extension.equals(".docm")
+                || extension.equals(".dotx")
+                || extension.equals(".dotm")
+                || extension.equals(".xlsx")
+                || extension.equals(".xlsm")
+                || extension.equals(".xlsb")
+                || extension.equals(".xlam")
+                || extension.equals(".pptx")
+                || extension.equals(".pptm")
+                || extension.equals(".ppsx")
+                || extension.equals(".ppsm")
+                || extension.equals(".potx")
+                || extension.equals(".potm")
+                || extension.equals(".ppam")
+                || extension.equals(".sldx")
+                || extension.equals(".sldm") || extension.equals(".thmx")
+
+            );
         } else {
             return false;
         }

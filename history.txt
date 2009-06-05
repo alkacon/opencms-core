@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/06/05 14:45:38 $
- * Version: $Revision: 1.1107 $
+ * Date   : $Date: 2009/06/05 14:48:13 $
+ * Version: $Revision: 1.1108 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ OpenCms 7.5.0 - May 18, 2009
 ! Improved exception handling on login of disabled users
 ! Improved handling of secure site configuration errors.
 ! Tabs can now be defined for the structured content editor to improve usability
+! Added support for new Microsoft document types to upload applet
 - Updated FCKeditor to version 2.6.4
 - Updated EditArea syntax highlighting editor to 0.8.1.1
 - Updated simapi.jar to version 0.9.8
