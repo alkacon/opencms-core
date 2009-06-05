@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2009/06/04 14:31:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/06/05 14:26:26 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.1.8 
  */
@@ -107,6 +107,7 @@ public class CmsSetupXmlManager {
         m_plugins.add(new CmsXmlReplaceHtmlAreaWidgets());
         m_plugins.add(new CmsXmlAddImageLoader());
         m_plugins.add(new CmsXmlAddImgGalleryParam());
+        m_plugins.add(new CmsXmlChangeGalleryClasses());
         m_plugins.add(new CmsXmlAddXmlContentWidgets());
         m_plugins.add(new CmsXmlAddXmlSchemaTypes());
         m_plugins.add(new CmsXmlAddMimeTypes());
@@ -114,7 +115,7 @@ public class CmsSetupXmlManager {
 
         // workplace
         if (fromV6) {
-            // all this plugins apply to v6 and not anymore to v7
+            // all these plugins apply to v6 and not anymore to v7
             m_plugins.add(new CmsXmlUpdateDefaultProperties());
 
             m_plugins.add(new CmsXmlAddAvailabilityContextMenu());
