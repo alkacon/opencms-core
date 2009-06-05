@@ -581,6 +581,30 @@
 				<mimetype extension=".rss" type="application/rss+xml" />
  		        <mimetype extension=".jar" type="application/java-archive"/>
 				<mimetype extension=".jad" type="text/vnd.sun.j2me.app-descriptor"/>
+				<mimetype extension=".docx" type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+		        <mimetype extension=".docm" type="application/vnd.ms-word.document.macroEnabled.12"/>
+		        <mimetype extension=".dotx" type="application/vnd.openxmlformats-officedocument.wordprocessingml.template"/>
+		        <mimetype extension=".dotm" type="application/vnd.ms-word.template.macroEnabled.12"/>
+		        <mimetype extension=".xlsx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+		        <mimetype extension=".xlsm" type="application/vnd.ms-excel.sheet.macroEnabled.12"/>
+		        <mimetype extension=".xltx" type="application/vnd.openxmlformats-officedocument.spreadsheetml.template"/>
+		        <mimetype extension=".xltm" type="application/vnd.ms-excel.template.macroEnabled.12"/>
+		        <mimetype extension=".xlsb" type="application/vnd.ms-excel.sheet.binary.macroEnabled.12"/>
+		        <mimetype extension=".xlam" type="application/vnd.ms-excel.addin.macroEnabled.12"/>
+		        <mimetype extension=".pptx" type="application/vnd.openxmlformats-officedocument.presentationml.presentation"/>
+		        <mimetype extension=".pptm" type="application/vnd.ms-powerpoint.presentation.macroEnabled.12"/>
+		        <mimetype extension=".ppsx" type="application/vnd.openxmlformats-officedocument.presentationml.slideshow"/>
+		        <mimetype extension=".ppsm" type="application/vnd.ms-powerpoint.slideshow.macroEnabled.12"/>
+		        <mimetype extension=".potx" type="application/vnd.openxmlformats-officedocument.presentationml.template"/>
+		        <mimetype extension=".potm" type="application/vnd.ms-powerpoint.template.macroEnabled.12"/>
+		        <mimetype extension=".ppam" type="application/vnd.ms-powerpoint.addin.macroEnabled.12"/>
+		        <mimetype extension=".sldx" type="application/vnd.openxmlformats-officedocument.presentationml.slide"/>
+		        <mimetype extension=".sldm" type="application/vnd.ms-powerpoint.slide.macroEnabled.12"/>
+		        <mimetype extension=".thmx" type="application/vnd.ms-officetheme"/>
+		        <mimetype extension=".onetoc" type="application/onenote"/>
+		        <mimetype extension=".onetoc2" type="application/onenote"/>
+		        <mimetype extension=".onetmp" type="application/onenote"/>
+		        <mimetype extension=".onepkg" type="application/onenote"/>
 			</mimetypes>
 		</resources>
 		<defaultfiles>

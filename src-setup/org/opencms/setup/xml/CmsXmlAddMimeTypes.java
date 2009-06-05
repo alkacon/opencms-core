@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddMimeTypes.java,v $
- * Date   : $Date: 2009/06/04 14:31:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/06/05 14:26:55 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.2.3
  */
@@ -550,7 +550,31 @@ public class CmsXmlAddMimeTypes extends A_CmsSetupXmlUpdate {
         {".xmz", "xgl/movie"},
         {".rss", "application/rss+xml"},
         {".jar", "application/java-archive"},
-        {".jad", "text/vnd.sun.j2me.app-descriptor"}};
+        {".jad", "text/vnd.sun.j2me.app-descriptor"},
+        {".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+        {".docm", "application/vnd.ms-word.document.macroEnabled.12"},
+        {".dotx", "application/vnd.openxmlformats-officedocument.wordprocessingml.template"},
+        {".dotm", "application/vnd.ms-word.template.macroEnabled.12"},
+        {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+        {".xlsm", "application/vnd.ms-excel.sheet.macroEnabled.12"},
+        {".xltx", "application/vnd.openxmlformats-officedocument.spreadsheetml.template"},
+        {".xltm", "application/vnd.ms-excel.template.macroEnabled.12"},
+        {".xlsb", "application/vnd.ms-excel.sheet.binary.macroEnabled.12"},
+        {".xlam", "application/vnd.ms-excel.addin.macroEnabled.12"},
+        {".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
+        {".pptm", "application/vnd.ms-powerpoint.presentation.macroEnabled.12"},
+        {".ppsx", "application/vnd.openxmlformats-officedocument.presentationml.slideshow"},
+        {".ppsm", "application/vnd.ms-powerpoint.slideshow.macroEnabled.12"},
+        {".potx", "application/vnd.openxmlformats-officedocument.presentationml.template"},
+        {".potm", "application/vnd.ms-powerpoint.template.macroEnabled.12"},
+        {".ppam", "application/vnd.ms-powerpoint.addin.macroEnabled.12"},
+        {".sldx", "application/vnd.openxmlformats-officedocument.presentationml.slide"},
+        {".sldm", "application/vnd.ms-powerpoint.slide.macroEnabled.12"},
+        {".thmx", "application/vnd.ms-officetheme"},
+        {".onetoc", "application/onenote"},
+        {".onetoc2", "application/onenote"},
+        {".onetmp", "application/onenote"},
+        {".onepkg", "application/onenote"}};
 
     /**
      * @see org.opencms.setup.xml.I_CmsSetupXmlUpdate#getName()
@@ -575,27 +599,22 @@ public class CmsXmlAddMimeTypes extends A_CmsSetupXmlUpdate {
     protected boolean executeUpdate(Document document, String xpath) {
 
         Node node = document.selectSingleNode(xpath);
-        if (node == null) {
-            if (xpath.equals(getXPathsToUpdate().get(0))) {
-                for (int i = 0; i < m_mimeTypes.length; i++) {
-                    String mPath = xpath
-                        + "/"
-                        + CmsVfsConfiguration.N_MIMETYPE
-                        + "[@"
-                        + CmsVfsConfiguration.A_EXTENSION
-                        + "=\""
-                        + m_mimeTypes[i][0]
-                        + "\"]";
-                    CmsSetupXmlHelper.setValue(
-                        document,
-                        mPath + "/@" + CmsVfsConfiguration.A_EXTENSION,
-                        m_mimeTypes[i][0]);
-                    CmsSetupXmlHelper.setValue(document, mPath + "/@" + I_CmsXmlConfiguration.A_TYPE, m_mimeTypes[i][1]);
-                }
+        if (xpath.equals(getXPathsToUpdate().get(0))) {
+            for (int i = 0; i < m_mimeTypes.length; i++) {
+                String mPath = xpath
+                    + "/"
+                    + CmsVfsConfiguration.N_MIMETYPE
+                    + "[@"
+                    + CmsVfsConfiguration.A_EXTENSION
+                    + "=\""
+                    + m_mimeTypes[i][0]
+                    + "\"]";
+                CmsSetupXmlHelper.setValue(document, mPath + "/@" + CmsVfsConfiguration.A_EXTENSION, m_mimeTypes[i][0]);
+                CmsSetupXmlHelper.setValue(document, mPath + "/@" + I_CmsXmlConfiguration.A_TYPE, m_mimeTypes[i][1]);
             }
-            return true;
         }
-        return false;
+        return true;
+
     }
 
     /**
