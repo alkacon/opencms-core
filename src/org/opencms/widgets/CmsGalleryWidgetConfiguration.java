@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsGalleryWidgetConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:11 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/06/05 14:42:36 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,9 +56,10 @@ import org.opencms.util.CmsStringUtil;
  * <code>{type: 'gallery', startup: '/demo_en/images/'}</code><p>
  * <code>{type: 'category', startup: 'wurstsorten/kochwurst/'}</code><p>
  *
- * @author  
+ * @author Polina Smagina
+ * @author Andreas Zahner 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.0 
  */

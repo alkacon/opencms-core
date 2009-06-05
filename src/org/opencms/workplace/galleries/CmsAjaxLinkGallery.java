@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxLinkGallery.java,v $
- * Date   : $Date: 2009/06/05 09:05:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/06/05 14:42:35 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,14 +54,14 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides the specific constants, members and helper methods to generate the content of the download gallery dialog 
+ * Provides the specific constants, members and helper methods to generate the content of the external link gallery dialog 
  * used in the XML content editors, WYSIWYG editors and context menu.<p>
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
- * @since 6.0.0 
+ * @since 7.5.0 
  */
 
 public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {

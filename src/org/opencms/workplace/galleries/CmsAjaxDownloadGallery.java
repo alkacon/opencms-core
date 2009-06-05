@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxDownloadGallery.java,v $
- * Date   : $Date: 2009/06/05 13:31:38 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/06/05 14:42:36 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,9 +51,9 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
- * @since 6.0.0 
+ * @since 7.5.0 
  */
 public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
 
@@ -139,7 +139,7 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
     protected void buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath) {
 
         try {
-            // 1: file mimetype
+            // file mimetype
             String mt = OpenCms.getResourceManager().getMimeType(getJsp().link(sitePath), null);
             if (mt.equals("application/msword")
                 || mt.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
