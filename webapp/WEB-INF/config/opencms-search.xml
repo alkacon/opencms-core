@@ -182,18 +182,9 @@
 			</index>
 			<index>
 				<name>Offline project EN (VFS)</name>
-				<rebuild>auto</rebuild>
+				<rebuild>offline</rebuild>
 				<project>Offline</project>
 				<locale>en</locale>			
-				<sources>
-					<source>source1</source>
-				</sources>		
-			</index>
-			<index>
-				<name>Offline project DE (VFS)</name>
-				<rebuild>auto</rebuild>
-				<project>Offline</project>
-				<locale>de</locale>			
 				<sources>
 					<source>source1</source>
 				</sources>		

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/06/05 15:49:44 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -211,6 +211,8 @@ public class CmsEditSearchIndexDialog extends A_CmsEditSearchIndexDialog {
         CmsSelectWidgetOption option = new CmsSelectWidgetOption("auto", "auto".equals(rebuildMode));
         result.add(option);
         option = new CmsSelectWidgetOption("manual", "manual".equals(rebuildMode));
+        result.add(option);
+        option = new CmsSelectWidgetOption("offline", "offline".equals(rebuildMode));
         result.add(option);
         return result;
     }
