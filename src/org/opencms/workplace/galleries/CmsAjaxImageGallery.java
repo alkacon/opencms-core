@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxImageGallery.java,v $
- * Date   : $Date: 2009/05/19 15:53:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/06/05 09:05:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,8 +58,9 @@ import org.apache.commons.logging.Log;
  * used in the XML content editors, WYSIWYG editors and context menu.<p>  
  *
  * @author Andreas Zahner  
+ * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,6 +107,14 @@ public class CmsAjaxImageGallery extends A_CmsAjaxGallery {
 
     /** The resource type id of this gallery instance. */
     private int m_galleryTypeId;
+
+    /**
+     * Public empty constructor, required for {@link A_CmsAjaxGallery#createInstance(String, CmsJspActionElement)}.<p>
+     */
+    public CmsAjaxImageGallery() {
+
+        // noop
+    }
 
     /**
      * Public constructor with JSP action element.<p>

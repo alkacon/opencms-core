@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxDownloadGallery.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxHtmlGallery.java,v $
  * Date   : $Date: 2009/06/05 09:05:16 $
- * Version: $Revision: 1.2 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,12 @@
 package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsLoaderException;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
@@ -46,25 +48,25 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides the specific constants, members and helper methods to generate the content of the download gallery dialog 
+ * Provides the specific constants, members and helper methods to generate the content of the html gallery dialog 
  * used in the XML content editors, WYSIWYG editors and context menu.<p>
  * 
  * @author Polina Smagina  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
+public class CmsAjaxHtmlGallery extends A_CmsAjaxGallery {
 
-    /** Type name of the download gallery. */
-    public static final String GALLERYTYPE_NAME = "downloadgallery";
+    /** Type name of the html gallery. */
+    public static final String GALLERYTYPE_NAME = "htmlgallery";
 
     /** The uri suffix for the gallery start page. */
     public static final String OPEN_URI_SUFFIX = GALLERYTYPE_NAME + "/index.jsp";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsAjaxDownloadGallery.class);
+    private static final Log LOG = CmsLog.getLog(CmsAjaxHtmlGallery.class);
 
     /** The resource type id of this gallery instance. */
     private int m_galleryTypeId;
@@ -72,7 +74,7 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
     /**
      * Public empty constructor, required for {@link A_CmsAjaxGallery#createInstance(String, CmsJspActionElement)}.<p>
      */
-    public CmsAjaxDownloadGallery() {
+    public CmsAjaxHtmlGallery() {
 
         // noop
     }
@@ -82,7 +84,7 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsAjaxDownloadGallery(CmsJspActionElement jsp) {
+    public CmsAjaxHtmlGallery(CmsJspActionElement jsp) {
 
         super(jsp);
 
@@ -95,19 +97,45 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsAjaxDownloadGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsAjaxHtmlGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+
+    }
+
+    /**
+     * Fills the JSON object with the specific information used for the resources of the html gallery.<p>
+     * 
+     * <ul>
+     * <li><code>html</code>: the content of the given file resource (html code).</li>
+     * </ul>
+     * 
+     * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath)
+     *
+     */
+    protected void buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath) {
+
+        String html = "";
+        try {
+            html = new String(getCms().readFile(res).getContents());
+            jsonObj.append("html", html);
+        } catch (CmsException e) {
+            // reading the resource or property value failed
+            LOG.error(e.getLocalizedMessage(), e);
+        } catch (JSONException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+
     }
 
     /**
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryItemsTypeId()
-     * 
-     * @return -1 for download gallery type
      */
     public int getGalleryItemsTypeId() {
 
-        return -1;
+        return CmsResourceTypePlain.getStaticTypeId();
     }
 
     /**
@@ -126,43 +154,4 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
         return this.m_galleryTypeId;
     }
 
-    /**
-     * Fills the JSON object with the specific information used for download file resource type.<p>
-     * 
-     * <ul>
-     * <li><code>mimetype</code>: file mimetype.</li>
-     * </ul>
-     * 
-     * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath)
-     *
-     */
-    protected void buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath) {
-
-        try {
-            // 1: file mimetype
-            String mimetype = "unknown/mimetype";
-            String mt = OpenCms.getResourceManager().getMimeType(getJsp().link(sitePath), null);
-            if (mt.equals("application/msword")) {
-                mimetype = mt;
-            } else if (mt.equals("application/pdf")) {
-                mimetype = mt;
-            } else if (mt.equals("application/vnd.ms-excel")) {
-                mimetype = mt;
-            } else if (mt.equals("application/vnd.ms-powerpoint")) {
-                mimetype = mt;
-            } else if (mt.equals("image/jpeg")) {
-                mimetype = mt;
-            } else if (mt.equals("image/png")) {
-                mimetype = mt;
-            } else if (mt.equals("text/plain")) {
-                mimetype = mt;
-            }
-            jsonObj.put("mimetype", mimetype);
-
-        } catch (JSONException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
-    }
 }

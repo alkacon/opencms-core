@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/06/05 09:05:16 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,6 +85,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GALLERY_CATEGORIES_HL_AVAILABLE_0 = "GUI_GALLERY_CATEGORIES_HL_AVAILABLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKGALLERY_BUTTON_NEWLINK_0 = "GUI_LINKGALLERY_BUTTON_NEWLINK_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGEGALLERY_CROP_HEADLINE_0 = "GUI_IMAGEGALLERY_CROP_HEADLINE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -107,6 +110,24 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DOWNLOADGALLERY_EDITOR_TOOLTIP_0 = "GUI_DOWNLOADGALLERY_EDITOR_TOOLTIP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKGALLERY_EDITOR_TITLE_0 = "GUI_LINKGALLERY_EDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LINKGALLERY_EDITOR_TOOLTIP_0 = "GUI_LINKGALLERY_EDITOR_TOOLTIP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLGALLERY_EDITOR_TITLE_0 = "GUI_HTMLGALLERY_EDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HTMLGALLERY_EDITOR_TOOLTIP_0 = "GUI_HTMLGALLERY_EDITOR_TOOLTIP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TABLEGALLERY_EDITOR_TITLE_0 = "GUI_TABLEGALLERY_EDITOR_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TABLEGALLERY_EDITOR_TOOLTIP_0 = "GUI_TABLEGALLERY_EDITOR_TOOLTIP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGEGALLERY_FORMAT_FREECROP_0 = "GUI_IMAGEGALLERY_FORMAT_FREECROP_0";
@@ -227,6 +248,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_ITEMDETAIL_TARGET_0 = "GUI_GALLERY_ITEMDETAIL_TARGET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_ITEMDETAIL_LINKTO_0 = "GUI_GALLERY_ITEMDETAIL_LINKTO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_IMAGEGALLERY_IMGDETAIL_STATE_CHANGED_0 = "GUI_IMAGEGALLERY_IMGDETAIL_STATE_CHANGED_0";

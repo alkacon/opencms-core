@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/A_CmsAjaxGallery.java,v $
- * Date   : $Date: 2009/05/19 15:53:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/06/05 09:05:16 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeFolderExtended;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -43,12 +45,14 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsCategory;
 import org.opencms.relations.CmsCategoryService;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
@@ -61,6 +65,7 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
@@ -77,11 +82,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsAjaxGallery extends CmsDialog {
+
+    /** Request parameter value for the action: change the item link url value. */
+    public static final String DIALOG_CHANGEITEMLINKURL = "changeitemlinkurl";
 
     /** Request parameter value for the action: change the item title property value. */
     public static final String DIALOG_CHANGEITEMTITLE = "changeitemtitle";
@@ -100,6 +108,9 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
 
     /** Request parameter value for the action: get the items for a gallery or category. */
     public static final String DIALOG_GETITEMS = "getitems";
+
+    /** Request parameter value for the action: list gallery items. */
+    public static final String DIALOG_LIST = "list";
 
     /** The list mode name "category" for getting the items. */
     public static final String LISTMODE_CATEGORY = "category";
@@ -170,6 +181,94 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     /** The value of the property (current propertydefinition: Title). */
     private String m_paramPropertyValue;
 
+    /** The gallery base resource type. */
+    private CmsResourceTypeFolderExtended m_resourceType;
+
+    /**
+     * Creates a new gallery instance of the given gallery type name.<p>
+     * 
+     * @param galleryTypeName the gallery type name to create the instance for
+     * @param jsp an initialized JSP action element
+     * 
+     * @return a new gallery instance of the given gallery type name
+     */
+    public static A_CmsAjaxGallery createInstance(String galleryTypeName, CmsJspActionElement jsp) {
+
+        if (jsp != null) {
+            // must have a valid JSP in order to read from the user session
+            HttpSession session = jsp.getRequest().getSession();
+            // lookup the workplace settings 
+            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+            if (settings != null) {
+                if (CmsStringUtil.isEmpty(galleryTypeName)) {
+                    // look up the gallery type from the settings
+                    galleryTypeName = settings.getGalleryType();
+                } else {
+                    // store the last used gallery type name
+                    settings.setGalleryType(galleryTypeName);
+                }
+            }
+        }
+        // get the gallery class name for the type
+        A_CmsAjaxGallery template = (A_CmsAjaxGallery)OpenCms.getWorkplaceManager().getGalleries().get(galleryTypeName);
+
+        if (template == null) {
+            // requested gallery type is not configured
+            CmsMessageContainer message;
+            if (jsp == null) {
+                message = Messages.get().container(Messages.LOG_UNKNOWN_GALLERY_TYPE_REQ_1, galleryTypeName);
+            } else {
+                message = Messages.get().container(
+                    Messages.LOG_UNKNOWN_GALLERY_TYPE_REQ_JSP_2,
+                    galleryTypeName,
+                    jsp.info("opencms.request.element.uri"));
+            }
+            LOG.error(message.key());
+            throw new CmsRuntimeException(message);
+        }
+
+        try {
+            // first get the class of the gallery
+            Class galleryClass = Class.forName(template.getResourceType().getFolderClassName());
+            // create a new instance and cast to a gallery
+            A_CmsAjaxGallery galleryInstance = (A_CmsAjaxGallery)galleryClass.newInstance();
+            // set the type name and id
+            galleryInstance.m_resourceType = template.getResourceType();
+            galleryInstance.m_galleryTypeParams = template.getResourceType().getFolderClassParams();
+            // initialize the members
+            galleryInstance.initWorkplaceMembers(jsp);
+            // perform other initialization
+            galleryInstance.init();
+            // return the result
+            return galleryInstance;
+        } catch (Exception e) {
+            // requested type is not configured          
+            CmsMessageContainer message;
+            if (jsp == null) {
+                message = Messages.get().container(
+                    Messages.LOG_CREATE_GALLERY_INSTANCE_FAILED_2,
+                    template.getResourceType().getFolderClassName(),
+                    galleryTypeName);
+            } else {
+                message = Messages.get().container(
+                    Messages.LOG_CREATE_GALLERY_INSTANCE_FAILED_JSP_3,
+                    template.getResourceType().getFolderClassName(),
+                    galleryTypeName,
+                    jsp.info("opencms.request.element.uri"));
+            }
+            LOG.error(message.key());
+            throw new CmsRuntimeException(message);
+        }
+    }
+
+    /**
+     * Public empty constructor, required for {@link A_CmsAjaxGallery#createInstance(String, CmsJspActionElement)}.<p>
+     */
+    public A_CmsAjaxGallery() {
+
+        this(null);
+    }
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -178,7 +277,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     public A_CmsAjaxGallery(CmsJspActionElement jsp) {
 
         super(jsp);
-        // perform other intialization
+        // perform other intialisation
         init();
 
     }
@@ -201,8 +300,11 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     public void displayDialog() {
 
         if (DIALOG_CHANGEITEMTITLE.equals(getParamAction())) {
-            // get the available categories as JSON array
+            // build the JSON object for the current item with changed title property
             changeItemTitle(getJsp().getRequest().getParameter(PARAM_ITEMPATH));
+        } else if (DIALOG_CHANGEITEMLINKURL.equals(getParamAction())) {
+            // build the JSON object for the current item with changed resource content (CmsResourcePointer)
+            changeItemLinkUrl(getJsp().getRequest().getParameter(PARAM_ITEMPATH));
         } else if (DIALOG_GETCATEGORIES.equals(getParamAction())) {
             // get the available categories as JSON array
             buildJsonCategoryList();
@@ -390,6 +492,16 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     }
 
     /**
+     * Returns the extended folder resource type this gallery is based on.<p>
+     * 
+     * @return the extended folder resource type this gallery is based on
+     */
+    public CmsResourceTypeFolderExtended getResourceType() {
+
+        return m_resourceType;
+    }
+
+    /**
      * Initialization method that is called after the gallery instance has been created.<p>
      * 
      * It can be overwritten in the inherited class, e.g. {@link org.opencms.workplace.galleries.CmsAjaxImageGallery#init()}.<p>
@@ -479,6 +591,16 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     public void setParamPropertyValue(String paramPropertyValue) {
 
         m_paramPropertyValue = paramPropertyValue;
+    }
+
+    /**
+     * Sets the extended folder resource type this gallery is based on.<p>
+     * 
+     * @param type the extended folder resource type this gallery is based on
+     */
+    public void setResourceType(CmsResourceTypeFolderExtended type) {
+
+        m_resourceType = type;
     }
 
     /**
@@ -764,7 +886,9 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     }
 
     /**
-     * Returns a JSON object containing information from the given resource for usage in the gallery.<p>
+     * Returns a JSON object containing information of the given resource for usage in the gallery.<p>
+     * 
+     * The content of the JSON object consists of a common and a specific part of the given resource.<p> 
      * 
      * @param res the resource to create the object from
      * @return the JSON object containing information from the given resource
@@ -839,6 +963,19 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                 LOG.error(e.getLocalizedMessage(), e);
             }
         }
+    }
+
+    /**
+     * Changes the content of the CmsResource.<p>
+     * This function should be overwritten in {@link org.opencms.workplace.galleries.CmsAjaxLinkGallery}.<p>
+     * 
+     * @param itemUrl the item URL
+     * 
+     */
+    protected void changeItemLinkUrl(String itemUrl) {
+
+        // the most galleries do not provide this method
+
     }
 
     /**
