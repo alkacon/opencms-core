@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/06/05 13:31:39 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,6 @@ import org.opencms.json.JSONArray;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
-import org.opencms.workplace.galleries.A_CmsGallery;
 
 /**
  * Base class for all gallery widget implementations.<p>
@@ -45,7 +44,7 @@ import org.opencms.workplace.galleries.A_CmsGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,20 +103,10 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
         result.append("\t");
         result.append(getNameLower());
         result.append("GalleryPath = '");
+        // path to download/image/link/html/table gallery
         result.append(A_CmsAjaxGallery.PATH_GALLERIES);
-        // path to download or image gallery
-        if (getNameLower().equals("download") || getNameLower().equals("image")) {
-            result.append(getNameLower());
-            result.append("gallery/index.jsp?");
-        } else {
-            // path to another galleries
-            result.append(A_CmsGallery.OPEN_URI_SUFFIX);
-            result.append("?");
-            result.append(A_CmsGallery.PARAM_GALLERY_TYPENAME);
-            result.append("=");
-            result.append(getNameLower());
-            result.append("gallery");
-        }
+        result.append(getNameLower());
+        result.append("gallery/index.jsp?");
         result.append("';\n");
         result.append("}\n");
         return result.toString();
@@ -197,23 +186,8 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
 
         result.append("</td>");
 
-        if (getNameLower().equals("download")) {
+        if (getNameLower().equals("image")) {
             // reads the configuration String for this widget
-            CmsGalleryWidgetConfiguration configuration = new CmsGalleryWidgetConfiguration(
-                cms,
-                widgetDialog,
-                param,
-                getConfiguration());
-
-            result.append("\n<script type=\"text/javascript\">");
-            result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
-                "\";");
-            result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
-                "\";");
-            result.append("\n</script>");
-
-        } else if (getNameLower().equals("image")) {
-
             CmsVfsImageWidgetConfiguration configuration = new CmsVfsImageWidgetConfiguration(
                 cms,
                 widgetDialog,
@@ -227,6 +201,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
                 "\";");
             result.append("\n</script>");
 
+            //This part is not used in javascript for now
             if (configuration.isShowFormat()) {
                 // create hidden field to store the matching image format value
                 result.append("\n<script type=\"text/javascript\">");
@@ -252,6 +227,20 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
             }
             result.append("\n<script type=\"text/javascript\">");
             result.append("\nvar scale").append(idHash).append(" = ").append(scale).append(";");
+            result.append("\n</script>");
+        } else { // for download, link, html or table galleries
+            // reads the configuration String for this widget
+            CmsGalleryWidgetConfiguration configuration = new CmsGalleryWidgetConfiguration(
+                cms,
+                widgetDialog,
+                param,
+                getConfiguration());
+
+            result.append("\n<script type=\"text/javascript\">");
+            result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
+                "\";");
+            result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
+                "\";");
             result.append("\n</script>");
         }
 

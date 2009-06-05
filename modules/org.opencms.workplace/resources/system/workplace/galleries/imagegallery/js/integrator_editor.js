@@ -35,7 +35,7 @@ var vfsPopupUri = "<%= wp.getJsp().link("/system/workplace/editors/fckeditor/plu
 previewX = 600;
 previewY = 230;
 
-itemsPerPage = 12;
+imagesPerPage = 12;
 
 /* Initialize the dialog values. */
 initValues = {};

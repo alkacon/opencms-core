@@ -20,6 +20,9 @@ function downloadGalleryDialogUrl() {
 	var resParam = "";
 	if (top.edit.editedResource != null) {
 		resParam = "&resource=" + top.edit.editedResource;
+		
+	} else {
+		resParam = "&resource=" + top.edit.editform.editedResource;
 	}
 	return FCKPlugins.Items["downloadgallery"].Path + "index.jsp?dialogmode=editor" + resParam;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditor.java,v $
- * Date   : $Date: 2009/06/04 14:33:36 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/06/05 13:31:39 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,22 +32,10 @@
 package org.opencms.editors.fckeditor;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsSimplePageEditor;
-import org.opencms.workplace.galleries.A_CmsGallery;
-import org.opencms.workplace.galleries.CmsImageGallery;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -71,12 +59,12 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.1.7
  */
 public class CmsFCKEditor extends CmsSimplePageEditor {
-    
+
     /** Suffix for the style XML file that is added to the used template CSS style sheet file name. */
     public static final String SUFFIX_STYLESXML = "_style.xml";
 
@@ -91,82 +79,6 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
     public CmsFCKEditor(CmsJspActionElement jsp) {
 
         super(jsp);
-    }
-
-    /**
-     * Returns the configuration String for the gallery button row in the FCKeditor.<p>
-     * 
-     * @param options the display configuration for the editor
-     * @param displayOptions the display options for the editor
-     * @return the html String for the gallery buttons
-     */
-    public String buildGalleryButtonRow(CmsEditorDisplayOptions options, Properties displayOptions) {
-
-        StringBuffer result = new StringBuffer();
-        Map galleryMap = OpenCms.getWorkplaceManager().getGalleries();
-        List galleries = new ArrayList(galleryMap.size());
-        Map typeMap = new HashMap(galleryMap.size());
-
-        Iterator i = galleryMap.entrySet().iterator();
-        while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            String key = (String)entry.getKey();
-            if (CmsImageGallery.GALLERYTYPE_NAME.equals(key)) {
-                continue;
-            }
-            A_CmsGallery currGallery = (A_CmsGallery)entry.getValue();
-            galleries.add(currGallery);
-            // put the type name to the type Map
-            typeMap.put(currGallery, key);
-        }
-
-        // sort the found galleries by their order
-        Collections.sort(galleries);
-
-        for (int k = 0; k < galleries.size(); k++) {
-            A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
-            String galleryType = (String)typeMap.get(currGallery);
-            if (options.showElement("gallery." + CmsStringUtil.substitute(galleryType, "gallery", ""), displayOptions)) {
-                // gallery is shown, build row configuration String
-                if (result.length() == 0) {
-                    result.append(", \'-\'");
-                }
-                result.append(", \'oc-" + galleryType + "\'");
-            }
-        }
-        return result.toString();
-    }
-
-    /**
-     * @see org.opencms.workplace.editors.CmsDefaultPageEditor#buildGalleryButtons(CmsEditorDisplayOptions, int, Properties)
-     */
-    public String buildGalleryButtons(CmsEditorDisplayOptions options, int buttonStyle, Properties displayOptions) {
-
-        StringBuffer result = new StringBuffer(1024);
-        Iterator i = OpenCms.getWorkplaceManager().getGalleries().keySet().iterator();
-
-        while (i.hasNext()) {
-            String galleryType = (String)i.next();
-            if (CmsImageGallery.GALLERYTYPE_NAME.equals(galleryType)) {
-                continue;
-            }
-            String galleryName = CmsStringUtil.substitute(galleryType, "gallery", "");
-
-            result.append("\n\nvar ").append(galleryType).append("Command = function() { this.Name = \"").append(
-                galleryType).append("\"; }\n");
-            result.append(galleryType).append("Command.prototype.GetState = function() { return FCK_TRISTATE_OFF ; }\n");
-            result.append(galleryType).append("Command.prototype.Execute = function() {\n");
-            result.append("\topenGallery(\"").append(galleryType).append("\");\n");
-
-            result.append("}\n");
-            result.append("FCKCommands.RegisterCommand(\"oc-").append(galleryType).append("\", new ").append(
-                galleryType).append("Command());\n");
-            result.append("FCKToolbarItems.RegisterItem(\"oc-").append(galleryType).append("\", ");
-            result.append("new FCKToolbarButton(\"oc-").append(galleryType).append("\", \"");
-            result.append(key(org.opencms.workplace.editors.Messages.getGalleryKey(galleryName))).append("\"));");
-        }
-
-        return result.toString();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsLinkGalleryWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:11 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/06/05 13:31:38 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,6 +92,6 @@ public class CmsLinkGalleryWidget extends A_CmsGalleryWidget {
      */
     public boolean showPreview(String value) {
 
-        return CmsStringUtil.isNotEmpty(value) && (value.startsWith("http://") || (value.startsWith("https://")));
+        return CmsStringUtil.isNotEmpty(value) && value.startsWith("/");
     }
 }

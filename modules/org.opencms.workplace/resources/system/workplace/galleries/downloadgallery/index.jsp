@@ -26,6 +26,9 @@ Boolean isAppletUsed = wp.getSettings().getUserSettings().useUploadApplet();
 <% } %>
 <% if (wp.isModeWidget()) { %>
 <link rel="stylesheet" type="text/css" href="<%= galleryResourcePath %>css/widget.css" />
+<!--[if lte IE 7]>
+  <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/css/widget_ie.css" />
+<![endif]-->
 <% } %>
 <!--[if lte IE 7]>
   <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/css/ie.css" />

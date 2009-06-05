@@ -1,4 +1,5 @@
-#galleryitemetitle form.edittitle, #categoryitemtitle form.edittitle {
+#galleryitemetitle form.edittitle, #categoryitemtitle form.edittitle,
+#galleryitemlinkurl form.edittitle, #categoryitemlinkurl form.edittitle {
 	margin-top: -3px;
 }
 

@@ -26,7 +26,8 @@ var LANG = {
 	"ITEM_STATE_CHANGED"		: "<%= wp.key(Messages.GUI_GALLERY_ITEM_STATE_CHANGED_0) %>",
 
 	"ITEM_LOCKSTATE_LOCKED"		: "<%= wp.key(Messages.GUI_GALLERY_ITEM_LOCKSTATE_LOCKED_0) %>",
-
+	
+	"ITEM_INPUT_LINKURL"		: "<%= wp.key(Messages.GUI_INPUT_LINKTARGET_0) %>",
 
 	"PAGINATION_NEXT"		: "<%= wp.key(Messages.GUI_GALLERY_PAGINATION_NEXT_0) %>",
 	"PAGINATION_PREVIOUS"		: "<%= wp.key(Messages.GUI_GALLERY_PAGINATION_PREVIOUS_0) %>",

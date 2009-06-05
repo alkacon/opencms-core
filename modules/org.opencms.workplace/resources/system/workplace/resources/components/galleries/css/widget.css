@@ -1,11 +1,25 @@
 #galleryitemlist, #categoryitemlist {
-	height: 450px;  /*  overwrites editor.css */
+	height: 465px;  /*  overwrites editor.css */
 }
 
 #galleryitemlistinner, #categoryitemlistinner {
-	height: 370px; /*  overwrites editor.css */
+	height: 395px; /*  overwrites editor.css */
 }
 
 .ui-tabs-panel {
 	height: 600px;   /*  overwrites tab.css */
+}
+
+#preview #previewwrapperhtml {
+	height: 535px;
+}
+
+#preview #imgpreview {
+	text-align: center;
+}
+
+#preview #htmlpreview {
+	text-align: center;
+	height: 535px;
+	overflow:auto;
 }

@@ -12,21 +12,19 @@ initValues.dialogmode = "<% if (CmsStringUtil.isEmpty(request.getParameter(A_Cms
 initValues.fieldid = "<% if (CmsStringUtil.isEmpty(request.getParameter(A_CmsAjaxGallery.PARAM_FIELDID))) { out.print(""); } else { out.print(request.getParameter(A_CmsAjaxGallery.PARAM_FIELDID)); } %>";
 initValues.viewonly = false;
 
-itemsPerPage = 7;
+itemsPerPage = 9;
 
 /* Initializes the download gallery popup window. */
 function initPopup() {
 
 	var sizeX = 650;
 	var sizeY = 700;
-	try {
-		if (!isNaN(window.innerHeight) && window.innerHeight < (sizeY - 50)) {
-			window.innerHeight = sizeY - 50;
-		}
-	} catch (e) {}
-	var collectCategories = true;
+	if (window.locationbar && window.locationbar.visible == true) {
+        	sizeY += 20;
+    	} 
 	window.resizeTo(sizeX, sizeY);
-	//$("#dialogbuttons").show();
+	
+	var collectCategories = true;
 	$("#categoryiteminfo > #dialogbuttons").show();
 	$("#galleryiteminfo > #dialogbuttons").show();
 	$("#galleryokbutton").hide();
@@ -54,6 +52,8 @@ function initStartup() {
 		setTimeout("initStartup();", 100);
 	} else {
 		if (initValues.startuptype == "category") {
+			// swith to categories tab
+			$tabs.tabs("select", 1);
 			getGalleries();
 			for (var i = 0; i < categories.length; i++) {
 				var currCat = categories[i];
@@ -61,6 +61,8 @@ function initStartup() {
 					selectCategory(currCat.path, i);
 				}
 			}
+			$("#galleryfolders").hide();
+			$("#galleryitems").show();
 		} else {
 			// start gallery folder specified, load gallery first
 			$("#galleryfolders").hide();

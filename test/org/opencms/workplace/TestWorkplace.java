@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/workplace/TestWorkplace.java,v $
- * Date   : $Date: 2009/06/04 14:35:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/06/05 13:31:40 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,11 +33,11 @@ package org.opencms.workplace;
 
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.workplace.galleries.A_CmsGallery;
-import org.opencms.workplace.galleries.CmsDownloadGallery;
-import org.opencms.workplace.galleries.CmsHtmlGallery;
-import org.opencms.workplace.galleries.CmsImageGallery;
-import org.opencms.workplace.galleries.CmsLinkGallery;
+import org.opencms.workplace.galleries.A_CmsAjaxGallery;
+import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
+import org.opencms.workplace.galleries.CmsAjaxHtmlGallery;
+import org.opencms.workplace.galleries.CmsAjaxImageGallery;
+import org.opencms.workplace.galleries.CmsAjaxLinkGallery;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
 /**
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -99,31 +99,31 @@ public class TestWorkplace extends OpenCmsTestCase {
      */
     public void testGalleryClassCreation() throws Exception {
 
-        A_CmsGallery gallery;
+        A_CmsAjaxGallery gallery;
 
-        gallery = A_CmsGallery.createInstance("imagegallery", null);
-        assertEquals(gallery.getClass().getName(), CmsImageGallery.class.getName());
-        assertEquals("imagegallery", gallery.getGalleryTypeName());
-        assertEquals(8, gallery.getGalleryTypeId());        
-        
-        gallery = A_CmsGallery.createInstance("downloadgallery", null);
-        assertEquals(gallery.getClass().getName(), CmsDownloadGallery.class.getName());
-        assertEquals("downloadgallery", gallery.getGalleryTypeName());
-        assertEquals(9, gallery.getGalleryTypeId());     
-        
-        gallery = A_CmsGallery.createInstance("linkgallery", null);
-        assertEquals(gallery.getClass().getName(), CmsLinkGallery.class.getName());
-        assertEquals("linkgallery", gallery.getGalleryTypeName());
-        assertEquals(10, gallery.getGalleryTypeId());     
-        
-        gallery = A_CmsGallery.createInstance("htmlgallery", null);
-        assertEquals(gallery.getClass().getName(), CmsHtmlGallery.class.getName());
-        assertEquals("htmlgallery", gallery.getGalleryTypeName());
-        assertEquals(11, gallery.getGalleryTypeId());     
-        
+        gallery = A_CmsAjaxGallery.createInstance("imagegallery", null);
+        assertEquals(gallery.getClass().getName(), CmsAjaxImageGallery.class.getName());
+        //assertEquals("imagegallery", gallery.getGalleryTypeName());
+        assertEquals(8, gallery.getGalleryTypeId());
+
+        gallery = A_CmsAjaxGallery.createInstance("downloadgallery", null);
+        assertEquals(gallery.getClass().getName(), CmsAjaxDownloadGallery.class.getName());
+        //assertEquals("downloadgallery", gallery.getGalleryTypeName());
+        assertEquals(9, gallery.getGalleryTypeId());
+
+        gallery = A_CmsAjaxGallery.createInstance("linkgallery", null);
+        assertEquals(gallery.getClass().getName(), CmsAjaxLinkGallery.class.getName());
+        //assertEquals("linkgallery", gallery.getGalleryTypeName());
+        assertEquals(10, gallery.getGalleryTypeId());
+
+        gallery = A_CmsAjaxGallery.createInstance("htmlgallery", null);
+        assertEquals(gallery.getClass().getName(), CmsAjaxHtmlGallery.class.getName());
+        //assertEquals("htmlgallery", gallery.getGalleryTypeName());
+        assertEquals(11, gallery.getGalleryTypeId());
+
         boolean error = true;
         try {
-            A_CmsGallery.createInstance("unknowngallery", null);
+            A_CmsAjaxGallery.createInstance("unknowngallery", null);
         } catch (RuntimeException e) {
             error = false;
         }
@@ -133,7 +133,7 @@ public class TestWorkplace extends OpenCmsTestCase {
 
         error = true;
         try {
-            A_CmsGallery.createInstance(null, null);
+            A_CmsAjaxGallery.createInstance(null, null);
         } catch (RuntimeException e) {
             error = false;
         }

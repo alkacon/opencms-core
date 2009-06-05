@@ -11,16 +11,22 @@ initValues = <% if (CmsStringUtil.isEmpty(params)) { out.print("{}"); } else { o
 initValues.dialogmode = "<% if (CmsStringUtil.isEmpty(request.getParameter(A_CmsAjaxGallery.PARAM_DIALOGMODE))) { out.print(""); } else { out.print(request.getParameter(A_CmsAjaxGallery.PARAM_DIALOGMODE)); } %>";
 initValues.viewonly = true;
 
-/* Initializes the item gallery popup window. bin hier ;-)*/
+/* Initializes the item gallery popup window. */
 function initPopup() {
+	// set the size of the gallery dialog
 	var sizeX = 650;
-	var sizeY = 750;
+	var sizeY = 710;
+	if (navigator.userAgent.indexOf("MSIE") != -1) {
+		sizeY = 720;
+	}
+	if (document.location.pathname.indexOf("imagegallery/") != -1) {
+		sizeY = 730;
+	}
+	if (window.locationbar && window.locationbar.visible == true) {
+        	sizeY += 20;
+    	} 
 	window.resizeTo(sizeX, sizeY);
-	try {
-		if (!isNaN(window.innerHeight) && window.innerHeight < (sizeY - 50)) {
-			window.innerHeight = sizeY - 50;
-		}
-	} catch (e) {}
+	
 	$("#dialogbuttons").hide();
 	$("#closebutton").show();
 

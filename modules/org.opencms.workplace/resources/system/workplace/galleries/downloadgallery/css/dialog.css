@@ -78,7 +78,8 @@ img {
 
 }
 
-#preview #imagename, #advancedhead, #galleryfolders div.head, #categoryfolders div.head  {
+#preview #imagename, #preview #htmlname, 
+#advancedhead, #galleryfolders div.head, #categoryfolders div.head  {
 	color: ButtonText;
 	background-color: ButtonFace;
 	border-bottom: 1px solid ButtonShadow;
@@ -90,7 +91,8 @@ img {
 	overflow: hidden;
 }
 
-#preview #imagename #toggleInfo {
+#preview #imagename #toggleInfo,
+#preview #htmlname #toggleInfo {
 	width: 16px;
 	height: 16px;
 	float: left;
@@ -100,11 +102,13 @@ img {
 	cursor: pointer;
 }
 
-#preview #imagename div.hideinfo {
+#preview #imagename div.hideinfo,
+#preview #htmlname div.hideinfo {
 	background-image: url(../../../buttons/move_up.png);
 }
 
-#preview #imagename div.showinfo {
+#preview #imagename div.showinfo,
+#preview #htmlname div.showinfo {
 	background-image: url(../../../buttons/move_down.png);
 }
 
@@ -115,9 +119,22 @@ img {
 	border-bottom: 1px solid ButtonShadow;
 }
 
+#preview #previewwrapperhtml {
+	height: 550px;
+	background-color:window;
+	border-bottom: 1px solid ButtonShadow;
+}
+
 #preview #imgpreview {
 	text-align: center;
 }
+
+#preview #htmlpreview {
+	text-align: center;
+	height: 550px;
+	overflow: auto;
+}
+
 
 #preview #imgdetails {
 	padding: 6px 4px;
@@ -228,12 +245,13 @@ input.showborder, select.showborder {
 
 #galleryitemlistinner, #categoryitemlistinner {
 	height: 415px;
+
 }
 
 
 #galleryitemlistinner div div, #categoryitemlistinner div div {
-	margin-bottom: 6px;
-	padding: 4px;
+	margin-bottom: 1px;
+	padding: 2px;
 	background-color: Window;
 	border: 1px solid ButtonShadow;
 	cursor: pointer;
@@ -286,14 +304,16 @@ input.showborder, select.showborder {
 	margin-left: 4px;
 }
 
-#galleryuploadbutton {
+#galleryuploadbutton, #gallerynewlinkbutton {
 	float: right;
 }
 
 #galleryitemlist, #categoryitemlist {
 	background-color: ButtonFace;
 	border-bottom: 1px solid ButtonShadow; 
-	height: 486px;		/* overwritten in editor.css */
+	height: 486px; 		/* overwritten in editor.css */ 
+
+
 }
 
 #galleryitems, #categoryitems {
@@ -310,6 +330,7 @@ input.showborder, select.showborder {
 	background-color: ButtonFace;
 	border-bottom: 1px solid ButtonShadow; 
 	height: 486px;		/* overwritten in editor.css */
+	
 }
 
 
@@ -393,11 +414,11 @@ td.iteminfoheadline, td.iteminfostate {
 
 
 
-td.imageinfoheadline, td.iteminfoheadline {
+td.imageinfoheadline, td.iteminfoheadline, td.infoheadline {
 	font-weight: bold;
 }
 
-td.imageinfostate, td.iteminfostate {
+td.imageinfostate, td.iteminfostate, td.infostate {
 	font-style: italic;
 }
 
@@ -423,7 +444,8 @@ td.imageinfostate, td.iteminfostate {
 }
 
 #galleryitemselectbutton, #categoryitemselectbutton, 
-#galleryitempublishbutton, #categoryitempublishbutton {
+#galleryitempublishbutton, #categoryitempublishbutton,
+#galleryitempreviewbutton, #categoryitempreviewbutton {
 	display: none;
 	width: 28px;
 	height: 18px;
@@ -433,12 +455,14 @@ td.imageinfostate, td.iteminfostate {
 }
 
 #galleryitemselectbutton img, #categoryitemselectbutton img, 
-#galleryitempublishbutton img, #categoryitempublishbutton img {
+#galleryitempublishbutton img, #categoryitempublishbutton img,
+#galleryitempreviewbutton img, #categoryitempreviewbutton img {
 	margin-top: -4px;
 	margin-left: -2px;
 }
 
-td.galleryiteminfotitle, td.categoryiteminfotitle{
+td.galleryiteminfotitle, td.categoryiteminfotitle,
+td.galleryiteminfolinkurl, td.categoryiteminfolinkurl{
 	font-size: 12px !important;
 	padding: 0;
 	margin: 0;
@@ -448,12 +472,14 @@ td.galleryiteminfotitle, td.categoryiteminfotitle{
 
 
 
-#galleryitemtitle, #categoryitemtitle {
+#galleryitemtitle, #categoryitemtitle,
+#galleryitemlinkurl, #categoryitemlinkurl {
 	padding-top: 0px;
-	height: 16px;
+	height: 16px;   /*16px*/
 }
 
-#galleryitemtitle.editable, #categoryitemtitle.editable {
+#galleryitemtitle.editable, #categoryitemtitle.editable,
+#galleryitemlinkurl.editable, #categoryitemlinkurl.editable {
 	cursor: pointer;
 	padding-left: 24px;
 	background-image: url("../../../buttons/edit.png");
@@ -461,20 +487,23 @@ td.galleryiteminfotitle, td.categoryiteminfotitle{
 	background-repeat: no-repeat;
 }
 
-#galleryitemtitle form.edittitle, #categoryitemtitle form.edittitle {
+#galleryitemtitle form.edittitle, #categoryitemtitle form.edittitle,
+#galleryitemlinkurl form.edittitle, #categoryitemlinkurl form.edittitle {
 	height: 18px;
 	margin: -1px 0 0 0;
 	padding: 0;
 }
 
-#galleryitemtitle input, #categoryitemtitle input {
+#galleryitemtitle input, #categoryitemtitle input,
+#galleryitemlinkurl input, #categoryitemlinkurl input {
 	margin-bottom: 2px;
 	font-size: 12px !important;
 	border: none;
 	width: 75% !important;
 }
 
-#galleryitemtitle button, #categoryitemtitle button {
+#galleryitemtitle button, #categoryitemtitle button,
+#galleryitemlinkurl button, #categoryitemlinkurl button {
 	height: 18px;
 	margin-bottom: 1px;
 	font-size: 9px;

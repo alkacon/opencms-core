@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxDownloadGallery.java,v $
- * Date   : $Date: 2009/06/05 09:05:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/06/05 13:31:38 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,24 +140,34 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
 
         try {
             // 1: file mimetype
-            String mimetype = "unknown/mimetype";
             String mt = OpenCms.getResourceManager().getMimeType(getJsp().link(sitePath), null);
-            if (mt.equals("application/msword")) {
-                mimetype = mt;
+            if (mt.equals("application/msword")
+                || mt.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+                mt = "application/msword";
             } else if (mt.equals("application/pdf")) {
-                mimetype = mt;
-            } else if (mt.equals("application/vnd.ms-excel")) {
-                mimetype = mt;
-            } else if (mt.equals("application/vnd.ms-powerpoint")) {
-                mimetype = mt;
-            } else if (mt.equals("image/jpeg")) {
-                mimetype = mt;
-            } else if (mt.equals("image/png")) {
-                mimetype = mt;
+                mt = "application/pdf";
+            } else if (mt.equals("application/vnd.ms-excel")
+                || mt.equals("application/excel")
+                || mt.equals("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+                mt = "application/excel";
+            } else if (mt.equals("application/vnd.ms-powerpoint")
+                || mt.equals("application/vnd.openxmlformats-officedocument.presentationml.presentation")) {
+                mt = "application/powerpoint";
+            } else if (mt.equals("image/jpeg")
+                || mt.equals("image/gif")
+                || mt.equals("image/png")
+                || mt.equals("image/tiff")) {
+                mt = "image/image";
             } else if (mt.equals("text/plain")) {
-                mimetype = mt;
+                mt = "text/plain";
+            } else if (mt.equals("application/zip")
+                || mt.equals("application/x-gzip")
+                || mt.equals("application/x-tar")) {
+                mt = "application/archiv";
+            } else {
+                mt = "unknown/mimetype";
             }
-            jsonObj.put("mimetype", mimetype);
+            jsonObj.put("mimetype", mt);
 
         } catch (JSONException e) {
             if (LOG.isErrorEnabled()) {

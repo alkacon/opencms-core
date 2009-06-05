@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsOpenGallery.java,v $
- * Date   : $Date: 2009/06/04 14:29:32 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/06/05 13:31:38 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,58 +117,24 @@ public class CmsOpenGallery extends CmsDialog {
                 galleryUri.append(A_CmsAjaxGallery.PATH_GALLERIES);
                 String width = "650";
                 String height = "700";
-                if (CmsAjaxImageGallery.GALLERYTYPE_NAME.equals(galleryType)) {
-                    // image gallery, open new image gallery dialog
-                    galleryUri.append("imagegallery/index.jsp?");
-                    galleryUri.append(A_CmsAjaxGallery.PARAM_DIALOGMODE);
-                    galleryUri.append("=");
-                    galleryUri.append(A_CmsAjaxGallery.MODE_VIEW);
-                    galleryUri.append("&");
-                    galleryUri.append(A_CmsAjaxGallery.PARAM_PARAMS);
-                    galleryUri.append("=");
-                    JSONObject jsonObj = new JSONObject();
-                    try {
-                        jsonObj.putOpt(A_CmsAjaxGallery.PARAM_STARTUPFOLDER, galleryPath);
-                        jsonObj.putOpt(A_CmsAjaxGallery.PARAM_STARTUPTYPE, A_CmsAjaxGallery.LISTMODE_GALLERY);
-                    } catch (JSONException e) {
-                        // ignore, because it should not happen!
-                    }
-                    galleryUri.append(jsonObj.toString());
-                    height = "750";
-                } else if (CmsAjaxDownloadGallery.GALLERYTYPE_NAME.equals(galleryType)) {
-                    // download gallery, open new down gallery dialog
-                    galleryUri.append("downloadgallery/index.jsp?");
-                    galleryUri.append(A_CmsAjaxGallery.PARAM_DIALOGMODE);
-                    galleryUri.append("=");
-                    galleryUri.append(A_CmsAjaxGallery.MODE_VIEW);
-                    galleryUri.append("&");
-                    galleryUri.append(A_CmsAjaxGallery.PARAM_PARAMS);
-                    galleryUri.append("=");
-                    JSONObject jsonObj = new JSONObject();
-                    try {
-                        jsonObj.putOpt(A_CmsAjaxGallery.PARAM_STARTUPFOLDER, galleryPath);
-                        jsonObj.putOpt(A_CmsAjaxGallery.PARAM_STARTUPTYPE, A_CmsAjaxGallery.LISTMODE_GALLERY);
-                    } catch (JSONException e) {
-                        // ignore, because it should not happen!
-                    }
-                    galleryUri.append(jsonObj.toString());
-                    height = "750";
-                } else {
-                    // other gallery type, create link to common gallery
-                    galleryUri.append(A_CmsGallery.OPEN_URI_SUFFIX);
-                    galleryUri.append("?");
-                    galleryUri.append(A_CmsGallery.PARAM_GALLERY_TYPENAME);
-                    galleryUri.append("=");
-                    galleryUri.append(galleryType);
-                    galleryUri.append("&");
-                    galleryUri.append(A_CmsGallery.PARAM_DIALOGMODE);
-                    galleryUri.append("=");
-                    galleryUri.append(A_CmsGallery.MODE_VIEW);
-                    galleryUri.append("&");
-                    galleryUri.append(A_CmsGallery.PARAM_GALLERYPATH);
-                    galleryUri.append("=");
-                    galleryUri.append(galleryPath);
+                // path to the gallery dialog with the required request parameters
+                galleryUri.append(galleryType);
+                galleryUri.append("/index.jsp?");
+                galleryUri.append(A_CmsAjaxGallery.PARAM_DIALOGMODE);
+                galleryUri.append("=");
+                galleryUri.append(A_CmsAjaxGallery.MODE_VIEW);
+                galleryUri.append("&");
+                galleryUri.append(A_CmsAjaxGallery.PARAM_PARAMS);
+                galleryUri.append("=");
+                JSONObject jsonObj = new JSONObject();
+                try {
+                    jsonObj.putOpt(A_CmsAjaxGallery.PARAM_STARTUPFOLDER, galleryPath);
+                    jsonObj.putOpt(A_CmsAjaxGallery.PARAM_STARTUPTYPE, A_CmsAjaxGallery.LISTMODE_GALLERY);
+                } catch (JSONException e) {
+                    // ignore, because it should not happen!
                 }
+                galleryUri.append(jsonObj.toString());
+                // open new gallery dialog
                 jsOpener.append("window.open('");
                 jsOpener.append(getJsp().link(galleryUri.toString()));
 

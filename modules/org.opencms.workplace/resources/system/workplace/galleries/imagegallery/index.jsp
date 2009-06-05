@@ -68,9 +68,9 @@ var isAppletUsed = <%=isAppletUsed %>;
 		
 		<%
 		if (wp.isModeWidget()) { %>
-			<%@ include file="%(link.strong:/system/workplace/galleries/imagegallery/html/tabs_widget.html:bb9bf84b-a42c-11dd-a77f-55b439b85a0e)" %><%
+			<%@ include file="%(link.strong:/system/workplace/galleries/imagegallery/html/tabs_widget_imagegallery.html:bb9bf84b-a42c-11dd-a77f-55b439b85a0e)" %><%
 		} else if (wp.isModeEditor()) { %>
-			<%@ include file="%(link.strong:/system/workplace/galleries/imagegallery/html/tabs_editor.html:453c7b4e-a430-11dd-a77f-55b439b85a0e)" %><%
+			<%@ include file="%(link.strong:/system/workplace/galleries/imagegallery/html/tabs_editor_imagegallery.html:453c7b4e-a430-11dd-a77f-55b439b85a0e)" %><%
 		}
 		%>
 	

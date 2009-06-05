@@ -19,13 +19,15 @@ function fillItems(data, modeName) {
 			+ "<span>"
 			+ categories[activeCategory].path
 			+ "</span></div>");
-		$("#" + modeName + "itemselectbutton").fadeOut();
-		$("#" + modeName + "itempublishbutton").fadeOut();
+
+		$("#" + modeName + "itemselectbutton").hide();
+		$("#" + modeName + "itempublishbutton").hide();
 		if (initValues.dialogmode == "widget") {
-			$("#" + modeName + "okbutton").fadeOut();
+			$("#" + modeName + "okbutton").hide();
 		}
-		$("#" + modeName + "itemtitle").removeClass();
 		$("#" + modeName + "itemtitle").unbind();
+		$("#" + modeName + "itemtitle").removeClass();
+		
 	} else {
 		galleryItems = new ItemList();
 		galleryItems.items = foundItems;
@@ -48,10 +50,10 @@ function fillItems(data, modeName) {
 			+ gPath
 			+ "</span></div>");
 		//remove buttons to be not seen
-		$("#" + modeName + "itemselectbutton").fadeOut();
-		$("#" + modeName + "itempublishbutton").fadeOut();
+		$("#" + modeName + "itemselectbutton").hide();
+		$("#" + modeName + "itempublishbutton").hide();
 		if (initValues.dialogmode == "widget") {
-			$("#" + modeName + "okbutton").fadeOut();
+			$("#" + modeName + "okbutton").hide();
 		}
 		$("#" + modeName + "itemtitle").unbind();
 		$("#" + modeName + "itemtitle").removeClass();
@@ -363,20 +365,20 @@ function markItem(itemIndex, idPrefix) {
 			    tooltip  : LANG.DETAIL_EDIT_HELP
 			});
 			if (state != 0) {
-				$("#" + idPrefix + "itempublishbutton").fadeIn();
+				$("#" + idPrefix + "itempublishbutton").fadeIn("fast");
 			} else {
-				$("#" + idPrefix + "itempublishbutton").fadeOut();
+				$("#" + idPrefix + "itempublishbutton").fadeOut("slow");
 			}
 		} else {
 			$("#" + idPrefix + "itemtitle").unbind();
 			$("#" + idPrefix + "itemtitle").removeClass();
-			$("#" + idPrefix + "itempublishbutton").fadeOut();
+			$("#" + idPrefix + "itempublishbutton").fadeOut("slow");
 		}
 		showItemInfo(markedIndex, idPrefix);
 		if (initValues.viewonly == false) {
-			$("#" + idPrefix + "itemselectbutton").fadeIn();
+			$("#" + idPrefix + "itemselectbutton").fadeIn("fast");
 			if(initValues.dialogmode == "widget") {
-				$("#" + idPrefix + "okbutton").fadeIn();
+				$("#" + idPrefix + "okbutton").fadeIn("fast");
 			}
 			if (initValues.dialogmode == "editor") {
 				try {
@@ -386,11 +388,11 @@ function markItem(itemIndex, idPrefix) {
 			}
 		}
 	} else {
-		$("#" + idPrefix + "itemselectbutton").fadeOut();
+		$("#" + idPrefix + "itemselectbutton").fadeOut("slow");
 		$("#" + idPrefix + "itemtitle").removeClass();
-		$("#" + idPrefix + "itempublishbutton").fadeOut();
+		$("#" + idPrefix + "itempublishbutton").fadeOut("slow");
 		if (initValues.dialogmode == "widget") {
-			$("#" + idPrefix + "okbutton").fadeOut();
+			$("#" + idPrefix + "okbutton").fadeOut("slow");
 		}
 	}
 }
@@ -442,7 +444,7 @@ function refreshMarkedItem(data, modeName) {
 	}
 	if (state == 1 || state == 2) {
 		$("#" + modeName + "itemlayer" + itemIndex).empty();
-		$("#" + modeName + "itempublishbutton").fadeIn();
+		$("#" + modeName + "itempublishbutton").fadeIn("fast");
 		var imgHtml = "";
 		if (state == 1) {
 			// changed item
@@ -458,7 +460,7 @@ function refreshMarkedItem(data, modeName) {
 		$("#" + modeName + "itemlayer" + itemIndex).append(imgHtml);
 	} else {
 		$("#" + modeName + "itemlayer" + itemIndex).empty();
-		$("#" + modeName + "itempublishbutton").fadeOut();
+		$("#" + modeName + "itempublishbutton").fadeOut("fast");
 	}
 	showItemInfo(itemIndex, modeName);
 }

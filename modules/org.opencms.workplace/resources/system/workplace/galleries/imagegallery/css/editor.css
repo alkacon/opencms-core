@@ -24,6 +24,14 @@ td {
 	height: 230px;
 }
 
+#preview #previewwrapperhtml {
+	height: 475px;
+}
+
+#preview #htmlpreview {
+	height: 475px;
+}
+
 #preview #imgoptions {
 	height: 148px;
 	padding: 6px 4px;

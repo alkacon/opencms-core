@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:22 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2009/06/05 13:31:38 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.explorer.menu.CmsMenuRule;
-import org.opencms.workplace.galleries.A_CmsGallery;
+import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.UnsupportedEncodingException;
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.90 $ 
+ * @version $Revision: 1.91 $ 
  * 
  * @since 6.0.0 
  */
@@ -332,7 +332,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 editorCssHandlerClassName), e);
         }
     }
-    
+
     /**
      * Adds an editor CSS handler class at the first position of the list of handlers.<p>
      * 
@@ -342,13 +342,13 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         try {
             I_CmsEditorCssHandler editorCssHandler = (I_CmsEditorCssHandler)Class.forName(editorCssHandlerClassName).newInstance();
-            
+
             List editorCssHandlers = new ArrayList();
             editorCssHandlers.add(editorCssHandler);
             editorCssHandlers.addAll(m_editorCssHandlers);
-            
+
             m_editorCssHandlers = editorCssHandlers;
-            
+
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_EDITOR_CSSHANDLER_CLASS_1,
@@ -360,7 +360,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                 editorCssHandlerClassName), e);
         }
     }
-    
 
     /** 
      * Adds an explorer type setting object to the list of type settings.<p>
@@ -379,7 +378,6 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
     }
 
-    
     /** 
      * Adds the list of explorer type settings from the given module.<p>
      * 
@@ -1181,9 +1179,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
                         // only process this as a gallery if the folder name is not empty
                         try {
                             // check, if the folder class is a subclass of A_CmsGallery
-                            if (A_CmsGallery.class.isAssignableFrom(Class.forName(folderClassName))) {
+                            if (A_CmsAjaxGallery.class.isAssignableFrom(Class.forName(folderClassName))) {
                                 // create gallery class instance
-                                A_CmsGallery galleryInstance = (A_CmsGallery)Class.forName(folderClassName).newInstance();
+                                A_CmsAjaxGallery galleryInstance = (A_CmsAjaxGallery)Class.forName(folderClassName).newInstance();
                                 // set gallery folder resource type
                                 galleryInstance.setResourceType(galleryType);
                                 // store the gallery class instance with the type name as lookup key
@@ -1336,7 +1334,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_defaultPropertiesOnStructure = Boolean.valueOf(defaultPropertiesOnStructure).booleanValue();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
-                m_defaultPropertiesOnStructure ? Messages.INIT_PROP_ON_STRUCT_TRUE_0
+                m_defaultPropertiesOnStructure
+                ? Messages.INIT_PROP_ON_STRUCT_TRUE_0
                 : Messages.INIT_PROP_ON_STRUCT_FALSE_0));
         }
     }
@@ -1427,7 +1426,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_enableAdvancedPropertyTabs = Boolean.valueOf(enableAdvancedPropertyTabs).booleanValue();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
-                m_enableAdvancedPropertyTabs ? Messages.INIT_ADV_PROP_DIALOG_SHOW_TABS_0
+                m_enableAdvancedPropertyTabs
+                ? Messages.INIT_ADV_PROP_DIALOG_SHOW_TABS_0
                 : Messages.INIT_ADV_PROP_DIALOG_HIDE_TABS_0));
         }
     }
@@ -1537,7 +1537,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         m_xmlContentAutoCorrect = Boolean.valueOf(xmlContentAutoCorrect).booleanValue();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
-                m_xmlContentAutoCorrect ? Messages.INIT_XMLCONTENT_AUTOCORRECT_ENABLED_0
+                m_xmlContentAutoCorrect
+                ? Messages.INIT_XMLCONTENT_AUTOCORRECT_ENABLED_0
                 : Messages.INIT_XMLCONTENT_AUTOCORRECT_DISABLED_0));
         }
     }

@@ -38,6 +38,9 @@ FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");
 //replaced by image gallery: FCKConfig.Plugins.Add("ocmsimage", null, "<%= cms.link("plugins/") %>");
 FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
 FCKConfig.Plugins.Add("downloadgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+FCKConfig.Plugins.Add("linkgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+FCKConfig.Plugins.Add("htmlgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+FCKConfig.Plugins.Add("tablegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
 <%
 
 StringBuffer toolbar = new StringBuffer(1024);

@@ -20,7 +20,7 @@ var FCKBrowserInfo	= oEditor.FCKBrowserInfo;
 previewX = 600;
 previewY = 230;
 
-itemsPerPage = 6;
+itemsPerPage = 7;
 
 /* Initialize the dialog values. */
 initValues = {};
@@ -32,10 +32,12 @@ var modeType = "";
 
 /* Initializes the download gallery popup window. */
 function initPopup() {
+
 	$("#gallerycancelbutton").remove();
 	$("#categorycancelbutton").remove();
 	$("#galleryokbutton").remove();
 	$("#categoryokbutton").remove();
+	
 	
 	if (hasSelectedText() == true) {
 		loadItemSitepath = getSelectedLinkUri();

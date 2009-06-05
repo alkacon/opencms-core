@@ -1,3 +1,5 @@
+isImageGallery = true;
+
 $(document).ready(function(){
 	$tabs = $("#tabs").tabs({
 	});
@@ -18,6 +20,11 @@ function fillItems(data, modeName) {
 			+ "<span>"
 			+ categories[activeCategory].path
 			+ "</span></div>");
+		// hide the buttons
+		$("#" + modeName + "itemtitle").unbind();
+		$("#" + modeName + "itemtitle").removeClass();
+		$("#" + modeName + "itempublishbutton").hide();
+		$("#" + modeName + "itemselectbutton").hide();
 		
 	} else {
 		galleryItems = new ItemList();
@@ -37,10 +44,12 @@ function fillItems(data, modeName) {
 			+ "<span>"
 			+ gPath
 			+ "</span></div>");
+		// hide the buttons
+		$("#" + modeName + "itemselectbutton").hide();
+		$("#" + modeName + "itemtitle").unbind();
+		$("#" + modeName + "itemtitle").removeClass();
+		$("#" + modeName + "itempublishbutton").hide();
 	}
-	$("#" + modeName + "itemselectbutton").fadeOut();
-	$("#" + modeName + "itemtitle").removeClass();
-	$("#" + modeName + "itempublishbutton").fadeOut();
 	
 	var innerListId = modeName + "imagelistinner";
 	$("#" + modeName + "itemlist").append("<div class=\"imagelist\" id=\"" + innerListId  + "\"></div>");
@@ -455,23 +464,23 @@ function markItem(imgIndex, idPrefix) {
 			    tooltip  : LANG.IMGDETAIL_EDIT_HELP
 			});
 			if (state != 0) {
-				$("#" + idPrefix + "itempublishbutton").fadeIn();
+				$("#" + idPrefix + "itempublishbutton").fadeIn("fast");
 			} else {
-				$("#" + idPrefix + "itempublishbutton").fadeOut();
+				$("#" + idPrefix + "itempublishbutton").fadeOut("fast");
 			}
 		} else {
 			$("#" + idPrefix + "itemtitle").unbind();
 			$("#" + idPrefix + "itemtitle").removeClass();
-			$("#" + idPrefix + "itempublishbutton").fadeOut();
+			$("#" + idPrefix + "itempublishbutton").fadeOut("fast");
 		}
 		showItemInfo(markedIndex, idPrefix);
 		if (initValues.viewonly == false) {
-			$("#" + idPrefix + "itemselectbutton").fadeIn();
+			$("#" + idPrefix + "itemselectbutton").fadeIn("fast");
 		}
 	} else {
-		$("#" + idPrefix + "itemselectbutton").fadeOut();
+		$("#" + idPrefix + "itemselectbutton").fadeOut("fast");
 		$("#" + idPrefix + "itemtitle").removeClass();
-		$("#" + idPrefix + "itempublishbutton").fadeOut();
+		$("#" + idPrefix + "itempublishbutton").fadeOut("fast");
 	}
 }
 
@@ -507,7 +516,7 @@ function refreshMarkedItem(data, modeName) {
 	}
 	if (state == 1 || state == 2) {
 		$("#" + modeName + "itemlayer" + imgIndex).empty();
-		$("#" + modeName + "itempublishbutton").fadeIn();
+		$("#" + modeName + "itempublishbutton").fadeIn("fast");
 		var imgHtml = "";
 		if (state == 1) {
 			// changed image
@@ -523,7 +532,7 @@ function refreshMarkedItem(data, modeName) {
 		$("#" + modeName + "itemlayer" + imgIndex).append(imgHtml);
 	} else {
 		$("#" + modeName + "itemlayer" + imgIndex).empty();
-		$("#" + modeName + "itempublishbutton").fadeOut();
+		$("#" + modeName + "itempublishbutton").fadeOut("slow");
 	}
 	showItemInfo(imgIndex, modeName);
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2009/06/04 14:29:35 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/06/05 13:31:39 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.jsp.JspException;
@@ -65,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +105,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     private String m_paramElementname;
 
     private String m_paramOldelementname;
-    
+
     /** The URI of the style sheet to use in the editor. */
     private String m_uriStyleSheet;
 
@@ -310,19 +309,6 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             setAction(ACTION_SAVE);
         }
     }
-
-    /**
-     * Builds the html String for the gallery buttons.<p>
-     * 
-     * @param options the display configuration for the editor
-     * @param buttonStyle the style for the buttons
-     * @param displayOptions the display options for the editor
-     * @return the html String for the gallery buttons
-     */
-    public abstract String buildGalleryButtons(
-        CmsEditorDisplayOptions options,
-        int buttonStyle,
-        Properties displayOptions);
 
     /**
      * Builds the html String for the element language selector.<p>

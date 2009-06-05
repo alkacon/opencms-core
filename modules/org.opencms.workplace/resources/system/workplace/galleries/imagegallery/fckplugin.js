@@ -20,14 +20,19 @@ function imageGalleryDialogUrl() {
 	var resParam = "";
 	if (top.edit.editedResource != null) {
 		resParam = "&resource=" + top.edit.editedResource;
+		
+	} else {
+		resParam = "&resource=" + top.edit.editform.editedResource;
 	}
+	
 	return FCKPlugins.Items["imagegallery"].Path + "index.jsp?dialogmode=editor" + resParam;
 }
+
 
 // create the "OcmsImageGallery" toolbar button
 // syntax: FCKToolbarButton(commandName, label, tooltip, style, sourceView, contextSensitive) 
 var opencmsImageGalleryItem = new FCKToolbarButton("OcmsImageGallery", "<%= wp.key(Messages.GUI_IMAGEGALLERY_EDITOR_TITLE_0) %>", "<%= wp.key(Messages.GUI_IMAGEGALLERY_EDITOR_TOOLTIP_0) %>", null, false, true);
-opencmsImageGalleryItem.IconPath = 37;
+opencmsImageGalleryItem.IconPath = FCKConfig.SkinPath + "toolbar/oc-imagegallery.gif";;
 
 // "OcmsImageGallery" is the name that is used in the toolbar configuration
 FCKToolbarItems.RegisterItem("OcmsImageGallery", opencmsImageGalleryItem);

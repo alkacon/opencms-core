@@ -66,7 +66,8 @@ default:
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
-<%= wp.paramsAsHidden() %>
+<%= wp.paramsAsHidden() %> 
+<input type="hidden" name="<%= wp.PARAM_CLOSELINK %>" value="<%= wp.getParamCloseLink() %>">
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <table border="0" width="100%">
@@ -78,10 +79,15 @@ default:
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_POINTER_LINKTO_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_LINKTARGET %>" id="<%= wp.PARAM_LINKTARGET %>" type="text" value="" class="maxwidth" onkeyup="checkValue();"></td>
 </tr> 
+<% 
+if (wp.getParamCloseLink() != null) { %>
+<input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" style="display: none;">
+<% } else { %> 
 <tr>
 	<td>&nbsp;</td>
 	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key(Messages.GUI_NEWFILE_EDITPROPERTIES_0) %></td>    
 </tr>
+<% } %>
 </table>
 
 <%= wp.dialogContentEnd() %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2009/06/05 13:31:40 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.galleries.A_CmsGallery;
+import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 import org.opencms.workplace.tools.CmsToolManager;
 
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -574,7 +574,8 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.setDirectory(\"");
         content.append(CmsResource.getFolderPath(currentResource.getRootPath()));
         content.append("\",\"");
-        content.append(CmsResource.getFolderPath(getCms().getRequestContext().removeSiteRoot(currentResource.getRootPath())));
+        content.append(CmsResource.getFolderPath(getCms().getRequestContext().removeSiteRoot(
+            currentResource.getRootPath())));
         content.append("\");\n");
         content.append("top.rD();\n");
         List reloadTreeFolders = (List)getJsp().getRequest().getAttribute(REQUEST_ATTRIBUTE_RELOADTREE);
@@ -740,7 +741,7 @@ public class CmsExplorer extends CmsWorkplace {
             return Collections.EMPTY_LIST;
         } else if (VIEW_GALLERY.equals(getSettings().getExplorerMode())) {
             // select galleries
-            A_CmsGallery gallery = A_CmsGallery.createInstance(getSettings().getGalleryType(), getJsp());
+            A_CmsAjaxGallery gallery = A_CmsAjaxGallery.createInstance(getSettings().getGalleryType(), getJsp());
             return gallery.getGalleries();
         } else {
             // default is to return a list of all files in the folder

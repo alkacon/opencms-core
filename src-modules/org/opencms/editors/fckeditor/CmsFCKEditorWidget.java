@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2009/06/04 14:33:36 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/06/05 13:31:40 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,19 +43,15 @@ import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsEditor;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
-import org.opencms.workplace.galleries.A_CmsGallery;
 import org.opencms.workplace.galleries.CmsAjaxDownloadGallery;
+import org.opencms.workplace.galleries.CmsAjaxHtmlGallery;
 import org.opencms.workplace.galleries.CmsAjaxImageGallery;
-import org.opencms.workplace.galleries.CmsDownloadGallery;
-import org.opencms.workplace.galleries.CmsImageGallery;
+import org.opencms.workplace.galleries.CmsAjaxLinkGallery;
+import org.opencms.workplace.galleries.CmsAjaxTableGallery;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Provides a widget that creates a rich input field using the "FCKeditor" component, for use on a widget dialog.<p>
@@ -64,7 +60,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.1.7
  */
@@ -169,40 +165,53 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
                 custom.append(", \"Unlink\"");
             }
 
-            // build the gallery button row
-            Map galleryMap = OpenCms.getWorkplaceManager().getGalleries();
-            List galleries = new ArrayList(galleryMap.size());
-            Map typeMap = new HashMap(galleryMap.size());
-
-            Iterator i = galleryMap.entrySet().iterator();
-            while (i.hasNext()) {
-                Map.Entry entry = (Map.Entry)i.next();
-                String key = (String)entry.getKey();
-                if (CmsImageGallery.GALLERYTYPE_NAME.equals(key) || CmsDownloadGallery.GALLERYTYPE_NAME.equals(key)) {
-                    continue;
-                }
-                A_CmsGallery currGallery = (A_CmsGallery)entry.getValue();
-                galleries.add(currGallery);
-                // put the type name to the type Map
-                typeMap.put(currGallery, key);
-            }
-
-            // sort the found galleries by their order
-            Collections.sort(galleries);
-
-            StringBuffer galleryResult = new StringBuffer(8);
+            //build the gallery buttons
             boolean showGallery = false;
-            for (int k = 0; k < galleries.size(); k++) {
-                A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
-                String galleryType = (String)typeMap.get(currGallery);
-                if (option.getDisplayGalleries().contains(galleryType)) {
-                    // gallery is shown, build row configuration String
+            StringBuffer galleryResult = new StringBuffer(8);
+            if ((option.getDisplayGalleries().size() > 0) || option.showImageDialog()) {
+                // show image button if configured, compatible to old image dialog
+                if (option.getDisplayGalleries().contains(CmsAjaxImageGallery.GALLERYTYPE_NAME)
+                    || option.showImageDialog()) {
                     if (galleryResult.length() > 0) {
                         galleryResult.append(", ");
                     }
-                    galleryResult.append("\"oc-");
-                    galleryResult.append(galleryType);
-                    galleryResult.append("\"");
+                    galleryResult.append("\"OcmsImageGallery\"");
+                    showGallery = true;
+                }
+
+                // show downloadgallery button if configured
+                if (option.getDisplayGalleries().contains(CmsAjaxDownloadGallery.GALLERYTYPE_NAME)) {
+                    if (galleryResult.length() > 0) {
+                        galleryResult.append(", ");
+                    }
+                    galleryResult.append("\"OcmsDownloadGallery\"");
+                    showGallery = true;
+                }
+
+                // show linkgallery button if configured
+                if (option.getDisplayGalleries().contains(CmsAjaxLinkGallery.GALLERYTYPE_NAME)) {
+                    if (galleryResult.length() > 0) {
+                        galleryResult.append(", ");
+                    }
+                    galleryResult.append("\"OcmsLinkGallery\"");
+                    showGallery = true;
+                }
+
+                // show htmlgallery button if configured
+                if (option.getDisplayGalleries().contains(CmsAjaxHtmlGallery.GALLERYTYPE_NAME)) {
+                    if (galleryResult.length() > 0) {
+                        galleryResult.append(", ");
+                    }
+                    galleryResult.append("\"OcmsHtmlGallery\"");
+                    showGallery = true;
+                }
+
+                // show tablegallery button if configured
+                if (option.getDisplayGalleries().contains(CmsAjaxTableGallery.GALLERYTYPE_NAME)) {
+                    if (galleryResult.length() > 0) {
+                        galleryResult.append(", ");
+                    }
+                    galleryResult.append("\"OcmsTableGallery\"");
                     showGallery = true;
                 }
             }
@@ -213,24 +222,6 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
                     custom.append("],[");
                 }
                 custom.append(galleryResult);
-                buttonRendered = true;
-            }
-
-            // show image button if configured, compatible to old image dialog
-            if (option.getDisplayGalleries().contains(CmsAjaxImageGallery.GALLERYTYPE_NAME) || option.showImageDialog()) {
-                if (buttonRendered) {
-                    custom.append(",\"-\",");
-                }
-                custom.append("\"OcmsImageGallery\"");
-                buttonRendered = true;
-            }
-
-            // show downloadgellery button if configured
-            if (option.getDisplayGalleries().contains(CmsAjaxDownloadGallery.GALLERYTYPE_NAME)) {
-                if (buttonRendered) {
-                    custom.append(",\"-\",");
-                }
-                custom.append("\"OcmsDownloadGallery\"");
                 buttonRendered = true;
             }
 

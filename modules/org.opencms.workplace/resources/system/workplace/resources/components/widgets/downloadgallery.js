@@ -6,7 +6,7 @@
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -40,7 +40,7 @@
 var downloadGalleryPath;
 var galleryInfo;
 
-//opens the download gallery popup window, dialog mode has to be "widget" (as defined in A_CmsAjaxGallery.MODE_WIDGET)
+// opens the download gallery popup window, dialog mode has to be "widget" (as defined in A_CmsAjaxGallery.MODE_WIDGET)
 function openDownloadGallery(dialogMode, fieldId, idHash) {
 	
 	//parameter from the xml configuration
@@ -60,7 +60,7 @@ function openDownloadGallery(dialogMode, fieldId, idHash) {
 	var paramString = "&dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
 	paramString += "&params=" + JSON.stringify(galleryInfo);
-	treewin = window.open(contextPath + downloadGalleryPath + paramString , "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=750');
+	treewin = window.open(contextPath + downloadGalleryPath + paramString , "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
 }
 
 // opens a preview popup window to display the currently selected download

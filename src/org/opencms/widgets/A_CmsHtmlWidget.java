@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:10 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/06/05 13:31:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,14 +33,8 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.galleries.A_CmsGallery;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -50,7 +44,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.1 
  */
@@ -183,41 +177,6 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
                 + "');openAnchorDialog('"
                 + Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0)
                 + "');", null, "anchor", Messages.GUI_BUTTON_ANCHOR_0, widgetDialog.getButtonStyle()));
-            buttonsActive = true;
-        }
-
-        // build the gallery button row
-        Map galleryMap = OpenCms.getWorkplaceManager().getGalleries();
-        List galleries = new ArrayList(galleryMap.values());
-        // sort the found galleries by their order
-        Collections.sort(galleries);
-
-        StringBuffer galleryResult = new StringBuffer(256);
-        boolean showGallery = false;
-        for (int k = 0; k < galleries.size(); k++) {
-            A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
-            String galleryType = currGallery.getResourceType().getTypeName();
-            if (getHtmlWidgetOption().showGalleryDialog(galleryType)) {
-                // gallery is shown, build button
-                galleryResult.append(widgetDialog.button("javascript:setActiveEditor('"
-                    + paramId
-                    + "');openGallery('"
-                    + galleryType
-                    + "');", null, galleryType, Messages.getButtonName(CmsStringUtil.substitute(
-                    galleryType,
-                    "gallery",
-                    "")), widgetDialog.getButtonStyle()));
-                showGallery = true;
-            }
-        }
-
-        if (showGallery) {
-            // at least one gallery is shown, create the gallery buttons
-            if (buttonsActive) {
-                // show separator before gallery buttons
-                result.append(widgetDialog.buttonBarSeparator(5, 5));
-            }
-            result.append(galleryResult);
             buttonsActive = true;
         }
 

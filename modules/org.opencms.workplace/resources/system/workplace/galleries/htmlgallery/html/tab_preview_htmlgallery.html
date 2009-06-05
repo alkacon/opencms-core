@@ -1,0 +1,41 @@
+	<div id="preview">
+
+		<div id="htmlname">
+			<div id="toggleInfo" class="showinfo" onclick="toggleDetailInfo();" title="<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_HEADLINE_0) %>"></div><%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_TITLE_0) %> <span id="prevhtmlname"></span>
+		</div>
+		<div id="previewwrapperhtml">
+			<table cellspacing="0" cellpadding="0" border="0" id="detailinfo">
+				<tr>
+					<td colspan="2" class="infoheadline">
+						<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_HEADLINE_0) %>
+					</td>
+					<td colspan="2" class="infostate">
+						<span id="detailitemstate"></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="categoryimageinfotitle">
+						<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_TITLE_0) %>
+					</td>
+					<td class="categoryimageinfotitle" colspan="3"><span id="detailitemtitle"></span></td>
+				</tr>
+				<tr>
+					<td valign="top" width="14%">
+						<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_NAME_0) %>
+					</td>
+					<td valign="top" width="45%" id="detailitemname"></td>
+					<td valign="top" width="14%">
+						<%= wp.key(Messages.GUI_GALLERY_ITEMDETAIL_DATE_MODIFIED_0) %>
+					</td>
+					<td valign="top" width="26%" id="detailitemdm"></td>
+				</tr>
+			</table>
+			<div id="htmlpreview"></div>
+		</div>
+
+		<div id="dialogbuttons">
+			<button type="button" onclick="okPressed();"><%= wp.key(Messages.GUI_GALLERY_BUTTON_OK_0) %></button>
+			<button type="button" id="cancelbutton" onclick="window.close();"><%= wp.key(Messages.GUI_GALLERY_BUTTON_CANCEL_0) %></button>
+		</div>
+
+	</div>

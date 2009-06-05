@@ -29,6 +29,7 @@ var loadItemSitepath = null;
 /* this flag is to be set in the appropriate gallery to "true" */
 var isLinkGallery = false;
 var isTableGallery = false;
+var isImageGallery = false;
 
 /* Stores the hide image info timeout to interrupt it on a mouseover. */
 var imgDetailTimeout;
@@ -38,7 +39,7 @@ var previewY = 450;
 
 //number of items per page for different galleries
 var imagesPerPage = 16;
-var itemsPerPage  = 8;
+var itemsPerPage  = 10;
 
 /* Collects all available categories using a post request. */
 function getCategories() {
@@ -126,10 +127,12 @@ function fillGalleries(data, showActiveGallery) {
 function refreshGallery() {
 	if (activeGallery != -1) {
 		getItems(galleries[activeGallery].path, true);
+		$("#galleryitemtitle").unbind();
 		$("#galleryitemtitle").removeClass();
 
 	} else if (startGallery != null) {
 		getItems(startGallery.path, true);
+		$("#galleryitemtitle").unbind();
 		$("#galleryitemtitle").removeClass();
 	}
 }
@@ -171,7 +174,15 @@ function selectGallery(vfsPath, galleryIndex) {
 	}
 	// fill required data in publish link
 	$("#gallerypublishlink").attr("href", createPublishLink(vfsPath));
-	$("#galleryfolders").slideUp("fast", function(){ $("#galleryitems").slideDown("fast"); });
+	
+	var selectedTab = $tabs.tabs('option', 'selected');
+	if (isImageGallery == true &&  selectedTab == 0  && initValues.viewonly != true ) {
+		$("#galleryfolders").hide();
+		$("#galleryitems").show();
+	} else {
+		$("#galleryfolders").slideUp("fast", function(){ $("#galleryitems").slideDown("fast"); });
+	}
+	
 	$("#galleryitemtitle").removeClass();
 }
 
@@ -184,6 +195,7 @@ function showGalleryFolders() {
 function refreshCategory() {
 	if (activeCategory != -1) {
 		getItems(categories[activeCategory].path, false);
+		$("#categoryitemtitle").unbind();
 		$("#categoryitemtitle").removeClass();
 	}
 }
@@ -199,7 +211,14 @@ function selectCategory(vfsPath, categoryIndex) {
 		}
 		activeCategory = categoryIndex;
 	}
-	$("#categoryfolders").slideUp("fast", function() { $("#categoryitems").slideDown("fast"); });
+	var selectedTab = $tabs.tabs('option', 'selected');
+	if (isImageGallery == true &&  selectedTab == 0 && initValues.viewonly != true) {
+		$("#categoryfolders").hide();
+		$("#categoryitems").show();
+		alert("isImage preview category");
+	} else {
+		$("#categoryfolders").slideUp("fast", function() { $("#categoryitems").slideDown("fast"); });
+	}
 	$("#categoryitemtitle").removeClass();
 }
 

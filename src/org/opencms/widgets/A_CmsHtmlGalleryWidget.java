@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlGalleryWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:11 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/06/05 13:31:38 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,7 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.workplace.galleries.A_CmsGallery;
+import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 
 /**
  * Base class for non-editable "HTML display only" widget implementations.<p>
@@ -41,7 +41,7 @@ import org.opencms.workplace.galleries.A_CmsGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,6 +72,13 @@ public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String id = param.getId();
+        long idHash = id.hashCode();
+        if (idHash < 0) {
+            // negative hash codes will not work as JS variable names, so convert them
+            idHash = -idHash;
+            // add 2^32 to the value to ensure that it is unique
+            idHash += 4294967296L;
+        }
         StringBuffer result = new StringBuffer(128);
         result.append("<td class=\"xmlTd\">");
         result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" class=\"maxwidth\">");
@@ -95,11 +102,20 @@ public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
         result.append(widgetDialog.dialogHorizontalSpacer(10));
         result.append("<td><table class=\"editorbuttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         result.append(widgetDialog.button(
-            "javascript:open" + getNameUpper() + "Gallery('" + A_CmsGallery.MODE_WIDGET + "',  '" + id + "');",
+            "javascript:open"
+                + getNameUpper()
+                + "Gallery('"
+                + A_CmsAjaxGallery.MODE_WIDGET
+                + "',  '"
+                + id
+                + "' , '"
+                + idHash
+                + "');",
             null,
             getNameLower() + "gallery",
             Messages.getButtonName(this.getNameLower()),
             widgetDialog.getButtonStyle()));
+        // reset button 
         result.append(widgetDialog.button(
             "javascript:reset" + getNameUpper() + "Gallery('" + id + "');",
             null,
@@ -116,6 +132,19 @@ public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
         result.append("</table>");
 
         result.append("</td>");
+
+        // reads the configuration String for this widget
+        CmsGalleryWidgetConfiguration configuration = new CmsGalleryWidgetConfiguration(
+            cms,
+            widgetDialog,
+            param,
+            getConfiguration());
+
+        result.append("\n<script type=\"text/javascript\">");
+        result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
+            "\";");
+        result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append("\";");
+        result.append("\n</script>");
 
         return result.toString();
     }
