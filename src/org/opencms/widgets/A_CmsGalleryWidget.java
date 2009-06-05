@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2009/06/05 13:31:39 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/06/05 14:20:35 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 
@@ -44,7 +43,7 @@ import org.opencms.workplace.galleries.A_CmsAjaxGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,18 +215,6 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
                 result.append("\nvar useFmts").append(idHash).append(" = false;");
                 result.append("\n</script>");
             }
-
-            String scale = "";
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getScaleParams())
-                && (scale.indexOf(configuration.getScaleParams()) == -1)) {
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(scale)) {
-                    scale += ",";
-                }
-                scale += configuration.getScaleParams();
-            }
-            result.append("\n<script type=\"text/javascript\">");
-            result.append("\nvar scale").append(idHash).append(" = ").append(scale).append(";");
-            result.append("\n</script>");
         } else { // for download, link, html or table galleries
             // reads the configuration String for this widget
             CmsGalleryWidgetConfiguration configuration = new CmsGalleryWidgetConfiguration(
