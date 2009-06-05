@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFileView.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/06/05 15:41:53 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import javax.swing.filechooser.FileView;
  * 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,7 +60,7 @@ public class ImageFileView extends FileView {
     private String m_opencms;
 
     /**
-     * Creates a new ImageFile Vew object.<p>
+     * Creates a new ImageFile View object.<p>
      */
     public ImageFileView() {
 
@@ -134,7 +134,7 @@ public class ImageFileView extends FileView {
     /**
      * Returns a resource image icon for a given path. <p>
      * 
-     * The resource icon is chossen by the resource path, i.g. the resource type.
+     * The resource icon is chosen by the resource path, i.g. the resource type.
      * 
      * @param path the path of the resource
      * @return ImageIcon, or null if the path was invalid
