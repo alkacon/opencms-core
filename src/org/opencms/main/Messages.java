@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:38 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2009/06/05 15:10:01 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -48,7 +48,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** The copyright message for OpenCms. */
     public static final String[] COPYRIGHT_BY_ALKACON = {
         "",
-        "Copyright (c) 2007 Alkacon Software GmbH",
+        "Copyright (c) 2009 Alkacon Software GmbH",
         "OpenCms comes with ABSOLUTELY NO WARRANTY",
         "This is free software, and you are welcome to",
         "redistribute it under certain conditions.",
