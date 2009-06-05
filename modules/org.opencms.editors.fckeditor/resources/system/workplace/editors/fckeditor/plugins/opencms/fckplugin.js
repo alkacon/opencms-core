@@ -70,14 +70,6 @@ function execAction(form, action, target) {
 	form.submit(); 
 }
 
-// opens the specified gallery in a popup window
-function openGallery(galleryType) {
-	var cssPath = encodeURIComponent(top.edit.cssPath);
-	openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=" + galleryType + "&csspath=" + cssPath, "GalleryBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
-	focusCount = 1;
-	openWindow.focus();
-}
-
 // opens the link dialog window
 function openLinkDialog(errorMessage) {
 	openAnchorDialogWindow("link", errorMessage);
@@ -277,7 +269,3 @@ helpCommand.prototype.Execute = function() {
 }
 FCKCommands.RegisterCommand('oc-help', new helpCommand());
 FCKToolbarItems.RegisterItem('oc-help', new FCKToolbarButton('oc-help','<%=  CmsEncoder.encodeJavaEntities(wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_HELP_0), encoding) %>', null, null, true)); 
-
-
-// OpenCms gallery buttons
-<%= wp.buildGalleryButtons(null, 0, null) %>
