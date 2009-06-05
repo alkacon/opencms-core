@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/06/05 14:48:13 $
- * Version: $Revision: 1.1108 $
+ * Date   : $Date: 2009/06/05 14:57:33 $
+ * Version: $Revision: 1.1109 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,7 +19,14 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.5.0 - May 18, 2009
+OpenCms 7.5.0 - June xx, 2009
+! Added support for new Microsoft document types to upload applet
+! All galleries with advanced AJAX features available in structured content and free page editor
+* Fixed issue with HTML-decorator when tagging the second level
+* Fixed issue #1696: Categories collector throws unexpected nullpointer exception
+* Fixed issue #1697: Fixed incompatibility of templateone form with OpenJDK 1.6 (Fedora 10)
+
+OpenCms 7.3.0 (aka 7.5 beta 1) - May 18, 2009
 ! Added configuration of offline update frequency
 ! Added support for decentralized categories
 ! Simapi and Image scaler now support image cropping
@@ -34,7 +41,7 @@ OpenCms 7.5.0 - May 18, 2009
 ! Added definition of exclude links for internal link check. Internal links defined this way are handled like external links.
 ! New scheduled job to delete expired resources
 ! Removed 2GB size limit for average and maximum flex cache size
-! New galleries with advanced AJAX features available in structured content and free page editor
+! New image gallery with advanced AJAX features available in structured content and free page editor
 ! Improved exception handling on login of disabled users
 ! Improved handling of secure site configuration errors.
 ! Tabs can now be defined for the structured content editor to improve usability
@@ -44,7 +51,6 @@ OpenCms 7.5.0 - May 18, 2009
 - Updated simapi.jar to version 0.9.8
 - Multiple other .jar updates
 - New property read strategy - always read all properties of a resource, even if only one is needed
-* Fixed issue with HTML-decorator when tagging the second level
 * Fixed security issue with the history handler
 * Fixed issue #1016: JSP send mail example out of order
 * Fixed issue #1122: JSTL Examples do not work in the Alkacon Documentation 
@@ -75,8 +81,6 @@ OpenCms 7.5.0 - May 18, 2009
 * Fixed issue #1298: Tab key in FCK widget behaves badly in IE
 * Fixed issue #1311: editoptions in opencms-modules.xml inhibits the import
 * Fixed issue #1738: CmsShellCommands.uploadFile(...) not working
-* Fixed issue #1696: Categories collector throws unexpected nullpointer exception
-* Fixed issue #1697: Fixed incompatibility of templateone form with OpenJDK 1.6 (Fedora 10)
 * Fixed issue with JSP hard includes when using site relative paths
 * Fixed issue with performance when serving JSP pages
 * Fixed issue with SQL query not running on MS SQL server
