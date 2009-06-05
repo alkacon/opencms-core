@@ -3,7 +3,7 @@
 <Configs xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/config.xsd">
   <Config language="en">
     <Preset>
-      <link type="WEAK">
+      <link type="STRONG">
         <target><![CDATA[/sites/default/release/_config_/twocolums]]></target>
         <uuid>432944bd-e54e-11dc-af52-31960a76c470</uuid>
       </link>

@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.4</opencms_version>
-		<createdate>Sat, 01 Mar 2008 14:49:03 GMT</createdate>
+		<opencms_version>7.5.0</opencms_version>
+		<createdate>Fri, 05 Jun 2009 07:50:44 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -14,11 +14,11 @@
 		<group>OpenCms Release Notes</group>
 		<class/>
 		<description><![CDATA[<p>This module contains the OpenCms welcome page and release notes.</p>
-<p>Install this module as a simple demonstration for the template capabilities of OpenCms 7.0.</p>
+<p>Install this module as a simple demonstration for the template capabilities of OpenCms 7.5.</p>
 <p><strong>Note:</strong> Deleting this module will remove the "/release" folder and all pages there. 
 It will also remove the "default" template.</p>
-<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.5</version>
+<p><i>(c) 2009 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>7.5.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -38,7 +38,7 @@ It will also remove the "default" template.</p>
 			<destination>release</destination>
 			<type>folder</type>
 			<uuidstructure>f0d1ccb2-11b7-11db-91cd-fdbae480bac9</uuidstructure>
-			<datelastmodified>Fri, 29 Feb 2008 08:22:35 GMT</datelastmodified>
+			<datelastmodified>Thu, 04 Jun 2009 16:02:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -58,7 +58,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[notes_7.0.5.html]]></value>
+					<value><![CDATA[notes_7.5.0.html]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -263,7 +263,7 @@ It will also remove the "default" template.</p>
 			<uuidstructure>9f579584-e5e9-11dc-a1ea-31960a76c470</uuidstructure>
 			<uuidresource>9f579585-e5e9-11dc-a1ea-31960a76c470</uuidresource>
 			<datelastmodified>Sat, 01 Mar 2008 12:31:26 GMT</datelastmodified>
-			<userlastmodified>andreas</userlastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 28 Feb 2008 10:40:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
@@ -307,6 +307,34 @@ It will also remove the "default" template.</p>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 7.0.5 Release Notes]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_7.5.0.html</source>
+			<destination>release/notes_7.5.0.html</destination>
+			<type>xmlpage</type>
+			<uuidstructure>5080d54e-511f-11de-bc13-8f23054f3cbd</uuidstructure>
+			<uuidresource>5080d54f-511f-11de-bc13-8f23054f3cbd</uuidresource>
+			<datelastmodified>Thu, 04 Jun 2009 16:03:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 04 Jun 2009 15:49:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[7.5.0 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms 7.5.0 Release Notes]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -408,10 +436,10 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>721910c3-e6b0-11dc-8289-d3bbbb60c354</uuidstructure>
-			<datelastmodified>Fri, 29 Feb 2008 10:24:01 GMT</datelastmodified>
+			<uuidstructure>82f2e017-511d-11de-bc13-8f23054f3cbd</uuidstructure>
+			<datelastmodified>Thu, 04 Jun 2009 15:36:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 29 Feb 2008 10:24:01 GMT</datecreated>
+			<datecreated>Thu, 04 Jun 2009 15:36:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -430,10 +458,10 @@ It will also remove the "default" template.</p>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>7257a09c-e6b0-11dc-8289-d3bbbb60c354</uuidstructure>
-			<datelastmodified>Fri, 29 Feb 2008 10:24:02 GMT</datelastmodified>
+			<uuidstructure>838471f0-511d-11de-bc13-8f23054f3cbd</uuidstructure>
+			<datelastmodified>Thu, 04 Jun 2009 15:36:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 29 Feb 2008 10:24:02 GMT</datecreated>
+			<datecreated>Thu, 04 Jun 2009 15:36:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

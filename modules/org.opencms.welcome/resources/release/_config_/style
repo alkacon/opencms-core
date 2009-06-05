@@ -5,7 +5,7 @@
     <window.width><![CDATA[80em]]></window.width>
     <window.background>#EEE</window.background>
     <window.background.image>
-      <link type="WEAK">
+      <link type="STRONG">
         <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/bg_welcome_png24.png]]></target>
         <uuid>fa5f2e0f-e617-11dc-a594-c3eec68d3370</uuid>
       </link>
@@ -16,7 +16,7 @@
     <header.color>#444444</header.color>
     <header.background>#FFF</header.background>
     <header.background.image>
-      <link type="WEAK">
+      <link type="STRONG">
         <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/bg_head_welcome_png24.png]]></target>
         <uuid>ec45a886-e612-11dc-a594-c3eec68d3370</uuid>
       </link>
@@ -25,7 +25,7 @@
     <footer.color>#444444</footer.color>
     <footer.background>#FFFFFF</footer.background>
     <footer.background.image>
-      <link type="WEAK">
+      <link type="STRONG">
         <target><![CDATA[/system/modules/org.opencms.welcome/resources/images/bg_foot_welcome_png24.png]]></target>
         <uuid>fa6ff5f3-e617-11dc-a594-c3eec68d3370</uuid>
       </link>
