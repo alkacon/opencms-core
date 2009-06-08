@@ -5,6 +5,7 @@
 	<search>
 		<directory>index</directory>
 		<timeout>60000</timeout>
+		<offlineUpdateFrequency>30000</offlineUpdateFrequency>
 		<forceunlock>onlyfull</forceunlock>		
 		<excerpt>1024</excerpt>
 		<extractionCacheMaxAge>672.0</extractionCacheMaxAge>		
