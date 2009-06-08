@@ -166,7 +166,7 @@ function selectGallery(vfsPath, galleryIndex) {
 		var uploadLink = "../galleryelements/upload.jsp?gallery=";
 		uploadLink += vfsPath;
 		if ( isAppletUsed == true ) {
-			uploadLink += "&amp;TB_iframe=true&amp;width=480&amp;height=95&amp;modal=true";
+			uploadLink += "&amp;TB_iframe=true&amp;width=480&amp;height=120&amp;modal=true";
 		} else {
 			uploadLink += "&amp;TB_iframe=true&amp;width=560&amp;height=480&amp;modal=true";
 		}
