@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/06/05 14:57:33 $
- * Version: $Revision: 1.1109 $
+ * Date   : $Date: 2009/06/08 14:33:53 $
+ * Version: $Revision: 1.1110 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 7.5.0 - June xx, 2009
+OpenCms 7.5.0 - June 15, 2009
 ! Added support for new Microsoft document types to upload applet
 ! All galleries with advanced AJAX features available in structured content and free page editor
 * Fixed issue with HTML-decorator when tagging the second level
