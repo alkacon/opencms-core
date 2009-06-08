@@ -87,14 +87,14 @@
 					</properties>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
-					<param name="folder.class">org.opencms.workplace.galleries.CmsImageGallery</param>
+					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxImageGallery</param>
 					<param name="folder.class.params">w:120,h:90,c:D4D0C8</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="downloadgallery" id="9">
-					<param name="folder.class">org.opencms.workplace.galleries.CmsDownloadGallery</param>
+					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxDownloadGallery</param>
 				</type>	
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="linkgallery" id="10">
-					<param name="folder.class">org.opencms.workplace.galleries.CmsLinkGallery</param>
+					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxLinkGallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="htmlgallery" id="11">
 					<copy-resources>
@@ -102,7 +102,7 @@
 						<copy-resource source="/system/index2.html" target="${resource.folder.path}" />
 						<copy-resource source="/system/index3.html" target="${resource.folder.path}" type="sibling" />
 					</copy-resources>
-					<param name="folder.class">org.opencms.workplace.galleries.CmsHtmlGallery</param>
+					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 				</type>	
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsTableGallery</param>
