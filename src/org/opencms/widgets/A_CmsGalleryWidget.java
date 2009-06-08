@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2009/06/05 14:20:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/06/08 14:52:36 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.widgets;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 
@@ -43,7 +44,7 @@ import org.opencms.workplace.galleries.A_CmsAjaxGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,12 +194,19 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
                 param,
                 getConfiguration());
 
-            result.append("\n<script type=\"text/javascript\">");
-            result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
-                "\";");
-            result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
-                "\";");
-            result.append("\n</script>");
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
+                result.append("\n<script type=\"text/javascript\">");
+                result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
+                    "\";");
+                result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
+                    "\";");
+                result.append("\n</script>");
+            } else {
+                result.append("\n<script type=\"text/javascript\">");
+                result.append("\nvar startupFolder").append(idHash).append(" = null;");
+                result.append("\nvar startupType").append(idHash).append(" = null;");
+                result.append("\n</script>");
+            }
 
             //This part is not used in javascript for now
             if (configuration.isShowFormat()) {
@@ -223,12 +231,19 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
                 param,
                 getConfiguration());
 
-            result.append("\n<script type=\"text/javascript\">");
-            result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
-                "\";");
-            result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
-                "\";");
-            result.append("\n</script>");
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(configuration.getStartup())) {
+                result.append("\n<script type=\"text/javascript\">");
+                result.append("\nvar startupFolder").append(idHash).append(" = \"").append(configuration.getStartup()).append(
+                    "\";");
+                result.append("\nvar startupType").append(idHash).append(" = \"").append(configuration.getType()).append(
+                    "\";");
+                result.append("\n</script>");
+            } else {
+                result.append("\n<script type=\"text/javascript\">");
+                result.append("\nvar startupFolder").append(idHash).append(" = null;");
+                result.append("\nvar startupType").append(idHash).append(" = null;");
+                result.append("\n</script>");
+            }
         }
 
         return result.toString();
