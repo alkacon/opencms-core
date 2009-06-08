@@ -68,14 +68,15 @@ function getScaleValue(scale, valueName) {
 }
 
 function setImageGalleryInfo(fieldId, idHash) {
-// TO DO: formatnames and formatvalues are missed
+	// TO DO: formatnames and formatvalues are not yet supported
 	// parameter from the xml configuration and the input field
 	var imageEl = window.document.getElementById(fieldId);
 	// image path with scale parameteres as ?__scale=
 	var imagePath = imageEl.value;
 	
 	// must be set in the configuration, for now=false
-	var useFormats = false;
+	var useFormats = false; 
+	var showFormats = eval('useFmts' + idHash); 
 	var formatValue = null;
 	
 	var scaleParam = extractScaleParam(imagePath);
@@ -92,7 +93,6 @@ function setImageGalleryInfo(fieldId, idHash) {
 		} else {
 			imgWidth = getScaleValue(scaleParam, "w");
 			imgHeight = getScaleValue(scaleParam, "h");
-			//alert("imgwidth + height :" + imgWidth + " " +imgHeight);
 		}
 	}
 		
@@ -109,6 +109,7 @@ function setImageGalleryInfo(fieldId, idHash) {
 		"fieldid": 		fieldId,
 		"imagepath": 		imagePath,
 		"useformats": 		useFormats,
+		"showformats": 		showFormats,
 		"scale":		scaleParam,
 		"imgwidth":		imgWidth,
 		"imgheight":		imgHeight,

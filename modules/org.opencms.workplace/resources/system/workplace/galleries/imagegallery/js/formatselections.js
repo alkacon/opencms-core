@@ -9,30 +9,41 @@ var lockRatio = true;
 
 /* Enables and disabled links and inputs depending if image is cropped or not. */
 function setCropActive(isCropped, forceRefreshPreview) {
-	if (isCropped == true) {
-		// cropping has been set, disable input fields and refresh view
+	if (initValues.widgetmode == "simple" && initValues.showformats == false) {
+		// disable input fields and buttons for simple widget mode
 		$('#txtWidth').get(0).disabled = true;
 		$('#txtHeight').get(0).disabled = true;
 		$('#formatselect').get(0).disabled = true;
 		$('#resetsize').hide();
 		$('#locksizes').hide();
-		$('#cropremove').show();
-		$('#cropinfo').show();
-	} else {
-		// cropping has been disabled, enable input fields and refresh view
-		if (initValues.useformats == true) {
-			// using formats, calculate image for currently selected size
-			changeFormat();
-		} else {
-			// only enable if not using formats
-			$('#txtWidth').get(0).disabled = false;
-			$('#txtHeight').get(0).disabled = false;
-		}
-		$('#formatselect').get(0).disabled = false;
-		$('#resetsize').show();
-		$('#locksizes').show();
 		$('#cropremove').hide();
 		$('#cropinfo').hide();
+	} else {
+		if (isCropped == true) {
+			// cropping has been set, disable input fields and refresh view
+			$('#txtWidth').get(0).disabled = true;
+			$('#txtHeight').get(0).disabled = true;
+			$('#formatselect').get(0).disabled = true;
+			$('#resetsize').hide();
+			$('#locksizes').hide();
+			$('#cropremove').show();
+			$('#cropinfo').show();
+		} else {
+			// cropping has been disabled, enable input fields and refresh view
+			if (initValues.useformats == true) {
+				// using formats, calculate image for currently selected size
+				changeFormat();
+			} else {
+				// only enable if not using formats
+				$('#txtWidth').get(0).disabled = false;
+				$('#txtHeight').get(0).disabled = false;
+			}
+			$('#formatselect').get(0).disabled = false;
+			$('#resetsize').show();
+			$('#locksizes').show();
+			$('#cropremove').hide();
+			$('#cropinfo').hide();
+		}
 	}
 	if (isCropped != activeItem.isCropped || (forceRefreshPreview != null && forceRefreshPreview == true)) {
 		activeItem.isCropped = isCropped;
@@ -176,7 +187,7 @@ function changeFormat() {
 /* Initializes the options and values shown in the format select box. */
 function initFormatSelectBox() {
 	var formatOptions, formatValues;
-	if (initValues.useformats == true) {
+	if (initValues.widgetmode != "simple" && initValues.useformats == true) {
 		// using a preselected format, just display information that cannot be changed
 
 		$("#txtWidth").get(0).disabled = true;
@@ -257,7 +268,7 @@ function refreshSelectBox() {
 			if (currSelect.type == "free" && activeItem.isCropped == true) {
 				selectedIndex = i;
 				$("#croplink").show();
-			} else if (currSelect.type == "original" && activeItem.newwidth == activeItem.width && activeItem.newheight == activeItem.height) {
+			} else if (currSelect.type == "original" && (activeItem.newwidth == 0 ||activeItem.newwidth == activeItem.width) && (activeItem.newheight == 0 || activeItem.newheight == activeItem.height)) {
 				selectedIndex = i;
 				$("#croplink").hide();
 				break;

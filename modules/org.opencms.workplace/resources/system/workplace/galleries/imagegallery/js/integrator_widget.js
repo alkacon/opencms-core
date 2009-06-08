@@ -34,7 +34,7 @@ function initPopup() {
 		$tabs.tabs("disable", 0);
 	}
 	window.resizeTo(sizeX, sizeY);
-	if (initValues.startupfolder != null && initValues.startupfolder != "null") {
+	if (initValues.startupfolder != null && initValues.startupfolder != "null" && initValues.startupfolder != "") {
 		initStartup();
 	} else {
 		setTimeout("getGalleries();", 50);

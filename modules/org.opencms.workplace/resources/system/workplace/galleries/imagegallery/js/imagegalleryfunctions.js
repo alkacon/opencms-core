@@ -322,8 +322,12 @@ function loadActiveItem(data, isInitial) {
 			} else {
 				setCropActive(false);
 			}
-			// refresh the format select box
-			refreshSelectBox();
+	        if (initValues.widgetmode != "simple" || initValues.showformats == true) {
+            	// refresh the format select box
+				refreshSelectBox();
+			} else  if (initValues.showformats == false) {
+				$("#croplink").hide();
+			} 
 		}
 		initValues.scale = removeScaleValue(initValues.scale, "w");
 		initValues.scale = removeScaleValue(initValues.scale, "h");
