@@ -2,7 +2,7 @@
 
 <ListBoxes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/listbox.xsd">
   <ListBox language="en">
-    <Title><![CDATA[Liliaceous Plants]]></Title>
+    <Title><![CDATA[Composite Plants]]></Title>
     <Links>
       <link type="WEAK">
         <target><![CDATA[/sites/default/demo_en/dictionary/]]></target>
@@ -10,7 +10,7 @@
       </link>
     </Links>
     <Collector><![CDATA[allKeyValuePairFiltered]]></Collector>
-    <Parameter><![CDATA[resource=%(link1)|resourceType=ttitem|categoryTypes=gewaechsarten/liliengewaechs/|subTree=false|sortBy=date|sortAsc=true]]></Parameter>
+    <Parameter><![CDATA[resource=%(link1)|resourceType=ttitem|categoryTypes=gewaechsarten/korbbluetengewaechs/|subTree=false|sortBy=date|sortAsc=true]]></Parameter>
     <More/>
     <PositionAuthor><![CDATA[Top]]></PositionAuthor>
     <PositionDate><![CDATA[Top]]></PositionDate>
