@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2009/06/08 12:01:22 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,7 +117,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
     private String m_actionOutputError = "Error";
 
-    /** Defintion of output strings.*/
+    /** Definition of output strings.*/
     private String m_actionOutputSelect = "Seleting files for upload....";
 
     private String m_actionOutputUpload = "Upload Zip-File";
@@ -142,7 +142,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     /** The URL to return to after an error. */
     private String m_errorUrl = "";
 
-    /** File extensions, used to find the correct icons for the selectbox. */
+    /** File extensions, used to find the correct icons for the select box. */
     private String m_fileExtensions = "";
 
     /** The type of gallery to upload to. */
@@ -160,7 +160,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     /** Maximum file upload size. */
     private long m_maxsize = -1;
 
-    /** Output string for loggin messages. */
+    /** Output string for logging messages. */
     private String m_message = "";
     private String m_messageNoPreview = "no preview available";
     private String m_messageOutputAdding = "Adding ";
@@ -408,7 +408,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             // check if is really a folder
             count = 1;
         } else {
-            // recurest to count
+            // recurse to count
             count = countResources(folder.listFiles());
         }
         return count;
