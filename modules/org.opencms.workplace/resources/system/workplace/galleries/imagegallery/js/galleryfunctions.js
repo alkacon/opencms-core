@@ -215,7 +215,6 @@ function selectCategory(vfsPath, categoryIndex) {
 	if (isImageGallery == true &&  selectedTab == 0 && initValues.viewonly != true) {
 		$("#categoryfolders").hide();
 		$("#categoryitems").show();
-		alert("isImage preview category");
 	} else {
 		$("#categoryfolders").slideUp("fast", function() { $("#categoryitems").slideDown("fast"); });
 	}
