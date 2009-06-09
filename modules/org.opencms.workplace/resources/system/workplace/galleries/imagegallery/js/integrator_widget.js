@@ -204,6 +204,10 @@ function okPressed() {
 			ratioField.value = activeItem.width / activeItem.height;
 		}
 	}
+	try {
+		// toggle preview icon if possible
+		window.opener.checkPreview(initValues.fieldid);
+	} catch (e) {}
 	window.close();
 }
 

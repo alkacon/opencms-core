@@ -84,7 +84,11 @@ function okPressed() {
 
 	if ( initValues.fieldid != null && initValues.fieldid != "") {
 		var imgField = window.opener.document.getElementById(initValues.fieldid);
-		imgField.value = activeItem.sitepath;	
+		imgField.value = activeItem.sitepath;
+		try {
+			// toggle preview icon if possible
+			window.opener.checkPreview(initValues.fieldid);
+		} catch (e) {}
 	}
 	window.close();
 }
