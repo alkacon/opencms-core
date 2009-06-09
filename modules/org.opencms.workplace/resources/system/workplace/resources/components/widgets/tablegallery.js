@@ -56,7 +56,7 @@ function openTableGallery(dialogMode, fieldId, idHash) {
 		"editedresource": 	editedResource
 	};
 
-	var paramString = "&dialogmode=" + dialogMode;
+	var paramString = "dialogmode=" + dialogMode;
 	paramString += "&fieldid=" + fieldId;
 	paramString += "&params=" + JSON.stringify(tableGalleryInfo);
 	treewin = window.open(contextPath + tableGalleryPath + paramString, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=650,height=700');
