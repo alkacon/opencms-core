@@ -174,6 +174,8 @@ var contextPath = "<%= wp.getOpenCmsContext() %>";
 var workplacePath="<%= cms.link("/system/workplace/") %>";
 // skin URI needed in included javascript files 
 var skinUri = "<%= CmsWorkplace.getSkinUri() %>";
+//Path to the currently edited resource
+var editedResource = "<%= wp.getParamResource() %>";
 // style of the buttons
 var buttonStyle = <%= buttonStyle %>;
 
