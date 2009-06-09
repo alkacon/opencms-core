@@ -126,7 +126,7 @@ function setImageGalleryInfo(fieldId, idHash) {
 function openImageGallery(dialogMode, fieldId, idHash) {
 
 	setImageGalleryInfo(fieldId, idHash);
-	var paramString = "&dialogmode=" + dialogMode;
+	var paramString = "dialogmode=" + dialogMode;
 	paramString += "&widgetmode=simple";
 	paramString += "&params=" + JSON.stringify(imageGalleryInfo);
 	
