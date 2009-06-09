@@ -83,7 +83,7 @@
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxHtmlGallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="tablegallery" id="12">
-					<param name="folder.class">org.opencms.workplace.galleries.CmsTableGallery</param>
+					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
 				</type>
 			</resourcetypes>
 			<collectors>
