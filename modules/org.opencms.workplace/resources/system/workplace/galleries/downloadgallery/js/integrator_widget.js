@@ -52,7 +52,7 @@ function initStartup() {
 		setTimeout("initStartup();", 100);
 	} else {
 		if (initValues.startuptype == "category") {
-			// swith to categories tab
+			// switch to categories tab
 			$tabs.tabs("select", 1);
 			getGalleries();
 			for (var i = 0; i < categories.length; i++) {
