@@ -99,7 +99,7 @@ function okPressed() {
 				initValues.scale += newScale;
 								
 			} 
-			//entferne alle crop-paramter
+			//remove cropping parameter
 			else if (getScaleValue(initValues.scale, "cx") != "") {
 				initValues.scale = removeScaleValue(initValues.scale, "cx");
 				initValues.scale = removeScaleValue(initValues.scale, "cy");
@@ -206,7 +206,11 @@ function okPressed() {
 	}
 	try {
 		// toggle preview icon if possible
-		window.opener.checkPreview(initValues.fieldid);
+		if (initValues.widgetmode == "simple") {
+			window.opener.checkPreview(initValues.fieldid);
+		} else {
+			window.opener.checkVfsImagePreview(initValues.fieldid);
+		}
 	} catch (e) {}
 	window.close();
 }

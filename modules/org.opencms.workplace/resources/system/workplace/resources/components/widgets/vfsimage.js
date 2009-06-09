@@ -1,12 +1,12 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace/resources/system/workplace/resources/components/widgets/vfsimage.js,v $
- * Date   : $Date: 2009/06/05 13:31:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/06/09 13:03:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
  *
- * Copyright (c) 2002 - 2008 Alkacon Software GmbH (http://www.alkacon.com)
+ * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -248,23 +248,23 @@ function checkVfsImagePreview(fieldId) {
 
 /* Opens a preview popup window to display the currently selected image. */
 function previewVfsImage(fieldId, idHash) {
-	setGalleryInfo(fieldId, idHash);
-	if ((galleryInfo.imagepath != "") && (galleryInfo.imagepath.charAt(0) == "/")) {
+	setVfsImageGalleryInfo(fieldId, idHash);
+	if ((vfsImageGalleryInfo.imagepath != "") && (vfsImageGalleryInfo.imagepath.charAt(0) == "/")) {
 		var winWidth = 550;
 		var winHeight = winWidth;
 		var additionalScale = "";
-		if (galleryInfo.imgwidth != "" && galleryInfo.imgwidth != "?") {
-			winWidth = parseInt(galleryInfo.imgwidth) + 20;
-			if (galleryInfo.imgheight != "" && galleryInfo.imgheight != "?") {
-				additionalScale += ",w:" + parseInt(galleryInfo.imgwidth);
+		if (vfsImageGalleryInfo.imgwidth != "" && vfsImageGalleryInfo.imgwidth != "?") {
+			winWidth = parseInt(vfsImageGalleryInfo.imgwidth) + 20;
+			if (vfsImageGalleryInfo.imgheight != "" && vfsImageGalleryInfo.imgheight != "?") {
+				additionalScale += ",w:" + parseInt(vfsImageGalleryInfo.imgwidth);
 			}
 		}
-		if (galleryInfo.imgheight != "" && galleryInfo.imgheight != "?") {
-			winHeight = parseInt(galleryInfo.imgheight) + 10;
-			if (galleryInfo.imgwidth != "" && galleryInfo.imgwidth != "?") {
-				additionalScale += ",h:" + parseInt(galleryInfo.imgheight);
+		if (vfsImageGalleryInfo.imgheight != "" && vfsImageGalleryInfo.imgheight != "?") {
+			winHeight = parseInt(vfsImageGalleryInfo.imgheight) + 10;
+			if (vfsImageGalleryInfo.imgwidth != "" && vfsImageGalleryInfo.imgwidth != "?") {
+				additionalScale += ",h:" + parseInt(vfsImageGalleryInfo.imgheight);
 			}
 		}
-		treewin = window.open(contextPath + galleryInfo.imagepath + "?__scale=" + galleryInfo.scale + additionalScale, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=' + winWidth + ',height=' + winHeight + '');
+		treewin = window.open(contextPath + vfsImageGalleryInfo.imagepath + "?__scale=" + vfsImageGalleryInfo.scale + additionalScale, "opencms", 'toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=' + winWidth + ',height=' + winHeight + '');
 	}
 }
