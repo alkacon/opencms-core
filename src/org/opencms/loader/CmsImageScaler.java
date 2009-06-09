@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageScaler.java,v $
- * Date   : $Date: 2009/06/04 14:29:08 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/06/09 10:02:56 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.2.0
  */
@@ -419,8 +419,6 @@ public class CmsImageScaler {
      * Use {@link #setCropArea(int, int, int, int)} to set this value.<p>
      *
      * @return the crop area Y start coordinate
-     * 
-     * @use {@link #setCropArea(int, int, int, int)} to set this value
      */
     public int getCropY() {
 

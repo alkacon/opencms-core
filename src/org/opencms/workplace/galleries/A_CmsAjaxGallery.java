@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/A_CmsAjaxGallery.java,v $
- * Date   : $Date: 2009/06/09 08:20:37 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/06/09 10:02:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,9 +82,9 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
- * @since 6.0.0 
+ * @since 7.5.0 
  */
 public abstract class A_CmsAjaxGallery extends CmsDialog {
 
@@ -178,7 +178,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     /** The list mode to get the item either from a gallery or by a category. */
     private String m_paramListMode;
 
-    /** The value of the property (current propertydefinition: Title). */
+    /** The value of the property (current property definition: Title). */
     private String m_paramPropertyValue;
 
     /** The gallery base resource type. */
@@ -200,7 +200,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     public A_CmsAjaxGallery(CmsJspActionElement jsp) {
 
         super(jsp);
-        // perform other intialisation
+        // perform other initialization
         init();
 
     }

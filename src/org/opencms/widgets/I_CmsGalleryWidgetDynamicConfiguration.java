@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsGalleryWidgetDynamicConfiguration.java,v $
- * Date   : $Date: 2009/05/19 15:53:55 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/06/09 10:02:56 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,9 +44,9 @@ import org.opencms.file.CmsObject;
  *
  * @author Polina Smagina 
  * 
- * @version 
+ * @version $Revision: 1.2 $
  * 
- * @since  
+ * @since 7.5.0
  */
 
 public interface I_CmsGalleryWidgetDynamicConfiguration {
