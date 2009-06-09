@@ -197,7 +197,7 @@ input.showborder, select.showborder {
 /* gallery folder list for all galleries --------------------------- */
 #galleryfolderlist, #categoryfolderlist {
 	padding: 6px 4px;
-	height: 570px;		/* overwritten in editor.css */
+	height: 550px;		/* overwritten in editor.css */
 	overflow: auto;
 }
 
