@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddXmlContentWidgets.java,v $
- * Date   : $Date: 2009/06/04 14:31:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/06/09 10:55:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ import org.opencms.widgets.CmsPrincipalWidget;
 import org.opencms.widgets.CmsRadioSelectWidget;
 import org.opencms.widgets.CmsTextareaWidgetPlaintext;
 import org.opencms.widgets.CmsUserWidget;
+import org.opencms.widgets.CmsVfsImageWidget;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.1.8 
  */
@@ -172,8 +173,8 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
             m_widgetData.put("OrgUnitWidget", CmsOrgUnitWidget.class.getName());
             m_widgetData.put("PrincipalWidget", CmsPrincipalWidget.class.getName());
             m_widgetData.put("RadioSelectWidget", CmsRadioSelectWidget.class.getName());
+            m_widgetData.put("VfsImageWidget", CmsVfsImageWidget.class.getName());
         }
         return m_widgetData;
     }
-
 }
