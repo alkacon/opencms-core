@@ -26,7 +26,8 @@
     </target>
 
     <target name="javadoc" depends="init,clean" >
-        <javadoc destdir="${destdir}" 
+        <javadoc destdir="${destdir}"
+          maxmemory="512m"
           access="protected" 
           use="true" 
           notree="false" 
