@@ -14,8 +14,8 @@
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[<p>This module contains Overviews for every OpenCms gallery types.</p>
-<p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.0</version>
+<p><i>(c) 2009 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>7.5.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -265,7 +265,7 @@
 			<type>jsp</type>
 			<uuidstructure>dc8dcf3b-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>27a4a8a0-c0f9-1cd7-cda0-80b84c2772a5</uuidresource>
-			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<datelastmodified>Tue, 09 Jun 2009 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>

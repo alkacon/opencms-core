@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/A_CmsAjaxGallery.java,v $
- * Date   : $Date: 2009/06/05 09:05:16 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/06/09 08:20:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,6 +185,39 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     private CmsResourceTypeFolderExtended m_resourceType;
 
     /**
+     * Public empty constructor, required for {@link A_CmsAjaxGallery#createInstance(String, CmsJspActionElement)}.<p>
+     */
+    public A_CmsAjaxGallery() {
+
+        this(null);
+    }
+
+    /**
+     * Public constructor with JSP action element.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     */
+    public A_CmsAjaxGallery(CmsJspActionElement jsp) {
+
+        super(jsp);
+        // perform other intialisation
+        init();
+
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public A_CmsAjaxGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
      * Creates a new gallery instance of the given gallery type name.<p>
      * 
      * @param galleryTypeName the gallery type name to create the instance for
@@ -262,36 +295,26 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     }
 
     /**
-     * Public empty constructor, required for {@link A_CmsAjaxGallery#createInstance(String, CmsJspActionElement)}.<p>
-     */
-    public A_CmsAjaxGallery() {
-
-        this(null);
-    }
-
-    /**
-     * Public constructor with JSP action element.<p>
+     * Initializes the gallery dialog before redirecting.<p>
      * 
-     * @param jsp an initialized JSP action element
+     * @param wp the workplace object
      */
-    public A_CmsAjaxGallery(CmsJspActionElement jsp) {
+    public static void initGallery(CmsDialog wp) {
 
-        super(jsp);
-        // perform other intialisation
-        init();
-
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public A_CmsAjaxGallery(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
+        // 1. get "gallerytypename" by reading the folderpath
+        String galleryTypeName = null;
+        if (wp.useNewStyle()) {
+            galleryTypeName = CmsResource.getName(CmsResource.getFolderPath(wp.getAdminTool().getHandler().getLink()));
+        } else {
+            galleryTypeName = CmsResource.getName(CmsResource.getFolderPath(wp.getJsp().getRequestContext().getUri()));
+        }
+        if (galleryTypeName.endsWith("/")) {
+            galleryTypeName = galleryTypeName.substring(0, galleryTypeName.length() - 1);
+        }
+        if (!galleryTypeName.equals("commons")) {
+            // 2. set in user settings
+            wp.getSettings().setGalleryType(galleryTypeName);
+        }
     }
 
     /**
