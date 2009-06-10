@@ -2,7 +2,7 @@
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/config.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/image.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/itemimage.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/extendedlink.xsd"/>
 		
 	<xsd:element name="TTItems" type="OpenCmsTTItems"/>
@@ -19,7 +19,7 @@
 			<xsd:element name="Category" type="OpenCmsString" />
 			<xsd:element name="ShortDescription" type="OpenCmsHtml" minOccurs="0" />
 			<xsd:element name="LongDescription" type="OpenCmsHtml" />
-			<xsd:element name="Images" type="OpenCmsTTImage" minOccurs="0" maxOccurs="5"/>			
+			<xsd:element name="Images" type="OpenCmsTTItemImage" minOccurs="0" maxOccurs="5"/>			
 			<xsd:element name="Links" type="OpenCmsTTExtendedLink" minOccurs="0" maxOccurs="5"/>
 			<xsd:element name="Config" type="OpenCmsConfig" minOccurs="0" />
 		</xsd:sequence>

@@ -1,6 +1,7 @@
 <%@ page import="org.opencms.file.*" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <cms:include property="template" element="head" />
 
 <cms:contentload collector="singleFile" param="%(opencms.uri)" editable="auto">
@@ -9,12 +10,24 @@
 	
 		<cms:contentloop element="Images">
 			<c:set var="imagePath"><cms:contentshow element="Image" /></c:set>
+			<c:set var="imageParams" value="" />
+			<c:if test="${fn:indexOf(imagePath, '?') != - 1}">
+				<c:set var="imageParams" value="${fn:substringAfter(imagePath, '?')}" />
+				<c:set var="imagePath" value="${fn:substringBefore(imagePath, '?')}" />
+			</c:if>
 			<c:set var="imageTitle">${cms:vfs(pageContext).property[imagePath]['Title']}</c:set>
 			<c:set var="imageFolder"><%= CmsResource.getFolderPath((String)pageContext.getAttribute("imagePath")) %></c:set>
 			<div class="image">
-				<cms:img scaleType="1" width="200" alt="${imageTitle}">
-					<cms:param name="src">${imagePath}</cms:param> 
-				</cms:img>
+				<c:choose>
+					<c:when test="${not empty imageParams}">
+						<img src="<cms:link>${imagePath}?${imageParams}</cms:link>" alt="${imageTitle}">
+					</c:when>
+					<c:otherwise> 
+						<cms:img scaleType="1" width="200" alt="${imageTitle}">
+							<cms:param name="src">${imagePath}</cms:param> 
+						</cms:img>
+					</c:otherwise>
+				</c:choose>
 				<div class="description">
 					<a href="<cms:link>${imageFolder}index.html#${imageTitle}</cms:link>">${imageTitle}</a><br />
 					<cms:contentcheck ifexists="Description">

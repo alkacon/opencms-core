@@ -1,6 +1,7 @@
 <%@ page import="org.opencms.file.*" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <cms:contentload collector="allInFolder" param="${param.path}|ttitem" editable="false" preload="true">
 	<cms:contentinfo var="info" />
@@ -14,6 +15,11 @@
 			<cms:contentcheck ifexists="Images">
 			<cms:contentloop element="Images">
 				<c:set var="image"><cms:contentshow element="Image" /></c:set>
+				<c:set var="imageParams" value="" />
+				<c:if test="${fn:indexOf(image, '?') != - 1}">
+					<c:set var="imageParams" value="${fn:substringAfter(image, '?')}" />
+					<c:set var="image" value="${fn:substringBefore(image, '?')}" />
+				</c:if>
 				<c:set var="imagetitle">${cms:vfs(pageContext).property[image]['Title']}</c:set>
 				<c:set var="imagefolder"><%= CmsResource.getFolderPath((String)pageContext.getAttribute("image")) %></c:set>
 				<div class="image">

@@ -930,6 +930,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/itemimage.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/itemimage.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>67ceed43-55a6-11de-8d92-13178f4ab99a</uuidstructure>
+			<uuidresource>67ceed44-55a6-11de-8d92-13178f4ab99a</uuidresource>
+			<datelastmodified>Wed, 10 Jun 2009 10:07:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 10 Jun 2009 10:06:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/paragraph.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/paragraph.xsd</destination>
 			<type>plain</type>
