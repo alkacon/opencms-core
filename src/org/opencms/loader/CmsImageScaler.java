@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageScaler.java,v $
- * Date   : $Date: 2009/06/09 10:02:56 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/06/10 12:31:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.2.0
  */
@@ -390,6 +390,27 @@ public class CmsImageScaler {
     }
 
     /**
+     * Returns a new image scaler that is a cropped rescaler from <code>this</code> cropped scaler 
+     * size to the given target scaler size.<p>
+     * 
+     * @param target the image scaler that holds the target image dimensions
+     * 
+     * @return a new image scaler that is a cropped rescaler from <code>this</code> cropped scaler 
+     *      size to the given target scaler size
+     *      
+     * @see #getReScaler(CmsImageScaler)
+     * @see #setCropArea(int, int, int, int)
+     */
+    public CmsImageScaler getCropScaler(CmsImageScaler target) {
+
+        // first re-scale the image (if required)
+        CmsImageScaler result = getReScaler(target);
+        // now use the crop area from the original
+        result.setCropArea(m_cropX, m_cropY, m_cropWidth, m_cropHeigt);
+        return result;
+    }
+
+    /**
      * Returns the crop area width.<p>
      * 
      * Use {@link #setCropArea(int, int, int, int)} to set this value.<p>
@@ -606,7 +627,7 @@ public class CmsImageScaler {
     }
 
     /**
-     * Returns a new image scaler that is a rescaler from the <code>this</code> scaler 
+     * Returns a new image scaler that is a rescaler from <code>this</code> scaler 
      * size to the given target scaler size.<p>
      * 
      * The height of the target image is calculated in proportion 
@@ -616,7 +637,7 @@ public class CmsImageScaler {
      * @param target the image scaler that holds the target image dimensions
      * 
      * @return a new image scaler that is a rescaler from the <code>this</code> scaler 
-     *      size to the given target scaler size.<p>
+     *      size to the given target scaler size
      */
     public CmsImageScaler getReScaler(CmsImageScaler target) {
 

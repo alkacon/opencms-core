@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/06/10 12:31:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUriSplitter;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -59,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.2.0 
  */
@@ -156,7 +158,20 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
         // resolve possible relative URI
         src = CmsLinkManager.getAbsoluteUri(src, controller.getCurrentRequest().getElementUri());
-        CmsResource imageRes = cms.readResource(src);
+        CmsUriSplitter splitSrc = new CmsUriSplitter(src);
+
+        CmsResource imageRes = cms.readResource(splitSrc.getPrefix());
+        CmsImageScaler reScaler = null;
+        if (splitSrc.getQuery() != null) {
+            // check if the original URI already has parameters, this is true if original has been cropped
+            String[] scaleStr = (String[])CmsRequestUtil.createParameterMap(splitSrc.getQuery()).get(
+                CmsImageScaler.PARAM_SCALE);
+            if (scaleStr != null) {
+                // use cropped image as a base for scaling
+                reScaler = new CmsImageScaler(scaleStr[0]);
+                scaler = reScaler.getCropScaler(scaler);
+            }
+        }
 
         // calculate target scale dimensions (if required)  
         if ((scaler.getHeight() <= 0) || (scaler.getWidth() <= 0)) {
