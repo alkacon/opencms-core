@@ -1,6 +1,7 @@
 <%@ page import="org.opencms.file.*" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <cms:include property="template" element="head"/>
 
 <cms:contentload collector="singleFile" param="%(opencms.uri)" editable="auto">
@@ -15,8 +16,12 @@
 		<!-- Image of the paragraph -->
 		<cms:contentloop element="Image">
 			<c:set var="imagePath"><cms:contentshow element="Image" /></c:set>
-			<c:set var="imageTitle">${cms:vfs(pageContext).property[imagePath]['Title']}</c:set>
-			<c:set var="imageFolder"><%= CmsResource.getFolderPath((String)pageContext.getAttribute("imagePath")) %></c:set>
+			<c:set var="imageName" value="${imagePath}" />
+			<c:if test="${fn:indexOf(imagePath, '?') != - 1}">
+				<c:set var="imageName" value="${fn:substringBefore(imagePath, '?')}" />
+			</c:if>
+			<c:set var="imageTitle">${cms:vfs(pageContext).property[imageName]['Title']}</c:set>
+			<c:set var="imageFolder"><%= CmsResource.getFolderPath((String)pageContext.getAttribute("imageName")) %></c:set>
 			<div class="image">
 				<cms:img scaleType="1" width="200">
 					<cms:param name="src">${imagePath}</cms:param> 

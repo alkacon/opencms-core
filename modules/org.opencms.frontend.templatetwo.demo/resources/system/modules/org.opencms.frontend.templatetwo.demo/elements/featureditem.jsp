@@ -15,13 +15,12 @@
 			<cms:contentcheck ifexists="Images">
 			<cms:contentloop element="Images">
 				<c:set var="image"><cms:contentshow element="Image" /></c:set>
-				<c:set var="imageParams" value="" />
+				<c:set var="imageName" value="${image}" />
 				<c:if test="${fn:indexOf(image, '?') != - 1}">
-					<c:set var="imageParams" value="${fn:substringAfter(image, '?')}" />
-					<c:set var="image" value="${fn:substringBefore(image, '?')}" />
+					<c:set var="imageName" value="${fn:substringBefore(image, '?')}" />
 				</c:if>
-				<c:set var="imagetitle">${cms:vfs(pageContext).property[image]['Title']}</c:set>
-				<c:set var="imagefolder"><%= CmsResource.getFolderPath((String)pageContext.getAttribute("image")) %></c:set>
+				<c:set var="imagetitle">${cms:vfs(pageContext).property[imageName]['Title']}</c:set>
+				<c:set var="imagefolder"><%= CmsResource.getFolderPath((String)pageContext.getAttribute("imageName")) %></c:set>
 				<div class="image">
 					<a href="<cms:link>${file}</cms:link>">
 						<cms:img scaleType="1" width="185" alt="${imagetitle}">

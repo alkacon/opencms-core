@@ -21,7 +21,7 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.frontend.templatetwo.demo.workplace"/>
 			<layouts>
-				<layout element="Image" widget="ImageGalleryWidget" />			
+				<layout element="Image" widget="ImageGalleryWidget" configuration="{useformat:true}" />			
 			</layouts>
 			<relations>
 				<relation element="Image" invalidate="false" type="strong" />
