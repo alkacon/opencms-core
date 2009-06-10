@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxDownloadGallery.java,v $
- * Date   : $Date: 2009/06/05 14:42:36 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/06/10 16:04:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.5.0 
  */
@@ -160,6 +160,8 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
                 mt = "image/image";
             } else if (mt.equals("text/plain")) {
                 mt = "text/plain";
+            } else if (mt.equals("text/html")) {
+                mt = "text/html";
             } else if (mt.equals("application/zip")
                 || mt.equals("application/x-gzip")
                 || mt.equals("application/x-tar")) {

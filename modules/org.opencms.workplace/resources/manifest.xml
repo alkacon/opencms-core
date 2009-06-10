@@ -3439,6 +3439,29 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/resources/components/galleries/img/text/html.png</destination>
+			<type>image</type>
+			<uuidstructure>86f711e6-55d4-11de-9692-177948a29b50</uuidstructure>
+			<uuidresource>18b9fb86-5054-11de-a443-350e680a0242</uuidresource>
+			<datelastmodified>Thu, 04 Jun 2009 12:14:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 03 Jun 2009 15:34:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[html document icon 32x32]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/components/galleries/img/text/plain.png</source>
 			<destination>system/workplace/resources/components/galleries/img/text/plain.png</destination>
 			<type>image</type>
