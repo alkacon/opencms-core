@@ -1,10 +1,6 @@
+<script type="text/javascript" src="%(skinUri)jquery/unpacked/jquery.js"></script>
 <script type="text/javascript" src="%(skinUri)jquery/load.js"></script>
 <script type="text/javascript">
-if (window.$) {
-	// ignore, jquery already included
-} else {
-	load_script("%(skinUri)jquery/unpacked/jquery.js", 'js');
-}
 if (window.$ && window.$.dimensions) {
 	// ignore, dimensions already included
 } else {

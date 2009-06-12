@@ -9,6 +9,11 @@
  * Date: 2009-02-19 17:34:21 -0500 (Thu, 19 Feb 2009)
  * Revision: 6246
  */
+
+// this is a patch to prevent multiple inclusion of jQuery
+if (window.$) {
+	// ignore, jquery already included
+} else {
 (function(){
 
 var 
@@ -4374,3 +4379,5 @@ jQuery.each([ "Height", "Width" ], function(i, name){
 
 });
 })();
+		
+}
