@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/06/08 14:33:53 $
- * Version: $Revision: 1.1110 $
+ * Date   : $Date: 2009/06/12 08:27:16 $
+ * Version: $Revision: 1.1111 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -25,6 +25,7 @@ OpenCms 7.5.0 - June 15, 2009
 * Fixed issue with HTML-decorator when tagging the second level
 * Fixed issue #1696: Categories collector throws unexpected nullpointer exception
 * Fixed issue #1697: Fixed incompatibility of templateone form with OpenJDK 1.6 (Fedora 10)
+* Fixed issue #1728: Fixed direct edit problems with Internet Explorer 8
 
 OpenCms 7.3.0 (aka 7.5 beta 1) - May 18, 2009
 ! Added configuration of offline update frequency
