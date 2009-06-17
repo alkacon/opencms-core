@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaEngine.java,v $
- * Date   : $Date: 2009/06/04 14:33:37 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/06/17 12:25:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,12 +28,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.frontend.templateone.form;
 
 import org.opencms.main.OpenCms;
 
 import java.awt.image.ImageFilter;
-import java.util.Locale;
 
 import com.jhlabs.image.WaterFilter;
 import com.octo.captcha.CaptchaFactory;
@@ -56,7 +56,6 @@ import com.octo.captcha.component.word.wordgenerator.RandomWordGenerator;
 import com.octo.captcha.component.word.wordgenerator.WordGenerator;
 import com.octo.captcha.engine.CaptchaEngineException;
 import com.octo.captcha.engine.image.ImageCaptchaEngine;
-import com.octo.captcha.image.ImageCaptcha;
 import com.octo.captcha.image.ImageCaptchaFactory;
 import com.octo.captcha.image.gimpy.GimpyFactory;
 
@@ -68,7 +67,7 @@ import com.octo.captcha.image.gimpy.GimpyFactory;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class CmsCaptchaEngine extends ImageCaptchaEngine {
 
@@ -90,22 +89,6 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
 
         m_settings = captchaSettings;
         initGimpyFactory();
-    }
-
-    /**
-     * @see com.octo.captcha.engine.image.ImageCaptchaEngine#getNextImageCaptcha()
-     */
-    public ImageCaptcha getNextImageCaptcha() {
-
-        return m_factory.getImageCaptcha();
-    }
-
-    /**
-     * @see com.octo.captcha.engine.image.ImageCaptchaEngine#getNextImageCaptcha(java.util.Locale)
-     */
-    public ImageCaptcha getNextImageCaptcha(Locale locale) {
-
-        return m_factory.getImageCaptcha(locale);
     }
 
     /**
@@ -185,7 +168,7 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
      */
     public CaptchaFactory[] getFactories() {
 
-        return new CaptchaFactory[]{m_factory};
+        return new CaptchaFactory[] {m_factory};
     }
 
     /**
@@ -200,6 +183,15 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
 
         // TODO Auto-generated method stub
 
+    }
+
+    /** This method build a ImageCaptchaFactory.
+    *
+    * @return a CaptchaFactory
+    */
+    public com.octo.captcha.image.ImageCaptchaFactory getImageCaptchaFactory() {
+
+        return m_factory;
     }
 
 }

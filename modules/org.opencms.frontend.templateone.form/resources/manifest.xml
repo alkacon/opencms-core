@@ -567,6 +567,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/lib/jcaptcha-1.0-all.jar</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/lib/jcaptcha-1.0-all.jar</destination>
+			<type>binary</type>
+			<uuidstructure>a7f068d0-5b2d-11de-b3e4-f9441ff21e44</uuidstructure>
+			<uuidresource>a7f068d1-5b2d-11de-b3e4-f9441ff21e44</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.form/pages</destination>
 			<type>folder</type>
 			<uuidstructure>a4200287-11b7-11db-91cd-fdbae480bac9</uuidstructure>
