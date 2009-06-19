@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/06/12 08:27:16 $
- * Version: $Revision: 1.1111 $
+ * Date   : $Date: 2009/06/19 16:52:23 $
+ * Version: $Revision: 1.1112 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -18,6 +18,11 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 7.5.1 - month day, 2009
+
+* Fixed issue #1739: Deleted or moved project resources cannot be removed from project.
+* Fixed issue with OU users being unable to work after OU resource has been renamed 
 
 OpenCms 7.5.0 - June 15, 2009
 ! Added support for new Microsoft document types to upload applet
@@ -1929,7 +1934,7 @@ OpenCms 4.5.34 Chusuk - 05 February 2002
 * Static export throwed a NullPointerexception while setup.
 * The exportpoint handling creates missing parent-directories.
 * The backup of resources does not fail if the owner or the group of the resource was already deleted
-* Changed the init method of CmsRequestContext. If the current project is absent ínit will switch to
+* Changed the init method of CmsRequestContext. If the current project is absent ï¿½nit will switch to
   the online project.
 - Removed file.encoding warnings about passwords. file.encoding for passwords can be
   set manually in the opencms.properties.

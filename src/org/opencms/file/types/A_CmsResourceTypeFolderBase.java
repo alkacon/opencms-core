@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/06/19 16:52:23 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,15 +34,19 @@ package org.opencms.file.types;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsDataNotImplementedException;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
+import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.lock.CmsLockType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,7 +54,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,6 +136,43 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     }
 
     /**
+     * @see org.opencms.file.types.A_CmsResourceType#deleteResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceDeleteMode)
+     */
+    public void deleteResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        CmsResourceDeleteMode siblingMode) throws CmsException {
+
+        super.deleteResource(cms, securityManager, resource, siblingMode);
+        
+        // update the project resources: 
+        List projects = OpenCms.getOrgUnitManager().getAllManageableProjects(cms, "", true);
+        CmsProject project;
+        List projectResources;
+        Iterator itProjectResources;
+        
+        String projectResourceRootPath;
+        String deletedResourceRootPath = resource.getRootPath();
+        Iterator itProjects = projects.iterator();
+        while (itProjects.hasNext()) {
+            project = (CmsProject)itProjects.next();
+            projectResources = cms.readProjectResources(project);
+            itProjectResources = projectResources.iterator();
+            while (itProjectResources.hasNext()) {
+                projectResourceRootPath = (String) itProjectResources.next();
+                if (deletedResourceRootPath.equals(projectResourceRootPath)) {
+                    // we have to change the project resource: 
+                    CmsObject projectCms = OpenCms.initCmsObject(cms);
+                    CmsRequestContext context = projectCms.getRequestContext();
+                    context.setCurrentProject(project);
+                    securityManager.removeResourceFromProject(context, resource);
+                }
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
     public int getLoaderId() {
@@ -177,6 +218,57 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         dest = validateFoldername(dest);
 
         securityManager.moveResource(cms.getRequestContext(), resource, dest);
+
+        // update the project resources: 
+        List projects = OpenCms.getOrgUnitManager().getAllManageableProjects(cms, "", true);
+        CmsProject project;
+        List projectResources;
+        Iterator itProjectResources;
+        
+        String projectResourceRootPath;
+        String moveResourceRootPath = resource.getRootPath();
+        Iterator itProjects = projects.iterator();
+        while (itProjects.hasNext()) {
+            project = (CmsProject)itProjects.next();
+            projectResources = cms.readProjectResources(project);
+            itProjectResources = projectResources.iterator();
+            while (itProjectResources.hasNext()) {
+                projectResourceRootPath = (String) itProjectResources.next();
+                if (moveResourceRootPath.equals(projectResourceRootPath)) {
+                    // we have to change the project resource: 
+                    CmsObject projectCms = OpenCms.initCmsObject(cms);
+                    CmsRequestContext context = projectCms.getRequestContext();
+                    context.setCurrentProject(project);
+                    securityManager.removeResourceFromProject(context, resource);
+
+                    // impossible to set root path on resource: copy
+                    CmsResource movedResource = new CmsResource(
+                        resource.getStructureId(),
+                        resource.getResourceId(),
+                        dest,
+                        resource.getTypeId(),
+                        resource.isFolder(),
+                        resource.getFlags(),
+                        resource.getProjectLastModified(),
+                        resource.getState(),
+                        resource.getDateCreated(),
+                        resource.getUserCreated(),
+                        resource.getDateLastModified(),
+                        resource.getUserLastModified(),
+                        resource.getDateReleased(),
+                        resource.getDateExpired(),
+                        resource.getSiblingCount(),
+                        resource.getLength(),
+                        resource.getDateContent(),
+                        resource.getVersion()
+
+                    );
+                    securityManager.copyResourceToProject(context, movedResource);
+                }
+            }
+
+        }
+
     }
 
     /**
@@ -213,6 +305,8 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         restoreResource(cms, securityManager, resourename, version);
     }
+    
+    
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
