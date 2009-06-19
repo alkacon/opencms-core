@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2009/06/19 08:25:16 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.w3c.tidy.Tidy;
  * @author Michael Emmerich 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,7 +105,7 @@ public class CmsHtmlConverter {
     String[] m_replacePatterns = {
         "&#160;",
         "(\\r\\n){2,}",
-        "–",
+        "\u2013",
         "(\\n){2,}",
         "\\(\\r\\n<",
         "\\(\\n<",
