@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPermissionHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/06/19 08:24:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,11 @@ import org.opencms.main.CmsException;
 import org.opencms.util.A_CmsModeIntEnumeration;
 
 /**
- * Default permission handler implementation.<p>
+ * Permission handler interface.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.0.2
  * 
