@@ -14,7 +14,7 @@
 		<group>Template Two</group>
 		<class/>
 		<description><![CDATA[This module contains contents for the Template Two Demo Site.]]></description>
-		<version>7.5.0</version>
+		<version>7.5.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -7998,7 +7998,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Gewächsarten / Arten??]]></value>
+					<value><![CDATA[Gewächsarten / Species]]></value>
 				</property>
 			</properties>
 			<relations/>
