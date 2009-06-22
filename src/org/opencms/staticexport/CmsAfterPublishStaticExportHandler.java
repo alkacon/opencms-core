@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/06/22 09:23:23 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  * 
@@ -99,7 +99,7 @@ public class CmsAfterPublishStaticExportHandler extends A_CmsStaticExportHandler
      * @param report an <code>{@link I_CmsReport}</code> instance to print output message, or <code>null</code> to write messages to the log file
      *       
      * @throws CmsException in case of errors accessing the VFS
-     * @throws IOException in case of erros writing to the export output stream
+     * @throws IOException in case of errors writing to the export output stream
      * @throws ServletException in case of errors accessing the servlet 
      */
     public void doExportAfterPublish(List resources, I_CmsReport report)
