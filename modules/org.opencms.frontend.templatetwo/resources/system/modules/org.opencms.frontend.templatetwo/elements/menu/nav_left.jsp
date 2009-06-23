@@ -25,7 +25,7 @@
 				<c:when test="${currentLevel > oldLevel}"><ul></c:when>
 				<c:when test="${currentLevel == oldLevel}"></li></c:when>
 				<c:when test="${oldLevel > currentLevel}">
-					<c:forEach begin="${currentLevel+1}" end="${oldLevel}"></li></ul></c:forEach>
+					<c:forEach begin="${currentLevel+1}" end="${oldLevel}"></li></ul></c:forEach></li>
 				</c:when>
 			</c:choose>
 			
@@ -35,6 +35,7 @@
 		</c:forEach>
 		
 		<c:forEach begin="${cms.topLevel+1}" end="${oldLevel}"></li></ul></c:forEach>
+		<c:if test="${not empty cms.elements}"></li></c:if>
 	</ul>
 </div>
 
