@@ -7,7 +7,7 @@ String jQueryResourcePath = org.opencms.workplace.CmsWorkplace.getSkinUri() + "j
 String jsIntegratorQuery = "";
 
 //check in settings if the upload-applet is used
-Boolean isAppletUsed = wp.getSettings().getUserSettings().useUploadApplet();
+boolean isAppletUsed = wp.getSettings().getUserSettings().useUploadApplet();
 
 
 %><%--
