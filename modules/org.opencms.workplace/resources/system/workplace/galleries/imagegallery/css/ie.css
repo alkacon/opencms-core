@@ -6,3 +6,8 @@
 span.changeiconlayer {
 	top: -10px;
 }
+
+#galleryuploadbutton div, #gallerynewlinkbutton div,
+#opengallerybutton div, #opencategorybutton div {
+	padding-left: 20px;
+}

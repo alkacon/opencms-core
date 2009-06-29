@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Messages.java,v $
- * Date   : $Date: 2009/06/05 09:05:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/06/29 15:12:32 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,6 +77,24 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_BUTTON_OK_0 = "GUI_GALLERY_BUTTON_OK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_SEARCH_BUTTON_SEARCH_0 = "GUI_GALLERY_SEARCH_BUTTON_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_BUTTON_SEARCH_RESET_0 = "GUI_GALLERY_BUTTON_SEARCH_RESET_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_SEARCH_RESULTS_0 = "GUI_GALLERY_SEARCH_RESULTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_SEARCH_NORESULTS_0 = "GUI_GALLERY_SEARCH_NORESULTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_SEARCH_QUERY = "GUI_GALLERY_SEARCH_QUERY";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GALLERY_SEARCH_DESCRIPTION = "GUI_GALLERY_SEARCH_DESCRIPTION";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GALLERY_CATEGORIES_BUTTON_SHOW_0 = "GUI_GALLERY_CATEGORIES_BUTTON_SHOW_0";

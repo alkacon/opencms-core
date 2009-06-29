@@ -1,7 +1,7 @@
 #galleryitemlist, #categoryitemlist {
-	height: 360px; /*  overwritten in editor.css */
+	height: 360px; /*  overwrites editor.css */
 }
 
 #galleryitemlistinner, #categoryitemlistinner {
-	height: 295px; /*  overwritten in editor.css */
+	height: 295px; /*  overwrites editor.css */
 }

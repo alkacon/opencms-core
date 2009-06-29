@@ -29,9 +29,9 @@ function initPopup() {
 	$("#galleryiteminfo > #dialogbuttons").show();
 	$("#galleryokbutton").hide();
 	$("#categoryokbutton").hide();
+	$("#galleryresetsearchbutton").hide();
+	$("#categoryresetsearchbutton").hide();
 
-
-	
 	var itemField = window.opener.document.getElementById(initValues.fieldid);
 	if (itemField.value != null && itemField.value != "") {
 		//path to selected item

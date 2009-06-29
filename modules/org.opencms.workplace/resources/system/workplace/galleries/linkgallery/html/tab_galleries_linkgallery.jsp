@@ -2,10 +2,21 @@
 	<div id="galleryfolders"><div class="head"><%= wp.key(Messages.GUI_GALLERY_GALLERIES_HL_AVAILABLE_0) %></div><div id="galleryfolderlist"></div></div>
 	<div id="galleryitems">
 		<div id="gallerybuttons">
-			<button type="button" id="gallerynewlinkbutton" onclick="$('#gallerynewlink').click();"><%= wp.key(Messages.GUI_LINKGALLERY_BUTTON_NEWLINK_0) %></button><a href="#" class="thickbox" id="gallerynewlink"></a>
-			<button type="button" onclick="showGalleryFolders();"><%= wp.key(Messages.GUI_GALLERY_GALLERIES_BUTTON_SHOW_0) %></button>
-			<button type="button" id="gallerypublishbutton" onclick="$('#gallerypublishlink').click();" disabled="disabled"><%= wp.key(Messages.GUI_GALLERY_GALLERIES_BUTTON_PUBLISH_0) %></button><a href="#" class="thickbox" id="gallerypublishlink"></a>
-	
+			<button type="button" id="gallerynewlinkbutton" onclick="$('#gallerynewlink').click();">
+				<div> <%= wp.key(Messages.GUI_LINKGALLERY_BUTTON_NEWLINK_0) %> </div>
+			</button><a href="#" class="thickbox" id="gallerynewlink"></a>
+			<button type="button" id="opengallerybutton" class="linkgallery" onclick="showGalleryFolders();" title="<%= wp.key(Messages.GUI_GALLERY_GALLERIES_BUTTON_SHOW_0) %>">
+				<div> <%= wp.key(Messages.GUI_GALLERY_GALLERIES_BUTTON_SHOW_0) %> </div>
+			</button>
+			<button type="button" id="gallerysearchbutton" onclick="openSearchDialog('gallery');" title="<%= wp.key(Messages.GUI_GALLERY_SEARCH_BUTTON_SEARCH_0) %>">
+				<div> &nbsp; </div>
+			</button>
+			<button type="button" id="galleryresetsearchbutton" onclick="resetSearch('gallery');" title="<%= wp.key(Messages.GUI_GALLERY_BUTTON_SEARCH_RESET_0) %>">
+				<div> &nbsp;</div>
+			</button>
+			<button type="button" id="gallerypublishbutton" onclick="$('#gallerypublishlink').click();" disabled="disabled" title="<%= wp.key(Messages.GUI_GALLERY_GALLERIES_BUTTON_PUBLISH_0) %>">
+				<div> &nbsp; </div>
+			</button><a href="#" class="thickbox" id="gallerypublishlink"></a>
 		</div>
 		<!-- fillItems() -->
 		<div id="galleryitemlist"><p></p></div>	

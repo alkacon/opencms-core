@@ -29,6 +29,8 @@ function initPopup() {
 	
 	$("#dialogbuttons").hide();
 	$("#closebutton").show();
+	$("#galleryresetsearchbutton").hide();
+	$("#categoryresetsearchbutton").hide();
 
 	if (initValues.startupfolder != null) {
 		// start gallery folder specified, load gallery first

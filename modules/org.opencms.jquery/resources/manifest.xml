@@ -14,7 +14,7 @@
 		<group>OpenCms frontend</group>
 		<class/>
 		<description><![CDATA[This modules includes the JQuery javascript libraries as well as several plugins used by OpenCms]]></description>
-		<version>7.5.0</version>
+		<version>7.5.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>

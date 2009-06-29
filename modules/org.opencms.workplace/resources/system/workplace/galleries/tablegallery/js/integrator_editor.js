@@ -34,6 +34,8 @@ var modeType = "";
 function initPopup() {
 
 	$("#dialogbuttons").remove();
+	$("#galleryresetsearchbutton").hide();
+	$("#categoryresetsearchbutton").hide();
 	
 	//always open the gallery tab
 	$tabs.tabs("select", 1);

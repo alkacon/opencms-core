@@ -3,6 +3,7 @@ isImageGallery = true;
 $(document).ready(function(){
 	$tabs = $("#tabs").tabs({
 	});
+	initSearchDialog();
 	initPopup();
 	initFormatSelectBox();
 });
@@ -13,10 +14,32 @@ function fillItems(data, modeName) {
 	var foundImages = eval(data);
 	var publishInfo = foundImages.shift();
 	if (modeName == "category") {
+		// disable search button, if there are no items in the gallery
+		if (foundImages.length == 0) {
+			$("#categorysearchbutton").addClass("ui-state-disabled");
+			$("#categorysearchbutton").get(0).disabled = true;
+		} else {
+			$("#categorysearchbutton").removeClass("ui-state-disabled");
+			$("#categorysearchbutton").get(0).disabled = false;
+		}
+		// filter search results
+		foundImages = filterItems(foundImages, modeName);
+		if (foundImages == "noresults") {
+			return;
+		}
 		categoryItems = new ItemList();
 		categoryItems.items = foundImages;
+		// display number of search results if not 0 
+		var categorysearchresult = " ";
+		var cTitle = categories[activeCategory].title;
+		if (searchKeyword != null) {
+			categorysearchresult = ": (" + foundImages.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\")";
+			//cut the title of the gallery, if it is too long
+			cTitle = cutTitle(cTitle);
+		}
 		$("#" + modeName + "itemlist").append("<div id=\"categoryname\">"
-			+ categories[activeCategory].title
+			+ cTitle 
+			+ categorysearchresult 
 			+ "<span>"
 			+ categories[activeCategory].path
 			+ "</span></div>");
@@ -27,9 +50,28 @@ function fillItems(data, modeName) {
 		$("#" + modeName + "itemselectbutton").hide();
 		
 	} else {
+		// disable search button, if there are no items in the gallery
+		if (foundImages.length == 0) {
+			$("#gallerysearchbutton").addClass("ui-state-disabled");
+			$("#gallerysearchbutton").get(0).disabled = true;
+		} else {
+			$("#gallerysearchbutton").removeClass("ui-state-disabled");
+			$("#gallerysearchbutton").get(0).disabled = false;
+		}
+		// filter search results
+		foundImages = filterItems(foundImages, modeName);
+		if (foundImages == "noresults") {
+			return;
+		}
 		galleryItems = new ItemList();
 		galleryItems.items = foundImages;
 		galleryItems.publishable = publishInfo.publishable;
+		if (galleryItems.publishable == true) { // enabled		
+			$("#gallerypublishbutton").removeClass("ui-state-disabled");
+		} else { //galleryItems.publishable == false -> disabled
+			$("#gallerypublishbutton").addClass("ui-state-disabled");		
+		}
+		$("#gallerypublishbutton").get(0).disabled = !galleryItems.publishable;
 		var gTitle, gPath;
 		if (activeGallery != -1) {
 			gTitle = galleries[activeGallery].title;
@@ -38,9 +80,16 @@ function fillItems(data, modeName) {
 			gTitle = startGallery.title;
 			gPath = startGallery.path;
 		}
-		$("#gallerypublishbutton").get(0).disabled = !galleryItems.publishable;
+		// display number of search results if not 0
+		var gallerysearchresult = " ";
+		if (searchKeyword != null) {
+			gallerysearchresult = ": (" + foundImages.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\")";
+			//prepare title of the gallery, if too long
+			gTitle = cutTitle(gTitle);
+		}
 		$("#" + modeName + "itemlist").append("<div id=\"galleryname\">"
 			+ gTitle
+			+ gallerysearchresult
 			+ "<span>"
 			+ gPath
 			+ "</span></div>");
@@ -50,7 +99,6 @@ function fillItems(data, modeName) {
 		$("#" + modeName + "itemtitle").removeClass();
 		$("#" + modeName + "itempublishbutton").hide();
 	}
-	
 	var innerListId = modeName + "imagelistinner";
 	$("#" + modeName + "itemlist").append("<div class=\"imagelist\" id=\"" + innerListId  + "\"></div>");
 	innerListId = "#" + innerListId;
@@ -513,6 +561,7 @@ function refreshMarkedItem(data, modeName) {
 		galleryItems.items[imgIndex] = newImg;
 		state = galleryItems.items[imgIndex].state;
 		$("#gallerypublishbutton").get(0).disabled = false;
+		$("#gallerypublishbutton").removeClass("ui-state-disabled");
 	} else {
 		imgIndex = categoryItems.markedItem;
 		categoryItems.items[imgIndex] = newImg;

@@ -40,7 +40,6 @@ imagesPerPage = 12;
 /* Initialize the dialog values. */
 initValues = {};
 initValues.dialogmode = "<% if (CmsStringUtil.isEmpty(request.getParameter(A_CmsAjaxGallery.PARAM_DIALOGMODE))) { out.print(""); } else { out.print(request.getParameter(A_CmsAjaxGallery.PARAM_DIALOGMODE)); } %>";
-//initValues.dialogmode = "editor";
 initValues.viewonly = false;
 initValues.editedresource = "<%= editedResource %>";
 
@@ -64,6 +63,8 @@ function initPopup() {
 	}
 	// load eventually selected image and information
 	loadSelection();
+	$("#galleryresetsearchbutton").hide();
+	$("#categoryresetsearchbutton").hide();
 	if (initValues.itempath != null && initValues.itempath != "") {
 		$.post(vfsPathAjaxJsp, { action: "getactiveitem", itempath: initValues.itempath}, function(data){ loadActiveItem(data, true); });
 	} else {

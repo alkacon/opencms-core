@@ -40,6 +40,7 @@ var LANG = {
 	"FORMAT_LARGE"			: "<%= wp.key(Messages.GUI_IMAGEGALLERY_FORMAT_LARGE_0) %>",
 
 	"BUTTON_OK"			: "<%= wp.key(Messages.GUI_GALLERY_BUTTON_OK_0) %>",
-	"BUTTON_CANCEL"			: "<%= wp.key(Messages.GUI_GALLERY_BUTTON_CANCEL_0) %>"
-
+	"BUTTON_CANCEL"			: "<%= wp.key(Messages.GUI_GALLERY_BUTTON_CANCEL_0) %>",
+	"NO_SEARCH_RESULTS"		: "<%= wp.key(Messages.GUI_GALLERY_SEARCH_NORESULTS_0) %>",
+	"SEARCH_RESULTS"		: "<%= wp.key(Messages.GUI_GALLERY_SEARCH_RESULTS_0) %>"
 };

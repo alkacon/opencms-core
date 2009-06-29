@@ -24,6 +24,8 @@ function initPopup() {
 	window.resizeTo(sizeX, sizeY);
 	$("#dialogbuttons").hide();
 	$("#closebutton").show();
+	$("#galleryresetsearchbutton").hide();
+	$("#categoryresetsearchbutton").hide();
 	
 	// select the gallery tab
 	$tabs.tabs("select", 1);

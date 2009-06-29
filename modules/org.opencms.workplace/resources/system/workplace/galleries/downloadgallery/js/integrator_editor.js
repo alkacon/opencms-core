@@ -33,11 +33,13 @@ var modeType = "";
 /* Initializes the download gallery popup window. */
 function initPopup() {
 
+	//set up buttons
 	$("#gallerycancelbutton").remove();
 	$("#categorycancelbutton").remove();
 	$("#galleryokbutton").remove();
 	$("#categoryokbutton").remove();
-	
+	$("#galleryresetsearchbutton").hide();
+	$("#categoryresetsearchbutton").hide();
 	
 	if (hasSelectedText() == true) {
 		loadItemSitepath = getSelectedLinkUri();

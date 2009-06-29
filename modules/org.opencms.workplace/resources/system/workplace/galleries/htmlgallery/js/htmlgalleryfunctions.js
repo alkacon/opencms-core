@@ -1,6 +1,7 @@
 $(document).ready(function(){
 	$tabs = $("#tabs").tabs({
 	});
+	initSearchDialog();
 	initPopup();
 });
 
@@ -12,10 +13,33 @@ function fillItems(data, modeName) {
 	var foundItems = eval(data);
 	var publishInfo = foundItems.shift();
 	if (modeName == "category") {
+		// disable search button, if there are no items in the gallery
+		if (foundItems.length == 0) {
+			$("#categorysearchbutton").addClass("ui-state-disabled");
+			$("#categorysearchbutton").get(0).disabled = true;
+		} else {
+			$("#categorysearchbutton").removeClass("ui-state-disabled");
+			$("#categorysearchbutton").get(0).disabled = false;
+		}
+		// filter search results
+		foundItems = filterItems(foundItems, modeName);
+		// break building list, if no result are found for given search
+		if (foundItems == "noresults") {
+			return;
+		}		
 		categoryItems = new ItemList();
 		categoryItems.items = foundItems;
+		// display number of search results if not 0 
+		var categorysearchresult = " ";
+		var cTitle = categories[activeCategory].title;
+		if (searchKeyword != null) {
+			categorysearchresult = ": (" + foundItems.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\")";
+			//cut the title of the gallery, if it is too long
+			cTitle = cutTitle(cTitle);
+		}
 		$("#" + modeName + "itemlist").append("<div id=\"categoryname\">"
-			+ categories[activeCategory].title
+			+ cTitle
+			+ categorysearchresult 
 			+ "<span>"
 			+ categories[activeCategory].path
 			+ "</span></div>");
@@ -27,9 +51,29 @@ function fillItems(data, modeName) {
 		$("#" + modeName + "itemtitle").removeClass();
 		$("#" + modeName + "itemtitle").unbind();
 	} else {
+		// disable search button, if there are no items in the gallery
+		if (foundItems.length == 0) {
+			$("#gallerysearchbutton").addClass("ui-state-disabled");
+			$("#gallerysearchbutton").get(0).disabled = true;
+		} else {
+			$("#gallerysearchbutton").removeClass("ui-state-disabled");
+			$("#gallerysearchbutton").get(0).disabled = false;
+		}
+		// filter search results
+		foundItems = filterItems(foundItems, modeName);
+		// break building list, if no result are found for given search
+		if (foundItems == "noresults") {
+			return;
+		}
 		galleryItems = new ItemList();
 		galleryItems.items = foundItems;
 		galleryItems.publishable = publishInfo.publishable;
+		if (galleryItems.publishable == true) { // enabled		
+			$("#gallerypublishbutton").removeClass("ui-state-disabled");
+		} else { //galleryItems.publishable == false -> disabled
+			$("#gallerypublishbutton").addClass("ui-state-disabled");		
+		}
+		$("#gallerypublishbutton").get(0).disabled = !galleryItems.publishable;
 		var gTitle, gPath;
 		if (activeGallery != -1) {
 			gTitle = galleries[activeGallery].title;
@@ -39,11 +83,18 @@ function fillItems(data, modeName) {
 			gTitle = startGallery.title;
 			gPath = startGallery.path;
 		}
-		
-		$("#gallerypublishbutton").get(0).disabled = !galleryItems.publishable;
+		// display number of search results if not 0
+		var gallerysearchresult = " ";
+		if (searchKeyword != null) {
+			gallerysearchresult = ": (" + foundItems.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\")";
+			//prepare title of the gallery, if too long
+			gTitle = cutTitle(gTitle);
+		}
+
 		/* Name and path of the gallery */
 		$("#" + modeName + "itemlist").append("<div id=\"galleryname\">"
 			+ gTitle
+			+ gallerysearchresult
 			+ "<span>"
 			+ gPath
 			+ "</span></div>");
@@ -438,6 +489,7 @@ function refreshMarkedItem(data, modeName) {
 		updateModDateInItemlist(itemIndex, modeName, newImg.datelastmodified);
 		state = galleryItems.items[itemIndex].state;
 		$("#gallerypublishbutton").get(0).disabled = false;
+		$("#gallerypublishbutton").removeClass("ui-state-disabled");
 	} else {
 		itemIndex = categoryItems.markedItem;
 		categoryItems.items[itemIndex] = newImg;

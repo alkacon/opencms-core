@@ -4,7 +4,6 @@ var ItemList = function() {
 	this.markedItem = -1;
 	this.currentPage = 0;
 	this.publishable = false;
-
 }
 
 /* Global variables. */
@@ -19,12 +18,18 @@ var galleriesLoaded = false;
 var categoriesLoaded = false;
 var startGallery = null;
 
+
 /* Path to already selected path for download gallery in widget and editor mode */
 var ItemSitepath = function(){
 	this.path = null;
 	this.target = null;
 }
 var loadItemSitepath = null;
+
+/* Stores the search word, if search is performed. */
+var searchKeyword = null;
+/* Max length for title of a gallery or a category, if search number is displayed */
+var titleMaxLength = 40;
 
 /* this flag is to be set in the appropriate gallery to "true" */
 var isLinkGallery = false;
@@ -37,9 +42,74 @@ var imgDetailTimeout;
 var previewX = 600;
 var previewY = 450;
 
-//number of items per page for different galleries
+/* The number of items per page for different galleries. */
 var imagesPerPage = 16;
 var itemsPerPage  = 10;
+
+// ok and cancel button for gallery search
+var gallerysearchbuttons = {};
+gallerysearchbuttons[LANG.BUTTON_CANCEL] = function() {
+					$(this).dialog('close');
+				}
+gallerysearchbuttons[LANG.BUTTON_OK] = function() {
+					getSearch($("#gallerysearchstring").val(), 'gallery');
+				}
+// ok and cancel button for category search	
+var categorysearchbuttons = {};
+categorysearchbuttons[LANG.BUTTON_CANCEL] = function() {
+					$(this).dialog('close');
+				}	
+categorysearchbuttons[LANG.BUTTON_OK] = function() {
+					getSearch($("#categorysearchstring").val(), 'category');
+				}
+/* Initializes the jquery dialog, which is used for search */		
+function initSearchDialog() {
+	$("#gallerysearchdialog").dialog({
+			bgiframe: true,
+			height: 220,
+			width: 350,
+			autoOpen: false,
+			resizable: false,
+			modal: true,
+			buttons: gallerysearchbuttons,
+			close: function() {
+				$("#gallerysearchstring").removeClass('ui-state-error');
+			}
+		});		
+	$("#categorysearchdialog").dialog({
+			bgiframe: true,
+			height: 220,
+			width: 350,
+			autoOpen: false,
+			resizable: false,
+			modal: true,
+			buttons: categorysearchbuttons,
+			close: function() {
+				$("#categorysearchstring").removeClass('ui-state-error');
+			}
+		});
+	// adds all gallery buttons the ui look	
+	$("button").addClass("ui-button ui-state-default ui-corner-all")
+		.hover(function() { 
+			$(this).addClass("ui-state-hover"); 
+		}, function() { 
+			$(this).removeClass("ui-state-hover"); 	
+		});
+	// handles the enter (keyCode==13) keypress event to avoid the the load of the gallery as the default action
+	$("#gallerysearchstring").keypress(function(event) {
+		if (event.keyCode == 13) {
+			event.preventDefault();	
+			getSearch($("#gallerysearchstring").val(), 'gallery');
+		}
+	});
+	$("#categorysearchstring").keypress(function(event) {
+		if (event.keyCode == 13) {
+			event.preventDefault();
+			getSearch($("#categorysearchstring").val(), 'category');
+		}
+	});
+
+}
 
 /* Collects all available categories using a post request. */
 function getCategories() {
@@ -137,9 +207,96 @@ function refreshGallery() {
 	}
 }
 
+
+/* Performs search request on the selected galleryitems. */
+function getSearch(newSearchString, modeName){
+	// close search dialog if no search word is given
+	if (newSearchString == "" || newSearchString == null) {
+		$("#"+ modeName +"searchdialog").dialog('close');
+		return;
+	}
+	// use the loaded gallery item list for the first search
+	if (searchKeyword == null) { 
+		searchKeyword = newSearchString;
+		var publishableInfo = new Array();
+		var selectedGallery = new Array();
+		if (modeName == 'gallery') {
+			var publishObj = new Object();
+			publishObj.publishable = galleryItems.publishable;
+			publishableInfo[0] = publishObj;
+			selectedGallery = publishableInfo.concat(galleryItems.items);
+		} else {
+			publishableInfo[0] = "";
+			selectedGallery = publishableInfo.concat(categoryItems.items);
+		}
+		fillItems(selectedGallery, modeName);
+	} else {
+		searchKeyword = newSearchString;
+		if (modeName == 'gallery') { 
+			getItems(galleries[activeGallery].path, true);
+		} else {
+			getItems(categories[activeCategory].path, false);
+		}
+	}
+}
+/* Clear the search. Delete the search key word and reload the gallery items. Should be used by reset search button. */
+function resetSearch(modeName) {
+	searchKeyword = null;
+	if (modeName == 'gallery') {
+		getItems(galleries[activeGallery].path, true);
+	} else {
+		getItems(categories[activeCategory].path, false);
+	}
+}
+
+/* Opens the search dialog. Should be used on click of the search button. */
+function openSearchDialog(modeName) {
+	$("#"+ modeName +"searchalert").empty();
+	$("#"+ modeName +"searchdialog").dialog('open');
+}
+
+/* Filters the gallery items with the given search word. Returns the old list, if no search word is given, returns the filtered list, if the search word is given. */
+function filterItems(galleryItems, modeName) {
+	if (searchKeyword != null) { // search query is given
+		var galleryNotFiltered = galleryItems;
+		var galleryFiltered = new Array();
+		for (var i = 0; i < galleryNotFiltered.length; i++) {
+			var title = galleryNotFiltered[i].title;
+			var filename = galleryNotFiltered[i].linkpath.substring(galleryNotFiltered[i].linkpath.lastIndexOf("/") + 1);
+			if (title.search(eval("/" + searchKeyword + "/i")) != -1 
+				|| filename.search(eval("/" + searchKeyword + "/i")) != -1) {
+				galleryFiltered.push(galleryNotFiltered[i]);
+			}
+		}
+		if (galleryFiltered.length > 0) {  // at least one search result
+			$("#"+ modeName +"searchbutton").hide()
+			$("#"+ modeName +"resetsearchbutton").show();
+			$("#"+ modeName +"searchdialog").dialog('close');
+			$("#"+ modeName +"itemlist").empty();
+			return galleryFiltered;
+		} else { // no search results are found
+			$("#"+ modeName +"searchbutton").show()
+			$("#"+ modeName +"resetsearchbutton").hide();
+			//show the 0 result dialog and highlight the search form
+			$("#"+ modeName +"searchalert").text(LANG.NO_SEARCH_RESULTS);
+			$("#"+ modeName +"searchstring").addClass('ui-state-error');
+			searchKeyword = null;
+			//return galleryItems;
+			return "noresults";
+		}	
+	} else { //  no search
+		$("#"+ modeName +"searchbutton").show()
+		$("#"+ modeName +"resetsearchbutton").hide();
+		return galleryItems;
+	} 
+	
+}
+
+
 /* Selects the active gallery, is triggered when clicking on the gallery name. */
 function selectGallery(vfsPath, galleryIndex) {
-
+	// reset the search key word
+	searchKeyword = null;
 	getItems(vfsPath, true);
 	if (galleryIndex != -1 && galleryIndex != activeGallery) {
 		$("#gallery" + galleryIndex).addClass("active");
@@ -174,7 +331,7 @@ function selectGallery(vfsPath, galleryIndex) {
 	}
 	// fill required data in publish link
 	$("#gallerypublishlink").attr("href", createPublishLink(vfsPath));
-	
+		
 	var selectedTab = $tabs.tabs('option', 'selected');
 	if (isImageGallery == true &&  selectedTab == 0  && initValues.viewonly != true ) {
 		$("#galleryfolders").hide();
@@ -202,8 +359,10 @@ function refreshCategory() {
 
 /* Selects the active category, is triggered when clicking on the category name. */
 function selectCategory(vfsPath, categoryIndex) {
-
+	// reset the search key word
+	searchKeyword = null;
 	getItems(vfsPath, false);
+	
 	if (categoryIndex != activeCategory) {
 		$('#category' + categoryIndex).addClass('active');
 		if (activeCategory != -1) {
@@ -286,6 +445,18 @@ function setItemTitle(newTitle, modeName) {
 	}
 }
 
+/* Cuts the given String to specified  length */
+function cutTitle(title) {
+	var maxlength = titleMaxLength;
+	var cutTitle = title;
+	var points = new String("...");
+	if (title.length > maxlength) {
+		cutTitle = title.substr(0, maxlength-3);
+		cutTitle = cutTitle.concat(points);
+	}
+	return cutTitle;
+}
+
 /* Sets the new link url property value of the marked item. */
 function setItemLinkurl(newLinkurl, modeName) {
 	var checkItem;
@@ -318,3 +489,4 @@ function publishItem(imgIndex, modeName) {
 	$("#resourcepublishlink").attr("href", createPublishLink(sitePath));
 	$("#resourcepublishlink").click();
 }
+

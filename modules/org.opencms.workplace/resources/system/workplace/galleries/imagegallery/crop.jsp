@@ -11,10 +11,11 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
   <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/css/imgselector_hack_ie7.css" />
   <![endif]-->
 <link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/css/crop.css" />
+<link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/css/ui-ocms/jquery.ui.css" />
+<link rel="stylesheet" type="text/css" href="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/css/ui-ocms/jquery.ui.ocms.css" />
 <script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.js"></script>
 <script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>jquery/packed/jquery.dimensions.js"></script>
 <script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/js/jquery.imgareaselect.min.js"></script>
-<!-- New vesion does not work for now <script type="text/javascript" src="<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/js/jquery.imgareaselect-0.8.min.js"></script> -->
 <script type="text/javascript">
 	var imgPreviewHeight = 450;
 	if (parent.initValues.dialogmode == "editor") {
@@ -147,6 +148,18 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 		}
 	}
 	
+	/* Buttons with ui jquery */
+	function uiButtons() {
+		$("button").addClass("ui-button ui-state-default ui-corner-all")
+			.hover(
+			function(){ 
+				$(this).addClass("ui-state-hover"); 
+			},
+			function(){ 
+				$(this).removeClass("ui-state-hover"); 	
+			});
+	}
+
 	$(document).ready(function () {
 		// show the image to crop, downscale it if necessary
 		var srcAttr = img.linkpath;
@@ -217,6 +230,7 @@ A_CmsAjaxGallery wp = new CmsAjaxImageGallery(pageContext, request, response);
 		}
 		// check if image is loaded and activate selector
 		checkImage();
+		uiButtons();
 	});
 </script>
 </head>

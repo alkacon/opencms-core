@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace base files.</p>
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.5.0</version>
+		<version>7.5.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -47,6 +47,7 @@
 			<resource uri="/system/workplace/resources/buttons/edit.png"/>
 			<resource uri="/system/workplace/resources/buttons/edit_in.png"/>
 			<resource uri="/system/workplace/resources/buttons/folder_refresh.png"/>
+			<resource uri="/system/workplace/resources/buttons/folder.png"/>
 			<resource uri="/system/workplace/resources/buttons/help.png"/>
 			<resource uri="/system/workplace/resources/buttons/htmlgallery.png"/>
 			<resource uri="/system/workplace/resources/buttons/imagegallery.png"/>
@@ -70,6 +71,7 @@
 			<resource uri="/system/workplace/resources/buttons/tablegallery.png"/>
 			<resource uri="/system/workplace/resources/buttons/wizard.png"/>
 			<resource uri="/system/workplace/resources/buttons/wizard_in.png"/>
+			<resource uri="/system/workplace/resources/buttons/upload.png"/>
 			<resource uri="/system/workplace/resources/commons/error.png"/>
 			<resource uri="/system/workplace/resources/commons/favicon.ico"/>
 			<resource uri="/system/workplace/resources/commons/help.png"/>
@@ -1430,6 +1432,26 @@
 					<name>Title</name>
 					<value><![CDATA[Publishes gallery item(s)]]></value>
 				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/galleries/galleryelements/searchdialog.html</source>
+			<destination>system/workplace/galleries/galleryelements/searchdialog.html</destination>
+			<type>plain</type>
+			<uuidstructure>01f57eeb-5f28-11de-8c07-2d12956623b5</uuidstructure>
+			<uuidresource>01f57eec-5f28-11de-8c07-2d12956623b5</uuidresource>
+			<datelastmodified>Thu, 25 Jun 2009 12:35:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 22 Jun 2009 12:27:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -2923,21 +2945,6 @@
 			<datelastmodified>Tue, 15 Jul 2008 09:49:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Tue, 15 Jul 2008 09:49:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/components/galleries/css/tabs.css</source>
-			<destination>system/workplace/resources/components/galleries/css/tabs.css</destination>
-			<type>plain</type>
-			<uuidstructure>83b2123e-99d2-11dd-b497-55b439b85a0e</uuidstructure>
-			<uuidresource>f7c91d30-4f60-11dd-ac91-55b439b85a0e</uuidresource>
-			<datelastmodified>Wed, 06 May 2009 13:11:59 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 11 Jul 2008 15:49:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

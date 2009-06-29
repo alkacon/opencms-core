@@ -17,10 +17,11 @@ boolean isAppletUsed = wp.getSettings().getUserSettings().useUploadApplet();
 <head>
 
 <title><%= wp.key(Messages.GUI_TITLE_IMAGEGALLERY_0) %></title>
-
 <link rel="stylesheet" type="text/css" href="<%= galleryResourcePath %>css/dialog.css" />
-<link rel="stylesheet" type="text/css" href="<%= galleryResourcePath %>css/tabs.css" />
 <link rel="stylesheet" type="text/css" href="<%= jQueryResourcePath %>css/thickbox/thickbox.css" />
+<link rel="stylesheet" type="text/css" href="<%= jQueryResourcePath %>css/ui-ocms/jquery.ui.css" />
+<link rel="stylesheet" type="text/css" href="<%= jQueryResourcePath %>css/ui-ocms/jquery.ui.ocms.css" />
+
 <% if (wp.isModeEditor()) { %>
 <link rel="stylesheet" type="text/css" href="<%= galleryResourcePath %>css/editor.css" />
 <% } %>
@@ -44,6 +45,7 @@ boolean isAppletUsed = wp.getSettings().getUserSettings().useUploadApplet();
 
 var vfsPathAjaxJsp = "<%= wp.getJsp().link("/system/workplace/galleries/imagegallery/ajaxcalls.jsp") %>";
 var vfsPathPrefixItems = "<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>components/galleries/img/";
+var vfsPathButtons = "<%= org.opencms.workplace.CmsWorkplace.getSkinUri() %>buttons/";
 var initValues;
 
 <% 
@@ -87,7 +89,10 @@ var isAppletUsed = <%=isAppletUsed %>;
 	<div id="closebutton">
 		<button type="button" onclick="window.close();"><%= wp.key(Messages.GUI_GALLERY_BUTTON_CLOSE_0) %></button>
 	</div>
+	<!-- The dialog html for the search dialog -->
+	<%@ include file="%(link.strong:/system/workplace/galleries/galleryelements/searchdialog.html:01f57eeb-5f28-11de-8c07-2d12956623b5)" %>
 	<a href="#" class="thickbox" id="resourcepublishlink"></a>
+
 </body>
 
 </html>

@@ -26,6 +26,8 @@ function initPopup() {
 	
 	var collectCategories = true;
 	$("#dialogbuttons").show();
+	$("#galleryresetsearchbutton").hide();
+	$("#categoryresetsearchbutton").hide();
 	//always open the gallery tab
 	$tabs.tabs("select", 1);
 	$tabs.tabs("disable", 0);

@@ -29,6 +29,8 @@ function initPopup() {
 	$("#galleryiteminfo > #dialogbuttons").show();
 	$("#galleryokbutton").hide();
 	$("#categoryokbutton").hide();
+	$("#galleryresetsearchbutton").hide();
+	$("#categoryresetsearchbutton").hide();
 
 
 	

@@ -3,18 +3,6 @@
 	font-size: 11px;
 }
 
-.ui-tabs-nav a:link, .ui-tabs-nav a:visited {
-    color: #808080;
-}
-
-.ui-tabs-nav .ui-tabs-selected a {
-    color: #FFF;
-}
-
-.ui-tabs-nav a, .ui-tabs-nav a span {
-    background: url(../img/tabs_editor.png) no-repeat;
-}
-
 td {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
@@ -105,12 +93,4 @@ div.imgitem, div.imgitemhover, div.imgitemactive {
 
 #galleryimagelistinner, #categoryimagelistinner {
 	height: 305px;
-}
-
-.ui-tabs-nav {
-    padding: 0 0 0 3px;
-}
-
-.ui-tabs-panel {
-	height: 503px;
 }

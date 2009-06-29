@@ -36,6 +36,8 @@ function initPopup() {
 	$("#categorycancelbutton").remove();
 	$("#galleryokbutton").remove();
 	$("#categoryokbutton").remove();
+	$("#galleryresetsearchbutton").hide();
+	$("#categoryresetsearchbutton").hide();
 	
 	if (hasSelectedText() == true) {
 		loadItemSitepath = getSelectedLinkUri();

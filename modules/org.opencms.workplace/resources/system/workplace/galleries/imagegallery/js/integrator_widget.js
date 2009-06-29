@@ -23,6 +23,7 @@ function initPopup() {
     	} 
 	window.resizeTo(sizeX, sizeY);
 	var collectCategories = true;
+
 	if (initValues.imagepath != null && initValues.imagepath != "") {
 		var path = initValues.imagepath; 
 		if (initValues.widgetmode == "simple") {
@@ -33,7 +34,8 @@ function initPopup() {
 		$tabs.tabs("select", 1);
 		$tabs.tabs("disable", 0);
 	}
-	window.resizeTo(sizeX, sizeY);
+	$("#galleryresetsearchbutton").hide();
+	$("#categoryresetsearchbutton").hide();
 	if (initValues.startupfolder != null && initValues.startupfolder != "null" && initValues.startupfolder != "") {
 		initStartup();
 	} else {

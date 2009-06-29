@@ -1,5 +1,6 @@
 /* Overrides default JQuery UI styles */
 .ui-widget-content { border: 1px solid ButtonFace; background: none; background-color: ButtonFace; color: WindowText; }
+.ui-widget-content-search { border: 1px solid #aaaaaa; background: #ffffff url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x; color: #222222; }
 .ui-widget-content a { color: WindowText; }
 .ui-widget-header { color: WindowText; }
 .ui-widget-header a { color: WindowText; }
@@ -12,3 +13,5 @@
 
 .ui-state-warning, .ui-widget-content .ui-state-warning{border: 1px solid #EE7700 !important; color: #EE7700; background: #fbf9ee url(images/ui-bg_glass_95_fef1ec_1x400.png) 50% 50% repeat-x !important; }
 .ui-state-warning a, .ui-widget-content .ui-state-warning a { color: #EE7700;  }
+
+.ui-widget-overlay { background: #ffffff url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x; opacity: .60;filter:Alpha(Opacity=60); }
