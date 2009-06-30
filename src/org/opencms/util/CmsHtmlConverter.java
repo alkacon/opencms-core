@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2009/06/19 08:25:16 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2009/06/30 15:08:33 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,29 +38,25 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
-import java.util.StringTokenizer;
-import java.util.regex.Pattern;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
-import org.w3c.tidy.Tidy;
-
 /**
- * Html cleaner and pretty printer.<p>
+ * HTML cleaner and pretty printer.<p>
  * 
- * Used to clean up html code (e.g. remove word tags) and optionally create xhtml from html.<p>
+ * Used to clean up HTML code (e.g. remove word tags) and optionally create XHTML from HTML.<p>
  *   
- * @author Michael Emmerich 
- * @author Alexander Kandzior
+ * @author Andreas Zahner
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,86 +68,26 @@ public class CmsHtmlConverter {
     /** Parameter value for enabled mode. **/
     public static final String PARAM_ENABLED = CmsStringUtil.TRUE;
 
+    /** Parameter value for replace paragraph mode. */
+    public static final String PARAM_REPLACE_PARAGRAPHS = "replace-paragraphs";
+
     /** Parameter value for WORD mode. **/
     public static final String PARAM_WORD = "cleanup";
 
     /** Parameter value for XHTML mode. **/
     public static final String PARAM_XHTML = "xhtml";
 
-    /** Parameter value for replace paragraph mode. */
-    public static final String PARAM_REPLACE_PARAGRAPHS = "replace-paragraphs";
+    /** The separator used for the configured modes String. */
+    public static final char SEPARATOR_MODES = ';';
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlConverter.class);
 
-    /** Regular expression for cleanup. */
-    String[] m_cleanupPatterns = {
-        "<o:p>.*(\\r\\n)*.*</o:p>",
-        "<o:p>.*(\\r\\n)*.*</O:p>",
-        "<\\?xml:.*(\\r\\n).*/>",
-        "<\\?xml:.*(\\r\\n).*(\\r\\n).*/\\?>",
-        "<\\?xml:.*(\\r\\n).*(\\r\\n).*/>",
-        "<\\?xml:(.*(\\r\\n)).*/\\?>",
-        "<o:SmartTagType.*(\\r\\n)*.*/>",
-        "<o:smarttagtype.*(\\r\\n)*.*/>"};
+    /** The encoding used for the HTML code conversion. */
+    private String m_encoding;
 
-    /** Patterns for cleanup. */
-    Pattern[] m_clearStyle;
-
-    /** The input encoding. */
-    String m_encoding;
-
-    /** Regular expression for replace. */
-    String[] m_replacePatterns = {
-        "&#160;",
-        "(\\r\\n){2,}",
-        "\u2013",
-        "(\\n){2,}",
-        "\\(\\r\\n<",
-        "\\(\\n<",
-        "\\(\\r\\n(\\ ){1,}<",
-        "\\(\\n(\\ ){1,}<",
-        "\\r\\n<span",
-        "\\n<span"};
-
-    /** Patterns for replace. */
-    Pattern[] m_replaceStyle;
-
-    /** Values for replace. */
-    String[] m_replaceValues = {"&nbsp;", "", "&ndash;", "", "(<", "(<", "(<", "(<", "<span", "<span"};
-
-    /** Regular expressions for paragraph replacements -- additionally remove leading and trailing breaks. */
-    String[] m_replaceParagraphPatterns = {
-        "</ul>\n<br />",
-        "</ol>\n<br />",
-        "<p><br />",
-        "<p>",
-        "<br />(\\s)*&nbsp;(\\s)*</p>",
-        "<br /></p>",
-        "</p>",
-        "^<br />",
-        "<br />$"};
-
-    /** Values for paragraph replacements. */
-    String[] m_replaceParagraphValues = {"</ul>", "</ol>", "<br />", "<br />", "<br />", "<br />", "<br />", "", ""};
-
-    /** The tidy to use. */
-    Tidy m_tidy;
-
-    /** The length of the line separator. */
-    private int m_lineSeparatorLength;
-
-    /** Indicates if this converter is enabled or not. */
-    private boolean m_modeEnabled;
-
-    /** Indicates if word cleanup mode is enabled or not. */
-    private boolean m_modeWord;
-
-    /** Indicates if xhtml conversion mode is enabled or not. */
-    private boolean m_modeXhtml;
-
-    /** Indicates if paragraph replacement mode is enabled or not. */
-    private boolean m_modeReplaceParagraphs;
+    /** The conversion mode for the converter. */
+    private String m_mode;
 
     /**
      * Constructor, creates a new CmsHtmlConverter.<p>
@@ -166,18 +102,17 @@ public class CmsHtmlConverter {
     /**
      * Constructor, creates a new CmsHtmlConverter.<p>
      * 
-     * Possible values for the conversion mode are:<ul>
-     * <li>{@link #PARAM_DISABLED}: The conversion is disabled.
-     * <li>{@link #PARAM_ENABLED}: Conversion is enabled without transformation, so html is pretty printed only. 
-     * <li>{@link #PARAM_XHTML}: Conversion from html to xhtml is enabled.
-     * <li>{@link #PARAM_WORD}: Cleanup of word like html tags is enabled.
-     * <li>{@link #PARAM_REPLACE_PARAGRAPHS}: Cleanup of paragraphs and leading/trailing linebreaks is enabled.
-     * 
+     * Possible values for the default conversion mode are:<ul>
+     * <li>{@link #PARAM_DISABLED}: The conversion is disabled.</li>
+     * <li>{@link #PARAM_ENABLED}: Conversion is enabled without transformation, so HTML is pretty printed only.</li>
+     * <li>{@link #PARAM_XHTML}: Conversion from HTML to XHTML is enabled.</li>
+     * <li>{@link #PARAM_WORD}: Cleanup of word like HTML tags is enabled.</li>
+     * <li>Other values can be used by the implementing converter class.</li>
      * </ul>
-     * Values can be combined with the <code>;</code> separator, so it's possible to convert 
-     * to xhtml and clean from word at the same time.<p>
+     * Values can be combined with the <code>;</code> separator, so it is e.g. possible to convert 
+     * to XHTML and clean from word at the same time.<p>
      * 
-     * @param encoding the encoding used for the html code conversion
+     * @param encoding the encoding used for the HTML code conversion
      * @param mode the conversion mode to use
      */
     public CmsHtmlConverter(String encoding, String mode) {
@@ -186,12 +121,12 @@ public class CmsHtmlConverter {
     }
 
     /**
-     * Reads the content conversion property of a given resource and returns it's value.<p>
+     * Reads the content conversion property of a given resource and returns its value.<p>
      * 
      * A default value (disabled) is returned if the property could not be read.<p>
      * 
      * @param cms the CmsObject
-     * @param resource the resource in the vfs
+     * @param resource the resource in the VFS
      * @return the content conversion property value
      */
     public static String getConversionSettings(CmsObject cms, CmsResource resource) {
@@ -228,42 +163,38 @@ public class CmsHtmlConverter {
     }
 
     /**
-     * Converts the given html code according to the settings of this converter.<p>
+     * Converts the given HTML code according to the settings of this converter.<p>
      * 
-     * @param htmlInput html input stored in an array of bytes
-     * @return array of bytes containing the converted html
+     * @param htmlInput HTML input stored in an array of bytes
+     * @return array of bytes containing the converted HTML
      * 
      * @throws UnsupportedEncodingException if the encoding set for the conversion is not supported
      */
     public byte[] convertToByte(byte[] htmlInput) throws UnsupportedEncodingException {
 
-        if (m_modeEnabled) {
-            // only do any processing if the conversion is enabled
-            return convertToByte(new String(htmlInput, m_encoding));
-        }
-        return htmlInput;
+        return convertToByte(new String(htmlInput, getEncoding()));
     }
 
     /**
-     * Converts the given html code according to the settings of this converter.<p>
+     * Converts the given HTML code according to the settings of this converter.<p>
      * 
-     * @param htmlInput html input stored in a string
-     * @return array of bytes containing the converted html
+     * @param htmlInput HTML input stored in a string
+     * @return array of bytes containing the converted HTML
      * 
      * @throws UnsupportedEncodingException if the encoding set for the conversion is not supported
      */
     public byte[] convertToByte(String htmlInput) throws UnsupportedEncodingException {
 
-        return convertToString(htmlInput).getBytes(m_encoding);
+        return convertToString(htmlInput).getBytes(getEncoding());
     }
 
     /**
-     * Converts the given html code according to the settings of this converter.<p>
+     * Converts the given HTML code according to the settings of this converter.<p>
      * 
      * If an any error occurs during the conversion process, the original input is returned unmodified.<p>
      * 
-     * @param htmlInput html input stored in an array of bytes
-     * @return array of bytes containing the converted html
+     * @param htmlInput HTML input stored in an array of bytes
+     * @return array of bytes containing the converted HTML
      */
     public byte[] convertToByteSilent(byte[] htmlInput) {
 
@@ -278,23 +209,23 @@ public class CmsHtmlConverter {
     }
 
     /**
-     * Converts the given html code according to the settings of this converter.<p>
+     * Converts the given HTML code according to the settings of this converter.<p>
      * 
      * If an any error occurs during the conversion process, the original input is returned unmodified.<p>
      * 
-     * @param htmlInput html input stored in a string
-     * @return array of bytes containing the converted html
+     * @param htmlInput HTML input stored in a string
+     * @return array of bytes containing the converted HTML
      */
     public byte[] convertToByteSilent(String htmlInput) {
 
         try {
-            return convertToByte(htmlInput.getBytes(m_encoding));
+            return convertToByte(htmlInput.getBytes(getEncoding()));
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().getBundle().key(Messages.LOG_CONVERSION_BYTE_FAILED_0), e);
             }
             try {
-                return htmlInput.getBytes(m_encoding);
+                return htmlInput.getBytes(getEncoding());
             } catch (UnsupportedEncodingException e1) {
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_CONVERSION_BYTE_FAILED_0), e1);
@@ -305,80 +236,80 @@ public class CmsHtmlConverter {
     }
 
     /**
-     * Converts the given html code according to the settings of this converter.<p>
+     * Converts the given HTML code according to the settings of this converter.<p>
      * 
-     * @param htmlInput html input stored in an array of bytes
-     * @return string containing the converted html
+     * @param htmlInput HTML input stored in an array of bytes
+     * @return string containing the converted HTML
      * 
      * @throws UnsupportedEncodingException if the encoding set for the conversion is not supported
      */
     public String convertToString(byte[] htmlInput) throws UnsupportedEncodingException {
 
-        return convertToString(new String(htmlInput, m_encoding));
+        return convertToString(new String(htmlInput, getEncoding()));
     }
 
     /**
-     * Converts the given html code according to the settings of this converter.<p>
+     * Converts the given HTML code according to the settings of the converter.<p>
      * 
-     * @param htmlInput html input stored in a string
-     * @return string containing the converted html
+     * @param htmlInput HTML input stored in a string
+     * @return string containing the converted HTML
      * 
      * @throws UnsupportedEncodingException if the encoding set for the conversion is not supported
      */
     public String convertToString(String htmlInput) throws UnsupportedEncodingException {
 
-        // only do parsing if the mode is not set to disabled
-        if (m_modeEnabled) {
-
-            // do a maximum of 10 loops
-            int max = m_modeWord ? 10 : 1;
-            int count = 0;
-
-            // we may have to do several parsing runs until all tags are removed
-            int oldSize = htmlInput.length();
-            String workHtml = regExp(htmlInput);
-            while (count < max) {
-                count++;
-
-                // first add the optional header if in word mode   
-                if (m_modeWord) {
-                    workHtml = adjustHtml(workHtml);
-                }
-                // now use tidy to parse and format the html
-                workHtml = parse(workHtml, m_encoding);
-                if (m_modeWord) {
-                    // cut off the line separator, which is always appended
-                    workHtml = workHtml.substring(0, workHtml.length() - m_lineSeparatorLength);
-                }
-
-                if (workHtml.length() == oldSize) {
-                    // no change in html code after last processing loop
-                    workHtml = regExp(workHtml);
-                    break;
-                }
-                oldSize = workHtml.length();
-                workHtml = regExp(workHtml);
+        // first: collect all converter classes to use on the input
+        Map converters = new HashMap();
+        for (Iterator i = getModes().iterator(); i.hasNext();) {
+            String mode = (String)i.next();
+            String converterClass = OpenCms.getResourceManager().getHtmlConverter(mode);
+            List modes = new ArrayList();
+            if (converters.containsKey(converterClass)) {
+                // converter class already defined for a previous mode, get mode list
+                modes = (List)converters.get(converterClass);
             }
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().getBundle().key(
-                    Messages.LOG_PARSING_RUNS_2,
-                    this.getClass().getName(),
-                    new Integer(count)));
-            }
-            htmlInput = workHtml;
+            // add mode name to list for the converter
+            modes.add(mode);
+            // store converter with modes in map
+            converters.put(converterClass, modes);
         }
 
+        // second: convert the content with all found converter classes
+        for (Iterator i = converters.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry)i.next();
+            String className = (String)entry.getKey();
+            List modes = (List)entry.getValue();
+            try {
+                I_CmsHtmlConverter converter = (I_CmsHtmlConverter)Class.forName(className).newInstance();
+                // initialize converter
+                converter.init(getEncoding(), modes);
+                // convert input String
+                htmlInput = converter.convertToString(htmlInput);
+            } catch (ClassNotFoundException e) {
+                LOG.error(org.opencms.loader.Messages.get().getBundle().key(
+                    org.opencms.loader.Messages.LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1,
+                    className), e);
+            } catch (IllegalAccessException e) {
+                LOG.error(org.opencms.loader.Messages.get().getBundle().key(
+                    org.opencms.loader.Messages.LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1,
+                    className), e);
+            } catch (InstantiationException e) {
+                LOG.error(org.opencms.loader.Messages.get().getBundle().key(
+                    org.opencms.loader.Messages.LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1,
+                    className), e);
+            }
+        }
         return htmlInput;
     }
 
     /**
-     * Converts the given html code according to the settings of this converter.<p>
+     * Converts the given HTML code according to the settings of this converter.<p>
      * 
      * If an any error occurs during the conversion process, the original input is returned unmodified.<p>
      * 
-     * @param htmlInput html input stored in an array of bytes
+     * @param htmlInput HTML input stored in an array of bytes
      * 
-     * @return string containing the converted html
+     * @return string containing the converted HTML
      */
     public String convertToStringSilent(byte[] htmlInput) {
 
@@ -389,7 +320,7 @@ public class CmsHtmlConverter {
                 LOG.warn(Messages.get().getBundle().key(Messages.LOG_CONVERSION_BYTE_FAILED_0), e);
             }
             try {
-                return new String(htmlInput, m_encoding);
+                return new String(htmlInput, getEncoding());
             } catch (UnsupportedEncodingException e1) {
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(Messages.get().getBundle().key(Messages.LOG_CONVERSION_BYTE_FAILED_0), e1);
@@ -400,13 +331,13 @@ public class CmsHtmlConverter {
     }
 
     /**
-     * Converts the given html code according to the settings of this converter.<p>
+     * Converts the given HTML code according to the settings of this converter.<p>
      * 
      * If an any error occurs during the conversion process, the original input is returned unmodified.<p>
      * 
-     * @param htmlInput html input stored in string 
+     * @param htmlInput HTML input stored in string 
      * 
-     * @return string containing the converted html
+     * @return string containing the converted HTML
      */
     public String convertToStringSilent(String htmlInput) {
 
@@ -421,9 +352,9 @@ public class CmsHtmlConverter {
     }
 
     /**
-     * Returns the encoding used for the html code conversion.<p>
+     * Returns the encoding used for the HTML code conversion.<p>
      * 
-     * @return the encoding used for the html code conversion
+     * @return the encoding used for the HTML code conversion
      */
     public String getEncoding() {
 
@@ -431,214 +362,55 @@ public class CmsHtmlConverter {
     }
 
     /**
-     * Adjusts the html input code in WORD mode if necessary.<p>
+     * Returns the conversion mode to use.<p>
      * 
-     * When in WORD mode, the html tag must contain the xmlns:o="urn:schemas-microsoft-com:office:office"
-     * attribute, otherwise tide will not remove the WORD tags from the document.
-     * 
-     * @param htmlInput the html input
-     * @return adjusted html input
+     * @return the conversion mode to use
      */
-    private String adjustHtml(String htmlInput) {
+    public String getMode() {
 
-        // check if we have some opening and closing html tags
-        if ((htmlInput.toLowerCase().indexOf("<html>") == -1) && (htmlInput.toLowerCase().indexOf("</html>") == -1)) {
-            // add a correct html tag for word generated html
-            StringBuffer tmp = new StringBuffer();
-            tmp.append("<html xmlns:o=\"\"><body>");
-            tmp.append(htmlInput);
-            tmp.append("</body></html>");
-            htmlInput = tmp.toString();
-        }
-        return htmlInput;
+        return m_mode;
     }
 
     /**
-     * Extracts all mode parameters from the mode property value and stores them in a list.<p>
+     * Returns the conversion modes to use as List of String parameters.<p>
      * 
-     * Values must be separated with a semicolon.
-     * 
-     * @param mode the mode parameter string
-     * @return list with all extracted nodes
+     * @return the conversion modes to use as List of String parameters
      */
-    private List extractModes(String mode) {
+    private List getModes() {
 
-        ArrayList extractedModes = new ArrayList();
-        if (mode != null) {
-            StringTokenizer extract = new StringTokenizer(mode, ";");
-            while (extract.hasMoreTokens()) {
-                String tok = extract.nextToken();
-                extractedModes.add(tok);
-            }
+        List modes = new ArrayList();
+        try {
+            modes = CmsStringUtil.splitAsList(getMode(), SEPARATOR_MODES, true);
+        } catch (Exception e) {
+            // error generating list, an empty list will be returned
         }
-        return extractedModes;
+
+        return modes;
     }
 
     /**
-     * Initializes the CmsHtmlConverter.<p>
+     * Initializes the HTML converter instance.<p>
      * 
-     * @param encoding the encoding used for the html code conversion
-     * @param mode the mode parameter to select the operation mode of the converter.
+     * Possible values for the conversion mode are dependent from the converter implementation.<p>
+     * 
+     * Values can be combined with the <code>;</code> separator, so that it is e.g. possible to convert 
+     * to XHTML and clean from word at the same time.<p>
+     * 
+     * @param encoding the encoding used for the HTML code conversion
+     * @param mode the conversion mode to use
      */
     private void init(String encoding, String mode) {
 
-        // extract all operation mode
-        List modes = extractModes(mode);
-
-        // configure the tidy depending on the operation mode
-        if (modes.contains(PARAM_ENABLED)) {
-            m_modeEnabled = true;
+        if (encoding == null) {
+            m_encoding = CmsEncoder.ENCODING_UTF_8;
+        } else {
+            m_encoding = encoding;
         }
-        if (modes.contains(PARAM_XHTML)) {
-            m_modeEnabled = true;
-            m_modeXhtml = true;
-        }
-        if (modes.contains(PARAM_WORD)) {
-            m_modeEnabled = true;
-            m_modeWord = true;
-        }
-        if (modes.contains(PARAM_REPLACE_PARAGRAPHS)) {
-            m_modeEnabled = true;
-            m_modeReplaceParagraphs = true;
-        }
-
-        // set the encoding
-        m_encoding = encoding;
-
-        // get line separator length
-        m_lineSeparatorLength = System.getProperty("line.separator").length();
-
-        // we need this only if the conversion is enabled
-        if (m_modeEnabled) {
-
-            // create the main tidy object
-            m_tidy = new Tidy();
-
-            // set specified word, xhtml conversion settings
-            m_tidy.setXHTML(m_modeXhtml);
-            m_tidy.setWord2000(m_modeWord);
-
-            // add additional tags
-            // those are required to handle word 2002 (and newer) documents
-            Properties additionalTags = new Properties();
-            additionalTags.put("new-empty-tags", "o:smarttagtype");
-            additionalTags.put("new-inline-tags", "o:smarttagtype");
-            m_tidy.getConfiguration().addProps(additionalTags);
-
-            // set the default tidy configuration
-
-            // set the tidy encoding
-            m_tidy.setInputEncoding(encoding);
-            m_tidy.setOutputEncoding(encoding);
-
-            // disable the tidy meta element in output
-            m_tidy.setTidyMark(false);
-            // disable clean mode
-            m_tidy.setMakeClean(false);
-            // enable num entities
-            m_tidy.setNumEntities(true);
-            // create output of the body only
-            m_tidy.setPrintBodyOnly(true);
-            // force output creation even if there are tidy errors
-            m_tidy.setForceOutput(true);
-            // set tidy to quiet mode to prevent output        
-            m_tidy.setQuiet(true);
-            // disable warning output
-            m_tidy.setShowWarnings(false);
-            // allow comments in the output
-            m_tidy.setHideComments(false);
-            // set no line break before a <br>
-            m_tidy.setBreakBeforeBR(false);
-            // dont wrap attribute values
-            m_tidy.setWrapAttVals(false);
-            // warp lines after 100 chars
-            m_tidy.setWraplen(100);
-            // no indentation
-            m_tidy.setSpaces(0);
-
-            if (m_modeWord) {
-                // create the regexp for cleanup, only used in word clean mode
-                m_clearStyle = new Pattern[m_cleanupPatterns.length];
-                for (int i = 0; i < m_cleanupPatterns.length; i++) {
-                    m_clearStyle[i] = Pattern.compile(m_cleanupPatterns[i]);
-                }
-            }
-
-            // add paragraph replacement regexp and values if needed
-            if (m_modeReplaceParagraphs) {
-                // add the regexp and values for paragraph replacements
-                String[] newPatterns = new String[m_replacePatterns.length + m_replaceParagraphPatterns.length];
-                String[] newValues = new String[m_replacePatterns.length + m_replaceParagraphPatterns.length];
-                System.arraycopy(m_replacePatterns, 0, newPatterns, 0, m_replacePatterns.length);
-                System.arraycopy(
-                    m_replaceParagraphPatterns,
-                    0,
-                    newPatterns,
-                    m_replacePatterns.length,
-                    m_replaceParagraphPatterns.length);
-                System.arraycopy(m_replaceValues, 0, newValues, 0, m_replacePatterns.length);
-                System.arraycopy(
-                    m_replaceParagraphValues,
-                    0,
-                    newValues,
-                    m_replacePatterns.length,
-                    m_replaceParagraphPatterns.length);
-                m_replacePatterns = newPatterns;
-                m_replaceValues = newValues;
-            }
-
-            // create the regexp for replace
-            m_replaceStyle = new Pattern[m_replacePatterns.length];
-            for (int i = 0; i < m_replacePatterns.length; i++) {
-                m_replaceStyle[i] = Pattern.compile(m_replacePatterns[i]);
-            }
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(mode)) {
+            m_mode = "";
+        } else {
+            m_mode = mode;
         }
     }
 
-    /**
-     * Parses a byte array containing html code with different parsing modes.<p>
-     * 
-     * @param htmlInput a byte array containing raw html code
-     * @param encoding the  encoding
-     * 
-     * @return parsed and cleared html code
-     * 
-     * @throws UnsupportedEncodingException if the encoding set for the conversion is not supported
-     */
-    private String parse(String htmlInput, String encoding) throws UnsupportedEncodingException {
-
-        // prepare the streams
-        ByteArrayInputStream in = new ByteArrayInputStream(htmlInput.getBytes(encoding));
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        // do the parsing
-        m_tidy.parse(in, out);
-        // return the result
-        byte[] result = out.toByteArray();
-        return new String(result, encoding);
-    }
-
-    /**
-     * Parses the htmlInput with regular expressions for cleanup purposes.<p>
-     * 
-     * @param htmlInput the html input
-     * @return processed html
-     */
-    private String regExp(String htmlInput) {
-
-        String parsedHtml = htmlInput.trim();
-
-        if (m_modeWord) {
-            // process all cleanup regexp
-            for (int i = 0; i < m_cleanupPatterns.length; i++) {
-                parsedHtml = m_clearStyle[i].matcher(parsedHtml).replaceAll("");
-            }
-        }
-
-        // process all replace regexp
-        for (int i = 0; i < m_replacePatterns.length; i++) {
-            parsedHtml = m_replaceStyle[i].matcher(parsedHtml).replaceAll(m_replaceValues[i]);
-        }
-
-        return parsedHtml;
-    }
 }

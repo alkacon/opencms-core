@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlStripper.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/06/30 15:08:33 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.9.2
  * 
@@ -203,11 +203,11 @@ public final class CmsHtmlStripper {
     }
 
     /**
-     * Internally tidies with cleanup and xmhtml.<p> 
+     * Internally tidies with cleanup and XHTML.<p> 
      * 
-     * @param content html to clean 
+     * @param content HTML to clean 
      * 
-     * @return the tidy html
+     * @return the tidy HTML
      */
     private String tidy(final String content) {
 

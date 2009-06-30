@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2009/06/30 15:08:33 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationType;
+import org.opencms.util.CmsHtmlConverterOption;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentTypeManager;
@@ -60,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48 $
+ * @version $Revision: 1.49 $
  * 
  * @since 6.0.0
  */
@@ -89,6 +90,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /** The collectors node name. */
     public static final String N_COLLECTORS = "collectors";
+
+    /** The html-converter node name.*/
+    public static final String N_HTML_CONVERTER = "html-converter";
+
+    /** The html-converters node name.*/
+    public static final String N_HTML_CONVERTERS = "html-converters";
 
     /** The copy-resource node name.*/
     public static final String N_COPY_RESOURCE = "copy-resource";
@@ -500,6 +507,20 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             1,
             A_TYPE);
 
+        // add html converter rules
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_HTML_CONVERTERS + "/" + N_HTML_CONVERTER,
+            "addHtmlConverter",
+            2);
+        digester.addCallParam(
+            "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_HTML_CONVERTERS + "/" + N_HTML_CONVERTER,
+            0,
+            A_NAME);
+        digester.addCallParam(
+            "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_HTML_CONVERTERS + "/" + N_HTML_CONVERTER,
+            1,
+            A_CLASS);
+
         // generic <param> parameter rules
         digester.addCallMethod(
             "*/" + I_CmsXmlConfiguration.N_PARAM,
@@ -634,6 +655,28 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             relationTypesElement.addElement(N_RELATIONTYPE).addAttribute(A_NAME, type.getName()).addAttribute(
                 A_TYPE,
                 type.getType());
+        }
+
+        // HTML converter configuration
+        boolean writeConfig = false;
+        for (it = m_resourceManager.getHtmlConverters().iterator(); it.hasNext();) {
+            CmsHtmlConverterOption converter = (CmsHtmlConverterOption)it.next();
+            if (!converter.isDefault()) {
+                // found a non default converter configuration, set flag to write configuration
+                writeConfig = true;
+                break;
+            }
+        }
+        if (writeConfig) {
+            // configuration is written because non default options were found
+            Element htmlConvertersElement = resources.addElement(N_HTML_CONVERTERS);
+            for (it = m_resourceManager.getHtmlConverters().iterator(); it.hasNext();) {
+                CmsHtmlConverterOption converter = (CmsHtmlConverterOption)it.next();
+                Element converterElement = htmlConvertersElement.addElement(N_HTML_CONVERTER).addAttribute(
+                    A_NAME,
+                    converter.getName());
+                converterElement.addAttribute(A_CLASS, converter.getClassName());
+            }
         }
 
         // add default file names

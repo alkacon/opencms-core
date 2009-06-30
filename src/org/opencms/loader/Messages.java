@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:07 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/06/30 15:08:33 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,6 +56,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_COLLECTOR_NAME_1 = "ERR_INVALID_COLLECTOR_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_HTMLCONVERTER_NAME_1 = "ERR_INVALID_HTMLCONVERTER_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1 = "LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_ADD_HTML_CONVERTER_CLASS_2 = "INIT_ADD_HTML_CONVERTER_CLASS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_IMAGE_SCALE_PARAMS_2 = "ERR_INVALID_IMAGE_SCALE_PARAMS_2";

@@ -611,6 +611,12 @@
 			   <relationtype name="TESTRELATION1" type="WEAK" />
 			   <relationtype name="TESTRELATION2" type="STRONG" />
 			</relationtypes>
+			<html-converters>
+  		  		<html-converter name="true" class="org.opencms.util.CmsHtmlConverterJTidy" />
+  		  		<html-converter name="xhtml" class="org.opencms.util.CmsHtmlConverterJTidy" />
+  		  		<html-converter name="cleanup" class="org.opencms.util.CmsHtmlConverterJTidy" />
+  		  		<html-converter name="replace-paragraphs" class="org.opencms.util.CmsHtmlConverterJTidy" />
+			</html-converters>
 		</resources>
 		<defaultfiles>
 			<defaultfile name="index.html" />

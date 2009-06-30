@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:07 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2009/06/30 15:08:33 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,8 +51,12 @@ import org.opencms.module.CmsModuleManager;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.util.CmsHtmlConverter;
+import org.opencms.util.CmsHtmlConverterJTidy;
+import org.opencms.util.CmsHtmlConverterOption;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.I_CmsHtmlConverter;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.io.IOException;
@@ -79,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,6 +208,9 @@ public class CmsResourceManager {
     /** The current resource manager configuration. */
     private CmsResourceManagerConfiguration m_configuration;
 
+    /** The list of all configured HTML converters. */
+    private List m_configuredHtmlConverters;
+
     /** The list of all configured MIME types. */
     private List m_configuredMimeTypes;
 
@@ -218,6 +225,9 @@ public class CmsResourceManager {
 
     /** Indicates if the configuration is finalized (frozen). */
     private boolean m_frozen;
+
+    /** The OpenCms map of configured HTML converters. */
+    private Map m_htmlConverters;
 
     /** Contains all loader extensions to the include process. */
     private List m_includeExtensions;
@@ -256,6 +266,7 @@ public class CmsResourceManager {
         m_includeExtensions = new ArrayList();
         m_configuredMimeTypes = new ArrayList();
         m_configuredRelationTypes = new ArrayList();
+        m_configuredHtmlConverters = new ArrayList();
     }
 
     /**
@@ -358,6 +369,57 @@ public class CmsResourceManager {
 
         // return the created collector instance
         return collector;
+    }
+
+    /**
+     * Adds a new HTML converter class to internal list of loaded converter classes.<p> 
+     * 
+     * @param name the name of the option that should trigger the HTML converter class
+     * @param className the name of the class to add
+     * 
+     * @return the created HTML converter instance
+     * 
+     * @throws CmsConfigurationException in case the HTML converter could not be properly initialized
+     */
+    public I_CmsHtmlConverter addHtmlConverter(String name, String className) throws CmsConfigurationException {
+
+        // check if new conversion option can still be added
+        if (m_frozen) {
+            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_NO_CONFIG_AFTER_STARTUP_0));
+        }
+
+        Class classClazz;
+        // init class for content converter
+        try {
+            classClazz = Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1, className), e);
+            return null;
+        }
+
+        I_CmsHtmlConverter converter;
+        try {
+            converter = (I_CmsHtmlConverter)classClazz.newInstance();
+        } catch (InstantiationException e) {
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_INVALID_HTMLCONVERTER_NAME_1,
+                className));
+        } catch (IllegalAccessException e) {
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_INVALID_HTMLCONVERTER_NAME_1,
+                className));
+        } catch (ClassCastException e) {
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_INVALID_HTMLCONVERTER_NAME_1,
+                className));
+        }
+
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_HTML_CONVERTER_CLASS_2, className, name));
+        }
+
+        m_configuredHtmlConverters.add(new CmsHtmlConverterOption(name, className));
+        return converter;
     }
 
     /**
@@ -580,6 +642,28 @@ public class CmsResourceManager {
     public CmsResourceTranslator getFolderTranslator() {
 
         return m_folderTranslator;
+    }
+
+    /**
+     * Returns the matching HTML converter class name for the specified option name.<p>
+     * 
+     * @param name the name of the option that should trigger the HTML converter class
+     * 
+     * @return the matching HTML converter class name for the specified option name or <code>null</code> if no match is found
+     */
+    public String getHtmlConverter(String name) {
+
+        return (String)m_htmlConverters.get(name);
+    }
+
+    /**
+     * Returns an unmodifiable List of the configured {@link CmsHtmlConverterOption} objects.<p>
+     * 
+     * @return an unmodifiable List of the configured {@link CmsHtmlConverterOption} objects
+     */
+    public List getHtmlConverters() {
+
+        return m_configuredHtmlConverters;
     }
 
     /**
@@ -909,6 +993,10 @@ public class CmsResourceManager {
         m_configuredMimeTypes = Collections.unmodifiableList(m_configuredMimeTypes);
         m_configuredRelationTypes = Collections.unmodifiableList(m_configuredRelationTypes);
 
+        // initialize the HTML converters
+        initHtmlConverters();
+        m_configuredHtmlConverters = Collections.unmodifiableList(m_configuredHtmlConverters);
+
         // initialize the resource types
         initResourceTypes();
         // initialize the MIME types
@@ -1032,9 +1120,42 @@ public class CmsResourceManager {
         m_mimeTypes = null;
         m_configuredMimeTypes = null;
         m_configuredRelationTypes = null;
+        m_configuredHtmlConverters = null;
+        m_htmlConverters = null;
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+        }
+    }
+
+    /**
+     * Initialize the HTML converters.<p>
+     * 
+     * HTML converters are configured in the OpenCms <code>opencms-vfs.xml</code> configuration file.<p>
+     * 
+     * For legacy reasons, the default JTidy HTML converter has to be loaded if no explicit HTML converters
+     * are configured in the configuration file.<p>
+     */
+    private void initHtmlConverters() {
+
+        // check if any HTML converter configuration were found
+        if (m_configuredHtmlConverters.size() == 0) {
+            // no converters configured, add default JTidy converter configuration
+            String classJTidy = CmsHtmlConverterJTidy.class.getName();
+            m_configuredHtmlConverters.add(new CmsHtmlConverterOption(CmsHtmlConverter.PARAM_ENABLED, classJTidy, true));
+            m_configuredHtmlConverters.add(new CmsHtmlConverterOption(CmsHtmlConverter.PARAM_XHTML, classJTidy, true));
+            m_configuredHtmlConverters.add(new CmsHtmlConverterOption(CmsHtmlConverter.PARAM_WORD, classJTidy, true));
+            m_configuredHtmlConverters.add(new CmsHtmlConverterOption(
+                CmsHtmlConverter.PARAM_REPLACE_PARAGRAPHS,
+                classJTidy,
+                true));
+        }
+
+        // initialize lookup map of configured HTML converters
+        m_htmlConverters = new HashMap(m_configuredHtmlConverters.size());
+        for (Iterator i = m_configuredHtmlConverters.iterator(); i.hasNext();) {
+            CmsHtmlConverterOption converterOption = (CmsHtmlConverterOption)i.next();
+            m_htmlConverters.put(converterOption.getName(), converterOption.getClassName());
         }
     }
 

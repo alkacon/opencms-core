@@ -606,6 +606,12 @@
 		        <mimetype extension=".onetmp" type="application/onenote"/>
 		        <mimetype extension=".onepkg" type="application/onenote"/>
 			</mimetypes>
+			<html-converters>
+  		  		<html-converter name="true" class="org.opencms.util.CmsHtmlConverterJTidy" />
+  		  		<html-converter name="xhtml" class="org.opencms.util.CmsHtmlConverterJTidy" />
+  		  		<html-converter name="cleanup" class="org.opencms.util.CmsHtmlConverterJTidy" />
+  		  		<html-converter name="replace-paragraphs" class="org.opencms.util.CmsHtmlConverterJTidy" />
+			</html-converters>
 		</resources>
 		<defaultfiles>
 			<defaultfile name="index.html" />

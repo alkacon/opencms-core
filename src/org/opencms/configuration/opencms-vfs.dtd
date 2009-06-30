@@ -13,6 +13,7 @@
 	resources,
 	defaultfiles,
 	translations?, 
+	
 	xmlcontent?)>
 
 <!ELEMENT resources (
@@ -20,7 +21,8 @@
 	resourcetypes,
 	collectors?,
 	mimetypes?,
-	relationtypes?)>
+	relationtypes?,
+	html-converters?)>
 
 <!ELEMENT resourceloaders (loader+)>
 <!ELEMENT loader (param*)>
@@ -58,6 +60,17 @@
 <!ELEMENT mimetypes (mimetype*)>
 <!ELEMENT mimetype EMPTY>
 <!ATTLIST mimetype extension CDATA #REQUIRED type CDATA #REQUIRED>
+
+<!--
+# HTML converters manipulate the content of pages containing HTML values.
+# The behavior of the HTML converters is configured by using the "content-conversion"
+# property value. The name(s) entered here are passed to the matching HTML converter. 
+# There can be entered more than one option in the property, e.g. "cleanup;xhtml",
+# the ";" acts as separator.
+-->
+<!ELEMENT html-converters (html-converter*)>
+<!ELEMENT html-converter EMPTY>
+<!ATTLIST html-converter name CDATA #REQUIRED class CDATA #REQUIRED>
 
 <!--
 # Default file names for directories.
