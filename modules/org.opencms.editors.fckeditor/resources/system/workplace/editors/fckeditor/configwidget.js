@@ -14,9 +14,7 @@ CmsDialog wp = new CmsDialog(cms);
 String site = OpenCms.getSiteManager().getWorkplaceServer();
 
 String configuration = request.getParameter(CmsFCKEditorWidget.PARAM_CONFIGURATION);
-if (CmsStringUtil.isEmpty(configuration)) {
-	configuration = "";
-}
+CmsHtmlWidgetOption option = new CmsHtmlWidgetOption(configuration);
 
 %>
 FCKConfig.AutoDetectLanguage = false;
@@ -26,6 +24,8 @@ FCKConfig.ProcessHTMLEntities = true;
 FCKConfig.ProcessNumericEntities = false;
 FCKConfig.IncludeLatinEntities = false;
 FCKConfig.IncludeGreekEntities = false;
+
+<%= CmsFCKEditorWidget.getFormatSelectOptionsConfiguration(option) %>
 
 FCKConfig.BaseHref = "<%= site %>";
 
@@ -51,20 +51,14 @@ toolbar.append("'Undo','Redo','-','SelectAll','RemoveFormat'");
 
 toolbar.append(",'-','Cut','Copy','Paste','PasteText','PasteWord'");
 
-toolbar.append(",'-','Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'");
-
-toolbar.append("],[");
-
-toolbar.append("'JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'");
-
-toolbar.append(",'-','OrderedList','UnorderedList'");
-
-toolbar.append(",'-','Outdent','Indent'");
+CmsFCKEditorWidget.buildFontButtons(toolbar, option);
 
 toolbar.append("]");
 
+CmsFCKEditorWidget.buildFormatButtons(toolbar, option);
+
 // append customized OpenCms buttons
-if (CmsFCKEditorWidget.buildOpenCmsButtonRow(toolbar, configuration)) {
+if (CmsFCKEditorWidget.buildMiscButtons(toolbar, option)) {
 	toolbar.append(",'-',");
 } else {
 	toolbar.append(",[");
@@ -96,7 +90,7 @@ FCKConfig.Keystrokes = [
 	[ CTRL + 85 /*U*/, 'Underline' ],
 	[ CTRL + SHIFT + 83 /*S*/, true ],
 	[ CTRL + ALT + 13 /*ENTER*/, 'FitWindow' ]<% 
-	if (configuration.indexOf(CmsHtmlWidgetOption.OPTION_SOURCE) != -1) { %>,
+	if (option.showSourceEditor()) { %>,
 	[ CTRL + 9 /*TAB*/, 'Source' ]<%
 	} %>
 ] ;

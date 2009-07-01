@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidgetOption.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/07/01 15:46:37 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.1
  */
@@ -89,11 +89,17 @@ public class CmsHtmlWidgetOption {
     /** Option for the "formatselect" selector. */
     public static final String OPTION_FORMATSELECT = "formatselect";
 
+    /** Option for the "formatselect" options selector. */
+    public static final String OPTION_FORMATSELECT_OPTIONS = "formatselect.options:";
+
     /** Option for the "fullpage" editor variant. */
     public static final String OPTION_FULLPAGE = "fullpage";
 
     /** Option for the "height" configuration. */
     public static final String OPTION_HEIGHT = "height:";
+
+    /** Option for the "hidebuttons" configuration. */
+    public static final String OPTION_HIDEBUTTONS = "hidebuttons:";
 
     /** Option for the "image" dialog. */
     public static final String OPTION_IMAGE = "image";
@@ -110,10 +116,16 @@ public class CmsHtmlWidgetOption {
     /** Option for the "table" dialog. */
     public static final String OPTION_TABLE = "table";
 
+    /** The delimiter to use for separation of option values. */
+    public static final char VALUE_DELIMITER = ';';
+
+    private String m_configuration;
     private String m_cssPath;
     private List m_displayGalleries;
     private String m_editorHeight;
+    private String m_formatSelectOptions;
     private boolean m_fullPage;
+    private List m_hiddenButtons;
     private boolean m_showAnchorDialog;
     private boolean m_showFormatSelect;
     private boolean m_showImageDialog;
@@ -123,34 +135,31 @@ public class CmsHtmlWidgetOption {
     private String m_stylesXmlPath;
 
     /**
-     * Creates a new empty html widget object object.<p>
+     * Creates a new empty HTML widget object object.<p>
      */
     public CmsHtmlWidgetOption() {
 
-        // initialize the members
-        m_displayGalleries = new ArrayList();
-        m_editorHeight = EDITOR_DEFAULTHEIGHT;
+        // initialize the options
+        init(null);
     }
 
     /**
-     * Creates a new html widget object object, configured by the given configuration String.<p>
+     * Creates a new HTML widget object object, configured by the given configuration String.<p>
      * 
      * @param configuration configuration String to parse
      */
     public CmsHtmlWidgetOption(String configuration) {
 
-        // initialize the widget options
-        m_displayGalleries = new ArrayList();
-        m_editorHeight = EDITOR_DEFAULTHEIGHT;
-        parseOptions(configuration);
+        // initialize the options
+        init(configuration);
     }
 
     /**
-     * Returns a html widget configuration String created from the given html widget option.<p>
+     * Returns a HTML widget configuration String created from the given HTML widget option.<p>
      * 
-     * @param option the html widget options to create the configuration String for
+     * @param option the HTML widget options to create the configuration String for
      * 
-     * @return a select widget configuration String created from the given html widget option object
+     * @return a select widget configuration String created from the given HTML widget option object
      */
     public static String createConfigurationString(CmsHtmlWidgetOption option) {
 
@@ -228,6 +237,24 @@ public class CmsHtmlWidgetOption {
             result.append(option.getStylesXmlPath());
             added = true;
         }
+        if (!option.getHiddenButtons().isEmpty()) {
+            // append the buttons to hide from tool bar
+            if (added) {
+                result.append(OPTION_DELIMITER);
+            }
+            result.append(OPTION_HIDEBUTTONS);
+            result.append(CmsStringUtil.collectionAsString(option.getHiddenButtons(), String.valueOf(VALUE_DELIMITER)));
+            added = true;
+        }
+        if (CmsStringUtil.isNotEmpty(option.getFormatSelectOptions())) {
+            // append the format select option String
+            if (added) {
+                result.append(OPTION_DELIMITER);
+            }
+            result.append(OPTION_FORMATSELECT_OPTIONS);
+            result.append(option.getFormatSelectOptions());
+            added = true;
+        }
 
         boolean isFirst = true;
         for (int i = 0; i < option.getDisplayGalleries().size(); i++) {
@@ -244,9 +271,19 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
-     * Returns the css style sheet VFS path to use in the widget area.<p>
+     * Returns the original configuration String that was used to initialize the HTML widget options.<p>
+     * 
+     * @return the original configuration String
+     */
+    public String getConfiguration() {
+
+        return m_configuration;
+    }
+
+    /**
+     * Returns the CSS style sheet VFS path to use in the widget area.<p>
      *
-     * @return the css style sheet VFS path to use in the widget area
+     * @return the CSS style sheet VFS path to use in the widget area
      */
     public String getCssPath() {
 
@@ -274,6 +311,26 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Returns the options for the format select box as String.<p>
+     * 
+     * @return the options for the format select box as String
+     */
+    public String getFormatSelectOptions() {
+
+        return m_formatSelectOptions;
+    }
+
+    /**
+     * Returns the buttons to hide as list with button names.<p>
+     * 
+     * @return the buttons to hide as list with button names
+     */
+    public List getHiddenButtons() {
+
+        return m_hiddenButtons;
+    }
+
+    /**
      * Returns the styles XML VFS path to use in the widget area.<p>
      *
      * @return the styles XML VFS path to use in the widget area
@@ -281,6 +338,34 @@ public class CmsHtmlWidgetOption {
     public String getStylesXmlPath() {
 
         return m_stylesXmlPath;
+    }
+
+    /**
+     * Initializes the widget options from the given configuration String.<p>
+     * 
+     * @param configuration the configuration String
+     */
+    public void init(String configuration) {
+
+        // initialize the members
+        m_configuration = configuration;
+        m_displayGalleries = new ArrayList();
+        m_editorHeight = EDITOR_DEFAULTHEIGHT;
+        m_hiddenButtons = new ArrayList();
+        // initialize the widget options
+        parseOptions(configuration);
+    }
+
+    /**
+     * Returns if the button with the given name should be hidden.<p>
+     * 
+     * @param buttonName the button name to check
+     * 
+     * @return <code>true</code> if the button with the given name should be hidden, otherwise <code>false</code>
+     */
+    public boolean isButtonHidden(String buttonName) {
+
+        return getHiddenButtons().contains(buttonName);
     }
 
     /**
@@ -294,9 +379,9 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
-     * Sets the css style sheet VFS path to use in the widget area.<p>
+     * Sets the CSS style sheet VFS path to use in the widget area.<p>
      *
-     * @param cssPath the css style sheet VFS path to use in the widget area
+     * @param cssPath the CSS style sheet VFS path to use in the widget area
      */
     public void setCssPath(String cssPath) {
 
@@ -324,6 +409,16 @@ public class CmsHtmlWidgetOption {
     }
 
     /**
+     * Sets the options for the format select box as String.<p>
+     * 
+     * @param formatSelectOptions the options for the format select box as String
+     */
+    public void setFormatSelectOptions(String formatSelectOptions) {
+
+        m_formatSelectOptions = formatSelectOptions;
+    }
+
+    /**
      * Sets if the editor should be used in full page mode.<p>
      * 
      * @param fullPage true if the editor should be used in full page mode, otherwise false
@@ -331,6 +426,16 @@ public class CmsHtmlWidgetOption {
     public void setFullPage(boolean fullPage) {
 
         m_fullPage = fullPage;
+    }
+
+    /**
+     * Sets the buttons to hide as list with button names.<p>
+     * 
+     * @param buttons the buttons to hide as list with button names
+     */
+    public void setHiddenButtons(List buttons) {
+
+        m_hiddenButtons = buttons;
     }
 
     /**
@@ -527,12 +632,20 @@ public class CmsHtmlWidgetOption {
                 } else if (OPTION_TABLE.equals(option)) {
                     // show table dialog
                     setShowTableDialog(true);
+                } else if (option.startsWith(OPTION_FORMATSELECT_OPTIONS)) {
+                    // the format select options
+                    option = option.substring(OPTION_FORMATSELECT_OPTIONS.length());
+                    setFormatSelectOptions(option);
                 } else if (option.startsWith(OPTION_HEIGHT)) {
                     // the editor height
                     option = option.substring(OPTION_HEIGHT.length());
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(option)) {
                         setEditorHeight(option);
                     }
+                } else if (option.startsWith(OPTION_HIDEBUTTONS)) {
+                    // buttons to hide from the tool bar
+                    option = option.substring(OPTION_HIDEBUTTONS.length());
+                    setHiddenButtons(CmsStringUtil.splitAsList(option, VALUE_DELIMITER, true));
                 } else if (option.startsWith(OPTION_CSS)) {
                     // the editor CSS
                     option = option.substring(OPTION_CSS.length());
@@ -551,5 +664,4 @@ public class CmsHtmlWidgetOption {
             }
         }
     }
-
 }
