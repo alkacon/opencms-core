@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2009/06/04 14:29:35 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/07/03 10:36:00 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -217,14 +217,52 @@ public class CmsEditorDisplayOptions {
     }
 
     /**
+     * Returns the value for the given key from the display options.<p>
+     * 
+     * @param key he element key name which should be read
+     * @param defaultValue the default value to use in case the property is not found
+     * @param displayOptions the display options for the current user
+     * 
+     * @return the value for the given key from the display options
+     */
+    public String getOptionValue(String key, String defaultValue, Properties displayOptions) {
+
+        if (displayOptions == null) {
+            return defaultValue;
+        }
+        return displayOptions.getProperty(key, defaultValue);
+    }
+
+    /**
      * Determines if the given element should be shown in the editor.<p>
      * 
      * @param key the element key name which should be displayed
      * @param displayOptions the display options for the current user
+     * 
      * @return true if the element should be shown, otherwise false
      */
     public boolean showElement(String key, Properties displayOptions) {
 
-        return ((displayOptions != null) && Boolean.valueOf(displayOptions.getProperty(key)).booleanValue());
+        return showElement(key, null, displayOptions);
+    }
+
+    /**
+     * Determines if the given element should be shown in the editor.<p>
+     * 
+     * @param key the element key name which should be displayed
+     * @param defaultValue the default value to use in case the property is not found, should be a boolean value as String
+     * @param displayOptions the display options for the current user
+     * 
+     * @return true if the element should be shown, otherwise false
+     */
+    public boolean showElement(String key, String defaultValue, Properties displayOptions) {
+
+        if (defaultValue == null) {
+            return ((displayOptions != null) && Boolean.valueOf(displayOptions.getProperty(key)).booleanValue());
+        }
+        if (displayOptions == null) {
+            return Boolean.valueOf(defaultValue).booleanValue();
+        }
+        return Boolean.valueOf(displayOptions.getProperty(key, defaultValue)).booleanValue();
     }
 }

@@ -10,7 +10,7 @@
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 CmsFCKEditor wp = new CmsFCKEditor(cms);
 
-cms.getResponse().setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, "no-cache");
+CmsRequestUtil.setNoCacheHeaders(response);
 
 CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
 Properties displayOptions = options.getDisplayOptions(cms);
@@ -52,6 +52,11 @@ FCKConfig.ProcessHTMLEntities = true;
 FCKConfig.ProcessNumericEntities = false;
 FCKConfig.IncludeLatinEntities = false;
 FCKConfig.IncludeGreekEntities = false;
+<%
+String formatOptions = options.getOptionValue("formatselect.options", "", displayOptions);
+if (CmsStringUtil.isNotEmpty(formatOptions)) { %>
+FCKConfig.FontFormats = "<%= formatOptions %>";<%
+} %>
 
 FCKConfig.BaseHref = "<%= site %>";
 FCKConfig.ToolbarCanCollapse = false;
@@ -159,69 +164,170 @@ if (wp.isHelpEnabled()) {
 toolbar.append(",'-','oc-exit']");
 
 // style buttons 
-toolbar.append(", '/'\n,[");
-toolbar.append("'FontFormat'");
-
+boolean fontFormat = options.showElement("option.formatselect", CmsStringUtil.TRUE, displayOptions);
 boolean fontFace = options.showElement("font.face", displayOptions);
 boolean fontSize = options.showElement("font.size", displayOptions);
 boolean style = styleXMLPresent && options.showElement("option.style", displayOptions);
 
-if (style || fontFace || fontSize) {
-	// determine if the font face selector should be shown
-	if (fontFace) {
-		toolbar.append(",'FontName'");
-	}
+StringBuffer stylebar = new StringBuffer(1536);
 
-	// determine if the font size selector should be shown 
-	if (fontSize) {
-		toolbar.append(",'FontSize'");
-	}
-
-
-	// determine if the style selector should be shown
-	if (style) {
-		toolbar.append(",'Style'");
-	}
+// determine if the font format selector should be shown
+if (fontFormat) {
+	stylebar.append("'FontFormat'");
 }
+// determine if the font face selector should be shown
+if (fontFace) {
+	stylebar.append(",'FontName'");
+}
+
+// determine if the font size selector should be shown 
+if (fontSize) {
+	stylebar.append(",'FontSize'");
+}
+
+
+// determine if the style selector should be shown
+if (style) {
+	stylebar.append(",'Style'");
+}
+
+boolean showStyleBt = false;
+boolean showScriptBt = false;
 
 // determine if the font decoration buttons should be shown
 if (options.showElement("font.decoration", displayOptions)) {
-	toolbar.append(",'Bold','Italic','Underline','StrikeThrough','-','Subscript','Superscript'");
+	if (options.showElement("button.bold", CmsStringUtil.TRUE, displayOptions)) {
+		stylebar.append(",'Bold'");
+		showStyleBt = true;
+	}
+	if (options.showElement("button.italic", CmsStringUtil.TRUE, displayOptions)) {
+		stylebar.append(",'Italic'");
+		showStyleBt = true;
+	}
+	if (options.showElement("button.underline", CmsStringUtil.TRUE, displayOptions)) {
+		stylebar.append(",'Underline'");
+		showStyleBt = true;
+	}
+	if (options.showElement("button.strikethrough", CmsStringUtil.TRUE, displayOptions)) {
+		stylebar.append(",'StrikeThrough'");
+		showStyleBt = true;
+	}
+
+	StringBuffer styleBt = new StringBuffer(32);
+	if (options.showElement("button.sub", CmsStringUtil.TRUE, displayOptions)) {
+		showScriptBt = true;
+		styleBt.append(",'Subscript'");
+	}
+	if (options.showElement("button.super", CmsStringUtil.TRUE, displayOptions)) {
+		showScriptBt = true;
+		styleBt.append(",'Superscript'");
+	}
+        if (showScriptBt) {
+        	if (showStyleBt) {
+			// append leading separator in case format buttons were rendered
+			stylebar.append(",'-'");
+		}
+		stylebar.append(styleBt);
+        }
 }
+
+boolean showAlignBt = false;
 
 // determine if the text alignment buttons should be shown
 if (options.showElement("text.align", displayOptions)) {
-	toolbar.append(",'-','JustifyLeft','JustifyCenter','JustifyRight','JustifyFull'");
-}       
+	StringBuffer alignBt = new StringBuffer(64);
+	if (options.showElement("button.alignleft", CmsStringUtil.TRUE, displayOptions)) {
+		showAlignBt = true;
+		alignBt.append(",'JustifyLeft'");
+	}
+	if (options.showElement("button.aligncenter", CmsStringUtil.TRUE, displayOptions)) {
+		showAlignBt = true;
+		alignBt.append(",'JustifyCenter'");
+	}
+	if (options.showElement("button.alignright", CmsStringUtil.TRUE, displayOptions)) {
+		showAlignBt = true;
+		alignBt.append(",'JustifyRight'");
+	}
+	if (options.showElement("button.justify", CmsStringUtil.TRUE, displayOptions)) {
+		showAlignBt = true;
+		alignBt.append(",'JustifyFull'");
+	}
+	if (showAlignBt) {
+		if (showScriptBt || showStyleBt) {
+			stylebar.append(",'-'");
+		}
+		stylebar.append(alignBt);
+	}
+	
+}
+
+boolean showListBt = false;
 
 // determine if the text list buttons should be shown
 if (options.showElement("text.lists", displayOptions)) {
-	toolbar.append(",'-','OrderedList','UnorderedList'");
+	StringBuffer listBt = new StringBuffer(32);
+	if (options.showElement("button.orderedlist", CmsStringUtil.TRUE, displayOptions)) {
+		showListBt = true;
+		listBt.append(",'OrderedList'");
+	}
+	if (options.showElement("button.unorderedlist", CmsStringUtil.TRUE, displayOptions)) {
+		showListBt = true;
+		listBt.append(",'UnorderedList'");
+	}
+	if (showListBt) {
+		if (showScriptBt || showStyleBt || showAlignBt) {
+			stylebar.append(",'-'");
+		}
+		stylebar.append(listBt);
+	}
 }
 
 // determine if the text indentation buttons should be shown 
 if (options.showElement("text.indent", displayOptions)) {
-	toolbar.append(",'-','Outdent','Indent'");
+	boolean showIndBt = false;
+	StringBuffer indBt = new StringBuffer(32);
+	if (options.showElement("button.outdent", CmsStringUtil.TRUE, displayOptions)) {
+		showIndBt = true;
+		indBt.append(",'Outdent'");
+	}
+	if (options.showElement("button.indent", CmsStringUtil.TRUE, displayOptions)) {
+		showIndBt = true;
+		indBt.append(",'Indent'");
+	}
+	if (showIndBt) {
+		if (showScriptBt || showStyleBt || showAlignBt || showListBt) {
+			stylebar.append(",'-'");
+		}
+		stylebar.append(indBt);
+	}
 }   
 
 // Determine wich color selectors should be shown
 boolean fontColor = options.showElement("font.color", displayOptions);
 boolean bgColor = options.showElement("bg.color", displayOptions);
 if (fontColor || bgColor) {
-    toolbar.append(",'-',");   
+    stylebar.append(",'-',");   
     if (fontColor && bgColor) {
-      toolbar.append("'TextColor','BGColor'");
+      stylebar.append("'TextColor','BGColor'");
     } else {
     	if (fontColor) {
-           toolbar.append("'TextColor'");
+           stylebar.append("'TextColor'");
         }
         if (bgColor) {
-           toolbar.append("'BGColor'");
+           stylebar.append("'BGColor'");
         }
     }
 }
 
-toolbar.append("]");
+if (stylebar.length() > 0) {
+	String styleStr = stylebar.toString();
+	if (styleStr.charAt(0) == ',') {
+		styleStr = styleStr.substring(1);
+	}
+	toolbar.append(", '/'\n,[");
+	toolbar.append(styleStr);
+	toolbar.append("]");
+}
 
 // determines if the form editing buttons should be shown
 if (options.showElement("option.form", displayOptions)) {

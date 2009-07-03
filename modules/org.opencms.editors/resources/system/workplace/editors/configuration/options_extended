@@ -1,5 +1,9 @@
 # Editor display options
 
+# format selector
+option.formatselect=true
+formatselect.options=p;h1;h2;h3;h4;h5;h6;pre;address;div
+
 # font manipulation
 font.size=true
 font.face=true
@@ -13,6 +17,22 @@ bg.color=true
 text.align=true
 text.indent=true
 text.lists=true
+
+# individual buttons for paragraph manipulation
+button.bold=true
+button.italic=true
+button.underline=true
+button.strikethrough=true
+button.super=true
+button.sub=true
+button.alignleft=true
+button.aligncenter=true
+button.alignright=true
+button.justify=true
+button.indent=true
+button.outdent=true
+button.orderedlist=true
+button.unorderedlist=true
 
 # customized editor button
 button.customized=true

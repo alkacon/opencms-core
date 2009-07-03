@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/07/01 15:46:37 $
- * Version: $Revision: 1.1113 $
+ * Date   : $Date: 2009/07/03 10:36:01 $
+ * Version: $Revision: 1.1114 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -21,8 +21,11 @@ Legend:
 
 OpenCms 7.5.1 - month day, 2009
 
-! Improved HTML widget button configuration to hide unwanted buttons
-* Fixed issue #1739: Deleted or moved project resources cannot be removed from project.
+! Improved HTML widget button configuration and unstructured content button configuration to hide unwanted buttons
+! Added option to set global default widget configurations
+! Added selectable start galleries to user preferences and possibility to define start galleries in OpenCms configuration
+! Added search dialog to all galleries
+* Fixed issue #1739: Deleted or moved project resources cannot be removed from project
 * Fixed issue with OU users being unable to work after OU resource has been renamed 
 
 OpenCms 7.5.0 - June 15, 2009

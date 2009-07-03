@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditor.java,v $
- * Date   : $Date: 2009/06/05 13:31:39 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/07/03 10:36:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.1.7
  */
@@ -68,7 +68,7 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
     /** Suffix for the style XML file that is added to the used template CSS style sheet file name. */
     public static final String SUFFIX_STYLESXML = "_style.xml";
 
-    /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
+    /** Constant for the editor type, must be the same as the editors sub folder name in the VFS. */
     private static final String EDITOR_TYPE = "fckeditor";
 
     /**
