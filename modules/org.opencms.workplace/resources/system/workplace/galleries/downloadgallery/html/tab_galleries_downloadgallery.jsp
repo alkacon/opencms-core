@@ -8,7 +8,7 @@
 			<button type="button" id="opengallerybutton" class="downloadgallery" onclick="showGalleryFolders();" title="<%= wp.key(Messages.GUI_GALLERY_GALLERIES_BUTTON_SHOW_0) %>">
 				<div> <%= wp.key(Messages.GUI_GALLERY_GALLERIES_BUTTON_SHOW_0) %> </div>
 			</button>
-			<button type="button" id="gallerysearchbutton" onclick="openSearchDialog('gallery');" title="<%= wp.key(Messages.GUI_GALLERY_SEARCH_BUTTON_SEARCH_0) %>">
+			<button type="button" id="gallerysearchbutton" onclick="openSearchDialog('gallery');" title="<%= wp.key(Messages.GUI_GALLERY_BUTTON_SEARCH_0) %>">
 				<div> &nbsp; </div>
 			</button>
 			<button type="button" id="galleryresetsearchbutton" onclick="resetSearch('gallery');" title="<%= wp.key(Messages.GUI_GALLERY_BUTTON_SEARCH_RESET_0) %>">

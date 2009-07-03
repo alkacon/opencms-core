@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2009/06/04 14:29:17 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2009/07/03 12:46:05 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.A_CmsModeStringEnumeration;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.commons.CmsPreferences;
 
 import java.util.Iterator;
 import java.util.List;
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 6.0.0
  */
@@ -242,7 +243,7 @@ public class CmsUserSettings {
     private static final int ENTRYS_PER_PAGE_DEFAULT = 50;
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsDriverManager.class);
+    private static final Log LOG = CmsLog.getLog(CmsUserSettings.class);
 
     /** Default workplace search index name. */
     private static final String SEARCH_INDEX_DEFAULT = "Offline project (VFS)";
@@ -309,6 +310,9 @@ public class CmsUserSettings {
 
     private String m_startFolder;
 
+    /** Contains the key value entries with start setting for different gallery types. */
+    private TreeMap m_startGalleriesSettings;
+
     private String m_startSite;
 
     private CmsSynchronizeSettings m_synchronizeSettings;
@@ -346,6 +350,7 @@ public class CmsUserSettings {
         m_explorerFileEntries = CmsUserSettings.ENTRYS_PER_PAGE_DEFAULT;
         m_explorerSettings = CmsUserSettings.FILELIST_NAME;
         m_editorSettings = new TreeMap();
+        m_startGalleriesSettings = new TreeMap();
         m_showFileUploadButton = true;
         m_showPublishNotification = false;
         m_listAllProjects = false;
@@ -661,6 +666,28 @@ public class CmsUserSettings {
     public String getStartFolder() {
 
         return m_startFolder;
+    }
+
+    /**
+     * The start galleries settings of the user.<p>
+     * 
+     * @return the start galleries settings of the user
+     */
+    public Map getStartGalleriesSettings() {
+
+        return m_startGalleriesSettings;
+    }
+
+    /**
+     * Returns the path to the start gallery of the user.<p>
+     * 
+     * @param galleryType the type of the gallery
+     * @return the path to the start gallery or null, if no key 
+     */
+    public String getStartGallery(String galleryType) {
+
+        return (String)m_startGalleriesSettings.get(galleryType);
+
     }
 
     /** 
@@ -999,7 +1026,22 @@ public class CmsUserSettings {
         }
         if (m_editorSettings.isEmpty()) {
             m_editorSettings = new TreeMap(OpenCms.getWorkplaceManager().getDefaultUserSettings().getEditorSettings());
+
         }
+        // start gallery settings 
+        m_startGalleriesSettings = new TreeMap();
+        Iterator gKeys = m_user.getAdditionalInfo().keySet().iterator();
+        while (gKeys.hasNext()) {
+            String key = (String)gKeys.next();
+            if (key.startsWith(PREFERENCES + CmsWorkplaceConfiguration.N_STARTGALLERIES)) {
+                String editKey = key.substring((PREFERENCES + CmsWorkplaceConfiguration.N_STARTGALLERIES).length());
+                m_startGalleriesSettings.put(editKey, m_user.getAdditionalInfo(key));
+            }
+        }
+        if (m_startGalleriesSettings.isEmpty()) {
+            m_startGalleriesSettings = new TreeMap();
+        }
+
         // start site
         m_startSite = (String)m_user.getAdditionalInfo(PREFERENCES
             + CmsWorkplaceConfiguration.N_WORKPLACESTARTUPSETTINGS
@@ -1360,6 +1402,33 @@ public class CmsUserSettings {
                 }
             }
         }
+        // start settings for galleries
+        if (m_startGalleriesSettings.size() > 0) {
+            Iterator itEntries = m_startGalleriesSettings.entrySet().iterator();
+            while (itEntries.hasNext()) {
+                Map.Entry entry = (Map.Entry)itEntries.next();
+                if ((entry.getValue() != null) && !entry.getValue().equals(CmsPreferences.INPUT_DEFAULT)) {
+                    m_user.setAdditionalInfo(
+                        PREFERENCES + CmsWorkplaceConfiguration.N_STARTGALLERIES + entry.getKey(),
+                        entry.getValue().toString());
+                } else {
+                    // delete from user settings if value of the entry is null or "default" 
+                    m_user.deleteAdditionalInfo(PREFERENCES
+                        + CmsWorkplaceConfiguration.N_STARTGALLERIES
+                        + entry.getKey());
+                }
+            }
+        } else if (cms != null) {
+            Iterator itKeys = m_user.getAdditionalInfo().keySet().iterator();
+            while (itKeys.hasNext()) {
+                String key = (String)itKeys.next();
+                if (key.startsWith(PREFERENCES + CmsWorkplaceConfiguration.N_STARTGALLERIES)) {
+                    m_user.deleteAdditionalInfo(key);
+                }
+            }
+
+        }
+
         // workplace search
         if (getWorkplaceSearchViewStyle() != null) {
             m_user.setAdditionalInfo(PREFERENCES
@@ -1828,6 +1897,31 @@ public class CmsUserSettings {
             folder = folder + "/";
         }
         m_startFolder = folder;
+    }
+
+    /**
+     * Sets the start galleries settings of the user.<p>
+     * 
+     * @param settings the start galleries setting of the user
+     */
+    public void setStartGalleriesSetting(Map settings) {
+
+        m_startGalleriesSettings = new TreeMap(settings);
+    }
+
+    /**
+     * Sets the path to the start gallery of the user or removes the entry from user settings if no path is null.<p>
+     * 
+     * @param galleryType the type of the gallery
+     * @param galleryUri the gallery URI
+     */
+    public void setStartGallery(String galleryType, String galleryUri) {
+
+        if (galleryUri == null) {
+            m_startGalleriesSettings.remove(galleryType);
+        } else {
+            m_startGalleriesSettings.put(galleryType, galleryUri);
+        }
     }
 
     /**

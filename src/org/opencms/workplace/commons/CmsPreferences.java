@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2009/07/03 12:46:03 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.db.CmsUserSettings.CmsSearchResultStyle;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -43,6 +44,7 @@ import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -61,6 +63,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.CmsWorkplaceView;
 import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -94,7 +97,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 6.0.0
  */
@@ -121,6 +124,9 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name prefix for the preferred editors. */
     public static final String INPUT_DEFAULT = "default";
 
+    /** Request parameter name prefix for the preferred editors. */
+    public static final String INPUT_PRESELECT = "preselect";
+
     /** Request parameter name for the dialog copy file siblings default setting. */
     public static final String PARAM_DIALOGS_COPYFILEMODE = "tabdicopyfilemode";
 
@@ -136,7 +142,7 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name for the dialog permissions show current users permissions. */
     public static final String PARAM_DIALOGS_PERMISSIONS_EXPANDUSER = "tabdipermissionsexpanduser";
 
-    /** Request parameter name for the dialog permissions default inheritance behaviour on folders. */
+    /** Request parameter name for the dialog permissions default inheritance behavior on folders. */
     public static final String PARAM_DIALOGS_PERMISSIONS_INHERITONFOLDER = "tabdipermissionsinheritonfolder";
 
     /** Request parameter name for the dialog publish file siblings default setting. */
@@ -207,6 +213,9 @@ public class CmsPreferences extends CmsTabDialog {
 
     /** Request parameter name prefix for the preferred editors. */
     public static final String PARAM_PREFERREDEDITOR_PREFIX = "tabedprefed_";
+
+    /** Request parameter name prefix for the preferred editors. */
+    public static final String PARAM_STARTGALLERY_PREFIX = "tabgastartgallery_";
 
     /** Request parameter name for the workplace button style. */
     public static final String PARAM_WORKPLACE_BUTTONSTYLE = "tabwpbuttonstyle";
@@ -320,6 +329,8 @@ public class CmsPreferences extends CmsTabDialog {
         CmsUserSettings userSettings = new CmsUserSettings(getSettings().getUser());
         // first set the old preferred editors
         m_userSettings.setEditorSettings(userSettings.getEditorSettings());
+        // also set the old start gallery settings
+        m_userSettings.setStartGalleriesSetting(userSettings.getStartGalleriesSettings());
         // then set the old synchronization settings
         m_userSettings.setSynchronizeSettings(userSettings.getSynchronizeSettings());
         Enumeration en = request.getParameterNames();
@@ -337,7 +348,16 @@ public class CmsPreferences extends CmsTabDialog {
                     // reset preferred editor for this resource type
                     m_userSettings.setPreferredEditor(paramName.substring(PARAM_PREFERREDEDITOR_PREFIX.length()), null);
                 }
+            } else if (paramName.startsWith(PARAM_STARTGALLERY_PREFIX)) {
+                String paramValue = request.getParameter(paramName);
+                if (paramValue != null) {
+                    // set the selected start gallery for the gallery type
+                    m_userSettings.setStartGallery(
+                        paramName.substring(PARAM_STARTGALLERY_PREFIX.length()),
+                        CmsEncoder.decode(paramValue));
+                }
             }
+
         }
 
         // set the current user in the settings object
@@ -793,6 +813,105 @@ public class CmsPreferences extends CmsTabDialog {
         }
 
         return buildSelect(htmlAttributes, options, values, selectedIndex);
+    }
+
+    /**
+     * Builds the HTML for the start galleries settings as select boxes.<p>
+     *  
+     * @param htmlAttributes optional HTML attributes for the &lgt;select&gt; tag
+     * @return the HTML for start galleries select boxes
+     */
+    public String buildSelectStartGalleries(String htmlAttributes) {
+
+        StringBuffer result = new StringBuffer(1024);
+        HttpServletRequest request = getJsp().getRequest();
+        // set the attributes for the select tag
+        if (htmlAttributes != null) {
+            htmlAttributes += " name=\"" + PARAM_STARTGALLERY_PREFIX;
+        }
+        Map galleriesTypes = OpenCms.getWorkplaceManager().getGalleries();
+        if (galleriesTypes != null) {
+
+            // sort the galleries by localized name
+            Map localizedGalleries = new TreeMap();
+            for (Iterator i = galleriesTypes.keySet().iterator(); i.hasNext();) {
+                String currentGalleryType = (String)i.next();
+                String localizedName = CmsWorkplaceMessages.getResourceName(this, currentGalleryType);
+                localizedGalleries.put(localizedName, currentGalleryType);
+            }
+
+            for (Iterator i = localizedGalleries.entrySet().iterator(); i.hasNext();) {
+                Map.Entry entry = (Map.Entry)i.next();
+                // first: retrieve the gallery type
+                String currentGalleryType = (String)entry.getValue();
+                // second: retrieve the gallery type id
+                int currentGalleryTypeId = 0;
+                try {
+                    currentGalleryTypeId = OpenCms.getResourceManager().getResourceType(currentGalleryType).getTypeId();
+                } catch (CmsLoaderException e) {
+                    // resource type not found, log error
+                    if (LOG.isErrorEnabled()) {
+                        LOG.error(e.getLocalizedMessage(), e);
+                    }
+                    continue;
+                }
+                // third: get the available galleries for this gallery type id
+                List availableGalleries = A_CmsAjaxGallery.getGalleries(currentGalleryTypeId, getCms());
+
+                // forth: fill the select box 
+                List options = new ArrayList(availableGalleries.size() + 2);
+                List values = new ArrayList(availableGalleries.size() + 2);
+                options.add(key(Messages.GUI_PREF_STARTGALLERY_NONE_0));
+                values.add(INPUT_DEFAULT);
+                options.add(key(Messages.GUI_PREF_STARTGALLERY_PRESELECT_0));
+                values.add(INPUT_PRESELECT);
+
+                String savedValue = computeStartGalleryPreselection(request, currentGalleryType);
+                int counter = 2;
+                int selectedIndex = 0;
+                Iterator iGalleries = availableGalleries.iterator();
+                while (iGalleries.hasNext()) {
+                    CmsResource res = (CmsResource)iGalleries.next();
+                    String rootPath = res.getRootPath();
+                    String sitePath = getCms().getSitePath(res);
+                    // select the value
+                    if ((savedValue != null) && (savedValue.equals(rootPath))) {
+                        selectedIndex = counter;
+                    }
+                    counter++;
+                    // gallery title
+                    String title = "";
+                    try {
+                        // read the gallery title
+                        title = getCms().readPropertyObject(sitePath, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
+                            "");
+                    } catch (CmsException e) {
+                        // error reading title property
+                        if (LOG.isErrorEnabled()) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                    options.add(title.concat(" (").concat(sitePath).concat(")"));
+                    values.add(rootPath);
+
+                }
+                // select the value
+                if ((savedValue != null) && savedValue.equals(INPUT_PRESELECT)) {
+                    selectedIndex = 1;
+                }
+
+                // create the table row for the current resource type
+                result.append("<tr>\n\t<td style=\"white-space: nowrap;\">");
+
+                result.append(entry.getKey());
+                result.append("</td>\n\t<td>");
+                result.append(buildSelect(htmlAttributes + currentGalleryType + "\"", options, values, selectedIndex));
+                result.append("</td>\n</tr>\n");
+
+            }
+
+        }
+        return result.toString();
     }
 
     /**
@@ -1421,7 +1540,7 @@ public class CmsPreferences extends CmsTabDialog {
         orderList.add("tabex");
         orderList.add("tabdi");
         orderList.add("tabed");
-        orderList.add("tabwf");
+        orderList.add("tabga");
         orderList.add("tabup");
         return orderList;
     }
@@ -1436,6 +1555,7 @@ public class CmsPreferences extends CmsTabDialog {
         tabList.add(key(Messages.GUI_PREF_PANEL_EXPLORER_0));
         tabList.add(key(Messages.GUI_PREF_PANEL_DIALOGS_0));
         tabList.add(key(Messages.GUI_PREF_PANEL_EDITORS_0));
+        tabList.add(key(Messages.GUI_PREF_PANEL_GALLERIES_0));
         tabList.add(key(Messages.GUI_PREF_PANEL_USER_0));
         return tabList;
     }
@@ -1964,7 +2084,7 @@ public class CmsPreferences extends CmsTabDialog {
         Enumeration en = request.getParameterNames();
         while (en.hasMoreElements()) {
             String paramName = (String)en.nextElement();
-            if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX)) {
+            if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX) || paramName.startsWith(PARAM_STARTGALLERY_PREFIX)) {
                 String paramValue = request.getParameter(paramName);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramValue)) {
                     map.put(paramName, CmsEncoder.decode(paramValue));
@@ -2031,6 +2151,27 @@ public class CmsPreferences extends CmsTabDialog {
             // no value found in request, check current user settings (not the member!)
             CmsUserSettings userSettings = new CmsUserSettings(getSettings().getUser());
             return userSettings.getPreferredEditor(resourceType);
+
+        }
+    }
+
+    /**
+     * Returns the preferred editor preselection value either from the request, if not present, from the user settings.<p>
+     * 
+     * @param request the current http servlet request
+     * @param resourceType the preferred editors resource type
+     * @return the preferred editor preselection value or null, if none found
+     */
+    private String computeStartGalleryPreselection(HttpServletRequest request, String galleryType) {
+
+        // first check presence of the setting in request parameter
+        String preSelection = request.getParameter(PARAM_STARTGALLERY_PREFIX + galleryType);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(preSelection)) {
+            return CmsEncoder.decode(preSelection);
+        } else {
+            // no value found in request, check current user settings (not the member!)
+            CmsUserSettings userSettings = new CmsUserSettings(getSettings().getUser());
+            return userSettings.getStartGallery(galleryType);
 
         }
     }

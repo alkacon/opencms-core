@@ -434,12 +434,14 @@
 <!--
 # The default user preferences of the OpenCms workplace contains the default data 
 # for the user workplace preferences. The xml data is subdifeded into four major knots,
-# representing the different tabs in the preferences screen in the workplace.
+# representing the different tabs in the preferences screen in the workplace. 
+# The knot for start setting of the galleries is optional.
 -->
 <!ELEMENT default-preferences (workplace-preferences,
 				explorer-preferences,
 				dialogs-preferences,
 				editors-preferences,
+				galleries-preferences?,
 				workflow-preferences?)>
 
 <!--
@@ -737,6 +739,27 @@
 <!ELEMENT editor EMPTY >	
 <!ATTLIST editor type CDATA #REQUIRED>
 <!ATTLIST editor value CDATA #REQUIRED>	
+
+<!--
+# The galleries preferences define the default settings of the galleries in OpenCms.
+-->
+<!ELEMENT galleries-preferences (startgalleries?)>
+
+<!--
+# Configuration of the start setting for different gallery types in OpenCms. This settings can be overwritten 
+# by configuration of the widget.  
+-->
+<!ELEMENT startgalleries (startgallery*)>
+
+<!--
+# Startgallery node has two attributes.
+# type: The type of the gallery for which the global start setting is applied ("imagegallery", 
+# "downloadgallery", "linkgallery", "tablegallery", "htmlgallery").
+# path: The path to the gallery, which should be opened after login. 
+-->
+<!ELEMENT startgallery EMPTY >
+<!ATTLIST startgallery type CDATA #REQUIRED>
+<!ATTLIST startgallery path CDATA #REQUIRED>
 
 <!--
 # The workflow preferences define the default workflow options.

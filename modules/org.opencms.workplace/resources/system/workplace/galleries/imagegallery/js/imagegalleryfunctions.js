@@ -33,7 +33,11 @@ function fillItems(data, modeName) {
 		var categorysearchresult = " ";
 		var cTitle = categories[activeCategory].title;
 		if (searchKeyword != null) {
-			categorysearchresult = ": (" + foundImages.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\")";
+			if (foundImages.length == 1) {
+				categorysearchresult = ": " + foundImages.length + " " + LANG.SEARCH_RESULT + " \""  + searchKeyword + "\"";
+			} else {
+				categorysearchresult = ": " + foundImages.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\"";
+			}
 			//cut the title of the gallery, if it is too long
 			cTitle = cutTitle(cTitle);
 		}
@@ -83,7 +87,11 @@ function fillItems(data, modeName) {
 		// display number of search results if not 0
 		var gallerysearchresult = " ";
 		if (searchKeyword != null) {
-			gallerysearchresult = ": (" + foundImages.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\")";
+			if (foundImages.length == 1) {
+				gallerysearchresult = ": " + foundImages.length + " " + LANG.SEARCH_RESULT + " \""  + searchKeyword + "\"";
+			} else {
+				gallerysearchresult = ": " + foundImages.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\"";
+			}
 			//prepare title of the gallery, if too long
 			gTitle = cutTitle(gTitle);
 		}

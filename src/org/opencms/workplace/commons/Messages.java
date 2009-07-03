@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/07/03 12:46:03 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,17 +39,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_UNDO_CHANGES_1 = "ERR_UNDO_CHANGES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_UNDO_CONFIRMATION_SIBLINGS_0 = "GUI_UNDO_CONFIRMATION_SIBLINGS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_AVAILABILITY_BAD_TIMEWINDOW_0 = "ERR_AVAILABILITY_BAD_TIMEWINDOW_0";
@@ -173,6 +167,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNDELETE_MULTI_0 = "ERR_UNDELETE_MULTI_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNDO_CHANGES_1 = "ERR_UNDO_CHANGES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNDO_CHANGES_MULTI_0 = "ERR_UNDO_CHANGES_MULTI_0";
@@ -1030,6 +1027,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_FILES_PER_PAGE_0 = "GUI_PREF_FILES_PER_PAGE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_LIST_ALL_PROJECTS_0 = "GUI_PREF_LIST_ALL_PROJECTS_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_NEW_PWD_0 = "GUI_PREF_NEW_PWD_0";
 
     /** Message constant for key in the resource bundle. */
@@ -1040,6 +1040,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_PANEL_EXPLORER_0 = "GUI_PREF_PANEL_EXPLORER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_PANEL_GALLERIES_0 = "GUI_PREF_PANEL_GALLERIES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_PANEL_USER_0 = "GUI_PREF_PANEL_USER_0";
@@ -1102,13 +1105,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PREF_SETTINGS_STARTUP_0 = "GUI_PREF_SETTINGS_STARTUP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PREF_LIST_ALL_PROJECTS_0 = "GUI_PREF_LIST_ALL_PROJECTS_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_SHOW_LOCK_DIALOG_0 = "GUI_PREF_SHOW_LOCK_DIALOG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_SHOW_PUBLISHNOTIFICATION_0 = "GUI_PREF_SHOW_PUBLISHNOTIFICATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_STARTGALLERY_NONE_0 = "GUI_PREF_STARTGALLERY_NONE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PREF_STARTGALLERY_PRESELECT_0 = "GUI_PREF_STARTGALLERY_PRESELECT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PREF_STARTUP_FILTER_0 = "GUI_PREF_STARTUP_FILTER_0";
@@ -1508,6 +1514,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_CONFIRMATION_0 = "GUI_UNDO_CONFIRMATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_UNDO_CONFIRMATION_SIBLINGS_0 = "GUI_UNDO_CONFIRMATION_SIBLINGS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_LASTMODIFIED_INFO_3 = "GUI_UNDO_LASTMODIFIED_INFO_3";

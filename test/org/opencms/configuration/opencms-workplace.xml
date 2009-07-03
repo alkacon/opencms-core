@@ -806,6 +806,15 @@
           <editor type="xmlpage" value="bestavailable"/>
         </editors-preferrededitors>
       </editors-preferences>
+      <galleries-preferences>
+        <startgalleries>
+          <startgallery type="downloadgallery" path="/demo_de/extra/extranet/dokumente/" />
+          <startgallery type="htmlgallery" path="/sites/default/demo_en/html/" />
+          <startgallery type="imagegallery" path="/sites/default/demo_en/images/" />
+          <startgallery type="linkgallery" path="/sites/default/demo_en/linkgallery/" />
+          <startgallery type="tablegallery" path="/sites/default/demo_en/table/" />
+        </startgalleries>
+      </galleries-preferences>
     </default-preferences>
     <workplace-customfoot>
     	<color>InfoText</color>

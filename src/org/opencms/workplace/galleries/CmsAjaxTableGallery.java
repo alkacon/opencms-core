@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxTableGallery.java,v $
- * Date   : $Date: 2009/06/05 14:42:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/07/03 12:46:04 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.0
  */
@@ -105,6 +105,38 @@ public class CmsAjaxTableGallery extends A_CmsAjaxGallery {
     }
 
     /**
+     * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryItemsTypeId()
+     */
+    public int getGalleryItemsTypeId() {
+
+        return CmsResourceTypePlain.getStaticTypeId();
+    }
+
+    /**
+     * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryTypeId()
+     */
+    public int getGalleryTypeId() {
+
+        try {
+            this.m_galleryTypeId = OpenCms.getResourceManager().getResourceType(GALLERYTYPE_NAME).getTypeId();
+        } catch (CmsLoaderException e) {
+            // resource type not found, log error
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+        }
+        return this.m_galleryTypeId;
+    }
+
+    /**
+     * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryTypeName()
+     */
+    public String getGalleryTypeName() {
+
+        return GALLERYTYPE_NAME;
+    }
+
+    /**
      * Fills the JSON object with the specific information used for file resource type of the table gallery.<p>
      * 
      * <ul>
@@ -141,30 +173,6 @@ public class CmsAjaxTableGallery extends A_CmsAjaxGallery {
             }
         }
 
-    }
-
-    /**
-     * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryItemsTypeId()
-     */
-    public int getGalleryItemsTypeId() {
-
-        return CmsResourceTypePlain.getStaticTypeId();
-    }
-
-    /**
-     * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryTypeId()
-     */
-    public int getGalleryTypeId() {
-
-        try {
-            this.m_galleryTypeId = OpenCms.getResourceManager().getResourceType(GALLERYTYPE_NAME).getTypeId();
-        } catch (CmsLoaderException e) {
-            // resource type not found, log error
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-        }
-        return this.m_galleryTypeId;
     }
 
 }

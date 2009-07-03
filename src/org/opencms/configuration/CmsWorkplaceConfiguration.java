@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:39 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2009/07/03 12:46:03 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 6.0.0
  */
@@ -97,6 +97,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The "parent" attribute. */
     public static final String A_PARENT = "parent";
+
+    /** The "path" attribute. */
+    public static final String A_PATH = "path";
 
     /** The "permissions" attribute. */
     public static final String A_PERMISSIONS = "permissions";
@@ -238,6 +241,15 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
 
     /** The node name of the editors preferred editors node. */
     public static final String N_EDITORPREFERREDEDITORS = "editors-preferrededitors";
+
+    /** The node name of the gallery preferences node. */
+    public static final String N_GALLERIESPREFERENCES = "galleries-preferences";
+
+    /** The node name of the galleries start setting node. */
+    public static final String N_STARTGALLERIES = "startgalleries";
+
+    /** The node name of the start gallery node. */
+    public static final String N_STARTGALLERY = "startgallery";
 
     /** The name of the "enable advanced property tabs" node. */
     public static final String N_ENABLEADVANCEDPROPERTYTABS = "enableadvancedpropertytabs";
@@ -1282,6 +1294,24 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             editor.addAttribute(A_VALUE, value);
         }
 
+        if (!m_workplaceManager.getDefaultUserSettings().getStartGalleriesSettings().isEmpty()) {
+            //add the <galleries-preferences> node
+            Element galleriesPreferences = defaultPreferences.addElement(N_GALLERIESPREFERENCES);
+            //add the <startgalleries> node
+            Element galleryStartGalleries = galleriesPreferences.addElement(N_STARTGALLERIES);
+            //add the <startgallery> nodes
+            Iterator startGalleries = m_workplaceManager.getDefaultUserSettings().getStartGalleriesSettings().entrySet().iterator();
+            while (startGalleries.hasNext()) {
+                Map.Entry e = (Map.Entry)startGalleries.next();
+                String type = (String)e.getKey();
+                String path = (String)e.getValue();
+                Element startGallery = galleryStartGalleries.addElement(N_STARTGALLERY);
+                startGallery.addAttribute(A_TYPE, type);
+                startGallery.addAttribute(A_PATH, path);
+
+            }
+        }
+
         if (m_workplaceManager.getCustomFoot() != null) {
             // add the <workplace-footcustom> node
             Element workplaceFootCustom = workplaceElement.addElement(N_WORKPLACECUSTOMFOOT);
@@ -1608,6 +1638,20 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         digester.addCallMethod(xPathPrefix + "/" + N_EDITOR, "setPreferredEditor", 2);
         digester.addCallParam(xPathPrefix + "/" + N_EDITOR, 0, A_TYPE);
         digester.addCallParam(xPathPrefix + "/" + N_EDITOR, 1, A_VALUE);
+
+        // add startgallery rules
+        xPathPrefix = "*/"
+            + N_WORKPLACE
+            + "/"
+            + N_DEFAULTPREFERENCES
+            + "/"
+            + N_GALLERIESPREFERENCES
+            + "/"
+            + N_STARTGALLERIES;
+        digester.addCallMethod(xPathPrefix + "/" + N_STARTGALLERY, "setStartGallery", 2);
+        digester.addCallParam(xPathPrefix + "/" + N_STARTGALLERY, 0, A_TYPE);
+        digester.addCallParam(xPathPrefix + "/" + N_STARTGALLERY, 1, A_PATH);
+
     }
 
     /**

@@ -42,5 +42,6 @@ var LANG = {
 	"BUTTON_OK"			: "<%= wp.key(Messages.GUI_GALLERY_BUTTON_OK_0) %>",
 	"BUTTON_CANCEL"			: "<%= wp.key(Messages.GUI_GALLERY_BUTTON_CANCEL_0) %>",
 	"NO_SEARCH_RESULTS"		: "<%= wp.key(Messages.GUI_GALLERY_SEARCH_NORESULTS_0) %>",
-	"SEARCH_RESULTS"		: "<%= wp.key(Messages.GUI_GALLERY_SEARCH_RESULTS_0) %>"
+	"SEARCH_RESULTS"		: "<%= wp.key(Messages.GUI_GALLERY_SEARCH_RESULTS_0) %>",
+	"SEARCH_RESULT"			: "<%= wp.key(Messages.GUI_GALLERY_SEARCH_RESULT_0) %>"
 };

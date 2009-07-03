@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/A_CmsAjaxGallery.java,v $
- * Date   : $Date: 2009/06/09 10:02:56 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/07/03 12:46:04 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.galleries;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -54,6 +55,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.commons.CmsPreferences;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.5.0 
  */
@@ -295,6 +297,47 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     }
 
     /**
+     * Returns a list of galleries which have the required gallery type id.<p>
+     * 
+     * @param galleryTypeId type id of the gallery
+     * @param cms the initialized CmsObject for the current user
+     * @return a list of galleries
+     */
+    public static List getGalleries(int galleryTypeId, CmsObject cms) {
+
+        List galleries = new ArrayList();
+        try {
+            // get the galleries of the current site
+            galleries = cms.readResources("/", CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
+        } catch (CmsException e) {
+            // error reading resources with filter
+            LOG.error(e.getLocalizedMessage(), e);
+        }
+
+        // if the current site is NOT the root site - add all other galleries from the system path
+        if (!cms.getRequestContext().getSiteRoot().equals("")) {
+            List systemGalleries = null;
+            try {
+                // get the galleries in the /system/ folder
+                systemGalleries = cms.readResources(
+                    CmsWorkplace.VFS_PATH_SYSTEM,
+                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
+            } catch (CmsException e) {
+                // error reading resources with filter
+                LOG.error(e.getLocalizedMessage(), e);
+            }
+
+            if ((systemGalleries != null) && (systemGalleries.size() > 0)) {
+                // add the found system galleries to the result
+                galleries.addAll(systemGalleries);
+            }
+        }
+
+        // return the found galleries
+        return galleries;
+    }
+
+    /**
      * Initializes the gallery dialog before redirecting.<p>
      * 
      * @param wp the workplace object
@@ -358,39 +401,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      */
     public List getGalleries() {
 
-        List galleries = new ArrayList();
-        int galleryTypeId = getGalleryTypeId();
-        try {
-            // get the galleries of the current site
-            galleries = getCms().readResources(
-                "/",
-                CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
-        } catch (CmsException e) {
-            // error reading resources with filter
-            LOG.error(e.getLocalizedMessage(), e);
-        }
-
-        // if the current site is NOT the root site - add all other galleries from the system path
-        if (!getCms().getRequestContext().getSiteRoot().equals("")) {
-            List systemGalleries = null;
-            try {
-                // get the galleries in the /system/ folder
-                systemGalleries = getCms().readResources(
-                    CmsWorkplace.VFS_PATH_SYSTEM,
-                    CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
-            } catch (CmsException e) {
-                // error reading resources with filter
-                LOG.error(e.getLocalizedMessage(), e);
-            }
-
-            if ((systemGalleries != null) && (systemGalleries.size() > 0)) {
-                // add the found system galleries to the result
-                galleries.addAll(systemGalleries);
-            }
-        }
-
-        // return the found galleries
-        return galleries;
+        return getGalleries(getGalleryTypeId(), getCms());
     }
 
     /**
@@ -445,6 +456,13 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      * @return the type id of this gallery instance
      */
     public abstract int getGalleryTypeId();
+
+    /**
+     * Returns the type name of this gallery instance.<p>
+     * 
+     * @return the type name of this gallery instance
+     */
+    public abstract String getGalleryTypeName();
 
     /**
      * Returns the (optional) parameters of this gallery instance.<p>
@@ -776,7 +794,27 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      */
     protected void buildJsonGalleryList() {
 
-        String lastUsed = getSettings().getLastUsedGallery(getGalleryTypeId());
+        String startGallery = getSettings().getLastUsedGallery(getGalleryTypeId());
+        // set the value of last Used 
+        if (CmsStringUtil.isEmpty(startGallery)) {
+            // start gallery settings for this gallery type of the current user
+            String startGallerySetting = getSettings().getUserSettings().getStartGallery(getGalleryTypeName());
+            if (startGallerySetting != null) {
+                // handle the case, "preselected settings" are selected
+                if (startGallerySetting.equals(CmsPreferences.INPUT_PRESELECT)) {
+                    // get selected value from workplace xml settings
+                    String preselectedValue = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartGallery(
+                        getGalleryTypeName());
+                    if (preselectedValue != null) {
+                        startGallerySetting = preselectedValue;
+                    }
+                }
+                String sitePath = getCms().getRequestContext().removeSiteRoot(startGallerySetting);
+                if (getCms().existsResource(sitePath)) {
+                    startGallery = sitePath;
+                }
+            }
+        }
         List galleries = new ArrayList();
         Iterator i = getGalleries().iterator();
         boolean isFirst = true;
@@ -801,7 +839,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                 jsonObj.put("path", path);
                 // 3: active flag
                 boolean active = false;
-                if ((CmsStringUtil.isEmpty(lastUsed) && isFirst) || path.equals(lastUsed)) {
+                if ((CmsStringUtil.isEmpty(startGallery) && isFirst) || path.equals(startGallery)) {
                     // TODO: adjust logic to get active gallery
                     active = true;
                 }

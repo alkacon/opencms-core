@@ -35,7 +35,11 @@ function fillItems(data, modeName) {
 		var categorysearchresult = " ";
 		var cTitle = categories[activeCategory].title;
 		if (searchKeyword != null) {
-			categorysearchresult = ": (" + foundItems.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\")";
+			if (foundItems.length == 1) {
+				categorysearchresult = ": " + foundItems.length + " " + LANG.SEARCH_RESULT + " \""  + searchKeyword + "\"";
+			} else {
+				categorysearchresult = ": " + foundItems.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\"";
+			}
 			//cut the title of the gallery, if it is too long
 			cTitle = cutTitle(cTitle);
 		}
@@ -91,7 +95,11 @@ function fillItems(data, modeName) {
 		// display number of search results if not 0
 		var gallerysearchresult = " ";
 		if (searchKeyword != null) {
-			gallerysearchresult = ": (" + foundItems.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\")";
+			if (foundItems.length == 1) {
+				gallerysearchresult = ": " + foundItems.length + " " + LANG.SEARCH_RESULT + " \""  + searchKeyword + "\"";
+			} else {
+				gallerysearchresult = ": " + foundItems.length + " " + LANG.SEARCH_RESULTS + " \""  + searchKeyword + "\"";
+			}
 			//prepare title of the gallery, if too long
 			gTitle = cutTitle(gTitle);
 		}

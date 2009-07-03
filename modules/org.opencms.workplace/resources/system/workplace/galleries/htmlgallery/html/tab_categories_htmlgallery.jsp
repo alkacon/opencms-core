@@ -5,7 +5,7 @@
 				<button id="opencategorybutton" onclick="showCategoryFolders();" title="<%= wp.key(Messages.GUI_GALLERY_CATEGORIES_BUTTON_SHOW_0) %>">
 					<div> <%= wp.key(Messages.GUI_GALLERY_CATEGORIES_BUTTON_SHOW_0) %> </div>
 				</button>
-				<button id="categorysearchbutton" onclick="openSearchDialog('category');" title="<%= wp.key(Messages.GUI_GALLERY_SEARCH_BUTTON_SEARCH_0) %>">
+				<button id="categorysearchbutton" onclick="openSearchDialog('category');" title="<%= wp.key(Messages.GUI_GALLERY_BUTTON_SEARCH_0) %>">
 					<div> &nbsp; </div>
 				</button>
 				<button id="categoryresetsearchbutton" onclick="resetSearch('category');" title="<%= wp.key(Messages.GUI_GALLERY_BUTTON_SEARCH_RESET_0) %>">
