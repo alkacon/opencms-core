@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2009/07/03 10:36:37 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 6.0.0 
  */
@@ -424,10 +424,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public String getModelFolder(CmsObject cms, String currentFolder) {
 
         String result = m_modelFolder;
-        // store the original uri
+        // store the original URI
         String uri = cms.getRequestContext().getUri();
         try {
-            // set uri to current folder
+            // set URI to current folder
             cms.getRequestContext().setUri(currentFolder);
             CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms);
             // resolve eventual macros
@@ -494,7 +494,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             result = result.newInstance();
         }
         // set the configuration value for this widget
-        result.setConfiguration(getConfiguration(value));
+        String configuration = getConfiguration(value);
+        if (configuration == null) {
+            // no individual configuration defined, try to get global default configuration
+            configuration = OpenCms.getXmlContentTypeManager().getWidgetDefaultConfiguration(result);
+        }
+        result.setConfiguration(configuration);
 
         return result;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/07/03 10:36:37 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,11 +40,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_ADD_WIDGET_CONFIG_2 = "INIT_ADD_WIDGET_CONFIG_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_ADD_WIDGET_ALIAS_CONFIG_3 = "INIT_ADD_WIDGET_ALIAS_CONFIG_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CD_BAD_INCLUDE_1 = "ERR_CD_BAD_INCLUDE_1";

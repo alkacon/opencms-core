@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2009/06/30 15:08:33 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2009/07/03 10:36:37 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.util.CmsHtmlConverterOption;
 import org.opencms.util.CmsResourceTranslator;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.I_CmsWidget;
 import org.opencms.xml.CmsXmlContentTypeManager;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
@@ -61,11 +62,14 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 6.0.0
  */
 public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
+
+    /** The widget configuration attribute. */
+    public static final String A_CONFIGURATION = "configuration";
 
     /** The widget attribute. */
     public static final String A_DEFAULTWIDGET = "defaultwidget";
@@ -560,9 +564,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_VFS + "/" + N_XMLCONTENT, "setXmlContentTypeManager");
 
         // XML content widgets add rules
-        digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, "addWidget", 2);
+        digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, "addWidget", 3);
         digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, 0, A_CLASS);
         digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, 1, A_ALIAS);
+        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, 2, A_CONFIGURATION);
 
         // XML content schema type add rules
         digester.addCallMethod(
@@ -720,6 +725,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
             if (alias != null) {
                 widgetElement.addAttribute(A_ALIAS, alias);
             }
+            String defaultConfiguration = m_xmlContentTypeManager.getWidgetDefaultConfiguration(widget);
+            if (CmsStringUtil.isNotEmpty(defaultConfiguration)) {
+                widgetElement.addAttribute(A_CONFIGURATION, defaultConfiguration);
+            }
         }
 
         // XML content types 
@@ -738,9 +747,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * Returns the (umodifiable) list of configured directory default files.<p>
+     * Returns the (unmodifiable) list of configured directory default files.<p>
      * 
-     * @return the (umodifiable) list of configured directory default files
+     * @return the (unmodifiable) list of configured directory default files
      */
     public List getDefaultFiles() {
 

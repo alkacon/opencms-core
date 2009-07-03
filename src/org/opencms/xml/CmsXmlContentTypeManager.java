@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2009/07/03 10:36:37 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,11 +82,14 @@ public class CmsXmlContentTypeManager {
     /** Stores the registered content types. */
     private Map m_registeredTypes;
 
-    /** Stores the registed content widgegts by class name. */
+    /** Stores the registered content widgets by class name. */
     private Map m_registeredWidgets;
 
     /** The alias names for the widgets. */
     private Map m_widgetAliases;
+
+    /** The default configurations for the widgets. */
+    private Map m_widgetDefaultConfigurations;
 
     /**
      * Creates a new content type manager.<p> 
@@ -99,6 +102,7 @@ public class CmsXmlContentTypeManager {
         m_defaultWidgets = new HashMap();
         m_registeredWidgets = new HashMap();
         m_widgetAliases = new HashMap();
+        m_widgetDefaultConfigurations = new HashMap();
 
         FastHashMap fastMap = new FastHashMap();
         fastMap.setFast(true);
@@ -118,9 +122,9 @@ public class CmsXmlContentTypeManager {
 
         CmsXmlContentTypeManager typeManager = new CmsXmlContentTypeManager();
 
-        typeManager.addWidget("org.opencms.widgets.CmsCalendarWidget", null);
-        typeManager.addWidget("org.opencms.widgets.CmsHtmlWidget", null);
-        typeManager.addWidget("org.opencms.widgets.CmsInputWidget", null);
+        typeManager.addWidget("org.opencms.widgets.CmsCalendarWidget", null, null);
+        typeManager.addWidget("org.opencms.widgets.CmsHtmlWidget", null, null);
+        typeManager.addWidget("org.opencms.widgets.CmsInputWidget", null, null);
 
         typeManager.addSchemaType("org.opencms.xml.types.CmsXmlDateTimeValue", "org.opencms.widgets.CmsCalendarWidget");
         typeManager.addSchemaType("org.opencms.xml.types.CmsXmlHtmlValue", "org.opencms.widgets.CmsHtmlWidget");
@@ -170,7 +174,7 @@ public class CmsXmlContentTypeManager {
     public void addSchemaType(String className, String defaultWidget) {
 
         Class classClazz;
-        // init class for schema type
+        // initialize class for schema type
         try {
             classClazz = Class.forName(className);
         } catch (ClassNotFoundException e) {
@@ -217,8 +221,9 @@ public class CmsXmlContentTypeManager {
      * 
      * @param className the widget class to add
      * @param aliasName the (optional) alias name to use for the widget class
+     * @param defaultConfiguration the default configuration of the widget
      */
-    public void addWidget(String className, String aliasName) {
+    public void addWidget(String className, String aliasName, String defaultConfiguration) {
 
         Class widgetClazz;
         I_CmsWidget widget;
@@ -236,14 +241,34 @@ public class CmsXmlContentTypeManager {
             m_widgetAliases.put(aliasName, widgetClazz.getName());
         }
 
+        if (CmsStringUtil.isNotEmpty(defaultConfiguration)) {
+            // put the default configuration to the lookup Map
+            m_widgetDefaultConfigurations.put(className, defaultConfiguration);
+        }
+
         if (CmsLog.INIT.isInfoEnabled()) {
-            if (aliasName != null) {
-                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_WIDGET_1, widgetClazz.getName()));
+            if (aliasName == null) {
+                if (CmsStringUtil.isEmpty(defaultConfiguration)) {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_WIDGET_1, widgetClazz.getName()));
+                } else {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
+                        Messages.INIT_ADD_WIDGET_CONFIG_2,
+                        widgetClazz.getName(),
+                        defaultConfiguration));
+                }
             } else {
-                CmsLog.INIT.info(Messages.get().getBundle().key(
-                    Messages.INIT_ADD_WIDGET_ALIAS_2,
-                    widgetClazz.getName(),
-                    aliasName));
+                if (CmsStringUtil.isEmpty(defaultConfiguration)) {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
+                        Messages.INIT_ADD_WIDGET_ALIAS_2,
+                        widgetClazz.getName(),
+                        aliasName));
+                } else {
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
+                        Messages.INIT_ADD_WIDGET_ALIAS_CONFIG_3,
+                        widgetClazz.getName(),
+                        aliasName,
+                        defaultConfiguration));
+                }
             }
         }
     }
@@ -450,6 +475,38 @@ public class CmsXmlContentTypeManager {
             result = result.newInstance();
         }
         return result;
+    }
+
+    /**
+     * Returns the default widget configuration set in <code>opencms-vfs.xml</code> or <code>null</code> if nothing is found.<p>
+     * 
+     * @param widget the widget instance to get the default configuration for
+     * 
+     * @return the default widget configuration
+     */
+    public String getWidgetDefaultConfiguration(I_CmsWidget widget) {
+
+        return (String)m_widgetDefaultConfigurations.get(widget.getClass().getName());
+    }
+
+    /**
+     * Returns the default widget configuration set in <code>opencms-vfs.xml</code> or <code>null</code> if nothing is found.<p>
+     * 
+     * @param name the class name or alias name to get the default configuration for
+     * 
+     * @return the default widget configuration
+     */
+    public String getWidgetDefaultConfiguration(String name) {
+
+        if (m_registeredWidgets.containsKey(name)) {
+            return (String)m_widgetDefaultConfigurations.get(name);
+        }
+        // not found by class name, look up an alias
+        String className = (String)m_widgetAliases.get(name);
+        if (className != null) {
+            return (String)m_widgetDefaultConfigurations.get(className);
+        }
+        return null;
     }
 
     /**

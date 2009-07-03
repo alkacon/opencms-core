@@ -135,12 +135,15 @@
 # XML content editor, a default widget class must be given that implements the 
 # interface "org.opencms.workplace.xmltypes.I_CmsXmlWidget". 
 # The configured widget class must also be listed in the "widgets" node.
+# For a widget, an optional alias name can be configured as well as a default
+# widget configuration that is used to define the widget behavior in the structured
+# content editor if no individual configuration is defined in the XSD for the XML content.
 -->
 <!ELEMENT xmlcontent (widgets, schematypes)>
 
 <!ELEMENT widgets (widget*)>
 <!ELEMENT widget EMPTY>
-<!ATTLIST widget class CDATA #REQUIRED alias CDATA #IMPLIED>
+<!ATTLIST widget class CDATA #REQUIRED alias CDATA #IMPLIED configuration CDATA #IMPLIED>
 
 <!ELEMENT schematypes (schematype*)>
 <!ELEMENT schematype EMPTY>

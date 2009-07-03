@@ -656,7 +656,7 @@
 				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
 				<widget class="org.opencms.widgets.CmsGroupWidget" alias="GroupWidget"/>
                 <widget class="org.opencms.widgets.CmsHtmlGalleryWidget" alias="HtmlGalleryWidget" />
-				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget"/>
+				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget" configuration="link,anchor,source,formatselect" />
 				<widget class="org.opencms.widgets.CmsImageGalleryWidget" alias="ImageGalleryWidget"/>
 				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget"/>
                 <widget class="org.opencms.widgets.CmsInputWidgetPlaintext" alias="StringWidgetPlaintext" />                
@@ -665,10 +665,10 @@
 				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
 				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />				
 				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
-				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
+				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" configuration="8" />
                 <widget class="org.opencms.widgets.CmsTextareaWidgetPlaintext" alias="TextareaWidgetPlaintext" />                
 				<widget class="org.opencms.widgets.CmsUserWidget" alias="UserWidget"/>
-				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
+				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"  configuration="hidesiteselector|excludefiles"/>
 				<widget class="org.opencms.widgets.CmsVfsImageWidget" alias="VfsImageWidget"/>
 			</widgets>
 			<schematypes>
