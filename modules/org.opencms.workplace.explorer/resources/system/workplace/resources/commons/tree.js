@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/tree.js,v $
- * Date   : $Date: 2009/06/04 14:42:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/07/03 07:08:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -420,10 +420,12 @@ function getNodeIdByName(nodeName) {
 				if (childs != null) {
 				for (i=0; i<childs.length; i++) {
 					subnode = tree.nodes[childs[i]];
-					var subname = result + subnode.name;
-					if ((subnode != null) && ((nodeName == subname) || (nodeName.indexOf(subname + "/") == 0))) {
-						result = result + subnode.name;
-						i = childs.length;
+					if (subnode != null) {
+						var subname = result + subnode.name;
+						if ((nodeName == subname) || (nodeName.indexOf(subname + "/") == 0)) {
+							result = result + subnode.name;
+							i = childs.length;
+						}
 					}
 				}
 			}
