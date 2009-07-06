@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2009/07/03 12:46:05 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2009/07/06 08:02:34 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 6.0.0
  */
@@ -687,6 +687,33 @@ public class CmsUserSettings {
     public String getStartGallery(String galleryType) {
 
         return (String)m_startGalleriesSettings.get(galleryType);
+
+    }
+
+    /**
+     * Returns the root site path to the start gallery of the user or the constant CmsPreferences.INPUT_DEFAULT.<p>
+     * 
+     * @param galleryType the type of the gallery
+     * @param cms Cms object
+     * @return the root site path to the start gallery or the default key, null if "not set"
+     */
+    public String getStartGallery(String galleryType, CmsObject cms) {
+
+        String startGallerySetting = getStartGallery(galleryType);
+        String pathSetting = null;
+        // if a custom path to the gallery is selected
+        if ((startGallerySetting != null) && !startGallerySetting.equals(CmsPreferences.INPUT_NONE)) {
+            String sitePath = cms.getRequestContext().removeSiteRoot(startGallerySetting);
+            if (cms.existsResource(sitePath)) {
+                pathSetting = startGallerySetting;
+            } else {
+                pathSetting = CmsPreferences.INPUT_DEFAULT;
+            }
+            // global default settings
+        } else if (startGallerySetting == null) {
+            pathSetting = CmsPreferences.INPUT_DEFAULT;
+        }
+        return pathSetting;
 
     }
 

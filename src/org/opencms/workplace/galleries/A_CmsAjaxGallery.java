@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/A_CmsAjaxGallery.java,v $
- * Date   : $Date: 2009/07/03 12:46:04 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/07/06 08:02:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.5.0 
  */
@@ -794,14 +794,14 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
      */
     protected void buildJsonGalleryList() {
 
-        String startGallery = getSettings().getLastUsedGallery(getGalleryTypeId());
-        // set the value of last Used 
-        if (CmsStringUtil.isEmpty(startGallery)) {
-            // start gallery settings for this gallery type of the current user
-            String startGallerySetting = getSettings().getUserSettings().getStartGallery(getGalleryTypeName());
+        String lastUsed = getSettings().getLastUsedGallery(getGalleryTypeId());
+        // check the value of last Used, if gallery is opened for the first time
+        if (CmsStringUtil.isEmpty(lastUsed)) {
+            // start gallery settings for this gallery type for the current user
+            String startGallerySetting = getSettings().getUserSettings().getStartGallery(getGalleryTypeName(), getCms());
             if (startGallerySetting != null) {
-                // handle the case, "preselected settings" are selected
-                if (startGallerySetting.equals(CmsPreferences.INPUT_PRESELECT)) {
+                // handle the case, "global settings" are selected
+                if (startGallerySetting.equals(CmsPreferences.INPUT_DEFAULT)) {
                     // get selected value from workplace xml settings
                     String preselectedValue = OpenCms.getWorkplaceManager().getDefaultUserSettings().getStartGallery(
                         getGalleryTypeName());
@@ -809,9 +809,10 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                         startGallerySetting = preselectedValue;
                     }
                 }
+                // checks if the resource exists
                 String sitePath = getCms().getRequestContext().removeSiteRoot(startGallerySetting);
                 if (getCms().existsResource(sitePath)) {
-                    startGallery = sitePath;
+                    lastUsed = sitePath;
                 }
             }
         }
@@ -839,7 +840,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
                 jsonObj.put("path", path);
                 // 3: active flag
                 boolean active = false;
-                if ((CmsStringUtil.isEmpty(startGallery) && isFirst) || path.equals(startGallery)) {
+                if ((CmsStringUtil.isEmpty(lastUsed) && isFirst) || path.equals(lastUsed)) {
                     // TODO: adjust logic to get active gallery
                     active = true;
                 }

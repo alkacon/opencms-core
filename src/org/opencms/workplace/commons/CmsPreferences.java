@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2009/07/03 12:46:03 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2009/07/06 08:02:34 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -97,7 +97,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.44 $
+ * @version $Revision: 1.45 $
  * 
  * @since 6.0.0
  */
@@ -124,7 +124,10 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name prefix for the preferred editors. */
     public static final String INPUT_DEFAULT = "default";
 
-    /** Request parameter name prefix for the preferred editors. */
+    /** Request parameter name for no settings in start galleries. */
+    public static final String INPUT_NONE = "none";
+
+    /** Request parameter name for global gallery settings. */
     public static final String INPUT_PRESELECT = "preselect";
 
     /** Request parameter name for the dialog copy file siblings default setting. */
@@ -357,7 +360,6 @@ public class CmsPreferences extends CmsTabDialog {
                         CmsEncoder.decode(paramValue));
                 }
             }
-
         }
 
         // set the current user in the settings object
@@ -861,10 +863,10 @@ public class CmsPreferences extends CmsTabDialog {
                 // forth: fill the select box 
                 List options = new ArrayList(availableGalleries.size() + 2);
                 List values = new ArrayList(availableGalleries.size() + 2);
-                options.add(key(Messages.GUI_PREF_STARTGALLERY_NONE_0));
-                values.add(INPUT_DEFAULT);
                 options.add(key(Messages.GUI_PREF_STARTGALLERY_PRESELECT_0));
-                values.add(INPUT_PRESELECT);
+                values.add(INPUT_DEFAULT);
+                options.add(key(Messages.GUI_PREF_STARTGALLERY_NONE_0));
+                values.add(INPUT_NONE);
 
                 String savedValue = computeStartGalleryPreselection(request, currentGalleryType);
                 int counter = 2;
@@ -896,7 +898,7 @@ public class CmsPreferences extends CmsTabDialog {
 
                 }
                 // select the value
-                if ((savedValue != null) && savedValue.equals(INPUT_PRESELECT)) {
+                if ((savedValue != null) && savedValue.equals(INPUT_NONE)) {
                     selectedIndex = 1;
                 }
 
