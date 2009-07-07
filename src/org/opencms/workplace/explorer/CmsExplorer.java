@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2009/07/07 12:50:50 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2009/07/07 13:15:38 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.workplace.explorer;
 
-import de.dataprocess.websites.base.Entry;
-
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
@@ -58,7 +56,6 @@ import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -177,43 +174,6 @@ public class CmsExplorer extends CmsWorkplace {
 
         String result = link2Source.toString();
         result = jsp.link(result);
-        return result;
-    }
-
-    /**
-     * Helper that splits a root path into site root and path independent of the current site root.
-     * <p>
-     * This is primitive and only works by using the first to path tokens (separated with slash) for the site root and
-     * the rest for the path.
-     * <p>
-     * 
-     * @param rootPath
-     *            full path including site root.
-     * 
-     * @return key is the site root value is the remaining path.
-     */
-    public static Map.Entry<String, String> siteRootSplit(String rootPath) {
-
-        Map.Entry<String, String> result;
-        StringBuffer siteRoot = new StringBuffer();
-        StringBuffer path = new StringBuffer('/');
-        Scanner scanner = new Scanner(rootPath);
-        scanner.useDelimiter("/");
-        int count = 0;
-        while (scanner.hasNext()) {
-            if (count < 2) {
-                siteRoot.append('/').append(scanner.next());
-            } else {
-                if (count == 2) {
-                    path.append('/');
-                }
-                path.append(scanner.next());
-                path.append('/');
-            }
-            count++;
-        }
-
-        result = new Entry<String, String>(siteRoot.toString(), path.toString());
         return result;
     }
 
