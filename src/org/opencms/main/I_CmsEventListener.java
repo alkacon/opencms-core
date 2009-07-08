@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2009/06/04 14:29:38 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2009/07/08 11:11:37 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  * 
@@ -327,6 +327,16 @@ public interface I_CmsEventListener {
     /** Key name for passing a publish list in the data map. */
     String KEY_PUBLISHLIST = "publishList";
 
+    /** Key name for passing a {@link org.opencms.file.CmsResource} in the data map. */
+    String KEY_RESOURCE = "resource";
+
+    /** Key name for passing a List of {@link org.opencms.file.CmsResource} in the data map. */
+    String KEY_RESOURCES = "resources";
+
+    /** Key name for passing a change int in the data map - see the <code>CHANGED_XXX</code> constants in {@link org.opencms.db.CmsDriverManager}. */
+    String KEY_CHANGE = "change";
+
+    
     /** Key name for passing a report in the data map. */
     String KEY_REPORT = "report";
 

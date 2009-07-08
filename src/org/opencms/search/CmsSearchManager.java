@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:50 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2009/07/08 11:11:35 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.75 $ 
+ * @version $Revision: 1.76 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,7 +171,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
                 case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
                     // a resource has been modified - offline indexes require (re)indexing
-                    List resources = Collections.singletonList(event.getData().get("resource"));
+                    List resources = Collections.singletonList(event.getData().get(I_CmsEventListener.KEY_RESOURCE));
                     reIndexResources(resources);
                     break;
                 case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
@@ -180,7 +180,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 case I_CmsEventListener.EVENT_RESOURCE_COPIED:
                 case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
                     // a list of resources has been modified - offline indexes require (re)indexing
-                    reIndexResources((List)event.getData().get("resources"));
+                    reIndexResources((List)event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                     break;
                 default:
                     // no operation

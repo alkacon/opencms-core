@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:41 $
- * Version: $Revision: 1.254 $
+ * Date   : $Date: 2009/07/08 11:11:35 $
+ * Version: $Revision: 1.255 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -98,7 +98,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.254 $
+ * @version $Revision: 1.255 $
  * 
  * @since 6.0.0 
  */
@@ -879,7 +879,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // notify the app. that the published folder and it's properties have been modified offline
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.singletonMap("resource", currentFolder)));
+                Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, currentFolder)));
         }
     }
 
@@ -1032,7 +1032,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // notify the app. that the published file and it's properties have been modified offline
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.singletonMap("resource", offlineResource)));
+                Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineResource)));
         }
     }
 
@@ -1307,7 +1307,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             // notify the app. that the published folder and it's properties have been modified offline
             OpenCms.fireCmsEvent(new CmsEvent(
                 I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-                Collections.singletonMap("resource", offlineFolder)));
+                Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, offlineFolder)));
         }
     }
 

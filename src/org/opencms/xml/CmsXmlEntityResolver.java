@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/07/08 11:11:35 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -232,12 +232,12 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 }
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
-                resource = (CmsResource)event.getData().get("resource");
+                resource = (CmsResource)event.getData().get(I_CmsEventListener.KEY_RESOURCE);
                 uncacheSystemId(resource.getRootPath());
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_DELETED:
             case I_CmsEventListener.EVENT_RESOURCE_MOVED:
-                List resources = (List)event.getData().get("resources");
+                List resources = (List)event.getData().get(I_CmsEventListener.KEY_RESOURCES);
                 for (int i = 0; i < resources.size(); i++) {
                     resource = (CmsResource)resources.get(i);
                     uncacheSystemId(resource.getRootPath());

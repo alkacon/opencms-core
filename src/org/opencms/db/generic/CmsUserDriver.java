@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:41 $
- * Version: $Revision: 1.128 $
+ * Date   : $Date: 2009/07/08 11:11:36 $
+ * Version: $Revision: 1.129 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.128 $
+ * @version $Revision: 1.129 $
  * 
  * @since 6.0.0 
  */
@@ -2279,7 +2279,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         // fire an event that a new resource has been created
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_CREATED, Collections.singletonMap(
-            "resource",
+            I_CmsEventListener.KEY_RESOURCE,
             resource)));
 
         return resource;
@@ -2388,11 +2388,11 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         // fire events
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_DELETED, Collections.singletonMap(
-            "resources",
+            I_CmsEventListener.KEY_RESOURCES,
             Collections.singletonList(resource))));
         OpenCms.fireCmsEvent(new CmsEvent(
             I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
-            Collections.singletonMap("resource", resource)));
+            Collections.singletonMap(I_CmsEventListener.KEY_RESOURCE, resource)));
     }
 
     /**
