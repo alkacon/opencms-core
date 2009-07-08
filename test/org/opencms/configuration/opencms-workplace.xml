@@ -11,7 +11,11 @@
     <dialoghandlers>
       <dialoghandler class="org.opencms.workplace.commons.CmsDelete"/>
       <dialoghandler class="org.opencms.workplace.commons.CmsLock"/>
-      <dialoghandler class="org.opencms.workplace.commons.CmsPropertyAdvanced"/>
+      <dialoghandler class="org.opencms.workplace.commons.CmsPropertyAdvanced">
+      	<param name="hideadvanced">true</param>
+      	<param name="showgroup">/Users</param>
+      	<param name="showgroup">/Test</param>
+      </dialoghandler>
     </dialoghandlers>
     <editorhandler class="org.opencms.workplace.editors.CmsEditorHandler"/>
     <editoraction class="org.opencms.workplace.editors.CmsEditorActionDefault"/>

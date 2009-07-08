@@ -118,11 +118,23 @@
 <!ATTLIST resource uri CDATA #REQUIRED>
 
 <!--
-# The worklace dialog handlers allow extending / changing the default
+# The workplace dialog handlers allow extending / changing the default
 # Workplace dialogs with another, customized implementation.
 # For example, if your application requires a lot of special properties,
 # you can implement your own property dialog handler that contains only
 # the properties required by your application in a more user friendly form.
+# 
+# For the property dialog (org.opencms.workplace.commons.CmsPropertyAdvanced)
+# the "advanced" button can be hidden over the optional parameters  
+# and shown only for specified groups of users. If no <param> Elements are set 
+# all OpenCms user can see the "advanced" button of the property dialog.
+# However the admin user will always see the "advanced" button.
+# To hide the "advanced" button set the "hideadvanced" attribute to value "true":
+# 	<param name="hideadvanced">true</param>
+# To show the button to the specified user groups in addition set the "showgroup" attribute.
+# The value should be the full qualified name of the user group:
+#	<param name="showgroup">/Groupname</param> or <param name="showgroup">Groupname</param> in the root organisational unit
+#   <param name="showgroup">/subOrganizationalUnit/Groupname</param> in the sub organizational unit
 #
 # If OpenCms does not start because a customized dialog handler class is not found, use the following 
 # default dialog handler classes:
@@ -131,12 +143,12 @@
 # - Property dialog: org.opencms.workplace.commons.CmsPropertyAdvanced
 -->
 <!ELEMENT dialoghandlers (dialoghandler+)>
-<!ELEMENT dialoghandler EMPTY>
+<!ELEMENT dialoghandler (param*)>
 <!ATTLIST dialoghandler class CDATA #REQUIRED>
 
 <!--
 # Using editor handler and editor action classes you can
-# modify the behaviour of the "edit" action in the OpenCms Workplace.
+# modify the behavior of the "edit" action in the OpenCms Workplace.
 -->
 <!ELEMENT editorhandler EMPTY>
 <!ATTLIST editorhandler class CDATA #REQUIRED>

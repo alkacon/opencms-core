@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsConfigurationParameterHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/07/08 09:27:11 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,23 +38,23 @@ import java.util.Map;
  * <code>&lt;param name="name"&gt;value&lt;/param&gt;</code> 
  * in the XML configuration.<p>
  * 
- * Such "param" nodes can be used to add some arbitary names 
+ * Such "param" nodes can be used to add some arbitrary names 
  * parameters to classes that otherwise share the same XML configuration.
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
 public interface I_CmsConfigurationParameterHandler {
-    
+
     /** The name of the addConfigurationParameter() method. */
     String ADD_PARAMETER_METHOD = "addConfigurationParameter";
-    
+
     /** The name of the initConfiguration() method. */
-    String INIT_CONFIGURATION_METHOD = "initConfiguration";    
-    
+    String INIT_CONFIGURATION_METHOD = "initConfiguration";
+
     /**
      * Adds a configuration parameter to this parameter configurable class instance.<p>
      * 
@@ -62,7 +62,7 @@ public interface I_CmsConfigurationParameterHandler {
      * @param paramValue the value for the parameter
      */
     void addConfigurationParameter(String paramName, String paramValue);
-    
+
     /**
      * Returns the configuration of this parameter configurable class instance,
      * or <code>null</code> if the class does not need to be configured.<p>
@@ -78,7 +78,7 @@ public interface I_CmsConfigurationParameterHandler {
      * @return the configuration of this resource loader, or <code>null</code>
      */
     Map getConfiguration();
-    
+
     /**
      * Initializes a configuration after all parameters have been added.<p>
      * 

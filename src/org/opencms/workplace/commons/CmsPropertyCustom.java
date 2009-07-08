@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/07/08 09:27:11 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,23 +35,28 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.I_CmsDialogHandler;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.logging.Log;
 
 /**
@@ -68,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,11 +244,21 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 // in wizard mode, display finish button instead of ok button
                 okButton = BUTTON_FINISH;
             }
+            // hide "advanced" button 
+            if (isHideButtonAdvanced()) {
+                return dialogButtons(new int[] {okButton, BUTTON_CANCEL}, new String[] {okAttributes, cancelAttributes});
+            }
+            // show "advanced" button
             return dialogButtons(new int[] {okButton, BUTTON_CANCEL, BUTTON_ADVANCED}, new String[] {
                 okAttributes,
                 cancelAttributes,
                 advancedAttributes});
         } else {
+            // hide "advanced" button 
+            if (isHideButtonAdvanced()) {
+                return dialogButtons(new int[] {BUTTON_CLOSE}, new String[] {cancelAttributes});
+            }
+            // show "advanced" button
             return dialogButtons(new int[] {BUTTON_CLOSE, BUTTON_ADVANCED}, new String[] {
                 cancelAttributes,
                 advancedAttributes});
@@ -562,6 +577,56 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             }
             setParamTitle(key(Messages.GUI_PROPERTIES_1, new Object[] {resName}));
         }
+    }
+
+    /**
+     * Checks the optional parameters of the handler configuration. <p> 
+     * 
+     * Decides if the "advanced" button should be shown or not. 
+     * The "advanced" button is shown if no parameters are given (default) 
+     * or the "hideadvanced" attribute is set to false. The "advanced" button
+     * is hidden only, if "hideadvanced" is true and the user is not a member 
+     * of the specified user groups.  
+     * 
+     * @return  false if the "advanced" button is shown (default) <br>
+     *          true if the "advanced" button is hidden
+     */
+    protected boolean isHideButtonAdvanced() {
+
+        I_CmsDialogHandler handler = (I_CmsDialogHandler)OpenCms.getWorkplaceManager().getDialogHandler(
+            getDialogHandler());
+        MultiValueMap handlerParams = (MultiValueMap)handler.getConfiguration();
+        if ((handlerParams != null) && handlerParams.containsKey(PARAM_HIDEADVANCED)) {
+            // checks if "hideadvanced" is set to true
+            boolean isHideAdvancedSet = false;
+            List hAdvanced = (List)handlerParams.get(PARAM_HIDEADVANCED);
+            if (!hAdvanced.isEmpty()) {
+                isHideAdvancedSet = Boolean.valueOf((String)hAdvanced.get(0)).booleanValue();
+            }
+            if (isHideAdvancedSet) {
+                // if user has the role root admin
+                if (OpenCms.getRoleManager().hasRole(getCms(), CmsRole.ROOT_ADMIN)) {
+                    return false;
+                }
+                if (handlerParams.containsKey(PARAM_SHOWGROUP)) {
+                    // check if user is one of the configured groups
+                    CmsUser currentUser = getCms().getRequestContext().currentUser();
+                    List confGroups = (List)handlerParams.get(PARAM_SHOWGROUP);
+                    for (Iterator i = confGroups.iterator(); i.hasNext();) {
+                        String groupName = (String)i.next();
+                        try {
+                            if (getCms().userInGroup(currentUser.getName(), groupName)) {
+                                return false;
+                            }
+                        } catch (CmsException e) {
+                            LOG.error(e.getLocalizedMessage(), e);
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

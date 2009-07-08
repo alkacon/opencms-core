@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2009/07/03 12:46:03 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2009/07/08 09:27:11 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceUserInfoBlock;
 import org.opencms.workplace.CmsWorkplaceUserInfoEntry;
 import org.opencms.workplace.CmsWorkplaceUserInfoManager;
+import org.opencms.workplace.I_CmsDialogHandler;
 import org.opencms.workplace.editors.I_CmsEditorCssHandler;
 import org.opencms.workplace.editors.I_CmsPreEditorActionDefinition;
 import org.opencms.workplace.explorer.CmsExplorerContextMenu;
@@ -71,7 +72,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 6.0.0
  */
@@ -794,6 +795,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
             A_CLASS,
             CmsConfigurationException.class);
         digester.addSetNext("*/" + N_WORKPLACE + "/" + N_DIALOGHANDLERS + "/" + N_DIALOGHANDLER, "addDialogHandler");
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_DIALOGHANDLERS + "/" + N_DIALOGHANDLER,
+            I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
 
         // add rules for editor handler
         digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_EDITORHANDLER, A_CLASS, CmsConfigurationException.class);
@@ -916,10 +920,41 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration {
         Map dialogs = m_workplaceManager.getDialogHandler();
         String[] keys = (String[])dialogs.keySet().toArray(new String[0]);
         Arrays.sort(keys);
-
         for (int j = 0; j < keys.length; j++) {
             String name = keys[j];
-            dialogElement.addElement(N_DIALOGHANDLER).addAttribute(A_CLASS, dialogs.get(name).getClass().getName());
+            // add <dialoghandler> subnode with class attribute
+            Element dialogHandler = dialogElement.addElement(N_DIALOGHANDLER).addAttribute(
+                A_CLASS,
+                dialogs.get(name).getClass().getName());
+            I_CmsDialogHandler daialogHandlerConfig = (I_CmsDialogHandler)dialogs.get(name);
+            Map handlerParams = daialogHandlerConfig.getConfiguration();
+            if (handlerParams != null) {
+                Iterator it = handlerParams.entrySet().iterator();
+                while (it.hasNext()) {
+                    Map.Entry entry = (Map.Entry)it.next();
+                    // name attribute of <param> Element
+                    String nameAttr = (String)entry.getKey();
+                    if (List.class.isInstance(entry.getValue())) {
+                        List values = (List)entry.getValue();
+                        for (Iterator iValues = values.listIterator(); iValues.hasNext();) {
+                            // add <param> node
+                            Element paramNode = dialogHandler.addElement(N_PARAM);
+                            // set the name attribute
+                            paramNode.addAttribute(A_NAME, nameAttr);
+                            // set the text of <param> node
+                            String text = (String)iValues.next();
+                            paramNode.addText(text);
+                        }
+                    } else {
+                        Element paramNode = dialogHandler.addElement(N_PARAM);
+                        // set the name attribute
+                        paramNode.addAttribute(A_NAME, nameAttr);
+                        // set the text of <param> node
+                        paramNode.addText(entry.getValue().toString());
+                    }
+                }
+            }
+
         }
 
         // add miscellaneous editor subnodes

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/07/08 09:27:11 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,6 +30,8 @@
  */
 
 package org.opencms.workplace.commons;
+
+import freemarker.template.EmptyMap;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -82,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -251,6 +253,15 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
             // exception occurred, show error dialog
             includeErrorpage(this, e);
         }
+    }
+
+    /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
+     */
+    public void addConfigurationParameter(String paramName, String paramValue) {
+
+        // not implemented yet
+
     }
 
     /**
@@ -554,6 +565,14 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
+     */
+    public Map getConfiguration() {
+
+        return new EmptyMap();
+    }
+
+    /**
      * Returns the confirmation message.<p>
      * 
      * @param state if <code>true</code> everything is ok
@@ -700,6 +719,15 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
+     * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
+     */
+    public void initConfiguration() {
+
+        // not implemented yet
+
+    }
+
+    /**
      * Sets the filter to get all blocking locks.<p>
      *
      * @param blockingFilter the filter to set
@@ -822,7 +850,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
             }
         }
 
-        if (getParamResource() == null && getParamResourcelist() == null) {
+        if ((getParamResource() == null) && (getParamResourcelist() == null)) {
             // this if in case of publish project
             setParamResource("/");
         }
