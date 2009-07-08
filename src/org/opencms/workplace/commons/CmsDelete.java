@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2009/07/08 09:27:11 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/07/08 09:42:15 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,6 @@
 
 package org.opencms.workplace.commons;
 
-import freemarker.template.EmptyMap;
-
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
@@ -51,6 +49,7 @@ import org.opencms.workplace.list.CmsListExplorerColumn;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -75,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -269,7 +268,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
      */
     public Map getConfiguration() {
 
-        return new EmptyMap();
+        return Collections.emptyMap();
     }
 
     /**

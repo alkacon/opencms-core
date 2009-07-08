@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2009/07/08 09:27:11 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/07/08 09:42:15 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,8 +30,6 @@
  */
 
 package org.opencms.workplace.commons;
-
-import freemarker.template.EmptyMap;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -84,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -569,7 +567,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      */
     public Map getConfiguration() {
 
-        return new EmptyMap();
+        return Collections.emptyMap();
     }
 
     /**
