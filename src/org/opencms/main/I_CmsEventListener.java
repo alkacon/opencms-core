@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2009/07/08 11:11:37 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2009/07/08 12:24:37 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  * 
@@ -312,6 +312,9 @@ public interface I_CmsEventListener {
      */
     int EVENT_USER_MODIFIED = 29;
 
+    /** Key name for passing a change int in the data map - see the <code>CHANGED_XXX</code> constants in {@link org.opencms.db.CmsDriverManager}. */
+    String KEY_CHANGE = "change";
+
     /** Key name for passing a database context in the data map. */
     String KEY_DBCONTEXT = "dbContext";
 
@@ -327,18 +330,14 @@ public interface I_CmsEventListener {
     /** Key name for passing a publish list in the data map. */
     String KEY_PUBLISHLIST = "publishList";
 
+    /** Key name for passing a report in the data map. */
+    String KEY_REPORT = "report";
+
     /** Key name for passing a {@link org.opencms.file.CmsResource} in the data map. */
     String KEY_RESOURCE = "resource";
 
     /** Key name for passing a List of {@link org.opencms.file.CmsResource} in the data map. */
     String KEY_RESOURCES = "resources";
-
-    /** Key name for passing a change int in the data map - see the <code>CHANGED_XXX</code> constants in {@link org.opencms.db.CmsDriverManager}. */
-    String KEY_CHANGE = "change";
-
-    
-    /** Key name for passing a report in the data map. */
-    String KEY_REPORT = "report";
 
     /**
      * Marker for "all events".<p>
