@@ -75,8 +75,12 @@ div.advinput {
 }
 
 div.imgitem, div.imgitemhover, div.imgitemactive {
-	padding: 1px 10px;
+	padding: 2px 10px;
 	margin: 2px 4px;
+}
+
+div.imgitemhover, div.imgitemactive {
+	padding: 0px 8px;
 }
 
 #galleryfolderlist, #categoryfolderlist {
