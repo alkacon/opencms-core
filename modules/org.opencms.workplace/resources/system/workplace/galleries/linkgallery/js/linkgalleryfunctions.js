@@ -225,7 +225,7 @@ function fillItems(data, modeName) {
 		itemHtml += "fileitemlinkurl";
 		itemHtml += i;
 		itemHtml += "\" class=\"filename\" alt=\"";
-		itemHtml += LANG.ITEM_INPUT_LINKURL + ": " + fileitem.linkpath;
+		itemHtml += LANG.ITEM_INPUT_LINKURL + ": " + fileitem.sitepath;
 		itemHtml += "\"  >";
 		itemHtml += fileitem.pointer;
 		itemHtml += "</span></td>";
@@ -433,7 +433,7 @@ function markItem(itemIndex, idPrefix) {
 			    cssclass : "edittitle",
 			    height   : "none",
 			    select   : true,
-			    tooltip  : LANG.DETAIL_EDIT_HELP
+			    tooltip  : LANG.DETAIL_EDIT_URL_HELP
 			});
 			if (state != 0) {
 				$("#" + idPrefix + "itempublishbutton").fadeIn("fast");
@@ -502,7 +502,6 @@ function openPreview(markedItem, modeName) {
 	} else {
 		checkItem = categoryItems.items[categoryItems.markedItem];
 	}
-	//window.open(checkItem.linkpath, "_blank");
 	window.open(checkItem.linkpath, "_blank", 'toolbar=no, location=no, directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,top=20,left=150,width=800,height=700');
 
 	

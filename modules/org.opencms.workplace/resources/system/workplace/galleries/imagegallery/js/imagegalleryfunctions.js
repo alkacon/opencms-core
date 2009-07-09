@@ -231,7 +231,7 @@ function showItemInfo(imgIndex, idPrefix, currImg, showAll) {
 			idPrefix = "#" + idPrefix;
 		}
 		var imgName = "<span title=\"";
-		imgName += currImg.linkpath;
+		imgName += currImg.sitepath;
 		imgName += "\">";
 		imgName += currImg.linkpath.substring(currImg.linkpath.lastIndexOf("/") + 1);
 		imgName += "</span>";

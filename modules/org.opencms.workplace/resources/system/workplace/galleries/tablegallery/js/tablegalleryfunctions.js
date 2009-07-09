@@ -214,7 +214,7 @@ function fillItems(data, modeName) {
 		itemHtml += "</tr>";
 		itemHtml += "<tr>";
 		itemHtml += "<td style=\"width\ : 60%\"><span class=\"filename\" alt=\"";
-		itemHtml += fileitem.linkpath;
+		itemHtml += fileitem.sitepath;
 		itemHtml += "\"  >";
 		itemHtml += itemName;
 		itemHtml += "</span></td>";
@@ -313,7 +313,7 @@ function showItemInfo(itemIndex, idPrefix, currItem) {
 			idPrefix = "#" + idPrefix;
 		}
 		var itemName = "<span title=\"";
-		itemName += currItem.linkpath;
+		itemName += currItem.sitepath;
 		itemName += "\">";
 		itemName += currItem.linkpath.substring(currItem.linkpath.lastIndexOf("/") + 1);
 		itemName += "</span>";

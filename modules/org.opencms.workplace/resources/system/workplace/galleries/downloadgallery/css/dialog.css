@@ -215,11 +215,11 @@ input.showborder, select.showborder {
 }
 
 #galleryfolderlist div:hover, #categoryfolderlist div:hover, #galleryfolderlist div.active:hover, #categoryfolderlist div.active:hover {
-	background-color: Background;
+	background-color: #a8adb4;
 }
 
 #galleryfolderlist div.active, #categoryfolderlist div.active {
-	background-color: Highlight;
+	background-color: #003082;
 }
 
 #galleryfolderlist div span.title, #categoryfolderlist div span.title {
@@ -259,16 +259,15 @@ input.showborder, select.showborder {
 	background-color: Window;
 	border: 1px solid ButtonShadow;
 	cursor: pointer;
-	width: 100%;
 }
 
 #galleryitemlistinner div  div:hover, #galleryitemlistinner div  div.active:hover,
 #categoryitemlistinner div  div:hover, #categoryitemlistinner div  div.active:hover {
-	background-color: Background;
+	background-color: #a8adb4;
 }
 
 #galleryitemlistinner div div.active, #categoryitemlistinner div div.active {
-	background-color: Highlight;
+	background-color: #003082;
 }
 
 #galleryitemlistinner div div span.title, #categoryitemlistinner  div div span.title {
@@ -610,12 +609,13 @@ div.imgitem {
 }
 
 div.imgitemhover {
-	border: 1px solid ButtonShadow;
+	border: 3px solid #a8adb4;
+	padding: 0px 8px;
 }
 
 div.imgitemactive {
-	border: 1px solid Highlight;
-	background-color: ActiveCaption;
+	border: 3px solid #003082;
+	padding: 0px 8px;
 }
 
 div.imgitemwrapper {
