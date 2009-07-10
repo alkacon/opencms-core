@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2009/06/04 14:29:35 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2009/07/10 14:33:14 $
+ * Version: $Revision: 1.85 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.collectors.A_CmsResourceCollector;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -87,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.84 $ 
+ * @version $Revision: 1.85 $ 
  * 
  * @since 6.0.0 
  */
@@ -437,7 +438,21 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         // get the collector used to create the new content
         int pos = m_paramNewLink.indexOf('|');
         String collectorName = m_paramNewLink.substring(0, pos);
-        String param = m_paramNewLink.substring(pos + 1);
+        String collectorParams = m_paramNewLink.substring(pos + 1);
+
+        String param;
+        String templateFileName;
+
+        pos = collectorParams.indexOf(A_CmsResourceCollector.SEPARATOR_TEMPLATEFILE);
+        if (pos != -1) {
+            // found an explicit template file name to use for the new resource, use it
+            param = collectorParams.substring(0, pos);
+            templateFileName = collectorParams.substring(pos + A_CmsResourceCollector.SEPARATOR_TEMPLATEFILE.length());
+        } else {
+            // no template file name was specified, use given resource name as template file
+            param = collectorParams;
+            templateFileName = getParamResource();
+        }
 
         // get the collector used for calculating the next file name
         I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);
@@ -445,7 +460,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         try {
 
             // one resource serves as a "template" for the new resource
-            CmsFile templateFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+            CmsFile templateFile = getCms().readFile(templateFileName, CmsResourceFilter.IGNORE_EXPIRATION);
 
             CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCloneCms(), templateFile);
             Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);

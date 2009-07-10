@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/07/10 14:33:14 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,11 +49,15 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
+
+    /** The template file separator string for creating a new resource in direct edit mode,
+     *  can be used to append an explicit template file name in {@link #getCreateParam(CmsObject, String, String)}. */
+    public static final String SEPARATOR_TEMPLATEFILE = "::";
 
     /** The "number" macro. */
     private static final String MACRO_NUMBER = "number";
