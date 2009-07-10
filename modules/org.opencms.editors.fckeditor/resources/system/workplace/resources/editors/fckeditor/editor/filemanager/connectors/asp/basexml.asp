@@ -56,7 +56,11 @@ Sub SendError( number, text )
 	' Create the XML document header.
 	Response.Write "<?xml version=""1.0"" encoding=""utf-8"" ?>"
 
+	If text <> "" then
 	Response.Write "<Connector><Error number=""" & number & """ text=""" & Server.HTMLEncode( text ) & """ /></Connector>"
+	else
+	Response.Write "<Connector><Error number=""" & number & """ /></Connector>"
+	end if
 
 	Response.End
 End Sub
