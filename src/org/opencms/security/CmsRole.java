@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/07/20 10:39:06 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -230,7 +230,7 @@ public final class CmsRole {
         // DIRECT_EDIT_USER
         }));
 
-        // now initilaize all system roles
+        // now initialize all system roles
         for (int i = 0; i < SYSTEM_ROLES.size(); i++) {
             ((CmsRole)SYSTEM_ROLES.get(i)).initialize();
         }
