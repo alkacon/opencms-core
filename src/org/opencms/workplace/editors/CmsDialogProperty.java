@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogProperty.java,v $
- * Date   : $Date: 2009/06/04 14:29:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/07/20 13:47:30 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -183,7 +183,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
             currentTemplate = "";
         }
         if (templates == null) {
-            // no valid templated found, use only current one
+            // no valid template found, use only current one
             addCurrentTemplate(currentTemplate, options, values);
         } else {
             boolean found = false;

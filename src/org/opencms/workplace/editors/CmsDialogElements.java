@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2009/06/04 14:29:36 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/07/20 13:47:30 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,7 +135,7 @@ public class CmsDialogElements extends CmsDialog {
      * 
      * @param cms the CmsObject
      * @param xmlPage the resource to read the elements from
-     * @param xmlPageUri the URI of the resouirce to read the template property from
+     * @param xmlPageUri the URI of the resource to read the template property from
      * @param locale the current element locale
      * @return the list of elements in a String array with element name, nice name (if present) and mandatory flag
      */
