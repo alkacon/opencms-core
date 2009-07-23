@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/07/23 13:56:21 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.main.CmsException;
  * @author Alexander Kandzior
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0
  */
@@ -60,7 +60,7 @@ public class CmsConfigurationException extends CmsException {
     }
 
     /**
-     * Creates a new localized Exception that also containes a root cause.<p>
+     * Creates a new localized Exception that also contains a root cause.<p>
      * 
      * @param container the localized message container to use
      * @param cause the Exception root cause

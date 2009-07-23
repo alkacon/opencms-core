@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/07/23 13:56:21 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 6.0.0 
  */
@@ -750,8 +750,8 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      * The given <code>String</code> value is interpreted as a {@link Boolean} by the means 
      * of <code>{@link Boolean#valueOf(String)}</code>. <p>
      * 
-     * @param booleanValue a <code>String</code> that is interpred as a {@link Boolean} by the means 
-     *      of <code>{@link Boolean#valueOf(String)}</code> 
+     * @param booleanValue a <code>String</code> that is interpreted as a <code> {@link Boolean}</code> 
+     *      by the means of <code>{@link Boolean#valueOf(String)}</code> 
      */
     public void setNewFolderEditProperties(String booleanValue) {
 
@@ -816,7 +816,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Sets if the file release date should be shown in explorer view.<p>
      * 
-     * @param show true if the file relese date should be shown, otherwise false
+     * @param show true if the file release date should be shown, otherwise false
      */
     public void setShowExplorerFileDateReleased(String show) {
 
@@ -981,9 +981,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     }
 
     /**
-     * Sets the style of the  workplace buttons of the user.<p>
+     * Sets the style of the workplace buttons of the user.<p>
      * 
-     * @param buttonstyle the style of the  workplace buttons of the user
+     * @param buttonstyle the style of the workplace buttons of the user
      */
     public void setWorkplaceButtonStyle(String buttonstyle) {
 

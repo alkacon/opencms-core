@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2009/07/10 14:33:14 $
- * Version: $Revision: 1.85 $
+ * Date   : $Date: 2009/07/23 13:56:20 $
+ * Version: $Revision: 1.86 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.85 $ 
+ * @version $Revision: 1.86 $ 
  * 
  * @since 6.0.0 
  */
@@ -663,7 +663,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * not available in the upper button frame.<p>
      *  
      * @param attributes optional attributes for the &lt;select&gt; tag
-     * @return the html for the element language selectbox
+     * @return the html for the element language select box
      */
     public String buildSelectElementLanguage(String attributes) {
 
@@ -1190,7 +1190,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 }
             }
             if ((getAction() != ACTION_CANCEL) && (getAction() != ACTION_SHOW_ERRORMESSAGE)) {
-                // no error ocurred, redisplay the input form
+                // no error occurred, redisplay the input form
                 setAction(ACTION_SHOW);
             }
         } else if (EDITOR_ACTION_ELEMENT_REMOVE.equals(getParamAction())) {
@@ -1204,7 +1204,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 }
             }
             if ((getAction() != ACTION_CANCEL) && (getAction() != ACTION_SHOW_ERRORMESSAGE)) {
-                // no error ocurred, redisplay the input form
+                // no error occurred, redisplay the input form
                 setAction(ACTION_SHOW);
             }
         } else if (EDITOR_ACTION_ELEMENT_MOVE_DOWN.equals(getParamAction())) {

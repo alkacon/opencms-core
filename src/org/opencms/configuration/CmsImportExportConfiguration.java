@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2009/07/23 13:56:21 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 6.0.0
  */
@@ -141,7 +141,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
     /** The import immutable resources node. */
     public static final String N_IMMUTABLES = "immutables";
 
-    /** The node name of the import subconfiguration. */
+    /** The node name of the import sub-configuration. */
     public static final String N_IMPORT = "import";
 
     /** The main configuration node name. */
@@ -368,7 +368,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration {
             1);
         digester.addCallParam("*/" + N_IMPORTEXPORT + "/" + N_IMPORT + "/" + N_IMMUTABLES + "/" + N_RESOURCE, 0, A_URI);
 
-        // add rules for the import princial translations
+        // add rules for the import principal translations
         digester.addCallMethod("*/"
             + N_IMPORTEXPORT
             + "/"

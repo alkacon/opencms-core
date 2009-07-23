@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2009/06/04 14:29:35 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2009/07/23 13:56:21 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * 
  * @since 6.0.0 
  */
@@ -297,7 +297,7 @@ public abstract class CmsEditor extends CmsEditorBase {
      * 
      * @param href the href link for the button, if none is given the button will be disabled
      * @param target the href link target for the button, if none is given the target will be same window
-     * @param image the image name for the button, skin path will be automattically added as prefix
+     * @param image the image name for the button, skin path will be automatically added as prefix
      * @param label the label for the text of the button 
      * @param type 0: image only (default), 1: image and text, 2: text only
      * @param useCustomImage if true, the button has to be placed in the editors "custom pics" folder
@@ -408,7 +408,7 @@ public abstract class CmsEditor extends CmsEditorBase {
      * 
      * @param href the href link for the button, if none is given the button will be disabled
      * @param target the href link target for the button, if none is given the target will be same window
-     * @param image the image name for the button, skin path will be automattically added as prefix
+     * @param image the image name for the button, skin path will be automatically added as prefix
      * @param label the label for the text of the button 
      * @param type 0: image only (default), 1: image and text, 2: text only
      * 
@@ -886,7 +886,7 @@ public abstract class CmsEditor extends CmsEditorBase {
     /** 
      * Returns a cloned cms instance that prevents the time range resource filter check.<p> 
      * 
-     * Use it always for unmarschalling and file writing.<p>
+     * Use it always for unmarshalling and file writing.<p>
      * 
      * @return a cloned cms instance that prevents the time range resource filter check
      * 

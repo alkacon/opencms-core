@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationCopyResource.java,v $
- * Date   : $Date: 2009/06/04 14:29:39 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/07/23 13:56:21 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.util.CmsMacroResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -159,9 +159,9 @@ public class CmsConfigurationCopyResource {
     }
 
     /**
-     * Returns <code>true</code> if the orginal target configuration was <code>null</code>.<p>
+     * Returns <code>true</code> if the original target configuration was <code>null</code>.<p>
      *
-     * @return  <code>true</code> if the orginal target configuration was <code>null</code>
+     * @return  <code>true</code> if the original target configuration was <code>null</code>
      */
     public boolean isTargetWasNull() {
 
@@ -169,9 +169,9 @@ public class CmsConfigurationCopyResource {
     }
 
     /**
-     * Returns <code>true</code> if the orginal type configuration was <code>null</code>.<p>
+     * Returns <code>true</code> if the original type configuration was <code>null</code>.<p>
      *
-     * @return  <code>true</code> if the orginal type configuration was <code>null</code>
+     * @return  <code>true</code> if the original type configuration was <code>null</code>
      */
     public boolean isTypeWasNull() {
 

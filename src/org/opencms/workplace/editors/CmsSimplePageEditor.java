@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2009/06/05 13:31:39 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/07/23 13:56:21 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +106,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             } catch (CmsException e) {
                 if (e instanceof CmsVfsResourceNotFoundException) {
                     // the tempfile is missing, maybe someone else has deleted it
-                    // try to create a new one and redo the initalization
+                    // try to create a new one and redo the initialization
                     try {
                         setParamTempfile(createTempFile());
                         m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
@@ -180,7 +180,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             // initial call of editor, initialize page and page parameters
             setAction(ACTION_DEFAULT);
             try {
-                // lock resource if autolock is enabled in configuration
+                // lock resource if auto-lock is enabled in configuration
                 if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
                     // set a temporary lock in direct edit mode
                     checkLock(getParamResource(), CmsLockType.TEMPORARY);

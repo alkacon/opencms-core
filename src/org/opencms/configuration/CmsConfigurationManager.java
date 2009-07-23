@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2009/07/23 13:56:21 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 6.0.0
  */
@@ -341,7 +341,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         // first load the base configuration
         loadXmlConfiguration(baseUrl, this);
 
-        // now iterate all sub-configrations
+        // now iterate all sub-configurations
         Iterator i = m_configurations.iterator();
         while (i.hasNext()) {
             I_CmsXmlConfiguration config = (I_CmsXmlConfiguration)i.next();
