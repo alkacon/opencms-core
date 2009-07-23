@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsTimeShiftPublish.java,v $
- * Date   : $Date: 2009/07/23 10:13:12 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/07/23 10:43:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,13 +66,13 @@ import javax.servlet.jsp.PageContext;
  * 
  * The following files use this class:
  * <ul>
- * <li>/commons/availability.jsp
+ * <li>/commons/timeshiftpublish.jsp
  * </ul>
  * <p>
  *
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.5.0
  */
