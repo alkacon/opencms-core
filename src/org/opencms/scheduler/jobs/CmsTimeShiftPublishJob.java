@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/Attic/CmsTimeShiftPublishJob.java,v $
- * Date   : $Date: 2009/07/23 10:13:11 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/07/23 10:48:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
 /**
  * Scheduled job for time based publishing.<p>
  *
- * This class is called via the scheduled job backoffice to publish a project at a given time.<p>
+ * This class is called via the front end to time shift publish a file at a given time.<p>
  * 
  * Per default, it publishes all new, edited and deleted resources in the project which are locked in 
  * the current project. For all resources in the project which are not locked by the current user is the
@@ -61,11 +61,11 @@ import org.apache.commons.logging.Log;
  * publishing the project by adding the parameter <code>linkcheck=true</code>. It is possible to send
  * an email to a user in OpenCms in case somthing went wrong during this process. To do so specifiy
  * a parameter<code>mail-to-user=username_in_opencms</code>.
- * After running this job, the job is deleted.<p>
+ * After running this job, the job is deleted. Therefore the job name is to set in the parameter <code>jobname</code><p>
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.5.0
  */

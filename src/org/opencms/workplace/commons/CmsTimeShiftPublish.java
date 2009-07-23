@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsTimeShiftPublish.java,v $
- * Date   : $Date: 2009/07/23 10:43:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/07/23 10:44:37 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.0
  */
@@ -229,7 +229,7 @@ public class CmsTimeShiftPublish extends CmsDialog {
     }
 
     /**
-     * Modifies the release and expire date of a resource, and changes the notification interval. <p>
+     * Modifies the time shift publish date of a resource. <p>
      * 
      * @return true, if the operation was performed, otherwise false
      *
