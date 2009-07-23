@@ -74,6 +74,7 @@
 			<resource uri="/system/workplace/commons/secure.jsp"/>
 			<resource uri="/system/workplace/commons/show_deleted.jsp"/>
 			<resource uri="/system/workplace/commons/synchronize.jsp"/>
+			<resource uri="/system/workplace/commons/timeshiftpublishresource.jsp"/>
 			<resource uri="/system/workplace/commons/touch.jsp"/>
 			<resource uri="/system/workplace/commons/undelete.jsp"/>
 			<resource uri="/system/workplace/commons/undochanges.jsp"/>
@@ -2767,6 +2768,30 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dialog - Synchronization]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/timeshiftpublishresource.jsp</source>
+			<destination>system/workplace/commons/timeshiftpublishresource.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>1d0df93b-72dc-11de-9f05-4b94bac55a49</uuidstructure>
+			<uuidresource>1d0df93c-72dc-11de-9f05-4b94bac55a49</uuidresource>
+			<datelastmodified>Mon, 20 Jul 2009 10:39:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 17 Jul 2009 14:14:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Timeshift publish resource]]></value>
 				</property>
 				<property>
 					<name>export</name>
