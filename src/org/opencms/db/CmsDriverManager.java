@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/07/08 11:11:36 $
- * Version: $Revision: 1.637 $
+ * Date   : $Date: 2009/07/27 08:14:57 $
+ * Version: $Revision: 1.638 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -8367,7 +8367,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         m_monitor.clearUserCache(user);
         m_userDriver.writeUser(dbc, user);
-
+        m_monitor.flushUserGroups();
         // fire user modified event
         Map eventData = new HashMap();
         eventData.put("id", user.getId().toString());

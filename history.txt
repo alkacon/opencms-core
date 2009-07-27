@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/07/23 14:31:41 $
- * Version: $Revision: 1.1116 $
+ * Date   : $Date: 2009/07/27 08:14:57 $
+ * Version: $Revision: 1.1117 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -26,6 +26,7 @@ OpenCms 7.5.1 - month day, 2009
 ! Added selectable start galleries to user preferences and possibility to define start galleries in OpenCms configuration
 ! Added option to hide "Advanced" button of customized property dialog depending on the current users groups
 ! Added search dialog to all galleries
+* Fixed issue #1743: Cached users for groups are not invalidated when writing user
 * Fixed issue #1739: Deleted or moved project resources cannot be removed from project
 * Fixed issue with OU users being unable to work after OU resource has been renamed 
 * Fixed issue with pointer targets being stored in XML contents (instead of the uri to pointers) when selecting them from link gallery
