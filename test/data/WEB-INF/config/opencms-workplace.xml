@@ -107,6 +107,7 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <entry key="GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0" uri="commons/timeshiftpublishresource.jsp" rule="timeshiftdirectpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_PAGEEDIT_0" uri="editors/editor.jsp" target="_top" rule="standard"/>
             <separator/>
@@ -159,6 +160,7 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <entry key="GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0" uri="commons/timeshiftpublishresource.jsp" rule="timeshiftdirectpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp" target="_top" rule="standard"/>
             <separator/>
@@ -207,6 +209,7 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <entry key="GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0" uri="commons/timeshiftpublishresource.jsp" rule="timeshiftdirectpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
@@ -261,6 +264,7 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <entry key="GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0" uri="commons/timeshiftpublishresource.jsp" rule="timeshiftdirectpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_EDITSOURCE_0" uri="editors/editor.jsp" target="_top" rule="standard"/>
             <separator/>
@@ -308,6 +312,7 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <entry key="GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0" uri="commons/timeshiftpublishresource.jsp" rule="timeshiftdirectpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rule="copy"/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
@@ -354,6 +359,7 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <entry key="GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0" uri="commons/timeshiftpublishresource.jsp" rule="timeshiftdirectpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_EDITLINK_0" uri="commons/editpointer.jsp" rule="standard"/>
             <separator/>
@@ -602,6 +608,7 @@
             <entry key="GUI_EXPLORER_CONTEXT_UNLOCK_0" uri="commons/unlock.jsp" rule="unlock"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
+            <entry key="GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0" uri="commons/timeshiftpublishresource.jsp" rule="timeshiftdirectpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>

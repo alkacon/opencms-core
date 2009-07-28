@@ -413,7 +413,6 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0" uri="commons/timeshiftpublishresource.jsp" rule="timeshiftdirectpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/opengallery.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_RENAMEIMAGES_0" uri="commons/renameimages.jsp" rule="standard"/>
@@ -463,7 +462,6 @@
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_COPYTOPROJECT_0" uri="commons/copytoproject.jsp" rule="copytoproject"/>
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0" uri="commons/timeshiftpublishresource.jsp" rule="timeshiftdirectpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_OPENGALLERY_0" uri="commons/opengallery.jsp" rule="standard"/>
             <separator/>
@@ -575,7 +573,6 @@
             <entry key="GUI_EXPLORER_CONTEXT_LOCKS_0" uri="commons/locks.jsp" rule="showlocks"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_PUBLISH_0" uri="commons/publishresource.jsp" rule="directpublish"/>
-            <entry key="GUI_EXPLORER_CONTEXT_TIMESHIFT_PUBLISH_0" uri="commons/timeshiftpublishresource.jsp" rule="timeshiftdirectpublish"/>
             <separator/>
             <entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rule="standard"/>
             <entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rule="standard"/>
