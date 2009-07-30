@@ -35,12 +35,12 @@ FCKConfig.ToolbarStartExpanded	= false;
 FCKConfig.SkinPath = FCKConfig.BasePath + "skins/opencms/";
 
 FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");
-//replaced by image gallery: FCKConfig.Plugins.Add("ocmsimage", null, "<%= cms.link("plugins/") %>");
 FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
 FCKConfig.Plugins.Add("downloadgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
 FCKConfig.Plugins.Add("linkgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
 FCKConfig.Plugins.Add("htmlgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
 FCKConfig.Plugins.Add("tablegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+//replaced by image gallery: FCKConfig.Plugins.Add("ocmsimage", null, "<%= cms.link("plugins/") %>");
 <%
 
 StringBuffer toolbar = new StringBuffer(1024);
@@ -66,7 +66,11 @@ if (CmsFCKEditorWidget.buildMiscButtons(toolbar, option)) {
 
 toolbar.append("'SpecialChar'");
 
-toolbar.append(",'-','Print','-','FitWindow']");
+if (!option.isButtonHidden("print")) {
+	toolbar.append(",'-','Print'");
+}
+
+toolbar.append(",'-','FitWindow']");
 
 %>
 FCKConfig.ToolbarSets["OpenCmsWidget"] = [

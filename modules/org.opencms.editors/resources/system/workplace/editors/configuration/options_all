@@ -41,6 +41,7 @@ button.customized=true
 option.element.selection=true
 option.element.language=true
 option.properties=true
+option.cleanup=true
 option.sourcecode=true
 
 # galleries
@@ -53,12 +54,19 @@ gallery.table=true
 # link & anchor options
 option.links=true
 option.linkstyleinputs=false
+option.link=true
+option.extlink=true
+option.anchor=true
+option.unlink=true
 
 # misc buttons
 option.images=true
 option.specialchars=true
+option.rule=false
 option.table=true
 option.form=false
 option.style=false
 option.flash=false
 option.spellcheck=false
+option.print=true
+option.help=true

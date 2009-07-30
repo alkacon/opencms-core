@@ -1,9 +1,9 @@
 <%@ page import="
-	java.util.*, 
-	org.opencms.jsp.*, 
-	org.opencms.main.*, 
-	org.opencms.util.*, 
-	org.opencms.workplace.editors.*, 
+	java.util.*,
+	org.opencms.jsp.*,
+	org.opencms.main.*,
+	org.opencms.util.*,
+	org.opencms.workplace.editors.*,
 	org.opencms.editors.fckeditor.*
 "%><%
 
@@ -22,9 +22,9 @@ String cssPath = extConf.getUriStyleSheet();
 
 // This editor supports user defined styles. To show these styles, a plain text file containing the style definition
 // XML code has to be placed in the same folder where the template CSS style sheet is located.
-// The file name has to be exactly like the file name of the CSS with the suffix "_style.xml" added. 
+// The file name has to be exactly like the file name of the CSS with the suffix "_style.xml" added.
 // E.g. for the CSS file "style.css" the style definition file has to be named "style.css_style.xml".
-// An example for a style XML can be found in the VFS file "/system/workplace/resources/editors/fckeditor/fckstyles.xml". 
+// An example for a style XML can be found in the VFS file "/system/workplace/resources/editors/fckeditor/fckstyles.xml".
 boolean styleXMLPresent = false;
 if (CmsStringUtil.isNotEmpty(cssPath)) {
 	String pathUsed = cssPath;
@@ -64,12 +64,12 @@ FCKConfig.ToolbarCanCollapse = false;
 FCKConfig.SkinPath = FCKConfig.BasePath + "skins/opencms/";
 
 FCKConfig.Plugins.Add("opencms", null, "<%= cms.link("plugins/") %>");
-// replaced by image gallery: FCKConfig.Plugins.Add("ocmsimage", null, "<%= cms.link("plugins/") %>");
 FCKConfig.Plugins.Add("imagegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
 FCKConfig.Plugins.Add("downloadgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
 FCKConfig.Plugins.Add("linkgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
 FCKConfig.Plugins.Add("htmlgallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
 FCKConfig.Plugins.Add("tablegallery", null, "<%= cms.link("/system/workplace/galleries/") %>");
+//replaced by image gallery: FCKConfig.Plugins.Add("ocmsimage", null, "<%= cms.link("plugins/") %>");
 <%
 
 boolean showTableOptions = options.showElement("option.table", displayOptions);
@@ -95,7 +95,7 @@ toolbar.append("'oc-save_exit','oc-save'");
 // source code button
 if (options.showElement("option.sourcecode", displayOptions)) {
 	toolbar.append(",'-','Source'");
-} 
+}
 
 // standard buttons: undo/redo, find, cut/copy/paste
 toolbar.append(",'-','Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat','-','Cut','Copy','Paste','PasteText','PasteWord'");
@@ -109,8 +109,29 @@ if (showTableOptions) {
 
 // determine if the insert link buttons should be shown
 if (options.showElement("option.links", displayOptions)) {
-	toolbar.append(",'-','oc-link','Link', 'Anchor','Unlink'");
-}        
+	toolbar.append(",'-'");
+
+	// determine if the local link button should be shown
+	if (options.showElement("option.link", displayOptions)) {
+		toolbar.append(",'oc-link'");
+	}
+
+	// determine if the external link button should be shown
+	if (options.showElement("option.extlink", displayOptions)) {
+		toolbar.append(",'Link'");
+	}
+
+	// determine if the anchor button should be shown
+	if (options.showElement("option.anchor", displayOptions)) {
+		toolbar.append(",'Anchor'");
+	}
+
+	// determine if the unlink buttons should be shown
+	if (options.showElement("option.unlink", displayOptions)) {
+		toolbar.append(",'Unlink'");
+	}
+
+}
 
 // determine if the flash button button should be shown
 if (options.showElement("option.flash", displayOptions)) {
@@ -118,13 +139,12 @@ if (options.showElement("option.flash", displayOptions)) {
 }
 
 // determine if the insert/edit image button should be shown
-if (options.showElement("option.images", displayOptions)) {
+if (options.showElement("option.images", displayOptions) || options.showElement("gallery.image", displayOptions)) {
 	// replaced by image gallery: toolbar.append(",'-', 'OcmsImage'");
 	toolbar.append(",'-', 'OcmsImageGallery'");
 }
 
 if (options.showElement("gallery.download", displayOptions)) {
-	//toolbar.append(",'-', 'OcmsDownloadGallery'"); // insert '-' for separator
 	toolbar.append(", 'OcmsDownloadGallery'");
 }
 
@@ -140,30 +160,43 @@ if (options.showElement("gallery.table", displayOptions)) {
 	toolbar.append(", 'OcmsTableGallery'");
 }
 
-// insert rule button
-toolbar.append(",'-','Rule'");
+boolean showRule = options.showElement("option.rule", displayOptions);
+boolean showSpecial = options.showElement("option.specialchars", displayOptions);
 
-// determine if the insert special characters button should be shown
-if (options.showElement("option.specialchars", displayOptions)) {
-	toolbar.append(",'SpecialChar'");
+if (showRule || showSpecial) {
+
+	toolbar.append(",'-'");
+	// insert horizontal rule button
+	if (showRule) {
+		toolbar.append(",'Rule'");
+	}
+
+	// determine if the insert special characters button should be shown
+	if (showSpecial) {
+		toolbar.append(",'SpecialChar'");
+	}
 }
 
-// insert print button
-toolbar.append(",'-','Print'");
+// determine if the print button should be shown
+if (options.showElement("option.print", displayOptions)) {
+	toolbar.append(",'-','Print'");
+}
 
 // determine if the spell check button should be shown
 if (options.showElement("option.spellcheck", displayOptions)) {
-	toolbar.append(",'SpellCheck'");
+	toolbar.append(",'-','SpellCheck'");
 }
 
 // determine if the help button should be shown
 if (wp.isHelpEnabled()) {
-	toolbar.append(",'-','oc-help'");
+	if (options.showElement("option.help", displayOptions)) {
+		toolbar.append(",'-','oc-help'");
+	}
 }
 
 toolbar.append(",'-','oc-exit']");
 
-// style buttons 
+// style buttons
 boolean fontFormat = options.showElement("option.formatselect", CmsStringUtil.TRUE, displayOptions);
 boolean fontFace = options.showElement("font.face", displayOptions);
 boolean fontSize = options.showElement("font.size", displayOptions);
@@ -180,7 +213,7 @@ if (fontFace) {
 	stylebar.append(",'FontName'");
 }
 
-// determine if the font size selector should be shown 
+// determine if the font size selector should be shown
 if (fontSize) {
 	stylebar.append(",'FontSize'");
 }
@@ -258,7 +291,7 @@ if (options.showElement("text.align", displayOptions)) {
 		}
 		stylebar.append(alignBt);
 	}
-	
+
 }
 
 boolean showListBt = false;
@@ -282,7 +315,7 @@ if (options.showElement("text.lists", displayOptions)) {
 	}
 }
 
-// determine if the text indentation buttons should be shown 
+// determine if the text indentation buttons should be shown
 if (options.showElement("text.indent", displayOptions)) {
 	boolean showIndBt = false;
 	StringBuffer indBt = new StringBuffer(32);
@@ -300,13 +333,13 @@ if (options.showElement("text.indent", displayOptions)) {
 		}
 		stylebar.append(indBt);
 	}
-}   
+}
 
-// Determine wich color selectors should be shown
+// determine which color selectors should be shown
 boolean fontColor = options.showElement("font.color", displayOptions);
 boolean bgColor = options.showElement("bg.color", displayOptions);
 if (fontColor || bgColor) {
-    stylebar.append(",'-',");   
+    stylebar.append(",'-',");
     if (fontColor && bgColor) {
       stylebar.append("'TextColor','BGColor'");
     } else {

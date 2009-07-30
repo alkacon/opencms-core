@@ -6,7 +6,7 @@
 	org.opencms.main.*,
 	java.util.*
 "%><%
-	
+
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 CmsFCKEditor wp = new CmsFCKEditor(cms);
 CmsEditorDisplayOptions options = wp.getEditorDisplayOptions();
@@ -20,15 +20,15 @@ extConf.setUriStyleSheet(wp.getUriStyleSheet());
 extConf.setResourcePath(wp.getParamResource());
 extConf.setConfiguration(session);
 
-//////////////////// start of switch statement 
-	
+//////////////////// start of switch statement
+
 switch (wp.getAction()) {
 
 case CmsEditor.ACTION_SHOW_ERRORMESSAGE:
 //////////////////// ACTION: display the common error dialog
-	
+
 	// do nothing here, only prevents editor content from being displayed!
-	
+
 break;
 case CmsEditor.ACTION_PREVIEW:
 //////////////////// ACTION: preview the page
@@ -110,7 +110,7 @@ function confirmDeleteLocale() {
 	}
 }
 
-//action on button click 
+// action on button click
 function buttonAction(para) {
 	var _form = document.EDITOR;
 	_form.action.value = "";
@@ -123,7 +123,7 @@ function buttonAction(para) {
         _form.submit();
         break;
     case 2:
-        // preview selected 
+        // preview selected
     	saveContent();
         _form.action.value = "<%= CmsEditor.EDITOR_PREVIEW %>";
         _form.target = "PREVIEW";
@@ -142,7 +142,7 @@ function buttonAction(para) {
         dialogElementWindow = window.open("about:blank","DIALOGELEMENT","width=320,height=250,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,status=no,dependent=yes");
         document.ELEMENTS.submit();
         dialogElementWindow.focus();
-        break;      
+        break;
     case 5:
         // open properties window
     	saveContent();
@@ -168,12 +168,12 @@ function buttonAction(para) {
 function changeElement(elementName, language) {
     if (elementName != document.EDITOR.<%= CmsDefaultPageEditor.PARAM_ELEMENTNAME %>.value && language == document.EDITOR.<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>.value) {
         document.EDITOR.<%= CmsDefaultPageEditor.PARAM_ELEMENTNAME %>.value = elementName;
-        buttonAction(3);   
+        buttonAction(3);
     } else {
         buttonAction(1);
     }
 }
-  
+
 // action for closing the window
 function closeDialog() {
     if (dialogElementWindow) {
@@ -188,12 +188,12 @@ function closeDialog() {
     if (dialogAnchorWindow) {
     	window.dialogAnchorWindow.close();
     }
-    
+
     var actionValue = document.EDITOR.<%= CmsDialog.PARAM_ACTION %>.value;
     if (actionValue == null || actionValue == "null" || actionValue == "") {
 		closeBrowserWindow();
     }
-      
+
 }
 
 // sends a request to the server to delete the temporary file if the browser was accidentally closed
@@ -295,8 +295,10 @@ if (options.showElement("option.properties", displayOptions)) {
 	}
 	out.println(wp.button("javascript:buttonAction(5);", null, "properties", org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_PROPERTIES_BUTTON_0, buttonStyle));
 }
-out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_CLEANUP_BUTTON_0, buttonStyle));
-%>             
+if (options.showElement("option.cleanup", displayOptions)) {
+	out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_CLEANUP_BUTTON_0, buttonStyle));
+}
+%>
 <td class="maxwidth">&nbsp;</td>
 <%= wp.button("javascript:buttonAction(2);", null, "preview", org.opencms.workplace.editors.Messages.GUI_BUTTON_PREVIEW_0, buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
@@ -315,12 +317,12 @@ out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", org.openc
 	editor.Width = "100%";
 	editor.Height = "100%";
 	editor.ToolbarSet = "OpenCms";
-	editor.Value = decodeURIComponent("<%= wp.getParamContent() %>");  
+	editor.Value = decodeURIComponent("<%= wp.getParamContent() %>");
 	editor.Create();
 //-->
 </script>
 </div>
-</td>	
+</td>
 </tr>
 
 </table>
