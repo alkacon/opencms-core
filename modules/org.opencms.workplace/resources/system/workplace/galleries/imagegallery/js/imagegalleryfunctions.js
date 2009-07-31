@@ -110,81 +110,25 @@ function fillItems(data, modeName) {
 	var innerListId = modeName + "imagelistinner";
 	$("#" + modeName + "itemlist").append("<div class=\"imagelist\" id=\"" + innerListId  + "\"></div>");
 	innerListId = "#" + innerListId;
-	var paginationId = modeName + "itempage";
 	$(innerListId).hide();
-	for (var i = 0; i < foundImages.length; i++) {
-		var page = Math.floor(i / imagesPerPage);
-		if ((i + 1) % imagesPerPage == 1) {
-			$(innerListId).append("<div id=\"" + paginationId + "" + page + "\"></div>");
-			if (page > 0) {
-				$("#" + paginationId + page).hide();
-			}
+	// create empty div elements for the pages
+	var paginationId = modeName + "itempage";
+	var pageCount = Math.ceil((foundImages.length + 1) / imagesPerPage);
+	for (var i = 0; i < pageCount; i++) {
+		$(innerListId).append("<div id=\"" + paginationId + "" + i + "\"></div>");
+		if (i > 0) {
+			$("#" + paginationId + i).hide();
 		}
-		var image = foundImages[i];
-		var mouseAttrsClick = "";
-		mouseAttrsClick += " onclick=\"markItem(";
-		mouseAttrsClick += i + ", \'";
-		mouseAttrsClick += modeName;
-		mouseAttrsClick += "\');\"";
-		mouseAttrsClick += " ondblclick=\"setActiveItem(";
-		mouseAttrsClick += i + ", \'";
-		mouseAttrsClick += modeName;
-		mouseAttrsClick += "\', false);\"";
-		var mouseAttrs = "";
-		mouseAttrs += " onmouseover=\"showItemInfo(";
-		mouseAttrs += i + ", \'";
-		mouseAttrs += modeName;
-		mouseAttrs += "\');\" onmouseout=\"hideItemInfo(";
-		mouseAttrs += i + ", \'";
-		mouseAttrs += modeName;
-		mouseAttrs += "\');\"";
-		var imgHtml = "";
-		imgHtml += "<div class=\"imgitem\"";
-		imgHtml += " id=\"";
-		imgHtml += modeName + "item" + i;
-		imgHtml += "\"><div class=\"imgitemwrapper\">";
-		// show icon for new or changed images
-		imgHtml += "<span class=\"imglayer\" id=\"";
-		imgHtml += modeName + "itemlayer" + i;
-		imgHtml += "\"" + mouseAttrs + mouseAttrsClick + ">";
-		if (image.state == 1) {
-			// changed image
-			imgHtml += "<img src=\"" + vfsPathPrefixItems + "img_chg.png\" alt=\"\" title=\"";
-			imgHtml += LANG.IMGITEM_STATE_CHANGED;
-			imgHtml += "\" />";
-		} else if (image.state == 2) {
-			// new image
-			imgHtml += "<img src=\"" + vfsPathPrefixItems + "img_new.png\" alt=\"\" title=\"";
-			imgHtml += LANG.IMGITEM_STATE_NEW;
-			imgHtml += "\" />";
-		}
-		if (image.lockedby != "") {
-			// image is locked by other user
-			imgHtml += "<img src=\"" + vfsPathPrefixItems + "img_locked.png\" alt=\"\" title=\"";
-			imgHtml += LANG.IMGITEM_LOCKSTATE_LOCKED.replace(/%\(user\)/, image.lockedby);
-			imgHtml += "\" />";
-		}
-		imgHtml += "</span>";
-		// show the thumb image
-		imgHtml += "<img class=\"imgthumb\" alt=\"";
-		imgHtml += image.width + " x " + image.height + "<br/>" + LANG.DETAIL_SIZE + " " + image.size;
-		imgHtml += "\" alt=\"\" title=\"\" src=\"";
-		imgHtml += image.scalepath;
-		imgHtml += "\"";
-		imgHtml += mouseAttrs + mouseAttrsClick;
-		imgHtml += "/>";
-		imgHtml += "</div></div>";
-		$("#" + paginationId + page).append(imgHtml);
-
-	}
-	$(innerListId + " img.imgthumb").jHelperTip({trigger: "hover", source: "attribute", attrName: "alt", opacity: 0.75});
+	}  
+	// fill the first page with images
+	fillImagesOnPage(foundImages, modeName, 0);
 	$(innerListId).append("<div style=\"clear: left;\"></div>");
 	if (foundImages.length + 1 > imagesPerPage) {
 		$("#" + modeName + "itemlist").append("<div id=\"item" + modeName + "-paginationwrapper\"><span id=\"item" + modeName + "-pagination\"></span></div>");
 		if (modeName == "gallery") {
 			$("#item" + modeName + "-pagination").pagination(foundImages.length, {
 				items_per_page: imagesPerPage,
-				callback: showItemPagegallery,
+				callback: showImagePagegallery,
 				prev_text: LANG.PAGINATION_PREVIOUS,
 				next_text: LANG.PAGINATION_NEXT,
 				prev_show_always: false,
@@ -194,7 +138,7 @@ function fillItems(data, modeName) {
 		} else {
 			$("#item" + modeName + "-pagination").pagination(foundImages.length, {
 				items_per_page: imagesPerPage,
-				callback: showItemPagecategory,
+				callback: showImagePagecategory,
 				prev_text: LANG.PAGINATION_PREVIOUS,
 				next_text: LANG.PAGINATION_NEXT,
 				prev_show_always: false,
@@ -204,6 +148,91 @@ function fillItems(data, modeName) {
 		}
 	}
 	$(innerListId).show();
+}
+
+/* Fills the images that should be shown on the currently selected page. */
+function fillImagesOnPage(imageList, modeName, page) {
+	var paginationId = modeName + "itempage";
+	// check if the images have to be created
+	if ($("#" + paginationId + page).children().length == 0) {
+		// calculate start and end indexes in image list
+		var beginIndex = page * imagesPerPage;
+		var endIndex = beginIndex + imagesPerPage;
+		if (endIndex > imageList.length) {
+			endIndex = imageList.length;
+		}
+		for (var i = beginIndex; i < endIndex; i++) {
+			var image = imageList[i];
+			var mouseAttrsClick = "";
+			mouseAttrsClick += " onclick=\"markItem(";
+			mouseAttrsClick += i + ", \'";
+			mouseAttrsClick += modeName;
+			mouseAttrsClick += "\');\"";
+			mouseAttrsClick += " ondblclick=\"setActiveItem(";
+			mouseAttrsClick += i + ", \'";
+			mouseAttrsClick += modeName;
+			mouseAttrsClick += "\', false);\"";
+			var mouseAttrs = "";
+			mouseAttrs += " onmouseover=\"showItemInfo(";
+			mouseAttrs += i + ", \'";
+			mouseAttrs += modeName;
+			mouseAttrs += "\');\" onmouseout=\"hideItemInfo(";
+			mouseAttrs += i + ", \'";
+			mouseAttrs += modeName;
+			mouseAttrs += "\');\"";
+			var imgHtml = "";
+			imgHtml += "<div class=\"imgitem\"";
+			imgHtml += " id=\"";
+			imgHtml += modeName + "item" + i;
+			imgHtml += "\"><div class=\"imgitemwrapper\">";
+			// show icon for new or changed images
+			imgHtml += "<span class=\"imglayer\" id=\"";
+			imgHtml += modeName + "itemlayer" + i;
+			imgHtml += "\"" + mouseAttrs + mouseAttrsClick + ">";
+			if (image.state == 1) {
+				// changed image
+				imgHtml += "<img src=\"" + vfsPathPrefixItems + "img_chg.png\" alt=\"\" title=\"";
+				imgHtml += LANG.IMGITEM_STATE_CHANGED;
+				imgHtml += "\" />";
+			} else if (image.state == 2) {
+				// new image
+				imgHtml += "<img src=\"" + vfsPathPrefixItems + "img_new.png\" alt=\"\" title=\"";
+				imgHtml += LANG.IMGITEM_STATE_NEW;
+				imgHtml += "\" />";
+			}
+			if (image.lockedby != "") {
+				// image is locked by other user
+				imgHtml += "<img src=\"" + vfsPathPrefixItems + "img_locked.png\" alt=\"\" title=\"";
+				imgHtml += LANG.IMGITEM_LOCKSTATE_LOCKED.replace(/%\(user\)/, image.lockedby);
+				imgHtml += "\" />";
+			}
+			imgHtml += "</span>";
+			// show the thumb image
+			imgHtml += "<img class=\"imgthumb\" alt=\"";
+			imgHtml += image.width + " x " + image.height + "<br/>" + LANG.DETAIL_SIZE + " " + image.size;
+			imgHtml += "\" alt=\"\" title=\"\" src=\"";
+			imgHtml += image.scalepath;
+			imgHtml += "\"";
+			imgHtml += mouseAttrs + mouseAttrsClick;
+			imgHtml += "/>";
+			imgHtml += "</div></div>";
+			$("#" + paginationId + page).append(imgHtml);
+		}
+		// initialize image tool tips on hover
+		$("#" + paginationId + page + " img.imgthumb").jHelperTip({trigger: "hover", source: "attribute", attrName: "alt", opacity: 0.75});
+	}
+}
+
+/* Callback function of the pagination, shows the clicked gallery page. */
+function showImagePagegallery(page_id, jq) {
+	fillImagesOnPage(galleryItems.items, "gallery", page_id);
+	showItemPagegallery(page_id, jq);
+}
+
+/* Callback function of the pagination, shows the clicked category page. */
+function showImagePagecategory(page_id, jq) {
+	fillImagesOnPage(categoryItems.items, "category", page_id);
+	showItemPagecategory(page_id, jq);
 }
 
 /* Shows the additional image information (called on mouseover or on preview tab). */
