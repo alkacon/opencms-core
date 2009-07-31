@@ -345,6 +345,11 @@ function loadActiveItem(data, isInitial) {
 					}
 				}
 			}
+			if (initValues.widgetmode == "simple" && initValues.showformats == true) {
+            			// refresh the format select box
+				refreshSelectBox(true);
+			}
+
 			if (cropIt == true) {
 				setCropActive(true);
 			} else {
@@ -378,8 +383,8 @@ function loadActiveItem(data, isInitial) {
 			} else {
 				setCropActive(false);
 			}
-	        if (initValues.widgetmode != "simple" || initValues.showformats == true) {
-            	// refresh the format select box
+	        	if (initValues.widgetmode != "simple" || initValues.showformats == true) {
+            			// refresh the format select box
 				refreshSelectBox();
 			} else  if (initValues.showformats == false) {
 				$("#croplink").hide();
@@ -395,6 +400,9 @@ function loadActiveItem(data, isInitial) {
 		setCropActive(false);
 		if (initValues.useformats != true) {
 			$("#croplink").hide();
+		}
+		if (initValues.useformats == true && initValues.showformats == true) {
+			$("#croplink").show();
 		}
 	}
 	try {
@@ -430,7 +438,6 @@ function refreshActiveImagePreview() {
 		imgHeight = activeItem.newheight;
 		useSelectedDimensions = true;
 	}
-
 	if (initValues.useformats != true || (initValues.useformats == true && (formatSelected.width == -1 || formatSelected.height == -1))) {
 		setImageFormatFields(imgWidth, imgHeight);
 	}

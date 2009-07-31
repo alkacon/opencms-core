@@ -30,10 +30,10 @@ function setCropActive(isCropped, forceRefreshPreview) {
 			$('#cropinfo').show();
 		} else {
 			// cropping has been disabled, enable input fields and refresh view
-			if (initValues.useformats == true) {
+			if (initValues.useformats == true && initValues.showformats != true) {
 				// using formats, calculate image for currently selected size
 				changeFormat();
-			} else {
+			} else if (initValues.useformats == false) {
 				// only enable if not using formats
 				$('#txtWidth').get(0).disabled = false;
 				$('#txtHeight').get(0).disabled = false;
@@ -61,7 +61,6 @@ function onSizeChanged(dimension, value, refreshImage, refreshSelect) {
 			e.value = "";
 			return;
 		}
-	
 		var imgHeight = activeItem.height;
 		var imgWidth = activeItem.width;
 				
@@ -123,9 +122,9 @@ function setLockRatio(newRatio) {
 	lockRatio = newRatio;
 	if (lockRatio == true) {
 		if ($('#txtWidth').get(0).value.length > 0 ) {
-		    onSizeChanged('Width', $('#txtWidth').get(0).value);
+		    	onSizeChanged('Width', $('#txtWidth').get(0).value);
 		} else {
-		    onSizeChanged('Height', $('#txtHeight').get(0).value);
+			onSizeChanged('Height', $('#txtHeight').get(0).value);
 		}
 		$('#locksizes').attr("title", LANG.IMGPREVIEW_SIZE_UNLOCK);
 		$('#locksizes').attr("class", "btnlocked");
@@ -138,8 +137,8 @@ function setLockRatio(newRatio) {
 /* Called if a format is selected in the format select box. */
 function changeFormat() {
 	var selected = $("#formatselect").get(0).selectedIndex;
-	
 	formatSelected = formatSelections[selected];
+
 	if (formatSelected.type == "original") {
 		// reset to original sizes
 		resetSizes();
@@ -187,7 +186,7 @@ function changeFormat() {
 /* Initializes the options and values shown in the format select box. */
 function initFormatSelectBox() {
 	var formatOptions, formatValues;
-	if (initValues.widgetmode != "simple" && initValues.useformats == true) {
+	if (initValues.useformats == true) {
 		// using a preselected format, just display information that cannot be changed
 
 		$("#txtWidth").get(0).disabled = true;
@@ -255,9 +254,9 @@ function initFormatSelectBox() {
 }
 
 /* Refreshes the selected option of the format select box. */
-function refreshSelectBox() {
+function refreshSelectBox(forceCalculateSelection) {
 	var selectedIndex = -1;
-	if (initValues.useformats != true) {
+	if (initValues.useformats != true || forceCalculateSelection == true) {
 		for (var i=0; i<formatSelections.length; i++) {
 			// check if the values match a format selection
 			var currSelect = formatSelections[i];

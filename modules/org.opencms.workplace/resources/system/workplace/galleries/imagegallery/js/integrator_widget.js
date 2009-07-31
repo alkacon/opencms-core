@@ -109,41 +109,30 @@ function okPressed() {
 				initValues.scale = removeScaleValue(initValues.scale, "ch");
 
 			}
-			// TODO: change the logic as for normal widget mode
-			if (initValues.useformats == true) {   // wenn user format 
-			//	initValues.scale = removeScaleValue(initValues.scale, "w");
-			//	initValues.scale = removeScaleValue(initValues.scale, "h");
-			//	var formatBox = window.opener.document.getElementById("format." + initValues.fieldid);
-			//	if (formatBox.selectedIndex != $("#formatselect").get(0).selectedIndex) {
-			//		formatBox.selectedIndex = $("#formatselect").get(0).selectedIndex;
-			//		window.opener.setImageFormat(initValues.fieldid, "imgFmts" + initValues.hashid);
-			//	}
-			} else {  // sonst
-				initValues.scale = removeScaleValue(initValues.scale, "w");
-				initValues.scale = removeScaleValue(initValues.scale, "h");
-
-				var newScale = "";
-				var sizeChanged = false;
-				// comma to separate the content
-				if (initValues.scale != null && initValues.scale != "") {
+			initValues.scale = removeScaleValue(initValues.scale, "w");
+			initValues.scale = removeScaleValue(initValues.scale, "h");
+			
+			var newScale = "";
+			var sizeChanged = false;
+			// comma to separate the content
+			if (initValues.scale != null && initValues.scale != "") {
+				newScale += ",";
+			}
+			if (activeItem.newwidth > 0 && activeItem.width != activeItem.newwidth) {
+				sizeChanged = true;
+				newScale += "w:" + activeItem.newwidth;
+			}
+			if (activeItem.newheight > 0 && activeItem.height != activeItem.newheight ) {
+				if (sizeChanged == true) {
 					newScale += ",";
 				}
-				if (activeItem.newwidth > 0 && activeItem.width != activeItem.newwidth) {
-					sizeChanged = true;
-					newScale += "w:" + activeItem.newwidth;
-				}
-				if (activeItem.newheight > 0 && activeItem.height != activeItem.newheight ) {
-					if (sizeChanged == true) {
-						newScale += ",";
-					}
-					sizeChanged = true;
-					newScale += "h:" + activeItem.newheight;
-				}
-				if (newScale.length > 1) {
-					initValues.scale += newScale;
-				}
-
+				sizeChanged = true;
+				newScale += "h:" + activeItem.newheight;
 			}
+			if (newScale.length > 1) {
+				initValues.scale += newScale;
+			}
+
 			if (initValues.scale != null && initValues.scale != "") {
 				imagePath += "?__scale=";
 				imagePath += initValues.scale;

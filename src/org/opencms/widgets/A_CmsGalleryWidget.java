@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2009/06/08 14:52:36 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/07/31 10:36:34 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.workplace.galleries.A_CmsAjaxGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -221,6 +221,8 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
             } else {
                 result.append("\n<script type=\"text/javascript\">");
                 result.append("\nvar useFmts").append(idHash).append(" = false;");
+                result.append("\nvar imgFmts").append(idHash).append(" = null;");
+                result.append("\nvar imgFmtNames").append(idHash).append(" = null;");
                 result.append("\n</script>");
             }
         } else { // for download, link, html or table galleries

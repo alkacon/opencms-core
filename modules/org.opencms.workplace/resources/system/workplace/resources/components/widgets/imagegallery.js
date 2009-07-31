@@ -68,32 +68,28 @@ function getScaleValue(scale, valueName) {
 }
 
 function setImageGalleryInfo(fieldId, idHash) {
-	// TO DO: formatnames and formatvalues are not yet supported
+
 	// parameter from the xml configuration and the input field
 	var imageEl = window.document.getElementById(fieldId);
 	// image path with scale parameteres as ?__scale=
 	var imagePath = imageEl.value;
 	
-	// must be set in the configuration, for now=false
-	var useFormats = false; 
-	var showFormats = eval('useFmts' + idHash); 
-	var formatValue = null;
+	var showFormats = eval('useFmts' + idHash);
+	var useFormats = false;
+	if (showFormats == true) {
+		var formatNames = escape(eval('imgFmtNames' + idHash));
+		var formatValues = eval('imgFmts' + idHash);
+		if (formatNames.toString() != "null") {
+			useFormats = showFormats;
+		}
+	}
 	
 	var scaleParam = extractScaleParam(imagePath);
 	var imgWidth = "";
 	var imgHeight = "";
 	if (scaleParam != null) {
-		if (formatValue != null && formatValue.length > 0) {
-			// we have a format value, check scale parameters
-			// for eventual width and height info and remove them if a format selector is present
-			if (useFormats == true) {
-				//scale = removeScaleValue(scaleParam, "w");
-				//scale = removeScaleValue(scaleParam, "h");
-			}
-		} else {
-			imgWidth = getScaleValue(scaleParam, "w");
-			imgHeight = getScaleValue(scaleParam, "h");
-		}
+		imgWidth = getScaleValue(scaleParam, "w");
+		imgHeight = getScaleValue(scaleParam, "h");
 	}
 		
 	var editedResource = "";
@@ -107,6 +103,7 @@ function setImageGalleryInfo(fieldId, idHash) {
 	imageGalleryInfo = {
 		
 		"fieldid": 		fieldId,
+		"hashid": 		idHash,
 		"imagepath": 		imagePath,
 		"useformats": 		useFormats,
 		"showformats": 		showFormats,

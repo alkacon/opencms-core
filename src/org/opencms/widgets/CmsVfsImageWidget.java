@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsImageWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:11 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/07/31 10:36:34 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.5.0 
  */
@@ -291,6 +291,9 @@ public class CmsVfsImageWidget extends A_CmsWidget {
             result.append("\nvar useFmts").append(idHash).append(" = true;");
             result.append("\n</script>");
         } else {
+            result.append("<input type=\"hidden\" value=\"\" name=\"");
+            result.append(PREFIX_IMAGERATIO).append(id).append("\" id=\"");
+            result.append(PREFIX_IMAGERATIO).append(id).append("\" />");
             result.append("<input type=\"hidden\" value=\"").append(format).append("\" name=\"");
             result.append(PREFIX_FORMAT).append(id).append("\" id=\"");
             result.append(PREFIX_FORMAT).append(id).append("\" />");
