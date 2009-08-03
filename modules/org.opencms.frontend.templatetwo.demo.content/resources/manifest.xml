@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.5</opencms_version>
-		<createdate>Thu, 04 Jun 2009 09:44:27 GMT</createdate>
+		<opencms_version>7.5.0</opencms_version>
+		<createdate>Mon, 03 Aug 2009 13:01:33 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -1737,7 +1737,7 @@
 			<type>image</type>
 			<uuidstructure>2cf30253-bd41-11dd-b0a0-bb58e5a148ea</uuidstructure>
 			<uuidresource>2cf30254-bd41-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:49:05 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:15:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:39:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1765,7 +1765,7 @@
 			<type>image</type>
 			<uuidstructure>7e2ba401-db09-11dc-8686-9f7a6a6ce285</uuidstructure>
 			<uuidresource>7e2ba402-db09-11dc-8686-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:49:56 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:58:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 14 Feb 2008 14:31:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1961,7 +1961,7 @@
 			<type>image</type>
 			<uuidstructure>49e94140-bd41-11dd-b0a0-bb58e5a148ea</uuidstructure>
 			<uuidresource>49e94141-bd41-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:08 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:20:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:40:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1989,7 +1989,7 @@
 			<type>image</type>
 			<uuidstructure>2678ed01-356d-11de-ad83-9f223d1d1dbb</uuidstructure>
 			<uuidresource>2678ed02-356d-11de-ad83-9f223d1d1dbb</uuidresource>
-			<datelastmodified>Thu, 30 Apr 2009 09:58:41 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:21:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 30 Apr 2009 09:56:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2045,7 +2045,7 @@
 			<type>image</type>
 			<uuidstructure>7e4a9db5-db09-11dc-8686-9f7a6a6ce285</uuidstructure>
 			<uuidresource>7e4a9db6-db09-11dc-8686-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:13 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:21:25 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 14 Feb 2008 14:31:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2129,7 +2129,7 @@
 			<type>image</type>
 			<uuidstructure>61b684fa-bf85-11dd-8638-bb58e5a148ea</uuidstructure>
 			<uuidresource>61b684fb-bf85-11dd-8638-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 14:13:32 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:33:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 01 Dec 2008 08:52:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2185,7 +2185,7 @@
 			<type>image</type>
 			<uuidstructure>5a8f08e8-bd41-11dd-b0a0-bb58e5a148ea</uuidstructure>
 			<uuidresource>5a8f08e9-bd41-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:23 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:33:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:40:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2293,7 +2293,7 @@
 			<type>image</type>
 			<uuidstructure>719965dd-e6e5-11dc-ada5-d3bbbb60c354</uuidstructure>
 			<uuidresource>240c4faf-e172-11dc-b389-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:41 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:19:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 22 Feb 2008 18:15:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2349,7 +2349,7 @@
 			<type>image</type>
 			<uuidstructure>87ef8d20-bd41-11dd-b0a0-bb58e5a148ea</uuidstructure>
 			<uuidresource>87ef8d21-bd41-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:47 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:34:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:41:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2377,7 +2377,7 @@
 			<type>image</type>
 			<uuidstructure>9ca236d7-dbcc-11dc-8613-9f7a6a6ce285</uuidstructure>
 			<uuidresource>9ca236d8-dbcc-11dc-8613-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:52 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:34:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Feb 2008 13:47:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2461,7 +2461,7 @@
 			<type>image</type>
 			<uuidstructure>bf6f117a-dbdb-11dc-8025-9f7a6a6ce285</uuidstructure>
 			<uuidresource>bf6f117b-dbdb-11dc-8025-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:51:09 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:59:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Feb 2008 15:36:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2517,7 +2517,7 @@
 			<type>image</type>
 			<uuidstructure>9c17f82f-dbcc-11dc-8613-9f7a6a6ce285</uuidstructure>
 			<uuidresource>9c17f830-dbcc-11dc-8613-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:51:20 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:14:13 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Feb 2008 13:47:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2545,7 +2545,7 @@
 			<type>image</type>
 			<uuidstructure>24f8aa37-34b3-11de-9836-9f223d1d1dbb</uuidstructure>
 			<uuidresource>24f8aa38-34b3-11de-9836-9f223d1d1dbb</uuidresource>
-			<datelastmodified>Fri, 08 May 2009 12:11:15 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:14:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 29 Apr 2009 11:44:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2629,7 +2629,7 @@
 			<type>image</type>
 			<uuidstructure>f9037555-bd41-11dd-b0a0-bb58e5a148ea</uuidstructure>
 			<uuidresource>f9037556-bd41-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:51:38 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:56:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:44:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2713,7 +2713,7 @@
 			<type>image</type>
 			<uuidstructure>af2c6266-bf85-11dd-8638-bb58e5a148ea</uuidstructure>
 			<uuidresource>af2c6267-bf85-11dd-8638-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:51:50 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:57:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 01 Dec 2008 08:54:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2741,7 +2741,7 @@
 			<type>image</type>
 			<uuidstructure>24793f8d-bd42-11dd-b0a0-bb58e5a148ea</uuidstructure>
 			<uuidresource>24793f8e-bd42-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:51:56 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:57:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:46:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2769,7 +2769,7 @@
 			<type>image</type>
 			<uuidstructure>9db1f94b-dbcc-11dc-8613-9f7a6a6ce285</uuidstructure>
 			<uuidresource>9db1f94c-dbcc-11dc-8613-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:52:01 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:32:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Feb 2008 13:47:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2797,7 +2797,7 @@
 			<type>image</type>
 			<uuidstructure>4d05f1e8-c1fb-11dd-971c-bb58e5a148ea</uuidstructure>
 			<uuidresource>4d05f1e9-c1fb-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 14:13:46 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:58:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 12:01:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -4346,7 +4346,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Liliaceous Plants]]></value>
+					<value><![CDATA[Lilaceous Plants]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -5758,7 +5758,7 @@
 			<type>image</type>
 			<uuidstructure>737801e0-e549-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>2cf30254-bd41-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:49:05 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:15:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:39:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -5777,7 +5777,18 @@
 					<value><![CDATA[w:399,h:599]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116d98-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/korbbluetengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -5785,7 +5796,7 @@
 			<type>image</type>
 			<uuidstructure>73d9d11f-e549-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>7e2ba402-db09-11dc-8686-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:49:56 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:58:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 14 Feb 2008 14:31:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -5804,7 +5815,18 @@
 					<value><![CDATA[w:283,h:424]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>55d2449e-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/rosengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6055,7 +6077,7 @@
 			<type>image</type>
 			<uuidstructure>739bdd9e-e549-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>240c4faf-e172-11dc-b389-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:41 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:19:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 22 Feb 2008 18:15:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6074,7 +6096,18 @@
 					<value><![CDATA[w:400,h:600]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>6340d611-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/liliengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6082,7 +6115,7 @@
 			<type>image</type>
 			<uuidstructure>7394b1ab-e549-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>bf6f117b-dbdb-11dc-8025-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:51:09 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:59:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Feb 2008 15:36:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6101,7 +6134,18 @@
 					<value><![CDATA[w:554,h:600]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>6340d611-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/liliengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6109,7 +6153,7 @@
 			<type>image</type>
 			<uuidstructure>5e0a3ad2-bd43-11dd-b0a0-bb58e5a148ea</uuidstructure>
 			<uuidresource>49e94141-bd41-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:08 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:20:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:40:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6128,7 +6172,18 @@
 					<value><![CDATA[w:635,h:599]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116d98-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/korbbluetengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6136,7 +6191,7 @@
 			<type>image</type>
 			<uuidstructure>73de8b12-e549-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>7e4a9db6-db09-11dc-8686-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:13 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:21:25 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 14 Feb 2008 14:31:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6155,7 +6210,18 @@
 					<value><![CDATA[w:800,h:497]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116d98-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/korbbluetengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6163,7 +6229,7 @@
 			<type>image</type>
 			<uuidstructure>ef32dc32-3953-11de-90e9-9f223d1d1dbb</uuidstructure>
 			<uuidresource>2678ed02-356d-11de-ad83-9f223d1d1dbb</uuidresource>
-			<datelastmodified>Thu, 30 Apr 2009 09:58:41 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:21:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 30 Apr 2009 09:56:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6182,7 +6248,18 @@
 					<value><![CDATA[w:568,h:426]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>55d2449e-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/rosengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6217,7 +6294,7 @@
 			<type>image</type>
 			<uuidstructure>73cdea39-e549-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>9db1f94c-dbcc-11dc-8613-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:52:01 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:32:49 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Feb 2008 13:47:57 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6236,7 +6313,18 @@
 					<value><![CDATA[w:800,h:600]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116d98-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/korbbluetengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6298,7 +6386,7 @@
 			<type>image</type>
 			<uuidstructure>3d85e494-237e-11de-b3f6-8744e439627c</uuidstructure>
 			<uuidresource>61b684fb-bf85-11dd-8638-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 14:13:32 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:33:16 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 01 Dec 2008 08:52:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6317,7 +6405,18 @@
 					<value><![CDATA[w:300,h:342]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>6340d611-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/liliengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6325,7 +6424,7 @@
 			<type>image</type>
 			<uuidstructure>a094837d-bd4a-11dd-b0a0-bb58e5a148ea</uuidstructure>
 			<uuidresource>5a8f08e9-bd41-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:23 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:33:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:40:28 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6344,7 +6443,18 @@
 					<value><![CDATA[w:800,h:600]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116d98-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/korbbluetengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6457,7 +6567,7 @@
 			<type>image</type>
 			<uuidstructure>1a17b101-bd4b-11dd-b0a0-bb58e5a148ea</uuidstructure>
 			<uuidresource>87ef8d21-bd41-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:47 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:34:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:41:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6476,7 +6586,18 @@
 					<value><![CDATA[w:800,h:532]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>6340d611-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/liliengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6484,7 +6605,7 @@
 			<type>image</type>
 			<uuidstructure>7364ef07-e549-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>9ca236d8-dbcc-11dc-8613-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:50:52 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:34:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Feb 2008 13:47:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6503,7 +6624,18 @@
 					<value><![CDATA[w:800,h:600]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>55d2449e-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/rosengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6619,7 +6751,7 @@
 			<type>image</type>
 			<uuidstructure>73544d2e-e549-11dc-8457-51cb880fd12a</uuidstructure>
 			<uuidresource>9c17f830-dbcc-11dc-8613-9f7a6a6ce285</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:51:20 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:14:13 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Feb 2008 13:47:55 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6638,7 +6770,18 @@
 					<value><![CDATA[w:650,h:599]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>55d2449e-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/rosengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6646,7 +6789,7 @@
 			<type>image</type>
 			<uuidstructure>2349b8d4-3959-11de-90e9-9f223d1d1dbb</uuidstructure>
 			<uuidresource>24f8aa38-34b3-11de-9836-9f223d1d1dbb</uuidresource>
-			<datelastmodified>Fri, 08 May 2009 12:11:15 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:14:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 29 Apr 2009 11:44:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6665,7 +6808,18 @@
 					<value><![CDATA[w:600,h:450]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>55d2449e-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/rosengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6673,7 +6827,7 @@
 			<type>image</type>
 			<uuidstructure>4d05b15b-bd43-11dd-b0a0-bb58e5a148ea</uuidstructure>
 			<uuidresource>f9037556-bd41-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:51:38 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:56:31 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:44:54 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6692,7 +6846,18 @@
 					<value><![CDATA[w:450,h:600]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116d98-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/korbbluetengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6755,7 +6920,7 @@
 			<type>image</type>
 			<uuidstructure>e12bd7ef-bf87-11dd-8638-bb58e5a148ea</uuidstructure>
 			<uuidresource>af2c6267-bf85-11dd-8638-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:51:50 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:57:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 01 Dec 2008 08:54:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6774,7 +6939,18 @@
 					<value><![CDATA[w:479,h:599]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>6340d611-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/liliengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6782,7 +6958,7 @@
 			<type>image</type>
 			<uuidstructure>5527ee4b-bd4b-11dd-b0a0-bb58e5a148ea</uuidstructure>
 			<uuidresource>24793f8e-bd42-11dd-b0a0-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 13:51:56 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:57:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 28 Nov 2008 11:46:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6801,7 +6977,18 @@
 					<value><![CDATA[w:480,h:600]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>55d2449e-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/rosengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -6809,7 +6996,7 @@
 			<type>image</type>
 			<uuidstructure>f258bec1-237d-11de-b3f6-8744e439627c</uuidstructure>
 			<uuidresource>4d05f1e9-c1fb-11dd-971c-bb58e5a148ea</uuidresource>
-			<datelastmodified>Tue, 07 Apr 2009 14:13:46 GMT</datelastmodified>
+			<datelastmodified>Mon, 03 Aug 2009 12:58:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 04 Dec 2008 12:01:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -6828,7 +7015,18 @@
 					<value><![CDATA[w:800,h:600]]></value>
 				</property>
 			</properties>
-			<relations/>
+			<relations>
+				<relation>
+					<id>4744878b-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/</path>
+					<type>CATEGORY</type>
+				</relation>
+				<relation>
+					<id>39116d98-dbb1-11dc-997c-9f7a6a6ce285</id>
+					<path>/system/categories/gewaechsarten/korbbluetengewaechs/</path>
+					<type>CATEGORY</type>
+				</relation>
+			</relations>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -7954,10 +8152,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>41f49e25-358b-11de-9835-f9441ff21e44</uuidstructure>
-			<datelastmodified>Thu, 30 Apr 2009 13:31:49 GMT</datelastmodified>
+			<uuidstructure>872e522c-7cdd-11de-8e2f-e92aaf3d04db</uuidstructure>
+			<datelastmodified>Thu, 30 Jul 2009 07:49:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 30 Apr 2009 13:31:49 GMT</datecreated>
+			<datecreated>Thu, 30 Jul 2009 07:49:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
