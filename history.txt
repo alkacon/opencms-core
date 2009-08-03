@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/07/31 14:47:16 $
- * Version: $Revision: 1.1118 $
+ * Date   : $Date: 2009/08/03 12:38:03 $
+ * Version: $Revision: 1.1119 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -30,6 +30,7 @@ OpenCms 7.5.1 - month day, 2009
 * Fixed issue #1739: Deleted or moved project resources cannot be removed from project
 * Fixed issue with OU users being unable to work after OU resource has been renamed 
 * Fixed issue with pointer targets being stored in XML contents (instead of the uri to pointers) when selecting them from link gallery
+* Fixed issue with transfer permissions of a deleted user to another user
 ! Added functionality to publish resources at specified date (publish schedule)
 
 OpenCms 7.5.0 - June 15, 2009

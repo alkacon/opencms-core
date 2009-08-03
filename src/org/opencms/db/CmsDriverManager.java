@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/07/27 08:14:57 $
- * Version: $Revision: 1.638 $
+ * Date   : $Date: 2009/08/03 12:38:02 $
+ * Version: $Revision: 1.639 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -2861,8 +2861,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsGroup group = (CmsGroup)itGroups.next();
                 if (!isVfsManager) {
                     // add replacement user to user groups
-                    if (!userInGroup(dbc, replacementUser.getName(), group.getName(), false)) {
-                        addUserToGroup(dbc, replacementUser.getName(), group.getName(), false);
+                    if (!userInGroup(dbc, replacementUser.getName(), group.getName(), readRoles)) {
+                        addUserToGroup(dbc, replacementUser.getName(), group.getName(), readRoles);
                     }
                 }
                 // remove user from groups
