@@ -1,0 +1,1234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Flower Today</title>
+    <meta name="description" content="dd" />
+    <meta name="keywords" content="" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="robots" content="index, follow" />
+    <meta name="revisit-after" content="7 days" />
+    <!-- insert stylesheets needed for the template -->
+    <link href="flower-demo-Dateien/style_003.css" rel="stylesheet" type="text/css" />
+    <link href="flower-demo-Dateien/nav_left.css" rel="stylesheet" type="text/css" />
+    <link href="flower-demo-Dateien/style.css" rel="stylesheet" type="text/css" />
+    <link href="flower-demo-Dateien/style_002.css" rel="stylesheet" type="text/css" />
+    <link href="custom-theme/jquery-ui-1.7.2.custom.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="lib/jquery-1.3.2.js">
+    </script>
+    <script type="text/javascript" src="lib/jquery-ui-1.7.2.custom.js">
+    </script>
+    <script type="text/javascript" src="lib/jquery.jHelperTip.1.0.js">
+    </script>
+    <script type="text/javascript" src="lib/jquery.dump.js">
+    </script>
+    <script type="text/javascript" src="lib/json2.js">
+    </script>
+    <script type="text/javascript" src="testing.js">
+    </script>
+    <script type="text/javascript">
+      
+      var sortlist = '#col1_content, #col2_content, #col3_content, #bottom_cont';
+      var sortitems = 'div.box';
+      var deleteitems = sortitems;
+      
+      $('document').ready(function() {
+         addToolbar();
+         
+         $('.cms-item a.ui-icon').live('click', function() {
+            var elem = $(this);
+            if (elem.hasClass('ui-icon-triangle-1-e')) {
+               elem.removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
+               elem.parents('.ui-widget-content').children('.cms-additional').show(5, function() {
+                  var list = $(this).parents('div.cms-item-list');
+                  $('div.ui-widget-shadow', list).css({
+                     height: list.outerHeight() + 2
+                  });
+               });
+            } else {
+               elem.removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
+               elem.parents('.ui-widget-content').children('.cms-additional').hide(5, function() {
+                  var list = $(this).parents('div.cms-item-list');
+                  $('div.ui-widget-shadow', list).css({
+                     height: list.outerHeight() + 2
+                  });
+               });
+            }
+            return false;
+         });
+         
+         
+         $('.cms-item-list div.cms-additional div').jHelperTip({
+            trigger: 'hover',
+            source: 'attribute',
+            attrName: 'alt',
+            topOff: -30,
+            opacity: 0.8
+         });
+         
+         
+         
+      });
+    </script>
+    <style type="text/css">
+      
+      #toolbar {
+          height: 34px;
+          position: fixed;
+          width: 100%;
+          background-color: transparent;
+          top: 0;
+          left: 0;
+          z-index: 10000;
+      }
+      
+      #toolbar_background {
+          height: 34px;
+          width: 100%;
+          position: absolute;
+          border-top: none;
+      }
+      
+      #toolbar_content {
+          width: 1000px;
+          margin: 0 auto;
+          position: relative;
+      }
+      
+      #toolbar div.ui-widget-shadow {
+          height: 34px;
+          width: 100%;
+          padding: 5px 0px;
+          margin-left: 0px;
+          position: absolute;
+      }
+      
+      button {
+          margin: 2px 2px 0px 2px;
+          width: 32px;
+      }
+      
+      #toolbar_content button.wide span.cms-button-text {
+          width: 55px;
+          text-align: center;
+          margin-top: 5px;
+      }
+      
+      #toolbar_content button span {
+          width: 24px;
+          height: 24px;
+          margin: 2px auto;
+      }
+      
+      #toolbar_content button.wide span {
+          float: left;
+          margin: 2px 0 0 2px;
+      }
+      
+      #toolbar_content button {
+          height: 30px;
+      }
+      
+      button.wide {
+          width: 95px;
+      }
+      
+      #close-button {
+          position: absolute;
+          top: -5px;
+          right: 20px;
+          width: 25px;
+          display: none;
+      }
+      
+      #show-button {
+          position: fixed;
+          top: -4px;
+          right: 20px;
+          width: 25px;
+          z-index: 10100;
+      }
+      
+      #toolbar button.left {
+          float: left;
+          z-index: 10100;
+          position: relative;
+      }
+      
+      #toolbar button.right {
+          float: right;
+      }
+      
+      .ui-state-default .cms-icon-logo {
+          background-image: url(images/opencms_logo_16.png)
+      }
+      
+      .ui-state-default .cms-icon-recent {
+          background-image: url(images/24x24/ade_recent_sw.png)
+      }
+      
+      .ui-state-default .cms-icon-edit {
+          background-image: url(images/24x24/ade_edit_sw.png)
+      }
+      
+      .ui-state-default .cms-icon-move {
+          background-image: url(images/24x24/ade_move_sw.png)
+      }
+      
+      .ui-state-default .cms-icon-reset {
+          background-image: url(images/24x24/ade_exit_sw.png)
+      }
+      
+      .ui-state-default .cms-icon-delete {
+          background-image: url(images/24x24/ade_delete_sw.png)
+      }
+      
+      .ui-state-default .cms-icon-add {
+          background-image: url(images/24x24/ade_add_sw.png)
+      }
+      
+      .ui-state-default .cms-icon-favorites {
+          background-image: url(images/24x24/ade_favorites_sw.png)
+      }
+      
+      .ui-state-default .cms-icon-new {
+          background-image: url(images/24x24/ade_new_sw.png)
+      }
+      
+      .ui-state-default .cms-icon-publish {
+          background-image: url(images/24x24/ade_publish_sw.png)
+      }
+      
+      .ui-state-default .cms-icon-sitemap {
+          background-image: url(images/24x24/ade_sitemap_sw.png)
+      }
+      
+      .ui-state-default .cms-icon-save {
+          background-image: url(images/24x24/ade_save_sw.png)
+      }
+      
+      .ui-state-hover span.cms-icon-recent {
+          background-image: url(images/24x24/ade_recent.png)
+      }
+      
+      .ui-state-hover span.cms-icon-edit {
+          background-image: url(images/24x24/ade_edit.png)
+      }
+      
+      .ui-state-hover span.cms-icon-move {
+          background-image: url(images/24x24/ade_move.png)
+      }
+      
+      .ui-state-hover span.cms-icon-reset {
+          background-image: url(images/24x24/ade_exit.png)
+      }
+      
+      .ui-state-hover span.cms-icon-delete {
+          background-image: url(images/24x24/ade_delete.png)
+      }
+      
+      .ui-state-hover span.cms-icon-add {
+          background-image: url(images/24x24/ade_add.png)
+      }
+      
+      .ui-state-hover span.cms-icon-favorites {
+          background-image: url(images/24x24/ade_favorites.png)
+      }
+      
+      .ui-state-hover span.cms-icon-new {
+          background-image: url(images/24x24/ade_new.png)
+      }
+      
+      .ui-state-hover span.cms-icon-publish {
+          background-image: url(images/24x24/ade_publish.png)
+      }
+      
+      .ui-state-hover span.cms-icon-sitemap {
+          background-image: url(images/24x24/ade_sitemap.png)
+      }
+      
+      .ui-state-hover span.cms-icon-save {
+          background-image: url(images/24x24/ade_save.png)
+      }
+      
+      .ui-state-active span.cms-icon-move {
+          background-image: url(images/24x24/ade_move.png)
+      }
+      
+      .ui-state-active span.cms-icon-delete {
+          background-image: url(images/24x24/ade_delete.png)
+      }
+      
+      .ui-state-active span.cms-icon-recent {
+          background-image: url(images/24x24/ade_recent.png)
+      }
+      
+      .ui-state-active span.cms-icon-add {
+          background-image: url(images/24x24/ade_add.png)
+      }
+      
+      .ui-state-active span.cms-icon-favorites {
+          background-image: url(images/24x24/ade_favorites.png)
+      }
+      
+      .ui-state-active span.cms-icon-new {
+          background-image: url(images/24x24/ade_new.png)
+      }
+      
+      .ui-state-active span.cms-icon-publish {
+          background-image: url(images/24x24/ade_publish.png)
+      }
+      
+      .hovering {
+          position: absolute;
+          overflow: hidden;
+      }
+      
+      .hovering-top {
+          background: transparent url(images/ocms_de_t.gif) repeat scroll 0 50%;
+      }
+      
+      .hovering-right {
+          background: transparent url(images/ocms_de_r.gif) repeat scroll 0 50%;
+      }
+      
+      .hovering-left {
+          background: transparent url(images/ocms_de_l.gif) repeat scroll 0 50%;
+      }
+      
+      .hovering-bottom {
+          background: transparent url(images/ocms_de_b.gif) repeat scroll 0 50%;
+      }
+      
+      .hovered {
+          margin: 2px !important;
+      }
+      
+      .placeholder {
+          border: 2px dotted black;
+          visibility: visible !important;
+          height: 10px;
+          position: relative;
+      }
+      
+      .placeholder * {
+          visibility: hidden;
+      }
+      
+      .show-sortable {
+          background-color: #AACCFF;
+      }
+      
+      div.cms-button {
+          position: absolute;
+          top: 0px;
+          right: 0px;
+          width: 20px;
+          height: 20px;
+          overflow: hidden;
+      }
+      
+      div.cms-move {
+          background: transparent url(images/16x16/ocms_de_move_i.png) repeat scroll 0 50%;
+      }
+      
+      .cms-handle {
+          position: absolute;
+          top: 0px;
+          right: 0px;
+          width: 20px;
+          height: 20px;
+          overflow: hidden;
+      }
+      
+      .cms-led-icon {
+          position: absolute;
+          top: 1px;
+          right: 1px;
+          width: 16px;
+          height: 16px;
+          overflow: hidden;
+          background: transparent url(images/16x16/img_new_.png) repeat scroll 0 50%;
+      }
+      
+      .cms-lock-icon {
+          position: absolute;
+          top: 17px;
+          right: 1px;
+          width: 16px;
+          height: 16px;
+          overflow: hidden;
+          background: transparent url(images/16x16/img_locked_.png) repeat scroll 0 50%;
+      }
+      
+      .cms-file-icon {
+          position: absolute;
+          top: 1px;
+          left: 1px;
+          width: 32px;
+          height: 32px;
+          overflow: hidden;
+          background: transparent url(images/32x32/document_text.png) repeat scroll 0 50%;
+      }
+      
+      .cms-check-icon {
+          width: 16px;
+          height: 16px;
+          overflow: hidden;
+          background: transparent url(images/16x16/checkbox_checked_16x16.png) repeat scroll 0 50%;
+          display: block;
+      }
+      
+      span.cms-check-icon-inactive {
+          background-image: url(images/16x16/checkbox_empty_16x16.png);
+      }
+      
+      .cms-move {
+          background: transparent url(images/16x16/ocms_de_move_i.png) repeat scroll 0 50%;
+      }
+      
+      .cms-move:hover {
+          background-image: url(images/16x16/ocms_de_move_a.png);
+      }
+      
+      .cms-delete {
+          background: transparent url(images/16x16/ocms_de_delete_i.png) repeat scroll 0 50%;
+      }
+      
+      .cms-delete:hover {
+          background-image: url(images/16x16/ocms_de_delete_a.png);
+      }
+      
+      #publishlist {
+          display: none;
+          padding: 0px;
+      }
+      
+      .cms-item-list li {
+          display: block;
+          font-weight: normal;
+      }
+      
+      .cms-item-list .cms-check-icon, .cms-item-list input {
+          margin: 10px 5px 0 0;
+          cursor: pointer;
+      }
+      
+      .cms-item div.ui-state-hover {
+          border: none;
+          padding-bottom: 1px;
+      }
+      
+      .cms-item-list label {
+          float: left;
+          padding: 7px 0 3px 5px;
+      }
+      
+      .cms-item-list ul {
+          margin: 10px 0 0 0;
+          list-style: none outside;
+          padding-bottom: 2px;
+      }
+      
+      .cms-item-list ul.options li, #publishlist ul.options input {
+          margin-bottom: 0;
+      }
+      
+      .cms-item-list ul.options {
+          border-top: solid 1px #999999
+      }
+      
+      .cms-item-list .ui-widget-content, cms-item .ui-widget-content {
+          position: relative;
+          width: 290px;
+          line-height: 16px;
+          margin-bottom: 2px;
+      }
+      
+      .cms-item .ui-widget-content .cms-navtext {
+          font-weight: bold;
+          margin-left: 30px;
+      }
+      
+      .cms-item .ui-widget-content .cms-title {
+          margin-left: 34px;
+      }
+      
+      .cms-item .cms-additional {
+          display: none;
+          padding: 5px 0 0 4px;
+      }
+      
+      .cms-item-list .ui-widget-content .cms-additional span.left {
+          width: 60px;
+          overflow: hidden;
+          margin-right: 3px;
+      }
+      
+      .cms-item-list .ui-widget-content .cms-additional div {
+          width: 280px;
+          overflow: hidden;
+          height: 18px;
+          word-wrap: break-word;
+      }
+      
+      .cms-item-list .ui-widget-content a.ui-icon {
+          cursor: pointer;
+      }
+      
+      .cms-item .cms-item-content {
+          display: none;
+      }
+      
+      .cms-item-list .ui-widget-shadow {
+          position: absolute;
+      }
+      
+      li.cms-item, ul.options li {
+          list-style: none;
+          margin-left: 10px;
+      }
+      
+      #favoritelist {
+          display: none;
+          padding: 0px;
+          position: absolute;
+      }
+      
+      #favoritelist div.ui-widget-content, #favoritelist div.connect {
+          background: #AACCFF;
+      }
+      
+      #favoritelist div.ui-widget-content div.ui-widget-content {
+          background: #ffffff;
+      }
+      
+      #favoritelist div.ui-corner-bottom {
+          width: 315px;
+      }
+      
+      #favoritelist div.connect {
+          position: absolute;
+          right: 0px;
+          top: -35px;
+          width: 99px;
+          height: 36px;
+          z-index: 1;
+          border: 1px solid #aaaaaa;
+          border-bottom: 0px;
+      }
+      
+      div.ui-widget-overlay {
+          position: fixed;
+      }
+      
+      div.container-bottom div.box {
+          margin: 0 5px;
+          width: 32%;
+          float: left;
+          height: 150px;
+          overflow: hidden;
+      }
+      
+      div.container-bottom {
+          position: relative;
+          min-height: 10px;
+      }
+      
+      #tree-list {
+          padding: 0;
+          display: none;
+          z-index: 13000;
+          position: absolute;
+          top: 50px;
+          left: 200px;
+      }
+      
+      #tree-list li.cms-item {
+          list-style: none;
+          margin: -1px 0 0 8px;
+          padding: 1px 0 0 0px;
+          background: transparent url(images/leaf__.gif) no-repeat scroll 0 -1px;
+      }
+      
+      #tree-list li.last {
+          background: transparent url(images/leaf-last.gif) no-repeat scroll -2px -1px;
+      }
+      
+      #tree-list li.cms-collapsed .cms-collapse-icon {
+          background-image: url(images/expandable.gif)
+      }
+      
+      #tree-list li.cms-collapsed li.cms-item {
+          display: none;
+      }
+      
+      li.jTreePlacement, li.jTreePlaceholder {
+          list-style: none;
+          margin: 0 13px;
+          padding: 0px;
+          width: 303px;
+      }
+      
+      #tree-list .cms-collapse-icon {
+          background: transparent url(images/collapsable.gif) no-repeat scroll 0 0;
+          height: 9px;
+          width: 9px;
+          position: absolute;
+          top: 2px;
+          left: -16px;
+      }
+      
+      #appendBox, #cms_appendbox {
+          position: relative;
+      }
+      
+      #jHelperTipAttrContainer {
+          background: InfoBackground;
+          border: 1px solid ButtonShadow;
+          color: Infotext;
+          padding: 2px;
+          display: none;
+          z-index: 20000;
+          max-width: 500px;
+      }
+      
+      .cms-delete-icon {
+          width: 20px;
+          height: 20px;
+          overflow: hidden;
+          background: transparent url(images/16x16/ocms_de_delete_a.png) repeat scroll 0 50%;
+          display: block;
+          position: relative;
+          top: 6px;
+          right: 3px;
+      }
+      
+      #fav-dialog {
+          display: none;
+          padding: 0px;
+      }
+      
+      #fav-dialog .cms-title {
+          white-space: nowrap;
+          overflow: hidden;
+      }
+      
+      #fav-dialog .cms-item-list .ui-widget-content, #fav-dialog .cms-item .ui-widget-content {
+          overflow: hidden;
+          white-space: nowrap;
+      }
+      
+      #fav-edit {
+          margin-left: 10px;
+          margin-bottom: 10px;
+          width: 290px;
+      }
+      
+      #recentlist {
+          display: none;
+          padding: 0px;
+          position: absolute;
+      }
+      
+      #recentlist div.ui-widget-content, #recentlist div.connect {
+          background: #AACCFF;
+      }
+      
+      #recentlist div.ui-widget-content div.ui-widget-content {
+          background: #ffffff;
+      }
+      
+      #recentlist div.ui-corner-bottom {
+          width: 315px;
+      }
+      
+      #recentlist div.connect {
+          position: absolute;
+          right: 0px;
+          top: -35px;
+          width: 99px;
+          height: 36px;
+          z-index: 1;
+          border: 1px solid #aaaaaa;
+          border-bottom: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="window">
+      <div id="page">
+        <!-- begin: header -->
+        <div id="header">
+          <div id="topnav">
+            <a href="#content" class="skip">Skip to Main Content</a>
+          </div>
+          <div style="padding: 10px 10px 5px; height: 55px;">
+            <div style="margin: 0pt; padding: 0pt; float: left;">
+              <a href="http://www.alkacon.com/"><img id="iimg_369039394" src="flower-demo-Dateien/logo_alkacon_png24.png" title="Go to the Alkacon Software website" alt="Alkacon Software"/></a>
+            </div>
+            <div style="margin: 1pt; padding: 0pt; float: right;">
+              <a href="http://www.opencms.org/"><img id="iimg_364996162" src="flower-demo-Dateien/logo_opencms_png24.png" title="Go to the OpenCms website" alt="Logo OpenCms"/></a>
+            </div>
+            <div style="margin: 0px 210px 0pt 160px;">
+              <p style="margin: 1pt; float: right;">
+                <a href="http://localhost:8080/opencms/opencms/demo_en/search.html">Search</a>
+                &nbsp;
+              </p>
+              <h3 style="margin: 0pt;">OpenCms Advanced Direct Edit Demo</h3>
+              <p style="margin: 1pt;">
+                <i>Flower Today</i>
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- end: header --><!-- begin: main navigation --><!--<div id="nav_main" class="gradient">
+        <ul>
+        <li>
+        <a href="http://localhost:8080/opencms/opencms/index.jsp" class="gradient">Welcome to OpenCms</a>
+        </li>
+        <li>
+        <a href="http://localhost:8080/opencms/opencms/release/" class="gradient">Release Notes</a>
+        </li>
+        <li>
+        <a href="http://localhost:8080/opencms/opencms/demo_de/" class="gradient">OpenCms Demo</a>
+        </li>
+        </ul>
+        </div> --><!-- end: main navigation --><!-- begin: breadcrumb --><!-- <div id="breadcrumb">
+        <a href="http://localhost:8080/opencms/opencms/demo_en/">OpenCms Demo [EN]</a>
+        &nbsp;»&nbsp;
+        <a href="http://localhost:8080/opencms/opencms/demo_en/today/">Flower Today</a>
+        </div> --><!-- end: breadcrumb --><!-- begin: content area #main -->
+        <div id="main">
+          <!-- begin: left column -->
+          <div id="col1">
+            <div style="padding: 10px 10px 0 0;">
+              <!-- include the left navigation menu -->
+              <div id="nav_left">
+                <ul>
+                  <li>
+                    <a href="http://localhost:8080/opencms/opencms/demo_en/index.html">Starting page</a>
+                  </li>
+                  <li>
+                    <a href="http://localhost:8080/opencms/opencms/demo_en/today/" class="current">Flower Today</a>
+                    <ul>
+                      <li>
+                        <a href="http://localhost:8080/opencms/opencms/demo_en/today/news/">News</a>
+                      </li>
+                      <li>
+                        <a href="http://localhost:8080/opencms/opencms/demo_en/today/events/">Events</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="http://localhost:8080/opencms/opencms/demo_en/dictionary/">Flower Dictionary</a>
+                  </li>
+                  <li>
+                    <a href="http://localhost:8080/opencms/opencms/demo_en/view/">Flower View</a>
+                  </li>
+                  <li>
+                    <a href="http://localhost:8080/opencms/opencms/demo_en/extra/">Flower Extranet</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!-- include the boxes on the left side -->
+            <div id="col1_content" class="clearfix">
+              <div class="box box_schema2" rel="item_001">
+                <h4>XML based contents</h4>
+                <div class="boxbody">
+                  <p>
+                    In this section, you find additinal examples for xml based contents (news and events) demonstrating how to manage structured contents.
+                  </p>
+                  <p>
+                    &nbsp;
+                  </p>
+                  <p>
+                    These contents are displayed in various list boxes, where the selection and the ordering of the contents shown inside is done by a so-called "collector". At this page, for example, the collector provides the two most-recent news or events, only.
+                  </p>
+                </div>
+              </div>
+              <div class="box box_schema2" rel="item_002">
+                <h4>Direct edit</h4>
+                <div class="boxbody">
+                  <p>
+                    By utilizing the direct edit feature, you can create new or edit already existing XML contents.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end: left column --><!-- begin: right column -->
+          <div id="col3">
+            <div id="col3_content" class="clearfix">
+              <!-- include the boxes on the right side -->
+              <div class="box box_schema4" rel="item_003">
+                <h4>Login</h4>
+                <div class="boxbody">
+                  <p>
+                    <b>Logged in as:</b>
+                  </p>
+                  <form method="get" action="/opencms/opencms/demo_en/extra/login.html" class="loginform">
+                    <div class="boxform">
+                      (Admin)
+                    </div>
+                    <div class="boxform">
+                      <input name="action" value="logoff" type="hidden"/><input name="requestedResource" value="/demo_en/today/index.html" type="hidden"/><input class="button" value="Logoff" type="submit"/>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="box box_schema4" rel="item_004">
+                <h4>Login</h4>
+                <div class="boxbody">
+                  <p>
+                    Via the login page or the login box, you can enter your credentials in order to access the protected section (extranet).
+                  </p>
+                  <p>
+                    &nbsp;
+                  </p>
+                  <p>
+                    Furthermore, since this login switches to the "Offline Project" (a working copy of all contents of the site), the user can edit the contents using the "direct edit" buttons.
+                  </p>
+                  <p>
+                    &nbsp;
+                  </p>
+                  <p>
+                    If you are already logged in, you can logout here.
+                  </p>
+                </div>
+              </div>
+              <div class="box box_schema4" rel="item_005">
+                <h4>Photo album</h4>
+                <div class="boxbody boxbody_listentry">
+                  <div class="left">
+                    <img src="flower-demo-Dateien/Workshop.jpg" alt="Cooking with flowers"/>
+                  </div>
+                  <p>
+                    A photo album renders overview pages showing images of a distinct folder. By clicking on them, the album renders the selected image.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- end: right column --><!-- begin: center column -->
+          <div id="col2">
+            <div style="padding:0 10px;">
+              <!-- anchor for accessible link to main content --><a id="content" name="content"></a>
+              <div class="view-article">
+                <!-- Title of the article --><h2>Flower Today</h2>
+                <!-- Paragraphs of the article --><!-- Image of the paragraph --><!-- Optional headline of the paragraph --><h3>News from the world of flowers</h3>
+                <!-- The text content of the paragraph -->
+                <p>
+                  In this section, you find current flower related news and events.
+                </p>
+                <p>
+                  &nbsp;
+                </p>
+                <!-- The optional links for a paragraph -->
+              </div>
+            </div>
+            <div id="col2_content" class="clearfix">
+              <!-- include the second body from an xml page, if available --><!-- include the boxes in the center -->
+              <div class="box box_schema3" rel="item_006">
+                <h4>Recent news</h4>
+                <div class="boxbody">
+                  <div class="boxbody_listentry">
+                    <h5><a href="http://localhost:8080/opencms/opencms/demo_en/today/news/news_0005.html">Cooking with flowers</a></h5>
+                    <p>
+                      <small>
+                        Jan 5, 2009
+                      </small>
+                    </p>
+                    <div class="left">
+                      <img src="flower-demo-Dateien/Erdbeeren.jpg" alt="Cooking with flowers" width="100" height="75"/>
+                    </div>
+                    <div>
+                      <p>
+                        New edition will be released in 2009. More than 100 new recipes and lots of useful tips for planting.
+                      </p>
+                      <p>
+                        Jekka McVicar, expert herb grower and best-selling author, examines
+                        50 flowers, with tips on how to grow them in your garden, or in
+                        containers, and when to harvest. Showing which parts of the flowers are
+                        the tastiest and which should be removed, Jekka provides at least 2
+                        recipes for each flower.
+                      </p>
+                    </div>
+                  </div>
+                  <div class="boxbody_listentry">
+                    <h5><a href="http://localhost:8080/opencms/opencms/demo_en/today/news/news_0007.html">Transportationbag for Christmastrees</a></h5>
+                    <p>
+                      <small>
+                        Dec 10, 2008
+                      </small>
+                    </p>
+                    <div class="left">
+                      <img src="flower-demo-Dateien/Christmastree.jpg" alt="Transportationbag for Christmastrees" width="100" height="133"/>
+                    </div>
+                    <div>
+                      <p>
+                        Since this season, carrying bags for christmas trees are available.
+                      </p>
+                      <p>
+                        The advantage of these bags is clear. Well stored trees cannot soil
+                        cars, clothes and houses. But this bag is also useful for a needle-free
+                        removement of the tree. The manufacturer offers also the possibility to
+                        print advertisements on the bags- this can ba a good campaign for the
+                        christmastree vendors.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end: center column -->
+          </div>
+          <div class="clear">
+            &nbsp;
+          </div>
+          <!-- end: content area -->
+          <div id="bottom_cont" class="container-bottom clearfix">
+            <div class="box box_schema3" rel="item_007">
+              <h4>Flower of the year 2009</h4>
+              <div class="boxbody boxbody_listentry">
+                <div class="left">
+                  <img src="flower-demo-Dateien/Wegwarte.jpg" alt="Wegwarte" />
+                </div>
+                <div>
+                  <p>
+                    The flower of the year 2009 is the common chicory. Common chicory (Cichorium intybus) is a bushy perennial herb with blue, lavender, or occasionally white flowers.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="box box_schema3" rel="item_008">
+              <h4>New Flowerservice!</h4>
+              <div class="boxbody boxbody_listentry">
+                <div class="left">
+                  <img src="flower-demo-Dateien/GartenII.jpg" alt="Wegwarte" />
+                </div>
+                <div>
+                  <p>
+                    Berlin - In the hope of a bloomy summer trade lots of German nurseries offer their customers an All- Inclusive Package. Beside an extensive client counselling...
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="box box_schema3" rel="item_009">
+              <h4>Ikebana - flowers a gateway to life</h4>
+              <div class="boxbody">
+                <p>
+                  For interested women and men who want to open their view on the harmony
+                  and beauty of flowers.
+                  The event takes place at Missionshaus Hofstetten.
+                  Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
+                  nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
+                  sed diam voluptua. ...
+                </p>
+              </div>
+            </div>
+          </div>
+          <!-- begin: #footer -->
+          <div id="footer">
+            <div style="padding: 2px 0px 0px; height: 14px; text-align: center;">
+              Build with <a href="http://www.opencms.org/" title="Go to the OpenCms website">OpenCms - The Open Source CMS</a>, provided by <a title="Go to the Alkacon Software website" href="http://www.alkacon.com/">Alkacon Software - The OpenCms Experts</a>
+            </div>
+          </div>
+          <!-- end: #footer -->
+        </div>
+        <!-- end: #page -->
+      </div>
+    </div>
+    <div id="publishlist" class="cms-item-list">
+      <form action="#">
+        <ul>
+          <li class="cms-item">
+            <div class="left">
+              <span class="cms-check-icon"></span>
+            </div>
+            <div class="left ui-widget-content">
+              <div class="cms-head ui-state-hover">
+                <div class="cms-navtext">
+                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Flower Today
+                </div>
+                <span class="cms-title">News from the world of flowers</span>
+                <!-- <span class="cms-releasedate">04.04.2009</span>--><span class="cms-file-icon"></span>
+                <!-- <span class="cms-handle cms-delete"></span> --><span class="cms-led-icon"></span>
+                <span class="cms-lock-icon"></span>
+              </div>
+              <div class="cms-additional">
+                <div alt="File: /demo_en/site/folder/flowers.html">
+                  <span class="left">File:</span>flowers.html
+                </div>
+                <div alt="Date: 4/4/2009 5:30 PM">
+                  <span class="left">Date:</span>4/4/2009 5:30 PM
+                </div>
+                <div alt="User: Admin">
+                  <span class="left">User:</span>Admin
+                </div>
+                <div alt="Type: xmlpage">
+                  <span class="left">Type:</span>xmlpage
+                </div>
+              </div>
+            </div>
+            <br clear="all" />
+          </li>
+          <li class="cms-item">
+            <div class="left">
+              <span class="cms-check-icon"></span>
+            </div>
+            <div class="left ui-widget-content">
+              <div class="cms-head ui-state-hover">
+                <div class="cms-navtext">
+                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Text
+                </div>
+                <span class="cms-title">Text file</span>
+                <!-- <span class="cms-releasedate">04.04.2009</span>--><span class="cms-file-icon"></span>
+                <!-- <span class="cms-handle cms-delete"></span> --><span class="cms-led-icon"></span>
+                <span class="cms-lock-icon"></span>
+              </div>
+              <div class="cms-additional">
+                <div alt="File: /demo_en/site/folder/file.txt">
+                  <span class="left">File:</span>file.txt
+                </div>
+                <div alt="Date: 04/04/2009">
+                  <span class="left">Date:</span>4/4/2009 5:30 PM
+                </div>
+                <div alt="User: Admin">
+                  <span class="left">User:</span>Admin
+                </div>
+                <div alt="Type: plain">
+                  <span class="left">Type:</span>plain
+                </div>
+              </div>
+            </div>
+            <br clear="all" />
+          </li>
+          <li class="cms-item">
+            <div class="left">
+              <span class="cms-check-icon"></span>
+            </div>
+            <div class="left ui-widget-content">
+              <div class="cms-head ui-state-hover">
+                <div class="cms-navtext">
+                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Flowerparade
+                </div>
+                <span class="cms-title">Images of beautiful flowers</span>
+                <!-- <span class="cms-releasedate">04.04.2009</span>--><span class="cms-file-icon"></span>
+                <!-- <span class="cms-handle cms-delete"></span> --><span class="cms-led-icon"></span>
+                <span class="cms-lock-icon"></span>
+              </div>
+              <div class="cms-additional">
+                <div alt="File: /demo_en/site/flowerparade.html">
+                  <span class="left">File:</span>flowerparade.html
+                </div>
+                <div alt="Date: 04/04/2009">
+                  <span class="left">Date:</span>4/4/2009 5:30 PM
+                </div>
+                <div alt="User: Admin">
+                  <span class="left">User:</span>Admin
+                </div>
+                <div alt="Type: photoalbum">
+                  <span class="left">Type:</span>photoalbum
+                </div>
+              </div>
+            </div>
+            <br style="clear: both;"/>
+          </li>
+          <li class="cms-item">
+            <div class="left">
+              <span class="cms-check-icon"></span>
+            </div>
+            <div class="left ui-widget-content">
+              <div class="cms-head ui-state-hover">
+                <div class="cms-navtext">
+                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Extranet
+                </div>
+                <span class="cms-title">Flower extranet</span>
+                <!-- <span class="cms-releasedate">04.04.2009</span>--><span class="cms-file-icon"></span>
+                <!-- <span class="cms-handle cms-delete"></span> --><span class="cms-led-icon"></span>
+                <span class="cms-lock-icon"></span>
+              </div>
+              <div class="cms-additional">
+                <div alt="File: /demo_en/site/extranet/extranet.html">
+                  <span class="left">File:</span>extranet.html
+                </div>
+                <div alt="Date: 04/04/2009">
+                  <span class="left">Date:</span>4/4/2009 5:30 PM
+                </div>
+                <div alt="User: Admin">
+                  <span class="left">User:</span>Admin
+                </div>
+                <div alt="Type: xmlpage">
+                  <span class="left">Type:</span>xmlpage
+                </div>
+              </div>
+            </div>
+            <br clear="all" />
+          </li>
+        </ul>
+        <ul class="options">
+          <li>
+            <div class="left">
+              <span class="cms-check-icon"></span>
+            </div>
+            <label for="siblings">
+              Publish all siblings
+            </label>
+            <br clear="all"/>
+          </li>
+          <li>
+            <div class="left">
+              <span class="cms-check-icon"></span>
+            </div>
+            <label for="related">
+              Publish with related resources
+            </label>
+            <br clear="all"/>
+          </li>
+        </ul>
+      </form>
+    </div>
+    <div id="favoritelist" class="cms-item-list">
+      <div class="connect ui-corner-top">
+      </div>
+      <div class="ui-widget-shadow ui-corner-all">
+      </div>
+      <div class="ui-widget-content ui-corner-bottom ui-corner-tl">
+        <ul id="favorite_list_items">
+          <button id="fav-edit" name="Edit_Favorites" title="Edit Favorites" class="ui-state-default ui-corner-all">
+            Edit Favorites
+          </button>
+          <li class="cms-item" rel="item_010">
+            <div class=" ui-widget-content">
+              <div class="cms-head ui-state-hover">
+                <div class="cms-navtext">
+                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Differences in Botany
+                </div>
+                <span class="cms-title">Differences in Botany</span>
+                <span class="cms-file-icon"></span>
+              </div>
+              <div class="cms-additional">
+                <div alt="File: /demo_en/site/news/news_01.html">
+                  <span class="left">File:</span>news_01.html
+                </div>
+                <div alt="Date: 04/04/2009">
+                  <span class="left">Date:</span>4/4/2009 5:30 PM
+                </div>
+                <div alt="User: Admin">
+                  <span class="left">User:</span>Admin
+                </div>
+                <div alt="Type: news">
+                  <span class="left">Type:</span>news
+                </div>
+                <!--
+                <div alt="Headline: Differences in Botany"><span class="left">Headline:</span>Differences in Botany</div>
+                <div alt="Content: Plants are living organisms belonging to the kingdom Plantae. They include familiar organisms such as trees, herbs, bushes, grasses, vines, ferns, mosses, and green algae. About 350,000 species of plants, defined as seed plants, bryophytes, ferns and fern allies, are estimated to exist currently."><span class="left">Content:</span>Plants are living organisms belonging to the kingdom Plantae. They include familiar organisms such as trees, herbs, bushes, grasses, vines, ferns, mosses, and green algae. About 350,000 species of plants, defined as seed plants, bryophytes, ferns and fern allies, are estimated to exist currently.</div>
+                <div alt="Type: news"><span class="left">Type:</span>news</div>
+                -->
+              </div>
+              <div class="cms-item-content">
+                <div class="box box_schema4">
+                  <h4>Differences in Botany</h4>
+                  <div class="boxbody">
+                    <p>
+                      Plants are living organisms belonging to the kingdom Plantae. They include familiar organisms such as trees, herbs, bushes, grasses, vines, ferns, mosses, and green algae. About 350,000 species of plants, defined as seed plants, bryophytes, ferns and fern allies, are estimated to exist currently.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="cms-item" rel="item_011">
+            <div class=" ui-widget-content">
+              <div class="cms-head ui-state-hover">
+                <div class="cms-navtext">
+                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Flower workshop
+                </div>
+                <span class="cms-title">Flower workshop in Bonn, Germany</span>
+                <span class="cms-file-icon"></span>
+              </div>
+              <div class="cms-additional">
+                <div alt="File: /demo_en/site/events/event_01.html">
+                  <span class="left">File:</span>event_01.html
+                </div>
+                <div alt="Date: 04/04/2009">
+                  <span class="left">Date:</span>4/4/2009 5:30 PM
+                </div>
+                <div alt="User: Admin">
+                  <span class="left">User:</span>Admin
+                </div>
+                <div alt="Type: event">
+                  <span class="left">Type:</span>event
+                </div>
+                <!--
+                <div alt="Headline: Flower workshop in Bonn, Germany"><span class="left">Headline:</span>Flower workshop in Bonn, Germany</div>
+                <div alt="Content: September 25, 2008 Flower bonding is an art. Who wants to know how it works can try it under professional instruction in a flower workshop at Thursday, September 25, 2008 in Bonn. The workshop is free and takes place from 3 PM to 6 PM in the foyer of the Stadthaus, Berliner Platz 2 in Bonn, Germany. ..."><span class="left">Content:</span>September 25, 2008 Flower bonding is an art. Who wants to know how it works can try it under professional instruction in a flower workshop at Thursday, September 25, 2008 in Bonn. The workshop is free and takes place from 3 PM to 6 PM in the foyer of the Stadthaus, Berliner Platz 2 in Bonn, Germany. ...</div>
+                <div alt="Image: flower-demo-Dateien/Workshop.jpg"><span class="left">Image:</span>Workshop.jpg</div>
+                <div alt="Type: image-content"><span class="left">Type:</span>image-content</div>
+                -->
+              </div>
+              <div class="cms-item-content">
+                <div class="box box_schema2">
+                  <h4>Flower workshop in Bonn, Germany</h4>
+                  <div class="boxbody boxbody_listentry">
+                    <div class="left">
+                      <img src="flower-demo-Dateien/Ikebana.jpg" alt="Cooking with flowers"/>
+                    </div>
+                    <p>
+                      September 25, 2008 Flower bonding is an art. Who wants to know how it works can try it under professional instruction in a flower workshop at Thursday, September 25, 2008 in Bonn. The workshop is free and takes place from 3 PM to 6 PM in the foyer of the Stadthaus, Berliner Platz 2 in Bonn, Germany. ...
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="cms-item" rel="item_012">
+            <div class=" ui-widget-content">
+              <div class="cms-head ui-state-hover">
+                <div class="cms-navtext">
+                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Rose
+                </div>
+                <span class="cms-title">Rose</span>
+                <span class="cms-file-icon"></span>
+              </div>
+              <div class="cms-additional">
+                <div alt="File: /demo_en/site/news/news_02.html">
+                  <span class="left">File:</span>news_02.html
+                </div>
+                <div alt="Date: 04/04/2009">
+                  <span class="left">Date:</span>4/4/2009 5:30 PM
+                </div>
+                <div alt="User: Admin">
+                  <span class="left">User:</span>Admin
+                </div>
+                <div alt="Type: news">
+                  <span class="left">Type:</span>news
+                </div>
+                <!--
+                <div alt="Headline: Direct edit"><span class="left">Headline:</span>Direct edit</div>
+                <div alt="Content: By utilizing the direct edit feature, you can create new or edit already existing XML contents."><span class="left">Content:</span>By utilizing the direct edit feature, you can create new or edit already existing XML contents.</div>
+                <div alt="Type: news"><span class="left">Type:</span>news</div>
+                -->
+              </div>
+              <div class="cms-item-content">
+                <div class="box box_schema3">
+                  <h4>Rose</h4>
+                  <div class="boxbody">
+                    <p>
+                      A rose is a perennial flowering shrub or vine of the genus Rosa, within the family Rosaceae, that contains over 100 species.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div id="fav-dialog" class="cms-item-list">
+      <ul>
+      </ul>
+    </div>
+  </body>
+</html>
