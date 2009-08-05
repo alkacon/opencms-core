@@ -79,3 +79,16 @@ var fixZIndex = function(currentId, zmap) {
 var setZIndex = function(id, z) {
 	$('#' + id).css('z-index', z);
 }
+
+var setHelper = function (sortable, id) {
+	sortable.helper.css('display','none');
+	sortable.helper=sortable.cmsHelpers[id].css('display','block');
+	sortable.currentItem=sortable.cmsHelpers[id];
+	refreshHelperPositions(sortable);
+}
+
+var refreshHelperPositions = function(sortable) {
+	sortable._cacheHelperProportions();
+	sortable._adjustOffsetFromHelper(sortable.options.cursorAt);
+	sortable.refreshPositions(true);
+}
