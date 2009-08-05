@@ -614,8 +614,8 @@ var showFavDialog = function() {
 	}
 }
 
-var clickTriangle = function(triangle) {
-	var elem = $(triangle);
+var toggleAdditionalInfo = function() {
+	var elem = $(this);
 	if (elem.hasClass('ui-icon-triangle-1-e')) {
 		elem.removeClass('ui-icon-triangle-1-e').addClass(
 				'ui-icon-triangle-1-s');
