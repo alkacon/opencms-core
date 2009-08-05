@@ -1,4 +1,6 @@
-var cms_elements_list = {
+( function(cms) {
+	
+var cms_elements_list = cms.data.cms_elements_list = {
 	   'item_001': {
 	      'resource_id': 'item_001',
 	      'nav_text': 'XML',
@@ -336,3 +338,4 @@ var getSerializeString = function() {
    });
    return JSON.stringify(ser);
 };
+})(cms);

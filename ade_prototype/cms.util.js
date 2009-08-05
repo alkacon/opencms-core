@@ -1,14 +1,15 @@
+(function (cms) {
 /*util*/
-var log = function(s) {
+var log = cms.util.log = function(s) {
 	$("body").append("<p>" + s + "</p>");
 }
 
 /* util */
-var dump = function(s) {
+var dump = cms.util.dump = function(s) {
 	$("body").append("<pre>" + $.dump(s) + "</pre>");
 }
 
-var addUnique = function(list, item, maxlen) {
+var addUnique = cms.util.addUnique = function(list, item, maxlen) {
 	for ( var i = 0; i < list.length; i++) {
 		if (list[i] == item) {
 			list.splice(i, 1);
@@ -23,7 +24,7 @@ var addUnique = function(list, item, maxlen) {
 	}
 }
 
-var addToList = function(resource_id, list, max_size) {
+var addToList = cms.util.addToList = function(resource_id, list, max_size) {
 	var newList = [ resource_id ];
 	for ( var i = 0; i < list.length; i++) {
 		if (resource_id != list[i])
@@ -34,7 +35,7 @@ var addToList = function(resource_id, list, max_size) {
 	return newList;
 }
 
-var clearAttributes = function(elem, attrs) {
+var clearAttributes = cms.util.clearAttributes = function(elem, attrs) {
 	var ie = $.browser.msie;
 	for ( var i = 0; i < attrs.length; i++) {
 		if (ie) {
@@ -45,7 +46,7 @@ var clearAttributes = function(elem, attrs) {
 	}
 }
 
-var getElementPosition = function(elem) {
+var getElementPosition = cms.util.getElementPosition = function(elem) {
 	var position = {
 		left :0,
 		top :0
@@ -62,7 +63,7 @@ var getElementPosition = function(elem) {
 	return position;
 }
 
-var fixZIndex = function(currentId, zmap) {
+var fixZIndex = cms.util.fixZIndex = function(currentId, zmap) {
 	if (!$.browser.msie)
 		return;
 	var z;
@@ -80,15 +81,16 @@ var setZIndex = function(id, z) {
 	$('#' + id).css('z-index', z);
 }
 
-var setHelper = function (sortable, id) {
+var setHelper = cms.util.setHelper = function (sortable, id) {
 	sortable.helper.css('display','none');
 	sortable.helper=sortable.cmsHelpers[id].css('display','block');
 	sortable.currentItem=sortable.cmsHelpers[id];
 	refreshHelperPositions(sortable);
 }
 
-var refreshHelperPositions = function(sortable) {
+var refreshHelperPositions = cms.util.refreshHelperPositions = function(sortable) {
 	sortable._cacheHelperProportions();
 	sortable._adjustOffsetFromHelper(sortable.options.cursorAt);
 	sortable.refreshPositions(true);
 }
+})(cms);

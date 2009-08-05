@@ -1,4 +1,6 @@
-var toggleTree = function() {
+(function(cms) {
+
+var toggleTree = cms.sitemap.toggleTree = function() {
 	var button = $(this);
 	if (button.hasClass('ui-state-active')) {
 		// disabling tree mode
@@ -44,11 +46,11 @@ var toggleTree = function() {
 	}
 };
 
-var collapse = function() {
+var collapse = cms.sitemap.collapse = function() {
 	$(this).closest('li').toggleClass('cms-collapsed');
 };
 
-var treeDrop = function(event) {
+var treeDrop = cms.sitemap.treeDrop = function(event) {
 	var elem = event.target ? event.target : event.srcElement;
 	$('ul:empty', elem).remove();
 	$('li a.cms-collapse-icon').each( function() {
@@ -78,7 +80,7 @@ var treeDrop = function(event) {
 
 };
 
-var treeDrop_ = function() {
+var treeDrop_ = cms.sitemap.treeDrop_ = function() {
 	var elem = 'ul.cms-item-list';
 	$('li.last', elem).removeClass('last');
 	$('ul', elem).each( function() {
@@ -93,3 +95,4 @@ var treeDrop_ = function() {
 			collapseIcon);
 
 };
+})(cms);

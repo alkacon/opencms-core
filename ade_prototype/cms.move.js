@@ -1,30 +1,20 @@
-var over;
-var favorites = ['item_010', 'item_011', 'item_012'];
-var recent = [];
-var recentSize = 3;
+(function (cms) {
+
+var over = null;
 var cancel = false;
-var oldBodyMarginTop = 0;
-var zIndexMap = {};
+cms.move.zIndexMap = {};
 
-var sortmenus = "#favoritelist ul, #recentlist ul"
-var menuHandles = "#favoritelist a.cms-move, #recentlist a.cms-move"
-var menus = "#favoritelist, #recentlist";
-var currentMenu = "favoritelist";
-var currentMenuItems = "favorite_list_items";
-
-
-
-var isMenuContainer = function(id) {
+var isMenuContainer = cms.move.isMenuContainer = function(id) {
 	return id == 'favorite_list_items' || id == 'recent_list_items';
 }
 
-var movePreparation = function(event) {
+var movePreparation = cms.move.movePreparation = function(event) {
 	$(this).unbind('mouseenter').unbind('mouseleave').addClass('cms-trigger');
 	hoverOut();
 	$('a.cms-move:not(.cms-trigger)').hide();
 }
 
-var moveEnd = function(event) {
+var moveEnd = cms.move.moveEnd = function(event) {
 	$('a.cms-move').show();
 	$(this).hover( function() {
 		hoverIn($(this).parent(), 2)
@@ -32,7 +22,7 @@ var moveEnd = function(event) {
 }
 
 
-var startAdd = function(event, ui) {
+var startAdd = cms.move.startAdd = function(event, ui) {
 
 	ui.self.cmsStartContainerId = ui.self.currentItem.parent().attr('id');
 	// if (ui.self.cmsStartContainerId!='favorite_list_items'){
@@ -42,8 +32,8 @@ var startAdd = function(event, ui) {
 	ui.self.cmsHoverList = '#' + ui.self.cmsStartContainerId;
 	ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
 	ui.self.cmsResource_id = ui.self.currentItem.attr('rel');
-	if (ui.self.cmsResource_id && cms_elements_list[ui.self.cmsResource_id]) {
-		ui.self.cmsItem = cms_elements_list[ui.self.cmsResource_id];
+	if (ui.self.cmsResource_id && cms.data.cms_elements_list[ui.self.cmsResource_id]) {
+		ui.self.cmsItem = cms.data.cms_elements_list[ui.self.cmsResource_id];
 		ui.self.cmsStartOffset = ui.placeholder.offset();
 		ui.self.cmsHelpers = {};
 		ui.self.cmsOrgPlaceholder = ui.placeholder.clone().insertBefore(
@@ -54,10 +44,10 @@ var startAdd = function(event, ui) {
 					'display' :'none',
 					'height' :ui.self.currentItem.height()
 				});
-		zIndexMap = {};
+		cms.move.zIndexMap = {};
 		for (container_name in ui.self.cmsItem.contents) {
 			var zIndex = $('#' + container_name).css('z-index');
-			zIndexMap[container_name] = zIndex;
+			cms.move.zIndexMap[container_name] = zIndex;
 			if (container_name != ui.self.cmsStartContainerId) {
 				ui.self.cmsHoverList += ', #' + container_name;
 				ui.self.cmsHelpers[container_name] = $(
@@ -67,7 +57,7 @@ var startAdd = function(event, ui) {
 					'position' :'absolute',
 					'zIndex' :ui.self.options.zIndex
 				}).addClass('ui-sortable-helper');
-				if (ui.self.cmsStartContainerId != currentMenuItems) {
+				if (ui.self.cmsStartContainerId != cms.toolbar.currentMenuItems) {
 					// if we aren't starting from the favorite list, call
 					// movePreparation on the handle
 					// (hides all other handles)
@@ -85,7 +75,7 @@ var startAdd = function(event, ui) {
 			}
 		}
 		if (isMenuContainer(ui.self.cmsStartContainerId)) {
-			ui.self.cmsHelpers[currentMenuItems] = ui.self.helper;
+			ui.self.cmsHelpers[cms.toolbar.currentMenuItems] = ui.self.helper;
 			var elem = $(document.createElement('div')).addClass(
 					"placeholder" + " ui-sortable-placeholder box").css(
 					'display', 'none');
@@ -105,7 +95,7 @@ var startAdd = function(event, ui) {
 			ui.self.cmsOver = false;
 		} else {
 
-			fixZIndex(ui.self.cmsStartContainerId, zIndexMap);
+			cms.util.fixZIndex(ui.self.cmsStartContainerId, cms.move.zIndexMap);
 
 			// show drop zone for new favorites
 			var list_item = '<li class="cms-item"  rel="'
@@ -149,21 +139,21 @@ var startAdd = function(event, ui) {
 	}
 }
 
-var beforeStopFunction = function(event, ui) {
+var beforeStopFunction = cms.move.beforeStopFunction = function(event, ui) {
 	if (!ui.self.cmsOver)
 		cancel = true;
 	else
 		cancel = false;
 }
 
-var stopAdd = function(event, ui) {
-	fixZIndex(null, zIndexMap);
+var stopAdd = cms.move.stopAdd = function(event, ui) {
+	cms.util.fixZIndex(null, cms.move.zIndexMap);
 	if (cancel) {
 		cancel = false;
 
 		if (isMenuContainer(ui.self.cmsStartContainerId)) {
 			// show favorite list again after dragging a favorite from it.
-			$('#' + currentMenu).css('display', 'block');
+			$('#' + cms.toolbar.currentMenu).css('display', 'block');
 		}
 
 		$(this).sortable('cancel');
@@ -171,13 +161,13 @@ var stopAdd = function(event, ui) {
 
 	} else {
 
-		if (ui.self.cmsStartContainerId == currentMenuItems) {
+		if (ui.self.cmsStartContainerId == cms.toolbar.currentMenuItems) {
 
 			ui.self.cmsOrgPlaceholder
-					.replaceWith(ui.self.cmsHelpers[currentMenuItems]);
-			ui.self.cmsHelpers[currentMenuItems]
+					.replaceWith(ui.self.cmsHelpers[cms.toolbar.currentMenuItems]);
+			ui.self.cmsHelpers[cms.toolbar.currentMenuItems]
 					.removeClass('ui-sortable-helper');
-			clearAttributes(ui.self.cmsHelpers[currentMenuItems].get(0).style,
+			cms.util.clearAttributes(ui.self.cmsHelpers[cms.toolbar.currentMenuItems].get(0).style,
 					[ 'width', 'height', 'top', 'left', 'position', 'opacity',
 							'zIndex', 'display' ]);
 			$('a.cms-move', ui.self.currentItem).remove();
@@ -186,11 +176,11 @@ var stopAdd = function(event, ui) {
 
 			if (ui.self.cmsCurrentContainerId == 'favorite_list_items') {
 
-				addUnique(favorites, ui.self.cmsResource_id);
+				cms.util.addUnique(cms.toolbar.favorites, ui.self.cmsResource_id);
 			}
 			ui.self.cmsOrgPlaceholder.remove();
 		}
-		addToRecent(ui.self.cmsResource_id);
+		cms.toolbar.addToRecent(ui.self.cmsResource_id);
 	}
 	for (container_name in ui.self.cmsHelpers) {
 
@@ -202,7 +192,7 @@ var stopAdd = function(event, ui) {
 						.removeClass('ui-sortable-helper');
 				// reset position (?) of helper that was dragged to favorites,
 				// but don't remove it
-				clearAttributes(
+				cms.util.clearAttributes(
 						ui.self.cmsHelpers[container_name].get(0).style, [
 								'width', 'height', 'top', 'left', 'opacity',
 								'zIndex', 'display' ]);
@@ -224,7 +214,7 @@ var stopAdd = function(event, ui) {
 
 	hoverOut();
 
-	clearAttributes(ui.self.currentItem.get(0).style, [ 'top', 'left',
+	cms.util.clearAttributes(ui.self.currentItem.get(0).style, [ 'top', 'left',
 			'zIndex', 'display' ]);
 	if ($.browser.msie) {
 		ui.self.currentItem.get(0).style.removeAttribute('filter');
@@ -247,7 +237,7 @@ var stopAdd = function(event, ui) {
  * @param {}
  *            ui
  */
-var overAdd = function(event, ui) {
+var overAdd = cms.move.overAdd = function(event, ui) {
 
 	var elem = event.target ? event.target : event.srcElement;
 	var elemId = $(elem).attr('id');
@@ -267,7 +257,7 @@ var overAdd = function(event, ui) {
 		ui.self.cmsOrgPlaceholder.css('display', 'none');
 	}
 	if (ui.self.cmsHelpers[elemId]) {
-		fixZIndex(elemId, zIndexMap);
+		cms.util.fixZIndex(elemId, cms.move.zIndexMap);
 		ui.placeholder.css('display', 'block');
 		ui.self.cmsOver = true;
 		if (elemId != ui.self.cmsCurrentContainerId) {
@@ -306,13 +296,13 @@ var overAdd = function(event, ui) {
 
 }
 
-var outAdd = function(event, ui) {
+var outAdd = cms.move.outAdd = function(event, ui) {
 	var elem = event.target ? event.target : event.srcElement;
 	var elemId = $(elem).attr('id');
 	if (ui.self.helper && elemId==ui.self.cmsCurrentContainerId){
 		if (ui.self.cmsStartContainerId != ui.self.cmsCurrentContainerId) {
 			ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
-			fixZIndex(ui.self.cmsStartContainerId, zIndexMap);
+			cms.util.fixZIndex(ui.self.cmsStartContainerId, cms.move.zIndexMap);
 			ui.self.helper.css('display', 'none');
 			ui.self.helper = ui.self.cmsHelpers[ui.self.cmsCurrentContainerId]
 					.css('display', 'block');
@@ -337,9 +327,9 @@ var outAdd = function(event, ui) {
 
 }
 
-var hoverIn = function(elem, hOff) {
+var hoverIn = cms.move.hoverIn = function(elem, hOff) {
 
-	var position = getElementPosition(elem);
+	var position = cms.util.getElementPosition(elem);
 	var tHeight = elem.outerHeight();
 	var tWidth = elem.outerWidth();
 	var hWidth = 2;
@@ -367,7 +357,7 @@ var hoverIn = function(elem, hOff) {
 
 }
 
-var hoverInner = function(elem, hOff) {
+var hoverInner = cms.move.hoverInner = function(elem, hOff) {
 
 	var position = {
 		left :'x',
@@ -381,7 +371,7 @@ var hoverInner = function(elem, hOff) {
 					function() {
 						var el = $(this);
 						if (!el.hasClass('ui-sortable-helper')) {
-							var pos = getElementPosition(el);
+							var pos = cms.util.getElementPosition(el);
 							position.left = (position.left == 'x' || pos.left < position.left) ? pos.left
 									: position.left;
 							position.top = (position.top == 'x' || pos.top < position.top) ? pos.top
@@ -396,7 +386,7 @@ var hoverInner = function(elem, hOff) {
 					});
 	var tHeight = bottom - position.top;
 	var tWidth = right - position.left;
-	var elemPos = getElementPosition(elem);
+	var elemPos = cms.util.getElementPosition(elem);
 
 	if (bottom == 'x') {
 		tHeight = 25;
@@ -441,8 +431,9 @@ var hoverInner = function(elem, hOff) {
 			position.left - (hOff + hWidth)).appendTo(document.body);
 
 }
-var hoverOut = function() {
+var hoverOut = cms.move.hoverOut = function() {
 	$('div.hovering, div.show-sortable').remove();
 
 }
 
+})(cms);

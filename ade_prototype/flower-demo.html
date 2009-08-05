@@ -23,7 +23,9 @@
     </script>
     <script type="text/javascript" src="lib/json2.js">
     </script>
-  
+    <script type="text/javascript">
+        var cms = {data:{}, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}};
+    </script>
     <script type="text/javascript" src="cms.util.js"></script>
     <script type="text/javascript" src="cms.init.js"></script>
     <script type="text/javascript" src="cms.data.js"></script>
@@ -38,9 +40,9 @@
       var deleteitems = sortitems;
       
       $('document').ready(function() {
-         addToolbar();
+         cms.toolbar.addToolbar();
          
-         $('.cms-item a.ui-icon').live('click', toggleAdditionalInfo);
+         $('.cms-item a.ui-icon').live('click', cms.toolbar.toggleAdditionalInfo);
          
          
          $('.cms-item-list div.cms-additional div').jHelperTip({
