@@ -386,7 +386,9 @@ var overAdd = function(event, ui) {
 }
 
 var outAdd = function(event, ui) {
-	if (ui.self.helper) {
+	var elem = event.target ? event.target : event.srcElement;
+	var elemId = $(elem).attr('id');
+	if (ui.self.helper && elemId==ui.self.cmsCurrentContainerId){
 		if (ui.self.cmsStartContainerId != ui.self.cmsCurrentContainerId) {
 			ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
 			fixZIndex(ui.self.cmsStartContainerId, zIndexMap);
