@@ -4,11 +4,11 @@
     cms.toolbar.recentSize = 3;
     var oldBodyMarginTop = 0;
     
-    var sortmenus = "#favoritelist ul, #recentlist ul"
-    var menuHandles = "#favoritelist a.cms-move, #recentlist a.cms-move"
-    var menus = "#favoritelist, #recentlist";
-    cms.toolbar.currentMenu = "favoritelist";
-    cms.toolbar.currentMenuItems = "favorite_list_items";
+    var sortmenus = "#"+cms.html.favoriteMenuId+" ul, #"+cms.html.recentMenuId+" ul"
+    var menuHandles = "#"+cms.html.favoriteMenuId+" a.cms-move, #"+cms.html.recentMenuId+" a.cms-move"
+    var menus = "#"+cms.html.favoriteMenuId+", #"+cms.html.recentMenuId;
+    cms.toolbar.currentMenu = cms.html.favoriteMenuId;
+    cms.toolbar.currentMenuItems = cms.html.favoriteListId;
 
 
 	var showPublishList = cms.toolbar.showPublishList = function() {
@@ -94,9 +94,9 @@
 		oldBodyMarginTop = bodyEl.offset().top;
 		var offsetLeft = bodyEl.offset().left;
 		bodyEl.append(cms.html.toolbar);
-		bodyEl.append(cms.html.favoriteList);
+		bodyEl.append(cms.html.createMenu(cms.html.favoriteMenuId));
 		bodyEl.append(cms.html.favoriteDialog);
-		bodyEl.append(cms.html.recentList);
+		bodyEl.append(cms.html.createMenu(cms.html.recentMenuId));
 		resetFavList();
 		bodyEl
 				.append('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>');
@@ -105,10 +105,10 @@
 		$('button[name="Delete"]').click(toggleDelete);
 		$('button[name="Publish"]').click(showPublishList);
 		$('button[name="Favorites"]').click( function() {
-			toggleList(this, "favoritelist");
+			toggleList(this, cms.html.favoriteMenuId);
 		});
 		$('button[name="Recent"]').click( function() {
-			toggleList(this, "recentlist");
+			toggleList(this, cms.html.recentMenuId);
 		});
 		$('#toolbar button, #show-button').mouseover( function() {
 			$(this).addClass('ui-state-hover');
@@ -150,12 +150,12 @@
 
 		if (button.hasClass('ui-state-active')) {
 			// disabling move-mode
-			$(sortlist + ', #favorite_list_items').sortable('destroy');
-			var list = $('#favoritelist');
+			$(sortlist + ', #'+cms.html.favoriteListId).sortable('destroy');
+			var list = $('#'+cms.html.favoriteMenuId);
 			$('li.cms-item, button', list).css('display', 'block');
 			list.css('display', 'none');
 			list.get(0).style.visibility = '';
-			$('#favorite_list_items').get(0).style.height = '';
+			$('#'+cms.html.favoriteListId).get(0).style.height = '';
 			resetFavList();
 			$('a.cms-move').remove();
 			button.removeClass('ui-state-active');
@@ -172,7 +172,7 @@
 								.mouseup(cms.move.moveEnd);
 					});
 
-			var list = $('#favoritelist');
+			var list = $('#'+cms.html.favoriteMenuId);
 			var favbutton = $('button[name="Favorites"]');
 			$('li.cms-item, button', list).css('display', 'none');
 			list.appendTo('#toolbar_content').css( {
@@ -181,7 +181,7 @@
 				display :'block',
 				visibility :'hidden'
 			});
-			$('#favorite_list_items').css('height', '37px');
+			$('#'+cms.html.favoriteListId).css('height', '37px');
 			$('div.ui-widget-shadow', list).css( {
 				top :0,
 				left :-4,
@@ -192,9 +192,9 @@
 			});
 
 			$(sortlist).children('*:visible').css('position', 'relative');
-			$(sortlist + ', #favorite_list_items').sortable( {
-				connectWith :sortlist + ', #favorite_list_items',
-				placeholder :'placeholder',
+			$(sortlist + ', #'+cms.html.favoriteListId).sortable( {
+				connectWith :sortlist + ', #'+cms.html.favoriteListId,
+				placeholder :'cms-placeholder',
 				dropOnEmpty :true,
 				start :cms.move.startAdd,
 				beforeStop :cms.move.beforeStopFunction,
@@ -212,8 +212,8 @@
 				items :sortitems,
 				revert :true,
 				deactivate : function(event, ui) {
-					$('#favorite_list_items li').hide(200);
-					$('#favoritelist').css('visibility', 'hidden');
+					$('#'+cms.html.favoriteListId+' li').hide(200);
+					$('#'+cms.html.favoriteMenuId).css('visibility', 'hidden');
 					if ($.browser.msie) {
 						setTimeout("$(sortitems).css('display','block')", 10);
 					}
@@ -390,7 +390,7 @@
 					'ui-icon-triangle-1-s');
 			elem.parents('.ui-widget-content').children('.cms-additional')
 					.show(5, function() {
-						var list = $(this).parents('div.cms-item-list');
+						var list = $(this).parents('div.cms-menu');
 						$('div.ui-widget-shadow', list).css( {
 							height :list.outerHeight() + 2
 						});
@@ -400,7 +400,7 @@
 					'ui-icon-triangle-1-e');
 			elem.parents('.ui-widget-content').children('.cms-additional')
 					.hide(5, function() {
-						var list = $(this).parents('div.cms-item-list');
+						var list = $(this).parents('div.cms-menu');
 						$('div.ui-widget-shadow', list).css( {
 							height :list.outerHeight() + 2
 						});
@@ -410,14 +410,14 @@
 	};
 
 	var resetFavList = cms.toolbar.resetFavList = function() {
-		$("#favoritelist li.cms-item").remove();
-		var $favlist = $("#favoritelist ul");
+		$("#"+cms.html.favoriteMenuId+" li.cms-item").remove();
+		var $favlist = $("#"+cms.html.favoriteMenuId+" ul");
 		for ( var i = 0; i < cms.toolbar.favorites.length; i++) {
 			$favlist
 					.append(cms.html
 							.createItemFavListHtml(cms.data.cms_elements_list[cms.toolbar.favorites[i]]))
 		}
-		// $("#favoritelist a.ui-icon").click(function() {clickTriangle(this)});
+		// $("#"+cms.html.favoriteMenuId+" a.ui-icon").click(function() {clickTriangle(this)});
 	}
 
 	var addToRecent = cms.toolbar.addToRecent = function(itemId) {
@@ -425,8 +425,8 @@
 	}
 
 	var resetRecentList = cms.toolbar.resetRecentList = function() {
-		$("#recentlist li.cms-item").remove();
-		var $recentlist = $("#recent_list_items");
+		$("#"+cms.html.recentMenuId+" li.cms-item").remove();
+		var $recentlist = $("#"+cms.html.recentListId);
 		for ( var i = 0; i < cms.toolbar.recent.length; i++) {
 			$recentlist
 					.append(cms.html

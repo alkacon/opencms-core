@@ -13,6 +13,7 @@
     <link href="flower-demo-Dateien/style.css" rel="stylesheet" type="text/css" />
     <link href="flower-demo-Dateien/style_002.css" rel="stylesheet" type="text/css" />
     <link href="custom-theme/jquery-ui-1.7.2.custom.css" rel="stylesheet" type="text/css" />
+    <link href="advanced_direct_edit.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="lib/jquery-1.3.2.js">
     </script>
     <script type="text/javascript" src="lib/jquery-ui-1.7.2.custom.js">
@@ -58,457 +59,10 @@
       });
     </script>
     <style type="text/css">
+        
+   
       
-      #toolbar {
-          height: 34px;
-          position: fixed;
-          width: 100%;
-          background-color: transparent;
-          top: 0;
-          left: 0;
-          z-index: 10000;
-      }
-      
-      #toolbar_background {
-          height: 34px;
-          width: 100%;
-          position: absolute;
-          border-top: none;
-      }
-      
-      #toolbar_content {
-          width: 1000px;
-          margin: 0 auto;
-          position: relative;
-      }
-      
-      #toolbar div.ui-widget-shadow {
-          height: 34px;
-          width: 100%;
-          padding: 5px 0px;
-          margin-left: 0px;
-          position: absolute;
-      }
-      
-      button {
-          margin: 2px 2px 0px 2px;
-          width: 32px;
-      }
-      
-      #toolbar_content button.wide span.cms-button-text {
-          width: 55px;
-          text-align: center;
-          margin-top: 5px;
-      }
-      
-      #toolbar_content button span {
-          width: 24px;
-          height: 24px;
-          margin: 2px auto;
-      }
-      
-      #toolbar_content button.wide span {
-          float: left;
-          margin: 2px 0 0 2px;
-      }
-      
-      #toolbar_content button {
-          height: 30px;
-      }
-      
-      button.wide {
-          width: 95px;
-      }
-      
-      #close-button {
-          position: absolute;
-          top: -5px;
-          right: 20px;
-          width: 25px;
-          display: none;
-      }
-      
-      #show-button {
-          position: fixed;
-          top: -4px;
-          right: 20px;
-          width: 25px;
-          z-index: 10100;
-      }
-      
-      #toolbar button.left {
-          float: left;
-          z-index: 10100;
-          position: relative;
-      }
-      
-      #toolbar button.right {
-          float: right;
-      }
-      
-      .ui-state-default .cms-icon-logo {
-          background-image: url(images/opencms_logo_16.png)
-      }
-      
-      .ui-state-default .cms-icon-recent {
-          background-image: url(images/24x24/ade_recent_sw.png)
-      }
-      
-      .ui-state-default .cms-icon-edit {
-          background-image: url(images/24x24/ade_edit_sw.png)
-      }
-      
-      .ui-state-default .cms-icon-move {
-          background-image: url(images/24x24/ade_move_sw.png)
-      }
-      
-      .ui-state-default .cms-icon-reset {
-          background-image: url(images/24x24/ade_exit_sw.png)
-      }
-      
-      .ui-state-default .cms-icon-delete {
-          background-image: url(images/24x24/ade_delete_sw.png)
-      }
-      
-      .ui-state-default .cms-icon-add {
-          background-image: url(images/24x24/ade_add_sw.png)
-      }
-      
-      .ui-state-default .cms-icon-favorites {
-          background-image: url(images/24x24/ade_favorites_sw.png)
-      }
-      
-      .ui-state-default .cms-icon-new {
-          background-image: url(images/24x24/ade_new_sw.png)
-      }
-      
-      .ui-state-default .cms-icon-publish {
-          background-image: url(images/24x24/ade_publish_sw.png)
-      }
-      
-      .ui-state-default .cms-icon-sitemap {
-          background-image: url(images/24x24/ade_sitemap_sw.png)
-      }
-      
-      .ui-state-default .cms-icon-save {
-          background-image: url(images/24x24/ade_save_sw.png)
-      }
-      
-      .ui-state-hover span.cms-icon-recent {
-          background-image: url(images/24x24/ade_recent.png)
-      }
-      
-      .ui-state-hover span.cms-icon-edit {
-          background-image: url(images/24x24/ade_edit.png)
-      }
-      
-      .ui-state-hover span.cms-icon-move {
-          background-image: url(images/24x24/ade_move.png)
-      }
-      
-      .ui-state-hover span.cms-icon-reset {
-          background-image: url(images/24x24/ade_exit.png)
-      }
-      
-      .ui-state-hover span.cms-icon-delete {
-          background-image: url(images/24x24/ade_delete.png)
-      }
-      
-      .ui-state-hover span.cms-icon-add {
-          background-image: url(images/24x24/ade_add.png)
-      }
-      
-      .ui-state-hover span.cms-icon-favorites {
-          background-image: url(images/24x24/ade_favorites.png)
-      }
-      
-      .ui-state-hover span.cms-icon-new {
-          background-image: url(images/24x24/ade_new.png)
-      }
-      
-      .ui-state-hover span.cms-icon-publish {
-          background-image: url(images/24x24/ade_publish.png)
-      }
-      
-      .ui-state-hover span.cms-icon-sitemap {
-          background-image: url(images/24x24/ade_sitemap.png)
-      }
-      
-      .ui-state-hover span.cms-icon-save {
-          background-image: url(images/24x24/ade_save.png)
-      }
-      
-      .ui-state-active span.cms-icon-move {
-          background-image: url(images/24x24/ade_move.png)
-      }
-      
-      .ui-state-active span.cms-icon-delete {
-          background-image: url(images/24x24/ade_delete.png)
-      }
-      
-      .ui-state-active span.cms-icon-recent {
-          background-image: url(images/24x24/ade_recent.png)
-      }
-      
-      .ui-state-active span.cms-icon-add {
-          background-image: url(images/24x24/ade_add.png)
-      }
-      
-      .ui-state-active span.cms-icon-favorites {
-          background-image: url(images/24x24/ade_favorites.png)
-      }
-      
-      .ui-state-active span.cms-icon-new {
-          background-image: url(images/24x24/ade_new.png)
-      }
-      
-      .ui-state-active span.cms-icon-publish {
-          background-image: url(images/24x24/ade_publish.png)
-      }
-      
-      .hovering {
-          position: absolute;
-          overflow: hidden;
-      }
-      
-      .hovering-top {
-          background: transparent url(images/ocms_de_t.gif) repeat scroll 0 50%;
-      }
-      
-      .hovering-right {
-          background: transparent url(images/ocms_de_r.gif) repeat scroll 0 50%;
-      }
-      
-      .hovering-left {
-          background: transparent url(images/ocms_de_l.gif) repeat scroll 0 50%;
-      }
-      
-      .hovering-bottom {
-          background: transparent url(images/ocms_de_b.gif) repeat scroll 0 50%;
-      }
-      
-      .hovered {
-          margin: 2px !important;
-      }
-      
-      .placeholder {
-          border: 2px dotted black;
-          visibility: visible !important;
-          height: 10px;
-          position: relative;
-      }
-      
-      .placeholder * {
-          visibility: hidden;
-      }
-      
-      .show-sortable {
-          background-color: #AACCFF;
-      }
-      
-      div.cms-button {
-          position: absolute;
-          top: 0px;
-          right: 0px;
-          width: 20px;
-          height: 20px;
-          overflow: hidden;
-      }
-      
-      div.cms-move {
-          background: transparent url(images/16x16/ocms_de_move_i.png) repeat scroll 0 50%;
-      }
-      
-      .cms-handle {
-          position: absolute;
-          top: 0px;
-          right: 0px;
-          width: 20px;
-          height: 20px;
-          overflow: hidden;
-      }
-      
-      .cms-led-icon {
-          position: absolute;
-          top: 1px;
-          right: 1px;
-          width: 16px;
-          height: 16px;
-          overflow: hidden;
-          background: transparent url(images/16x16/img_new_.png) repeat scroll 0 50%;
-      }
-      
-      .cms-lock-icon {
-          position: absolute;
-          top: 17px;
-          right: 1px;
-          width: 16px;
-          height: 16px;
-          overflow: hidden;
-          background: transparent url(images/16x16/img_locked_.png) repeat scroll 0 50%;
-      }
-      
-      .cms-file-icon {
-          position: absolute;
-          top: 1px;
-          left: 1px;
-          width: 32px;
-          height: 32px;
-          overflow: hidden;
-          background: transparent url(images/32x32/document_text.png) repeat scroll 0 50%;
-      }
-      
-      .cms-check-icon {
-          width: 16px;
-          height: 16px;
-          overflow: hidden;
-          background: transparent url(images/16x16/checkbox_checked_16x16.png) repeat scroll 0 50%;
-          display: block;
-      }
-      
-      span.cms-check-icon-inactive {
-          background-image: url(images/16x16/checkbox_empty_16x16.png);
-      }
-      
-      .cms-move {
-          background: transparent url(images/16x16/ocms_de_move_i.png) repeat scroll 0 50%;
-      }
-      
-      .cms-move:hover {
-          background-image: url(images/16x16/ocms_de_move_a.png);
-      }
-      
-      .cms-delete {
-          background: transparent url(images/16x16/ocms_de_delete_i.png) repeat scroll 0 50%;
-      }
-      
-      .cms-delete:hover {
-          background-image: url(images/16x16/ocms_de_delete_a.png);
-      }
-      
-      #publishlist {
-          display: none;
-          padding: 0px;
-      }
-      
-      .cms-item-list li {
-          display: block;
-          font-weight: normal;
-      }
-      
-      .cms-item-list .cms-check-icon, .cms-item-list input {
-          margin: 10px 5px 0 0;
-          cursor: pointer;
-      }
-      
-      .cms-item div.ui-state-hover {
-          border: none;
-          padding-bottom: 1px;
-      }
-      
-      .cms-item-list label {
-          float: left;
-          padding: 7px 0 3px 5px;
-      }
-      
-      .cms-item-list ul {
-          margin: 10px 0 0 0;
-          list-style: none outside;
-          padding-bottom: 2px;
-      }
-      
-      .cms-item-list ul.options li, #publishlist ul.options input {
-          margin-bottom: 0;
-      }
-      
-      .cms-item-list ul.options {
-          border-top: solid 1px #999999
-      }
-      
-      .cms-item-list .ui-widget-content, cms-item .ui-widget-content {
-          position: relative;
-          width: 290px;
-          line-height: 16px;
-          margin-bottom: 2px;
-      }
-      
-      .cms-item .ui-widget-content .cms-navtext {
-          font-weight: bold;
-          margin-left: 30px;
-      }
-      
-      .cms-item .ui-widget-content .cms-title {
-          margin-left: 34px;
-      }
-      
-      .cms-item .cms-additional {
-          display: none;
-          padding: 5px 0 0 4px;
-      }
-      
-      .cms-item-list .ui-widget-content .cms-additional span.left {
-          width: 60px;
-          overflow: hidden;
-          margin-right: 3px;
-      }
-      
-      .cms-item-list .ui-widget-content .cms-additional div {
-          width: 280px;
-          overflow: hidden;
-          height: 18px;
-          word-wrap: break-word;
-      }
-      
-      .cms-item-list .ui-widget-content a.ui-icon {
-          cursor: pointer;
-      }
-      
-      .cms-item .cms-item-content {
-          display: none;
-      }
-      
-      .cms-item-list .ui-widget-shadow {
-          position: absolute;
-      }
-      
-      li.cms-item, ul.options li {
-          list-style: none;
-          margin-left: 10px;
-      }
-      
-      #favoritelist {
-          display: none;
-          padding: 0px;
-          position: absolute;
-      }
-      
-      #favoritelist div.ui-widget-content, #favoritelist div.connect {
-          background: #AACCFF;
-      }
-      
-      #favoritelist div.ui-widget-content div.ui-widget-content {
-          background: #ffffff;
-      }
-      
-      #favoritelist div.ui-corner-bottom {
-          width: 315px;
-      }
-      
-      #favoritelist div.connect {
-          position: absolute;
-          right: 0px;
-          top: -35px;
-          width: 99px;
-          height: 36px;
-          z-index: 1;
-          border: 1px solid #aaaaaa;
-          border-bottom: 0px;
-      }
-      
-      div.ui-widget-overlay {
-          position: fixed;
-      }
-      
+       /** These styles are not part of ADE but of the demo page **/ 
       div.container-bottom div.box {
           margin: 0 5px;
           width: 32%;
@@ -517,128 +71,10 @@
           overflow: hidden;
       }
       
+       /** These styles are not part of ADE but of the demo page **/ 
       div.container-bottom {
           position: relative;
           min-height: 10px;
-      }
-      
-      #tree-list {
-          padding: 0;
-          display: none;
-          z-index: 13000;
-          position: absolute;
-          top: 50px;
-          left: 200px;
-      }
-      
-      #tree-list li.cms-item {
-          list-style: none;
-          margin: -1px 0 0 8px;
-          padding: 1px 0 0 0px;
-          background: transparent url(images/leaf__.gif) no-repeat scroll 0 -1px;
-      }
-      
-      #tree-list li.last {
-          background: transparent url(images/leaf-last.gif) no-repeat scroll -2px -1px;
-      }
-      
-      #tree-list li.cms-collapsed .cms-collapse-icon {
-          background-image: url(images/expandable.gif)
-      }
-      
-      #tree-list li.cms-collapsed li.cms-item {
-          display: none;
-      }
-      
-      li.jTreePlacement, li.jTreePlaceholder {
-          list-style: none;
-          margin: 0 13px;
-          padding: 0px;
-          width: 303px;
-      }
-      
-      #tree-list .cms-collapse-icon {
-          background: transparent url(images/collapsable.gif) no-repeat scroll 0 0;
-          height: 9px;
-          width: 9px;
-          position: absolute;
-          top: 2px;
-          left: -16px;
-      }
-      
-      #appendBox, #cms_appendbox {
-          position: relative;
-      }
-      
-      #jHelperTipAttrContainer {
-          background: InfoBackground;
-          border: 1px solid ButtonShadow;
-          color: Infotext;
-          padding: 2px;
-          display: none;
-          z-index: 20000;
-          max-width: 500px;
-      }
-      
-      .cms-delete-icon {
-          width: 20px;
-          height: 20px;
-          overflow: hidden;
-          background: transparent url(images/16x16/ocms_de_delete_a.png) repeat scroll 0 50%;
-          display: block;
-          position: relative;
-          top: 6px;
-          right: 3px;
-      }
-      
-      #fav-dialog {
-          display: none;
-          padding: 0px;
-      }
-      
-      #fav-dialog .cms-title {
-          white-space: nowrap;
-          overflow: hidden;
-      }
-      
-      #fav-dialog .cms-item-list .ui-widget-content, #fav-dialog .cms-item .ui-widget-content {
-          overflow: hidden;
-          white-space: nowrap;
-      }
-      
-      #fav-edit {
-          margin-left: 10px;
-          margin-bottom: 10px;
-          width: 290px;
-      }
-      
-      #recentlist {
-          display: none;
-          padding: 0px;
-          position: absolute;
-      }
-      
-      #recentlist div.ui-widget-content, #recentlist div.connect {
-          background: #AACCFF;
-      }
-      
-      #recentlist div.ui-widget-content div.ui-widget-content {
-          background: #ffffff;
-      }
-      
-      #recentlist div.ui-corner-bottom {
-          width: 315px;
-      }
-      
-      #recentlist div.connect {
-          position: absolute;
-          right: 0px;
-          top: -35px;
-          width: 99px;
-          height: 36px;
-          z-index: 1;
-          border: 1px solid #aaaaaa;
-          border-bottom: 0px;
       }
     </style>
   </head>
@@ -927,17 +363,17 @@
         <!-- end: #page -->
       </div>
     </div>
-    <div id="publishlist" class="cms-item-list">
+    <div id="publishlist" >
       <form action="#">
-        <ul>
+        <ul class="cms-item-list">
           <li class="cms-item">
-            <div class="left">
+            <div class="cms-left">
               <span class="cms-check-icon"></span>
             </div>
-            <div class="left ui-widget-content">
+            <div class="cms-left ui-widget-content">
               <div class="cms-head ui-state-hover">
                 <div class="cms-navtext">
-                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Flower Today
+                  <a class="cms-left ui-icon ui-icon-triangle-1-e"></a>Flower Today
                 </div>
                 <span class="cms-title">News from the world of flowers</span>
                 <!-- <span class="cms-releasedate">04.04.2009</span>--><span class="cms-file-icon"></span>
@@ -946,29 +382,29 @@
               </div>
               <div class="cms-additional">
                 <div alt="File: /demo_en/site/folder/flowers.html">
-                  <span class="left">File:</span>flowers.html
+                  <span class="cms-left">File:</span>flowers.html
                 </div>
                 <div alt="Date: 4/4/2009 5:30 PM">
-                  <span class="left">Date:</span>4/4/2009 5:30 PM
+                  <span class="cms-left">Date:</span>4/4/2009 5:30 PM
                 </div>
                 <div alt="User: Admin">
-                  <span class="left">User:</span>Admin
+                  <span class="cms-left">User:</span>Admin
                 </div>
                 <div alt="Type: xmlpage">
-                  <span class="left">Type:</span>xmlpage
+                  <span class="cms-left">Type:</span>xmlpage
                 </div>
               </div>
             </div>
             <br clear="all" />
           </li>
           <li class="cms-item">
-            <div class="left">
+            <div class="cms-left">
               <span class="cms-check-icon"></span>
             </div>
-            <div class="left ui-widget-content">
+            <div class="cms-left ui-widget-content">
               <div class="cms-head ui-state-hover">
                 <div class="cms-navtext">
-                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Text
+                  <a class="cms-left ui-icon ui-icon-triangle-1-e"></a>Text
                 </div>
                 <span class="cms-title">Text file</span>
                 <!-- <span class="cms-releasedate">04.04.2009</span>--><span class="cms-file-icon"></span>
@@ -977,29 +413,29 @@
               </div>
               <div class="cms-additional">
                 <div alt="File: /demo_en/site/folder/file.txt">
-                  <span class="left">File:</span>file.txt
+                  <span class="cms-left">File:</span>file.txt
                 </div>
                 <div alt="Date: 04/04/2009">
-                  <span class="left">Date:</span>4/4/2009 5:30 PM
+                  <span class="cms-left">Date:</span>4/4/2009 5:30 PM
                 </div>
                 <div alt="User: Admin">
-                  <span class="left">User:</span>Admin
+                  <span class="cms-left">User:</span>Admin
                 </div>
                 <div alt="Type: plain">
-                  <span class="left">Type:</span>plain
+                  <span class="cms-left">Type:</span>plain
                 </div>
               </div>
             </div>
             <br clear="all" />
           </li>
           <li class="cms-item">
-            <div class="left">
+            <div class="cms-left">
               <span class="cms-check-icon"></span>
             </div>
-            <div class="left ui-widget-content">
+            <div class="cms-left ui-widget-content">
               <div class="cms-head ui-state-hover">
                 <div class="cms-navtext">
-                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Flowerparade
+                  <a class="cms-left ui-icon ui-icon-triangle-1-e"></a>Flowerparade
                 </div>
                 <span class="cms-title">Images of beautiful flowers</span>
                 <!-- <span class="cms-releasedate">04.04.2009</span>--><span class="cms-file-icon"></span>
@@ -1008,29 +444,29 @@
               </div>
               <div class="cms-additional">
                 <div alt="File: /demo_en/site/flowerparade.html">
-                  <span class="left">File:</span>flowerparade.html
+                  <span class="cms-left">File:</span>flowerparade.html
                 </div>
                 <div alt="Date: 04/04/2009">
-                  <span class="left">Date:</span>4/4/2009 5:30 PM
+                  <span class="cms-left">Date:</span>4/4/2009 5:30 PM
                 </div>
                 <div alt="User: Admin">
-                  <span class="left">User:</span>Admin
+                  <span class="cms-left">User:</span>Admin
                 </div>
                 <div alt="Type: photoalbum">
-                  <span class="left">Type:</span>photoalbum
+                  <span class="cms-left">Type:</span>photoalbum
                 </div>
               </div>
             </div>
             <br style="clear: both;"/>
           </li>
           <li class="cms-item">
-            <div class="left">
+            <div class="cms-left">
               <span class="cms-check-icon"></span>
             </div>
-            <div class="left ui-widget-content">
+            <div class="cms-left ui-widget-content">
               <div class="cms-head ui-state-hover">
                 <div class="cms-navtext">
-                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Extranet
+                  <a class="cms-left ui-icon ui-icon-triangle-1-e"></a>Extranet
                 </div>
                 <span class="cms-title">Flower extranet</span>
                 <!-- <span class="cms-releasedate">04.04.2009</span>--><span class="cms-file-icon"></span>
@@ -1039,25 +475,25 @@
               </div>
               <div class="cms-additional">
                 <div alt="File: /demo_en/site/extranet/extranet.html">
-                  <span class="left">File:</span>extranet.html
+                  <span class="cms-left">File:</span>extranet.html
                 </div>
                 <div alt="Date: 04/04/2009">
-                  <span class="left">Date:</span>4/4/2009 5:30 PM
+                  <span class="cms-left">Date:</span>4/4/2009 5:30 PM
                 </div>
                 <div alt="User: Admin">
-                  <span class="left">User:</span>Admin
+                  <span class="cms-left">User:</span>Admin
                 </div>
                 <div alt="Type: xmlpage">
-                  <span class="left">Type:</span>xmlpage
+                  <span class="cms-left">Type:</span>xmlpage
                 </div>
               </div>
             </div>
             <br clear="all" />
           </li>
         </ul>
-        <ul class="options">
+        <ul class="cms-publish-options">
           <li>
-            <div class="left">
+            <div class="cms-left">
               <span class="cms-check-icon"></span>
             </div>
             <label for="siblings">
@@ -1066,7 +502,7 @@
             <br clear="all"/>
           </li>
           <li>
-            <div class="left">
+            <div class="cms-left">
               <span class="cms-check-icon"></span>
             </div>
             <label for="related">
