@@ -40,27 +40,7 @@
       $('document').ready(function() {
          addToolbar();
          
-         $('.cms-item a.ui-icon').live('click', function() {
-            var elem = $(this);
-            if (elem.hasClass('ui-icon-triangle-1-e')) {
-               elem.removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
-               elem.parents('.ui-widget-content').children('.cms-additional').show(5, function() {
-                  var list = $(this).parents('div.cms-item-list');
-                  $('div.ui-widget-shadow', list).css({
-                     height: list.outerHeight() + 2
-                  });
-               });
-            } else {
-               elem.removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
-               elem.parents('.ui-widget-content').children('.cms-additional').hide(5, function() {
-                  var list = $(this).parents('div.cms-item-list');
-                  $('div.ui-widget-shadow', list).css({
-                     height: list.outerHeight() + 2
-                  });
-               });
-            }
-            return false;
-         });
+         $('.cms-item a.ui-icon').live('click', toggleAdditionalInfo);
          
          
          $('.cms-item-list div.cms-additional div').jHelperTip({
