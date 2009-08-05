@@ -1,4 +1,6 @@
-var recentList = '<div id="recentlist" class="cms-item-list">\
+(function(cms){
+
+var recentList = cms.html.recentList = '<div id="recentlist" class="cms-item-list">\
 <div class="connect ui-corner-top"></div>\
 <div class="ui-widget-shadow ui-corner-all"></div>\
 <div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
@@ -8,7 +10,7 @@ var recentList = '<div id="recentlist" class="cms-item-list">\
 </div>';
 
 
-var favoriteList = '<div id="favoritelist" class="cms-item-list">\
+var favoriteList = cms.html.favoriteList = '<div id="favoritelist" class="cms-item-list">\
 	<div class="connect ui-corner-top"></div>\
 	<div class="ui-widget-shadow ui-corner-all"></div>\
 	<div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
@@ -18,7 +20,7 @@ var favoriteList = '<div id="favoritelist" class="cms-item-list">\
 	</div>\
 </div>';
 
-var publishList= '<div id="publishlist" class="cms-item-list">\
+var publishList = cms.html.publishList = '<div id="publishlist" class="cms-item-list">\
 	<form action="#">\
 	<ul>\
 	</ul>\
@@ -39,9 +41,9 @@ var publishList= '<div id="publishlist" class="cms-item-list">\
 	</form>\
 </div>';
 
-var favoriteDialog='<div id="fav-dialog" class="cms-item-list"><ul></ul></div>';
+var favoriteDialog= cms.html.favoriteDialog = '<div id="fav-dialog" class="cms-item-list"><ul></ul></div>';
 
-var createItemFavDialogHtml = function(item) {
+var createItemFavDialogHtml = cms.html.createItemFavDialogHtml = function(item) {
 	var html = [
 	'<li class="cms-item" rel="',item.resource_id,'">\
 		<div class="left">\
@@ -65,7 +67,7 @@ var createItemFavDialogHtml = function(item) {
 	</li>'];
 	return html.join('');
 }
-var createItemFavListHtml = function(item) {
+var createItemFavListHtml = cms.html.createItemFavListHtml = function(item) {
 	var html =[
 		'<li class="cms-item"  rel="',item.resource_id,'">\
 			<div class=" ui-widget-content">\
@@ -87,7 +89,7 @@ var createItemFavListHtml = function(item) {
 	return html.join('');
 }
 
-var toolbar = '<div id="toolbar">\
+var toolbar = cms.html.toolbar = '<div id="toolbar">\
 	<div class="ui-widget-shadow">\
 	</div>\
 	<div id="toolbar_background" class="ui-widget-header">\
@@ -103,3 +105,4 @@ var toolbar = '<div id="toolbar">\
 		<button name="Move" title="Move" class="left ui-state-default ui-corner-all"><span class="ui-icon cms-icon-move"></span>&nbsp;</button><button name="Delete" title="Delete" class="left ui-state-default ui-corner-all"><span class="ui-icon cms-icon-delete"></span>&nbsp;</button><button name="Add" title="Add" class="left wide ui-state-default ui-corner-all"><span class="ui-icon cms-icon-add"></span><span class="cms-button-text">Add</span></button><button name="New" title="New" class="left wide ui-state-default ui-corner-all"><span class="ui-icon cms-icon-new"></span><span class="cms-button-text">New</span></button><button name="Favorites" title="Favorites" class="left wide ui-state-default ui-corner-all"><span class="ui-icon cms-icon-favorites" /><span class="cms-button-text">Favorites</span></button><button name="Recent" title="Recent" class="left wide ui-state-default ui-corner-all"><span class="ui-icon cms-icon-recent" /><span class="cms-button-text">Recent</span></button><button name="Save" title="Save"  class="right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-save"/>&nbsp;</button><button name="Sitemap" title="Sitemap" class="right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-sitemap"/>&nbsp;</button><button name="Publish" title="Publish" class="right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-publish"/>&nbsp;</button></div></div></div>';
 
 
+})(cms);
