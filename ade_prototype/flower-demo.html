@@ -23,8 +23,14 @@
     </script>
     <script type="text/javascript" src="lib/json2.js">
     </script>
-    <script type="text/javascript" src="testing.js">
-    </script>
+  
+    <script type="text/javascript" src="cms.util.js"></script>
+    <script type="text/javascript" src="cms.init.js"></script>
+    <script type="text/javascript" src="cms.data.js"></script>
+    <script type="text/javascript" src="cms.html.js"></script>
+    <script type="text/javascript" src="cms.move.js"></script>
+    <script type="text/javascript" src="cms.toolbar.js"></script>
+    <script type="text/javascript" src="cms.sitemap.js"></script>
     <script type="text/javascript">
       
       var sortlist = '#col1_content, #col2_content, #col3_content, #bottom_cont';
@@ -1089,146 +1095,5 @@
         </ul>
       </form>
     </div>
-    <div id="favoritelist" class="cms-item-list">
-      <div class="connect ui-corner-top">
-      </div>
-      <div class="ui-widget-shadow ui-corner-all">
-      </div>
-      <div class="ui-widget-content ui-corner-bottom ui-corner-tl">
-        <ul id="favorite_list_items">
-          <button id="fav-edit" name="Edit_Favorites" title="Edit Favorites" class="ui-state-default ui-corner-all">
-            Edit Favorites
-          </button>
-          <li class="cms-item" rel="item_010">
-            <div class=" ui-widget-content">
-              <div class="cms-head ui-state-hover">
-                <div class="cms-navtext">
-                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Differences in Botany
-                </div>
-                <span class="cms-title">Differences in Botany</span>
-                <span class="cms-file-icon"></span>
-              </div>
-              <div class="cms-additional">
-                <div alt="File: /demo_en/site/news/news_01.html">
-                  <span class="left">File:</span>news_01.html
-                </div>
-                <div alt="Date: 04/04/2009">
-                  <span class="left">Date:</span>4/4/2009 5:30 PM
-                </div>
-                <div alt="User: Admin">
-                  <span class="left">User:</span>Admin
-                </div>
-                <div alt="Type: news">
-                  <span class="left">Type:</span>news
-                </div>
-                <!--
-                <div alt="Headline: Differences in Botany"><span class="left">Headline:</span>Differences in Botany</div>
-                <div alt="Content: Plants are living organisms belonging to the kingdom Plantae. They include familiar organisms such as trees, herbs, bushes, grasses, vines, ferns, mosses, and green algae. About 350,000 species of plants, defined as seed plants, bryophytes, ferns and fern allies, are estimated to exist currently."><span class="left">Content:</span>Plants are living organisms belonging to the kingdom Plantae. They include familiar organisms such as trees, herbs, bushes, grasses, vines, ferns, mosses, and green algae. About 350,000 species of plants, defined as seed plants, bryophytes, ferns and fern allies, are estimated to exist currently.</div>
-                <div alt="Type: news"><span class="left">Type:</span>news</div>
-                -->
-              </div>
-              <div class="cms-item-content">
-                <div class="box box_schema4">
-                  <h4>Differences in Botany</h4>
-                  <div class="boxbody">
-                    <p>
-                      Plants are living organisms belonging to the kingdom Plantae. They include familiar organisms such as trees, herbs, bushes, grasses, vines, ferns, mosses, and green algae. About 350,000 species of plants, defined as seed plants, bryophytes, ferns and fern allies, are estimated to exist currently.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li class="cms-item" rel="item_011">
-            <div class=" ui-widget-content">
-              <div class="cms-head ui-state-hover">
-                <div class="cms-navtext">
-                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Flower workshop
-                </div>
-                <span class="cms-title">Flower workshop in Bonn, Germany</span>
-                <span class="cms-file-icon"></span>
-              </div>
-              <div class="cms-additional">
-                <div alt="File: /demo_en/site/events/event_01.html">
-                  <span class="left">File:</span>event_01.html
-                </div>
-                <div alt="Date: 04/04/2009">
-                  <span class="left">Date:</span>4/4/2009 5:30 PM
-                </div>
-                <div alt="User: Admin">
-                  <span class="left">User:</span>Admin
-                </div>
-                <div alt="Type: event">
-                  <span class="left">Type:</span>event
-                </div>
-                <!--
-                <div alt="Headline: Flower workshop in Bonn, Germany"><span class="left">Headline:</span>Flower workshop in Bonn, Germany</div>
-                <div alt="Content: September 25, 2008 Flower bonding is an art. Who wants to know how it works can try it under professional instruction in a flower workshop at Thursday, September 25, 2008 in Bonn. The workshop is free and takes place from 3 PM to 6 PM in the foyer of the Stadthaus, Berliner Platz 2 in Bonn, Germany. ..."><span class="left">Content:</span>September 25, 2008 Flower bonding is an art. Who wants to know how it works can try it under professional instruction in a flower workshop at Thursday, September 25, 2008 in Bonn. The workshop is free and takes place from 3 PM to 6 PM in the foyer of the Stadthaus, Berliner Platz 2 in Bonn, Germany. ...</div>
-                <div alt="Image: flower-demo-Dateien/Workshop.jpg"><span class="left">Image:</span>Workshop.jpg</div>
-                <div alt="Type: image-content"><span class="left">Type:</span>image-content</div>
-                -->
-              </div>
-              <div class="cms-item-content">
-                <div class="box box_schema2">
-                  <h4>Flower workshop in Bonn, Germany</h4>
-                  <div class="boxbody boxbody_listentry">
-                    <div class="left">
-                      <img src="flower-demo-Dateien/Ikebana.jpg" alt="Cooking with flowers"/>
-                    </div>
-                    <p>
-                      September 25, 2008 Flower bonding is an art. Who wants to know how it works can try it under professional instruction in a flower workshop at Thursday, September 25, 2008 in Bonn. The workshop is free and takes place from 3 PM to 6 PM in the foyer of the Stadthaus, Berliner Platz 2 in Bonn, Germany. ...
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-          <li class="cms-item" rel="item_012">
-            <div class=" ui-widget-content">
-              <div class="cms-head ui-state-hover">
-                <div class="cms-navtext">
-                  <a class="left ui-icon ui-icon-triangle-1-e"></a>Rose
-                </div>
-                <span class="cms-title">Rose</span>
-                <span class="cms-file-icon"></span>
-              </div>
-              <div class="cms-additional">
-                <div alt="File: /demo_en/site/news/news_02.html">
-                  <span class="left">File:</span>news_02.html
-                </div>
-                <div alt="Date: 04/04/2009">
-                  <span class="left">Date:</span>4/4/2009 5:30 PM
-                </div>
-                <div alt="User: Admin">
-                  <span class="left">User:</span>Admin
-                </div>
-                <div alt="Type: news">
-                  <span class="left">Type:</span>news
-                </div>
-                <!--
-                <div alt="Headline: Direct edit"><span class="left">Headline:</span>Direct edit</div>
-                <div alt="Content: By utilizing the direct edit feature, you can create new or edit already existing XML contents."><span class="left">Content:</span>By utilizing the direct edit feature, you can create new or edit already existing XML contents.</div>
-                <div alt="Type: news"><span class="left">Type:</span>news</div>
-                -->
-              </div>
-              <div class="cms-item-content">
-                <div class="box box_schema3">
-                  <h4>Rose</h4>
-                  <div class="boxbody">
-                    <p>
-                      A rose is a perennial flowering shrub or vine of the genus Rosa, within the family Rosaceae, that contains over 100 species.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div id="fav-dialog" class="cms-item-list">
-      <ul>
-      </ul>
-    </div>
-  </body>
+    </body>
 </html>
