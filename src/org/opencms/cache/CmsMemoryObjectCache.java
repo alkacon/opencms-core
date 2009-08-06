@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsMemoryObjectCache.java,v $
- * Date   : $Date: 2009/06/04 14:29:39 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/06 09:08:33 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.7.2.1 $
  * 
  * @since 6.2.3
  */
@@ -68,9 +68,9 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
     }
 
     /**
-     * Returns the singelton memory Object cache instance.<p>
+     * Returns the singleton memory Object cache instance.<p>
      * 
-     * @return the singelton memory Object cache instance
+     * @return the singleton memory Object cache instance
      */
     public static CmsMemoryObjectCache getInstance() {
 
@@ -101,7 +101,7 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
     /**
      * Returns an object from the cache.<p>
      * 
-     * @param owner the owner class of the cached object (used to ensure keys don't overlapp)
+     * @param owner the owner class of the cached object (used to ensure keys don't overlap)
      * @param key the key to lookup the object for
      *  
      * @return an object from the cache, or <code>null</code> if no object matches the given key
@@ -115,7 +115,7 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
     /**
      * Puts an object into the cache.<p>
      * 
-     * @param owner the owner class of the cached object (used to ensure keys don't overlapp)
+     * @param owner the owner class of the cached object (used to ensure keys don't overlap)
      * @param key the key to store the object at
      * @param value the object to store
      */
