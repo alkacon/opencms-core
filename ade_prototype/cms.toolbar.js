@@ -14,13 +14,40 @@
 	var showPublishList = cms.toolbar.showPublishList = function() {
 		var button = $(this);
 		if (button.hasClass('ui-state-active')) {
-			// disabling move mode
+			
 
 			button.removeClass('ui-state-active');
 		} else {
 			$('button.ui-state-active').trigger('click');
-			// enabling move-mode
-			$('#publishlist').dialog('open');
+			// appending publish-dialog content
+            $(document.body).append(cms.html.publishDialog);
+            
+            $('#'+cms.html.publishDialogId).dialog( {
+    			buttons : {
+    				"Cancel" : function() {
+    					$(this).dialog("close");
+    				},
+    				"Publish" : function() {
+    					$(this).dialog("close");
+    				}
+    			},
+    			width :340,
+    			title :"Publish",
+    			modal :true,
+    			autoOpen :true,
+    			draggable :true,
+    			resizable :false,
+    			position : [ 'center', 20 ],
+    			close : function() {
+    				$('button[name="Publish"]').removeClass('ui-state-active');
+                    $('#'+cms.html.publishDialogId).dialog('destroy');
+    			},
+    			zIndex :10000
+    		});
+    		$('#'+cms.html.publishDialogId+' span.cms-check-icon').click( function() {
+    			$(this).toggleClass('cms-check-icon-inactive')
+    		}); 
+		
 			button.addClass('ui-state-active');
 		}
 	};
@@ -54,6 +81,23 @@
 			button.addClass('ui-state-active');
 		}
 	};
+    
+    var toggleEdit = cms.toolbar.toggleEdit = function(){
+    	var button=$(this);
+    	if (button.hasClass('ui-state-active')){
+    		// disabling edit mode
+    		$('a.cms-edit').remove();
+    		button.removeClass('ui-state-active');
+    	}else{
+    		$('button.ui-state-active').trigger('click');
+    		// enabling edit mode
+    		$(sortitems).each(function(){
+    			var elem=$(this).css('position', 'relative');
+    			$('<a class="cms-handle cms-edit"></a>').appendTo(elem).hover(function(){cms.move.hoverIn(elem, 2)}, cms.move.hoverOut);
+    		});
+    		button.addClass('ui-state-active');
+    	}
+    };
 
 	var removeToolbar = cms.toolbar.removeToolbar =  function() {
 		$('#toolbar').remove();
@@ -96,11 +140,12 @@
 		bodyEl.append(cms.html.toolbar);
 		bodyEl.append(cms.html.createMenu(cms.html.favoriteMenuId));
 		bodyEl.append(cms.html.favoriteDialog);
+        
 		bodyEl.append(cms.html.createMenu(cms.html.recentMenuId));
 		resetFavList();
-		bodyEl
-				.append('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>');
+		bodyEl.append('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>');
 		$('#show-button').click(toggleToolbar);
+        $('button[name="Edit"]').click(toggleEdit);
 		$('button[name="Move"]').click(toggleMove);
 		$('button[name="Delete"]').click(toggleDelete);
 		$('button[name="Publish"]').click(showPublishList);
@@ -118,30 +163,7 @@
 		bodyEl.animate( {
 			marginTop :oldBodyMarginTop + 34 + 'px'
 		}, 200);
-		$('#publishlist').dialog( {
-			buttons : {
-				"Cancel" : function() {
-					$(this).dialog("close");
-				},
-				"Publish" : function() {
-					$(this).dialog("close");
-				}
-			},
-			width :340,
-			title :"Publish",
-			modal :true,
-			autoOpen :false,
-			draggable :false,
-			resizable :false,
-			position : [ 'center', 20 ],
-			close : function() {
-				$('button[name="Publish"]').removeClass('ui-state-active');
-			},
-			zIndex :10000
-		});
-		$('#publishlist span.cms-check-icon').click( function() {
-			$(this).toggleClass('cms-check-icon-inactive')
-		});
+		
 		initFavDialog();
 	};
 
@@ -214,6 +236,7 @@
 				deactivate : function(event, ui) {
 					$('#'+cms.html.favoriteListId+' li').hide(200);
 					$('#'+cms.html.favoriteMenuId).css('visibility', 'hidden');
+                    $('a.cms-move').show();
 					if ($.browser.msie) {
 						setTimeout("$(sortitems).css('display','block')", 10);
 					}
@@ -349,8 +372,8 @@
 	};
 
 	var initFavDialogItems = cms.toolbar.initFavDialogItems = function() {
-		$("#fav-dialog ul").remove();
-		$("#fav-dialog").append("<ul></ul>")
+		$("#fav-dialog ul").empty();
+		//$("#fav-dialog").append("<ul></ul>")
 		var html = []
 		for ( var i = 0; i < cms.toolbar.favorites.length; i++) {
 			html
@@ -360,13 +383,13 @@
 		$("#fav-dialog ul").append(html.join(''));
 		$("#fav-dialog .cms-delete-icon").click(clickFavDeleteIcon);
 		$("#fav-dialog ul").sortable();
-		$('#fav-dialog div.cms-additional div').jHelperTip( {
-			trigger :'hover',
-			source :'attribute',
-			attrName :'alt',
-			topOff :-30,
-			opacity :0.8
-		});
+//		$('#fav-dialog div.cms-additional div').jHelperTip( {
+//			trigger :'hover',
+//			source :'attribute',
+//			attrName :'alt',
+//			topOff :-30,
+//			opacity :0.8
+//		});
 	};
 
 	var showFavDialog = cms.toolbar.showFavDialog = function() {
