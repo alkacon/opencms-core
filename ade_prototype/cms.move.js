@@ -266,15 +266,9 @@ var overAdd = cms.move.overAdd = function(event, ui) {
 
 			reDoHover = true;
 			// hide dragged helper, display helper for container instead
-			ui.self.helper.css('display', 'none');
-			ui.self.helper = ui.self.cmsHelpers[elemId].css('display', 'block');
-			ui.self.currentItem = ui.self.cmsHelpers[elemId];
-			ui.self.helper.width(ui.placeholder.width());
+			cms.util.setHelper(ui.self, elemId);
+            ui.self.helper.width(ui.placeholder.width());
 			ui.self.helper.height('auto');
-
-			ui.self._cacheHelperProportions();
-			ui.self._adjustOffsetFromHelper(ui.self.options.cursorAt);
-			ui.self.refreshPositions(true);
 
 		}
 
@@ -303,13 +297,7 @@ var outAdd = cms.move.outAdd = function(event, ui) {
 		if (ui.self.cmsStartContainerId != ui.self.cmsCurrentContainerId) {
 			ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
 			cms.util.fixZIndex(ui.self.cmsStartContainerId, cms.move.zIndexMap);
-			ui.self.helper.css('display', 'none');
-			ui.self.helper = ui.self.cmsHelpers[ui.self.cmsCurrentContainerId]
-					.css('display', 'block');
-			ui.self.currentItem = ui.self.cmsHelpers[ui.self.cmsCurrentContainerId];
-			ui.self._cacheHelperProportions();
-			ui.self._adjustOffsetFromHelper(ui.self.options.cursorAt);
-			ui.self.refreshPositions(true);
+			cms.util.setHelper(ui.self, ui.self.cmsCurrentContainerId);
 		}
 		ui.placeholder.css('display', 'none');
 		if (ui.self.cmsStartContainerId != cms.html.favoriteListId) {
