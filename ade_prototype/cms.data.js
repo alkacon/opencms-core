@@ -86,7 +86,7 @@ var item_004 = {
   status: 'unchanged',
   subItems: null,
   contents: {
-     'bottom': '<div class="box box_schema4" rel="item_004"><h4>Login</h4><div class="boxbody"><p>Via the login page or the login box, you can enter your credentials in order to access the protected section (extranet).</p><p>&nbsp;</p><p>Furthermore, since this login switches to the "Offline Project" (a working copy of all contents of the site), the user can edit the contents using the "direct edit" buttons.</p><p>&nbsp;</p><p>If you are already logged in, you can logout here.</p></div></div>',
+     'bottom': '<div class="box box_schema4" rel="item_004"><h4>Login</h4><div class="boxbody"><p>Via the login page or the login box, you can enter your credentials in order to access the protected section (extranet).</p><p>&nbsp;</p><p>Furthermore, since this login switches to the "Offline Project" (a working copy of all contents of the site), the user can edit the contents using the "direct edit" buttons.</p><p>&nbsp;</p><p>If you are already logged in, you can logout here.</p></div></div>'
    }
 };
 
@@ -108,7 +108,6 @@ var col2_content = {
     id: 'col2_content',
     type: 'column',
     elements: ['item_002', 'item_003'],
-    name: 'col2_content',
     maxElements: null
 } 
 
@@ -116,14 +115,13 @@ var col3_content = {
     id: 'col3_content',
     type: 'column',
     elements: ['item_003', 'item_004'],
-    name: 'col3_content',
     maxElements: null
 }
 
 var bottom_cont = {
+    id:'bottom_cont',
     type: 'bottom',
     elements: ['item_004', 'item_001'],
-    name: 'bottom_cont',
     maxElements: 42
 }
 
