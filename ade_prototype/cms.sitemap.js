@@ -50,33 +50,26 @@ var collapse = cms.sitemap.collapse = function() {
 	$(this).closest('li').toggleClass('cms-collapsed');
 };
 
-var treeDrop = cms.sitemap.treeDrop = function(event) {
-	var elem = event.target ? event.target : event.srcElement;
-	$('ul:empty', elem).remove();
-	$('li a.cms-collapse-icon').each( function() {
-
-		if (1 != $(this).closest('li').children('ul').length) {
+var treeWork = cms.sitemap.treeWork = function(){
+    $('ul:empty', listElem).remove();	
+	$('li a.cms-collapse-icon').each(function(){
+		
+		if (1!=$(this).closest('li').children('ul').length) {
 			this.parentNode.removeChild(this);
 		}
 	});
-
-	$('a.cms-collapse-icon', elem).unbind('click', collapse);
-	$('li.last', elem).removeClass('last');
-	$('ul', elem).andSelf().each( function() {
+	
+	$('li.last', listElem).removeClass('last');
+	$('ul', listElem).andSelf().each(function(){
 		$(this).children('li').filter(':last').addClass('last');
 	});
+	
+	$('li:has(ul)', listElem).children('div.ui-widget-content:not(:has(a.cms-collapse-icon))').append('<a class="cms-collapse-icon"></a>');
+}
 
-	$('li:has(ul)', elem).children(
-			'div.ui-widget-content:not(:has(a.cms-collapse-icon))').append(
-			'<a class="cms-collapse-icon"></a>');
-
-	$('a.cms-collapse-icon', elem).click(collapse);
-
-	// alert('done');
-
-	// $('li:not(:has(ul))', elem).find('a.cms-collapse-icon').each(function(){
-	// this.parentNode.removeChild(this);
-	// });
+var treeDrop = cms.sitemap.treeDrop = function(event) {
+	var elem = event.target ? event.target : event.srcElement;
+	treeWork(elem);
 
 };
 
