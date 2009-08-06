@@ -26,7 +26,7 @@
 }
 
 #toolbar div.cms-toolbar-content {
-    width: 1000px;
+    width: 930px;
     margin: 0 auto;
     position: relative;
 }
@@ -72,7 +72,7 @@ button.cms-button-wide {
 #show-button {
     position: fixed;
     top: -4px;
-    right: 20px;
+    right: 5px;
     width: 25px;
     z-index: 10100;
 }
@@ -189,6 +189,10 @@ div.cms-button {
 
 .ui-state-hover span.cms-icon-save {
     background-image: url(images/24x24/ade_save.png)
+}
+
+.ui-state-hover span.cms-icon-edit {
+    background-image: url(images/24x24/ade_edit.png)
 }
 
 .ui-state-active span.cms-icon-move {
@@ -319,6 +323,14 @@ span.cms-check-icon-inactive {
     background-image: url(images/16x16/checkbox_empty_16x16.png);
 }
 
+.cms-edit{
+    background: transparent url(images/16x16/ocms_de_editor_i.png) repeat scroll 0 50%;
+}
+
+.cms-edit:hover{
+    background-image: url(images/16x16/ocms_de_editor_a.png);
+}
+
 .cms-move {
     background: transparent url(images/16x16/ocms_de_move_i.png) repeat scroll 0 50%;
 }
@@ -335,9 +347,12 @@ span.cms-check-icon-inactive {
     background-image: url(images/16x16/ocms_de_delete_a.png);
 }
 
-#publishlist {
-    display: none;
+.ui-dialog div.cms-dialog {
     padding: 0px;
+}
+
+div.cms-dialog {
+    display: none;
 }
 
 
@@ -347,9 +362,10 @@ span.cms-check-icon-inactive {
     font-weight: normal;
 }
 
-.cms-item-list .cms-check-icon, .cms-item-list input, .cms-publish-options .cms-check-icon {
+.cms-item-list .cms-check-icon, .cms-item-list .cms-delete-icon, .cms-publish-options .cms-check-icon {
     margin: 10px 5px 0 0;
     cursor: pointer;
+    position: inherit;
 }
 
 .cms-item div.ui-state-hover {
@@ -368,11 +384,7 @@ ul.cms-item-list, ul.cms-publish-options {
     padding-bottom: 2px;
 }
 
-#publishlist ul.cms-publish-options li, #publishlist ul.options input, #publishlist ul.cms-publish-options input {
-    margin-bottom: 0;
-}
-
-.cms-item-list ul.options, #publishlist ul.cms-publish-options {
+.cms-item-list ul.options, .cms-dialog ul.cms-publish-options {
     border-top: solid 1px #999999
 }
 
@@ -424,7 +436,7 @@ ul.cms-item-list, ul.cms-publish-options {
 
 li.cms-item, ul.options li, ul.cms-publish-options li {
     list-style: none;
-    margin-left: 10px;
+    margin:0 0 0 10px;
 }
 
 div.cms-menu {
@@ -433,7 +445,7 @@ div.cms-menu {
     position: absolute;
 }
 
-div.cms-menu div.ui-widget-content, div.cms-menu div.cms-menu-connect, #favoritelist div.connect{
+div.cms-menu div.ui-widget-content, div.cms-menu div.cms-menu-connect {
     background: #AACCFF;
 }
 
@@ -539,6 +551,7 @@ li.jTreePlacement, li.jTreePlaceholder {
     right: 3px;
 }
 
+/*
 #fav-dialog {
     display: none;
     padding: 0px;
@@ -553,9 +566,9 @@ li.jTreePlacement, li.jTreePlaceholder {
     overflow: hidden;
     white-space: nowrap;
 }
+*/
 
-
-
+/*
 #recentlist {
     display: none;
     padding: 0px;
@@ -583,4 +596,4 @@ li.jTreePlacement, li.jTreePlaceholder {
     z-index: 1;
     border: 1px solid #aaaaaa;
     border-bottom: 0px;
-}
+}  */
