@@ -26,9 +26,39 @@ var favoriteList = cms.html.favoriteList = '<div id="'+favoriteMenuId+'" class="
 	    </ul>\
 	</div></div>';
 
-var publishList = cms.html.publishList = '<div id="'+publishDialogId+'" class="cms-dialog">\
+var publishDialog = cms.html.publishDialog = '<div id="'+publishDialogId+'" class="cms-dialog">\
 	<form action="#">\
-	    <ul  class="cms-item-list"></ul>\
+	    <ul  class="cms-item-list"><li class="cms-item">\
+            <div class="cms-left">\
+              <span class="cms-check-icon"></span>\
+            </div>\
+            <div class="cms-left ui-widget-content">\
+              <div class="cms-head ui-state-hover">\
+                <div class="cms-navtext">\
+                  <a class="cms-left ui-icon ui-icon-triangle-1-e"></a>Extranet\
+                </div>\
+                <span class="cms-title">Flower extranet</span>\
+                <span class="cms-file-icon"></span>\
+                <span class="cms-led-icon"></span>\
+                <span class="cms-lock-icon"></span>\
+              </div>\
+              <div class="cms-additional">\
+                <div alt="File: /demo_en/site/extranet/extranet.html">\
+                  <span class="cms-left">File:</span>extranet.html\
+                </div>\
+                <div alt="Date: 04/04/2009">\
+                  <span class="cms-left">Date:</span>4/4/2009 5:30 PM\
+                </div>\
+                <div alt="User: Admin">\
+                  <span class="cms-left">User:</span>Admin\
+                </div>\
+                <div alt="Type: xmlpage">\
+                  <span class="cms-left">Type:</span>xmlpage\
+                </div>\
+              </div>\
+            </div>\
+            <br clear="all" />\
+          </li></ul>\
 	    <ul class="cms-publish-options">\
 	        <li>\
 	            <div class="cms-left">\<span class="cms-check-icon"></span></div>\
