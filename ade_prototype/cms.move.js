@@ -87,10 +87,13 @@ var startAdd = cms.move.startAdd = function(event, ui) {
 				$(document.body).append('<div id="cms_appendbox"></div>');
 			}
 			ui.self.helper.appendTo('#cms_appendbox');
-			ui.self._cacheHelperProportions();
+			
+            refreshHelperPositions(ui.self);
+/*            ui.self._cacheHelperProportions();
 			ui.self._adjustOffsetFromHelper(ui.self.options.cursorAt);
-			ui.self.refreshPositions(true);
-			$('#' + ui.self.cmsStartContainerId).closest('.cms-menu').css(
+			ui.self.refreshPositions(true);*/
+			
+            $('#' + ui.self.cmsStartContainerId).closest('.cms-menu').css(
 					'display', 'none');
 			ui.self.cmsOver = false;
 		} else {
@@ -266,7 +269,7 @@ var overAdd = cms.move.overAdd = function(event, ui) {
 
 			reDoHover = true;
 			// hide dragged helper, display helper for container instead
-			cms.util.setHelper(ui.self, elemId);
+			setHelper(ui.self, elemId);
             ui.self.helper.width(ui.placeholder.width());
 			ui.self.helper.height('auto');
 
@@ -297,7 +300,7 @@ var outAdd = cms.move.outAdd = function(event, ui) {
 		if (ui.self.cmsStartContainerId != ui.self.cmsCurrentContainerId) {
 			ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
 			cms.util.fixZIndex(ui.self.cmsStartContainerId, cms.move.zIndexMap);
-			cms.util.setHelper(ui.self, ui.self.cmsCurrentContainerId);
+			setHelper(ui.self, ui.self.cmsCurrentContainerId);
 		}
 		ui.placeholder.css('display', 'none');
 		if (ui.self.cmsStartContainerId != cms.html.favoriteListId) {
@@ -422,6 +425,19 @@ var hoverInner = cms.move.hoverInner = function(elem, hOff) {
 var hoverOut = cms.move.hoverOut = function() {
 	$('div.cms-hovering, div.cms-highlight-container').remove();
 
-}
+};
+var setHelper = cms.move.setHelper = function (sortable, id) {
+	sortable.helper.css('display','none');
+	sortable.helper=sortable.cmsHelpers[id].css('display','block');
+	sortable.currentItem=sortable.cmsHelpers[id];
+	refreshHelperPositions(sortable);
+};
+
+var refreshHelperPositions = cms.move.refreshHelperPositions = function(sortable) {
+	sortable._cacheHelperProportions();
+	sortable._adjustOffsetFromHelper(sortable.options.cursorAt);
+	sortable.refreshPositions(true);
+};
+
 
 })(cms);

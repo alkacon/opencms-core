@@ -81,16 +81,14 @@ var setZIndex = function(id, z) {
 	$('#' + id).css('z-index', z);
 }
 
-var setHelper = cms.util.setHelper = function (sortable, id) {
-	sortable.helper.css('display','none');
-	sortable.helper=sortable.cmsHelpers[id].css('display','block');
-	sortable.currentItem=sortable.cmsHelpers[id];
-	refreshHelperPositions(sortable);
+
+var getCompatibleContainers = function(item) {
+    var result = [];
+    for (containerName in cms.data.containers) {
+        if (item.contents[containerName]) {
+            result.push(containerName);
+        }
+    }    
 }
 
-var refreshHelperPositions = cms.util.refreshHelperPositions = function(sortable) {
-	sortable._cacheHelperProportions();
-	sortable._adjustOffsetFromHelper(sortable.options.cursorAt);
-	sortable.refreshPositions(true);
-}
 })(cms);
