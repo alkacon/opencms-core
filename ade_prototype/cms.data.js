@@ -1,5 +1,154 @@
 ( function(cms) {
-	
+
+var item_001 = {
+    /* resource id (or special id for new items), also used as HTML id if the item isn't a subcontainer. */
+    id: 'item_001',
+    
+    navText: 'XML',
+    title: 'XML based contents',
+    file: 'xml_contents.xml',
+    date: '4/4/2009 5:30 PM',
+    user: 'Admin',
+    type: 'news',
+    
+    /* can the current user move the item? */
+    allowMove: true,
+    
+    /* can the current user edit the item? */
+    allowEdit: true,
+    
+    /* is this item locked by another user? */
+    locked: false,
+    
+    /* changed, unchanged or new */
+    status: 'unchanged',
+    
+    /* list of contained item ids if this is a subcontainer, else null */
+    subItems: null, 
+    
+    /* map container type to HTML for this item/container type combination, but only for container types 
+     * which are compatible with this item
+     */
+    contents: {
+             'column': '<div class="box box_schema2" rel="item_001"><h4>XML based contents</h4><div class="boxbody"><p>In this section, you find additinal examples for xml based contents (news and events) demonstrating how to manage structured contents.</p><p>&nbsp;</p><p>These contents are displayed in various list boxes, where the selection and the ordering of the contents shown inside is done by a so-called "collector". At this page, for example, the collector provides the two most-recent news or events, only.</p></div></div>'
+
+          }
+};
+
+var item_002 = {
+   id: item_002,
+   navText: 'Direct edit',
+   title: 'Direct edit',
+   file: 'direct_edit.xml',
+   date: '4/4/2009 5:30 PM',
+  user: 'Admin',
+  type: 'news',
+  allowMove: true,
+  allowEdit: true,
+  locked: false,
+  status: 'changed',
+  subItems: null,
+  contents: {
+     'column': '<div class="box box_schema2" rel="item_002"><h4>Direct edit</h4><div class="boxbody"><p>By utilizing the direct edit feature, you can create new or edit already existing XML contents.</p></div></div>'
+  }
+};
+var item_003 = {
+  id: 'item_003',
+  navText: 'Login',
+  title: 'Login box',
+  file: 'login.xml',
+  date: '4/4/2009 5:30 PM',
+  user: 'Admin',
+  type: 'news',
+  allowMove: true,
+  allowEdit: true,
+  locked: false,
+  status: 'unchanged',
+  subItems: null,
+  contents: {
+     'column': '<div class="box box_schema4" rel="item_003"><h4>Login</h4><div class="boxbody"><p><b>Logged in as:</b></p><form method="get" action="/opencms/opencms/demo_en/extra/login.html" class="loginform"><div class="boxform">(Admin)</div><div class="boxform"><input name="action" value="logoff" type="hidden"/><input name="requestedResource" value="/demo_en/today/index.html" type="hidden"/><input class="button" value="Logoff" type="submit"/></div></form></div></div>',
+     'bottom': '<div class="box box_schema4" rel="item_003"><h4>Login</h4><div class="boxbody"><p><b>Logged in as:</b></p><form method="get" action="/opencms/opencms/demo_en/extra/login.html" class="loginform"><div class="boxform">(Admin)</div><div class="boxform"><input name="action" value="logoff" type="hidden"/><input name="requestedResource" value="/demo_en/today/index.html" type="hidden"/><input class="button" value="Logoff" type="submit"/></div></form></div></div>'     
+
+  }
+};
+
+var item_004 = {
+  id: 'item_004',
+  navText: 'Login',
+  title: 'Login description',
+  file: 'login_description.xml',
+  date: '4/4/2009 5:30 PM',
+  user: 'Admin',
+  type: 'news',
+  allowMove: true,
+  allowEdit: true,
+  locked: false,
+  status: 'unchanged',
+  subItems: null,
+  contents: {
+     'bottom': '<div class="box box_schema4" rel="item_004"><h4>Login</h4><div class="boxbody"><p>Via the login page or the login box, you can enter your credentials in order to access the protected section (extranet).</p><p>&nbsp;</p><p>Furthermore, since this login switches to the "Offline Project" (a working copy of all contents of the site), the user can edit the contents using the "direct edit" buttons.</p><p>&nbsp;</p><p>If you are already logged in, you can logout here.</p></div></div>',
+   }
+};
+
+var col1_content = {
+    /* id for the container, also used as a HTML id */
+    id: 'col1_content',
+    
+    /* type of the container */
+    type: 'column',
+    
+    /* list of IDs of elements in the container */
+    elements: ['item_001', 'item_002'],
+    
+    /* maximum number of elements or null if there is no maximum number */    
+    maxElements: null
+}   
+
+var col2_content = {
+    id: 'col2_content',
+    type: 'column',
+    elements: ['item_002', 'item_003'],
+    name: 'col2_content',
+    maxElements: null
+} 
+
+var col3_content = {
+    id: 'col3_content',
+    type: 'column',
+    elements: ['item_003', 'item_004'],
+    name: 'col3_content',
+    maxElements: null
+}
+
+var bottom_cont = {
+    type: 'bottom',
+    elements: ['item_004', 'item_001'],
+    name: 'bottom_cont',
+    maxElements: 42
+}
+
+var containers = cms.data.containers = {
+    'col1_content':col1_content,
+    'col2_content':col2_content,
+    'col3_content':col3_content,
+    'bottom_cont':bottom_cont
+}
+   
+var elements = cms.data.elements = {
+    'item_001': item_001,
+    'item_002': item_002,
+    'item_003': item_003,
+    'item_004': item_004
+}    
+
+ 
+
+    
+
+   
+    
+
+
 var cms_elements_list = cms.data.cms_elements_list = {
 	   'item_001': {
 	      'resource_id': 'item_001',
