@@ -15,7 +15,7 @@ var movePreparation = cms.move.movePreparation = function(event) {
 }
 
 var moveEnd = cms.move.moveEnd = function(event) {
-	$('a.cms-move').show();
+	
 	$(this).hover( function() {
 		hoverIn($(this).parent(), 2)
 	}, hoverOut).removeClass('cms-trigger');
@@ -29,12 +29,15 @@ var startAdd = cms.move.startAdd = function(event, ui) {
 	// $('#'+cms.html.favoriteMenuId).css('display', 'block');
 	// ui.self._refreshItems(event);
 	// }
-	ui.self.cmsHoverList = '#' + ui.self.cmsStartContainerId;
+	ui.self.cmsHoverList = '';
 	ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
 	ui.self.cmsResource_id = ui.self.currentItem.attr('rel');
 	if (ui.self.cmsResource_id && cms.data.cms_elements_list[ui.self.cmsResource_id]) {
 		ui.self.cmsItem = cms.data.cms_elements_list[ui.self.cmsResource_id];
-		ui.self.cmsStartOffset = ui.placeholder.offset();
+		ui.self.cmsStartOffset = {
+            top: ui.self.offset.top,
+            left: ui.self.offset.left
+        };
 		ui.self.cmsHelpers = {};
 		ui.self.cmsOrgPlaceholder = ui.placeholder.clone().insertBefore(
 				ui.placeholder);
@@ -93,11 +96,11 @@ var startAdd = cms.move.startAdd = function(event, ui) {
 			ui.self._adjustOffsetFromHelper(ui.self.options.cursorAt);
 			ui.self.refreshPositions(true);*/
 			
-            $('#' + ui.self.cmsStartContainerId).closest('.cms-menu').css(
+			$('#' + ui.self.cmsStartContainerId).closest('.cms-menu').css(
 					'display', 'none');
 			ui.self.cmsOver = false;
 		} else {
-
+            ui.self.cmsHoverList+=', #'+ ui.self.cmsStartContainerId;
 			cms.util.fixZIndex(ui.self.cmsStartContainerId, cms.move.zIndexMap);
 
 			// show drop zone for new favorites
@@ -270,7 +273,7 @@ var overAdd = cms.move.overAdd = function(event, ui) {
 			reDoHover = true;
 			// hide dragged helper, display helper for container instead
 			setHelper(ui.self, elemId);
-            ui.self.helper.width(ui.placeholder.width());
+			ui.self.helper.width(ui.placeholder.width());
 			ui.self.helper.height('auto');
 
 		}
