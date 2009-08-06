@@ -4,6 +4,9 @@
  * jHelpertip
  * Version: 1.0 (Jun 2, 2008)
  * Requires: jQuery 1.2+
+ * 
+ * 
+ * Live option added, to assign only once for all existing and future elements.
  */
 (function($) {
 		  
@@ -98,23 +101,43 @@
 
 		// just close tool tip when not needed usually trigger by anything outside out tooltip target
 		if (opts.trigger == "hover") {
-			$(this).bind("mouseover", function(e){
-				e.preventDefault();
-				getData(this, e);
-				return false;
-			});
-			$(this).bind("mousemove", function(e){
-				getPosition(e);
-				return false;
-			});
-			
-			$(this).bind("mouseout", function(e){
-			    if (opts.source == "attribute")
-					$(opts.aC).hide().empty();
-				else
-					$(opts.ttC).hide().empty();
-				return false;
-			});
+            if (opts.live){
+                $(this).live("mouseover", function(e){
+    				e.preventDefault();
+    				getData(this, e);
+    				return false;
+    			});
+    			$(this).live("mousemove", function(e){
+    				getPosition(e);
+    				return false;
+    			});
+    			
+    			$(this).live("mouseout", function(e){
+    			    if (opts.source == "attribute")
+    					$(opts.aC).hide().empty();
+    				else
+    					$(opts.ttC).hide().empty();
+    				return false;
+    			});
+            }else{
+                $(this).bind("mouseover", function(e){
+    				e.preventDefault();
+    				getData(this, e);
+    				return false;
+    			});
+    			$(this).bind("mousemove", function(e){
+    				getPosition(e);
+    				return false;
+    			});
+    			
+    			$(this).bind("mouseout", function(e){
+    			    if (opts.source == "attribute")
+    					$(opts.aC).hide().empty();
+    				else
+    					$(opts.ttC).hide().empty();
+    				return false;
+    			});
+            }
 		}
 		
 		else if (opts.trigger == "click") {
@@ -151,7 +174,8 @@
 		type: "GET", /* data can be inline or CSS selector */
 		//url: '',
 		//data: '',
-		autoClose: true
+		autoClose: true,
+        live: false
 	};
 		
 	
