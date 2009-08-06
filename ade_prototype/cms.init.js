@@ -1,6 +1,9 @@
 $.extend($.ui.sortable.prototype, {
    _uiHash: function(inst) {
       var self = inst || this;
+      
+      /* cms-addition:
+       * return the sortable-plugin-object as self */
       return {
          helper: self.helper,
          placeholder: self.placeholder || $([]),
@@ -24,6 +27,9 @@ $.extend($.ui.sortable.prototype, {
       if (this.options.revert) {
          var self = this;
          var cur;
+         
+         /* cms-addition:
+          * in case the placeholder is hidden use the initial offset for reverting */
          if (self.placeholder.css('display') == 'none') {
             cur = self.cmsStartOffset;
          } else {
@@ -51,6 +57,8 @@ $.extend($.ui.sortable.prototype, {
 			isOverElementWidth = $.ui.isOverAxis(this.positionAbs.left + this.offset.click.left, item.left, item.width),
 			isOverElement = isOverElementHeight && isOverElementWidth;
             
+        /* cms-addition:
+         *  verify if item parent matches the container the pointer intersect with */    
         if (isOverElement){
             isOverElement=false;
             for (var i = this.containers.length - 1; i >= 0; i--) {
@@ -62,12 +70,11 @@ $.extend($.ui.sortable.prototype, {
                 }
             }
         }
+        if (!isOverElement)
+			return false;    
             
 		var verticalDirection = this._getDragVerticalDirection(),
 			horizontalDirection = this._getDragHorizontalDirection();
-
-		if (!isOverElement)
-			return false;
 
 		return this.floating ?
 			( ((horizontalDirection && horizontalDirection == "right") || verticalDirection == "down") ? 2 : 1 )
