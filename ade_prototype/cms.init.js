@@ -44,5 +44,34 @@ $.extend($.ui.sortable.prototype, {
       
       return false;
       
-   }
+   },
+   _intersectsWithPointer: function(item) {
+
+		var isOverElementHeight = $.ui.isOverAxis(this.positionAbs.top + this.offset.click.top, item.top, item.height),
+			isOverElementWidth = $.ui.isOverAxis(this.positionAbs.left + this.offset.click.left, item.left, item.width),
+			isOverElement = isOverElementHeight && isOverElementWidth;
+            
+        if (isOverElement){
+            isOverElement=false;
+            for (var i = this.containers.length - 1; i >= 0; i--) {
+                if (this._intersectsWith(this.containers[i].containerCache)) {
+                    if (this.containers[i].element[0] == item.item.parent().get(0)) {
+                        isOverElement = true;
+                        break;
+                    }
+                }
+            }
+        }
+            
+		var verticalDirection = this._getDragVerticalDirection(),
+			horizontalDirection = this._getDragHorizontalDirection();
+
+		if (!isOverElement)
+			return false;
+
+		return this.floating ?
+			( ((horizontalDirection && horizontalDirection == "right") || verticalDirection == "down") ? 2 : 1 )
+			: ( verticalDirection && (verticalDirection == "down" ? 2 : 1) );
+
+	}
 })
