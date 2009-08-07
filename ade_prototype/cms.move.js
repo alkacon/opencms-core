@@ -32,8 +32,8 @@ var startAdd = cms.move.startAdd = function(event, ui) {
 	ui.self.cmsHoverList = '';
 	ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
 	ui.self.cmsResource_id = ui.self.currentItem.attr('rel');
-	if (ui.self.cmsResource_id && cms.data.cms_elements_list[ui.self.cmsResource_id]) {
-		ui.self.cmsItem = cms.data.cms_elements_list[ui.self.cmsResource_id];
+	if (ui.self.cmsResource_id && cms.data.elements[ui.self.cmsResource_id]) {
+		ui.self.cmsItem = cms.data.elements[ui.self.cmsResource_id];
 		ui.self.cmsStartOffset = {
             top: ui.self.offset.top,
             left: ui.self.offset.left
@@ -48,13 +48,17 @@ var startAdd = cms.move.startAdd = function(event, ui) {
 					'height' :ui.self.currentItem.height()
 				});
 		cms.move.zIndexMap = {};
-		for (container_name in ui.self.cmsItem.contents) {
+		for (container_name in cms.data.containers) {
+            var containerType = cms.data.containers[container_name].type;
+            // skip incompatible containers
+            if (!cms.data.elements[ui.self.cmsResource_id].contents[containerType]) continue;
+			
 			var zIndex = $('#' + container_name).css('z-index');
 			cms.move.zIndexMap[container_name] = zIndex;
 			if (container_name != ui.self.cmsStartContainerId) {
 				ui.self.cmsHoverList += ', #' + container_name;
 				ui.self.cmsHelpers[container_name] = $(
-						ui.self.cmsItem.contents[container_name]).appendTo(
+						ui.self.cmsItem.contents[containerType]).appendTo(
 						'#' + container_name).css( {
 					'display' :'none',
 					'position' :'absolute',
@@ -107,7 +111,7 @@ var startAdd = cms.move.startAdd = function(event, ui) {
 			var list_item = '<li class="cms-item"  rel="'
 					+ ui.self.cmsResource_id
 					+ '"><div class=" ui-widget-content"><div class="cms-head ui-state-hover"><div class="cms-navtext"><a class="left ui-icon ui-icon-triangle-1-e"></a>'
-					+ ui.self.cmsItem.nav_text
+					+ ui.self.cmsItem.navText
 					+ '</div><span class="cms-title">'
 					+ ui.self.cmsItem.title
 					+ '</span><span class="cms-file-icon"></span><a class="cms-handle cms-move"></a></div><div class="cms-additional"><div alt="File: '
@@ -152,8 +156,24 @@ var beforeStopFunction = cms.move.beforeStopFunction = function(event, ui) {
 		cancel = false;
 }
 
+
+var updateContainer = cms.move.updateContainer = function(id) {
+    if (isMenuContainer(id)) return;
+    var newContents = [];
+    $('#'+id+' > *:visible').each(function(){
+        newContents.push($(this).attr("rel"));    
+    });
+    
+    cms.data.containers[id].elements = newContents;
+}
+
 var stopAdd = cms.move.stopAdd = function(event, ui) {
 	cms.util.fixZIndex(null, cms.move.zIndexMap);
+    var helpers = ui.self.cmsHelpers;
+	var orgPlaceholder = ui.self.cmsOrgPlaceholder;
+    var startContainer = ui.self.cmsStartContainerId;
+    var endContainer = ui.self.cmsCurrentContainerId;
+    var currentItem = ui.self.currentItem;            
 	if (cancel) {
 		cancel = false;
 
@@ -161,56 +181,50 @@ var stopAdd = cms.move.stopAdd = function(event, ui) {
 			// show favorite list again after dragging a favorite from it.
 			$('#' + cms.toolbar.currentMenu).css('display', 'block');
 		}
-
 		$(this).sortable('cancel');
-		ui.self.cmsOrgPlaceholder.remove();
-
+		orgPlaceholder.remove();
 	} else {
-
-		if (ui.self.cmsStartContainerId == cms.toolbar.currentMenuItems) {
-
-			ui.self.cmsOrgPlaceholder
-					.replaceWith(ui.self.cmsHelpers[cms.toolbar.currentMenuItems]);
-			ui.self.cmsHelpers[cms.toolbar.currentMenuItems]
-					.removeClass('ui-sortable-helper');
-			cms.util.clearAttributes(ui.self.cmsHelpers[cms.toolbar.currentMenuItems].get(0).style,
+       if (isMenuContainer(startContainer)) {
+            orgPlaceholder.replaceWith(helpers[startContainer]);
+			helpers[startContainer].removeClass('ui-sortable-helper');
+			cms.util.clearAttributes(helpers[startContainer].get(0).style,
 					[ 'width', 'height', 'top', 'left', 'position', 'opacity',
 							'zIndex', 'display' ]);
-			$('a.cms-move', ui.self.currentItem).remove();
+			$('a.cms-move', currentItem).remove();
 			$('button.ui-state-active').trigger('click');
+
+            // add item to endContainer
 		} else {
-
-			if (ui.self.cmsCurrentContainerId == cms.html.favoriteListId) {
-
+			if (endContainer == cms.html.favoriteListId) {
 				cms.util.addUnique(cms.toolbar.favorites, ui.self.cmsResource_id);
 			}
-			ui.self.cmsOrgPlaceholder.remove();
+			orgPlaceholder.remove();
+            // add item to endContainer
 		}
 		cms.toolbar.addToRecent(ui.self.cmsResource_id);
 	}
-	for (container_name in ui.self.cmsHelpers) {
-
-		if (container_name != ui.self.cmsCurrentContainerId
-				&& !(ui.self.cmsStartContainerId == container_name && isMenuContainer(container_name))) {
-			if (container_name == ui.self.cmsStartContainerId
-					&& ui.self.cmsCurrentContainerId == cms.html.favoriteListId) {
-				ui.self.cmsHelpers[container_name]
-						.removeClass('ui-sortable-helper');
+	for (var container_name in helpers) {
+		if (container_name != endContainer
+				&& !(startContainer == container_name && isMenuContainer(container_name))) {
+			var helper = helpers[container_name];
+            if (container_name == startContainer
+					&& endContainer == cms.html.favoriteListId) {
+			    var helperStyle = helper.get(0).style;
+                helper.removeClass('ui-sortable-helper');
 				// reset position (?) of helper that was dragged to favorites,
 				// but don't remove it
 				cms.util.clearAttributes(
-						ui.self.cmsHelpers[container_name].get(0).style, [
+						helperStyle, [
 								'width', 'height', 'top', 'left', 'opacity',
 								'zIndex', 'display' ]);
 
-				ui.self.cmsHelpers[container_name].get(0).style.position = 'relative';
-				if ($.browser.msie)
-					ui.self.cmsHelpers[container_name].get(0).style
-							.removeAttribute('filter');
+				helperStyle.position = 'relative';
+				if ($.browser.msie) {
+                    helperStyle.removeAttribute('filter');
+                }
 			} else {
 				// remove helper
-
-				ui.self.cmsHelpers[container_name].remove();
+				helper.remove();
 
 			}
 		}
@@ -220,20 +234,22 @@ var stopAdd = cms.move.stopAdd = function(event, ui) {
 
 	hoverOut();
 
-	cms.util.clearAttributes(ui.self.currentItem.get(0).style, [ 'top', 'left',
+	cms.util.clearAttributes(currentItem.get(0).style, [ 'top', 'left',
 			'zIndex', 'display' ]);
 	if ($.browser.msie) {
-		ui.self.currentItem.get(0).style.removeAttribute('filter');
+		currentItem.get(0).style.removeAttribute('filter');
 
 		// ui.self.currentItem.get(0).style.removeAttribute('position');
 
-	} else if (ui.self.currentItem) {
+	} else if (currentItem) {
 
 		// ui.self.currentItem.get(0).style.position='';
-		ui.self.currentItem.get(0).style.opacity = '';
+		currentItem.get(0).style.opacity = '';
 	}
-
+    updateContainer(startContainer);
+    updateContainer(endContainer);
 }
+
 
 /**
  * sertzsrthzs

@@ -53,10 +53,12 @@
 	};
 
 	var deleteItem = cms.toolbar.deleteItem = function() {
-		cms.move.hoverOut();
-		addToRecent($(this).parent().attr('rel'));
-		$(this).parent().remove();
-
+		var $item = $(this).parent();
+        var $container = $item.parent(); 
+        cms.move.hoverOut();
+        addToRecent($item.attr('rel'));
+     	$(this).parent().remove();
+        cms.move.updateContainer($container.attr('id'));
 	};
 
 	var toggleDelete = cms.toolbar.toggleDelete = function(el) {
@@ -378,7 +380,7 @@
 		for ( var i = 0; i < cms.toolbar.favorites.length; i++) {
 			html
 					.push(cms.html
-							.createItemFavDialogHtml(cms.data.cms_elements_list[cms.toolbar.favorites[i]]));
+							.createItemFavDialogHtml(cms.data.elements[cms.toolbar.favorites[i]]));
 		}
 		$("#fav-dialog ul").append(html.join(''));
 		$("#fav-dialog .cms-delete-icon").click(clickFavDeleteIcon);
@@ -438,7 +440,7 @@
 		for ( var i = 0; i < cms.toolbar.favorites.length; i++) {
 			$favlist
 					.append(cms.html
-							.createItemFavListHtml(cms.data.cms_elements_list[cms.toolbar.favorites[i]]))
+							.createItemFavListHtml(cms.data.elements[cms.toolbar.favorites[i]]))
 		}
 		// $("#"+cms.html.favoriteMenuId+" a.ui-icon").click(function() {clickTriangle(this)});
 	}
@@ -453,7 +455,7 @@
 		for ( var i = 0; i < cms.toolbar.recent.length; i++) {
 			$recentlist
 					.append(cms.html
-							.createItemFavListHtml(cms.data.cms_elements_list[cms.toolbar.recent[i]]));
+							.createItemFavListHtml(cms.data.elements[cms.toolbar.recent[i]]));
 		}
 	};
 

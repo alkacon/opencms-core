@@ -97,13 +97,13 @@ var favoriteDialog= cms.html.favoriteDialog = '<div id="'+favoriteDialogId+'" cl
 
 var createItemFavDialogHtml = cms.html.createItemFavDialogHtml = function(item) {
 	var html = [
-	'<li class="cms-item" rel="',item.resource_id,'">\
+	'<li class="cms-item" rel="',item.id,'">\
 		<div class="cms-left">\
 			<span class="cms-delete-icon" ></span>\
 		</div>\
 		<div class="cms-left ui-widget-content">\
 			<div class="cms-head ui-state-hover">\
-				<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>',item.nav_text,'</div>\
+				<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>',item.navText,'</div>\
 				<span class="cms-title">',item.title,'</span>\
 				<span class="cms-file-icon"></span>\
 				<a class="cms-move cms-handle"></a>\
@@ -121,10 +121,10 @@ var createItemFavDialogHtml = cms.html.createItemFavDialogHtml = function(item) 
 }
 var createItemFavListHtml = cms.html.createItemFavListHtml = function(item) {
 	var html =[
-		'<li class="cms-item"  rel="',item.resource_id,'">\
+		'<li class="cms-item"  rel="',item.id,'">\
 			<div class=" ui-widget-content">\
 				<div class="cms-head ui-state-hover">\
-					<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>',item.nav_text,'</div>\
+					<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>',item.navText,'</div>\
 					<span class="cms-title">',item.title,'</span>\
 					<span class="cms-file-icon"></span>\
 				</div>\
