@@ -795,6 +795,10 @@
       return JSON.stringify(ser);
    };
    
+   
+
+  
+   
    var fillContainers = cms.data.fillContainers = function() {
        for (var containerName in containers) {
            $('#'+containerName+' > *').remove();
@@ -808,4 +812,38 @@
        }
        
    }
+   
+   var DATA_URL = "data.txt";
+   
+   var persistFavorites = cms.data.persistFavorites = function() {
+       // dummy
+   }
+   
+   var persistRecent = cms.data.persistRecent = function() {
+      // dummy
+   }
+   
+   var loadAllData = cms.data.loadAllData = function(afterLoad) {
+       $.getJSON(DATA_URL, function(data, status) {
+           if (status == 'success') {
+                if (data.favorites) {
+                   cms.toolbar.favorites = data.favorites;
+               }
+               if (data.recent) {
+                   cms.toolbar.recent = data.recent;
+               }
+               if (data.containers) {
+                   cms.data.containers = data.containers;
+               }
+               if (data.elements) {
+                   cms.data.elements = data.elements;
+               }
+               afterLoad();
+           } else {
+               alert("error while getting JSON from "+DATA_URL+": "+status);
+           }
+       });
+   };
+   
+   
 })(cms);

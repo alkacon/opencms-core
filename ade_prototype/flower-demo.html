@@ -39,23 +39,24 @@
       var sortlist = '#col1_content, #col2_content, #col3_content, #bottom_cont';
       var sortitems = 'div.box';
       var deleteitems = sortitems;
-      
       $('document').ready(function() {
-         cms.toolbar.addToolbar();
-         
-         $('.cms-item a.ui-icon').live('click', cms.toolbar.toggleAdditionalInfo);
-         
-         
-         $('.cms-item-list div.cms-additional div').jHelperTip({
-            trigger: 'hover',
-            source: 'attribute',
-            attrName: 'alt',
-            topOff: -30,
-            opacity: 0.8,
-            live: true
+        $('.cms-item a.ui-icon').live('click', cms.toolbar.toggleAdditionalInfo);
+        cms.data.loadAllData(function() {
+           cms.data.fillContainers();
+           cms.toolbar.addToolbar();
+           $('.cms-item-list div.cms-additional div').jHelperTip({
+                trigger: 'hover',
+                source: 'attribute',
+                attrName: 'alt',
+                topOff: -30,
+                opacity: 0.8,
+                live: true
+            });
          });
-         cms.data.fillContainers();
+         
+         
       });
+      
     </script>
     <style type="text/css">
         
