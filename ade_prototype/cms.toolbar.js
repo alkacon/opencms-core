@@ -332,8 +332,8 @@
 		var newFavs = [];
 		$("#fav-dialog li.cms-item").each( function() {
 			var resource_id = this.getAttribute("rel");
-			cms.util.addUnique(newFavs, resource_id);
-		});
+			newFavs.push(resource_id);
+    	});
 		cms.toolbar.favorites = newFavs;
 		resetFavList();
 
@@ -342,6 +342,7 @@
 	var favEditOK = cms.toolbar.favEditOK = function() {
 		$(this).dialog("close");
 		saveFavorites();
+        cms.data.persistFavorites();
 	}
 
 	var favEditCancel = cms.toolbar.favEditCancel = function() {
@@ -447,6 +448,7 @@
 
 	var addToRecent = cms.toolbar.addToRecent = function(itemId) {
 		cms.util.addUnique(cms.toolbar.recent, itemId, cms.toolbar.recentSize);
+        cms.data.persistRecent();
 	}
 
 	var resetRecentList = cms.toolbar.resetRecentList = function() {
