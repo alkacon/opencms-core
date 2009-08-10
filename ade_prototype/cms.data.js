@@ -814,7 +814,7 @@
    }
    
    var DATA_URL = "data.txt";
-   
+   var AJAX_TIMEOUT = 5000;
    var persistFavorites = cms.data.persistFavorites = function() {
        // dummy
    }
@@ -824,26 +824,33 @@
    }
    
    var loadAllData = cms.data.loadAllData = function(afterLoad) {
-       $.getJSON(DATA_URL, function(data, status) {
-           if (status == 'success') {
-                if (data.favorites) {
-                   cms.toolbar.favorites = data.favorites;
+       $.ajax({
+           url: DATA_URL,
+           timeout: AJAX_TIMEOUT,
+           error:    function(xhr, status, error) { alert("ERROR: couldn't load data from server"); },
+           success: function(data) {
+               try {
+                   var jsonData = JSON.parse(data);
+               } catch (e) {
+                   alert("ERROR: Couldn't parse JSON data");
+                   return;
                }
-               if (data.recent) {
-                   cms.toolbar.recent = data.recent;
+               if (jsonData.favorites) {
+                   cms.toolbar.favorites = jsonData.favorites;
                }
-               if (data.containers) {
-                   cms.data.containers = data.containers;
+               if (jsonData.recent) {
+                   cms.toolbar.recent = jsonData.recent;
                }
-               if (data.elements) {
-                   cms.data.elements = data.elements;
+               if (jsonData.containers) {
+                   cms.data.containers = jsonData.containers;
+               }
+               if (jsonData.elements) {
+                   cms.data.elements = jsonData.elements;
                }
                afterLoad();
-           } else {
-               alert("error while getting JSON from "+DATA_URL+": "+status);
            }
-       });
-   };
-   
+       })
+   }
+  
    
 })(cms);
