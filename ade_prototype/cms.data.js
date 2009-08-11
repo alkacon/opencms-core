@@ -114,7 +114,7 @@
    var col3_content = {
       id: 'col3_content',
       type: 'column',
-      elements: ['item_003', 'item_004'],
+      elements: ['item_003', 'subcont_001'],
       maxElements: null
    }
    
@@ -721,7 +721,42 @@
          allowEdit: true,
          locked: false,
          status: UNCHANGED
-      }
+      },
+      'subcont_001' : {
+          id: 'subcont_001',
+          navText: 'Subcontainer',
+          title: 'Subcontainer',
+          file: 'login.xml',
+          date: '4/4/2009 5:30 PM',
+          user: 'Admin',
+          type: 'subcontainer',
+          allowMove: true,
+          allowEdit: true,
+          locked: false,
+          status: 'unchanged',
+          subItems: ['item_003', 'item_002'],
+          contents: {
+             'column': '<div class="box box_schema4" rel="item_003"><h4>Login</h4><div class="boxbody"><p><b>Logged in as:</b></p><form method="get" action="/opencms/opencms/demo_en/extra/login.html" class="loginform"><div class="boxform">(Admin)</div><div class="boxform"><input name="action" value="logoff" type="hidden"/><input name="requestedResource" value="/demo_en/today/index.html" type="hidden"/><input class="button" value="Logoff" type="submit"/></div></form></div></div><div class="box box_schema2" rel="item_002"><h4>Direct edit</h4><div class="boxbody"><p>By utilizing the direct edit feature, you can create new or edit already existing XML contents.</p></div></div>'
+          }
+       },
+       'subcont_002' : {
+          id: 'subcont_002',
+          navText: 'Subcontainer',
+          title: 'Subcontainer',
+          file: 'login.xml',
+          date: '4/4/2009 5:30 PM',
+          user: 'Admin',
+          type: 'subcontainer',
+          allowMove: true,
+          allowEdit: true,
+          locked: false,
+          status: 'unchanged',
+          subItems: ['item_008', 'item_009'],
+          contents: {
+             'bottom': '<div class="box box_schema4" rel="item_003"><h4>Login</h4><div class="boxbody"><p><b>Logged in as:</b></p><form method="get" action="/opencms/opencms/demo_en/extra/login.html" class="loginform"><div class="boxform">(Admin)</div><div class="boxform"><input name="action" value="logoff" type="hidden"/><input name="requestedResource" value="/demo_en/today/index.html" type="hidden"/><input class="button" value="Logoff" type="submit"/></div></form></div></div><div class="box box_schema2" rel="item_002"><h4>Direct edit</h4><div class="boxbody"><p>By utilizing the direct edit feature, you can create new or edit already existing XML contents.</p></div></div>'
+          }
+       }
+       
    
    };
    
@@ -742,14 +777,14 @@
        
        col3_content: {
            type: 'column',
-           elements:['item_005', 'item_006'],
+           elements:['item_005', 'subcont_001'],
            id:'col3_content',
            maxElem: null
        },
        
        bottom_cont: {
            type: 'bottom',
-           elements:['item_008', 'item_009', 'item_010'],
+           elements:['subcont_002', 'item_010'],
            id: 'bottom_cont',
            maxElem: null
            
@@ -795,19 +830,43 @@
       return JSON.stringify(ser);
    };
    
-   
-
-  
-   
    var fillContainers = cms.data.fillContainers = function() {
        for (var containerName in containers) {
            $('#'+containerName+' > *').remove();
            var elementIds = containers[containerName].elements;
            for (var i = 0; i<elementIds.length; i++) {
                var elem = cms.data.elements[elementIds[i]];
-               var html = $(elem.contents[containers[containerName].type]);
-               html.attr('rel', elem.id);
+               var html='';
+               var isSubcontainer=false;
+               if (elem.subItems) {
+                   isSubcontainer=true;
+                   html = $('<div class="cms-subcontainer"></div>');
+                   for (var j = 0; j < elem.subItems.length; j++) {
+                       var subElem = cms.data.elements[elem.subItems[j]];
+                       $(subElem.contents[containers[containerName].type]).attr('rel', subElem.id).addClass('cms-element').appendTo(html);
+                   }
+               } else {
+                   html = $(elem.contents[containers[containerName].type]);
+               }
+               html.attr('rel', elem.id).addClass('cms-element');
                $('#'+containerName).append(html);
+               if (isSubcontainer){
+                   var floatDirection = html.children('*:first').css('float');
+                   if (floatDirection && (/left|right/).test(floatDirection)){
+                       var dimensions=cms.util.getInnerDimensions(html, 0);
+                       var addMargin;
+                       if (floatDirection=='left'){
+                           addMargin=parseFloat(html.children('*:first').css('margin-left')) + parseFloat(html.children('*:last').css('margin-right'));
+                       }else{
+                           addMargin=parseFloat(html.children('*:first').css('margin-right')) + parseFloat(html.children('*:last').css('margin-left'));
+                       }
+                       html.attr('title', addMargin);
+                       html.children('*:visible').each(function(){
+                           $(this).width($(this).width());
+                       });
+                       html.width(dimensions.width + addMargin).addClass('cms-'+floatDirection);
+                   }
+               }
            }
        }
        
