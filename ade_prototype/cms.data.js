@@ -876,6 +876,15 @@
    
    var DATA_URL = "data.txt";
    var AJAX_TIMEOUT = 5000;
+   var RECENT_URL = "recent.txt";
+   var FAVORITE_URL = "fav.txt";
+   var ITEM_URL = "item.json";
+   var FAV_SAVE_URL = "sdfafsd";
+   var RECENT_SAVE_URL = "fgsdfsdfad";
+   var CONTAINER_SAVE_URL = "fsdafafasfd";
+   
+   var JSON_PARSE_ERROR = "ERROR: Couldn't parse JSON data";
+ 
    var persistFavorites = cms.data.persistFavorites = function() {
        // dummy
    }
@@ -912,6 +921,86 @@
            }
        })
    }
+  
+   var loadJSON = cms.data.loadJSON = function(url, data, afterLoad) {
+      $.ajax({
+         url: url,
+         timeout: AJAX_TIMEOUT,
+         data: data,
+         error: function(xhr, status, error) {
+            alert("ERROR: couldn't load data from server");
+         },
+         success: function(data) {
+            try {
+               var jsonData = JSON.parse(data);
+            } catch (e) {
+               alert(JSON_PARSE_ERROR);
+               return;
+            }
+            afterLoad(jsonData);
+         }
+      });
+   }
+   
+   var postJSON = cms.data.postJSON = function(url, data, afterPost) {
+       $.ajax({
+           type: 'POST',
+           timeout: AJAX_TIMEOUT,
+           data: data,
+           error: function(xhr, status, error) {
+               alert("ERROR: couldn't send data to server");
+           },
+           success: afterPost
+       });
+   }
+ 
+   
+   var reloadItem = cms.data.reloadItem = function(id) {
+      loadJSON(ITEM_URL, {
+         url: window.location.href,
+         id: id
+      }, function(data) {
+         cms.data.elements[data.id] = data;
+         fillContainers();
+      });
+   }
+   
+   var loadFavorites = cms.data.loadFavorites = function(afterFavoritesLoad) {
+      loadJSON(FAVORITES_URL, {
+         url: window.location.href,
+         id: id
+      }, function(data) {
+         cms.toolbar.favorites = data;
+         afterFavoritesLoad();
+         
+      });
+   }
+
+   var loadRecent = cms.data.loadRecent = function(afterRecentLoad) {
+      loadJSON(RECENT_URL, {
+         url: window.location.href,
+         id: id
+      }, function(data) {
+         cms.toolbar.recent = data;
+         afterRecentLoad();
+      });
+   }
+        
+   var persistContainers = cms.data.persistContainers = function(afterSave) {
+       postJSON(CONTAINER_SAVE_URL, {
+           'url':window.location.href, 
+           'containers': JSON.stringify(cms.data.containers)
+           }, function() {});
+   }
+   
+   var persistFavorites = cms.data.persistFavorites = function () {
+       //postJSON(FAV_SAVE_URL, {'favorites': JSON.stringify(cms.toolbar.favorites)}, function() {});
+   }
+   
+   var persistRecent = cms.data.persistRecent = function() {
+       //postJSON(RECENT_SAVE_URL, {'recent': JSON.stringify(cms.toolbar.recent)}, function() {});
+   }
+  
   
    
 })(cms);
