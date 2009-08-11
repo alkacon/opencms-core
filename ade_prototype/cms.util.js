@@ -63,6 +63,54 @@ var getElementPosition = cms.util.getElementPosition = function(elem) {
 	return position;
 }
 
+var getInnerDimensions = cms.util.getInnerDimensions = function(elem, minHeight){
+    var dimension = {
+		left :'x',
+		top :'x',
+        bottom : 'x',
+        right : 'x',
+        height : '',
+        width : ''
+        
+	};
+	var bottom = 'x';
+	var right = 'x';
+    var contentElements=elem.children('*:visible:not(.ui-sortable-helper)');
+    contentElements=contentElements.add(contentElements.filter('.cms-subcontainer').children('*:visible')).not('.cms-subcontainer');
+    if (contentElements.length) {
+        contentElements.each(function() {
+            var el = $(this);
+            var pos = cms.util.getElementPosition(el);
+            dimension.left = (dimension.left == 'x' || pos.left < dimension.left) ? pos.left : dimension.left;
+            dimension.top = (dimension.top == 'x' || pos.top < dimension.top) ? pos.top : dimension.top;
+            dimension.bottom = (dimension.bottom == 'x' ||
+            dimension.bottom <
+            (pos.top +
+            el.outerHeight())) ? pos.top +
+            el.outerHeight() : dimension.bottom;
+            dimension.right = (dimension.right == 'x' ||
+            dimension.right <
+            (pos.left +
+            el.outerWidth())) ? pos.left +
+            el.outerWidth() : dimension.right;
+            
+        });
+    }else{
+        var elemPos=getElementPosition(elem);
+        dimension.top=elemPos.top;
+        dimension.left=elemPos.left;
+        dimension.right=dimension.left+elem.innerWidth();
+        dimension.bottom=dimension.top+minHeight;
+    }
+    dimension.height = dimension.bottom - dimension.top;
+	dimension.width = dimension.right - dimension.left;
+    return dimension;
+}
+
+//var getRequiredWidth = cms.util.getRequiredWidth = function(elem){
+//    
+//}
+
 var fixZIndex = cms.util.fixZIndex = function(currentId, zmap) {
 	if (!$.browser.msie)
 		return;
