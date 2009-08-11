@@ -224,6 +224,11 @@ div.cms-button {
 }
 
 
+div.cms-subcontainer-start, div.cms-subcontainer-end{
+    display: none;
+}
+
+
 /** Highlighting effect **/
 div.cms-highlight-container {
     background-color: #AACCFF;
@@ -266,6 +271,11 @@ div.cms-highlight-container {
     visibility: hidden;
 }
 
+.cms-menu .cms-placeholder{
+    margin: 0 0 2px 10px !important;
+    width: 290px !important;
+    height: 35px !important;
+}
 
 /** Icons and handles **/
 div.cms-move {
