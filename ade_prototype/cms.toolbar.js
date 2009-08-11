@@ -95,11 +95,55 @@
     		// enabling edit mode
     		$(sortitems).each(function(){
     			var elem=$(this).css('position', 'relative');
-    			$('<a class="cms-handle cms-edit"></a>').appendTo(elem).hover(function(){cms.move.hoverIn(elem, 2)}, cms.move.hoverOut);
+                var elemId=elem.attr('rel');
+                if (elemId && cms.data.elements[elemId]){
+                    if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked){
+                        $('<a class="cms-handle cms-edit"></a>')
+                            .appendTo(elem)
+                            .hover(function(){cms.move.hoverIn(elem, 2)}, cms.move.hoverOut)
+                            .click(function() {
+                                openEditDialog(elemId);
+                            });
+                    }else{
+                    // Append edit-locked-handle
+                    }
+                }
+    			
     		});
     		button.addClass('ui-state-active');
     	}
     };
+    
+    var openEditDialog = cms.toolbar.openEditDialog = function(elemId){
+        if (elemId && cms.data.elements[elemId]) {
+            if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
+                var editorLink='http://localhost:8080/opencms/opencms/system/workplace/editors/editor.jsp?resource=/demo_en/dictionary/weisswurst.html&amp;directedit=true&amp;elementlanguage=en&amp;backlink=http://127.0.0.1:8100/OpenCms/ade_prototype/closeDialog.html&amp;redirect=true';
+                var editorFrame='<iframe width="99%" height="99%" name="cmsAdvancedDirectEditor" src="'+editorLink+'"></iframe>';
+                var editorDialog=$('#cms-editor')
+                if (!editorDialog.lenght){
+                    editorDialog=$('<div id="cms-editor"></div>').appendTo(document.body);
+                }else{
+                    editorDialog.empty();
+                }
+                editorDialog.append(editorFrame);
+                editorDialog.dialog( {
+    			width :900,
+                height : 600,
+    			title :"Editor",
+    			modal :true,
+    			autoOpen :true,
+    			draggable :true,
+    			resizable :true,
+    			position : [ 'center', 20 ],
+    			close : function() {
+    				$('button[name="Edit"]').removeClass('ui-state-active');
+                    editorDialog.empty().dialog('destroy');
+    			},
+    			zIndex :10000
+    		});
+            }
+        }
+    }
 
 	var removeToolbar = cms.toolbar.removeToolbar =  function() {
 		$('#toolbar').remove();
