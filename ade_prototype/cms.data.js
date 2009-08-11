@@ -125,12 +125,12 @@
       maxElements: 42
    }
    
-   var containers = cms.data.containers = {
-      'col1_content': col1_content,
-      'col2_content': col2_content,
-      'col3_content': col3_content,
-      'bottom_cont': bottom_cont
-   }
+//   var containers = cms.data.containers = {
+//      'col1_content': col1_content,
+//      'col2_content': col2_content,
+//      'col3_content': col3_content,
+//      'bottom_cont': bottom_cont
+//   }
    
    var elements = cms.data.elements = {
       'item_001': item_001,
@@ -835,14 +835,15 @@
            $('#'+containerName+' > *').remove();
            var elementIds = containers[containerName].elements;
            for (var i = 0; i<elementIds.length; i++) {
-               var elem = cms.data.elements[elementIds[i]];
+               var elem = elements[elementIds[i]];
                var html='';
                var isSubcontainer=false;
                if (elem.subItems) {
+                   
                    isSubcontainer=true;
                    html = $('<div class="cms-subcontainer"></div>');
                    for (var j = 0; j < elem.subItems.length; j++) {
-                       var subElem = cms.data.elements[elem.subItems[j]];
+                       var subElem = elements[elem.subItems[j]];
                        $(subElem.contents[containers[containerName].type]).attr('rel', subElem.id).addClass('cms-element').appendTo(html);
                    }
                } else {
@@ -851,6 +852,7 @@
                html.attr('rel', elem.id).addClass('cms-element');
                $('#'+containerName).append(html);
                if (isSubcontainer){
+                   
                    var floatDirection = html.children('*:first').css('float');
                    if (floatDirection && (/left|right/).test(floatDirection)){
                        var dimensions=cms.util.getInnerDimensions(html, 0);
@@ -895,16 +897,16 @@
                    return;
                }
                if (jsonData.favorites) {
-                   cms.toolbar.favorites = jsonData.favorites;
+                   favorites = cms.toolbar.favorites = jsonData.favorites;
                }
                if (jsonData.recent) {
-                   cms.toolbar.recent = jsonData.recent;
+                   recent = cms.toolbar.recent = jsonData.recent;
                }
                if (jsonData.containers) {
-                   cms.data.containers = jsonData.containers;
+                   containers = cms.data.containers = jsonData.containers;
                }
                if (jsonData.elements) {
-                   cms.data.elements = jsonData.elements;
+                   elements = cms.data.elements = jsonData.elements;
                }
                afterLoad();
            }
