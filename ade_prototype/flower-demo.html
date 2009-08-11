@@ -41,18 +41,18 @@
       var deleteitems = sortitems;
       $('document').ready(function() {
         $('.cms-item a.ui-icon').live('click', cms.toolbar.toggleAdditionalInfo);
+        cms.toolbar.addToolbar();
+        $('.cms-item-list div.cms-additional div').jHelperTip({
+            trigger: 'hover',
+            source: 'attribute',
+            attrName: 'alt',
+            topOff: -30,
+            opacity: 0.8,
+            live: true
+        });
         cms.data.loadAllData(function() {
            cms.data.fillContainers();
-           cms.toolbar.addToolbar();
-           $('.cms-item-list div.cms-additional div').jHelperTip({
-                trigger: 'hover',
-                source: 'attribute',
-                attrName: 'alt',
-                topOff: -30,
-                opacity: 0.8,
-                live: true
-            });
-         });
+        });
          
          
       });
