@@ -55,9 +55,9 @@
 	var deleteItem = cms.toolbar.deleteItem = function() {
 		var $item = $(this).parent();
         var $container = $item.parent(); 
-        cms.move.hoverOut();
+		cms.move.hoverOut();
         addToRecent($item.attr('rel'));
-     	$(this).parent().remove();
+		$(this).parent().remove();
         cms.move.updateContainer($container.attr('id'));
 	};
 
@@ -167,6 +167,25 @@
 		}, 200);
 		
 		initFavDialog();
+        
+        
+        $('button[name="Save"]').click(function(){
+            $(sortlist).filter(':has(div.cms-subcontainer-start)').each(function(){
+                var contElem=$(this);
+                contElem.children('div.cms-subcontainer-start').each(function(){
+                    var subCont=$('<div class="cms-subcontainer"></div>');
+                    var contStartElem=$(this);
+                    subCont.attr('rel', contStartElem.attr('rel'));
+                    var currentElem=contStartElem.next();
+                    while (currentElem && !currentElem.hasClass('cms-subcontainer-end')){
+                        subCont.append(currentElem.clone());
+                        currentElem.css('display','none')
+                        currentElem=currentElem.next();
+                    }
+                    subCont.insertBefore(contStartElem);
+                });
+            });
+        });
 	};
 
 	var toggleMove = cms.toolbar.toggleMove = function(el) {
@@ -186,14 +205,31 @@
 		} else {
 			$('button.ui-state-active').trigger('click');
 			// enabling move mode
-			$(sortitems).each(
+			$(sortlist).children('*:visible').each(
 					function() {
 						var elem = $(this).css('position', 'relative');
-						$('<a class="cms-handle cms-move"></a>').appendTo(elem)
+                        if (elem.hasClass('cms-subcontainer') && (/left|right/).test(elem.css('float'))) {
+                            var pos = cms.util.getElementPosition(elem);
+                            var dimensions = cms.util.getInnerDimensions(elem, 1);
+                            $('<a class="cms-handle cms-move"></a>')
+                                .appendTo(elem).hover(function() {
+                                    cms.move.hoverInner(elem, 2, false);
+                                }, cms.move.hoverOut)
+                                .mousedown(cms.move.movePreparation)
+                                .mouseup(cms.move.moveEnd)
+                                .css('left', dimensions.left - pos.left + dimensions.width - 20);
+                        }else{
+                            $('<a class="cms-handle cms-move"></a>').appendTo(elem)
 								.hover( function() {
-									cms.move.hoverIn(elem, 2)
-								}, cms.move.hoverOut).mousedown(cms.move.movePreparation)
+                                    if (elem.hasClass('cms-subcontainer')) {
+                                        cms.move.hoverInner(elem, 2, false);
+                                    } else {
+                                        cms.move.hoverIn(elem, 2);
+                                    }
+                                }, cms.move.hoverOut).mousedown(cms.move.movePreparation)
 								.mouseup(cms.move.moveEnd);
+                        }
+
 					});
 
 			var list = $('#'+cms.html.favoriteMenuId);
@@ -205,7 +241,7 @@
 				display :'block',
 				visibility :'hidden'
 			});
-			$('#'+cms.html.favoriteListId).css('height', '37px');
+			$('#'+cms.html.favoriteListId).css('height', '40px');
 			$('div.ui-widget-shadow', list).css( {
 				top :0,
 				left :-4,
@@ -233,7 +269,7 @@
 				},
 				zIndex :20000,
 				handle :'a.cms-move',
-				items :sortitems,
+				items :sortitems+', div.cms-subcontainer',
 				revert :true,
 				deactivate : function(event, ui) {
 					$('#'+cms.html.favoriteListId+' li').hide(200);
@@ -333,7 +369,7 @@
 		$("#fav-dialog li.cms-item").each( function() {
 			var resource_id = this.getAttribute("rel");
 			newFavs.push(resource_id);
-    	});
+		});
 		cms.toolbar.favorites = newFavs;
 		resetFavList();
 
