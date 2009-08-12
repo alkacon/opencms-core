@@ -20,9 +20,24 @@ int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 
 <script type="text/javascript">
 <!--
+//Searches for a frame by the specified name. Will only return siblings or ancestors.
+function getFrame(startFrame, frameName){
+    if (startFrame == top){
+        if (startFrame.name == frameName){
+            return startFrame;
+        }
+        return null;
+    }
+    for (var i=0; i<startFrame.parent.frames.length; i++){
+        if (startFrame.parent.frames[i].name == frameName) {
+            return startFrame.parent.frames[i];
+        }
+    }
+    return getFrame(startFrame.parent, frameName);
+}
 
 // the frame of the input form
-var formFrame = top.edit.editform;
+var formFrame = (editFrame=getFrame(self, 'edit')) ? editFrame.editform : top.edit.editform;
 
 function buttonAction(actionValue) {
 	lastPosY = 0;

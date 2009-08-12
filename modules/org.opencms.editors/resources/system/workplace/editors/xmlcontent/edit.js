@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2009/06/04 14:39:11 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/12 12:28:36 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,28 @@
 //------------------------------------------------------//
 // Script for xml content editor
 //------------------------------------------------------//
+
+// Searches for a frame by the specified name. Will only return siblings or ancestors.
+function getFrame(startFrame, frameName){
+    if (startFrame == top){
+        if (startFrame.name == frameName){
+            return startFrame;
+        }
+        return null;
+    }
+    for (var i=0; i<startFrame.parent.frames.length; i++){
+        if (startFrame.parent.frames[i].name == frameName) {
+            return startFrame.parent.frames[i];
+        }
+    }
+    return getFrame(startFrame.parent, frameName);
+}
+
+// the editors top frame target, may be !='_top' if in advanced direct edit!
+var editorTopFrameTarget= (editorTopFrame=getFrame(self, 'cmsAdvancedDirectEditor')) ? editorTopFrame.name : '_top';
+
+// edit frame object
+var editFrame=getFrame(self, 'edit');
 
 // stores the opened window object
 var treewin = null;
@@ -83,14 +105,14 @@ function buttonAction(para) {
 	_form.target = "_self";
 	submit(_form);
 	try {
-		top.edit.buttonbar.focus();
+		editFrame.buttonbar.focus();
 	} catch (e) {}
 
 	switch (para) {
 	case 1:
 		// exit editor without saving
 		_form.action.value = actionExit;
-		_form.target = "_top";
+		_form.target = editorTopFrameTarget;
 		_form.submit();
 		break;
 	case 2:
@@ -136,7 +158,7 @@ function buttonAction(para) {
 	case 9:
 		// save and perform customized action
 		_form.action.value = actionSaveAction;
-		_form.target = "_top";
+		_form.target = editorTopFrameTarget;
 		_form.submit();
 		break;
 	case 10:
@@ -224,7 +246,7 @@ function removeElement(elemName, index) {
 // clears the last scroll position
 function clearLastPosition() {
 	try {
-		top.edit.setLastPosY(0);
+		editFrame.setLastPosY(0);
 	} catch (e) {}
 }
 
@@ -232,9 +254,9 @@ function clearLastPosition() {
 function setLastPosition() {
 	try {
 		if (browser.isIE) {
-			top.edit.setLastPosY(document.body.scrollTop);
+			editFrame.setLastPosY(document.body.scrollTop);
 		} else {
-			top.edit.setLastPosY(window.pageYOffset);
+			editFrame.setLastPosY(window.pageYOffset);
 		}
 	} catch (e) {
 		// ignore
@@ -289,7 +311,7 @@ function checkPreview(fieldId) {
 function scrollForm() {
 	var posY = 0;
 	try {
-		posY = top.edit.lastPosY;
+		posY = editFrame.lastPosY;
 	} catch (e) {}
 	window.scrollTo(0, posY);
 }
