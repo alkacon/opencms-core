@@ -38,15 +38,35 @@ var startAdd = cms.move.startAdd = function(event, ui) {
             top: ui.self.offset.top,
             left: ui.self.offset.left
         };
+        var placeholderSize={height: ui.helper.height(), width: ui.helper.width()}
+        ui.self.placeholder.addClass(ui.self.currentItem.attr('class'));
+        // placeholder should not have class cms-subcontainer
+        if (ui.placeholder.hasClass('cms-subcontainer')){
+            ui.placeholder.removeClass('cms-subcontainer');
+            var dim=cms.util.getInnerDimensions(ui.helper, 1);
+            placeholderSize={height: dim.height, width: dim.width}
+            
+        }
+        
+        ui.self.placeholder.css( {
+			'background-color' :'blue',
+			'border' :'solid 2px black',
+			'height' :placeholderSize.height,
+            'width' : (/left|right/).test(ui.placeholder.css('float')) ? placeholderSize.width : 'auto'
+        });
+        
+        
 		ui.self.cmsHelpers = {};
 		ui.self.cmsOrgPlaceholder = ui.placeholder.clone().insertBefore(
 				ui.placeholder);
-		ui.self.cmsOrgPlaceholder.addClass(ui.self.currentItem.attr('class'))
-				.css( {
+//        ui.self.cmsOrgPlaceholder = $('<div />').insertBefore(
+//				ui.placeholder);
+		ui.self.cmsOrgPlaceholder.css( {
 					'background-color' :'gray',
 					'display' :'none',
 					'height' :ui.self.currentItem.height()
 				});
+        
 		cms.move.zIndexMap = {};
 		for (container_name in cms.data.containers) {
             var containerType = cms.data.containers[container_name].type;
@@ -57,13 +77,27 @@ var startAdd = cms.move.startAdd = function(event, ui) {
 			cms.move.zIndexMap[container_name] = zIndex;
 			if (container_name != ui.self.cmsStartContainerId) {
 				ui.self.cmsHoverList += ', #' + container_name;
-				ui.self.cmsHelpers[container_name] = $(
-						ui.self.cmsItem.contents[containerType]).appendTo(
-						'#' + container_name).css( {
-					'display' :'none',
-					'position' :'absolute',
-					'zIndex' :ui.self.options.zIndex
-				}).addClass('ui-sortable-helper');
+                var helperElem;
+                if (ui.self.cmsItem.subItems) {
+                    helperElem = $('<div class="cms-subcontainer"></div>');
+                    for (var j = 0; j < ui.self.cmsItem.subItems.length; j++) {
+                        var subElem = cms.data.elements[ui.self.cmsItem.subItems[j]];
+                        $(subElem.contents[containerType]).attr('rel', subElem.id).addClass('cms-element').appendTo(helperElem);
+                    }
+                    
+                    
+                } else {
+                    helperElem = $(ui.self.cmsItem.contents[containerType]);
+                }
+				ui.self.cmsHelpers[container_name] = helperElem.css( {
+    					'display' :'none',
+    					'position' :'absolute',
+                        'opacity' : ui.self.options.opacity,
+    					'zIndex' :ui.self.options.zIndex
+    				})
+                    .addClass('ui-sortable-helper cms-element')
+                    .attr('rel', ui.self.cmsItem.id)
+                    .appendTo('#' + container_name);
 				if (ui.self.cmsStartContainerId != cms.toolbar.currentMenuItems) {
 					// if we aren't starting from the favorite list, call
 					// movePreparation on the handle
@@ -135,13 +169,9 @@ var startAdd = cms.move.startAdd = function(event, ui) {
 			}).addClass('ui-sortable-helper');
 			$('#'+cms.html.favoriteMenuId).css('visibility', 'visible');
 		}
-		ui.self.placeholder.addClass(ui.self.currentItem.attr('class')).css( {
-			'background-color' :'blue',
-			'border' :'solid 2px black',
-			'height' :ui.helper.height()
-		});
+		
 		$(ui.self.cmsHoverList).each( function() {
-			hoverInner($(this), 2);
+			hoverInner($(this), 2,true);
 		});
 
 	} else {
@@ -181,6 +211,7 @@ var stopAdd = cms.move.stopAdd = function(event, ui) {
 			// show favorite list again after dragging a favorite from it.
 			$('#' + cms.toolbar.currentMenu).css('display', 'block');
 		}
+
 		$(this).sortable('cancel');
 		orgPlaceholder.remove();
 	} else {
@@ -248,7 +279,7 @@ var stopAdd = cms.move.stopAdd = function(event, ui) {
 	}
     updateContainer(startContainer);
     updateContainer(endContainer);
-}
+	}
 
 
 /**
@@ -293,8 +324,18 @@ var overAdd = cms.move.overAdd = function(event, ui) {
 			ui.self.helper.height('auto');
 
 		}
-
-		ui.placeholder.height(ui.self.helper.height());
+        
+        // in case of a subcontainer use inner height for placeholder and set a margin
+        var helperHeight=ui.self.helper.height();
+        if (ui.self.helper.hasClass('cms-subcontainer')){
+            var dimensions=cms.util.getInnerDimensions(ui.self.helper, 10);
+            ui.placeholder.height(dimensions.height).css({
+                'margin-bottom': helperHeight - dimensions.height,
+            });
+        }else{
+            ui.placeholder.height(helperHeight);    
+        }
+		
 	} else {
 		ui.placeholder.css('display', 'none');
 		ui.self.cmsOver = false;
@@ -306,7 +347,7 @@ var overAdd = cms.move.overAdd = function(event, ui) {
 	if (reDoHover) {
 		hoverOut();
 		$(ui.self.cmsHoverList).each( function() {
-			hoverInner($(this), 2);
+			hoverInner($(this), 2, true);
 		});
 	}
 
@@ -331,7 +372,7 @@ var outAdd = cms.move.outAdd = function(event, ui) {
 		ui.self.cmsOver = false;
 		hoverOut();
 		$(ui.self.cmsHoverList).each( function() {
-			hoverInner($(this), 2);
+			hoverInner($(this), 2, true);
 		});
 	}
 
@@ -367,78 +408,51 @@ var hoverIn = cms.move.hoverIn = function(elem, hOff) {
 
 }
 
-var hoverInner = cms.move.hoverInner = function(elem, hOff) {
+var hoverInner = cms.move.hoverInner = function(elem, hOff, showBackground) {
 
-	var position = {
-		left :'x',
-		top :'x'
-	};
-	var bottom = 'x';
-	var right = 'x';
-
-	$(elem.children('*:visible'))
-			.each(
-					function() {
-						var el = $(this);
-						if (!el.hasClass('ui-sortable-helper')) {
-							var pos = cms.util.getElementPosition(el);
-							position.left = (position.left == 'x' || pos.left < position.left) ? pos.left
-									: position.left;
-							position.top = (position.top == 'x' || pos.top < position.top) ? pos.top
-									: position.top;
-							bottom = (bottom == 'x' || bottom < (pos.top + el
-									.outerHeight())) ? pos.top
-									+ el.outerHeight() : bottom;
-							right = (right == 'x' || right < (pos.left + el
-									.outerWidth())) ? pos.left
-									+ el.outerWidth() : right;
-						}
-					});
-	var tHeight = bottom - position.top;
-	var tWidth = right - position.left;
+    var dimension=cms.util.getInnerDimensions(elem, 25);
 	var elemPos = cms.util.getElementPosition(elem);
-
-	if (bottom == 'x') {
-		tHeight = 25;
-		tWidth = elem.innerWidth();
-		position = elemPos;
-	}
-
 	var hWidth = 2;
 
-	var inner = {
-		top :position.top - (elemPos.top + hOff),
-		left :position.left - (elemPos.left + hOff),
-		height :tHeight + 2 * hOff,
-		width :tWidth + 2 * hOff
-	};
-	// inner
-	$(
-			'<div class="cms-highlight-container" style="position: absolute; z-index:0; top: '
-					+ inner.top + 'px; left: ' + inner.left + 'px; height: '
-					+ inner.height + 'px; width: ' + inner.width
-					+ 'px;"></div>').prependTo(elem);
+    if (showBackground) {
+        // inner
+        var inner = {
+    		top :dimension.top - (elemPos.top + hOff),
+    		left :dimension.left - (elemPos.left + hOff),
+    		height :dimension.height + 2 * hOff,
+    		width :dimension.width + 2 * hOff
+    	};
+        $('<div class="cms-highlight-container" style="position: absolute; z-index:0; top: ' +
+        inner.top +
+        'px; left: ' +
+        inner.left +
+        'px; height: ' +
+        inner.height +
+        'px; width: ' +
+        inner.width +
+        'px;"></div>').prependTo(elem);
+    }
 
 	// top
 	$('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(
-			tWidth + 2 * (hOff + hWidth)).css('top',
-			position.top - (hOff + hWidth)).css('left',
-			position.left - (hOff + hWidth)).appendTo(document.body);
+			dimension.width + 2 * (hOff + hWidth)).css('top',
+			dimension.top - (hOff + hWidth)).css('left',
+			dimension.left - (hOff + hWidth)).appendTo(document.body);
 	// right
 	$('<div class="cms-hovering cms-hovering-right"></div>').height(
-			tHeight + 2 * (hOff + hWidth)).width(hWidth).css('top',
-			position.top - (hOff + hWidth)).css('left',
-			position.left + tWidth + hOff).appendTo(document.body);
+			dimension.height + 2 * (hOff + hWidth)).width(hWidth).css('top',
+			dimension.top - (hOff + hWidth)).css('left',
+			dimension.left + dimension.width + hOff).appendTo(document.body);
 	// left
 	$('<div class="cms-hovering cms-hovering-left"></div>').height(
-			tHeight + 2 * (hOff + hWidth)).width(hWidth).css('top',
-			position.top - (hOff + hWidth)).css('left',
-			position.left - (hOff + hWidth)).appendTo(document.body);
+			dimension.height + 2 * (hOff + hWidth)).width(hWidth).css('top',
+			dimension.top - (hOff + hWidth)).css('left',
+			dimension.left - (hOff + hWidth)).appendTo(document.body);
 	// bottom
 	$('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(
-			tWidth + 2 * (hOff + hWidth)).css('top',
-			position.top + tHeight + hOff).css('left',
-			position.left - (hOff + hWidth)).appendTo(document.body);
+			dimension.width + 2 * (hOff + hWidth)).css('top',
+			dimension.top + dimension.height + hOff).css('left',
+			dimension.left - (hOff + hWidth)).appendTo(document.body);
 
 }
 var hoverOut = cms.move.hoverOut = function() {
