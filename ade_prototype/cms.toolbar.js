@@ -117,24 +117,29 @@
     var openEditDialog = cms.toolbar.openEditDialog = function(elemId){
         if (elemId && cms.data.elements[elemId]) {
             if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
-                var editorLink='http://localhost:8080/opencms/opencms/system/workplace/editors/editor.jsp?resource=/demo_en/dictionary/weisswurst.html&amp;directedit=true&amp;elementlanguage=en&amp;backlink=http://127.0.0.1:8100/OpenCms/ade_prototype/closeDialog.html&amp;redirect=true';
-                var editorFrame='<iframe width="99%" height="99%" name="cmsAdvancedDirectEditor" src="'+editorLink+'"></iframe>';
+                
+                var editorLink=cms.data.EDITOR_URL+'?resource='+cms.data.elements[elemId].file+'&amp;directedit=true&amp;elementlanguage='+cms.data.locale+'&amp;backlink='+cms.data.BACKLINK_URL+'&amp;redirect=true';
+                var editorFrame='<iframe style="border:none;" width="100%" height="100%" name="cmsAdvancedDirectEditor" src="'+editorLink+'"></iframe>';
                 var editorDialog=$('#cms-editor')
                 if (!editorDialog.lenght){
                     editorDialog=$('<div id="cms-editor"></div>').appendTo(document.body);
                 }else{
                     editorDialog.empty();
                 }
-                editorDialog.append(editorFrame);
+                
+                var dialogWidth=self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
+                dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
+                var dialogHeight=self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
+                editorDialog.append('<div class="cms-editor-subtitle>'+cms.data.elements[elemId].file+'</div>').append('<div>'+editorFrame+'</div>');
                 editorDialog.dialog( {
-    			width :900,
-                height : 600,
+    			width :dialogWidth-50,
+                height : dialogHeight - 60,
     			title :"Editor",
     			modal :true,
     			autoOpen :true,
     			draggable :true,
     			resizable :true,
-    			position : [ 'center', 20 ],
+    			position : [ 'center', -20 ],
     			close : function() {
     				$('button[name="Edit"]').removeClass('ui-state-active');
                     editorDialog.empty().dialog('destroy');

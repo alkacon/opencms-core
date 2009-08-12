@@ -873,7 +873,8 @@
       }
       
    }
-   
+   var locale = cms.data.locale ="en";
+   var BACKLINK_URL = cms.data.BACKLINK_URL = "backlink.jsp";
    var EDITOR_URL = cms.data.EDITOR_URL = "/system/workplace/editors/editor.jsp";
    var DATA_URL = "data.txt";
    var AJAX_TIMEOUT = 5000;
