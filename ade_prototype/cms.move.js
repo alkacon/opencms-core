@@ -51,7 +51,7 @@ var startAdd = cms.move.startAdd = function(event, ui) {
         ui.self.placeholder.css( {
 			'background-color' :'blue',
 			'border' :'solid 2px black',
-			'height' :placeholderSize.height,
+			'height' : placeholderSize.height,
             'width' : (/left|right/).test(ui.placeholder.css('float')) ? placeholderSize.width : 'auto'
         });
         
@@ -118,8 +118,11 @@ var startAdd = cms.move.startAdd = function(event, ui) {
 		if (isMenuContainer(ui.self.cmsStartContainerId)) {
 			ui.self.cmsHelpers[cms.toolbar.currentMenuItems] = ui.self.helper;
 			var elem = $(document.createElement('div')).addClass(
-					"placeholder" + " ui-sortable-placeholder box").css(
-					'display', 'none');
+					"placeholder" + " ui-sortable-placeholder box").css({
+					'display': 'none',
+                    'background-color' :'blue',
+			        'border' :'solid 2px black'
+                });
 			ui.placeholder.replaceWith(elem);
 			ui.self.placeholder = elem;
 
@@ -330,7 +333,7 @@ var overAdd = cms.move.overAdd = function(event, ui) {
         if (ui.self.helper.hasClass('cms-subcontainer')){
             var dimensions=cms.util.getInnerDimensions(ui.self.helper, 10);
             ui.placeholder.height(dimensions.height).css({
-                'margin-bottom': helperHeight - dimensions.height,
+                'margin-bottom': helperHeight - dimensions.height
             });
         }else{
             ui.placeholder.height(helperHeight);    
@@ -379,16 +382,15 @@ var outAdd = cms.move.outAdd = function(event, ui) {
 }
 
 var hoverIn = cms.move.hoverIn = function(elem, hOff) {
-
-	var position = cms.util.getElementPosition(elem);
-	var tHeight = elem.outerHeight();
+    var position = cms.util.getElementPosition(elem);
+    var tHeight = elem.outerHeight();
 	var tWidth = elem.outerWidth();
 	var hWidth = 2;
 	var lrHeight = tHeight + 2 * (hOff + hWidth);
 	var btWidth = tWidth + 2 * (hOff + hWidth);
 	var tlrTop = position.top - (hOff + hWidth);
 	var tblLeft = position.left - (hOff + hWidth);
-	// top
+    // top
 	$('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth)
 			.width(btWidth).css('top', tlrTop).css('left', tblLeft).appendTo(
 					document.body);
