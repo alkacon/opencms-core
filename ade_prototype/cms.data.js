@@ -874,6 +874,7 @@
       
    }
    
+   var EDITOR_URL = cms.data.EDITOR_URL = "/system/workplace/editors/editor.jsp";
    var DATA_URL = "data.txt";
    var AJAX_TIMEOUT = 5000;
    var RECENT_URL = "recent.txt";
