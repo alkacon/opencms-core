@@ -125,12 +125,12 @@
       maxElements: 42
    }
    
-//   var containers = cms.data.containers = {
-//      'col1_content': col1_content,
-//      'col2_content': col2_content,
-//      'col3_content': col3_content,
-//      'bottom_cont': bottom_cont
-//   }
+   //   var containers = cms.data.containers = {
+   //      'col1_content': col1_content,
+   //      'col2_content': col2_content,
+   //      'col3_content': col3_content,
+   //      'bottom_cont': bottom_cont
+   //   }
    
    var elements = cms.data.elements = {
       'item_001': item_001,
@@ -467,8 +467,8 @@
          allowEdit: true,
          locked: false,
          status: UNCHANGED
-         
-         
+      
+      
       },
       
       'item_002': {
@@ -722,73 +722,73 @@
          locked: false,
          status: UNCHANGED
       },
-      'subcont_001' : {
-          id: 'subcont_001',
-          navText: 'Subcontainer',
-          title: 'Subcontainer',
-          file: 'login.xml',
-          date: '4/4/2009 5:30 PM',
-          user: 'Admin',
-          type: 'subcontainer',
-          allowMove: true,
-          allowEdit: true,
-          locked: false,
-          status: 'unchanged',
-          subItems: ['item_003', 'item_002'],
-          contents: {
-             'column': '<div class="box box_schema4" rel="item_003"><h4>Login</h4><div class="boxbody"><p><b>Logged in as:</b></p><form method="get" action="/opencms/opencms/demo_en/extra/login.html" class="loginform"><div class="boxform">(Admin)</div><div class="boxform"><input name="action" value="logoff" type="hidden"/><input name="requestedResource" value="/demo_en/today/index.html" type="hidden"/><input class="button" value="Logoff" type="submit"/></div></form></div></div><div class="box box_schema2" rel="item_002"><h4>Direct edit</h4><div class="boxbody"><p>By utilizing the direct edit feature, you can create new or edit already existing XML contents.</p></div></div>'
-          }
-       },
-       'subcont_002' : {
-          id: 'subcont_002',
-          navText: 'Subcontainer',
-          title: 'Subcontainer',
-          file: 'login.xml',
-          date: '4/4/2009 5:30 PM',
-          user: 'Admin',
-          type: 'subcontainer',
-          allowMove: true,
-          allowEdit: true,
-          locked: false,
-          status: 'unchanged',
-          subItems: ['item_008', 'item_009'],
-          contents: {
-             'bottom': '<div class="box box_schema4" rel="item_003"><h4>Login</h4><div class="boxbody"><p><b>Logged in as:</b></p><form method="get" action="/opencms/opencms/demo_en/extra/login.html" class="loginform"><div class="boxform">(Admin)</div><div class="boxform"><input name="action" value="logoff" type="hidden"/><input name="requestedResource" value="/demo_en/today/index.html" type="hidden"/><input class="button" value="Logoff" type="submit"/></div></form></div></div><div class="box box_schema2" rel="item_002"><h4>Direct edit</h4><div class="boxbody"><p>By utilizing the direct edit feature, you can create new or edit already existing XML contents.</p></div></div>'
-          }
-       }
-       
+      'subcont_001': {
+         id: 'subcont_001',
+         navText: 'Subcontainer',
+         title: 'Subcontainer',
+         file: 'login.xml',
+         date: '4/4/2009 5:30 PM',
+         user: 'Admin',
+         type: 'subcontainer',
+         allowMove: true,
+         allowEdit: true,
+         locked: false,
+         status: 'unchanged',
+         subItems: ['item_003', 'item_002'],
+         contents: {
+            'column': '<div class="box box_schema4" rel="item_003"><h4>Login</h4><div class="boxbody"><p><b>Logged in as:</b></p><form method="get" action="/opencms/opencms/demo_en/extra/login.html" class="loginform"><div class="boxform">(Admin)</div><div class="boxform"><input name="action" value="logoff" type="hidden"/><input name="requestedResource" value="/demo_en/today/index.html" type="hidden"/><input class="button" value="Logoff" type="submit"/></div></form></div></div><div class="box box_schema2" rel="item_002"><h4>Direct edit</h4><div class="boxbody"><p>By utilizing the direct edit feature, you can create new or edit already existing XML contents.</p></div></div>'
+         }
+      },
+      'subcont_002': {
+         id: 'subcont_002',
+         navText: 'Subcontainer',
+         title: 'Subcontainer',
+         file: 'login.xml',
+         date: '4/4/2009 5:30 PM',
+         user: 'Admin',
+         type: 'subcontainer',
+         allowMove: true,
+         allowEdit: true,
+         locked: false,
+         status: 'unchanged',
+         subItems: ['item_008', 'item_009'],
+         contents: {
+            'bottom': '<div class="box box_schema4" rel="item_003"><h4>Login</h4><div class="boxbody"><p><b>Logged in as:</b></p><form method="get" action="/opencms/opencms/demo_en/extra/login.html" class="loginform"><div class="boxform">(Admin)</div><div class="boxform"><input name="action" value="logoff" type="hidden"/><input name="requestedResource" value="/demo_en/today/index.html" type="hidden"/><input class="button" value="Logoff" type="submit"/></div></form></div></div><div class="box box_schema2" rel="item_002"><h4>Direct edit</h4><div class="boxbody"><p>By utilizing the direct edit feature, you can create new or edit already existing XML contents.</p></div></div>'
+         }
+      }
+   
    
    };
    
    var containers = cms.data.containers = {
-       col1_content: {
-           type: 'column',
-           id: 'col1_content',
-           elements: ['item_001', 'item_002'],
-           maxElem: null
-       },
-       
-       col2_content: {
-           type: 'column',
-           id: 'col2_content',
-           elements: ['item_003', 'item_004'],
-           maxElem: null
-       },
-       
-       col3_content: {
-           type: 'column',
-           elements:['item_005', 'subcont_001'],
-           id:'col3_content',
-           maxElem: null
-       },
-       
-       bottom_cont: {
-           type: 'bottom',
-           elements:['subcont_002', 'item_010'],
-           id: 'bottom_cont',
-           maxElem: null
-           
-       }
+      col1_content: {
+         type: 'column',
+         id: 'col1_content',
+         elements: ['item_001', 'item_002'],
+         maxElem: null
+      },
+      
+      col2_content: {
+         type: 'column',
+         id: 'col2_content',
+         elements: ['item_003', 'item_004'],
+         maxElem: null
+      },
+      
+      col3_content: {
+         type: 'column',
+         elements: ['item_005', 'subcont_001'],
+         id: 'col3_content',
+         maxElem: null
+      },
+      
+      bottom_cont: {
+         type: 'bottom',
+         elements: ['subcont_002', 'item_010'],
+         id: 'bottom_cont',
+         maxElem: null
+      
+      }
    }
    
    var serialize = function() {
@@ -831,47 +831,47 @@
    };
    
    var fillContainers = cms.data.fillContainers = function() {
-       for (var containerName in containers) {
-           $('#'+containerName+' > *').remove();
-           var elementIds = containers[containerName].elements;
-           for (var i = 0; i<elementIds.length; i++) {
-               var elem = elements[elementIds[i]];
-               var html='';
-               var isSubcontainer=false;
-               if (elem.subItems) {
-                   
-                   isSubcontainer=true;
-                   html = $('<div class="cms-subcontainer"></div>');
-                   for (var j = 0; j < elem.subItems.length; j++) {
-                       var subElem = elements[elem.subItems[j]];
-                       $(subElem.contents[containers[containerName].type]).attr('rel', subElem.id).addClass('cms-element').appendTo(html);
-                   }
-               } else {
-                   html = $(elem.contents[containers[containerName].type]);
+      for (var containerName in containers) {
+         $('#' + containerName + ' > *').remove();
+         var elementIds = containers[containerName].elements;
+         for (var i = 0; i < elementIds.length; i++) {
+            var elem = elements[elementIds[i]];
+            var html = '';
+            var isSubcontainer = false;
+            if (elem.subItems) {
+            
+               isSubcontainer = true;
+               html = $('<div class="cms-subcontainer"></div>');
+               for (var j = 0; j < elem.subItems.length; j++) {
+                  var subElem = elements[elem.subItems[j]];
+                  $(subElem.contents[containers[containerName].type]).attr('rel', subElem.id).addClass('cms-element').appendTo(html);
                }
-               html.attr('rel', elem.id).addClass('cms-element');
-               $('#'+containerName).append(html);
-               if (isSubcontainer){
-                   
-                   var floatDirection = html.children('*:first').css('float');
-                   if (floatDirection && (/left|right/).test(floatDirection)){
-                       var dimensions=cms.util.getInnerDimensions(html, 0);
-                       var addMargin;
-                       if (floatDirection=='left'){
-                           addMargin=parseFloat(html.children('*:first').css('margin-left')) + parseFloat(html.children('*:last').css('margin-right'));
-                       }else{
-                           addMargin=parseFloat(html.children('*:first').css('margin-right')) + parseFloat(html.children('*:last').css('margin-left'));
-                       }
-                       html.attr('title', addMargin);
-                       html.children('*:visible').each(function(){
-                           $(this).width($(this).width());
-                       });
-                       html.width(dimensions.width + addMargin).addClass('cms-'+floatDirection);
-                   }
+            } else {
+               html = $(elem.contents[containers[containerName].type]);
+            }
+            html.attr('rel', elem.id).addClass('cms-element');
+            $('#' + containerName).append(html);
+            if (isSubcontainer) {
+            
+               var floatDirection = html.children('*:first').css('float');
+               if (floatDirection && (/left|right/).test(floatDirection)) {
+                  var dimensions = cms.util.getInnerDimensions(html, 0);
+                  var addMargin;
+                  if (floatDirection == 'left') {
+                     addMargin = parseFloat(html.children('*:first').css('margin-left')) + parseFloat(html.children('*:last').css('margin-right'));
+                  } else {
+                     addMargin = parseFloat(html.children('*:first').css('margin-right')) + parseFloat(html.children('*:last').css('margin-left'));
+                  }
+                  html.attr('title', addMargin);
+                  html.children('*:visible').each(function() {
+                     $(this).width($(this).width());
+                  });
+                  html.width(dimensions.width + addMargin).addClass('cms-' + floatDirection);
                }
-           }
-       }
-       
+            }
+         }
+      }
+      
    }
    
    var DATA_URL = "data.txt";
@@ -884,9 +884,9 @@
    var CONTAINER_SAVE_URL = "fsdafafasfd";
    
    var JSON_PARSE_ERROR = "ERROR: Couldn't parse JSON data";
- 
+   
    var persistFavorites = cms.data.persistFavorites = function() {
-       // dummy
+      // dummy
    }
    
    var persistRecent = cms.data.persistRecent = function() {
@@ -894,34 +894,36 @@
    }
    
    var loadAllData = cms.data.loadAllData = function(afterLoad) {
-       $.ajax({
-           url: DATA_URL,
-           timeout: AJAX_TIMEOUT,
-           error:    function(xhr, status, error) { alert("ERROR: couldn't load data from server"); },
-           success: function(data) {
-               try {
-                   var jsonData = JSON.parse(data);
-               } catch (e) {
-                   alert("ERROR: Couldn't parse JSON data");
-                   return;
-               }
-               if (jsonData.favorites) {
-                   favorites = cms.toolbar.favorites = jsonData.favorites;
-               }
-               if (jsonData.recent) {
-                   recent = cms.toolbar.recent = jsonData.recent;
-               }
-               if (jsonData.containers) {
-                   containers = cms.data.containers = jsonData.containers;
-               }
-               if (jsonData.elements) {
-                   elements = cms.data.elements = jsonData.elements;
-               }
-               afterLoad();
-           }
-       })
+      $.ajax({
+         url: DATA_URL,
+         timeout: AJAX_TIMEOUT,
+         error: function(xhr, status, error) {
+            alert("ERROR: couldn't load data from server");
+         },
+         success: function(data) {
+            try {
+               var jsonData = JSON.parse(data);
+            } catch (e) {
+               alert("ERROR: Couldn't parse JSON data");
+               return;
+            }
+            if (jsonData.favorites) {
+               favorites = cms.toolbar.favorites = jsonData.favorites;
+            }
+            if (jsonData.recent) {
+               recent = cms.toolbar.recent = jsonData.recent;
+            }
+            if (jsonData.containers) {
+               containers = cms.data.containers = jsonData.containers;
+            }
+            if (jsonData.elements) {
+               elements = cms.data.elements = jsonData.elements;
+            }
+            afterLoad();
+         }
+      })
    }
-  
+   
    var loadJSON = cms.data.loadJSON = function(url, data, afterLoad) {
       $.ajax({
          url: url,
@@ -943,19 +945,19 @@
    }
    
    var postJSON = cms.data.postJSON = function(url, data, afterPost) {
-       $.ajax({
-           type: 'POST',
-           timeout: AJAX_TIMEOUT,
-           data: data,
-           error: function(xhr, status, error) {
-               alert("ERROR: couldn't send data to server");
-           },
-           success: afterPost
-       });
+      $.ajax({
+         type: 'POST',
+         timeout: AJAX_TIMEOUT,
+         data: data,
+         error: function(xhr, status, error) {
+            alert("ERROR: couldn't send data to server");
+         },
+         success: afterPost
+      });
    }
- 
    
-   var reloadItem = cms.data.reloadItem = function(id) {
+   
+   var reloadElement = cms.data.reloadElement = function(id) {
       loadJSON(ITEM_URL, {
          url: window.location.href,
          id: id
@@ -965,6 +967,17 @@
       });
    }
    
+   var loadElements = cms.data.loadElements = function(ids) {
+      loadJSON(ITEMS_URL, {
+         url: window.location.href,
+         ids: JSON.stringify(ids)
+      }, function(data) {
+         for (var id in data) {
+            cms.data.elements[data.id] = data;
+         }
+      });
+   }
+     
    var loadFavorites = cms.data.loadFavorites = function(afterFavoritesLoad) {
       loadJSON(FAVORITES_URL, {
          url: window.location.href,
@@ -975,7 +988,7 @@
          
       });
    }
-
+   
    var loadRecent = cms.data.loadRecent = function(afterRecentLoad) {
       loadJSON(RECENT_URL, {
          url: window.location.href,
@@ -985,22 +998,23 @@
          afterRecentLoad();
       });
    }
-        
+   
    var persistContainers = cms.data.persistContainers = function(afterSave) {
-       postJSON(CONTAINER_SAVE_URL, {
-           'url':window.location.href, 
-           'containers': JSON.stringify(cms.data.containers)
-           }, function() {});
+      postJSON(CONTAINER_SAVE_URL, {
+         'url': window.location.href,
+         'containers': JSON.stringify(cms.data.containers)
+      }, function() {
+            });
    }
    
-   var persistFavorites = cms.data.persistFavorites = function () {
-       //postJSON(FAV_SAVE_URL, {'favorites': JSON.stringify(cms.toolbar.favorites)}, function() {});
+   var persistFavorites = cms.data.persistFavorites = function() {
+      //postJSON(FAV_SAVE_URL, {'favorites': JSON.stringify(cms.toolbar.favorites)}, function() {});
    }
    
    var persistRecent = cms.data.persistRecent = function() {
-       //postJSON(RECENT_SAVE_URL, {'recent': JSON.stringify(cms.toolbar.recent)}, function() {});
+      //postJSON(RECENT_SAVE_URL, {'recent': JSON.stringify(cms.toolbar.recent)}, function() {});
    }
-  
-  
+   
+   
    
 })(cms);
