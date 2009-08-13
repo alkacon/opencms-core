@@ -1,0 +1,46 @@
+    <link href="%(skinUri)editors/ade/css/custom-theme/jquery-ui-1.7.2.custom.css" rel="stylesheet" type="text/css" >
+    <link href="%(skinUri)editors/ade/css/advanced_direct_edit.css" rel="stylesheet" type="text/css" >
+    
+    <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery-1.3.2.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery-ui-1.7.2.custom.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery.jHelperTip.1.0.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/lib/jquery.dump.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/lib/json2.js"></script>
+    <script type="text/javascript">
+      var cms = {
+        data:{
+          "BACKLINK_URL"   : "%(backlinkUri)",
+          "EDITOR_URL"     : "%(editorUri)",
+          "SERVER_GET_URL" : "%(serverGetUri)",
+          "SERVER_SET_URL" : "%(serverSetUri)",
+          "CURRENT_URI"    : "%(currentUri)"
+        }, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}};
+    </script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.data.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.util.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.init.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.html.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.move.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.toolbar.js"></script>
+    <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.sitemap.js"></script>
+    <script type="text/javascript">
+      // TODO: WHY IS THIS A CONSTANT?!!
+      var sortlist = '#left, #right, #maincnt';
+      var sortitems = '.cms-element';
+      var deleteitems = sortitems;
+      $('document').ready(function() {
+        $('.cms-item a.ui-icon').live('click', cms.toolbar.toggleAdditionalInfo);
+        cms.toolbar.addToolbar();
+        $('.cms-item-list div.cms-additional div').jHelperTip({
+            trigger: 'hover',
+            source: 'attribute',
+            attrName: 'alt',
+            topOff: -30,
+            opacity: 0.8,
+            live: true
+        });
+        cms.data.loadAllData(function() {
+           cms.data.fillContainers();
+        });
+      });
+    </script>

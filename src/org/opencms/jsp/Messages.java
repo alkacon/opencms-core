@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2009/08/13 10:47:31 $
+ * Version: $Revision: 1.26.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.26.2.1 $
  * 
  * @since 6.0.0
  */
@@ -154,6 +154,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_TAG_USER_ADDITIONALINFO_0 = "GUI_TAG_USER_ADDITIONALINFO_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_CONTAINER_NOT_FOUND_3 = "LOG_CONTAINER_NOT_FOUND_3";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_INTERRUPTED_EXCEPTION_1 = "LOG_DEBUG_INTERRUPTED_EXCEPTION_1";
 
     /** Message constant for key in the resource bundle. */
@@ -188,6 +191,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_LOGOUT_SUCCESFUL_3 = "LOG_LOGOUT_SUCCESFUL_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WRONG_CONTAINER_MAXELEMENTS_4 = "LOG_WRONG_CONTAINER_MAXELEMENTS_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WRONG_CONTAINER_TYPE_4 = "LOG_WRONG_CONTAINER_TYPE_4";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.messages";

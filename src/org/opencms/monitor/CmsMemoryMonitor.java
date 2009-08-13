@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2009/06/04 14:29:48 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2009/08/13 10:47:37 $
+ * Version: $Revision: 1.69.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexCache.CmsFlexCacheVariation;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.json.JSONObject;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.mail.CmsMailTransport;
@@ -101,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.69 $ 
+ * @version $Revision: 1.69.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,6 +137,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** The memory monitor configuration. */
     private CmsMemoryMonitorConfiguration m_configuration;
+
+    /** Cache for offline container pages. */
+    private Map m_containerPagesOffline;
+
+    /** Cache for online container pages. */
+    private Map m_containerPagesOnline;
 
     /** A temporary cache for XML content definitions. */
     private Map m_contentDefinitionsCache;
@@ -492,6 +499,22 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Caches the given container page under the given key and for the given project.<p>
+     * 
+     * @param key the cache key
+     * @param containerPage the object to cache
+     * @param online if to cache in online or offline project
+     */
+    public void cacheContainerPages(String key, JSONObject containerPage, boolean online) {
+
+        if (online) {
+            m_containerPagesOnline.put(key, containerPage);
+        } else {
+            m_containerPagesOffline.put(key, containerPage);
+        }
+    }
+
+    /**
      * Caches the given content definition under the given cache key.<p>
      * 
      * @param key the cache key
@@ -840,6 +863,20 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Flushes the container pages cache.<p>
+     * 
+     * @param online if to flush the online or offline cache
+     */
+    public void flushContainerPages(boolean online) {
+
+        if (online) {
+            m_containerPagesOnline.clear();
+        } else {
+            m_containerPagesOffline.clear();
+        }
+    }
+
+    /**
      * Flushes the xml content definitions cache.<p>
      */
     public void flushContentDefinitions() {
@@ -1078,6 +1115,23 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public List getAllCachedPublishJobsInHistory() {
 
         return new ArrayList(m_publishHistory);
+    }
+
+    /**
+     * Returns the cached container page under the given key and for the given project.<p>
+     * 
+     * @param key the cache key
+     * @param online if cached in online or offline project
+     * 
+     * @return  the cached container page or <code>null</code> if not found
+     */
+    public JSONObject getCacheContainerPage(String key, boolean online) {
+
+        if (online) {
+            return (JSONObject)m_containerPagesOnline.get(key);
+        } else {
+            return (JSONObject)m_containerPagesOffline.get(key);
+        }
     }
 
     /**
@@ -1613,6 +1667,15 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         m_accessControlListCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".accessControlListCache", lruMap);
 
+        // container page caches
+        lruMap = new LRUMap(cacheSettings.getContainerPageOfflineSize());
+        m_containerPagesOffline = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".containerPagesOffline", lruMap);
+
+        lruMap = new LRUMap(cacheSettings.getContainerPageOfflineSize());
+        m_containerPagesOnline = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".containerPagesOnline", lruMap);
+
         // vfs object cache
         Map vfsObjectCache = new HashMap();
         m_vfsObjectCache = Collections.synchronizedMap(vfsObjectCache);
@@ -1834,6 +1897,23 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushXmlTemporaryEntities();
         flushRoles();
         flushRoleLists();
+        flushContainerPages(true);
+        flushContainerPages(false);
+    }
+
+    /**
+     * Removes the container page identified by the given cache key from the cache.<p>
+     * 
+     * @param cacheKey the cache key to identify the container page to remove
+     * @param online if online or offline
+     */
+    public void uncacheContainerPage(String cacheKey, boolean online) {
+
+        if (online) {
+            m_containerPagesOnline.remove(cacheKey);
+        } else {
+            m_containerPagesOffline.remove(cacheKey);
+        }
     }
 
     /**

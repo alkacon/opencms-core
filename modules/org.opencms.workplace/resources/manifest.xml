@@ -101,6 +101,7 @@
 			<resource uri="/system/workplace/resources/components/widgets/userselector.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/vfsimage.js"/>
 			<resource uri="/system/workplace/resources/filetypes/binary.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/containerpage.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/downloadgallery.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/folder.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/gallery.gif"/>
@@ -6047,6 +6048,26 @@
 			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/containerpage.gif</source>
+			<destination>system/workplace/resources/filetypes/containerpage.gif</destination>
+			<type>image</type>
+			<uuidstructure>4841ce7a-81a6-11de-9b82-dd9f629b113b</uuidstructure>
+			<uuidresource>4841ce7b-81a6-11de-9b82-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Aug 2009 09:56:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>

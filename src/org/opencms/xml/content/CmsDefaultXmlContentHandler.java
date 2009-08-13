@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/07/03 10:36:37 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2009/08/13 10:47:28 $
+ * Version: $Revision: 1.64.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,6 +71,7 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import org.opencms.xml.types.I_CmsXmlSchemaType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -91,11 +92,14 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.64 $ 
+ * @version $Revision: 1.64.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
+
+    /** Default formatter type constant. */
+    public static final String DEFAULT_FORMATTER_TYPE = "_DEFAULT_";
 
     /** Constant for the "appinfo" element name itself. */
     public static final String APPINFO_APPINFO = "appinfo";
@@ -105,6 +109,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "configuration" appinfo attribute name. */
     public static final String APPINFO_ATTR_CONFIGURATION = "configuration";
+
+    /** Constant for the "default" appinfo attribute name. */
+    public static final String APPINFO_ATTR_DEFAULT = "default";
 
     /** Constant for the "element" appinfo attribute name. */
     public static final String APPINFO_ATTR_ELEMENT = "element";
@@ -156,6 +163,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "defaults" appinfo element name. */
     public static final String APPINFO_DEFAULTS = "defaults";
+
+    /** Constant for the "formatter" appinfo element name. */
+    public static final String APPINFO_FORMATTER = "formatter";
+
+    /** Constant for the "formatters" appinfo element name. */
+    public static final String APPINFO_FORMATTERS = "formatters";
 
     /** Constant for the "layout" appinfo element name. */
     public static final String APPINFO_LAYOUT = "layout";
@@ -251,6 +264,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** The widgets used for the elements (as defined in the annotations). */
     protected Map m_elementWidgets;
+
+    /** The configured formatters. */
+    protected Map m_formatters;
 
     /** The resource bundle name to be used for localization of this content handler. */
     protected String m_messageBundleName;
@@ -374,6 +390,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getFormatters()
+     */
+    public Map getFormatters() {
+
+        return Collections.unmodifiableMap(m_formatters);
+    }
+
+    /**
      * Returns the first mapping defined for the given element xpath.<p>
      * 
      * Since OpenCms version 7.0.2, multiple mappings for an element are possible, so 
@@ -481,6 +505,14 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     }
 
     /**
+     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getTabs()
+     */
+    public List getTabs() {
+
+        return Collections.unmodifiableList(m_tabs);
+    }
+
+    /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getWidget(org.opencms.xml.types.I_CmsXmlContentValue)
      */
     public I_CmsWidget getWidget(I_CmsXmlContentValue value) {
@@ -542,6 +574,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     initSearchSettings(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_TABS)) {
                     initTabs(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_FORMATTERS)) {
+                    initFormatters(element, contentDefinition);
                 }
             }
         }
@@ -1327,6 +1361,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_previewLocation = null;
         m_modelFolder = null;
         m_tabs = new ArrayList();
+        m_formatters = new HashMap();
     }
 
     /**
@@ -1352,6 +1387,36 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 // add a default value mapping for the element
                 addDefault(contentDefinition, elementName, defaultValue);
             }
+        }
+    }
+
+    /**
+     * Initializes the formatters for this content handler.<p>
+     * 
+     * @param root the "formatters" element from the appinfo node of the XML content definition
+     * @param contentDefinition the content definition the tabs belong to
+     */
+    protected void initFormatters(Element root, CmsXmlContentDefinition contentDefinition) {
+
+        // add the default formatter
+        String defFormatter = root.attributeValue(APPINFO_ATTR_DEFAULT);
+        m_formatters.put(DEFAULT_FORMATTER_TYPE, defFormatter);
+
+        Iterator itFormatter = root.elementIterator(APPINFO_FORMATTER);
+        while (itFormatter.hasNext()) {
+            // iterate all "formatter" elements in the "formatters" node
+            Element element = (Element)itFormatter.next();
+            // this is a tab node
+            String type = element.attributeValue(APPINFO_ATTR_TYPE);
+            String uri = element.attributeValue(APPINFO_ATTR_URI);
+
+            if (m_formatters.get(type) != null) {
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_CONTENT_DEFINITION_DUPLICATE_FORMATTER_4,
+                    new Object[] {type, m_formatters.get(type), uri, contentDefinition.getSchemaLocation()}));
+            }
+            // add the formatter
+            m_formatters.put(type, uri);
         }
     }
 
@@ -1554,8 +1619,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /**
      * Initializes the tabs for this content handler.<p>
      * 
-     * .<p>
-     * 
      * @param root the "tabs" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the tabs belong to
      */
@@ -1591,14 +1654,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 m_tabs.add(0, tab);
             }
         }
-    }
-
-    /**
-     * @see org.opencms.xml.content.I_CmsXmlContentHandler#getTabs()
-     */
-    public List getTabs() {
-
-        return m_tabs;
     }
 
     /**

@@ -1,0 +1,102 @@
+CHANGES:
+
+/modules/org.opencms.locale.de/resources/
+  manifest.xml
+
+/modules/org.opencms.locale.de/resources/org/opencms/jsp/
+  messages_de.messages
+
+/modules/org.opencms.locale.de/resources/org/opencms/workplace/explorer/
+  messages_de.messages
+  
+/modules/org.opencms.editors/resources/
+  manifest.xml
+/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/
+  edit.js
+  editor_buttons.js
+
+/modules/org.opencms.workplace/resources/
+  manifest.xml
+  
+/modules/
+  all-modules.properties
+  
+/webapp/WEB-INF/
+  opencms.tld
+  
+/webapp/WEB-INF/config
+  opencms-vfs.xml
+  opencms-workplace.xml
+  
+/src/org/opencms/configuration/
+  CmsSystemConfiguration.java
+  
+/src/org/opencms/db/
+  CmsCacheSettings.java
+  
+/src/org/opencms/file/
+  CmsUser.java
+  Messages.java
+  messages.properties
+  
+/src/org/opencms/i18n/
+  A_CmsMessageBundle.java
+
+/src/org/opencms/jsp/
+  Messages.java
+  messages.properties
+
+/src/org/opencms/jsp/util/
+  CmsJspVfsAccessBean.java
+
+/src/org/opencms/loader/
+  Messages.java
+  messages.properties
+  
+/src/org/opencms/monitor/
+  CmsMemoryMonitor.java
+
+/src/org/opencms/workplace/editors/
+  CmsSimpleEditor.java
+
+/src/org/opencms/workplace/explorer/
+  messages.properties
+
+/src/org/opencms/xml/content/
+  CmsDefaultXmlContentHandler.java
+  CmsXmlContentFactory.java
+  I_CmsXmlContentHandler.java
+  Messages.java
+  DefaultAppinfo.xsd
+  DefaultAppinfoTypes.xsd
+  messages.properties  
+
+/src-modules/org/opencms/editors/editarea/
+  CmsEditArea.java
+
+ADDITIONS:
+/ade_prototype (to be removed)
+
+/modules/org.opencms.locale.de/resources/org/opencms/workplace/editors/ade/
+  messages_de.messages
+
+/modules/org.opencms.editors/resources/system/workplace/editors/ade/
+/modules/org.opencms.editors/resources/system/workplace/resources/editors/ade/
+
+/modules/org.opencms.workplace/resources/system/workplace/resources/filetypes/
+  containerpage.gif
+  
+/modules/org.opencms.workplace.ade.demo/
+
+/src/org/opencms/file/types/
+  CmsResourceTypeContainerPage.java
+  
+/src/org/opencms/jsp/
+  CmsJspTagContainer.java
+  CmsJspTagEnableADE.java
+
+/src/org/opencms/loader/
+  CmsContainerPageLoader.java
+
+/src/org/opencms/workplace/editors/ade/
+

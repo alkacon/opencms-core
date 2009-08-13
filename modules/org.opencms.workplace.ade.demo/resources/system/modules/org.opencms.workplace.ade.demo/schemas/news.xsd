@@ -1,0 +1,64 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/extendedlink.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/availability.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/paragraph.xsd"/>
+		
+	<xsd:element name="TTNewsArticles" type="OpenCmsTTNewsArticles"/>
+	
+	<xsd:complexType name="OpenCmsTTNewsArticles">
+		<xsd:sequence>
+			<xsd:element name="TTNewsArticle" type="OpenCmsTTNewsArticle" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsTTNewsArticle">
+		<xsd:sequence>
+			<xsd:element name="Date" type="OpenCmsDateTime" />
+			<xsd:element name="Title" type="OpenCmsString" />
+			<xsd:element name="SubTitle" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Teaser" type="OpenCmsHtml" />
+			<xsd:element name="Paragraph" type="OpenCmsTTParagraph" />
+			<xsd:element name="Author" type="OpenCmsString" />
+			<xsd:element name="AuthorMail" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Availability" type="OpenCmsTTAvailability" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templatetwo.demo.workplace"/>
+			<preview uri="${previewtempfile}" />
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Date" mapto="property:collector.date" />
+				<mapping element="Availability/Release" mapto="attribute:datereleased" />
+				<mapping element="Availability/Expiration" mapto="attribute:dateexpired" />
+				<mapping element="Availability/Priority" mapto="property:collector.priority" />
+			</mappings>
+			<layouts>
+				<layout element="Teaser" widget="HtmlWidget" configuration="height:100px"/>
+			</layouts>
+			<validationrules/>
+			<defaults>
+				<default element="Date" value="${currenttime}"/>
+				<default element="Author" value="${currentuser.firstname} ${currentuser.lastname}"/>
+				<default element="AuthorMail" value="${currentuser.email}"/>
+				<default element="Availability/Priority" value="1" />
+				<default element="Availability/Release" value="${currenttime}" />
+				<default element="Availability/Expiration" value="${currenttime}" />
+			</defaults>
+			<relations>
+				<relation element="Paragraph/Image/Image" invalidate="parent" />
+			</relations>
+			<formatters default="/system/modules/org.opencms.workplace.ade.demo/elements/news_default.jsp" >
+			  <formatter type="leftColumn" uri="/system/modules/org.opencms.workplace.ade.demo/elements/news_left_column.jsp" />
+			  <formatter type="rightColumn" uri="/system/modules/org.opencms.workplace.ade.demo/elements/news_right_column.jsp" />
+			  <formatter type="mainColumn" uri="/system/modules/org.opencms.workplace.ade.demo/elements/news_main_column.jsp" />
+			</formatters>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>

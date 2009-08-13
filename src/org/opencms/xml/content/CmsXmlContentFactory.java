@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/08/13 10:47:28 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.loader.CmsLoaderException;
@@ -59,7 +60,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -257,7 +258,8 @@ public final class CmsXmlContentFactory {
 
         String rootPath = resource.getRootPath();
 
-        if (!CmsResourceTypeXmlContent.isXmlContent(resource)) {
+        if (!CmsResourceTypeXmlContent.isXmlContent(resource)
+            && !CmsResourceTypeContainerPage.isContainerPage(resource)) {
             // sanity check: resource must be of type XML content
             throw new CmsXmlException(Messages.get().container(
                 Messages.ERR_XMLCONTENT_INVALID_TYPE_1,

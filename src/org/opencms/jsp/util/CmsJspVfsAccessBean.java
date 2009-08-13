@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspVfsAccessBean.java,v $
- * Date   : $Date: 2009/06/04 14:29:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/13 10:47:23 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.jsp.util;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
@@ -53,7 +54,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 7.0.2
  * 
@@ -91,7 +92,7 @@ public final class CmsJspVfsAccessBean {
             // first read the resource using the lazy map 
             CmsResource resource = (CmsResource)getReadResource().get(input);
             return Boolean.valueOf((resource != null)
-                && (CmsResourceTypeXmlPage.isXmlPage(resource) || CmsResourceTypeXmlContent.isXmlContent(resource)));
+                && (CmsResourceTypeXmlPage.isXmlPage(resource) || CmsResourceTypeXmlContent.isXmlContent(resource) || CmsResourceTypeContainerPage.isContainerPage(resource)));
         }
     }
 
@@ -228,7 +229,7 @@ public final class CmsJspVfsAccessBean {
             // first read the resource using the lazy map 
             CmsResource resource = (CmsResource)getReadResource().get(input);
             if ((resource != null)
-                && (CmsResourceTypeXmlPage.isXmlPage(resource) || CmsResourceTypeXmlContent.isXmlContent(resource))) {
+                && (CmsResourceTypeXmlPage.isXmlPage(resource) || CmsResourceTypeXmlContent.isXmlContent(resource) || CmsResourceTypeContainerPage.isContainerPage(resource))) {
                 // make sure we have a resource that really is an XML content
                 result = new CmsJspContentAccessBean(getCmsObject(), resource);
             }

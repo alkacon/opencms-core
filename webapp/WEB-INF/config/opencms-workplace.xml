@@ -505,6 +505,10 @@
       <explorertype name="tablegallery" key="fileicon.tablegallery" icon="tablegallery.gif" reference="downloadgallery">
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=tablegallery" order="50" autosetnavigation="false" autosettitle="false" info="desc.tablegallery" />
       </explorertype>
+      <explorertype name="containerpage" key="fileicon.containerpage" icon="containerpage.gif" reference="xmlcontent">
+        <newresource uri="newresource_xmlcontent.jsp?newresourcetype=containerpage" order="16" autosetnavigation="false" autosettitle="false" info="desc.containerpage"/>
+      </explorertype>
+      
       <explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
         <newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false" info="desc.xmlcontent" />
         <editoptions>

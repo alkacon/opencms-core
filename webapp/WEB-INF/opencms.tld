@@ -386,6 +386,15 @@
     
     <tag>
         <description>
+            This tag is used to enable the advanced direct editing within a template.
+        </description>
+        <name>enable-ade</name>
+        <tag-class>org.opencms.jsp.CmsJspTagEnableAde</tag-class>
+        <body-content>JSP</body-content>
+    </tag>
+
+    <tag>
+        <description>
             Adds a parameter to the outer tag (if supported).
         </description>
         <name>param</name>
@@ -533,6 +542,30 @@
         </attribute>
     </tag>
             
+    <tag>
+        <description>
+            This tag enables the template mechanism for container pages.
+        </description>
+        <name>container</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContainer</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>type</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+        <attribute>
+            <name>maxElements</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>        
+
     <function>
         <description>
             Provides simple access to a OpenCms JSP / EL content vfs access bean.

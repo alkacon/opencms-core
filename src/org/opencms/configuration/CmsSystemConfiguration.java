@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:39 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2009/08/13 10:47:30 $
+ * Version: $Revision: 1.51.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.51.2.1 $
  * 
  * @since 6.0.0
  */
@@ -360,43 +360,49 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the sites node. */
     public static final String N_SITES = "sites";
 
-    /** The size of the driver manager's cache for ACLS. */
+    /** The size of the memory monitor's cache for ACLS. */
     public static final String N_SIZE_ACLS = "size-accesscontrollists";
 
-    /** The size of the driver manager's cache for groups. */
+    /** The size of the memory monitor's cache for offline container pages. */
+    public static final String N_SIZE_CONTAINERPAGE_OFFLINE = "size-containerpage-offline";
+
+    /** The size of the memory monitor's cache for online container pages. */
+    public static final String N_SIZE_CONTAINERPAGE_ONLINE = "size-containerpage-online";
+
+    /** The size of the memory monitor's cache for groups. */
     public static final String N_SIZE_GROUPS = "size-groups";
 
-    /** The size of the driver manager's cache for organizational units. */
+    /** The size of the memory monitor's cache for organizational units. */
     public static final String N_SIZE_ORGUNITS = "size-orgunits";
 
-    /** The size of the security manager's cache for permission checks. */
+    /** The size of the memory monitor's cache for permission checks. */
     public static final String N_SIZE_PERMISSIONS = "size-permissions";
 
-    /** The size of the driver manager's cache for project resources. */
+    /** The size of the memory monitor's cache for project resources. */
     public static final String N_SIZE_PROJECTRESOURCES = "size-projectresources";
 
-    /** The size of the driver manager's cache for projects. */
+    /** The size of the memory monitor's cache for projects. */
     public static final String N_SIZE_PROJECTS = "size-projects";
 
-    /** The size of the driver manager's cache for properties. */
+    /** The size of the memory monitor's cache for properties. */
     public static final String N_SIZE_PROPERTIES = "size-properties";
 
-    /** The size of the driver manager's cache for property lists. */
+    /** The size of the memory monitor's cache for property lists. */
     public static final String N_SIZE_PROPERTYLISTS = "size-propertylists";
 
-    /** The size of the driver manager's cache for lists of resources. */
+    /** The size of the memory monitor's cache for lists of resources. */
     public static final String N_SIZE_RESOURCELISTS = "size-resourcelists";
 
-    /** The size of the driver manager's cache for resources. */
+    /** The size of the memory monitor's cache for resources. */
     public static final String N_SIZE_RESOURCES = "size-resources";
 
-    /** The size of the driver manager's cache for roles. */
+    /** The size of the memory monitor's cache for roles. */
     public static final String N_SIZE_ROLES = "size-roles";
 
-    /** The size of the driver manager's cache for user/group relations. */
+    /** The size of the memory monitor's cache for user/group relations. */
     public static final String N_SIZE_USERGROUPS = "size-usergroups";
 
-    /** The size of the driver manager's cache for users. */
+    /** The size of the memory monitor's cache for users. */
     public static final String N_SIZE_USERS = "size-users";
 
     /** The main system configuration node name. */
@@ -444,7 +450,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The authorization handler. */
     private String m_authorizationHandler;
 
-    /** The settings of the driver manager. */
+    /** The settings of the memory monitor. */
     private CmsCacheSettings m_cacheSettings;
 
     /** The configured OpenCms default users and groups. */
@@ -974,6 +980,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ACLS, "setAclCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PERMISSIONS, "setPermissionCacheSize", 0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_CONTAINERPAGE_OFFLINE,
+            "setContainerPageOfflineSize",
+            0);
+        digester.addCallMethod(
+            "*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_CONTAINERPAGE_ONLINE,
+            "setContainerPageOnlineSize",
+            0);
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_CACHE, "setCacheSettings");
 
         // set the notification time
@@ -1363,6 +1377,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         }
         cacheElement.addElement(N_SIZE_ACLS).setText(Integer.toString(m_cacheSettings.getAclCacheSize()));
         cacheElement.addElement(N_SIZE_PERMISSIONS).setText(Integer.toString(m_cacheSettings.getPermissionCacheSize()));
+        if (m_cacheSettings.getConfiguredContainerPageOfflineSize() > -1) {
+            cacheElement.addElement(N_SIZE_CONTAINERPAGE_OFFLINE).setText(
+                Integer.toString(m_cacheSettings.getConfiguredContainerPageOfflineSize()));
+        }
+        if (m_cacheSettings.getConfiguredContainerPageOnlineSize() > -1) {
+            cacheElement.addElement(N_SIZE_CONTAINERPAGE_ONLINE).setText(
+                Integer.toString(m_cacheSettings.getConfiguredContainerPageOnlineSize()));
+        }
 
         // content notification settings
         if ((m_notificationTime != null) || (m_notificationProject != null)) {
@@ -1454,9 +1476,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * Returns the settings of the driver manager.<p>
+     * Returns the settings of the memory monitor.<p>
      *
-     * @return the settings of the driver manager
+     * @return the settings of the memory monitor
      */
     public CmsCacheSettings getCacheSettings() {
 
@@ -1818,9 +1840,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     }
 
     /**
-     * Sets the settings of the driver manager.<p>
+     * Sets the settings of the memory monitor.<p>
      *
-     * @param settings the settings of the driver manager
+     * @param settings the settings of the memory monitor
      */
     public void setCacheSettings(CmsCacheSettings settings) {
 

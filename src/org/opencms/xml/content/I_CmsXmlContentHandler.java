@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/08/13 10:47:28 $
+ * Version: $Revision: 1.31.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.dom4j.Element;
 
@@ -55,7 +56,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.31.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,6 +113,13 @@ public interface I_CmsXmlContentHandler {
     String getDefault(CmsObject cms, I_CmsXmlContentValue value, Locale locale);
 
     /**
+     * Returns the element formatters.<p>
+     * 
+     * @return the element formatters (as &lt;type,uri&gt; pairs)
+     */
+    Map getFormatters();
+
+    /**
      * Returns the {@link CmsMessages} that are used to resolve localized keys 
      * for the given locale in this content handler.<p>
      * 
@@ -158,6 +166,13 @@ public interface I_CmsXmlContentHandler {
     CmsRelationType getRelationType(I_CmsXmlContentValue value);
 
     /**
+     * Returns the tabs to be displayed in the editor.<p>
+     * 
+     * @return the tabs to be displayed in the editor
+     */
+    List getTabs();
+
+    /**
      * Returns the editor widget that should be used for the given XML content value.<p>
      * 
      * The handler implementations should use the "appinfo" node of the XML content definition
@@ -170,13 +185,6 @@ public interface I_CmsXmlContentHandler {
      * @throws CmsXmlException if something goes wrong
      */
     I_CmsWidget getWidget(I_CmsXmlContentValue value) throws CmsXmlException;
-
-    /**
-     * Returns the tabs to be displayed in the editor.<p>
-     * 
-     * @return the tabs to be displayed in the editor
-     */
-    List getTabs();
 
     /**
      * Initializes this content handler for the given XML content definition by

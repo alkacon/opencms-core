@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2009/06/30 15:08:33 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/08/13 10:47:26 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,16 +61,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_HTMLCONVERTER_NAME_1 = "ERR_INVALID_HTMLCONVERTER_NAME_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1 = "LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_ADD_HTML_CONVERTER_CLASS_2 = "INIT_ADD_HTML_CONVERTER_CLASS_2";
-
-    /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_IMAGE_SCALE_PARAMS_2 = "ERR_INVALID_IMAGE_SCALE_PARAMS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_POINTER_FILE_1 = "ERR_INVALID_POINTER_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_JSON_EXCEPTION_1 = "ERR_JSON_EXCEPTION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOADER_JSP_ACCESS_1 = "ERR_LOADER_JSP_ACCESS_1";
@@ -109,6 +106,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UNKNOWN_RESTYPE_NAME_REQ_1 = "ERR_UNKNOWN_RESTYPE_NAME_REQ_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOADER_CONTAINERPAGE_DEFAULT_DESC_0 = "GUI_LOADER_CONTAINERPAGE_DEFAULT_DESC_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOADER_DUMB_DEFAULT_DESC_0 = "GUI_LOADER_DUMB_DEFAULT_DESC_0";
 
     /** Message constant for key in the resource bundle. */
@@ -131,6 +131,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_FLEX_CACHE_0 = "INIT_ADD_FLEX_CACHE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_ADD_HTML_CONVERTER_CLASS_2 = "INIT_ADD_HTML_CONVERTER_CLASS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_LOADER_2 = "INIT_ADD_LOADER_2";
@@ -202,6 +205,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_COLLECTOR_BAD_ORDER_NUMBER_1 = "LOG_COLLECTOR_BAD_ORDER_NUMBER_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2 = "LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_CONTAINER_PAGE_NOT_FOUND_1 = "LOG_CONTAINER_PAGE_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_CONTENT_COLLECTOR_CLASS_NOT_FOUND_1 = "LOG_CONTENT_COLLECTOR_CLASS_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
@@ -215,6 +224,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_UPDATE_1 = "LOG_ERR_UPDATE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1 = "LOG_HTML_CONVERTER_CLASS_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IGNORING_EXC_1 = "LOG_IGNORING_EXC_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2009/06/04 14:29:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/13 10:47:07 $
+ * Version: $Revision: 1.18.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.18.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,7 +125,7 @@ public class CmsSimpleEditor extends CmsEditor {
     }
 
     /**
-     * Performs the save content ation.<p>
+     * Performs the save content action.<p>
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
@@ -144,7 +145,7 @@ public class CmsSimpleEditor extends CmsEditor {
                     e);
             }
             if (OpenCms.getWorkplaceManager().isXmlContentAutoCorrect()
-                && CmsResourceTypeXmlContent.isXmlContent(editFile)) {
+                && (CmsResourceTypeXmlContent.isXmlContent(editFile) || CmsResourceTypeContainerPage.isContainerPage(editFile))) {
                 // enable auto correction in case of XML content (if configured)
                 getCms().getRequestContext().setAttribute(CmsXmlContent.AUTO_CORRECTION_ATTRIBUTE, Boolean.TRUE);
             }
@@ -173,7 +174,7 @@ public class CmsSimpleEditor extends CmsEditor {
     }
 
     /**
-     * Initializes the editor content when openening the editor for the first time.<p>
+     * Initializes the editor content when opening the editor for the first time.<p>
      */
     protected void initContent() {
 

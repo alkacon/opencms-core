@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheSettings.java,v $
- * Date   : $Date: 2009/06/04 14:29:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/13 10:47:34 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,56 +32,66 @@
 package org.opencms.db;
 
 /**
- * The settings of the OpenCms driver manager.<p>
+ * The settings of the OpenCms memory monitor.<p>
  * 
  * @author Thomas Weckert 
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.2.1 $
  * 
  * @since 6.0.0
  */
 public class CmsCacheSettings {
 
-    /** The size of the driver manager's cache for ACLs. */
+    /** Default size for container page caches. */
+    private static final int DEFAULT_CONTAINER_PAGE_SIZE = 128;
+
+    /** The size of the memory monitor's cache for ACLs. */
     private int m_aclCacheSize;
 
     /** The name of the class to generate cache keys. */
     private String m_cacheKeyGenerator;
 
-    /** The size of the driver manager's cache for groups. */
+    /** The size of the container page offline cache. */
+    private int m_containerPageOfflineSize = -1; // this configuration entry is optional 
+
+    /** The size of the container page online cache. */
+    private int m_containerPageOnlineSize = -1; // this configuration entry is optional 
+
+    /** The size of the memory monitor's cache for groups. */
     private int m_groupCacheSize;
 
-    /** The size of the driver manager's cache for organizational units. */
+    /** The size of the memory monitor's cache for organizational units. */
     private int m_orgUnitCacheSize = -1; // this configuration entry is optional 
 
-    /** The size of the security manager's cache for permission checks. */
+    /** The size of the memory monitor's cache for permission checks. */
     private int m_permissionCacheSize;
 
-    /** The size of the driver manager's cache for projects. */
+    /** The size of the memory monitor's cache for projects. */
     private int m_projectCacheSize;
 
-    /** The size of the driver manager's cache for project resources. */
+    /** The size of the memory monitor's cache for project resources. */
     private int m_projectResourcesCacheSize = -1; // this configuration entry is optional
 
-    /** The size of the driver manager's cache for properties. */
+    /** The size of the memory monitor's cache for properties. */
     private int m_propertyCacheSize;
 
-    /** The size of the driver manager's cache for property lists. */
+    /** The size of the memory monitor's cache for property lists. */
     private int m_propertyListsCacheSize = -1; // this configuration entry is optional
 
-    /** The size of the driver manager's cache for resources. */
+    /** The size of the memory monitor's cache for resources. */
     private int m_resourceCacheSize;
 
-    /** The size of the driver manager's cache for lists of resources. */
+    /** The size of the memory monitor's cache for lists of resources. */
     private int m_resourcelistCacheSize;
 
-    /** The size of the driver manager's cache for roles. */
-    private int m_rolesCacheSize = -1;
+    /** The size of the memory monitor's cache for roles. */
+    private int m_rolesCacheSize = -1; // this configuration entry is optional
 
-    /** The size of the driver manager's cache for users. */
+    /** The size of the memory monitor's cache for users. */
     private int m_userCacheSize;
 
-    /** The size of the driver manager's cache for user/group relations. */
+    /** The size of the memory monitor's cache for user/group relations. */
     private int m_userGroupsCacheSize;
 
     /**
@@ -93,9 +103,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for ACLs.<p>
+     * Returns the size of the memory monitor's cache for ACLs.<p>
      *
-     * @return the size of the driver manager's cache for ACLs
+     * @return the size of the memory monitor's cache for ACLs
      */
     public int getAclCacheSize() {
 
@@ -113,11 +123,35 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for organizational units.<p>
+     * Returns the size of the container page offline cache.<p>
+     * 
+     * Might be <code>-1</code> if configuration entry is missing.<p>
+     *
+     * @return the size of the container page offline cache
+     */
+    public int getConfiguredContainerPageOfflineSize() {
+
+        return m_containerPageOfflineSize;
+    }
+
+    /**
+     * Returns the size of the container page online cache.<p>
+     * 
+     * Might be <code>-1</code> if configuration entry is missing.<p>
+     *
+     * @return the size of the container page online cache
+     */
+    public int getConfiguredContainerPageOnlineSize() {
+
+        return m_containerPageOnlineSize;
+    }
+
+    /**
+     * Returns the size of the memory monitor's cache for organizational units.<p>
      *
      * Might be <code>-1</code> if configuration entry is missing.<p>
      *
-     * @return the size of the driver manager's cache for organizational units
+     * @return the size of the memory monitor's cache for organizational units
      */
     public int getConfiguredOrgUnitCacheSize() {
 
@@ -125,11 +159,11 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for project resources.<p>
+     * Returns the size of the memory monitor's cache for project resources.<p>
      *
      * Might be <code>-1</code> if configuration entry is missing.<p>
      *
-     * @return the size of the driver manager's cache for project resources
+     * @return the size of the memory monitor's cache for project resources
      */
     public int getConfiguredProjectResourcesCacheSize() {
 
@@ -137,11 +171,11 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for property lists.<p>
+     * Returns the size of the memory monitor's cache for property lists.<p>
      *
      * Might be <code>-1</code> if configuration entry is missing.<p>
      *
-     * @return the size of the driver manager's cache for property lists
+     * @return the size of the memory monitor's cache for property lists
      */
     public int getConfiguredPropertyListsCacheSize() {
 
@@ -149,11 +183,11 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for roles.<p>
+     * Returns the size of the memory monitor's cache for roles.<p>
      *
      * Might be <code>-1</code> if configuration entry is missing.<p>
      *
-     * @return the size of the driver manager's cache for roles
+     * @return the size of the memory monitor's cache for roles
      */
     public int getConfiguredRolesCacheSize() {
 
@@ -161,9 +195,35 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for groups.<p>
+     * Returns the size of the container page offline cache.<p>
+     * 
+     * @return the size of the container page offline cache
+     */
+    public int getContainerPageOfflineSize() {
+
+        if (m_containerPageOfflineSize < 0) {
+            return DEFAULT_CONTAINER_PAGE_SIZE;
+        }
+        return m_containerPageOfflineSize;
+    }
+
+    /**
+     * Returns the size of the container page online cache.<p>
+     * 
+     * @return the size of the container page online cache
+     */
+    public int getContainerPageOnlineSize() {
+
+        if (m_containerPageOnlineSize < 0) {
+            return DEFAULT_CONTAINER_PAGE_SIZE;
+        }
+        return m_containerPageOnlineSize;
+    }
+
+    /**
+     * Returns the size of the memory monitor's cache for groups.<p>
      *
-     * @return the size of the driver manager's cache for groups
+     * @return the size of the memory monitor's cache for groups
      */
     public int getGroupCacheSize() {
 
@@ -171,9 +231,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for organizational units.<p>
+     * Returns the size of the memory monitor's cache for organizational units.<p>
      * 
-     * @return the size of the driver manager's cache for organizational units
+     * @return the size of the memory monitor's cache for organizational units
      */
     public int getOrgUnitCacheSize() {
 
@@ -184,9 +244,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the security manager's cache for permission checks.<p>
+     * Returns the size of the memory monitor's cache for permission checks.<p>
      *
-     * @return the size of the security manager's cache for permission checks
+     * @return the size of the memory monitor's cache for permission checks
      */
     public int getPermissionCacheSize() {
 
@@ -194,9 +254,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for projects.<p>
+     * Returns the size of the memory monitor's cache for projects.<p>
      *
-     * @return the size of the driver manager's cache for projects
+     * @return the size of the memory monitor's cache for projects
      */
     public int getProjectCacheSize() {
 
@@ -204,9 +264,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for project resources.<p>
+     * Returns the size of the memory monitor's cache for project resources.<p>
      *
-     * @return the size of the driver manager's cache for project resources
+     * @return the size of the memory monitor's cache for project resources
      */
     public int getProjectResourcesCacheSize() {
 
@@ -217,9 +277,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for properties.<p>
+     * Returns the size of the memory monitor's cache for properties.<p>
      *
-     * @return the size of the driver manager's cache for properties
+     * @return the size of the memory monitor's cache for properties
      */
     public int getPropertyCacheSize() {
 
@@ -227,9 +287,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for property lists.<p>
+     * Returns the size of the memory monitor's cache for property lists.<p>
      *
-     * @return the size of the driver manager's cache for property lists
+     * @return the size of the memory monitor's cache for property lists
      */
     public int getPropertyListsCacheSize() {
 
@@ -240,9 +300,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for resources.<p>
+     * Returns the size of the memory monitor's cache for resources.<p>
      *
-     * @return the size of the driver manager's cache for resources
+     * @return the size of the memory monitor's cache for resources
      */
     public int getResourceCacheSize() {
 
@@ -250,9 +310,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for lists of resources.<p>
+     * Returns the size of the memory monitor's cache for lists of resources.<p>
      *
-     * @return the size of the driver manager's cache for lists of resources
+     * @return the size of the memory monitor's cache for lists of resources
      */
     public int getResourcelistCacheSize() {
 
@@ -260,9 +320,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for roles.<p>
+     * Returns the size of the memory monitor's cache for roles.<p>
      * 
-     * @return the size of the driver manager's cache for roles
+     * @return the size of the memory monitor's cache for roles
      */
     public int getRolesCacheSize() {
 
@@ -273,9 +333,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for users.<p>
+     * Returns the size of the memory monitor's cache for users.<p>
      *
-     * @return the size of the driver manager's cache for users
+     * @return the size of the memory monitor's cache for users
      */
     public int getUserCacheSize() {
 
@@ -283,9 +343,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Returns the size of the driver manager's cache for user/group relations.<p>
+     * Returns the size of the memory monitor's cache for user/group relations.<p>
      *
-     * @return the size of the driver manager's cache for user/group relations
+     * @return the size of the memory monitor's cache for user/group relations
      */
     public int getUserGroupsCacheSize() {
 
@@ -293,9 +353,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for ACLs.<p>
+     * Sets the size of the memory monitor's cache for ACLs.<p>
      *
-     * @param size the size of the driver manager's cache for ACLs
+     * @param size the size of the memory monitor's cache for ACLs
      */
     public void setAclCacheSize(String size) {
 
@@ -313,9 +373,29 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for groups.<p>
+     * Sets the size of the memory monitor's cache for offline container pages.<p>
      *
-     * @param size the size of the driver manager's cache for groups
+     * @param size the size of the memory monitor's cache for offline container pages
+     */
+    public void setContainerPageOfflineSize(String size) {
+
+        m_containerPageOfflineSize = getIntValue(size, 64);
+    }
+
+    /**
+     * Sets the size of the memory monitor's cache for online container pages.<p>
+     *
+     * @param size the size of the memory monitor's cache for online container pages
+     */
+    public void setContainerPageOnlineSize(String size) {
+
+        m_containerPageOnlineSize = getIntValue(size, 128);
+    }
+
+    /**
+     * Sets the size of the memory monitor's cache for groups.<p>
+     *
+     * @param size the size of the memory monitor's cache for groups
      */
     public void setGroupCacheSize(String size) {
 
@@ -323,9 +403,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for organizational units.<p>
+     * Sets the size of the memory monitor's cache for organizational units.<p>
      *
-     * @param size the size of the driver manager's cache for organizational units
+     * @param size the size of the memory monitor's cache for organizational units
      */
     public void setOrgUnitCacheSize(String size) {
 
@@ -333,9 +413,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the security manager's cache for permission checks.<p>
+     * Sets the size of the memory monitor's cache for permission checks.<p>
      *
-     * @param size the size of the security manager's cache for permission checks
+     * @param size the size of the memory monitor's cache for permission checks
      */
     public void setPermissionCacheSize(String size) {
 
@@ -343,9 +423,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for projects.<p>
+     * Sets the size of the memory monitor's cache for projects.<p>
      *
-     * @param size the size of the driver manager's cache for projects
+     * @param size the size of the memory monitor's cache for projects
      */
     public void setProjectCacheSize(String size) {
 
@@ -353,9 +433,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for project resources.<p>
+     * Sets the size of the memory monitor's cache for project resources.<p>
      *
-     * @param size the size of the driver manager's cache for project resources
+     * @param size the size of the memory monitor's cache for project resources
      */
     public void setProjectResourcesCacheSize(String size) {
 
@@ -363,9 +443,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for properties.<p>
+     * Sets the size of the memory monitor's cache for properties.<p>
      *
-     * @param size the size of the driver manager's cache for properties
+     * @param size the size of the memory monitor's cache for properties
      */
     public void setPropertyCacheSize(String size) {
 
@@ -373,9 +453,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for property lists.<p>
+     * Sets the size of the memory monitor's cache for property lists.<p>
      *
-     * @param size the size of the driver manager's cache for property lists
+     * @param size the size of the memory monitor's cache for property lists
      */
     public void setPropertyListsCacheSize(String size) {
 
@@ -383,9 +463,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for resources.<p>
+     * Sets the size of the memory monitor's cache for resources.<p>
      *
-     * @param size the size of the driver manager's cache for resources
+     * @param size the size of the memory monitor's cache for resources
      */
     public void setResourceCacheSize(String size) {
 
@@ -393,9 +473,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for lists of resources.<p>
+     * Sets the size of the memory monitor's cache for lists of resources.<p>
      *
-     * @param size the size of the driver manager's cache for lists of resources
+     * @param size the size of the memory monitor's cache for lists of resources
      */
     public void setResourcelistCacheSize(String size) {
 
@@ -403,9 +483,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for roles.<p>
+     * Sets the size of the memory monitor's cache for roles.<p>
      *
-     * @param size the size of the driver manager's cache for roles
+     * @param size the size of the memory monitor's cache for roles
      */
     public void setRolesCacheSize(String size) {
 
@@ -413,9 +493,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for users.<p>
+     * Sets the size of the memory monitor's cache for users.<p>
      *
-     * @param size the size of the driver manager's cache for users
+     * @param size the size of the memory monitor's cache for users
      */
     public void setUserCacheSize(String size) {
 
@@ -423,9 +503,9 @@ public class CmsCacheSettings {
     }
 
     /**
-     * Sets the size of the driver manager's cache for user/group relations.<p>
+     * Sets the size of the memory monitor's cache for user/group relations.<p>
      *
-     * @param size the size of the driver manager's cache for user/group relations
+     * @param size the size of the memory monitor's cache for user/group relations
      */
     public void setUserGroupsCacheSize(String size) {
 
