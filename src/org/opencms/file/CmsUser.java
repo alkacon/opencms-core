@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2009/08/13 09:59:03 $
+ * Version: $Revision: 1.43.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.43.2.1 $
  * 
  * @since 6.0.0
  * 
@@ -560,6 +560,11 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
      */
     public void setAdditionalInfo(String key, Object value) {
 
+        if (key == null) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_USER_ADDINFO_KEY_NULL_1,
+                getFullName()));
+        }
         m_additionalInfo.put(key, value);
     }
 
