@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2009/06/04 14:33:43 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/13 12:31:29 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0
  */
@@ -284,6 +284,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0 = "GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTYVIEW_HELP_0 = "GUI_PROPERTYVIEW_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PROPERTYVIEW_NAME_0 = "GUI_PROPERTYVIEW_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RENAMEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0 = "GUI_RENAMEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0";
@@ -539,10 +545,8 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_TAGREPLACE_SKIP_REASON_LOCKED_0 = "RPT_TAGREPLACE_SKIP_REASON_LOCKED_0";
-
     /** Message constant for key in the resource bundle. */
     public static final String RPT_TAGREPLACE_SKIP_REASON_LOCKED_1 = "RPT_TAGREPLACE_SKIP_REASON_LOCKED_1";
-
     /** Message constant for key in the resource bundle. */
     public static final String RPT_TAGREPLACE_SKIP_REASON_PROPERTY_0 = "RPT_TAGREPLACE_SKIP_REASON_PROPERTY_0";
 

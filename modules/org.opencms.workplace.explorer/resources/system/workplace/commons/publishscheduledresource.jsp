@@ -5,7 +5,7 @@
 "%><%	
 
 	// initialize the workplace class
-	CmsTimeShiftPublish wp = new CmsTimeShiftPublish(pageContext, request, response);
+	CmsPublishScheduled wp = new CmsPublishScheduled(pageContext, request, response);
 	
 //////////////////// start of switch statement 
 	
@@ -31,35 +31,35 @@ break;
 case CmsDialog.ACTION_LOCKS_CONFIRMED:
 //////////////////// ACTION: show touch dialog (default)
 
-	wp.setParamAction("timeshiftpublish");
+	wp.setParamAction("publishscheduled");
 	
 %><%= wp.htmlStart() %>
 <%@page import="org.opencms.workplace.CmsWorkplace"%>
 <script type="text/javascript">
 <!--
 
-var oldTimeshiftPublishValue;
-setTimeout("checkTimeshiftPublishFields()", 500);
+var oldPublishScheduledValue;
+setTimeout("checkPublishScheduledFields()", 500);
 
-function checkTimeshiftPublishFields(fieldId) {
+function checkPublishScheduledFields(fieldId) {
 	
-	var resetRel = document.getElementById("<%= CmsTimeShiftPublish.PARAM_RESETTIMESHIFTPUBLISH %>");
-	var dateRel = document.getElementById("<%= CmsTimeShiftPublish.PARAM_TIMESHIFTPUBLISHDATE %>");
+	var resetRel = document.getElementById("<%= CmsPublishScheduled.PARAM_RESETPUBLISHSCHEDULED %>");
+	var dateRel = document.getElementById("<%= CmsPublishScheduled.PARAM_PUBLISHSCHEDULEDDATE %>");
 	
-	if (fieldId == "<%= CmsTimeShiftPublish.PARAM_RESETTIMESHIFTPUBLISH %>") {
+	if (fieldId == "<%= CmsPublishScheduled.PARAM_RESETPUBLISHSCHEDULED %>") {
 		if (resetRel.checked) {
 			dateRel.value = "";
 		} else {
-			dateRel.value = document.forms["main"].elements["hiddentimeshiftpublish"].value;
+			dateRel.value = document.forms["main"].elements["hiddenpublishscheduled"].value;
 		}
 	} else {
 		var newDateValue = dateRel.value;
-		if ((newDateValue != oldTimeshiftPublishValue) && newDateValue != "<%= CmsTouch.DEFAULT_DATE_STRING %>") {
+		if ((newDateValue != oldPublishScheduledValue) && newDateValue != "<%= CmsTouch.DEFAULT_DATE_STRING %>") {
 			resetRel.checked = false;
 		} 
 	}
-	oldTimeshiftPublishValue = dateRel.value;
-	setTimeout("checkTimeshiftPublishFields()", 500);
+	oldPublishScheduledValue = dateRel.value;
+	setTimeout("checkPublishScheduledFields()", 500);
 }
 
 //-->
@@ -71,21 +71,21 @@ function checkTimeshiftPublishFields(fieldId) {
     <form name="main" class="nomargin" action="<%= wp.getDialogUri() %>" method="post" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
-<input type="hidden" name="hiddentimeshiftpublish" value="">
+<input type="hidden" name="hiddenpublishscheduled" value="">
 
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 <%@ include file="includes/resourceinfo.txt" %>
 <%= wp.dialogSpacer() %>
-<%= wp.dialogBlockStart(wp.key(Messages.GUI_TIMESHIFT_PUBLISH_0)) %>
+<%= wp.dialogBlockStart(wp.key(Messages.GUI_PUBLISH_SCHEDULED_0)) %>
 <table border="0">
     <tr>
-		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_TIMESHIFT_PUBLISH_0) %>
-		<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= CmsTimeShiftPublish.PARAM_TIMESHIFTPUBLISHDATE %>" id="<%= CmsTimeShiftPublish.PARAM_TIMESHIFTPUBLISHDATE %>" value=""></td>
-		<td>&nbsp;<img src="<%= CmsWorkplace.getSkinUri() %>buttons/calendar.png" id="triggernewtimeshiftpublishdate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
+		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_PUBLISH_SCHEDULED_0) %>
+		<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= CmsPublishScheduled.PARAM_PUBLISHSCHEDULEDDATE %>" id="<%= CmsPublishScheduled.PARAM_PUBLISHSCHEDULEDDATE %>" value=""></td>
+		<td>&nbsp;<img src="<%= CmsWorkplace.getSkinUri() %>buttons/calendar.png" id="triggernewpublishscheduleddate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
     </tr>
     <tr>
-		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_RESET_TIMESHIFT_PUBLISH_0) %>
-		<td colspan="2"><input type="checkbox" name="<%= CmsTimeShiftPublish.PARAM_RESETTIMESHIFTPUBLISH %>" id="<%= CmsTimeShiftPublish.PARAM_RESETTIMESHIFTPUBLISH %>" value="true" onclick="checkTimeshiftPublishFields('<%= CmsTimeShiftPublish.PARAM_RESETTIMESHIFTPUBLISH %>');"></td>
+		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_RESET_PUBLISH_SCHEDULED_0) %>
+		<td colspan="2"><input type="checkbox" name="<%= CmsPublishScheduled.PARAM_RESETPUBLISHSCHEDULED %>" id="<%= CmsPublishScheduled.PARAM_RESETPUBLISHSCHEDULED %>" value="true" onclick="checkPublishScheduledFields'<%= CmsPublishScheduled.PARAM_RESETPUBLISHSCHEDULED %>');"></td>
     </tr>
 </table>
 <%= wp.dialogBlockEnd() %>
@@ -109,7 +109,7 @@ function checkTimeshiftPublishFields(fieldId) {
      */
 
 %>
-<%= CmsCalendarWidget.calendarInit(wp.getMessages(), CmsTimeShiftPublish.PARAM_TIMESHIFTPUBLISHDATE, "triggernewtimeshiftpublishdate", "cR", false, false, true, null, true) %>
+<%= CmsCalendarWidget.calendarInit(wp.getMessages(), CmsPublishScheduled.PARAM_PUBLISHSCHEDULEDDATE, "triggernewpublishscheduleddate", "cR", false, false, true, null, true) %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
 <% 

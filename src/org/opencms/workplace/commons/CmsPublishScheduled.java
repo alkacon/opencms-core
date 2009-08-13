@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsTimeShiftPublish.java,v $
- * Date   : $Date: 2009/07/23 10:44:37 $
- * Version: $Revision: 1.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishScheduled.java,v $
+ * Date   : $Date: 2009/08/13 12:30:16 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.CmsScheduledJobInfo;
-import org.opencms.scheduler.jobs.CmsTimeShiftPublishJob;
+import org.opencms.scheduler.jobs.CmsPublishScheduledJob;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
@@ -62,43 +62,43 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Provides methods for the resource timeshift publishing dialog.<p> 
+ * Provides methods for the publish scheduled dialog.<p> 
  * 
  * The following files use this class:
  * <ul>
- * <li>/commons/timeshiftpublish.jsp
+ * <li>/commons/publishscheduled.jsp
  * </ul>
  * <p>
  *
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.1 $ 
  * 
- * @since 7.5.0
+ * @since 7.5.1
  */
-public class CmsTimeShiftPublish extends CmsDialog {
+public class CmsPublishScheduled extends CmsDialog {
 
     /** The dialog type. */
-    public static final String DIALOG_TYPE = "timeshiftpublish";
+    public static final String DIALOG_TYPE = "publishscheduled";
 
     /** Request parameter name for the activation of the notification. */
     public static final String PARAM_ENABLE_NOTIFICATION = "enablenotification";
 
     /** Request parameter name for the reset publish date. */
-    public static final String PARAM_RESETTIMESHIFTPUBLISH = "resettimeshiftpublish";
+    public static final String PARAM_RESETPUBLISHSCHEDULED = "resetpublishscheduled";
 
     /** Request parameter name for the publish date. */
-    public static final String PARAM_TIMESHIFTPUBLISHDATE = "timeshiftpublishdate";
+    public static final String PARAM_PUBLISHSCHEDULEDDATE = "publishscheduleddate";
 
-    /** The parameter for time shift publish date. */
-    private String m_paramTimeshiftpublishdate;
+    /** The parameter for publish scheduled date. */
+    private String m_paramPublishscheduleddate;
 
     /**
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsTimeShiftPublish(CmsJspActionElement jsp) {
+    public CmsPublishScheduled(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -110,7 +110,7 @@ public class CmsTimeShiftPublish extends CmsDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsTimeShiftPublish(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsPublishScheduled(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -137,7 +137,7 @@ public class CmsTimeShiftPublish extends CmsDialog {
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
 
         try {
-            // prepare the time shift publish for the resource
+            // prepare the publish scheduled resource
             performDialogOperation();
             // close the dialog
             actionCloseDialog();
@@ -148,13 +148,13 @@ public class CmsTimeShiftPublish extends CmsDialog {
     }
 
     /**
-     * Returns the value of the time shift publish data.<p>
+     * Returns the value of the publish scheduled date.<p>
      * 
-     * @return the value of the time shift publish data
+     * @return the value of the publish scheduled date
      */
-    public String getParamTimeshiftpublishdate() {
+    public String getParamPublishscheduleddate() {
 
-        return m_paramTimeshiftpublishdate;
+        return m_paramPublishscheduleddate;
     }
 
     /**
@@ -172,11 +172,11 @@ public class CmsTimeShiftPublish extends CmsDialog {
     /**
      * Sets the value of the reset expire parameter.<p>
      * 
-     * @param paramTimeshiftpublishdate the value of the time shift publish date
+     * @param paramPublishscheduleddate the value of the publish scheduled date
      */
-    public void setParamTimeshiftpublishdate(String paramTimeshiftpublishdate) {
+    public void setParamPublishscheduleddate(String paramPublishscheduleddate) {
 
-        m_paramTimeshiftpublishdate = paramTimeshiftpublishdate;
+        m_paramPublishscheduleddate = paramPublishscheduleddate;
     }
 
     /**
@@ -224,7 +224,7 @@ public class CmsTimeShiftPublish extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for dialog
-            setDialogTitle(Messages.GUI_TIMESHIFT_PUBLISH_SETTINGS_1);
+            setDialogTitle(Messages.GUI_PUBLISH_SCHEDULED_SETTINGS_1);
         }
     }
 
@@ -238,9 +238,9 @@ public class CmsTimeShiftPublish extends CmsDialog {
      */
     protected boolean performDialogOperation() throws CmsException, ParseException {
 
-        // get the request parameters for resource and time shift publish date
+        // get the request parameters for resource and publish scheduled date
         String resource = getParamResource();
-        String timeshiftPublishDate = getParamTimeshiftpublishdate();
+        String publishScheduledDate = getParamPublishscheduleddate();
         String userName = getCms().getRequestContext().currentUser().getName();
 
         // get the java date format
@@ -248,12 +248,12 @@ public class CmsTimeShiftPublish extends CmsDialog {
             DateFormat.SHORT,
             DateFormat.SHORT,
             getCms().getRequestContext().getLocale());
-        Date date = dateFormat.parse(timeshiftPublishDate);
+        Date date = dateFormat.parse(publishScheduledDate);
 
         // check if the selected date is in the future
         if (date.getTime() < new Date().getTime()) {
             // the selected date in in the past, this is not possible
-            throw new CmsException(Messages.get().container(Messages.ERR_SHIFTTIME_PUBLISH_DATE_IN_PAST_1, date));
+            throw new CmsException(Messages.get().container(Messages.ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1, date));
         }
 
         // make copies from the admin cmsobject and the user cmsobject
@@ -267,11 +267,11 @@ public class CmsTimeShiftPublish extends CmsDialog {
         cmsAdmin.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
 
         // create the temporary project, which is deleted after publishing
-        String projectName = "timeshiftpublish_" + date + "_" + resource;
+        String projectName = "publishscheduled_" + date + "_" + resource;
         projectName = projectName.replace("/", "_");
         CmsProject tmpProject = cmsAdmin.createProject(
             projectName,
-            "Timeshift publish project created for user "
+            "Publish scheduled project created for user "
                 + cms.getRequestContext().currentUser().getName()
                 + " for resource "
                 + resource
@@ -310,7 +310,7 @@ public class CmsTimeShiftPublish extends CmsDialog {
         String jobName = projectName;
         // set the job parameters
         job.setJobName(jobName);
-        job.setClassName("org.opencms.scheduler.jobs.CmsTimeShiftPublishJob");
+        job.setClassName("org.opencms.scheduler.jobs.CmsPublishScheduledJob");
         // create the cron expression
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -339,11 +339,11 @@ public class CmsTimeShiftPublish extends CmsDialog {
         // create the job schedule parameter
         SortedMap params = new TreeMap();
         // the user to send mail to
-        params.put(CmsTimeShiftPublishJob.PARAM_USER, userName);
+        params.put(CmsPublishScheduledJob.PARAM_USER, userName);
         // the job name
-        params.put(CmsTimeShiftPublishJob.PARAM_JOBNAME, jobName);
+        params.put(CmsPublishScheduledJob.PARAM_JOBNAME, jobName);
         // the link check
-        params.put(CmsTimeShiftPublishJob.PARAM_LINKCHECK, "true");
+        params.put(CmsPublishScheduledJob.PARAM_LINKCHECK, "true");
         // add the job schedule parameter
         job.setParameters(params);
         // add the context info to the scheduled job

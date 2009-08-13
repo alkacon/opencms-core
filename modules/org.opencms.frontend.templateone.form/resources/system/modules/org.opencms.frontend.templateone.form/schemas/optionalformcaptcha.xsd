@@ -22,7 +22,7 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.frontend.templateone.form.workplace"/>
 			<layouts>
-				<layout element="Preset" widget="org.opencms.frontend.templateone.form.CmsSelectWidgetXmlcontentType" configuration="folder=/system/workplace/admin/captcha/|resourcetypeName=xmlcontent|displayOptionMacro=%(property.Title)|sortMacro=%(property.collector.priority)"/>
+				<layout element="Preset" widget="org.opencms.frontend.templateone.form.CmsSelectWidgetXmlcontentType" configuration="folder=/system/workplace/admin/captcha/|resourcetypeName=xmlcontent|displayOptionMacro=%(property.Title)|sortMacro=%(property.collector.priority)|ignoreLocaleMatch=true"/>
 			</layouts>
 			<defaults>
 				<default element="FieldLabel" value="${key.GUI_FORMCAPTCHA_LABEL_DEFAULT_0}" />

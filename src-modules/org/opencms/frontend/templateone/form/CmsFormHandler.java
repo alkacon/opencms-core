@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2009/06/04 14:33:37 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/08/13 12:31:29 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,9 +39,9 @@ import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
+import org.opencms.util.CmsByteArrayDataSource;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.CmsByteArrayDataSource;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,6 +86,9 @@ public class CmsFormHandler extends CmsJspActionElement {
     /** Request parameter value for the form action parameter: form submitted. */
     public static final String ACTION_SUBMIT = "submit";
 
+    /** Name of the file item session attribute. */
+    public static final String ATTRIBUTE_FILEITEMS = "fileitems";
+
     /** Form error: mandatory field not filled out. */
     public static final String ERROR_MANDATORY = "mandatory";
 
@@ -94,9 +97,6 @@ public class CmsFormHandler extends CmsJspActionElement {
 
     /** Request parameter name for the hidden form action parameter to determine the action. */
     public static final String PARAM_FORMACTION = "formaction";
-
-    /** Name of the file item session attribute. */
-    public static final String ATTRIBUTE_FILEITEMS = "fileitems";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormHandler.class);
@@ -115,17 +115,17 @@ public class CmsFormHandler extends CmsJspActionElement {
     /** Flag indicating if the form is displayed for the first time. */
     private boolean m_initial;
 
-    /** The localized messages for the form handler. */
-    private CmsMessages m_messages;
-
     /** Boolean indicating if the form is validated correctly. */
     private Boolean m_isValidatedCorrect;
 
-    /** The map of request parameters. */
-    private Map m_parameterMap;
+    /** The localized messages for the form handler. */
+    private CmsMessages m_messages;
 
     /** The multipart file items. */
     private List m_mulipartFileItems;
+
+    /** The map of request parameters. */
+    private Map m_parameterMap;
 
     /**
      * Constructor, creates the necessary form configuration objects.<p>
@@ -282,6 +282,16 @@ public class CmsFormHandler extends CmsJspActionElement {
         return m_messages;
     }
 
+    /** 
+     * Returns the map of request parameters.<p>
+     * 
+     * @return the map of request parameters
+     */
+    public Map getParameterMap() {
+
+        return m_parameterMap;
+    }
+
     /**
      * Returns if the submitted values contain validation errors.<p>
      * 
@@ -353,16 +363,6 @@ public class CmsFormHandler extends CmsJspActionElement {
         return m_initial;
     }
 
-    /** 
-     * Returns the map of request parameters.<p>
-     * 
-     * @return the map of request parameters
-     */
-    public Map getParameterMap() {
-
-        return m_parameterMap;
-    }
-
     /**
      * Sends the confirmation mail with the form data to the specified email address.<p>
      * 
@@ -432,8 +432,12 @@ public class CmsFormHandler extends CmsJspActionElement {
                     theMail.setFrom(getFormConfiguration().getMailFrom());
                 }
                 theMail.setTo(createInternetAddresses(getFormConfiguration().getMailTo()));
-                theMail.setCc(createInternetAddresses(getFormConfiguration().getMailCC()));
-                theMail.setBcc(createInternetAddresses(getFormConfiguration().getMailBCC()));
+                if (CmsStringUtil.isNotEmpty(getFormConfiguration().getMailCC())) {
+                    theMail.setCc(createInternetAddresses(getFormConfiguration().getMailCC()));
+                }
+                if (CmsStringUtil.isNotEmpty(getFormConfiguration().getMailBCC())) {
+                    theMail.setBcc(createInternetAddresses(getFormConfiguration().getMailBCC()));
+                }
                 theMail.setSubject(getFormConfiguration().getMailSubjectPrefix()
                     + getFormConfiguration().getMailSubject());
                 theMail.setHtmlMsg(createMailTextFromFields(true, false));
@@ -484,22 +488,6 @@ public class CmsFormHandler extends CmsJspActionElement {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Returns the request parameter with the specified name.<p>
-     * 
-     * @param parameter the parameter to return
-     * 
-     * @return the parameter value
-     */
-    private String getParameter(String parameter) {
-
-        try {
-            return ((String[])m_parameterMap.get(parameter))[0];
-        } catch (NullPointerException e) {
-            return "";
-        }
     }
 
     /**
@@ -804,6 +792,22 @@ public class CmsFormHandler extends CmsJspActionElement {
     protected void setMessages(CmsMessages messages) {
 
         m_messages = messages;
+    }
+
+    /**
+     * Returns the request parameter with the specified name.<p>
+     * 
+     * @param parameter the parameter to return
+     * 
+     * @return the parameter value
+     */
+    private String getParameter(String parameter) {
+
+        try {
+            return ((String[])m_parameterMap.get(parameter))[0];
+        } catch (NullPointerException e) {
+            return "";
+        }
     }
 
 }

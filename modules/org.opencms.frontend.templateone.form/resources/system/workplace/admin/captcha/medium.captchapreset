@@ -4,7 +4,7 @@
   <CaptchaPreset language="en">
     <Name><![CDATA[Medium]]></Name>
     <ImageWidth><![CDATA[200]]></ImageWidth>
-    <ImageHeight><![CDATA[60]]></ImageHeight>
+    <ImageHeight><![CDATA[100]]></ImageHeight>
     <MinPhraseLength><![CDATA[5]]></MinPhraseLength>
     <MaxPhraseLength><![CDATA[7]]></MaxPhraseLength>
     <MinFontSize><![CDATA[20]]></MinFontSize>

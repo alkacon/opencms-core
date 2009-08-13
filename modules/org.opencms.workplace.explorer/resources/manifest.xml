@@ -3,7 +3,7 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>7.0.0</opencms_version>
+		<opencms_version>7.5.1</opencms_version>
 		<createdate>Wed, 1 Oct 2008 10:48:00 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Workplace Explorer.</p>
 <p>Install this module if you want a GUI to work on the OpenCms VFS.</p>
 <p><i>(c) 2008 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.5.1</version>
+		<version>7.5.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -46,6 +46,7 @@
 			<resource uri="/system/workplace/commons/lockchange_standard.jsp"/>
 			<resource uri="/system/workplace/commons/locks.jsp"/>
 			<resource uri="/system/workplace/commons/move.jsp"/>
+			<resource uri="/system/workplace/commons/property_multifile.jsp"/>			
 			<resource uri="/system/workplace/commons/newcsvfile_upload.jsp"/>
 			<resource uri="/system/workplace/commons/newresource.jsp"/>
 			<resource uri="/system/workplace/commons/newresource_folder.jsp"/>
@@ -74,13 +75,14 @@
 			<resource uri="/system/workplace/commons/secure.jsp"/>
 			<resource uri="/system/workplace/commons/show_deleted.jsp"/>
 			<resource uri="/system/workplace/commons/synchronize.jsp"/>
-			<resource uri="/system/workplace/commons/timeshiftpublishresource.jsp"/>
+			<resource uri="/system/workplace/commons/publishscheduledresource.jsp"/>
 			<resource uri="/system/workplace/commons/touch.jsp"/>
 			<resource uri="/system/workplace/commons/undelete.jsp"/>
 			<resource uri="/system/workplace/commons/undochanges.jsp"/>
 			<resource uri="/system/workplace/commons/unlock.jsp"/>
 			<resource uri="/system/workplace/commons/unlock_standard.jsp"/>
 			<resource uri="/system/workplace/commons/user_selection.jsp"/>
+			<resource uri="/system/workplace/commons/property_multifile.jsp"/>
 			<resource uri="/system/workplace/resources/buttons/back.png"/>
 			<resource uri="/system/workplace/resources/buttons/ex_search.png"/>
 			<resource uri="/system/workplace/resources/buttons/folder.png"/>
@@ -2099,6 +2101,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/property_multifile.jsp</source>
+			<destination>system/workplace/commons/property_multifile.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>b08f577c-4f1e-11dd-9317-b37cfc8f9e4e</uuidstructure>
+			<uuidresource>b08f577d-4f1e-11dd-9317-b37cfc8f9e4e</uuidresource>
+			<datelastmodified>Tue, 02 Sep 2008 08:40:55 GMT</datelastmodified>
+			<userlastmodified>alex</userlastmodified>
+			<datecreated>Fri, 11 Jul 2008 07:55:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Edit multiple properties]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/newcsvfile_upload.jsp</source>
 			<destination>system/workplace/commons/newcsvfile_upload.jsp</destination>
 			<type>jsp</type>
@@ -2778,8 +2804,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/commons/timeshiftpublishresource.jsp</source>
-			<destination>system/workplace/commons/timeshiftpublishresource.jsp</destination>
+			<source>system/workplace/commons/publishscheduledresource.jsp</source>
+			<destination>system/workplace/commons/publishscheduledresource.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>1d0df93b-72dc-11de-9f05-4b94bac55a49</uuidstructure>
 			<uuidresource>1d0df93c-72dc-11de-9f05-4b94bac55a49</uuidresource>
@@ -2791,7 +2817,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Dialog - Timeshift publish resource]]></value>
+					<value><![CDATA[Dialog - Publish scheduled resource]]></value>
 				</property>
 				<property>
 					<name>export</name>

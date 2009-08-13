@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaField.java,v $
- * Date   : $Date: 2009/06/04 14:33:37 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/13 12:31:29 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 
 import com.octo.captcha.CaptchaException;
+import com.octo.captcha.service.CaptchaServiceException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
 /**
@@ -59,7 +60,7 @@ import com.octo.captcha.service.image.ImageCaptchaService;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class CmsCaptchaField extends A_CmsField {
 
@@ -208,11 +209,17 @@ public class CmsCaptchaField extends A_CmsField {
 
         if (CmsStringUtil.isNotEmpty(captchaPhrase)) {
 
-            ImageCaptchaService captchaService = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(
-                m_captchaSettings,
-                jsp.getCmsObject());
-            if (captchaService != null) {
-                result = captchaService.validateResponseForID(sessionId, captchaPhrase).booleanValue();
+            try {
+                ImageCaptchaService captchaService = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(
+                    m_captchaSettings,
+                    jsp.getCmsObject());
+                if (captchaService != null) {
+                    result = captchaService.validateResponseForID(sessionId, captchaPhrase).booleanValue();
+                }
+            } catch (CaptchaServiceException cse) {
+                // most often this will be 
+                // "com.octo.captcha.service.CaptchaServiceException: Invalid ID, could not validate unexisting or already validated captcha"
+                // in case someone hits the back button and submits again 
             }
         }
 
@@ -252,7 +259,7 @@ public class CmsCaptchaField extends A_CmsField {
                 m_captchaSettings.setImageHeight(m_captchaSettings.getImageHeight() + 40);
                 m_captchaSettings.setImageWidth(m_captchaSettings.getImageWidth() + 80);
             }
-        } while (captchaImage == null && maxTries > 0);
+        } while ((captchaImage == null) && (maxTries > 0));
         try {
 
             ImageIO.write(captchaImage, "jpg", captchaImageOutput);
