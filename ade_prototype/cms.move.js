@@ -79,11 +79,6 @@
       $('#' + sortable.cmsStartContainerId).closest('.cms-menu').css('display', 'none');
       sortable.cmsOver = false;
       
-      
-      var loadedItem = cms.data.elements['item_001'];
-      //      if (sortable.cmsStartContainerId == 'cms-search-list') 
-      //         loadDynamicElement(sortable, loadedItem);
-   
    }
    
    
@@ -135,7 +130,7 @@
       ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
       ui.self.cmsResource_id = ui.self.currentItem.attr('rel');
       if (!(ui.self.cmsResource_id && cms.data.elements[ui.self.cmsResource_id])) {
-         $(sortlist).sortable('cancel');
+         $(cms.util.getContainerSelector()).sortable('cancel');
          return;
       }
       
@@ -290,6 +285,7 @@
       }
       updateContainer(startContainer);
       updateContainer(endContainer);
+      if (endContainer != cms.html.favoriteListId) cms.toolbar.setPageChanged(true);
    }
    
    
@@ -455,6 +451,13 @@
       sortable.currentItem = sortable.cmsHelpers[id];
       refreshHelperPositions(sortable);
    };
+   
+   var setHelperObj = cms.move.setHelperObj = function(sortable, helper) {
+       sortable.helper.css('display', 'none');
+       sortable.helper = helper;
+       sortable.currentItem = helper;
+       refreshHelperPosition(sortable);
+   }
    
    var refreshHelperPositions = cms.move.refreshHelperPositions = function(sortable) {
       sortable._cacheHelperProportions();
