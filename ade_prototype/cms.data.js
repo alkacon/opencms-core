@@ -139,7 +139,7 @@
                alert(jsonData.error);
                return;
             }
-            afterPost();
+            if ($.isFunction(afterPost)) afterPost();
          }
       });
    }
