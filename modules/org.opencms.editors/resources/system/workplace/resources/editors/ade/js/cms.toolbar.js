@@ -125,7 +125,7 @@
                 var editorLink=cms.data.EDITOR_URL+'?resource='+cms.data.elements[elemId].file+'&amp;directedit=true&amp;elementlanguage='+cms.data.locale+'&amp;backlink='+cms.data.BACKLINK_URL+'&amp;redirect=true';
                 var editorFrame='<iframe style="border:none; width:100%; height:'+iFrameHeight+'px;" name="cmsAdvancedDirectEditor" src="'+editorLink+'"></iframe>';
                 var editorDialog=$('#cms-editor')
-                if (!editorDialog.lenght){
+                if (!editorDialog.length){
                     editorDialog=$('<div id="cms-editor"  rel="'+elemId+'"></div>').appendTo(document.body);
                 }else{
                     editorDialog.empty().attr('rel', elemId);
