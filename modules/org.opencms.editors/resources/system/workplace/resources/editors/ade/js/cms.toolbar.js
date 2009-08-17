@@ -123,15 +123,15 @@
                 var editorFrame='<iframe style="border:none;" width="100%" height="100%" name="cmsAdvancedDirectEditor" src="'+editorLink+'"></iframe>';
                 var editorDialog=$('#cms-editor')
                 if (!editorDialog.lenght){
-                    editorDialog=$('<div id="cms-editor"></div>').appendTo(document.body);
+                    editorDialog=$('<div id="cms-editor"  rel="'+elemId+'"></div>').appendTo(document.body);
                 }else{
-                    editorDialog.empty();
+                    editorDialog.empty().attr('rel', elemId);
                 }
                 
                 var dialogWidth=self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
                 dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
                 var dialogHeight=self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
-                editorDialog.append('<div class="cms-editor-subtitle>'+cms.data.elements[elemId].file+'</div>').append('<div>'+editorFrame+'</div>');
+                editorDialog.append('<div class="cms-editor-subtitle">'+cms.data.elements[elemId].file+'</div>').append('<div>'+editorFrame+'</div>');
                 editorDialog.dialog( {
     			width :dialogWidth-50,
                 height : dialogHeight - 60,
