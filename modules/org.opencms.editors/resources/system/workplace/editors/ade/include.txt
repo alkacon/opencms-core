@@ -9,7 +9,7 @@
     <script type="text/javascript">
       var cms = {
         data:{
-          "BACKLINK_URL"   : "%(backlinkUri)",
+          "BACKLINK_URL"   : "/system/workplace/editors/ade/backlink.jsp",
           "EDITOR_URL"     : "%(editorUri)",
           "SERVER_GET_URL" : "%(serverGetUri)",
           "SERVER_SET_URL" : "%(serverSetUri)",
