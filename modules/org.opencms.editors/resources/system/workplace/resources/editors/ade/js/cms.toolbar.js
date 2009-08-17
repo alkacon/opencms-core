@@ -118,9 +118,12 @@
     var openEditDialog = cms.toolbar.openEditDialog = function(elemId){
         if (elemId && cms.data.elements[elemId]) {
             if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
-                
+                var dialogWidth=self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
+                dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
+                var dialogHeight=self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
+                var iFrameHeight=dialogHeight - 126;
                 var editorLink=cms.data.EDITOR_URL+'?resource='+cms.data.elements[elemId].file+'&amp;directedit=true&amp;elementlanguage='+cms.data.locale+'&amp;backlink='+cms.data.BACKLINK_URL+'&amp;redirect=true';
-                var editorFrame='<iframe style="border:none;" width="100%" height="100%" name="cmsAdvancedDirectEditor" src="'+editorLink+'"></iframe>';
+                var editorFrame='<iframe style="border:none; width:100%; height:'+iFrameHeight+'px;" name="cmsAdvancedDirectEditor" src="'+editorLink+'"></iframe>';
                 var editorDialog=$('#cms-editor')
                 if (!editorDialog.lenght){
                     editorDialog=$('<div id="cms-editor"  rel="'+elemId+'"></div>').appendTo(document.body);
@@ -128,19 +131,27 @@
                     editorDialog.empty().attr('rel', elemId);
                 }
                 
-                var dialogWidth=self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
-                dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
-                var dialogHeight=self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
-                editorDialog.append('<div class="cms-editor-subtitle">'+cms.data.elements[elemId].file+'</div>').append('<div>'+editorFrame+'</div>');
+                
+                editorDialog.append('<div class="cms-editor-subtitle">Resource: '+cms.data.elements[elemId].file+'</div>').append(editorFrame);
                 editorDialog.dialog( {
     			width :dialogWidth-50,
                 height : dialogHeight - 60,
     			title :"Editor",
     			modal :true,
     			autoOpen :true,
+                closeOnEscape : false,
     			draggable :true,
     			resizable :true,
+                resize : function(event, ui){
+                    $('#cms-editor iframe').height(ui.size.height-70);
+                },
+                resizeStop : function(event, ui){
+                    $('#cms-editor iframe').height(ui.size.height-70);
+                },
     			position : [ 'center', -20 ],
+                open : function(event, ui){
+                    $('a.ui-dialog-titlebar-close').hide();
+                },
     			close : function() {
     				$('button[name="Edit"]').removeClass('ui-state-active');
                     editorDialog.empty().dialog('destroy');
