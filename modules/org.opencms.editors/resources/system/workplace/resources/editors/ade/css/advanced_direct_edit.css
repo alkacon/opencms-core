@@ -191,7 +191,7 @@ div.cms-button {
     background-image: url(images/24x24/ade_save.png)
 }
 
-.ui-state-hover span.cms-icon-edit {
+.ui-state-active span.cms-icon-edit {
     background-image: url(images/24x24/ade_edit.png)
 }
 

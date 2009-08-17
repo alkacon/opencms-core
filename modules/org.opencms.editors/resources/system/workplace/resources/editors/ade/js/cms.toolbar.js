@@ -124,7 +124,7 @@
                 var iFrameHeight=dialogHeight - 126;
                 var editorLink=cms.data.EDITOR_URL+'?resource='+cms.data.elements[elemId].file+'&amp;directedit=true&amp;elementlanguage='+cms.data.locale+'&amp;backlink='+cms.data.BACKLINK_URL+'&amp;redirect=true';
                 var editorFrame='<iframe style="border:none; width:100%; height:'+iFrameHeight+'px;" name="cmsAdvancedDirectEditor" src="'+editorLink+'"></iframe>';
-                var editorDialog=$('#cms-editor')
+                var editorDialog=$('#cms-editor');
                 if (!editorDialog.length){
                     editorDialog=$('<div id="cms-editor"  rel="'+elemId+'"></div>').appendTo(document.body);
                 }else{
@@ -153,7 +153,7 @@
                     $('a.ui-dialog-titlebar-close').hide();
                 },
     			close : function() {
-    				$('button[name="Edit"]').removeClass('ui-state-active');
+    				$('#toolbar button.ui-state-active[name!="Edit"]').trigger('click');
                     editorDialog.empty().dialog('destroy');
     			},
     			zIndex :10000
