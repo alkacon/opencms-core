@@ -1,5 +1,5 @@
 (function(cms) {
-   cms.toolbar.favorites = ['item_010', 'item_011', 'item_012'];
+   cms.toolbar.favorites = [];
    cms.toolbar.recent = [];
    cms.toolbar.recentSize = 3;
    var oldBodyMarginTop = 0;
@@ -96,61 +96,61 @@
          // enabling edit mode
          $(sortitems).each(function() {
             var elem = $(this).css('position', 'relative');
-                var elemId=elem.attr('rel');
-                if (elemId && cms.data.elements[elemId]){
-                    if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked){
+            var elemId = elem.attr('rel');
+            if (elemId && cms.data.elements[elemId]) {
+               if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
                         $('<a class="cms-handle cms-edit"></a>')
                             .appendTo(elem)
                             .hover(function(){cms.move.hoverIn(elem, 2)}, cms.move.hoverOut)
                             .click(function() {
-                                openEditDialog(elemId);
-                            });
-                    }else{
-                    // Append edit-locked-handle
-                    }
-                }
+                     openEditDialog(elemId);
+                  });
+               } else {
+                              // Append edit-locked-handle
+               }
+            }
             
          });
          button.addClass('ui-state-active');
       }
    };
    
-    var openEditDialog = cms.toolbar.openEditDialog = function(elemId){
-        if (elemId && cms.data.elements[elemId]) {
-            if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
-                
-                var editorLink=cms.data.EDITOR_URL+'?resource='+cms.data.elements[elemId].file+'&amp;directedit=true&amp;elementlanguage='+cms.data.locale+'&amp;backlink='+cms.data.BACKLINK_URL+'&amp;redirect=true';
-                var editorFrame='<iframe style="border:none;" width="100%" height="100%" name="cmsAdvancedDirectEditor" src="'+editorLink+'"></iframe>';
-                var editorDialog=$('#cms-editor')
-                if (!editorDialog.lenght){
-                    editorDialog=$('<div id="cms-editor"></div>').appendTo(document.body);
-                }else{
-                    editorDialog.empty();
-                }
-                
-                var dialogWidth=self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
-                dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
-                var dialogHeight=self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
-                editorDialog.append('<div class="cms-editor-subtitle>'+cms.data.elements[elemId].file+'</div>').append('<div>'+editorFrame+'</div>');
-                editorDialog.dialog( {
-    			width :dialogWidth-50,
-                height : dialogHeight - 60,
-    			title :"Editor",
-    			modal :true,
-    			autoOpen :true,
-    			draggable :true,
-    			resizable :true,
-    			position : [ 'center', -20 ],
-    			close : function() {
-    				$('button[name="Edit"]').removeClass('ui-state-active');
-                    editorDialog.empty().dialog('destroy');
-    			},
-    			zIndex :10000
-    		});
+   var openEditDialog = cms.toolbar.openEditDialog = function(elemId) {
+      if (elemId && cms.data.elements[elemId]) {
+         if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
+         
+            var editorLink = cms.data.EDITOR_URL + '?resource=' + cms.data.elements[elemId].file + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
+            var editorFrame = '<iframe style="border:none;" width="100%" height="100%" name="cmsAdvancedDirectEditor" src="' + editorLink + '"></iframe>';
+            var editorDialog = $('#cms-editor')
+            if (!editorDialog.lenght) {
+               editorDialog = $('<div id="cms-editor"></div>').appendTo(document.body);
+            } else {
+               editorDialog.empty();
             }
-        }
-    }
-
+            
+            var dialogWidth = self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
+            dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
+            var dialogHeight = self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
+            editorDialog.append('<div class="cms-editor-subtitle>' + cms.data.elements[elemId].file + '</div>').append('<div>' + editorFrame + '</div>');
+            editorDialog.dialog({
+               width: dialogWidth - 50,
+               height: dialogHeight - 60,
+               title: "Editor",
+               modal: true,
+               autoOpen: true,
+               draggable: true,
+               resizable: true,
+               position: ['center', -20],
+               close: function() {
+                  $('button[name="Edit"]').removeClass('ui-state-active');
+                  editorDialog.empty().dialog('destroy');
+               },
+               zIndex: 10000
+            });
+         }
+      }
+   }
+   
    var removeToolbar = cms.toolbar.removeToolbar = function() {
       $('#toolbar').remove();
       $(document.body).css('margin-top', oldBodyMarginTop + 'px');
@@ -184,7 +184,7 @@
       return false;
    };
    
-      
+   
    var addToolbar = cms.toolbar.addToolbar = function() {
       $(window).unload(onUnload);
       initSaveDialog();
@@ -196,7 +196,7 @@
       bodyEl.append(cms.html.favoriteDialog);
       
       bodyEl.append(cms.html.createMenu(cms.html.recentMenuId));
-		resetFavList();
+      resetFavList();
       bodyEl.append('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>');
       $('#show-button').click(toggleToolbar);
       $('button[name="Edit"]').click(toggleEdit);
@@ -223,24 +223,6 @@
       
       initFavDialog();
       
-        
-        false && $('button[name="Save"]').click(function(){
-            $(cms.util.getContainerSelector()).filter(':has(div.cms-subcontainer-start)').each(function(){
-                var contElem=$(this);
-                contElem.children('div.cms-subcontainer-start').each(function(){
-                    var subCont=$('<div class="cms-subcontainer"></div>');
-                    var contStartElem=$(this);
-                    subCont.attr('rel', contStartElem.attr('rel'));
-                    var currentElem=contStartElem.next();
-                    while (currentElem && !currentElem.hasClass('cms-subcontainer-end')){
-                        subCont.append(currentElem.clone());
-                        currentElem.css('display','none')
-                        currentElem=currentElem.next();
-                    }
-                    subCont.insertBefore(contStartElem);
-                });
-            });
-        });
    };
    
    var toggleMove = cms.toolbar.toggleMove = function(el) {
@@ -254,37 +236,30 @@
          list.css('display', 'none');
          list.get(0).style.visibility = '';
          $('#' + cms.html.favoriteListId).get(0).style.height = '';
-			resetFavList();
+         resetFavList();
          $('a.cms-move').remove();
          button.removeClass('ui-state-active');
       } else {
          $('button.ui-state-active').trigger('click');
          // enabling move mode
-			$(cms.util.getContainerSelector()).children('*:visible').each(
-					function() {
+         $(cms.util.getContainerSelector()).children('*:visible').each(function() {
             var elem = $(this).css('position', 'relative');
-                        if (elem.hasClass('cms-subcontainer') && (/left|right/).test(elem.css('float'))) {
-                            var pos = cms.util.getElementPosition(elem);
-                            var dimensions = cms.util.getInnerDimensions(elem, 1);
-                            $('<a class="cms-handle cms-move"></a>')
-                                .appendTo(elem).hover(function() {
-                                    cms.move.hoverInner(elem, 2, false);
-                                }, cms.move.hoverOut)
-                                .mousedown(cms.move.movePreparation)
-                                .mouseup(cms.move.moveEnd)
-                                .css('left', dimensions.left - pos.left + dimensions.width - 20);
-                        }else{
-                            $('<a class="cms-handle cms-move"></a>').appendTo(elem)
-								.hover( function() {
-                                    if (elem.hasClass('cms-subcontainer')) {
-                                        cms.move.hoverInner(elem, 2, false);
-                                    } else {
-                                        cms.move.hoverIn(elem, 2);
-                                    }
-                                }, cms.move.hoverOut).mousedown(cms.move.movePreparation)
-								.mouseup(cms.move.moveEnd);
-                        }
-
+            if (elem.hasClass('cms-subcontainer') && (/left|right/).test(elem.css('float'))) {
+               var pos = cms.util.getElementPosition(elem);
+               var dimensions = cms.util.getInnerDimensions(elem, 1);
+               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
+                  cms.move.hoverInner(elem, 2, false);
+               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd).css('left', dimensions.left - pos.left + dimensions.width - 20);
+            } else {
+               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
+                  if (elem.hasClass('cms-subcontainer')) {
+                     cms.move.hoverInner(elem, 2, false);
+                  } else {
+                     cms.move.hoverIn(elem, 2);
+                  }
+               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd);
+            }
+            
          });
          
          var list = $('#' + cms.html.favoriteMenuId);
@@ -296,7 +271,7 @@
             display: 'block',
             visibility: 'hidden'
          });
-			$('#'+cms.html.favoriteListId).css('height', '40px');
+         $('#' + cms.html.favoriteListId).css('height', '40px');
          $('div.ui-widget-shadow', list).css({
             top: 0,
             left: -4,
@@ -324,7 +299,7 @@
             },
             zIndex: 20000,
             handle: 'a.cms-move',
-				items :sortitems+', div.cms-subcontainer',
+            items: sortitems + ', div.cms-subcontainer',
             revert: true,
             deactivate: function(event, ui) {
                $('#' + cms.html.favoriteListId + ' li').hide(200);
@@ -351,62 +326,72 @@
          $(menus).hide();
          button.removeClass('ui-state-active');
       } else {
-         resetRecentList();
-         resetFavList();
          cms.toolbar.currentMenu = newMenu;
          cms.toolbar.currentMenuItems = newMenuItems
-         $('button.ui-state-active').trigger('click');
+         var loadFunction;
+         if (newMenuItems == cms.html.favoriteListId) {
+             resetFavList();
+             loadFunction = cms.data.loadFavorites;
+         } else
+         if (newMenuItems == cms.html.recentListId) {
+             resetRecentList();
+             loadFunction = cms.data.loadRecent;
+         } else { alert("Invalid list id!");}
          
+         $('button.ui-state-active').trigger('click');
+         button.addClass('ui-state-active');
          // enabling move-mode
          // * current menu
-         list = $('#' + cms.toolbar.currentMenu);
-         $('.cms-head', list).each(function() {
-            var elem = $(this);
-            $('<a class="cms-handle cms-move"></a>').appendTo(elem);
-         });
-         list.appendTo('#toolbar_content').css({
-            /* position : 'fixed', */
-            top: 35,
-            left: $(buttonElem).position().left - 217
-         }).slideDown(100, function() {
-            $('div.ui-widget-shadow', list).css({
-               top: 0,
-               left: -4,
-               width: list.outerWidth() + 8,
-               height: list.outerHeight() + 2,
-               border: '0px solid',
-               opacity: 0.6
+         loadFunction(function() {
+            if (!button.hasClass("ui-state-active")) return;
+            list = $('#' + cms.toolbar.currentMenu);
+            $('.cms-head', list).each(function() {
+               var elem = $(this);
+               $('<a class="cms-handle cms-move"></a>').appendTo(elem);
+            });
+            list.appendTo('#toolbar_content').css({
+               /* position : 'fixed', */
+               top: 35,
+               left: $(buttonElem).position().left - 217
+            }).slideDown(100, function() {
+               $('div.ui-widget-shadow', list).css({
+                  top: 0,
+                  left: -4,
+                  width: list.outerWidth() + 8,
+                  height: list.outerHeight() + 2,
+                  border: '0px solid',
+                  opacity: 0.6
+               });
+            });
+            $(cms.util.getContainerSelector()).children('*:visible').css('position', 'relative');
+            // * current menu
+            $(cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems).sortable({
+               // * current menu
+               connectWith: cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems,
+               placeholder: 'placeholder',
+               dropOnEmpty: true,
+               start: cms.move.startAdd,
+               beforeStop: cms.move.beforeStopFunction,
+               over: cms.move.overAdd,
+               out: cms.move.outAdd,
+               tolerance: 'pointer',
+               opacity: 0.7,
+               stop: cms.move.stopAdd,
+               cursorAt: {
+                  right: 15,
+                  top: 10
+               },
+               handle: 'a.cms-move',
+               items: sortitems + ', li.cms-item',
+               revert: 100,
+               deactivate: function(event, ui) {
+                  $('a.cms-move', $(this)).removeClass('cms-trigger');
+                  if ($.browser.msie) {
+                     setTimeout("$(sortitems).css('display','block')", 10);
+                  }
+               }
             });
          });
-         $(cms.util.getContainerSelector()).children('*:visible').css('position', 'relative');
-         // * current menu
-         $(cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems).sortable({
-            // * current menu
-            connectWith: cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems,
-            placeholder: 'placeholder',
-            dropOnEmpty: true,
-            start: cms.move.startAdd,
-            beforeStop: cms.move.beforeStopFunction,
-            over: cms.move.overAdd,
-            out: cms.move.outAdd,
-            tolerance: 'pointer',
-            opacity: 0.7,
-            stop: cms.move.stopAdd,
-            cursorAt: {
-               right: 15,
-               top: 10
-            },
-            handle: 'a.cms-move',
-            items: sortitems + ', li.cms-item',
-            revert: 100,
-            deactivate: function(event, ui) {
-               $('a.cms-move', $(this)).removeClass('cms-trigger');
-               if ($.browser.msie) {
-                  setTimeout("$(sortitems).css('display','block')", 10);
-               }
-            }
-         });
-         button.addClass('ui-state-active');
       }
    };
    
@@ -468,9 +453,7 @@
       //$("#fav-dialog").append("<ul></ul>")
       var html = []
       for (var i = 0; i < cms.toolbar.favorites.length; i++) {
-			html
-					.push(cms.html
-							.createItemFavDialogHtml(cms.data.elements[cms.toolbar.favorites[i]]));
+         html.push(cms.html.createItemFavDialogHtml(cms.data.elements[cms.toolbar.favorites[i]]));
       }
       $("#fav-dialog ul").append(html.join(''));
       $("#fav-dialog .cms-delete-icon").click(clickFavDeleteIcon);
@@ -501,20 +484,16 @@
    var toggleAdditionalInfo = cms.toolbar.toggleAdditionalInfo = function() {
       var elem = $(this);
       if (elem.hasClass('ui-icon-triangle-1-e')) {
-			elem.removeClass('ui-icon-triangle-1-e').addClass(
-					'ui-icon-triangle-1-s');
-			elem.parents('.ui-widget-content').children('.cms-additional')
-					.show(5, function() {
+         elem.removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
+         elem.parents('.ui-widget-content').children('.cms-additional').show(5, function() {
             var list = $(this).parents('div.cms-menu');
             $('div.ui-widget-shadow', list).css({
                height: list.outerHeight() + 2
             });
          });
       } else {
-			elem.removeClass('ui-icon-triangle-1-s').addClass(
-					'ui-icon-triangle-1-e');
-			elem.parents('.ui-widget-content').children('.cms-additional')
-					.hide(5, function() {
+         elem.removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
+         elem.parents('.ui-widget-content').children('.cms-additional').hide(5, function() {
             var list = $(this).parents('div.cms-menu');
             $('div.ui-widget-shadow', list).css({
                height: list.outerHeight() + 2
@@ -528,9 +507,7 @@
       $("#" + cms.html.favoriteMenuId + " li.cms-item").remove();
       var $favlist = $("#" + cms.html.favoriteMenuId + " ul");
       for (var i = 0; i < cms.toolbar.favorites.length; i++) {
-			$favlist
-					.append(cms.html
-							.createItemFavListHtml(cms.data.elements[cms.toolbar.favorites[i]]))
+         $favlist.append(cms.html.createItemFavListHtml(cms.data.elements[cms.toolbar.favorites[i]]))
       }
       // $("#"+cms.html.favoriteMenuId+" a.ui-icon").click(function() {clickTriangle(this)});
    }
@@ -551,9 +528,9 @@
          autoOpen: false,
          buttons: {
             Cancel: function() {
-              $(this).dialog('close');
-              $('button[name="Save"]').removeClass('ui-state-active');
-              
+               $(this).dialog('close');
+               $('button[name="Save"]').removeClass('ui-state-active');
+               
             },
             'Save': function() {
                $(this).dialog('close');
@@ -565,7 +542,7 @@
          resizable: false,
          modal: true,
          zIndex: 10000
-         
+      
       });
    }
    
@@ -577,28 +554,28 @@
    }
    
    var savePage = cms.toolbar.savePage = function() {
-       //cms.data.saveContainers(...) 
-       setPageChanged(false);
+      //cms.data.saveContainers(...) 
+      setPageChanged(false);
    }
    
    var pageChanged = cms.toolbar.pageChanged = true;
    var setPageChanged = cms.toolbar.setPageChanged = function(newValue) {
-       pageChanged = cms.toolbar.pageChanged = true;
-       if (newValue) {
-           $('button[name="Save"]').show();
-       } else {
-           $('button[name="Save"]').hide();
-       }    
+      pageChanged = cms.toolbar.pageChanged = true;
+      if (newValue) {
+         $('button[name="Save"]').show();
+      } else {
+         $('button[name="Save"]').hide();
+      }
    }
    
    var onUnload = cms.toolbar.onUnload = function() {
-       if (cms.toolbar.pageChanged) {
-           var saveChanges = window.confirm("Do you want to save your changes made on " +window.location.href + "?\n (Cancel will discard changes)");
-           if (saveChanges) {
-               cms.toolbar.savePage();
-               //alert("Changes saved.")
-           }
-       }
+      if (cms.toolbar.pageChanged) {
+         var saveChanges = window.confirm("Do you want to save your changes made on " + window.location.href + "?\n (Cancel will discard changes)");
+         if (saveChanges) {
+            cms.toolbar.savePage();
+            //alert("Changes saved.")
+         }
+      }
    }
    
    //==================================================================================================================
@@ -606,9 +583,7 @@
       $("#" + cms.html.recentMenuId + " li.cms-item").remove();
       var $recentlist = $("#" + cms.html.recentListId);
       for (var i = 0; i < cms.toolbar.recent.length; i++) {
-			$recentlist
-					.append(cms.html
-							.createItemFavListHtml(cms.data.elements[cms.toolbar.recent[i]]));
+         $recentlist.append(cms.html.createItemFavListHtml(cms.data.elements[cms.toolbar.recent[i]]));
       }
    };
    

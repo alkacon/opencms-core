@@ -165,5 +165,21 @@
       return cms.util.makeCombinedSelector(cms.util.getKeys(cms.data.containers), '#%')
    }
    
+   var loadFavoriteAndRecentElements = function(afterLoad) {
+       var toLoad = {};
+       for (var fav in cms.toolbar.favorites) {
+           if (!cms.data.elements[fav]) {
+               toLoad[fav] = true;
+           }
+       }
+       for (var recent in cms.toolbar.recent) {
+           if (!cms.data.elements[recent]) {
+               toLoad[recent] = true;
+           }
+       }
+       cms.data.reloadItems(getKeys(toLoad), afterLoad);
+       
+   };
+   
    
 })(cms);

@@ -27,7 +27,7 @@
     <script type="text/javascript">
         var cms = {data:{}, html:{}, toolbar:{}, sitemap:{}, move:{}, util:{}};
     </script>
-    <script type="text/javascript" src="cms.data.js"></script>
+    <script type="text/javascript" src="cms.old-data.js"></script>
     <script type="text/javascript" src="cms.util.js"></script>
     <script type="text/javascript" src="cms.init.js"></script>
     <script type="text/javascript" src="cms.html.js"></script>
@@ -37,7 +37,7 @@
     <script type="text/javascript">
       
       var sortlist = '#col1_content, #col2_content, #col3_content, #bottom_cont';
-      var sortitems = 'div.box';
+      var sortitems = '.cms-element';
       var deleteitems = sortitems;
       $('document').ready(function() {
         $('.cms-item a.ui-icon').live('click', cms.toolbar.toggleAdditionalInfo);
