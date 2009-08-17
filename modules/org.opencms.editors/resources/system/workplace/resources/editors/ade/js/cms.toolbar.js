@@ -1,7 +1,7 @@
 (function(cms) {
    cms.toolbar.favorites = [];
    cms.toolbar.recent = [];
-   cms.toolbar.recentSize = 3;
+   cms.toolbar.recentSize = 10;
    var oldBodyMarginTop = 0;
    var menuIds = [cms.html.favoriteMenuId, cms.html.recentMenuId, 'cms-search'];
    var sortmenus = cms.util.makeCombinedSelector(menuIds, "#% ul");
@@ -565,7 +565,7 @@
        setPageChanged(false);
    }
    
-   var pageChanged = cms.toolbar.pageChanged = true;
+   var pageChanged = cms.toolbar.pageChanged = false;
    var setPageChanged = cms.toolbar.setPageChanged = function(newValue) {
        pageChanged = cms.toolbar.pageChanged = true;
        if (newValue) {
