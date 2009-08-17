@@ -408,6 +408,8 @@ ul.cms-item-list, ul.cms-publish-options {
 .cms-item .ui-widget-content .cms-navtext {
     font-weight: bold;
     margin-left: 30px;
+    height: 16px;
+    overflow: hidden;
 }
 
 .cms-item .ui-widget-content .cms-title {
