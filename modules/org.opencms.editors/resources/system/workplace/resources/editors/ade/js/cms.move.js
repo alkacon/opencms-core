@@ -238,11 +238,14 @@
          } else {
             if (endContainer == cms.html.favoriteListId) {
                cms.util.addUnique(cms.toolbar.favorites, ui.self.cmsResource_id);
+               cms.data.persistFavorites(function() {});
             }
             orgPlaceholder.remove();
             // add item to endContainer
          }
-         cms.toolbar.addToRecent(ui.self.cmsResource_id);
+         if (endContainer != cms.html.favoriteListId) {
+             cms.toolbar.addToRecent(ui.self.cmsResource_id);
+         }
       }
       for (var container_name in helpers) {
          if (container_name != endContainer &&
