@@ -1,4 +1,4 @@
-//$.fn.navTree = function(options){
+﻿//$.fn.navTree = function(options){
 //	var self=this;
 //	var opts=$.extend({}, $.fn.navTree.defaults, options);
 //	

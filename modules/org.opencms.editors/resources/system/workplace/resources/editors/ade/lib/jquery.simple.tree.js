@@ -1,4 +1,4 @@
-/*
+﻿/*
 * jQuery SimpleTree Drag&Drop plugin
 * Update on 22th May 2008
 * Version 0.3

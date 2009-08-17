@@ -1,4 +1,4 @@
-/* Copyright (c) 2008 Kean Loong Tan http://www.gimiti.com/kltan
+﻿/* Copyright (c) 2008 Kean Loong Tan http://www.gimiti.com/kltan
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
  * Copyright notice and license must remain intact for legal use
  * jHelpertip

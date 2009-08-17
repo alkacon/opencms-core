@@ -1,4 +1,4 @@
-/**
+﻿/**
  * jquery.dump.js
  * @author Torkild Dyvik Olsen
  * @version 1.0
