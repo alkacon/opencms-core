@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/08/18 08:11:31 $
- * Version: $Revision: 1.1121 $
+ * Date   : $Date: 2009/08/18 09:16:40 $
+ * Version: $Revision: 1.1122 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -26,17 +26,19 @@ OpenCms 7.5.1 - month day, 2009
 ! Added selectable start galleries to user preferences and possibility to define start galleries in OpenCms configuration
 ! Added option to hide "Advanced" button of customized property dialog depending on the current users groups
 ! Added search dialog to all galleries
-* Fixed issue #1743: Cached users for groups are not invalidated when writing user
-* Fixed issue #1739: Deleted or moved project resources cannot be removed from project
-* Fixed issue with OU users being unable to work after OU resource has been renamed 
-* Fixed issue with pointer targets being stored in XML contents (instead of the uri to pointers) when selecting them from link gallery
-* Fixed issue with transfer permissions of a deleted user to another user
 ! Added context menu entry "Publish scheduled" to publish resources at specified date
 ! Added content tool "Property viewer" to view properties from resources in specified folder
 ! Added content tool "Language node copier" to copy language nodes in XML contents in specified folder
 ! Added context menu entry "Comment comment" to view and change the default properties from all files in the selected folder
 ! Added option to use the current site macro in the template one form module
 ! Added content tool "Convert XML contents" to convert XML contents in specified folder
+! Added option to limit full text search to certain resource types only
+! Added "fields query" option to full text search by which you can search for different terms in several fields
+* Fixed issue with OU users being unable to work after OU resource has been renamed 
+* Fixed issue with pointer targets being stored in XML contents (instead of the uri to pointers) when selecting them from link gallery
+* Fixed issue with transfer permissions of a deleted user to another user
+* Fixed issue #1743: Cached users for groups are not invalidated when writing user
+* Fixed issue #1739: Deleted or moved project resources cannot be removed from project
 
 OpenCms 7.5.0 - June 15, 2009
 ! Added support for new Microsoft document types to upload applet

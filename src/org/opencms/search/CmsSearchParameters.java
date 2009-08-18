@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2009/06/04 14:29:51 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/08/18 09:16:40 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,13 +41,14 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.logging.Log;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.BooleanClause.Occur;
 
 /**
  * Contains the search parameters for a call to <code>{@link org.opencms.search.CmsSearchIndex#search(org.opencms.file.CmsObject, CmsSearchParameters)}</code>.<p>
@@ -57,11 +58,99 @@ import org.apache.lucene.search.SortField;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchParameters {
+
+    /**
+     * Describes a specific search field query.<p>
+     */
+    public class CmsSearchFieldQuery {
+
+        /** The field name. */
+        private String m_fieldName;
+
+        /** The occur parameter required for this field / query. */
+        private Occur m_occur;
+
+        /** The search query. */
+        private String m_searchQuery;
+
+        /**
+         * @param fieldName the field name
+         * @param searchQuery the search query
+         * @param occur the occur parameter required for this field / query
+         */
+        public CmsSearchFieldQuery(String fieldName, String searchQuery, Occur occur) {
+
+            super();
+            m_fieldName = fieldName;
+            m_searchQuery = searchQuery;
+            m_occur = occur;
+        }
+
+        /**
+         * Returns the field name.<p>
+         *
+         * @return the field name
+         */
+        public String getFieldName() {
+
+            return m_fieldName;
+        }
+
+        /**
+         * Returns the occur parameter required for this field / query.<p>
+         *
+         * @return the occur parameter required for this field / query
+         */
+        public Occur getOccur() {
+
+            return m_occur;
+        }
+
+        /**
+         * Returns the search query.<p>
+         *
+         * @return the search query
+         */
+        public String getSearchQuery() {
+
+            return m_searchQuery;
+        }
+
+        /**
+         * Sets the field name.<p>
+         *
+         * @param fieldName the field name to set
+         */
+        public void setFieldName(String fieldName) {
+
+            m_fieldName = fieldName;
+        }
+
+        /**
+         * Sets the occur parameter for this field / query.<p>
+         *
+         * @param occur the occur parameter to set
+         */
+        public void setOccur(BooleanClause.Occur occur) {
+
+            m_occur = occur;
+        }
+
+        /**
+         * Sets the search query.<p>
+         *
+         * @param searchQuery the search query to set
+         */
+        public void setSearchQuery(String searchQuery) {
+
+            m_searchQuery = searchQuery;
+        }
+    }
 
     /** Sort result documents by date of creation, then score. */
     public static final Sort SORT_DATE_CREATED = new Sort(new SortField[] {
@@ -106,6 +195,9 @@ public class CmsSearchParameters {
     /** Indicates if all fields should be used for generating the excerpt, regardless if they have been searched or not. */
     private boolean m_excerptOnlySearchedFields;
 
+    /** The map of individual search field queries. */
+    private List m_fieldQueries;
+
     /** The list of search index fields to search in. */
     private List m_fields;
 
@@ -133,6 +225,9 @@ public class CmsSearchParameters {
     /** The minimum length of the search query. */
     private int m_queryLength;
 
+    /** The list of resource types to limit the search to. */
+    private List m_resourceTypes;
+
     /** Only resource that are sub-resource of one of the search roots are included in the search result. */
     private List m_roots;
 
@@ -159,14 +254,14 @@ public class CmsSearchParameters {
      * Only the "meta" field (combination of content and title) will be used for search. 
      * No search root restriction is chosen. 
      * No category restriction is used. 
-     * No categorie counts are calculated for the result. 
+     * No category counts are calculated for the result. 
      * Sorting is turned off. This is a simple but fast setup. <p>
      * 
      * @param query the query to search for 
      */
     public CmsSearchParameters(String query) {
 
-        this(query, null, null, null, false, null);
+        this(query, null, null, null, null, false, null);
 
     }
 
@@ -177,6 +272,7 @@ public class CmsSearchParameters {
      * @param fields the list of fields to search
      * @param roots only resource that are sub-resource of one of the search roots are included in the search result
      * @param categories the list of categories to limit the search to
+     * @param resourceTypes the list of resource types to limit the search to
      * @param calculateCategories if <code>true</code>, the category count is calculated for all search results
      *      (use with caution, this option uses much performance)
      * @param sort the sort order for the search
@@ -186,6 +282,7 @@ public class CmsSearchParameters {
         List fields,
         List roots,
         List categories,
+        List resourceTypes,
         boolean calculateCategories,
         Sort sort) {
 
@@ -201,7 +298,8 @@ public class CmsSearchParameters {
             roots = new ArrayList();
         }
         m_roots = roots;
-        m_categories = (categories == null) ? new LinkedList() : categories;
+        m_categories = (categories == null) ? new ArrayList() : categories;
+        m_resourceTypes = (resourceTypes == null) ? new ArrayList() : resourceTypes;
         m_calculateCategories = calculateCategories;
         // null sort is allowed default
         m_sort = sort;
@@ -217,9 +315,50 @@ public class CmsSearchParameters {
     }
 
     /**
-     * Returns wether category counts are calculated for search results or not. <p>
+     * Adds an individual query for a search field.<p>
      * 
-     * @return a boolean that tells wether category counts are calculated for search results or not
+     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setFields(List)}
+     * will be ignored and only the individual field search settings will be used.<p>
+     *
+     * @param query the query to add
+     * 
+     * @since 7.5.1
+     */
+    public void addFieldQuery(CmsSearchFieldQuery query) {
+
+        if (m_fieldQueries == null) {
+            m_fieldQueries = new ArrayList();
+            m_fields = new ArrayList();
+        }
+        m_fieldQueries.add(query);
+        // add the used field used in the fields query to the list of fields used in the search
+        if (!m_fields.contains(query.getFieldName())) {
+            m_fields.add(query.getFieldName());
+        }
+    }
+
+    /**
+     * Adds an individual query for a search field.<p>
+     * 
+     * If this is used, any setting made with {@link #setQuery(String)} and {@link #setFields(List)}
+     * will be ignored and only the individual field search settings will be used.<p>
+     * 
+     * @param fieldName the field name
+     * @param searchQuery the search query
+     * @param occur the occur parameter for the query in the field
+     * 
+     * @since 7.5.1
+     */
+    public void addFieldQuery(String fieldName, String searchQuery, Occur occur) {
+
+        CmsSearchFieldQuery newQuery = new CmsSearchFieldQuery(fieldName, searchQuery, occur);
+        addFieldQuery(newQuery);
+    }
+
+    /**
+     * Returns whether category counts are calculated for search results or not. <p>
+     * 
+     * @return a boolean that tells whether category counts are calculated for search results or not
      */
     public boolean getCalculateCategories() {
 
@@ -244,6 +383,18 @@ public class CmsSearchParameters {
     public int getDisplayPages() {
 
         return m_displayPages;
+    }
+
+    /**
+     * Returns the list of individual field queries.<p>
+     * 
+     * @return the list of individual field queries
+     *
+     * @since 7.5.1
+     */
+    public List getFieldQueries() {
+
+        return m_fieldQueries;
     }
 
     /**
@@ -337,6 +488,18 @@ public class CmsSearchParameters {
     }
 
     /**
+     * Returns the list of resource types to limit the search to.<p>
+     *
+     * @return the list of resource types to limit the search to
+     *
+     * @since 7.5.1
+     */
+    public List getResourceTypes() {
+
+        return m_resourceTypes;
+    }
+
+    /**
      * Returns the list of strings of search roots to use.<p>
      * 
      * Only resource that are sub-resource of one of the search roots are included in the search result.<p>
@@ -383,13 +546,12 @@ public class CmsSearchParameters {
      * Returns the comma separated lists of root folder names to restrict search to.<p>
      * 
      * This method is a "sibling" to method <code>{@link #getRoots()}</code> but with 
-     * the support of being useable with widget technology. <p>
+     * the support of being usable with widget technology. <p>
      * 
      * @return the comma separated lists of field names to search in
      * 
      * @see #setSortName(String)
      */
-
     public String getSearchRoots() {
 
         return toSeparatedString(m_roots, ',');
@@ -441,7 +603,7 @@ public class CmsSearchParameters {
      * if they have been actually searched in.<p>
      *
      * The default setting is <code>false</code>, which means all text fields configured for the excerpt will
-     * be used to gernerate the excerpt, regardless if they have been searched in or not.<p>
+     * be used to generate the excerpt, regardless if they have been searched in or not.<p>
      *
      * Please note: A field will only be included in the excerpt if it has been configured as <code>excerpt="true"</code>
      * in <code>opencms-search.xml</code>. This method controls if so configured fields are used depending on the
@@ -464,9 +626,9 @@ public class CmsSearchParameters {
      * 
      * The lists in the restriction for <code>{@link #getFields()}</code>, <code>{@link #getRoots()}</code> and
      * <code>{@link #getCategories()}</code> are <b>intersected</b> with the lists of this search parameters. Only
-     * elements containd in both lists are included for the created search parameters. 
+     * elements contained in both lists are included for the created search parameters. 
      * If a list in either the restriction or in this search parameters is <code>null</code>, 
-     * the list from the other search parameters is used direclty.<p> 
+     * the list from the other search parameters is used directly.<p> 
      * 
      * The values for
      * <code>{@link #isCalculateCategories()}</code>
@@ -480,7 +642,7 @@ public class CmsSearchParameters {
         // append queries
         StringBuffer query = new StringBuffer(256);
         if (getQuery() != null) {
-            // don't blow up unneccessary closures (if CmsSearch is reused and restricted several times)
+            // don't blow up unnecessary closures (if CmsSearch is reused and restricted several times)
             boolean closure = !getQuery().startsWith("+(");
             if (closure) {
                 query.append("+(");
@@ -491,7 +653,7 @@ public class CmsSearchParameters {
             }
         }
         if (restriction.getQuery() != null) {
-            // don't let lucene max terms be exceeded in case someone reuses a CmsSearch and continuously restricts 
+            // don't let Lucene max terms be exceeded in case someone reuses a CmsSearch and continuously restricts 
             // query with the same restrictions...
             if (query.indexOf(restriction.getQuery()) < 0) {
                 query.append(" +(");
@@ -538,12 +700,25 @@ public class CmsSearchParameters {
             categories = restriction.getCategories();
         }
 
+        // restrict resource types
+        List resourceTypes = null;
+        if ((m_resourceTypes != null) && (m_resourceTypes.size() > 0)) {
+            if ((restriction.getResourceTypes() != null) && (restriction.getResourceTypes().size() > 0)) {
+                resourceTypes = ListUtils.intersection(m_resourceTypes, restriction.getResourceTypes());
+            } else {
+                resourceTypes = m_resourceTypes;
+            }
+        } else {
+            resourceTypes = restriction.getResourceTypes();
+        }
+
         // create the new search parameters 
         CmsSearchParameters result = new CmsSearchParameters(
             query.toString(),
             fields,
             roots,
             categories,
+            resourceTypes,
             m_calculateCategories,
             m_sort);
         result.setIndex(getIndex());
@@ -551,7 +726,7 @@ public class CmsSearchParameters {
     }
 
     /**
-     * Set wether category counts shall be calculated for the corresponding search results or not.<p> 
+     * Set whether category counts shall be calculated for the corresponding search results or not.<p> 
      * 
      * @param flag true if category counts shall be calculated for the corresponding search results or false if not
      */
@@ -682,20 +857,17 @@ public class CmsSearchParameters {
      * Sets the query to search for. <p> 
      * 
      * The decoding here is tailored for query strings that are 
-     * additionally manually utf-8 encoded at client side (javascript) to get around an 
-     * issue with special chars in applications that use non- utf-8 encoding 
+     * additionally manually UTF-8 encoded at client side (javascript) to get around an 
+     * issue with special chars in applications that use non- UTF-8 encoding 
      * (e.g. ISO-8859-1) OpenCms applications. It is not recommended to use this with 
-     * frontends that don't encode manually as characters like sole "%" (without number suffix) 
+     * front ends that don't encode manually as characters like sole "%" (without number suffix) 
      * will cause an Exception.<p> 
      * 
-     * @param query the querye to search for to set
-     *
+     * @param query the query to search for to set
      */
     public void setQuery(String query) {
 
-        // query = CmsEncoder.decode(query);
-
-        // for widget use the exception is thrown here to enforce the errmsg next to widget
+        // for use with widgets the exception is thrown here to enforce the error message next to the widget
         if (query.trim().length() < getQueryLength()) {
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_QUERY_TOO_SHORT_1,
@@ -712,6 +884,18 @@ public class CmsSearchParameters {
     public void setQueryLength(int length) {
 
         m_queryLength = length;
+    }
+
+    /**
+     * Set the list of resource types (strings) to limit the search to. <p> 
+     * 
+     * @param resourceTypes the list of resource types (strings) to limit the search to
+     *
+     * @since 7.5.1
+     */
+    public void setResourceTypes(List resourceTypes) {
+
+        m_resourceTypes = resourceTypes;
     }
 
     /**
@@ -895,6 +1079,16 @@ public class CmsSearchParameters {
             for (int i = 0; i < m_categories.size(); i++) {
                 result.append(m_categories.get(i));
                 if (i + 1 < m_categories.size()) {
+                    result.append(", ");
+                }
+            }
+            result.append("] ");
+        }
+        if ((m_resourceTypes != null) && (m_resourceTypes.size() > 0)) {
+            result.append("resourceTypes:[");
+            for (int i = 0; i < m_resourceTypes.size(); i++) {
+                result.append(m_resourceTypes.get(i));
+                if (i + 1 < m_resourceTypes.size()) {
                     result.append(", ");
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2009/06/04 14:35:31 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/18 09:16:40 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -151,7 +151,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         assertEquals(1, searchResult.size());
 
         // check max date created
-        searchBean.getParameters().setMaxDateCreated(stamp.getTime()-1000);
+        searchBean.getParameters().setMaxDateCreated(stamp.getTime() - 1000);
         searchBean.getParameters().setMinDateCreated(Long.MIN_VALUE);
 
         searchBean.init(cms);
@@ -167,11 +167,11 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         // check min date last modified
         stamp = new Date();
         searchBean.getParameters().setMinDateLastModified(stamp.getTime());
-        
+
         searchBean.init(cms);
         searchResult = searchBean.getSearchResult();
         assertEquals(0, searchResult.size());
-        
+
         CmsFile file = cms.readFile(resName);
         file.setContents("OpenCms ist toll".getBytes());
         cms.writeFile(file);
@@ -183,7 +183,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         assertEquals(1, searchResult.size());
 
         // check max date last modified
-        searchBean.getParameters().setMaxDateLastModified(stamp.getTime()-1000);
+        searchBean.getParameters().setMaxDateLastModified(stamp.getTime() - 1000);
         searchBean.getParameters().setMinDateLastModified(Long.MIN_VALUE);
 
         searchBean.init(cms);
@@ -387,7 +387,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         // now create a restriction to search for an additional "Alkacon" (effectivly searching for "OpenCms Alkacon")
         CmsSearchParameters restriction;
-        restriction = new CmsSearchParameters("Alkacon", null, null, null, false, null);
+        restriction = new CmsSearchParameters("Alkacon", null, null, null, null, false, null);
 
         expected = new int[] {3, 2, 1, 3, 4, 5, 6};
 
@@ -409,7 +409,14 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         }
 
         // another run of tests using searching only in the "meta" field
-        restriction = new CmsSearchParameters("Alkacon", Arrays.asList(new String[] {"meta"}), null, null, false, null);
+        restriction = new CmsSearchParameters(
+            "Alkacon",
+            Arrays.asList(new String[] {"meta"}),
+            null,
+            null,
+            null,
+            false,
+            null);
 
         expected = new int[] {0, 0, 1, 1, 1, 0, 1};
 
@@ -442,6 +449,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
             null,
             null,
             Arrays.asList(new String[] {"category_1", "category_3"}),
+            null,
             false,
             null);
 

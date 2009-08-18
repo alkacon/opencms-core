@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/06/04 14:29:51 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2009/08/18 09:16:40 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.75 $ 
+ * @version $Revision: 1.76 $ 
  * 
  * @since 6.0.0 
  */
@@ -214,9 +214,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The excerpt mode for this index. */
     private boolean m_createExcerpt;
 
-    /** The content extraction mode for this index. */
-    private boolean m_extractContent;
-
     /** Map of display query filters to use. */
     private Map m_displayFilters;
 
@@ -225,6 +222,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** An internal enabled flag, used to disable the index if for instance the configured project does not exist. */
     private boolean m_enabled;
+
+    /** The content extraction mode for this index. */
+    private boolean m_extractContent;
 
     /** The search field configuration of this index. */
     private CmsSearchFieldConfiguration m_fieldConfiguration;
@@ -944,11 +944,32 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     params.getCategories()), BooleanClause.Occur.MUST));
             }
 
+            if ((params.getResourceTypes() != null) && (params.getResourceTypes().size() > 0)) {
+                // add query resource types (if required)
+                filter.add(new FilterClause(getMultiTermQueryFilter(
+                    CmsSearchField.FIELD_TYPE,
+                    params.getResourceTypes()), BooleanClause.Occur.MUST));
+            }
+
             // the search query to use, will be constructed in the next lines 
             BooleanQuery query = new BooleanQuery();
             // store separate fields query for excerpt highlighting  
             Query fieldsQuery;
-            if ((params.getFields() != null) && (params.getFields().size() > 0)) {
+            if (params.getFieldQueries() != null) {
+                // each field has an individual query
+                BooleanQuery booleanFieldsQuery = new BooleanQuery();
+                Iterator i = params.getFieldQueries().iterator();
+                while (i.hasNext()) {
+                    CmsSearchParameters.CmsSearchFieldQuery fq = (CmsSearchParameters.CmsSearchFieldQuery)i.next();
+                    // add one sub-query for each defined field
+                    QueryParser p = new QueryParser(fq.getFieldName(), getAnalyzer());
+                    booleanFieldsQuery.add(p.parse(fq.getSearchQuery()), fq.getOccur());
+                }
+                fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
+                // set query to parameters in order to be somehow backward compatible
+                params.setQuery(fieldsQuery.toString());
+            } else if ((params.getFields() != null) && (params.getFields().size() > 0)) {
+                // no individual field queries have been defined, so use one query for all fields 
                 BooleanQuery booleanFieldsQuery = new BooleanQuery();
                 // this is a "regular" query over one or more fields
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
@@ -962,6 +983,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, getAnalyzer());
                 fieldsQuery = getSearcher().rewrite(p.parse(params.getQuery()));
             }
+
             // finally add the field queries to the main query
             query.add(fieldsQuery, BooleanClause.Occur.MUST);
 
