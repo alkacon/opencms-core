@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/08/13 12:34:34 $
- * Version: $Revision: 1.1120 $
+ * Date   : $Date: 2009/08/18 08:11:31 $
+ * Version: $Revision: 1.1121 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -31,12 +31,12 @@ OpenCms 7.5.1 - month day, 2009
 * Fixed issue with OU users being unable to work after OU resource has been renamed 
 * Fixed issue with pointer targets being stored in XML contents (instead of the uri to pointers) when selecting them from link gallery
 * Fixed issue with transfer permissions of a deleted user to another user
-! Added publish scheduled option to publish resources at specified date
-! Added option to view properties
-! Added option to copy language nodes in XML contents
-! Added option to comment comments
+! Added context menu entry "Publish scheduled" to publish resources at specified date
+! Added content tool "Property viewer" to view properties from resources in specified folder
+! Added content tool "Language node copier" to copy language nodes in XML contents in specified folder
+! Added context menu entry "Comment comment" to view and change the default properties from all files in the selected folder
 ! Added option to use the current site macro in the template one form module
-! Added option to convert XML contents
+! Added content tool "Convert XML contents" to convert XML contents in specified folder
 
 OpenCms 7.5.0 - June 15, 2009
 ! Added support for new Microsoft document types to upload applet
