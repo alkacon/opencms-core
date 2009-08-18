@@ -139,6 +139,29 @@
          top: ui.self.offset.top,
          left: ui.self.offset.left
       };
+
+      
+      
+      ui.self.cmsHelpers = {};
+      ui.self.cmsOrgPlaceholder = ui.placeholder.clone().insertBefore(ui.placeholder);
+      //        ui.self.cmsOrgPlaceholder = $('<div />').insertBefore(
+      //				ui.placeholder);
+      ui.self.cmsOrgPlaceholder.css({
+         'background-color': 'gray',
+         'display': 'none',
+         'height': ui.self.currentItem.height()
+      });
+      
+      cms.move.zIndexMap = {};
+      for (container_name in cms.data.containers) {
+         initContainerForDrag(ui.self, cms.data.containers[container_name]);
+      }
+      if (isMenuContainer(ui.self.cmsStartContainerId)) {
+         startDragFromMenu(ui.self);
+      } else {
+         startDragFromNormalContainer(ui.self);
+      }
+      
       var placeholderSize = {
          height: ui.helper.height(),
          width: ui.helper.width()
@@ -162,28 +185,7 @@
          'width': (/left|right/).test(ui.placeholder.css('float')) ? placeholderSize.width : 'auto'
       });
       
-      
-      ui.self.cmsHelpers = {};
-      ui.self.cmsOrgPlaceholder = ui.placeholder.clone().insertBefore(ui.placeholder);
-      //        ui.self.cmsOrgPlaceholder = $('<div />').insertBefore(
-      //				ui.placeholder);
-      ui.self.cmsOrgPlaceholder.css({
-         'background-color': 'gray',
-         'display': 'none',
-         'height': ui.self.currentItem.height()
-      });
-      
-      cms.move.zIndexMap = {};
-      for (container_name in cms.data.containers) {
-         initContainerForDrag(ui.self, cms.data.containers[container_name]);
-      }
-      if (isMenuContainer(ui.self.cmsStartContainerId)) {
-         startDragFromMenu(ui.self);
-      } else {
-         startDragFromNormalContainer(ui.self);
-      }
-      
-      $(ui.self.cmsHoverList).each(function() {
+      $(ui.self.cmsHoverList).css('position', 'relative').each(function() {
          hoverInner($(this), 2, true);
       });
       
@@ -459,7 +461,7 @@
        sortable.helper.css('display', 'none');
        sortable.helper = helper;
        sortable.currentItem = helper;
-       refreshHelperPosition(sortable);
+       refreshHelperPositions(sortable);
    }
    
    var refreshHelperPositions = cms.move.refreshHelperPositions = function(sortable) {

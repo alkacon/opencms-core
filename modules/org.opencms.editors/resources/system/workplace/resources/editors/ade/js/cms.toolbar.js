@@ -253,7 +253,7 @@
       } else {
          $('button.ui-state-active').trigger('click');
          // enabling move mode
-         $(containerSelector).css('position', 'relative').children('.cms-element:visible').each(
+         $(containerSelector).children('.cms-element:visible').each(
 			function() {
                 var elem = $(this).css('position', 'relative');
                         if (elem.hasClass('cms-subcontainer') && (/left|right/).test(elem.css('float'))) {
