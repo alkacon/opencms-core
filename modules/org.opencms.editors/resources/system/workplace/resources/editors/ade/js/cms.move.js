@@ -1,11 +1,11 @@
 (function(cms) {
-
+   var $ = jQuery;
    var over = null;
    var cancel = false;
    cms.move.zIndexMap = {};
    
    var isMenuContainer = cms.move.isMenuContainer = function(id) {
-      return id == cms.html.favoriteListId || id == cms.html.recentListId;
+      return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId;
    }
    
    var movePreparation = cms.move.movePreparation = function(event) {
@@ -148,12 +148,22 @@
       ui.self.cmsHoverList = '';
       ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
       ui.self.cmsResource_id = ui.self.currentItem.attr('rel');
-      if (!(ui.self.cmsResource_id && cms.data.elements[ui.self.cmsResource_id])) {
+      
+     
+      if (ui.self.cmsStartContainerId == cms.html.newListId) {
+         var typeElem = cms.data.elements[ui.self.cmsResource_id];
+         if (typeElem) {
+            var newItem = ui.self.cmsItem = cms.util.createInstanceForNewItem(typeElem.type);
+            ui.self.cmsResource_id = newItem.id;
+         }
+      } else {
+         ui.self.cmsItem = cms.data.elements[ui.self.cmsResource_id];
+      }
+      if (!(ui.self.cmsResource_id && ui.self.cmsItem)) {
          $(cms.util.getContainerSelector()).sortable('cancel');
          return;
       }
-      
-      ui.self.cmsItem = cms.data.elements[ui.self.cmsResource_id];
+     
       ui.self.cmsStartOffset = {
          top: ui.self.offset.top,
          left: ui.self.offset.left
@@ -264,7 +274,7 @@
             orgPlaceholder.remove();
             // add item to endContainer
          }
-         if (endContainer != cms.html.favoriteListId) {
+         if (endContainer != cms.html.favoriteListId && startContainer != cms.html.newListId) {
              cms.toolbar.addToRecent(ui.self.cmsResource_id);
          }
       }

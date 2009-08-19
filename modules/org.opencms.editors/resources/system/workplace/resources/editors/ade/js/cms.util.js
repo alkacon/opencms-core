@@ -165,21 +165,61 @@
       return cms.util.makeCombinedSelector(cms.util.getKeys(cms.data.containers), '#%')
    }
    
+   
+   
+   var replaceListElements = function(list, oldElem, newElem) {
+      var result = [];
+      for (var i = 0; i < list.length; i++) {
+         result[i] = list[i] == oldElem ? newElem : list[i];
+         
+      }
+      return result;
+   }
+   
+   
+   var replaceNewElement = cms.util.replaceNewElement = function(oldName, newName) {
+      for (var containerName in cms.data.containers) {
+           var container = cms.data.containers[containerName];
+           container.elements = replaceListElements(container.elements, oldName, newName);      
+      }
+   }
+   
+   
+   
+   
    var loadFavoriteAndRecentElements = function(afterLoad) {
-       var toLoad = {};
-       for (var fav in cms.toolbar.favorites) {
-           if (!cms.data.elements[fav]) {
-               toLoad[fav] = true;
-           }
-       }
-       for (var recent in cms.toolbar.recent) {
-           if (!cms.data.elements[recent]) {
-               toLoad[recent] = true;
-           }
-       }
-       cms.data.reloadItems(getKeys(toLoad), afterLoad);
-       
+      var toLoad = {};
+      for (var fav in cms.toolbar.favorites) {
+         if (!cms.data.elements[fav]) {
+            toLoad[fav] = true;
+         }
+      }
+      for (var recent in cms.toolbar.recent) {
+         if (!cms.data.elements[recent]) {
+            toLoad[recent] = true;
+         }
+      }
+      cms.data.reloadItems(getKeys(toLoad), afterLoad);
+      
    };
+   
+   
+   
+   var createInstanceForNewItem = cms.util.createInstanceForNewItem = function(type) {
+      var element = cms.util.deepCopy(cms.data.elements[type]);
+      var newId = "new:"+type +"-"+ (cms.data.newCounter++);
+      element.id = newId;
+      cms.data.prepareLoadedElements({1:element});
+      cms.data.elements[newId] = element;
+      return element;
+   }
+   
+   
+   
+   
+   var deepCopy = cms.util.deepCopy = function(obj) {
+       return JSON.parse(JSON.stringify(obj));
+   }
    
    
 })(cms);

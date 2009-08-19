@@ -1,9 +1,10 @@
-(function(cms) {
+﻿(function(cms) {
 
-   // constants
-   var UNCHANGED = 'u';
-   var CHANGED = 'c';
-   var NEW = 'n';
+   
+   var STATUS_NEW = cms.data.STATUS_NEW = 'n';
+   var STATUS_CREATED = cms.data.STATUS_CREATED = 'nc';
+   var STATUS_UNCHANGED = cms.data.STATUS_UNCHANGED = 'u';
+   var STATUS_CHANGED = cms.data.STATUS_CHANGED = 'c';
    
    var AJAX_TIMEOUT = 5000;
    
@@ -31,7 +32,9 @@
    var containers = cms.data.containers = {};
    var locale = cms.data.locale = "en";
    
-   var prepareLoadedElements = function(elements) {
+   var newCounter = cms.data.newCounter = 0;
+   
+   var prepareLoadedElements = cms.data.prepareLoadedElements = function(elements) {
       for (var id in elements) {
          var element = elements[id];
          for (var containerType in element.contents) {
@@ -68,7 +71,7 @@
                alert(jsonData.error);
                return;
             }
-
+            
             if (jsonData.favorites) {
                favorites = cms.toolbar.favorites = jsonData.favorites;
             }
@@ -81,9 +84,54 @@
             if (jsonData.elements) {
                elements = cms.data.elements = jsonData.elements;
             }
+            
+            if (jsonData.newCounter) {
+               newCounter = cms.data.newCounter = jsonData.newCounter;
+            }
+            addDummyTypes();
             afterLoad();
          }
       })
+   }
+   
+   var addDummyTypes = function() {
+      var news = {
+         "id": "news",
+         "navText": "news (navText)",
+         "title": "news (title)",
+         "file": null,
+         "date": null,
+         "user": null,
+         "type": "news",
+         "contents": {
+            "leftColumn": "<div class=\"box box_schema2\" rel=\"news\"><h4>(Title)</h4><div class=\"boxbody\"><p>(Content)</p></div></div>"
+         },
+         "subItems": null,
+         "allowMove": true,
+         "allowEdit": true,
+         "locked": false,
+         "status": cms.data.STATUS_NEW
+      };
+      var event = {
+         "id": "event",
+         "navText": "event (navText)",
+         "title": "event (title)",
+         "file": null,
+         "date": null,
+         "user": null,
+         "type": "event",
+         "contents": {
+            "leftColumn": "<div class=\"box box_schema2\" rel=\"event\"><h4>(Title)</h4><div class=\"boxbody\"><p>(Content)</p></div></div>"
+         },
+         "subItems": null,
+         "allowMove": true,
+         "allowEdit": true,
+         "locked": false,
+         "status": cms.data.STATUS_NEW
+      };
+      cms.data.elements["news"] = news;
+      cms.data.elements["event"] = event;
+      
    }
    
    var loadJSON = cms.data.loadJSON = function(data, afterLoad) {
@@ -139,13 +187,20 @@
                alert(jsonData.error);
                return;
             }
-            if ($.isFunction(afterPost)) afterPost();
+            if ($.isFunction(afterPost)) 
+               afterPost(jsonData);
          }
       });
    }
    
+   var createResource = cms.data.createResource = function(type, afterCreate) {
+      afterCreate("/demo_en/new_news.html", "ade_1b2ba42a-8c0a-11de-affd-f538a2445923");
+      //       postJSON('create', type, function(data) {
+      //           afterCreate(data.path, data.id);
+      //       });
+   }
    
-   var reloadElement = cms.data.reloadElement = function(id) {
+   var reloadElement = cms.data.reloadElement = function(id, afterReload) {
    
       loadJSON({
          obj: OBJ_ELEM,
@@ -153,6 +208,8 @@
       }, function(data) {
          cms.data.elements[id] = data.elements[id];
          fillContainers();
+         if (afterReload) 
+            afterReload(data);
       });
    }
    
@@ -245,12 +302,12 @@
    };
    
    var fillContainers = cms.data.fillContainers = function() {
-   
       for (var containerName in containers) {
          $('#' + containerName + ' > *').remove();
          var elementIds = containers[containerName].elements;
          for (var i = 0; i < elementIds.length; i++) {
             var elem = elements[elementIds[i]];
+
             var html = '';
             var isSubcontainer = false;
             if (elem.subItems) {
