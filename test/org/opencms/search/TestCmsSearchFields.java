@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchFields.java,v $
- * Date   : $Date: 2009/08/18 09:16:40 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/19 11:38:49 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in special fields of extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestCmsSearchFields extends OpenCmsTestCase {
 
@@ -86,6 +86,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         suite.addTest(new TestCmsSearchFields("testSearchInFields"));
         suite.addTest(new TestCmsSearchFields("testExcerptCreationFromFields"));
         suite.addTest(new TestCmsSearchFields("testSearchWithFieldQuery"));
+        suite.addTest(new TestCmsSearchFields("testSearchWithCombinedFieldQuery"));
         suite.addTest(new TestCmsSearchFields("testExcerptCreationWithFieldQuery"));
         suite.addTest(new TestCmsSearchFields("testSearchWithResouceTypeLimitaion"));
 
@@ -165,7 +166,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
     public void testSearchWithFieldQuery() throws Exception {
 
         CmsObject cms = getCmsObject();
-        echo("Testing searching with a specific field query");
+        echo("Testing search with a specific field query");
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
@@ -218,6 +219,42 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field with NOT option:");
         TestCmsSearch.printResults(searchResult, cms);
         assertEquals(3, searchResult.size());
+    }
+
+    /**
+     * Tests searching with a combined field query that includes SHOULD and MUST.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSearchWithCombinedFieldQuery() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing search with a combined field query");
+
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List searchResult;
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/");
+
+        // search for "Cologne" in the "special" field
+        searchBean.addFieldQueryMust("special", "Cologne");
+
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' index field:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(7, searchResult.size());
+
+        // now also require that "SearchEgg1" is part of the Title
+        searchBean.addFieldQueryShould(CmsSearchField.FIELD_TITLE_UNSTORED, "SearchEgg1");
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field again:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(1, searchResult.size());
     }
 
     /**

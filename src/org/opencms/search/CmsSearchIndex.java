@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/08/18 09:16:40 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2009/08/19 11:38:49 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.76 $ 
+ * @version $Revision: 1.77 $ 
  * 
  * @since 6.0.0 
  */
@@ -957,13 +957,31 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             Query fieldsQuery;
             if (params.getFieldQueries() != null) {
                 // each field has an individual query
-                BooleanQuery booleanFieldsQuery = new BooleanQuery();
+                BooleanQuery mustOccur = null;
+                BooleanQuery shouldOccur = null;
                 Iterator i = params.getFieldQueries().iterator();
                 while (i.hasNext()) {
                     CmsSearchParameters.CmsSearchFieldQuery fq = (CmsSearchParameters.CmsSearchFieldQuery)i.next();
                     // add one sub-query for each defined field
                     QueryParser p = new QueryParser(fq.getFieldName(), getAnalyzer());
-                    booleanFieldsQuery.add(p.parse(fq.getSearchQuery()), fq.getOccur());
+                    if (BooleanClause.Occur.SHOULD.equals(fq.getOccur())) {
+                        if (shouldOccur == null) {
+                            shouldOccur = new BooleanQuery();
+                        }
+                        shouldOccur.add(p.parse(fq.getSearchQuery()), fq.getOccur());
+                    } else {
+                        if (mustOccur == null) {
+                            mustOccur = new BooleanQuery();
+                        }
+                        mustOccur.add(p.parse(fq.getSearchQuery()), fq.getOccur());
+                    }
+                }
+                BooleanQuery booleanFieldsQuery = new BooleanQuery();
+                if (mustOccur != null) {
+                    booleanFieldsQuery.add(mustOccur, BooleanClause.Occur.MUST);
+                }
+                if (shouldOccur != null) {
+                    booleanFieldsQuery.add(shouldOccur, BooleanClause.Occur.MUST);
                 }
                 fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
                 // set query to parameters in order to be somehow backward compatible

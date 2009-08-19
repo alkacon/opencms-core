@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2009/08/18 09:16:40 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2009/08/19 11:38:49 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,6 +133,12 @@ public class CmsSearch {
      * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])} 
      * will be ignored and only the individual field search settings will be used.<p>
      * 
+     * When combining occurrences of SHOULD, MUST and MUST_NOT, keep the following in mind:
+     * All SHOULD clauses will be grouped and wrapped in one query, 
+     * all MUST and MUST_NOT clauses will be grouped in another query. 
+     * This means that at least one of the terms which are given as a SHOULD query must occur in the
+     * search result.<p>
+     * 
      * @param fieldName the field name
      * @param searchQuery the search query
      * @param occur the occur parameter for the query in the field
@@ -151,6 +157,12 @@ public class CmsSearch {
      * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])} 
      * will be ignored and only the individual field search settings will be used.<p>
      * 
+     * When combining occurrences of SHOULD, MUST and MUST_NOT, keep the following in mind:
+     * All SHOULD clauses will be grouped and wrapped in one query, 
+     * all MUST and MUST_NOT clauses will be grouped in another query. 
+     * This means that at least one of the terms which are given as a SHOULD query must occur in the
+     * search result.<p>
+     * 
      * @param fieldName the field name
      * @param searchQuery the search query
      * 
@@ -167,6 +179,12 @@ public class CmsSearch {
      * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])} 
      * will be ignored and only the individual field search settings will be used.<p>
      * 
+     * When combining occurrences of SHOULD, MUST and MUST_NOT, keep the following in mind:
+     * All SHOULD clauses will be grouped and wrapped in one query, 
+     * all MUST and MUST_NOT clauses will be grouped in another query. 
+     * This means that at least one of the terms which are given as a SHOULD query must occur in the
+     * search result.<p>
+     * 
      * @param fieldName the field name
      * @param searchQuery the search query
      * 
@@ -182,6 +200,12 @@ public class CmsSearch {
      * 
      * If this is used, any setting made with {@link #setQuery(String)} and {@link #setField(String[])} 
      * will be ignored and only the individual field search settings will be used.<p>
+     * 
+     * When combining occurrences of SHOULD, MUST and MUST_NOT, keep the following in mind:
+     * All SHOULD clauses will be grouped and wrapped in one query, 
+     * all MUST and MUST_NOT clauses will be grouped in another query. 
+     * This means that at least one of the terms which are given as a SHOULD query must occur in the
+     * search result.<p>
      * 
      * @param fieldName the field name
      * @param searchQuery the search query
