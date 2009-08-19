@@ -53,11 +53,11 @@
    };
    
    var deleteItem = cms.toolbar.deleteItem = function() {
-      var $item = $(this).parent();
+      var $item = $(this).closest('.cms-element');
       var $container = $item.parent();
       cms.move.hoverOut();
       addToRecent($item.attr('rel'));
-      $(this).parent().remove();
+      $item.remove();
       cms.move.updateContainer($container.attr('id'));
       setPageChanged(true);
    };
@@ -84,12 +84,36 @@
          button.addClass('ui-state-active');
       }
    };
+   var timer = cms.toolbar.timer = {id: null, handleDiv: null, adeMode: null};
+   var startHoverTimeout = cms.toolbar.startHoverTimeout = function(handleDiv, adeMode){
+       if (timer.id){
+           clearTimeout(timer.id);
+       }
+       timer.id=setTimeout("cms.toolbar.showAddButtons()", 1000);
+       timer.handleDiv=handleDiv;
+       timer.adeMode=adeMode;
+       
+   }
+   
+   var showAddButtons = cms.toolbar.showAddButtons = function(){
+       timer.id = null;
+       timer.handleDiv.addClass('ui-widget-header').css({'width': '72px', 'right': '-48px'}).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
+   }
+   
+   var stopHover = cms.toolbar.stopHover = function(){
+       if (timer.id){
+           clearTimeout(timer.id);
+           timer.id = null;
+       }
+       cms.move.hoverOut();
+       timer.handleDiv.removeClass('ui-widget-header').css({'width': '24px', 'right': '0px'}).children().removeClass('ui-corner-all ui-state-default').not('a.cms-'+timer.adeMode).css('display', 'none');
+   }
    
    var toggleEdit = cms.toolbar.toggleEdit = function() {
       var button = $(this);
       if (button.hasClass('ui-state-active')) {
          // disabling edit mode
-         $('a.cms-edit').remove();
+         $('.cms-element div.cms-handle').remove();
          button.removeClass('ui-state-active');
       } else {
          $('button.ui-state-active').trigger('click');
@@ -99,15 +123,25 @@
                 var elemId=elem.attr('rel');
                 if (elemId && cms.data.elements[elemId]){
                     if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked){
-                        $('<a class="cms-handle cms-edit"></a>')
-                            .appendTo(elem)
-                            .hover(function(){cms.move.hoverIn(elem, 2)}, cms.move.hoverOut)
-                            .click(function() {
-                                openEditDialog(elemId);
-                            });
+                        var handleDiv=$('<div class="cms-handle"></div>').appendTo(elem).hover(function(){
+                            cms.move.hoverIn(elem, 2);
+                            startHoverTimeout(handleDiv, 'edit');
+                        }, function() {
+                            stopHover();
+                        });
+                        $('<a class="cms-edit"></a>').appendTo(handleDiv).click(function(){
+                            openEditDialog(elemId);
+                        });
+                        $('<a class="cms-move"></a>').css('display', 'none').appendTo(handleDiv);
+                        $('<a class="cms-delete"></a>').css('display', 'none').appendTo(handleDiv).click(deleteItem);
+                        handleDiv.css({
+                            'left': handleDiv.position().left,
+                            'width': 24
+                        });
                     }else{
                     // Append edit-locked-handle
                     }
+
                 }
             
          });
@@ -115,7 +149,70 @@
       }
    };
    
-    var openEditDialog = cms.toolbar.openEditDialog = function(elemId){
+   var addHandles = cms.toolbar.addHandles = function(elem, adeMode, isMoving){
+        var handleDiv=$('<div class="cms-handle"></div>').appendTo(elem);
+        
+        var handles = {
+            'edit': $('<a class="cms-edit"></a>').click(openEditDialog),
+            'move': $('<a class="cms-move"></a>').mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd),
+            'delete': $('<a class="cms-delete"></a>').click(deleteItem)
+        };
+        handles[adeMode].appendTo(handleDiv);
+        for (handleName in handles){
+            if (handleName != adeMode){
+                handles[handleName].appendTo(handleDiv).css('display', 'none');
+            }
+        }
+        if (isMoving){
+            if (adeMode != 'move') {
+                handles[adeMode].css('display', 'none');
+                handles['move'].css('display', 'block');
+            }
+        }else{
+            handleDiv.hover(function(){
+                cms.move.hoverIn(elem, 2);
+                startHoverTimeout(handleDiv, adeMode);
+            }, function() {
+                stopHover();
+            });
+        }
+        handleDiv.css({
+            'right': '0px',
+            'width': '24px'
+        });
+   }
+   
+   var toggleMode = cms.toolbar.toggleMode = function() {
+      var button = $(this);
+      var adeMode=button.attr('name').toLowerCase();
+      if (button.hasClass('ui-state-active')) {
+         // disabling edit mode
+         destroyMove();
+         $('.cms-element div.cms-handle').remove();
+         button.removeClass('ui-state-active');
+      } else {
+         $('button.ui-state-active').trigger('click');
+         // enabling edit mode
+         $(sortitems).each(function() {
+            var elem = $(this).css('position', 'relative');
+                var elemId=elem.attr('rel');
+                if (elemId && cms.data.elements[elemId]){
+                   if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked){
+                        addHandles(elem, adeMode);
+                   }else{
+                    // Append edit-locked-handle
+                   }
+
+                }
+            
+         });
+         initMove();
+         button.addClass('ui-state-active');
+      }
+   };
+   
+    var openEditDialog = cms.toolbar.openEditDialog = function(){
+        var elemId=$(this).closest('.cms-element').attr('rel');
         if (elemId && cms.data.elements[elemId]) {
             if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
                 var dialogWidth=self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
@@ -210,11 +307,11 @@
 		resetFavList();
       bodyEl.append('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>');
       $('#show-button').click(toggleToolbar);
-      $('button[name="Edit"]').click(toggleEdit);
-      $('button[name="Move"]').click(toggleMove);
-      $('button[name="Delete"]').click(toggleDelete);
-      $('button[name="Publish"]').click(showPublishList);
-      $('button[name="Favorites"]').click(function() {
+      $('#toolbar button[name="Edit"], #toolbar button[name="Move"], #toolbar button[name="Delete"]').click(toggleMode);
+//      $('#toolbar button[name="Move"]').click(toggleMode);
+//      $('#toolbar button[name="Delete"]').click(toggleMode);
+      $('#toolbar button[name="Publish"]').click(showPublishList);
+      $('#toolbar button[name="Favorites"]').click(function() {
          toggleList(this, cms.html.favoriteMenuId);
       });
       
@@ -235,6 +332,70 @@
       initFavDialog();
       
    };
+   
+   var destroyMove=function(){
+       var containerSelector=cms.util.getContainerSelector();
+       $(containerSelector + ', #' + cms.html.favoriteListId).sortable('destroy');
+       var list = $('#' + cms.html.favoriteMenuId);
+       $('li.cms-item, button', list).css('display', 'block');
+       list.css('display', 'none');
+       list.get(0).style.visibility = '';
+       $('#' + cms.html.favoriteListId).get(0).style.height = '';
+	   resetFavList();
+ //      $('a.cms-move').remove();
+   }
+   
+   var initMove=function(){
+       var containerSelector=cms.util.getContainerSelector();
+       var list = $('#' + cms.html.favoriteMenuId);
+       var favbutton = $('button[name="Favorites"]');
+       $('li.cms-item, button', list).css('display', 'none');
+       list.appendTo('#toolbar_content').css({
+            top: 35,
+            left: favbutton.position().left - 217,
+            display: 'block',
+            visibility: 'hidden'
+       });
+	   $('#'+cms.html.favoriteListId).css('height', '40px');
+       $('div.ui-widget-shadow', list).css({
+            top: 0,
+            left: -4,
+            width: list.outerWidth() + 8,
+            height: list.outerHeight() + 2,
+            border: '0px solid',
+            opacity: 0.6
+       });
+         
+       $(containerSelector).children('.cms-element:visible').css('position', 'relative');
+       $(containerSelector + ', #' + cms.html.favoriteListId).sortable({
+            connectWith: containerSelector + ', #' + cms.html.favoriteListId,
+            placeholder: 'cms-placeholder',
+            dropOnEmpty: true,
+            start: cms.move.startAdd,
+            beforeStop: cms.move.beforeStopFunction,
+            over: cms.move.overAdd,
+            out: cms.move.outAdd,
+            tolerance: 'pointer',
+            opacity: 0.7,
+            stop: cms.move.stopAdd,
+            cursorAt: {
+               right: 10,
+               top: 10
+            },
+            zIndex: 20000,
+            handle: 'a.cms-move',
+				items :'.cms-element',
+            revert: true,
+            deactivate: function(event, ui) {
+               $('#' + cms.html.favoriteListId + ' li').hide(200);
+               $('#' + cms.html.favoriteMenuId).css('visibility', 'hidden');
+               //$('a.cms-move').show();
+               if ($.browser.msie) {
+                  setTimeout("$('.cms-element').css('display','block')", 10);
+               }
+            }
+         });
+   }
    
    var toggleMove = cms.toolbar.toggleMove = function(el) {
       var button = $(this);

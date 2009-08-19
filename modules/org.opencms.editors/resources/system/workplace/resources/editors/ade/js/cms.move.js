@@ -9,16 +9,34 @@
    }
    
    var movePreparation = cms.move.movePreparation = function(event) {
-      $(this).unbind('mouseenter').unbind('mouseleave').addClass('cms-trigger');
+      if (cms.toolbar.timer.id){
+          clearTimeout(cms.toolbar.timer.id);
+          cms.toolbar.timer.id=null;
+      }
+      var thisHandleDiv=$(this).closest('.cms-handle').unbind('mouseenter').unbind('mouseleave');
+      thisHandleDiv.children().removeClass('ui-corner-all ui-state-default');
       hoverOut();
-      $('a.cms-move:not(.cms-trigger)').hide();
+      $('div.cms-handle').not(thisHandleDiv).hide();
+      thisHandleDiv.removeClass('ui-widget-header').children('*:not(.cms-move)').hide();
    }
    
    var moveEnd = cms.move.moveEnd = function(event) {
-   
-      $(this).hover(function() {
-         hoverIn($(this).parent(), 2)
-      }, hoverOut).removeClass('cms-trigger');
+      var handleDiv=$(this).closest('.cms-handle');
+      if (handleDiv) {
+          handleDiv.hover(function() {
+              cms.move.hoverIn($(this).closest('.cms-element'), 2);
+              cms.toolbar.startHoverTimeout(handleDiv, cms.toolbar.timer.adeMode);
+          }, function() {
+              cms.toolbar.stopHover();
+          });
+      }else{
+          alert('no handle');
+      }
+      $('div.cms-handle').show();
+      if ('move'!=cms.toolbar.timer.adeMode){
+          $(this).hide();
+          handleDiv.children('.cms-'+cms.toolbar.timer.adeMode).show();
+      }
    }
    
    var saveZIndex = cms.move.saveZInde = function(containerId) {
@@ -50,9 +68,10 @@
             'opacity': sortable.options.opacity,
             'zIndex': sortable.options.zIndex
          }).addClass('ui-sortable-helper cms-element').attr('rel', sortable.cmsItem.id).appendTo('#' + container.name);
-         var $handle = $('<a class="cms-handle cms-move"></a>').appendTo(sortable.cmsHelpers[container.name]);
+         //var $handle = $('<a class="cms-handle cms-move"></a>').appendTo(sortable.cmsHelpers[container.name]);
+         cms.toolbar.addHandles(sortable.cmsHelpers[container.name], cms.toolbar.timer.adeMode ? cms.toolbar.timer.adeMode : 'move', true);
          if (sortable.cmsStartContainerId != cms.toolbar.currentMenuItems) {
-            $handle.mousedown(movePreparation).mouseup(moveEnd);
+            $('a.cms-move', sortable.cmsHelpers[container.name]).mousedown(movePreparation).mouseup(moveEnd);
          }
          
       } else {
