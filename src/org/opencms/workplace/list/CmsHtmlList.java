@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2009/08/20 11:07:45 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -54,7 +53,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,9 +103,6 @@ public class CmsHtmlList {
 
     /** printable flag. */
     protected boolean m_printable;
-
-    /** Search filter text. */
-    protected String m_searchFilter;
 
     /** Show the title of the list. */
     protected boolean m_showTitle;
@@ -346,7 +342,11 @@ public class CmsHtmlList {
      */
     public String getSearchFilter() {
 
-        return m_searchFilter;
+        if (getMetadata().isSearchable()) {
+            return getMetadata().getSearchAction().getSearchFilter();
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -724,22 +724,14 @@ public class CmsHtmlList {
         if (!m_metadata.isSearchable()) {
             return;
         }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchFilter)) {
-
-            // reset content if filter is empty
-            if (!m_metadata.isSelfManaged()) {
+        getMetadata().getSearchAction().setSearchFilter(searchFilter);
+        if (!m_metadata.isSelfManaged()) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(searchFilter)) {
+                // reset content if filter is empty
                 m_filteredItems = null;
+            } else {
+                m_filteredItems = getMetadata().getSearchAction().filter(getAllContent());
             }
-            m_searchFilter = "";
-            getMetadata().getSearchAction().getShowAllAction().setVisible(false);
-        } else {
-            // http://www.securityfocus.com/archive/1/490498: searchfilter cross site scripting vulnerability: 
-            searchFilter = CmsEncoder.escapeXml(searchFilter);
-            if (!m_metadata.isSelfManaged()) {
-                m_filteredItems = getMetadata().getSearchAction().filter(getAllContent(), searchFilter);
-            }
-            m_searchFilter = searchFilter;
-            getMetadata().getSearchAction().getShowAllAction().setVisible(true);
         }
         String sCol = m_sortedColumn;
         m_sortedColumn = "";
@@ -960,16 +952,6 @@ public class CmsHtmlList {
             html.append(getWp().dialogBlock(CmsWorkplace.HTML_END, m_name.key(getWp().getLocale()), false));
         }
         html.append("</div>\n");
-        if (!isPrintable() && getMetadata().isSearchable()) {
-            html.append("<script type='text/javascript'>\n");
-            html.append("\tvar form = document.forms['");
-            html.append(getId());
-            html.append("-form'];\n");
-            html.append("\tform.listSearchFilter.value='");
-            html.append(getSearchFilter() != null ? CmsStringUtil.escapeJavaScript(getSearchFilter()) : "");
-            html.append("';\n");
-            html.append("</script>\n");
-        }
         return html.toString();
     }
 
@@ -1041,7 +1023,11 @@ public class CmsHtmlList {
             getWp().getLocale()));
         html.append("\t\t\t</select>\n");
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
+        boolean isNotSearching = true;
+        if (getMetadata().isSearchable()) {
+            isNotSearching = CmsStringUtil.isEmptyOrWhitespaceOnly(getMetadata().getSearchAction().getSearchFilter());
+        }
+        if (isNotSearching) {
             html.append(messages.key(Messages.GUI_LIST_PAGING_TEXT_2, new Object[] {
                 m_name.key(getWp().getLocale()),
                 new Integer(getTotalSize())}));
@@ -1086,8 +1072,12 @@ public class CmsHtmlList {
         if (isShowTitle()) {
             html.append("\t\t<td align='left'>\n");
             html.append("\t\t\t");
+            boolean isNotSearching = true;
+            if (getMetadata().isSearchable()) {
+                isNotSearching = CmsStringUtil.isEmptyOrWhitespaceOnly(getMetadata().getSearchAction().getSearchFilter());
+            }
             if (getTotalNumberOfPages() > 1) {
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
+                if (isNotSearching) {
                     html.append(messages.key(Messages.GUI_LIST_TITLE_TEXT_4, new Object[] {
                         m_name.key(getWp().getLocale()),
                         new Integer(displayedFrom()),
@@ -1102,7 +1092,7 @@ public class CmsHtmlList {
                         new Integer(getTotalSize())}));
                 }
             } else {
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
+                if (isNotSearching) {
                     html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_TEXT_2, new Object[] {
                         m_name.key(getWp().getLocale()),
                         new Integer(getTotalSize())}));

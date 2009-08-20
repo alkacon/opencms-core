@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the base components for the administration view.</p>
 <p>Its allows you to install and/or develop administration tools for OpenCms 7.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.0.4</version>
+		<version>7.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -338,6 +338,21 @@
 			<type>plain</type>
 			<uuidstructure>96af9bf9-11b7-11db-91cd-fdbae480bac9</uuidstructure>
 			<uuidresource>bccd3d62-d34d-11d9-b717-b920ebfd9bc1</uuidresource>
+			<datelastmodified>Wed, 07 Feb 2007 11:31:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/admin/javascript/list-multisearch.js</source>
+			<destination>system/workplace/resources/admin/javascript/list-multisearch.js</destination>
+			<type>plain</type>
+			<uuidstructure>96af9bf9-11b7-13db-945d-fdbae480bac9</uuidstructure>
+			<uuidresource>bccd3d62-d34d-45d9-b717-b92084fd9bc1</uuidresource>
 			<datelastmodified>Wed, 07 Feb 2007 11:31:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

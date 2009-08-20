@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
- * Date   : $Date: 2009/06/04 14:29:27 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/08/20 11:07:45 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,9 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
@@ -40,20 +42,26 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Default implementation for a seach action in an html list.<p>
+ * Default implementation for a search action in an html list.<p>
  * 
  * It allows to search in several columns, including item details.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsSearchMethod {
+public class CmsListSearchAction extends A_CmsListSearchAction {
+
+    /** the html id for the input element of the search bar. */
+    public static final String SEARCH_BAR_INPUT_ID = "listSearchFilter";
 
     /** Ids of Columns to search into. */
     private final List m_columns = new ArrayList();
+
+    /** The current search filter. */
+    private String m_searchFilter = "";
 
     /**
      * Default Constructor.<p>
@@ -75,6 +83,35 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
     public void addColumn(CmsListColumnDefinition column) {
 
         m_columns.add(column);
+    }
+
+    /**
+     * Returns the html code for the search bar.<p>
+     * 
+     * @param wp the workplace context
+     * 
+     * @return html code
+     */
+    public String barHtml(CmsWorkplace wp) {
+
+        if (wp == null) {
+            wp = getWp();
+        }
+        StringBuffer html = new StringBuffer(1024);
+        html.append("\t\t<input type='text' name='");
+        html.append(SEARCH_BAR_INPUT_ID);
+        html.append("' id='");
+        html.append(SEARCH_BAR_INPUT_ID);
+        html.append("' value='");
+        // http://www.securityfocus.com/archive/1/490498: searchfilter cross site scripting vulnerability:
+        html.append(CmsStringUtil.escapeJavaScript(CmsEncoder.escapeXml(getSearchFilter())));
+        html.append("' size='20' maxlength='245' style='vertical-align: bottom;' >\n");
+        html.append(buttonHtml(wp));
+        if (getShowAllAction() != null) {
+            html.append("&nbsp;&nbsp;");
+            html.append(getShowAllAction().buttonHtml());
+        }
+        return html.toString();
     }
 
     /**
@@ -107,10 +144,32 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsSearchMethod#filter(java.util.List, java.lang.String)
+     * Returns a sublist of the given items, that match the current filter string.<p>
+     * 
+     * @param items the items to filter
+     * 
+     * @return the filtered sublist
+     */
+    public List filter(List items) {
+
+        return filter(items, m_searchFilter);
+    }
+
+    /**
+     * Returns a sublist of the given items, that match the given filter string.<p>
+     * 
+     * @param items the items to filter
+     * @param filter the string to filter
+     * 
+     * @return the filtered sublist
+     * 
+     * @deprecated use {@link #filter(List)}
      */
     public List filter(List items, String filter) {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(filter)) {
+            return items;
+        }
         List res = new ArrayList();
         Iterator itItems = items.iterator();
         while (itItems.hasNext()) {
@@ -141,6 +200,31 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
     public List getColumns() {
 
         return Collections.unmodifiableList(m_columns);
+    }
+
+    /**
+     * Returns the current search filter.<p>
+     * 
+     * @return the current search filter
+     */
+    public String getSearchFilter() {
+
+        return m_searchFilter;
+    }
+
+    /**
+     * Sets the current search filter.<p>
+     * 
+     * @param filter the current search filter
+     */
+    public void setSearchFilter(String filter) {
+
+        if (filter == null) {
+            filter = "";
+        }
+        m_searchFilter = filter;
+        boolean showAll = CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_searchFilter);
+        getShowAllAction().setVisible(showAll);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2009/06/04 14:29:26 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2009/08/20 11:07:45 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -168,15 +168,6 @@ public class CmsListColumnDefinition {
             if (item.get(m_id) != null) {
                 // null values are not showed by default
                 csv.append(item.get(m_id).toString());
-            } else {
-                Iterator itActions = m_directActions.iterator();
-                while (itActions.hasNext()) {
-                    I_CmsListDirectAction action = (I_CmsListDirectAction)itActions.next();
-                    if (action.isVisible()) {
-                        action.setItem(item);
-                        csv.append(action.getName().key(getWp().getLocale()));
-                    }
-                }
             }
         } else {
             // formatted output

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2009/06/04 14:29:25 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/08/20 11:07:45 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,14 +45,11 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListMetadata {
-
-    /** the html id for the input element of the search bar. */
-    public static final String SEARCH_BAR_INPUT_ID = "listSearchFilter";
 
     /** Container for column definitions. */
     private CmsIdentifiableObjectContainer m_columns = new CmsIdentifiableObjectContainer(true, false);
@@ -213,7 +210,7 @@ public class CmsListMetadata {
         Iterator itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
-            if (!col.isVisible()) {
+            if (!col.isVisible() || !col.isPrintable()) {
                 continue;
             }
             csv.append(col.csvHeader());
@@ -236,7 +233,7 @@ public class CmsListMetadata {
         Iterator itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
-            if (!col.isVisible()) {
+            if (!col.isVisible() || !col.isPrintable()) {
                 continue;
             }
             csv.append(col.csvCell(item));
@@ -665,15 +662,7 @@ public class CmsListMetadata {
         StringBuffer html = new StringBuffer(1024);
         html.append("<td class='main'>\n");
         html.append("\t<div>\n");
-        html.append("\t\t<input type='text' name='listSearchFilter' id='"
-            + SEARCH_BAR_INPUT_ID
-            + "' value='' size='20' maxlength='245' style='vertical-align: bottom;'>\n");
-        html.append(m_searchAction.buttonHtml());
-        I_CmsListAction showAllAction = m_searchAction.getShowAllAction();
-        if (showAllAction != null) {
-            html.append("&nbsp;&nbsp;");
-            html.append(showAllAction.buttonHtml());
-        }
+        html.append(m_searchAction.barHtml(getWp()));
         html.append("\t</div>\n");
         html.append("</td>\n");
         return html.toString();
@@ -682,7 +671,7 @@ public class CmsListMetadata {
     /**
      * Returns <code>true</code> if the list is searchable.<p>
      * 
-     * @return  <code>true</code> if the list is searchable
+     * @return <code>true</code> if the list is searchable
      */
     public boolean isSearchable() {
 
