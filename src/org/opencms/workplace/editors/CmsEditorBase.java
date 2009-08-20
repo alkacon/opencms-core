@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorBase.java,v $
- * Date   : $Date: 2009/07/23 13:56:20 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author  Achim Westermann
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,6 +62,7 @@ public class CmsEditorBase extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initTimeWarp(org.opencms.db.CmsUserSettings, javax.servlet.http.HttpSession)
      */
+    @Override
     protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
 
         // overridden to avoid deletion of the configured time warp: 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsMultiDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:30:44 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.2.0 
  */
@@ -178,6 +178,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#buildLockHeaderBox()
      */
+    @Override
     public String buildLockHeaderBox() throws CmsException {
 
         if (!isMultiOperation()) {
@@ -314,6 +315,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#setParamResource(java.lang.String)
      */
+    @Override
     public void setParamResource(String value) {
 
         super.setParamResource(value);
@@ -331,6 +333,7 @@ public abstract class CmsMultiDialog extends CmsDialog {
      * @param neededForFolder if true, the permissions are required for the parent folder of the resource (e.g. for editors)
      * @return true if the permissions are sufficient, otherwise false
      */
+    @Override
     protected boolean checkResourcePermissions(CmsPermissionSet required, boolean neededForFolder) {
 
         if (isMultiOperation()) {

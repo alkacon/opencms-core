@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2009/06/04 14:29:08 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/08/20 11:31:26 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 6.0.0 
  */
@@ -284,6 +284,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         return new CmsPropertyDefinition(m_id, m_name, m_type);
@@ -306,6 +307,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -350,6 +352,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_name != null) {
@@ -371,6 +374,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

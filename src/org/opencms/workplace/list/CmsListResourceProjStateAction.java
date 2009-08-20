@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceProjStateAction.java,v $
- * Date   : $Date: 2009/06/04 14:29:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:30:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,6 +57,7 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
      */
+    @Override
     public CmsMessageContainer getHelpText() {
 
         if ((super.getHelpText() == null) || super.getHelpText().equals(EMPTY_MESSAGE)) {
@@ -68,6 +69,7 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
      */
+    @Override
     public String getIconPath() {
 
         return getResourceUtil().getIconPathProjectState();
@@ -76,6 +78,7 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getName()
      */
+    @Override
     public CmsMessageContainer getName() {
 
         if (super.getName() == null) {

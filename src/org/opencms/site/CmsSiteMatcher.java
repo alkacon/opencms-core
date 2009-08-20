@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2009/06/04 14:29:57 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/08/20 11:31:55 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author  Alexander Kandzior
  *
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -184,6 +184,7 @@ public final class CmsSiteMatcher implements Cloneable {
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         return new CmsSiteMatcher(m_serverProtocol, m_serverName, m_serverPort, (m_timeOffset / 1000L));
@@ -192,6 +193,7 @@ public final class CmsSiteMatcher implements Cloneable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -266,6 +268,7 @@ public final class CmsSiteMatcher implements Cloneable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_hashCode == null) {
@@ -277,6 +280,7 @@ public final class CmsSiteMatcher implements Cloneable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer(32);

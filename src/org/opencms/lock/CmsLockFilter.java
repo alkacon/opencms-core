@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockFilter.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:37 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.5.4 
  */
@@ -99,6 +99,7 @@ public final class CmsLockFilter implements Cloneable {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsLockFilter filter = new CmsLockFilter(false);
@@ -373,6 +374,7 @@ public final class CmsLockFilter implements Cloneable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer str = new StringBuffer(128);

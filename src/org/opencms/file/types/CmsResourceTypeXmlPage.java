@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/08/20 11:31:24 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,6 +140,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getCachePropertyDefault()
      */
+    @Override
     public String getCachePropertyDefault() {
 
         return "element;locale;";
@@ -148,6 +149,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return CmsXmlPageLoader.RESOURCE_LOADER_ID;
@@ -156,6 +158,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
+    @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
@@ -230,6 +233,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsSecurityManager, CmsFile)
      */
+    @Override
     public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
 
         // check if the user has write access and if resource is locked

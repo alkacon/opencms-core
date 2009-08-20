@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestLogAppender.java,v $
- * Date   : $Date: 2009/06/04 14:35:30 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/20 11:31:55 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -64,6 +64,7 @@ public class OpenCmsTestLogAppender extends ConsoleAppender {
     /**
      * @see org.apache.log4j.WriterAppender#append(org.apache.log4j.spi.LoggingEvent)
      */
+    @Override
     public void append(LoggingEvent logEvent) {
 
         // first log the event as usual

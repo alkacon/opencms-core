@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/db2/CmsHistoryDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:35 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,6 +45,7 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
     /**
      * @see org.opencms.db.I_CmsHistoryDriver#initSqlManager(String)
      */
+    @Override
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);

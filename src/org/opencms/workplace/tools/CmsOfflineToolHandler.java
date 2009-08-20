@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsOfflineToolHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/20 11:31:06 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.file.CmsObject;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,6 +47,7 @@ public class CmsOfflineToolHandler extends CmsDefaultToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#getDisabledHelpText()
      */
+    @Override
     public String getDisabledHelpText() {
 
         if (super.getDisabledHelpText().equals(DEFAULT_DISABLED_HELPTEXT)) {
@@ -58,6 +59,7 @@ public class CmsOfflineToolHandler extends CmsDefaultToolHandler {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
+    @Override
     public boolean isEnabled(CmsObject cms) {
 
         return !cms.getRequestContext().currentProject().isOnlineProject();

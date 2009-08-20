@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +74,7 @@ public class CmsEditGroupDialog extends A_CmsEditGroupDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditGroupDialog#getListClass()
      */
+    @Override
     protected String getListClass() {
 
         return CmsGroupsList.class.getName();
@@ -82,6 +83,7 @@ public class CmsEditGroupDialog extends A_CmsEditGroupDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditGroupDialog#getListRootPath()
      */
+    @Override
     protected String getListRootPath() {
 
         return "/accounts/orgunit/groups";
@@ -90,6 +92,7 @@ public class CmsEditGroupDialog extends A_CmsEditGroupDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditGroupDialog#isEditable(org.opencms.file.CmsGroup)
      */
+    @Override
     protected boolean isEditable(CmsGroup group) {
 
         return true;

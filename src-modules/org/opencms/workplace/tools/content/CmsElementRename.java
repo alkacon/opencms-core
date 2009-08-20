@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2009/06/04 14:33:43 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/08/20 11:31:23 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -344,6 +344,7 @@ public class CmsElementRename extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#getCms()
      */
+    @Override
     public CmsObject getCms() {
 
         if (m_cms == null) {
@@ -557,6 +558,7 @@ public class CmsElementRename extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

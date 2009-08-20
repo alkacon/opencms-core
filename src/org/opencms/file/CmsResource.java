@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2009/06/04 14:29:08 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2009/08/20 11:31:26 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.util.Comparator;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 6.0.0 
  */
@@ -250,6 +250,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         /**
          * @see java.lang.Object#toString()
          */
+        @Override
         public String toString() {
 
             return String.valueOf(getMode());
@@ -741,6 +742,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         CmsResource clone = new CmsResource(
@@ -798,6 +800,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -1037,6 +1040,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_structureId != null) {
@@ -1247,6 +1251,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

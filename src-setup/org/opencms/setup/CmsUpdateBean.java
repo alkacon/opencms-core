@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsUpdateBean.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:04 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,6 +161,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * 
      * @return html code
      */
+    @Override
     public String displayError(String pathPrefix) {
 
         if (pathPrefix == null) {
@@ -341,6 +342,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     /**
      * @see org.opencms.setup.CmsSetupBean#htmlModules()
      */
+    @Override
     public String htmlModules() {
 
         StringBuffer html = new StringBuffer(1024);
@@ -376,6 +378,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * @param servletMapping the OpenCms servlet mapping
      * @param defaultWebApplication the name of the default web application
      */
+    @Override
     public void init(String webAppRfsPath, String servletMapping, String defaultWebApplication) {
 
         try {
@@ -667,6 +670,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     /**
      * @see org.opencms.main.I_CmsShellCommands#shellExit()
      */
+    @Override
     public void shellExit() {
 
         System.out.println();
@@ -677,6 +681,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     /**
      * @see org.opencms.main.I_CmsShellCommands#shellStart()
      */
+    @Override
     public void shellStart() {
 
         System.out.println();

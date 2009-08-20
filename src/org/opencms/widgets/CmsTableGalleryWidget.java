@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsTableGalleryWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:11 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.widgets;
  *
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,6 +64,7 @@ public class CmsTableGalleryWidget extends A_CmsHtmlGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsHtmlGalleryWidget#getNameLower()
      */
+    @Override
     public String getNameLower() {
 
         return "table";
@@ -72,6 +73,7 @@ public class CmsTableGalleryWidget extends A_CmsHtmlGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsHtmlGalleryWidget#getNameUpper()
      */
+    @Override
     public String getNameUpper() {
 
         return "Table";

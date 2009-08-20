@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2009/07/23 10:13:12 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2009/08/20 11:30:44 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.module.CmsModule;
  * 
  * @author  Mario Jaeger
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 7.5.0
  */
@@ -92,6 +92,7 @@ public class CmsWorkplaceAction extends A_CmsModuleAction {
     /**
      * @see org.opencms.module.A_CmsModuleAction#initialize(org.opencms.file.CmsObject, org.opencms.configuration.CmsConfigurationManager, org.opencms.module.CmsModule)
      */
+    @Override
     public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
 
         super.initialize(adminCms, configurationManager, module);

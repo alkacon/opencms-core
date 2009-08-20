@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationFilter.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,6 +92,7 @@ public final class CmsRelationFilter implements Cloneable {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsRelationFilter filter = new CmsRelationFilter(m_source, m_target);
@@ -364,6 +365,7 @@ public final class CmsRelationFilter implements Cloneable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer str = new StringBuffer(128);

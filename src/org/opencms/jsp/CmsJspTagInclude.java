@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2009/06/04 14:29:01 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2009/08/20 11:31:19 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  */
@@ -413,6 +413,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * 
      * @throws JspException by interface default
      */
+    @Override
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
@@ -489,6 +490,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * 
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() {
 
         return EVAL_BODY_BUFFERED;
@@ -578,6 +580,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         super.release();

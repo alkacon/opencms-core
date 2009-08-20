@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/08/20 11:30:44 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -341,6 +341,7 @@ public abstract class CmsTabDialog extends CmsDialog {
      * 
      * @return the start html of the page
      */
+    @Override
     public String htmlStart() {
 
         return htmlStart(null);
@@ -355,6 +356,7 @@ public abstract class CmsTabDialog extends CmsDialog {
      * @param helpUrl the key for the online help to include on the page
      * @return the start html of the page
      */
+    @Override
     public String htmlStart(String helpUrl) {
 
         String stylesheet = null;
@@ -407,6 +409,7 @@ public abstract class CmsTabDialog extends CmsDialog {
      * @return all initialized parameters of the current workplace class
      * as hidden field tags that can be inserted in a html form
      */
+    @Override
     public String paramsAsHidden() {
 
         StringBuffer result = new StringBuffer(512);

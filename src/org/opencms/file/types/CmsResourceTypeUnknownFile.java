@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeUnknownFile.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:25 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.opencms.main.OpenCms;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.0 
  */
@@ -96,6 +96,7 @@ public class CmsResourceTypeUnknownFile extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return CmsDumpLoader.RESOURCE_LOADER_ID;
@@ -104,6 +105,7 @@ public class CmsResourceTypeUnknownFile extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
+    @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItem.java,v $
- * Date   : $Date: 2009/06/04 14:29:27 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:30:41 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,6 +151,7 @@ public class CmsListItem {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_values.toString();

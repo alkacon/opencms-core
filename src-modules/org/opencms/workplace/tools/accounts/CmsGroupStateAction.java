@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupStateAction.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/20 11:30:57 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,6 +122,7 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
      */
+    @Override
     public boolean isVisible() {
 
         try {
@@ -151,6 +152,7 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
     /**
      * @see org.opencms.workplace.list.I_CmsListAction#setWp(org.opencms.workplace.list.A_CmsListDialog)
      */
+    @Override
     public void setWp(A_CmsListDialog wp) {
 
         super.setWp(wp);

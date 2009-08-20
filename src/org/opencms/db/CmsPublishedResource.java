@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2009/06/04 14:29:18 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2009/08/20 11:31:11 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 6.0.0
  * 
@@ -225,6 +225,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -347,6 +348,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_structureId.isNullUUID() ? m_resourceId.hashCode() : m_structureId.hashCode();
@@ -412,6 +414,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer(128);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsOverviewFieldDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.5 
  */
@@ -104,6 +104,7 @@ public class CmsOverviewFieldDialog extends A_CmsFieldDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -128,6 +129,7 @@ public class CmsOverviewFieldDialog extends A_CmsFieldDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -136,6 +138,7 @@ public class CmsOverviewFieldDialog extends A_CmsFieldDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         super.defineWidgets();

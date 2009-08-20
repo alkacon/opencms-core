@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsMergePages.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/08/20 11:31:23 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -209,6 +209,7 @@ public class CmsMergePages extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#getCms()
      */
+    @Override
     public CmsObject getCms() {
 
         if (m_cms == null) {
@@ -321,6 +322,7 @@ public class CmsMergePages extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

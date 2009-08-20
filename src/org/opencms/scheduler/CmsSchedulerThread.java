@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsSchedulerThread.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:31:18 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,6 +107,7 @@ public class CmsSchedulerThread extends Thread {
     /**
      * Loop, executing targets as they are received.<p>
      */
+    @Override
     public void run() {
 
         boolean runOnce = (m_runnable != null);

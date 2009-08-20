@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsSimpleNewsletterRecipient.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:18 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ package org.opencms.newsletter;
  * @author Alexander Kandzior
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.2
  * 
@@ -89,6 +89,7 @@ public class CmsSimpleNewsletterRecipient implements I_CmsNewsletterRecipient {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (!(obj instanceof CmsSimpleNewsletterRecipient)) {
@@ -150,6 +151,7 @@ public class CmsSimpleNewsletterRecipient implements I_CmsNewsletterRecipient {
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_email.hashCode() + m_firstname.hashCode() + m_lastname.hashCode() + m_name.hashCode();

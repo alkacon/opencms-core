@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceView.java,v $
- * Date   : $Date: 2009/06/04 14:29:22 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/08/20 11:30:43 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.workplace;
  *  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,6 +82,7 @@ public class CmsWorkplaceView implements Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -126,6 +127,7 @@ public class CmsWorkplaceView implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getUri().hashCode();

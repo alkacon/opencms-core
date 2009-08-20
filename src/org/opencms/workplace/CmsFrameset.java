@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2009/08/20 11:30:44 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.94 $ 
+ * @version $Revision: 1.95 $ 
  * 
  * @since 6.0.0 
  */
@@ -503,6 +503,7 @@ public class CmsFrameset extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initTimeWarp(org.opencms.db.CmsUserSettings, javax.servlet.http.HttpSession)
      */
+    @Override
     protected void initTimeWarp(CmsUserSettings settings, HttpSession session) {
 
         // overriden to avoid deletion of the configured time warp: 
@@ -513,6 +514,7 @@ public class CmsFrameset extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // check if a startup page has been set

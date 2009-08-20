@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2009/08/20 11:31:37 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  * 
@@ -542,6 +542,7 @@ public final class CmsLockManager {
     /** 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer();

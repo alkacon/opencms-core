@@ -115,6 +115,7 @@ public class CmsListDemo3 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -123,6 +124,7 @@ public class CmsListDemo3 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -131,6 +133,7 @@ public class CmsListDemo3 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -139,6 +142,7 @@ public class CmsListDemo3 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -161,6 +165,7 @@ public class CmsListDemo3 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -174,6 +179,7 @@ public class CmsListDemo3 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for activation/deactivation
@@ -216,6 +222,7 @@ public class CmsListDemo3 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // noop
@@ -224,6 +231,7 @@ public class CmsListDemo3 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // makes the list searchable by several columns

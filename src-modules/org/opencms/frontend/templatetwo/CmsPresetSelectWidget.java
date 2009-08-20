@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templatetwo/CmsPresetSelectWidget.java,v $
- * Date   : $Date: 2009/06/04 14:33:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.4
  */
@@ -81,6 +81,7 @@ public class CmsPresetSelectWidget extends CmsSelectWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#newInstance()
      */
+    @Override
     public I_CmsWidget newInstance() {
 
         return new CmsPresetSelectWidget(getConfiguration());
@@ -89,6 +90,7 @@ public class CmsPresetSelectWidget extends CmsSelectWidget {
     /**
      *@see org.opencms.widgets.A_CmsSelectWidget#parseSelectOptions(CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
+    @Override
     protected List parseSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         List result = new ArrayList();

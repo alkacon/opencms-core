@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishScheduled.java,v $
- * Date   : $Date: 2009/08/13 12:30:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/08/20 11:30:52 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.5.1
  */
@@ -119,6 +119,7 @@ public class CmsPublishScheduled extends CmsDialog {
      * 
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         // so that the explorer will be shown, if dialog is opened from e-mail
@@ -198,6 +199,7 @@ public class CmsPublishScheduled extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepository.java,v $
- * Date   : $Date: 2009/06/04 14:29:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.5.6
  */
@@ -89,6 +89,7 @@ public class CmsRepository extends A_CmsRepository {
     /**
      * @see org.opencms.repository.A_CmsRepository#initConfiguration()
      */
+    @Override
     public void initConfiguration() throws CmsConfigurationException {
 
         if (getConfiguration().containsKey(PARAM_WRAPPER)) {

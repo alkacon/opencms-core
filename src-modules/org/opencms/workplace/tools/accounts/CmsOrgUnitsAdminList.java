@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsAdminList.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:30:59 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.5.6 
  */
@@ -99,6 +99,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtml()
      */
+    @Override
     public String defaultActionHtml() {
 
         if ((getList() != null) && getList().getAllContent().isEmpty()) {
@@ -124,6 +125,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String ouFqn = getSelectedItem().get(LIST_COLUMN_NAME).toString();
@@ -238,6 +240,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for overview
@@ -253,6 +256,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
              */
+            @Override
             public CmsMessageContainer getName() {
 
                 if (getItem() != null) {
@@ -266,6 +270,7 @@ public class CmsOrgUnitsAdminList extends A_CmsOrgUnitsList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 if (getItem() != null) {

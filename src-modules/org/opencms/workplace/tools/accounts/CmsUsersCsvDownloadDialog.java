@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersCsvDownloadDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:30:58 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,6 +91,7 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         // empty
@@ -99,6 +100,7 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#dialogButtonsCustom()
      */
+    @Override
     public String dialogButtonsCustom() {
 
         return dialogButtons(new int[] {BUTTON_CLOSE}, new String[1]);
@@ -162,8 +164,8 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
                 try {
                     Method method = CmsUser.class.getMethod("get"
                         + curValue.substring(0, 1).toUpperCase()
-                        + curValue.substring(1), null);
-                    String curOutput = (String)method.invoke(exportUser, null);
+                        + curValue.substring(1), (Class<?>[])null);
+                    String curOutput = (String)method.invoke(exportUser, (Object[])null);
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(curOutput) || curOutput.equals("null")) {
                         curOutput = (String)exportUser.getAdditionalInfo(curValue);
                     }
@@ -210,6 +212,7 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -244,6 +247,7 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         // empty
@@ -369,6 +373,7 @@ public class CmsUsersCsvDownloadDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (getParamOufqn() == null) {

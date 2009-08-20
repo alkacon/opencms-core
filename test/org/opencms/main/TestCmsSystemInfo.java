@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsSystemInfo.java,v $
- * Date   : $Date: 2009/06/04 14:35:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:30 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -83,11 +83,13 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms(null, "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

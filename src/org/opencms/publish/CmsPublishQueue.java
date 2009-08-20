@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishQueue.java,v $
- * Date   : $Date: 2009/06/04 14:29:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.5.5
  */
@@ -93,6 +93,7 @@ public class CmsPublishQueue {
              * 
              * @see org.apache.commons.collections.buffer.BoundedFifoBuffer#remove()
              */
+            @Override
             public Object remove() {
 
                 CmsPublishJobInfoBean publishJob = (CmsPublishJobInfoBean)super.remove();

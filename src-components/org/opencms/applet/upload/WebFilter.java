@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/WebFilter.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import javax.swing.filechooser.FileFilter;
  *
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.2.4 
  */
@@ -58,6 +58,7 @@ public class WebFilter extends FileFilter {
      * 
      * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
      */
+    @Override
     public boolean accept(File f) {
 
         if (f.isDirectory()) {
@@ -70,6 +71,7 @@ public class WebFilter extends FileFilter {
     /**
      * @see javax.swing.filechooser.FileFilter#getDescription()
      */
+    @Override
     public String getDescription() {
 
         return "Html";

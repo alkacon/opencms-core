@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUsersList.java,v $
- * Date   : $Date: 2009/06/04 14:33:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:30:57 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,6 +185,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
      * @throws CmsRuntimeException to signal that an action is not supported
      * 
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
@@ -242,6 +243,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String userId = getSelectedItem().getId();
@@ -314,6 +316,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -401,6 +404,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -442,6 +446,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -464,6 +469,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for edit
@@ -526,6 +532,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() == null) {
@@ -550,6 +557,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() == null) {
@@ -647,6 +655,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add user address details
@@ -697,6 +706,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add delete multi action
@@ -744,6 +754,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

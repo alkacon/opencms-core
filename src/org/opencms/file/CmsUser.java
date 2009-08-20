@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2009/08/20 11:31:26 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 6.0.0
  * 
@@ -243,6 +243,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         return new CmsUser(
@@ -349,6 +350,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see org.opencms.security.CmsPrincipal#getDescription()
      */
+    @Override
     public String getDescription() {
 
         return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION);
@@ -383,6 +385,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see org.opencms.security.CmsPrincipal#getDisplayName(org.opencms.file.CmsObject, java.util.Locale)
      */
+    @Override
     public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
 
         if (OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, "", true).size() > 0) {
@@ -485,6 +488,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see org.opencms.security.I_CmsPrincipal#isGroup()
      */
+    @Override
     public boolean isGroup() {
 
         return false;
@@ -523,6 +527,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see org.opencms.security.I_CmsPrincipal#isUser()
      */
+    @Override
     public boolean isUser() {
 
         return true;
@@ -596,6 +601,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see org.opencms.security.CmsPrincipal#setDescription(java.lang.String)
      */
+    @Override
     public void setDescription(String description) {
 
         setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, description);
@@ -718,6 +724,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

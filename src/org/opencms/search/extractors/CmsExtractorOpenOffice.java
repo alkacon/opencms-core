@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorOpenOffice.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:31:13 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.dom4j.io.SAXReader;
  *
  * @author Dirk Oelkers
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.4  
  */
@@ -74,6 +74,7 @@ public final class CmsExtractorOpenOffice extends A_CmsTextExtractor {
     /**
      * @see org.opencms.search.extractors.A_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
      */
+    @Override
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
         ZipInputStream zin = new ZipInputStream(in);

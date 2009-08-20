@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2009/08/18 09:16:40 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:31:40 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -1048,6 +1048,7 @@ public class CmsSearchParameters {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

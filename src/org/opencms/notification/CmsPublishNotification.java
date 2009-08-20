@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsPublishNotification.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.5.3
  */
@@ -72,6 +72,7 @@ public class CmsPublishNotification extends A_CmsNotification {
     /**
      * @see org.opencms.notification.A_CmsNotification#generateHtmlMsg()
      */
+    @Override
     protected String generateHtmlMsg() {
 
         StringBuffer buffer = new StringBuffer();
@@ -100,6 +101,7 @@ public class CmsPublishNotification extends A_CmsNotification {
     /**
      * @see org.opencms.notification.A_CmsNotification#getNotificationContent()
      */
+    @Override
     protected String getNotificationContent() {
 
         return NOTIFICATION_CONTENT;

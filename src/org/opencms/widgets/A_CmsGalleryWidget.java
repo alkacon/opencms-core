@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2009/07/31 10:36:34 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/08/20 11:31:28 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.workplace.galleries.A_CmsAjaxGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,6 +72,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(256);
@@ -86,6 +87,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return "\tinit" + getNameUpper() + "Gallery();\n";
@@ -94,6 +96,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(16);

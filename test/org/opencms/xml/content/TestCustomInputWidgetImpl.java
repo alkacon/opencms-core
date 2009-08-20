@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCustomInputWidgetImpl.java,v $
- * Date   : $Date: 2009/06/04 14:35:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:30 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.widgets.I_CmsWidget;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestCustomInputWidgetImpl extends CmsInputWidget {
 
@@ -65,6 +65,7 @@ public class TestCustomInputWidgetImpl extends CmsInputWidget {
     /**
      * @see org.opencms.widgets.CmsInputWidget#newInstance()
      */
+    @Override
     public I_CmsWidget newInstance() {
 
         return new TestCustomInputWidgetImpl(getConfiguration());
@@ -73,6 +74,7 @@ public class TestCustomInputWidgetImpl extends CmsInputWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setConfiguration(java.lang.String)
      */
+    @Override
     public void setConfiguration(String configuration) {
 
         super.setConfiguration(configuration + "[some addition here]");

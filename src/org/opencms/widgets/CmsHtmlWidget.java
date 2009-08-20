@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:10 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.1 
  */
@@ -92,6 +92,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return getEditorWidget(cms, widgetDialog).getDialogIncludes(cms, widgetDialog);
@@ -100,6 +101,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return getEditorWidget(cms, widgetDialog).getDialogInitCall(cms, widgetDialog);
@@ -108,6 +110,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return getEditorWidget(cms, widgetDialog).getDialogInitMethod(cms, widgetDialog);
@@ -132,6 +135,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
         Map formParameters,

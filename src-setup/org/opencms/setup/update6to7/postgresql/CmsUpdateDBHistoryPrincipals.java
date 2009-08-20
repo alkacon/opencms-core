@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/postgresql/CmsUpdateDBHistoryPrincipals.java,v $
- * Date   : $Date: 2009/06/04 14:31:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.HashMap;
  * @author Ivan Codarin
  * @author Georgi Naplatanov
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.0.2
  */
@@ -70,6 +70,7 @@ public class CmsUpdateDBHistoryPrincipals extends org.opencms.setup.update6to7.g
     /**
      * @see org.opencms.setup.update6to7.generic.CmsUpdateDBHistoryPrincipals#createHistPrincipalsTable(org.opencms.setup.CmsSetupDb)
      */
+    @Override
     protected void createHistPrincipalsTable(CmsSetupDb dbCon) throws SQLException {
 
         String indexTablespace = (String)m_poolData.get("indexTablespace");

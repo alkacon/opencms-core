@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2009/08/20 11:31:45 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -840,6 +840,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * @return a clone of this XML content definition
      */
+    @Override
     public Object clone() {
 
         CmsXmlContentDefinition result = new CmsXmlContentDefinition();
@@ -932,6 +933,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -1143,6 +1145,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getInnerName().hashCode();

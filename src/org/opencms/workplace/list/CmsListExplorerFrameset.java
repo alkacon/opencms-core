@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2009/06/04 14:29:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:30:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,6 +145,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     /**
      * @see org.opencms.workplace.tools.CmsToolDialog#dialogTitle()
      */
+    @Override
     public String dialogTitle() {
 
         StringBuffer html = new StringBuffer(512);
@@ -270,6 +271,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden(java.util.Collection)
      */
+    @Override
     public String paramsAsHidden(Collection excludes) {
 
         StringBuffer result = new StringBuffer(512);
@@ -306,6 +308,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         setParamStyle(CmsToolDialog.STYLE_NEW);

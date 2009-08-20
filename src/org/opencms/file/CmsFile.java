@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2009/06/04 14:29:10 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/08/20 11:31:25 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 6.0.0 
  */
@@ -185,6 +185,7 @@ public class CmsFile extends CmsResource {
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         byte[] newContent = new byte[this.getContents().length];
@@ -230,6 +231,7 @@ public class CmsFile extends CmsResource {
     /**
      * @see org.opencms.file.CmsResource#getLength()
      */
+    @Override
     public int getLength() {
 
         return m_length;
@@ -238,6 +240,7 @@ public class CmsFile extends CmsResource {
     /**
      * @see org.opencms.file.CmsResource#isFile()
      */
+    @Override
     public boolean isFile() {
 
         return true;
@@ -246,6 +249,7 @@ public class CmsFile extends CmsResource {
     /**
      * @see org.opencms.file.CmsResource#isFolder()
      */
+    @Override
     public boolean isFolder() {
 
         return false;

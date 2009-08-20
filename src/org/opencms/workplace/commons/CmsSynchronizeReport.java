@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/08/20 11:30:50 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,6 +95,7 @@ public class CmsSynchronizeReport extends CmsReport {
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
                 setParamRefreshWorkplace(CmsStringUtil.TRUE);
+                // $FALL-THROUGH$
             default:
                 CmsSynchronizeThread thread = new CmsSynchronizeThread(getCms());
                 thread.start();
@@ -108,6 +109,7 @@ public class CmsSynchronizeReport extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

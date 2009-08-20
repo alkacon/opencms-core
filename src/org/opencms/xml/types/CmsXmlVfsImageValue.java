@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsImageValue.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:34 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 7.5.0 
  */
@@ -121,6 +121,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#createValue(I_CmsXmlDocument, org.dom4j.Element, Locale)
      */
+    @Override
     public I_CmsXmlContentValue createValue(I_CmsXmlDocument document, Element element, Locale locale) {
 
         return new CmsXmlVfsImageValue(document, element, locale, this);
@@ -198,6 +199,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
     /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#getSchemaDefinition()
      */
+    @Override
     public String getSchemaDefinition() {
 
         // the schema definition is located in a separate file for easier editing
@@ -210,6 +212,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#getTypeName()
      */
+    @Override
     public String getTypeName() {
 
         return TYPE_NAME_IMAGE;
@@ -218,6 +221,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#newInstance(java.lang.String, java.lang.String, java.lang.String)
      */
+    @Override
     public I_CmsXmlSchemaType newInstance(String name, String minOccurs, String maxOccurs) {
 
         return new CmsXmlVfsImageValue(name, minOccurs, maxOccurs);
@@ -284,6 +288,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#setStringValue(org.opencms.file.CmsObject, java.lang.String)
      */
+    @Override
     public void setStringValue(CmsObject cms, String value) throws CmsIllegalArgumentException {
 
         // call the super implementation to set the value

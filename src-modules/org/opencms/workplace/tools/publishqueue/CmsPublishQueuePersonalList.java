@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueuePersonalList.java,v $
- * Date   : $Date: 2009/06/04 14:33:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:10 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.5.5
  */
@@ -205,6 +205,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     public String defaultActionHtmlStart() {
 
         return new StringBuffer(getList().listJs()).append(dialogContentStart(getParamTitle())).toString();
@@ -213,6 +214,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -221,6 +223,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException {
 
         String publishJobId = getSelectedItem().get(LIST_COLUMN_ID).toString();
@@ -250,6 +253,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         //noop
@@ -258,6 +262,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -293,6 +298,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create view column
@@ -321,6 +327,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 String state = (String)getItem().get(LIST_COLUMN_STATE);
@@ -337,6 +344,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 String state = (String)getItem().get(LIST_COLUMN_STATE);
@@ -349,6 +357,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
              */
+            @Override
             public CmsMessageContainer getName() {
 
                 Integer warns = (Integer)getItem().get(LIST_COLUMN_WARNINGS);
@@ -359,6 +368,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 String state = (String)getItem().get(LIST_COLUMN_STATE);
@@ -461,6 +471,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         //noop
@@ -469,6 +480,7 @@ public class CmsPublishQueuePersonalList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         //noop

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/relations/TestCategories.java,v $
- * Date   : $Date: 2009/06/04 14:35:34 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/20 11:31:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -93,11 +93,13 @@ public class TestCategories extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

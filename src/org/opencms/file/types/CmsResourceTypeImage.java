@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeImage.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/08/20 11:31:25 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -279,6 +279,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
      */
+    @Override
     public CmsResource createResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -304,6 +305,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return m_staticLoaderId;
@@ -312,6 +314,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, org.opencms.file.CmsResource, byte[], java.util.List)
      */
+    @Override
     public CmsResource importResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -344,6 +347,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
+    @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
@@ -394,6 +398,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int, byte[], java.util.List)
      */
+    @Override
     public void replaceResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -431,6 +436,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsFile)
      */
+    @Override
     public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource)
     throws CmsException, CmsVfsException, CmsSecurityException {
 

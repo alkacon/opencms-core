@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsPowerPoint.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:31:13 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.poi.util.LittleEndian;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,6 +76,7 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
     /** 
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
      */
+    @Override
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
         POIFSReader reader = new POIFSReader();
@@ -94,6 +95,7 @@ public final class CmsExtractorMsPowerPoint extends A_CmsTextExtractorMsOfficeBa
     /**
      * @see org.apache.poi.poifs.eventfilesystem.POIFSReaderListener#processPOIFSReaderEvent(org.apache.poi.poifs.eventfilesystem.POIFSReaderEvent)
      */
+    @Override
     public void processPOIFSReaderEvent(POIFSReaderEvent event) {
 
         try {

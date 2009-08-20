@@ -104,6 +104,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         // not implemented for this demo
@@ -221,6 +222,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         addWidget(new CmsWidgetDialogParameter("stringwidget", new CmsInputWidget(), 0, 5));
@@ -253,6 +255,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return new String[] {"page1"};
@@ -261,6 +264,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -273,6 +277,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type

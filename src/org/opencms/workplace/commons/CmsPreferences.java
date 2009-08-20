@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2009/07/06 08:02:34 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2009/08/20 11:30:53 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -97,7 +97,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.45 $
+ * @version $Revision: 1.46 $
  * 
  * @since 6.0.0
  */
@@ -1535,6 +1535,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * @see org.opencms.workplace.CmsTabDialog#getTabParameterOrder()
      */
+    @Override
     public List getTabParameterOrder() {
 
         ArrayList orderList = new ArrayList(5);
@@ -1550,6 +1551,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * @see org.opencms.workplace.CmsTabDialog#getTabs()
      */
+    @Override
     public List getTabs() {
 
         ArrayList tabList = new ArrayList(6);
@@ -2036,6 +2038,7 @@ public class CmsPreferences extends CmsTabDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // create an empty user settings object
@@ -2079,6 +2082,7 @@ public class CmsPreferences extends CmsTabDialog {
      * 
      * @return the values of all parameter methods of this workplace class instance
      */
+    @Override
     protected Map paramValues() {
 
         Map map = super.paramValues();

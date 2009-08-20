@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImportDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:46 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:49 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -104,7 +104,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Peter Bonrad
  * @author Anja Roettgers
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  */
 public class CmsHtmlImportDialog extends CmsWidgetDialog {
@@ -164,6 +164,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -216,6 +217,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -252,6 +254,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlContent()
      */
+    @Override
     protected String defaultActionHtmlContent() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -274,6 +277,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initHtmlImportObject();
@@ -337,6 +341,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#fillWidgetValues(javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void fillWidgetValues(HttpServletRequest request) {
 
         Map parameters;
@@ -429,6 +434,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -472,6 +478,7 @@ public class CmsHtmlImportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle

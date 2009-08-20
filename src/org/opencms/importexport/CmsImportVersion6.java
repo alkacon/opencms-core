@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion6.java,v $
- * Date   : $Date: 2009/06/04 14:28:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.6 
  * 
@@ -82,6 +82,7 @@ public class CmsImportVersion6 extends CmsImportVersion5 {
     /**
      * @see org.opencms.importexport.I_CmsImport#getVersion()
      */
+    @Override
     public int getVersion() {
 
         return CmsImportVersion6.IMPORT_VERSION6;
@@ -92,6 +93,7 @@ public class CmsImportVersion6 extends CmsImportVersion5 {
      * 
      * @throws CmsImportExportException if something goes wrong
      */
+    @Override
     protected void importUsers() throws CmsImportExportException {
 
         try {

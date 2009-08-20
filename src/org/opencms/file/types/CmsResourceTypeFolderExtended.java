@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolderExtended.java,v $
- * Date   : $Date: 2009/06/04 14:29:29 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/08/20 11:31:25 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.TreeMap;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,6 +66,7 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         super.addConfigurationParameter(paramName, paramValue);
@@ -82,6 +83,7 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
+    @Override
     public Map getConfiguration() {
 
         Map result = new TreeMap();

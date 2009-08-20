@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2009/08/20 11:31:33 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -183,6 +183,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
      * @throws CmsRuntimeException to signal that an action is not supported
      * 
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
@@ -231,6 +232,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_ACTION_EDIT) || getParamListAction().equals(LIST_DEFACTION_EDIT)) {
@@ -297,6 +299,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get all scheduled jobs from manager
@@ -327,6 +330,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List items = new ArrayList();
@@ -351,6 +355,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific messages
@@ -362,6 +367,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // add column for edit action
@@ -395,6 +401,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -415,6 +422,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if (getItem() != null) {
@@ -515,6 +523,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add independent job context info button
@@ -562,6 +571,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the activate job multi action

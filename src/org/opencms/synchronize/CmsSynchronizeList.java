@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeList.java,v $
- * Date   : $Date: 2009/06/04 14:29:56 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/20 11:31:46 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.io.Serializable;
  * @author Edna Falkenhan
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,6 +146,7 @@ public class CmsSynchronizeList implements Serializable {
      *  
      * @return string-representation for this object.
      */
+    @Override
     public String toString() {
 
         String output = m_resName + ":" + m_transResName + ":" + m_modifiedVfs + ":" + m_modifiedFs;

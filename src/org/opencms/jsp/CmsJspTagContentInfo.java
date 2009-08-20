@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/08/20 11:31:19 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,6 +87,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
+    @Override
     public int doEndTag() {
 
         if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
@@ -99,6 +100,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content container" class
@@ -220,6 +222,7 @@ public class CmsJspTagContentInfo extends CmsJspScopedVarBodyTagSuport implement
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         m_value = null;

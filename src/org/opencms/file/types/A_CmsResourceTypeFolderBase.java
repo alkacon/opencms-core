@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2009/07/09 13:23:08 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/08/20 11:31:24 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,6 +72,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#chtype(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
      */
+    @Override
     public void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource filename, int newType)
     throws CmsException, CmsDataNotImplementedException {
 
@@ -87,6 +88,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResource.CmsResourceCopyMode)
      */
+    @Override
     public void copyResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -125,6 +127,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsSecurityManager, java.lang.String, byte[], List)
      */
+    @Override
     public CmsResource createResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -139,6 +142,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#deleteResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceDeleteMode)
      */
+    @Override
     public void deleteResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -177,6 +181,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         // folders have no loader
@@ -186,6 +191,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#isFolder()
      */
+    @Override
     public boolean isFolder() {
 
         return true;
@@ -194,6 +200,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
      */
+    @Override
     public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
     throws CmsException, CmsIllegalArgumentException {
 
@@ -336,6 +343,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
      */
+    @Override
     public void replaceResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -357,6 +365,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
+    @Override
     public void setDateExpired(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -393,6 +402,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateLastModified(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
+    @Override
     public void setDateLastModified(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -429,6 +439,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateReleased(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
+    @Override
     public void setDateReleased(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -465,6 +476,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#undelete(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, boolean)
      */
+    @Override
     public void undelete(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
     throws CmsException {
 
@@ -492,6 +504,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceUndoMode)
      */
+    @Override
     public void undoChanges(
         CmsObject cms,
         CmsSecurityManager securityManager,

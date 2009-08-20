@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsExtendedNotificationCause.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,6 +101,7 @@ public class CmsExtendedNotificationCause implements Comparable {
      * 
      * @see org.opencms.notification.CmsNotificationCause#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
 
         if (!(o instanceof CmsExtendedNotificationCause) && !(o instanceof CmsNotificationCause)) {
@@ -113,6 +114,7 @@ public class CmsExtendedNotificationCause implements Comparable {
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_cause + m_resource.getStructureId().hashCode();

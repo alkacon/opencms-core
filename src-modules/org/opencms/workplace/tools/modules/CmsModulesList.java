@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2009/06/04 14:33:31 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/08/20 11:31:13 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,6 +167,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
@@ -193,6 +194,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String module = getSelectedItem().getId();
@@ -224,6 +226,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -304,6 +307,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -330,6 +334,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -341,6 +346,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         //add column for edit action
@@ -435,6 +441,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // create list item detail
@@ -513,6 +520,7 @@ public class CmsModulesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the delete module multi action

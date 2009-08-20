@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitUsersList.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6
  */
@@ -118,6 +118,7 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         if (getAction() == ACTION_CANCEL) {
@@ -150,6 +151,7 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_REMOVE)) {
@@ -185,6 +187,7 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         if (m_removeActionIds.contains(getParamListAction())) {
@@ -217,6 +220,7 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsOrgUnitUsersList#getUsers()
      */
+    @Override
     protected List getUsers() {
 
         List ouUsers = (ArrayList)getJsp().getRequest().getSession().getAttribute(A_CmsOrgUnitUsersList.ORGUNIT_USERS);
@@ -234,6 +238,7 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsOrgUnitUsersList#setDefaultAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDefaultAction(CmsListColumnDefinition loginCol) {
 
         // add default remove action
@@ -248,6 +253,7 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsOrgUnitUsersList#setIconAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setIconAction(CmsListColumnDefinition iconCol) {
 
         CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON) {
@@ -255,6 +261,7 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return ((A_CmsOrgUnitUsersList)getWp()).getIconPath(getItem());
@@ -270,6 +277,7 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add remove multi action
@@ -283,6 +291,7 @@ public class CmsOrgUnitUsersList extends A_CmsOrgUnitUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsOrgUnitUsersList#setStateActionCol(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setStateActionCol(CmsListMetadata metadata) {
 
         // create column for state change

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/08/20 11:31:29 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.List;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,6 +136,7 @@ public class CmsSelectWidget extends A_CmsSelectWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getWidgetStringValue(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String result = super.getWidgetStringValue(cms, widgetDialog, param);

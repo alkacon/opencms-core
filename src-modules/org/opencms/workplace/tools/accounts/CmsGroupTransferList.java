@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupTransferList.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -159,6 +159,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
      * @throws CmsRuntimeException to signal that an action is not supported
      * 
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -167,6 +168,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_DEFACTION_TRANSFER) || getParamListAction().equals(LIST_ACTION_TRANSFER)) {
@@ -218,6 +220,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -245,6 +248,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -300,6 +304,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -329,6 +334,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -340,6 +346,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for transfer
@@ -386,6 +393,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add user users details
@@ -418,6 +426,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op
@@ -440,6 +449,7 @@ public class CmsGroupTransferList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

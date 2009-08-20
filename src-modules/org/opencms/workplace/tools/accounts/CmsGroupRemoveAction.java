@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupRemoveAction.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,6 +75,7 @@ public class CmsGroupRemoveAction extends CmsListDefaultAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
      */
+    @Override
     public boolean isVisible() {
 
         if (getItem() != null) {

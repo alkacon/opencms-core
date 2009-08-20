@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsHookList.java,v $
- * Date   : $Date: 2009/06/04 14:33:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import java.util.LinkedList;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -104,6 +104,7 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.List#add(int, java.lang.Object)
      */
+    @Override
     public void add(int index, Object element) {
 
         super.add(index, element);
@@ -115,6 +116,7 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.Collection#add(java.lang.Object)
      */
+    @Override
     public boolean add(Object o) {
 
         if (super.add(o)) {
@@ -128,6 +130,7 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.Collection#clear()
      */
+    @Override
     public void clear() {
 
         onClear(m_peer);
@@ -139,6 +142,7 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.List#get(int)
      */
+    @Override
     public Object get(int index) {
 
         Object ret = super.get(index);
@@ -150,6 +154,7 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.Collection#iterator()
      */
+    @Override
     public Iterator iterator() {
 
         Iterator it = super.iterator();
@@ -161,6 +166,7 @@ public abstract class CmsHookList extends LinkedList {
      * 
      * @see java.util.List#remove(int)
      */
+    @Override
     public Object remove(int index) {
 
         Object ret = null;

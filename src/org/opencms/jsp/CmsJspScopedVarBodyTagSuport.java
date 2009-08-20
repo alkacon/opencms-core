@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspScopedVarBodyTagSuport.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:31:21 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.2
  */
@@ -139,6 +139,7 @@ public class CmsJspScopedVarBodyTagSuport extends BodyTagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         m_variable = null;

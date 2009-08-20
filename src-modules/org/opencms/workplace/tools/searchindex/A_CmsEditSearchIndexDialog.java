@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsEditSearchIndexDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:35 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:30:37 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,6 +127,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     /**
      * Commits the edited search index to the search manager.<p>
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -182,6 +183,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initUserObject();
@@ -192,6 +194,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -210,6 +213,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -245,6 +249,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         m_searchManager = OpenCms.getSearchManager();
@@ -254,6 +259,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
@@ -282,6 +288,7 @@ public abstract class A_CmsEditSearchIndexDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (!isNewSearchIndex()) {

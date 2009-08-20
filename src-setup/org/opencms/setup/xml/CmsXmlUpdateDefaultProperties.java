@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlUpdateDefaultProperties.java,v $
- * Date   : $Date: 2009/06/04 14:31:31 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:30:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.9.2
  */
@@ -131,6 +131,7 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
      */
+    @Override
     protected boolean executeUpdate(Document document, String xpath) {
 
         Node node = document.selectSingleNode(xpath);
@@ -149,6 +150,7 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
+    @Override
     protected String getCommonPath() {
 
         return null;
@@ -195,6 +197,7 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToRemove()
      */
+    @Override
     protected List getXPathsToRemove() {
 
         if (m_xpathsRemove == null) {
@@ -215,6 +218,7 @@ public class CmsXmlUpdateDefaultProperties extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
+    @Override
     protected List getXPathsToUpdate() {
 
         if (m_xpaths == null) {

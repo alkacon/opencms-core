@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowOrgUnitResourcesCollector.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -83,6 +83,7 @@ public class CmsShowOrgUnitResourcesCollector extends A_CmsListResourceCollector
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
+    @Override
     public List getResources(CmsObject cms, Map params) {
 
         return m_resources;
@@ -91,6 +92,7 @@ public class CmsShowOrgUnitResourcesCollector extends A_CmsListResourceCollector
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         // no-op

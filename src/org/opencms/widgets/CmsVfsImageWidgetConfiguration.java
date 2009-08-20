@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsImageWidgetConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:28 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import java.util.List;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.5.0 
  */
@@ -206,6 +206,7 @@ public class CmsVfsImageWidgetConfiguration extends CmsGalleryWidgetConfiguratio
      * @param param the widget parameter to generate the widget for
      * @param configuration the widget configuration string
      */
+    @Override
     protected void init(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param, String configuration) {
 
         if (configuration == null) {

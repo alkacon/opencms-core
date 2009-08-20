@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/notification/TestContentNotification.java,v $
- * Date   : $Date: 2009/06/04 14:35:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  * Unit test for the OpenCms content notification.<p>
  * 
  * @author Jan Baudisch 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestContentNotification extends OpenCmsTestCase {
   
@@ -88,10 +88,12 @@ public class TestContentNotification extends OpenCmsTestCase {
                
         TestSetup wrapper = new TestSetup(suite) {
             
+            @Override
             protected void setUp() {
                 setupOpenCms("simpletest", "/sites/default/");
             }
             
+            @Override
             protected void tearDown() {
                 removeOpenCms();
             }

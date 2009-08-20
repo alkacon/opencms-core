@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/cache/CmsFlexCacheOverviewDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:49 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:38 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.5
  */
@@ -105,6 +105,7 @@ public class CmsFlexCacheOverviewDialog extends CmsWidgetDialog {
     /**
      * Commits the edited group to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
         // no saving needed
@@ -219,6 +220,7 @@ public class CmsFlexCacheOverviewDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -252,6 +254,7 @@ public class CmsFlexCacheOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -260,6 +263,7 @@ public class CmsFlexCacheOverviewDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the cache object to use for the dialog
@@ -278,6 +282,7 @@ public class CmsFlexCacheOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -307,6 +312,7 @@ public class CmsFlexCacheOverviewDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -320,6 +326,7 @@ public class CmsFlexCacheOverviewDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         super.initWorkplaceMembers(jsp);

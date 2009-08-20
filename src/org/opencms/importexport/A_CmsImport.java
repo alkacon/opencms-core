@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2009/06/04 14:29:00 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2009/08/20 11:31:32 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.92 $ 
+ * @version $Revision: 1.93 $ 
  * 
  * @since 6.0.0 
  * 
@@ -252,9 +252,6 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** The name of the legacy resource type "page". */
     public static final String RESOURCE_TYPE_LEGACY_PAGE_NAME = "page";
-
-    /** Debug flag to show debug output. */
-    protected static final int DEBUG = 0;
 
     /** The id of the legacy resource type "link". */
     protected static final int RESOURCE_TYPE_LINK_ID = 1024;

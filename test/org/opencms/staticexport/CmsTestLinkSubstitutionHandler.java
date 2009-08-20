@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/CmsTestLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2009/06/04 14:35:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:36 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  */
 public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHandler {
 
@@ -129,6 +129,7 @@ public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHa
     /**
      * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#getLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String, boolean)
      */
+    @Override
     public String getLink(CmsObject cms, String link, String siteRoot, boolean forceSecure) {
 
         // do link replacement for news 
@@ -140,6 +141,7 @@ public class CmsTestLinkSubstitutionHandler extends CmsDefaultLinkSubstitutionHa
     /**
      * @see org.opencms.staticexport.CmsDefaultLinkSubstitutionHandler#getRootPath(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
+    @Override
     public String getRootPath(CmsObject cms, String targetUri, String basePath) {
 
         // first do the normal calculation

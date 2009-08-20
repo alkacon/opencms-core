@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2009/06/04 14:33:49 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/08/20 11:31:26 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -201,6 +201,7 @@ public class CmsAdminMenu extends CmsToolDialog {
      * 
      * @return the admin manager
      */
+    @Override
     public CmsToolManager getToolManager() {
 
         return OpenCms.getWorkplaceManager().getToolManager();
@@ -278,6 +279,7 @@ public class CmsAdminMenu extends CmsToolDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(request);

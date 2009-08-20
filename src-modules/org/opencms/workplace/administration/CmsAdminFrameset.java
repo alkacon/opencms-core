@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminFrameset.java,v $
- * Date   : $Date: 2009/06/04 14:33:49 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,6 +108,7 @@ public class CmsAdminFrameset extends CmsToolDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

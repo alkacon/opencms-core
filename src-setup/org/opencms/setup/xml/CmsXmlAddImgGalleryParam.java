@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddImgGalleryParam.java,v $
- * Date   : $Date: 2009/06/04 14:31:33 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:30:47 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.1.8 
  */
@@ -75,6 +75,7 @@ public class CmsXmlAddImgGalleryParam extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
      */
+    @Override
     protected boolean executeUpdate(Document document, String xpath) {
 
         Node node = document.selectSingleNode(xpath);
@@ -96,6 +97,7 @@ public class CmsXmlAddImgGalleryParam extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
+    @Override
     protected String getCommonPath() {
 
         // /opencms/vfs/resources/resourcetypes/type[@class='org.opencms.file.types.CmsResourceTypeFolderExtended']
@@ -113,6 +115,7 @@ public class CmsXmlAddImgGalleryParam extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
+    @Override
     protected List getXPathsToUpdate() {
 
         if (m_xpaths == null) {

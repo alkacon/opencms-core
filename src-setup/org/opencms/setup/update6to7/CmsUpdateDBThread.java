@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/CmsUpdateDBThread.java,v $
- * Date   : $Date: 2009/06/04 14:31:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:41 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.io.PrintStream;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,6 +119,7 @@ public class CmsUpdateDBThread extends Thread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         // save the original out and err stream 

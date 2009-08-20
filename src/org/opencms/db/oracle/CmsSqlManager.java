@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsSqlManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/08/20 11:31:30 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 6.0.0 
  */
@@ -154,6 +154,7 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
     /**
      * @see org.opencms.db.generic.CmsSqlManager#getBytes(java.sql.ResultSet, java.lang.String)
      */
+    @Override
     public byte[] getBytes(ResultSet res, String attributeName) throws SQLException {
 
         Blob blob = res.getBlob(attributeName);

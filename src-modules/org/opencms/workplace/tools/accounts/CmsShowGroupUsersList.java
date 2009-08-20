@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowGroupUsersList.java,v $
- * Date   : $Date: 2009/06/04 14:33:39 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen  
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,6 +107,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     public String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -115,6 +116,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -123,6 +125,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String userId = getSelectedItem().getId();
@@ -145,6 +148,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getUsers(boolean)
      */
+    @Override
     protected List getUsers(boolean withOtherOus) throws CmsException {
 
         return getCms().getUsersOfGroup(getParamGroupname(), withOtherOus);
@@ -153,6 +157,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#setDefaultAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDefaultAction(CmsListColumnDefinition loginCol) {
 
         CmsListDefaultAction editAction = new CmsListDefaultAction(LIST_ACTION_EDIT) {
@@ -160,6 +165,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
+            @Override
             public boolean isEnabled() {
 
                 return getItem().get(LIST_COLUMN_ORGUNIT).equals(
@@ -174,6 +180,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#setIconAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setIconAction(CmsListColumnDefinition iconCol) {
 
         CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON) {
@@ -181,6 +188,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return ((A_CmsGroupUsersList)getWp()).getIconPath(getItem());
@@ -196,6 +204,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop
@@ -204,6 +213,7 @@ public class CmsShowGroupUsersList extends A_CmsGroupUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#setStateActionCol(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setStateActionCol(CmsListMetadata metadata) {
 
         // no-op

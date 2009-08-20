@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsPrivacyField.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:01 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,6 +56,7 @@ public class CmsPrivacyField extends CmsCheckboxField {
     /**
      * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler, org.opencms.i18n.CmsMessages, String)
      */
+    @Override
     public String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey) {
 
         StringBuffer buf = new StringBuffer();
@@ -140,6 +141,7 @@ public class CmsPrivacyField extends CmsCheckboxField {
     /**
      * @see org.opencms.frontend.templateone.form.I_CmsField#getType()
      */
+    @Override
     public String getType() {
 
         return TYPE;

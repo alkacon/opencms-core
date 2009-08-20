@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitsSubList.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.5.6 
  */
@@ -120,6 +120,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtml()
      */
+    @Override
     public String defaultActionHtml() {
 
         if ((getList() != null) && getList().getAllContent().isEmpty()) {
@@ -186,6 +187,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -208,6 +210,7 @@ public class CmsOrgUnitsSubList extends A_CmsOrgUnitsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

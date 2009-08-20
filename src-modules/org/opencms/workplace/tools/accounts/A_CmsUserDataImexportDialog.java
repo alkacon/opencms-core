@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserDataImexportDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:58 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.7.1
  */
@@ -100,6 +100,7 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public abstract void actionCommit() throws IOException, ServletException;
 
     /**
@@ -168,11 +169,13 @@ public abstract class A_CmsUserDataImexportDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected abstract void defineWidgets();
 
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;

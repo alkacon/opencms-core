@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationDefintion.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.1.3 
  */
@@ -372,6 +372,7 @@ public class CmsDecorationDefintion {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer();

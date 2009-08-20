@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsUserDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:55 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2009/08/20 11:31:04 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.db.generic.CmsSqlManager;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 6.0.0 
  */
@@ -49,6 +49,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#initSqlManager(String)
      */
+    @Override
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditBase.java,v $
- * Date   : $Date: 2009/06/04 14:33:32 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/08/20 11:31:13 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,6 +118,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /** 
      * Commits the edited module.<p>
      */
+    @Override
     public void actionCommit() {
 
         if (!hasCommitErrors()) {
@@ -152,6 +153,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#getCancelAction()
      */
+    @Override
     public String getCancelAction() {
 
         // set the default action
@@ -182,6 +184,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         initModule();
@@ -191,6 +194,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -199,6 +203,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -241,6 +246,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type
@@ -255,6 +261,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         String moduleName = getParamModule();

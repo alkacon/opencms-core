@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperSystemFolder.java,v $
- * Date   : $Date: 2009/06/04 14:29:36 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:04 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.5.6
  */
@@ -56,6 +56,7 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)
      */
+    @Override
     public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         if (!resourcename.endsWith("/")) {
@@ -100,6 +101,7 @@ public class CmsResourceWrapperSystemFolder extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#readResource(org.opencms.file.CmsObject, java.lang.String, org.opencms.file.CmsResourceFilter)
      */
+    @Override
     public CmsResource readResource(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         // only valid if site root is a target site

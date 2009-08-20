@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2009/08/20 11:31:20 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -320,6 +320,7 @@ public class CmsJspTagContentLoad extends CmsJspScopedVarBodyTagSuport implement
     /**
      * @see javax.servlet.jsp.tagext.BodyTagSupport#doAfterBody()
      */
+    @Override
     public int doAfterBody() throws JspException {
 
         // close open direct edit first
@@ -338,6 +339,7 @@ public class CmsJspTagContentLoad extends CmsJspScopedVarBodyTagSuport implement
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
+    @Override
     public int doEndTag() {
 
         if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
@@ -350,6 +352,7 @@ public class CmsJspTagContentLoad extends CmsJspScopedVarBodyTagSuport implement
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws JspException, CmsIllegalArgumentException {
 
         // get a reference to the parent "content container" class (if available)
@@ -600,6 +603,7 @@ public class CmsJspTagContentLoad extends CmsJspScopedVarBodyTagSuport implement
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         m_cms = null;

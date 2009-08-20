@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAdvancedLinkSubstitutionHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/20 11:31:16 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  *
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.0
  * 
@@ -112,6 +112,7 @@ public class CmsAdvancedLinkSubstitutionHandler extends CmsDefaultLinkSubstituti
     /**
      * @see org.opencms.staticexport.I_CmsLinkSubstitutionHandler#getRootPath(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
+    @Override
     public String getRootPath(CmsObject cms, String targetUri, String basePath) {
 
         if (cms == null) {

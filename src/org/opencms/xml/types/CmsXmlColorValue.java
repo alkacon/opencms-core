@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlColorValue.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/08/20 11:31:34 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,6 +102,7 @@ public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#getDefault(Locale)
      */
+    @Override
     public String getDefault(Locale locale) {
 
         if (m_defaultValue != null) {
@@ -134,6 +135,7 @@ public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
      */
+    @Override
     public boolean isSearchable() {
 
         // there is no point in searching color values
@@ -151,6 +153,7 @@ public class CmsXmlColorValue extends A_CmsXmlValueTextBase {
     /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#validateValue(java.lang.String)
      */
+    @Override
     public boolean validateValue(String value) {
 
         return TYPE_PATTERN.matcher(value).matches();

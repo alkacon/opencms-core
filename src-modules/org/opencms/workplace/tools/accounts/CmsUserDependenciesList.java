@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDependenciesList.java,v $
- * Date   : $Date: 2009/06/04 14:33:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:30:59 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -169,6 +169,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         switch (getAction()) {
@@ -205,6 +206,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlContent()
      */
+    @Override
     public String defaultActionHtmlContent() {
 
         if (getList().getTotalSize() > 0) {
@@ -216,6 +218,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -224,6 +227,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -262,6 +266,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlEnd()
      */
+    @Override
     protected String customHtmlEnd() {
 
         StringBuffer result = new StringBuffer(512);
@@ -296,6 +301,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(512);
@@ -327,6 +333,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no-op
@@ -335,6 +342,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         CmsIdentifiableObjectContainer ret = new CmsIdentifiableObjectContainer(true, false);
@@ -409,6 +417,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -422,6 +431,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -435,6 +445,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon
@@ -491,6 +502,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // no-op       
@@ -499,6 +511,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op
@@ -507,6 +520,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

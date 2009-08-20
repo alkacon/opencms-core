@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsSelectResourceList.java,v $
- * Date   : $Date: 2009/06/04 14:29:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:41 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.JspException;
  * @author Michael Moossen
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.5.6
  */
@@ -121,6 +121,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         if (getAction() == ACTION_CONTINUE) {
@@ -145,6 +146,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         // no multi actions present
@@ -153,6 +155,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         // no single actions present
@@ -176,6 +179,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#displayDialog()
      */
+    @Override
     public void displayDialog() throws JspException, IOException, ServletException {
 
         getList().setShowTitle(false);
@@ -199,6 +203,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlEnd()
      */
+    @Override
     protected String customHtmlEnd() {
 
         StringBuffer result = new StringBuffer(256);
@@ -214,6 +219,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(256);
@@ -231,6 +237,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
      */
+    @Override
     protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
 
         attribute = appendDelimiter(attribute);
@@ -280,6 +287,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no details
@@ -288,6 +296,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -303,6 +312,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
      * 
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
+    @Override
     protected boolean isColumnVisible(int colFlag) {
 
         if (colFlag == LIST_COLUMN_TYPEICON.hashCode()) {
@@ -323,6 +333,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for radio button
@@ -351,6 +362,7 @@ public abstract class A_CmsSelectResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no multi action present

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2009/08/20 11:31:15 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.htmlparser.util.SimpleNodeIterator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  */
@@ -248,6 +248,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
      * 
      * @param tag the tag to process
      */
+    @Override
     public void visitTag(Tag tag) {
 
         if (tag instanceof LinkTag) {

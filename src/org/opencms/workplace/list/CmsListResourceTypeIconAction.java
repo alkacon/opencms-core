@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceTypeIconAction.java,v $
- * Date   : $Date: 2009/06/04 14:29:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,6 +62,7 @@ public class CmsListResourceTypeIconAction extends CmsListExplorerDirectAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
      */
+    @Override
     public CmsMessageContainer getHelpText() {
 
         if ((super.getHelpText() == null) || super.getHelpText().equals(EMPTY_MESSAGE)) {
@@ -73,6 +74,7 @@ public class CmsListResourceTypeIconAction extends CmsListExplorerDirectAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
      */
+    @Override
     public String getIconPath() {
 
         return getResourceUtil().getIconPathExplorer();
@@ -81,6 +83,7 @@ public class CmsListResourceTypeIconAction extends CmsListExplorerDirectAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getName()
      */
+    @Override
     public CmsMessageContainer getName() {
 
         if (super.getName() == null) {
@@ -92,6 +95,7 @@ public class CmsListResourceTypeIconAction extends CmsListExplorerDirectAction {
     /**
      * @see org.opencms.workplace.list.CmsListExplorerDirectAction#defButtonHtml(java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, boolean)
      */
+    @Override
     protected String defButtonHtml(
         String id,
         String helpId,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2009/07/23 13:56:21 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  */
@@ -386,6 +386,7 @@ public abstract class CmsEditor extends CmsEditorBase {
     /**
      * @see org.opencms.workplace.CmsWorkplace#checkLock(String, CmsLockType)
      */
+    @Override
     public void checkLock(String resource, CmsLockType type) throws CmsException {
 
         CmsResource res = getCms().readResource(resource, CmsResourceFilter.ALL);
@@ -820,6 +821,7 @@ public abstract class CmsEditor extends CmsEditorBase {
      * @param paramValue the unencoded value of the parameter
      * @return the encoded value of the parameter
      */
+    @Override
     protected String decodeParamValue(String paramName, String paramValue) {
 
         if ((paramName != null) && (paramValue != null)) {

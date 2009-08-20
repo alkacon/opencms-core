@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsAllOrgUnitsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -106,6 +106,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException {
 
         String groupId = getSelectedItem().getId();
@@ -133,6 +134,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         super.fillDetails(detailId);
@@ -162,6 +164,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#getGroups()
      */
+    @Override
     protected List getGroups() throws CmsException {
 
         return CmsPrincipal.filterCore(OpenCms.getRoleManager().getManageableGroups(getCms(), "", true));
@@ -170,6 +173,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List listItems = super.getListItems();
@@ -186,6 +190,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -209,6 +214,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#setDeleteAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDeleteAction(CmsListColumnDefinition deleteCol) {
 
         // noop
@@ -217,6 +223,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#setEditAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setEditAction(CmsListColumnDefinition editCol) {
 
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_OVERVIEW);
@@ -229,6 +236,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         super.setIndependentActions(metadata);
@@ -257,6 +265,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop
@@ -265,6 +274,7 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // no param check needed

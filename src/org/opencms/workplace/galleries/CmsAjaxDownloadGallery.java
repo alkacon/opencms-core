@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxDownloadGallery.java,v $
- * Date   : $Date: 2009/07/03 12:46:04 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.5.0 
  */
@@ -105,6 +105,7 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
      * 
      * @return -1 for download gallery type
      */
+    @Override
     public int getGalleryItemsTypeId() {
 
         return -1;
@@ -113,6 +114,7 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
     /**
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryTypeId()
      */
+    @Override
     public int getGalleryTypeId() {
 
         try {
@@ -129,6 +131,7 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
     /**
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryTypeName()
      */
+    @Override
     public String getGalleryTypeName() {
 
         return GALLERYTYPE_NAME;
@@ -144,6 +147,7 @@ public class CmsAjaxDownloadGallery extends A_CmsAjaxGallery {
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath)
      *
      */
+    @Override
     protected void buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath) {
 
         try {

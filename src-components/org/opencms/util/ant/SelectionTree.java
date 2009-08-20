@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/SelectionTree.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import javax.swing.tree.TreeSelectionModel;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  */
 public class SelectionTree extends JTree {
@@ -78,7 +78,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.6 $
+     * @version $Revision: 1.7 $
      * 
      * @since 6.1.6
      * 
@@ -93,6 +93,7 @@ public class SelectionTree extends JTree {
          * @see javax.swing.tree.TreeCellRenderer#getTreeCellRendererComponent(javax.swing.JTree,
          *      java.lang.Object, boolean, boolean, boolean, int, boolean)
          */
+        @Override
         public Component getTreeCellRendererComponent(
             JTree tree,
             Object value,
@@ -118,7 +119,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.6 $
+     * @version $Revision: 1.7 $
      * 
      * @since 6.1.6
      * 
@@ -145,7 +146,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.6 $
+     * @version $Revision: 1.7 $
      * 
      * @since 6.1.6
      * 
@@ -246,6 +247,7 @@ public class SelectionTree extends JTree {
         frame.setSize(new Dimension(200, 800));
         frame.addWindowListener(new WindowAdapter() {
 
+            @Override
             public void windowClosing(WindowEvent we) {
 
                 System.exit(0);
@@ -258,6 +260,7 @@ public class SelectionTree extends JTree {
     /**
      * @see javax.swing.JTree#clearToggledPaths()
      */
+    @Override
     public void clearToggledPaths() {
 
         // TODO: Auto-generated method stub
@@ -268,6 +271,7 @@ public class SelectionTree extends JTree {
      * 
      * @see javax.swing.JTree#removeSelectionPath(javax.swing.tree.TreePath)
      */
+    @Override
     public void removeSelectionPath(TreePath path) {
 
         // unselect the current TreeCell:
@@ -280,6 +284,7 @@ public class SelectionTree extends JTree {
      * 
      * @see javax.swing.JTree#setCellRenderer(javax.swing.tree.TreeCellRenderer)
      */
+    @Override
     public void setCellRenderer(TreeCellRenderer x) {
 
         // nop
@@ -288,6 +293,7 @@ public class SelectionTree extends JTree {
     /**
      * @see javax.swing.JTree#setSelectionPath(javax.swing.tree.TreePath)
      */
+    @Override
     public void setSelectionPath(TreePath path) {
 
         super.setSelectionPath(path);

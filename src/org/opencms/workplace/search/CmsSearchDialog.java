@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:42 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:57 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.2.0 
  */
@@ -111,6 +111,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -174,6 +175,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         // check if the configured search index exists
@@ -215,6 +217,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initParams();
@@ -238,6 +241,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -246,6 +250,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -257,6 +262,7 @@ public class CmsSearchDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type

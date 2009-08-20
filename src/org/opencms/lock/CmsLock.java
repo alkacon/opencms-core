@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/08/20 11:31:37 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.opencms.util.CmsUUID;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  * 
@@ -108,6 +108,7 @@ public class CmsLock {
      * @param obj the object to compare to
      * @return true if and only if member values of this CmsLock are the same with the compared CmsLock 
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -202,6 +203,7 @@ public class CmsLock {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_project.hashCode() + m_resourceName.hashCode() + m_userId.hashCode() + m_type.hashCode();
@@ -410,6 +412,7 @@ public class CmsLock {
      * 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer();
@@ -434,6 +437,7 @@ public class CmsLock {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     protected Object clone() {
 
         CmsLock lock = new CmsLock(m_resourceName, m_userId, m_project, m_type);

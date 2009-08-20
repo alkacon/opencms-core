@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlContent.java,v $
- * Date   : $Date: 2009/06/04 14:29:01 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:32:00 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,6 +138,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
     /**
      * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
      */
+    @Override
     public List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException {
 
         if (resourceTypes.contains("*")) {

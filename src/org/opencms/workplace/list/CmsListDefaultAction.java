@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDefaultAction.java,v $
- * Date   : $Date: 2009/06/04 14:29:27 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/08/20 11:30:42 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,6 +96,7 @@ public class CmsListDefaultAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#resolveButtonStyle()
      */
+    @Override
     protected CmsHtmlIconButtonStyleEnum resolveButtonStyle() {
 
         if (getColumnForLink() == null) {
@@ -107,6 +108,7 @@ public class CmsListDefaultAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#resolveName(java.util.Locale)
      */
+    @Override
     protected String resolveName(Locale locale) {
 
         if (getColumnForLink() == null) {

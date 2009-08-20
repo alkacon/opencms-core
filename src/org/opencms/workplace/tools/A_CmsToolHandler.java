@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:20 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/08/20 11:31:06 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -481,6 +481,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_path + " - " + m_group + " - " + m_position;

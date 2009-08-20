@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsOrgUnitWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.workplace.CmsWorkplace;
  * @author Raphael Schnuck
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -88,6 +88,7 @@ public class CmsOrgUnitWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
      */
+    @Override
     public String getConfiguration() {
 
         StringBuffer result = new StringBuffer(8);
@@ -108,6 +109,7 @@ public class CmsOrgUnitWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(16);
@@ -190,6 +192,7 @@ public class CmsOrgUnitWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#setConfiguration(java.lang.String)
      */
+    @Override
     public void setConfiguration(String configuration) {
 
         m_role = null;

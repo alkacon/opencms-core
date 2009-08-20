@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFileView.java,v $
- * Date   : $Date: 2009/06/05 15:41:53 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/20 11:31:37 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import javax.swing.filechooser.FileView;
  * 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,6 +85,7 @@ public class ImageFileView extends FileView {
     /**
      * @see javax.swing.filechooser.FileView#getDescription(java.io.File)
      */
+    @Override
     public String getDescription(File f) {
 
         return null;
@@ -93,6 +94,7 @@ public class ImageFileView extends FileView {
     /**
      * @see javax.swing.filechooser.FileView#getIcon(java.io.File)
      */
+    @Override
     public Icon getIcon(File f) {
 
         String extension = FileUploadUtils.getExtension(f);
@@ -118,6 +120,7 @@ public class ImageFileView extends FileView {
     /**
      * @see javax.swing.filechooser.FileView#getName(java.io.File)
      */
+    @Override
     public String getName(File f) {
 
         return null;
@@ -126,6 +129,7 @@ public class ImageFileView extends FileView {
     /**
      * @see javax.swing.filechooser.FileView#isTraversable(java.io.File)
      */
+    @Override
     public Boolean isTraversable(File f) {
 
         return null;

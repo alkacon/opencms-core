@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceIconAction.java,v $
- * Date   : $Date: 2009/06/04 14:29:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:30:41 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.workplace.CmsWorkplace;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,7 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         if (!isVisible()) {
@@ -102,6 +103,7 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
      */
+    @Override
     public String getIconPath() {
 
         try {

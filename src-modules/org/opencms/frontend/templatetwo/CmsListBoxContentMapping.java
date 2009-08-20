@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templatetwo/CmsListBoxContentMapping.java,v $
- * Date   : $Date: 2009/06/04 14:33:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import java.util.Set;
  * @author Alexander Kandzior 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.4
  */
@@ -151,6 +151,7 @@ public class CmsListBoxContentMapping {
          * 
          * @see java.lang.Object#equals(java.lang.Object)
          */
+        @Override
         public boolean equals(Object obj) {
 
             String listBoxField = null;
@@ -218,6 +219,7 @@ public class CmsListBoxContentMapping {
         /**
          * @see java.lang.Object#hashCode()
          */
+        @Override
         public int hashCode() {
 
             return m_listBoxField.hashCode();

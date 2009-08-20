@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementChangeLocaleReport.java,v $
- * Date   : $Date: 2009/06/04 14:33:43 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:31:22 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.1 
  */
@@ -94,6 +94,7 @@ public class CmsElementChangeLocaleReport extends A_CmsListReport {
      * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         CmsElementChangeLocaleSettings settings = (CmsElementChangeLocaleSettings)((Map)getSettings().getDialogObject()).get(getParamClassname());

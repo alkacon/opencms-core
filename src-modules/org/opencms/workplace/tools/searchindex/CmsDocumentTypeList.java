@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsDocumentTypeList.java,v $
- * Date   : $Date: 2009/06/04 14:33:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -165,6 +165,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         // view only 
@@ -173,6 +174,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         // view only
@@ -204,6 +206,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -231,6 +234,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List result = new ArrayList();
@@ -251,6 +255,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -262,6 +267,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create dummy column for corporate design reasons
@@ -301,6 +307,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add document types of index source detail help
@@ -340,6 +347,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // view only
@@ -348,6 +356,7 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

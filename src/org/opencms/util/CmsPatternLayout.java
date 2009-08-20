@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsPatternLayout.java,v $
- * Date   : $Date: 2008/04/02 09:38:09 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,6 +92,7 @@ public class CmsPatternLayout extends PatternLayout {
     /**
      * @see org.apache.log4j.PatternLayout#format(org.apache.log4j.spi.LoggingEvent)
      */
+    @Override
     public String format(LoggingEvent event) {
 
         String result = super.format(event);
@@ -162,6 +163,7 @@ public class CmsPatternLayout extends PatternLayout {
     /**
      * @see org.apache.log4j.PatternLayout#ignoresThrowable()
      */
+    @Override
     public boolean ignoresThrowable() {
 
         return false;

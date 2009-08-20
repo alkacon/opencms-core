@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/20 11:30:43 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import javax.swing.border.Border;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0
  * 
@@ -133,6 +133,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
 
         addWindowListener(new WindowAdapter() {
 
+            @Override
             public void windowClosed(WindowEvent e) {
 
                 m_aborted = true;

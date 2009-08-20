@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsHtmlDifferenceDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:34 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:42 $
+ * Version: $Revision: 1.8 $
  *
  * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,6 +88,7 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
      * 
      * @throws Exception if writing to the JSP out fails
      */
+    @Override
     public void displayDialog() throws Exception {
 
         if (getAction() == ACTION_CANCEL) {
@@ -163,6 +164,7 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -176,6 +178,7 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
      * 
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() {
 
         // noop

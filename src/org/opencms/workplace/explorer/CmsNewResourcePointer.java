@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourcePointer.java,v $
- * Date   : $Date: 2009/06/04 14:29:46 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/08/20 11:30:33 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,6 +91,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
      * 
      * @throws JspException if inclusion of error dialog fails
      */
+    @Override
     public void actionCreateResource() throws JspException {
 
         try {
@@ -147,6 +148,7 @@ public class CmsNewResourcePointer extends CmsNewResource {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

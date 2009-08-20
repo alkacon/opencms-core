@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/08/20 11:30:51 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -385,6 +385,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -454,6 +455,7 @@ public class CmsUndoChanges extends CmsMultiDialog {
      * @return true, if the changes on a resource were undone, otherwise false
      * @throws CmsException if undo changes is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // check if the current resource is a folder for single operation

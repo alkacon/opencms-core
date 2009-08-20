@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromServer.java,v $
- * Date   : $Date: 2009/06/04 14:33:47 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/20 11:31:49 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,6 +152,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
@@ -215,6 +216,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -242,6 +244,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // get available files from server
@@ -279,6 +282,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -287,6 +291,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -298,6 +303,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type

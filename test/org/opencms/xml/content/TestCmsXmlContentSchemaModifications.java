@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentSchemaModifications.java,v $
- * Date   : $Date: 2009/06/04 14:35:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:30 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * Tests for XML content schema changes.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
@@ -94,11 +94,13 @@ public class TestCmsXmlContentSchemaModifications extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

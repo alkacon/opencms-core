@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateForm.java,v $
- * Date   : $Date: 2009/06/04 14:33:45 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/08/20 11:31:12 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.apache.commons.httpclient.util.URIUtil;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -160,6 +160,7 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
      * 
      * @return the template configuration path
      */
+    @Override
     public String getConfigPath() {
 
         // store form uri
@@ -346,6 +347,7 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
      * @param req the JSP request 
      * @param res the JSP response 
      */
+    @Override
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
         
         // get the page uri from request parameter

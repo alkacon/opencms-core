@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsLoginMessage.java,v $
- * Date   : $Date: 2009/06/04 14:29:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:11 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.GregorianCalendar;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -112,6 +112,7 @@ public class CmsLoginMessage {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsLoginMessage result = new CmsLoginMessage();

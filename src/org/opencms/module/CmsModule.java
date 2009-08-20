@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2009/06/04 14:29:43 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2009/08/20 11:31:52 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  * 
@@ -307,6 +307,7 @@ public class CmsModule implements Comparable {
      * 
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         // create a copy of the module
@@ -376,6 +377,7 @@ public class CmsModule implements Comparable {
      * @see java.lang.Object#equals(java.lang.Object)
      * @see #isIdentical(CmsModule)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -601,6 +603,7 @@ public class CmsModule implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_name.hashCode();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDirectJsAction.java,v $
- * Date   : $Date: 2009/06/04 14:29:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:30:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,6 +60,7 @@ public abstract class A_CmsListDirectJsAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#resolveOnClic(java.util.Locale)
      */
+    @Override
     protected String resolveOnClic(Locale locale) {
 
         String confirmationMessage = getConfirmationMessage().key(locale);

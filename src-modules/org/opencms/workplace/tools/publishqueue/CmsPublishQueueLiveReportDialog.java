@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/publishqueue/CmsPublishQueueLiveReportDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:10 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.5 
  */
@@ -118,6 +118,7 @@ public class CmsPublishQueueLiveReportDialog extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

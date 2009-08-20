@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2009/08/20 11:31:34 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,6 +136,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
     /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#generateXml(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.dom4j.Element, java.util.Locale)
      */
+    @Override
     public Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
 
         Element element = root.addElement(getName());
@@ -183,6 +184,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject)
      */
+    @Override
     public String getPlainText(CmsObject cms) {
 
         try {

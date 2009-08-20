@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsDependencyIconActionType.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:30:58 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -127,6 +127,7 @@ public final class CmsDependencyIconActionType {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_mode;

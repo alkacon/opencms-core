@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2009/08/20 11:30:44 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.103 $ 
+ * @version $Revision: 1.104 $ 
  * 
  * @since 6.0.0 
  */
@@ -935,6 +935,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @return the standard javascript for submitting the dialog
      */
+    @Override
     public String dialogScriptSubmit() {
 
         if (useNewStyle()) {
@@ -1403,6 +1404,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @return the start html of the page
      */
+    @Override
     public String htmlStart(String helpUrl) {
 
         return pageHtml(HTML_START, helpUrl);
@@ -1483,6 +1485,7 @@ public class CmsDialog extends CmsToolDialog {
      * 
      * @return the start html of the page
      */
+    @Override
     public String pageHtml(int segment, String helpUrl) {
 
         return pageHtml(segment, helpUrl, null);
@@ -1925,6 +1928,7 @@ public class CmsDialog extends CmsToolDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(request);

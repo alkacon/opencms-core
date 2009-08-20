@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsPreEditorActionDefinitionXmlContent.java,v $
- * Date   : $Date: 2009/06/04 14:29:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Map;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.4
  */
@@ -66,6 +66,7 @@ public class CmsPreEditorActionDefinitionXmlContent extends A_CmsPreEditorAction
     /**
      * @see org.opencms.workplace.editors.I_CmsPreEditorActionDefinition#doPreAction(org.opencms.file.CmsResource, org.opencms.workplace.CmsDialog, java.lang.String)
      */
+    @Override
     public boolean doPreAction(CmsResource resource, CmsDialog dialog, String originalParams) throws Exception {
 
         String newlink = dialog.getJsp().getRequest().getParameter(CmsXmlContentEditor.PARAM_NEWLINK);

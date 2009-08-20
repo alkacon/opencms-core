@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/publish/TestPublishManager.java,v $
- * Date   : $Date: 2009/06/04 14:35:32 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestPublishManager extends OpenCmsTestCase {
 
@@ -92,11 +92,13 @@ public class TestPublishManager extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

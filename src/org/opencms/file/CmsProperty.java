@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2009/08/20 11:31:26 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 6.0.0 
  */
@@ -441,6 +441,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @see #cloneAsProperty()
      */
+    @Override
     public Object clone() {
 
         return cloneAsProperty();
@@ -531,6 +532,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @see #isIdentical(CmsProperty)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -795,6 +797,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_name.hashCode();
@@ -1070,6 +1073,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer strBuf = new StringBuffer();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchOffline.java,v $
- * Date   : $Date: 2008/09/25 12:47:09 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/08/20 11:31:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class TestCmsSearchOffline extends OpenCmsTestCase {
 
@@ -89,12 +89,14 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
                 OpenCms.getSearchManager().setOfflineUpdateFrequency(1000);
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

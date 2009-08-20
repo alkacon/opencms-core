@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:34 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/20 11:31:42 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -279,6 +279,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         CmsResourceInfoDialog fileInfo = new CmsResourceInfoDialog(getJsp()) {
 
+            @Override
             protected String defaultActionHtmlEnd() {
 
                 return "";
@@ -319,6 +320,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 /**
                  * @see org.opencms.workplace.list.CmsMultiListDialog#defaultActionHtmlEnd()
                  */
+                @Override
                 public String defaultActionHtmlEnd() {
 
                     return "";
@@ -343,6 +345,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 /**
                  * @see org.opencms.workplace.list.CmsMultiListDialog#defaultActionHtmlEnd()
                  */
+                @Override
                 public String defaultActionHtmlEnd() {
 
                     return "";
@@ -628,6 +631,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/convertxml/CmsConvertXmlReport.java,v $
- * Date   : $Date: 2009/08/13 12:31:29 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/08/20 11:31:54 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 7.0.5
  */
@@ -83,6 +83,7 @@ public class CmsConvertXmlReport extends A_CmsListReport {
      * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         CmsConvertXmlSettings settings = (CmsConvertXmlSettings)((Map)getSettings().getDialogObject()).get(CmsConvertXmlDialog.class.getName());

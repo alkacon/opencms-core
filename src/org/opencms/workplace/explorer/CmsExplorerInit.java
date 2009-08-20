@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerInit.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:30:33 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.2.0 
  */
@@ -161,6 +161,7 @@ public class CmsExplorerInit extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // nothing to do for JS creation

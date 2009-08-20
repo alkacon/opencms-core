@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionPrompt.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:30:43 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import javax.swing.UIManager;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -83,6 +83,7 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
      * 
      * @see org.apache.tools.ant.Task#execute()
      */
+    @Override
     public void execute() throws org.apache.tools.ant.BuildException {
 
         log("Prompting user for " + m_property);
@@ -160,6 +161,7 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     /**
      * Initializes this task.<p>
      */
+    @Override
     public void init() {
 
         super.init();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/CmsHistoryClearReport.java,v $
- * Date   : $Date: 2009/06/04 14:33:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.9.1
  */
@@ -103,6 +103,7 @@ public class CmsHistoryClearReport extends A_CmsListReport {
     /**
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         CmsHistoryClear historyClear = (CmsHistoryClear)((Map)getSettings().getDialogObject()).get(getParamClassname());

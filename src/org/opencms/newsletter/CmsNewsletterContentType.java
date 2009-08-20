@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsNewsletterContentType.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.newsletter;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.2.0
  */
@@ -64,6 +64,7 @@ public final class CmsNewsletterContentType {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_typeName;

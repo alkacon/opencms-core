@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddXmlContentWidgets.java,v $
- * Date   : $Date: 2009/06/09 10:55:37 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:45 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.8 
  */
@@ -91,6 +91,7 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
      */
+    @Override
     protected boolean executeUpdate(Document document, String xpath) {
 
         Node node = document.selectSingleNode(xpath);
@@ -116,6 +117,7 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
+    @Override
     protected String getCommonPath() {
 
         // /opencms/vfs/xmlcontent/widgets
@@ -130,6 +132,7 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
+    @Override
     protected List getXPathsToUpdate() {
 
         if (m_xpaths == null) {

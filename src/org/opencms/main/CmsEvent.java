@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEvent.java,v $
- * Date   : $Date: 2009/06/04 14:29:39 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/20 11:31:03 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  * 
@@ -78,6 +78,7 @@ public class CmsEvent {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -129,6 +130,7 @@ public class CmsEvent {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_type.hashCode();
@@ -139,6 +141,7 @@ public class CmsEvent {
      *
      * @return a String representation of this event
      */
+    @Override
     public String toString() {
 
         return "CmsEvent['" + m_type + "']";

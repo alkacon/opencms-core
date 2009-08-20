@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsLocalizationWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:11 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:29 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import java.util.regex.Pattern;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.4
  */
@@ -172,6 +172,7 @@ public class CmsLocalizationWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
         Map formParameters,

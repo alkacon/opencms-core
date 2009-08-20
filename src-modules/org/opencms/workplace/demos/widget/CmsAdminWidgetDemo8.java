@@ -105,6 +105,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         // not implemented for this demo
@@ -116,6 +117,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
      * 
      * @return the HTML for the dialog form
      */
+    @Override
     public String buildDialogForm() {
 
         StringBuffer result = new StringBuffer(1024);
@@ -136,6 +138,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
      * 
      * @return the HTML for the buttons on the dialog.<p>
      */
+    @Override
     public String dialogButtonsCustom() {
 
         if (PAGES[1].equals(getParamPage())) {
@@ -149,6 +152,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#getCancelAction()
      */
+    @Override
     public String getCancelAction() {
 
         // set the default action
@@ -160,6 +164,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         Object o = getDialogObject();
@@ -237,6 +242,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -245,6 +251,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -257,6 +264,7 @@ public class CmsAdminWidgetDemo8 extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type

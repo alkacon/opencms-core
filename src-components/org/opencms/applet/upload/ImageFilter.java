@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFilter.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:31:37 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import javax.swing.filechooser.FileFilter;
  * 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,6 +58,7 @@ public class ImageFilter extends FileFilter {
      * 
      * @see javax.swing.filechooser.FileFilter#accept(java.io.File)
      */
+    @Override
     public boolean accept(File f) {
 
         if (f.isDirectory()) {
@@ -70,6 +71,7 @@ public class ImageFilter extends FileFilter {
     /**
      * @see javax.swing.filechooser.FileFilter#getDescription()
      */
+    @Override
     public String getDescription() {
 
         return "Images";

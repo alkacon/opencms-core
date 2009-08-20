@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlMessages.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:45 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.4 
  */
@@ -127,6 +127,7 @@ public class CmsXmlMessages extends CmsMessages {
      * 
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String)
      */
+    @Override
     public String key(String keyName) {
 
         if (hasConfigValue(keyName)) {
@@ -140,6 +141,7 @@ public class CmsXmlMessages extends CmsMessages {
      * 
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String, java.lang.Object)
      */
+    @Override
     public String key(String key, Object arg0) {
 
         if (hasConfigValue(key)) {
@@ -153,6 +155,7 @@ public class CmsXmlMessages extends CmsMessages {
      * 
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String, java.lang.Object, java.lang.Object)
      */
+    @Override
     public String key(String key, Object arg0, Object arg1) {
 
         if (hasConfigValue(key)) {
@@ -166,6 +169,7 @@ public class CmsXmlMessages extends CmsMessages {
      * 
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String, java.lang.Object, java.lang.Object, java.lang.Object)
      */
+    @Override
     public String key(String key, Object arg0, Object arg1, Object arg2) {
 
         if (hasConfigValue(key)) {
@@ -179,6 +183,7 @@ public class CmsXmlMessages extends CmsMessages {
      * 
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String, java.lang.Object[])
      */
+    @Override
     public String key(String key, Object[] args) {
 
         if (hasConfigValue(key)) {
@@ -192,6 +197,7 @@ public class CmsXmlMessages extends CmsMessages {
      * 
      * @see org.opencms.i18n.CmsMessages#keyDefault(java.lang.String, java.lang.String)
      */
+    @Override
     public String keyDefault(String keyName, String defaultValue) {
 
         if (hasConfigValue(keyName)) {

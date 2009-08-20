@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsRemovePubLocksThread.java,v $
- * Date   : $Date: 2009/06/04 14:33:46 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:49 $
+ * Version: $Revision: 1.7 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -64,7 +64,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.2
  */
@@ -94,6 +94,7 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
      * 
      * @see org.opencms.report.A_CmsReportThread#getError()
      */
+    @Override
     public Throwable getError() {
 
         return m_error;
@@ -104,6 +105,7 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
      * 
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -114,6 +116,7 @@ public class CmsRemovePubLocksThread extends A_CmsReportThread {
      * 
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         try {

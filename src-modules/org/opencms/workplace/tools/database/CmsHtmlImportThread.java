@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsHtmlImportThread.java,v $
- * Date   : $Date: 2009/06/04 14:33:46 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/20 11:31:49 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,7 @@ public class CmsHtmlImportThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -79,6 +80,7 @@ public class CmsHtmlImportThread extends A_CmsReportThread {
     /**
      * The run method which starts the import process.<p>
      */
+    @Override
     public void run() {
 
         try {

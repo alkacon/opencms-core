@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSetNextRule.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/08/20 11:31:43 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.xml.sax.Attributes;
  * @author Craig McClanahan 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0
  */
@@ -186,6 +186,7 @@ public class CmsSetNextRule extends Rule {
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @throws Exception if something goes wrong
      */
+    @Override
     public void begin(java.lang.String namespace, java.lang.String name, Attributes attributes) throws Exception {
 
         // not now: 6.0.0
@@ -210,6 +211,7 @@ public class CmsSetNextRule extends Rule {
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @throws Exception if something goes wrong 
      */
+    @Override
     public void body(java.lang.String namespace, java.lang.String name, String bodyText) throws Exception {
 
         if (m_paramCount == 0) {
@@ -225,6 +227,7 @@ public class CmsSetNextRule extends Rule {
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @throws Exception if something goes wrong
      */
+    @Override
     public void end(java.lang.String namespace, java.lang.String name) throws Exception {
 
         // Determine the target object for the method call: the parent object
@@ -397,6 +400,7 @@ public class CmsSetNextRule extends Rule {
      * 
      * @param aDigester the associated digester to set
      */
+    @Override
     public void setDigester(Digester aDigester) {
 
         aDigester.setLogger(CmsLog.getLog(aDigester.getClass()));
@@ -421,6 +425,7 @@ public class CmsSetNextRule extends Rule {
      * 
      * @return a printable version of this Rule
      */
+    @Override
     public String toString() {
 
         StringBuffer sb = new StringBuffer("CallMethodRule[");

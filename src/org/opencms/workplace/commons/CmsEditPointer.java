@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsEditPointer.java,v $
- * Date   : $Date: 2009/06/04 14:29:13 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/08/20 11:30:54 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,6 +167,7 @@ public class CmsEditPointer extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

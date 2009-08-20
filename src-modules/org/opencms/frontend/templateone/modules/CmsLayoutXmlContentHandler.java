@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/CmsLayoutXmlContentHandler.java,v $
- * Date   : $Date: 2009/06/04 14:33:50 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:59 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import java.util.Locale;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.7
  */
@@ -99,6 +99,7 @@ public class CmsLayoutXmlContentHandler extends CmsDefaultXmlContentHandler {
      * 
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#prepareForWrite(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, org.opencms.file.CmsFile)
      */
+    @Override
     public CmsFile prepareForWrite(CmsObject cms, CmsXmlContent content, CmsFile file) throws CmsException {
 
         super.prepareForWrite(cms, content, file);

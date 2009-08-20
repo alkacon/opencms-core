@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsExportpointsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:32 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/20 11:31:14 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,6 +146,7 @@ public class CmsExportpointsList extends A_CmsListDialog {
      * by comparing <code>{@link #getParamListAction()}</code> with the id 
      * of the action to execute.<p> 
      */
+    @Override
     public void executeListMultiActions() {
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
@@ -172,6 +173,7 @@ public class CmsExportpointsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String moduleName = getParamModule();
@@ -220,6 +222,7 @@ public class CmsExportpointsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -228,6 +231,7 @@ public class CmsExportpointsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -255,6 +259,7 @@ public class CmsExportpointsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -266,6 +271,7 @@ public class CmsExportpointsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         //add column for edit action
@@ -336,6 +342,7 @@ public class CmsExportpointsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // noop
@@ -344,6 +351,7 @@ public class CmsExportpointsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the delete dependencies multi action
@@ -360,6 +368,7 @@ public class CmsExportpointsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (OpenCms.getModuleManager().getModule(getParamModule()) == null) {

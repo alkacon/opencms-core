@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsVfsDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:46 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2009/08/20 11:31:30 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 6.0.0 
  */
@@ -65,6 +65,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#createContent(CmsDbContext, CmsUUID, CmsUUID, byte[])
      */
+    @Override
     public void createContent(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, byte[] content)
     throws CmsDataAccessException {
 
@@ -95,6 +96,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.generic.CmsVfsDriver#createOnlineContent(CmsDbContext, CmsUUID, byte[], int, boolean, boolean)
      */
+    @Override
     public void createOnlineContent(
         CmsDbContext dbc,
         CmsUUID resourceId,
@@ -155,6 +157,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#initSqlManager(String)
      */
+    @Override
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);
@@ -163,6 +166,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#writeContent(CmsDbContext, CmsUUID, byte[])
      */
+    @Override
     public void writeContent(CmsDbContext dbc, CmsUUID resourceId, byte[] content) throws CmsDataAccessException {
 
         internalWriteContent(dbc, dbc.currentProject().getUuid(), resourceId, content, -1);

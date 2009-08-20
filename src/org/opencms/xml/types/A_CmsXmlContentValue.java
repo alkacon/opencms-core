@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2009/08/20 11:31:34 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -192,6 +192,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -387,6 +388,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getTypeName().hashCode();
@@ -467,6 +469,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer(128);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheck.java,v $
- * Date   : $Date: 2009/06/04 14:33:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.2 
  */
@@ -283,6 +283,7 @@ public class CmsContentCheck {
      * 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer();

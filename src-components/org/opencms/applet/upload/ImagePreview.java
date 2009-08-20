@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImagePreview.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/08/20 11:31:37 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import javax.swing.JFileChooser;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,6 +111,7 @@ public class ImagePreview extends JComponent implements PropertyChangeListener {
     /**
      * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
      */
+    @Override
     public void paintComponent(Graphics g) {
 
         if (m_mode == C_MODE_IMAGE) {

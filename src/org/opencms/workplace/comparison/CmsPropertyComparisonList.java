@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2009/06/04 14:29:34 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/20 11:31:42 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -201,6 +201,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -209,6 +210,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         // forward to the edit module screen  
@@ -336,6 +338,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no details
@@ -344,6 +347,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -390,6 +394,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -411,6 +416,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon
@@ -426,6 +432,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
@@ -443,6 +450,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
@@ -460,6 +468,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
@@ -477,6 +486,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
@@ -534,6 +544,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add event details
@@ -547,6 +558,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op

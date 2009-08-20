@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsBroadcastMessageDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/20 11:31:53 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,6 +86,7 @@ public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
     /**
      * Commits the edited project to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -111,6 +112,7 @@ public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -140,6 +142,7 @@ public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the project object to use for the dialog

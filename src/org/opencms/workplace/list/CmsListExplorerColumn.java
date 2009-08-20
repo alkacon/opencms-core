@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerColumn.java,v $
- * Date   : $Date: 2009/06/04 14:29:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:41 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.workplace.explorer.CmsResourceUtil;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,6 +58,7 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
     /**
      * @see org.opencms.workplace.list.CmsListColumnDefinition#htmlCell(org.opencms.workplace.list.CmsListItem, boolean)
      */
+    @Override
     public String htmlCell(CmsListItem item, boolean isPrintable) {
 
         if (isPrintable) {

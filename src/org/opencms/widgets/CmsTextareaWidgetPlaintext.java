@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsTextareaWidgetPlaintext.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:28 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.3.0 
  */
@@ -69,6 +69,7 @@ public final class CmsTextareaWidgetPlaintext extends CmsTextareaWidget {
     /**
      * @see org.opencms.widgets.CmsTextareaWidget#newInstance()
      */
+    @Override
     public I_CmsWidget newInstance() {
 
         return new CmsTextareaWidgetPlaintext();
@@ -77,6 +78,7 @@ public final class CmsTextareaWidgetPlaintext extends CmsTextareaWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
         Map formParameters,

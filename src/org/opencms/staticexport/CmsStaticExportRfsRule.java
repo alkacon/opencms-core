@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportRfsRule.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:16 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
@@ -373,6 +373,7 @@ public class CmsStaticExportRfsRule {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer ret = new StringBuffer(getClass().getName());

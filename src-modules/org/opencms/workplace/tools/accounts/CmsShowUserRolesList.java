@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserRolesList.java,v $
- * Date   : $Date: 2009/06/04 14:33:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:58 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.6 
  */
@@ -122,6 +122,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -130,6 +131,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -138,6 +140,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#getIconPath(CmsListItem)
      */
+    @Override
     public String getIconPath(CmsListItem item) {
 
         List roles = getList().getAllContent();
@@ -190,6 +193,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#writeDialog()
      */
+    @Override
     public void writeDialog() throws IOException {
 
         try {
@@ -204,6 +208,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return dialogContentStart(getParamTitle());
@@ -212,6 +217,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#getRoles()
      */
+    @Override
     protected List getRoles() throws CmsException {
 
         List allRoles = OpenCms.getRoleManager().getRolesOfUser(
@@ -268,6 +274,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#includeOuDetails()
      */
+    @Override
     protected boolean includeOuDetails() {
 
         return false;
@@ -276,6 +283,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         super.setIndependentActions(metadata);
@@ -289,6 +297,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_HIDE;
@@ -297,6 +306,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((CmsShowUserRolesList)getWp()).hasRolesInOtherOus();
@@ -307,6 +317,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_SHOW;
@@ -315,6 +326,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((CmsShowUserRolesList)getWp()).hasRolesInOtherOus();
@@ -333,6 +345,7 @@ public class CmsShowUserRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop

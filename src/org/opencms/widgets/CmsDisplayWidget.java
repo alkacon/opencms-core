@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/08/20 11:31:28 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Set;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,6 +113,7 @@ public class CmsDisplayWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getHelpBubble(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         StringBuffer result = new StringBuffer(128);
@@ -145,6 +146,7 @@ public class CmsDisplayWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getHelpText(org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String helpId = getDisabledHelpKey(param);

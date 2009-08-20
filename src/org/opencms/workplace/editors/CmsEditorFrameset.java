@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorFrameset.java,v $
- * Date   : $Date: 2009/07/23 13:56:21 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +83,7 @@ public class CmsEditorFrameset extends CmsEditor {
      * 
      * @param forceUnlock if true, the resource will be unlocked anyway
      */
+    @Override
     public void actionClear(boolean forceUnlock) {
 
         // delete the temporary file        
@@ -103,6 +104,7 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
+    @Override
     public final void actionExit() {
 
         // do nothing
@@ -111,6 +113,7 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
+    @Override
     public final void actionSave() {
 
         // do nothing
@@ -119,6 +122,7 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
+    @Override
     public final String getEditorResourceUri() {
 
         // return empty String
@@ -151,6 +155,7 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#initContent()
      */
+    @Override
     protected final void initContent() {
 
         // do nothing
@@ -159,6 +164,7 @@ public class CmsEditorFrameset extends CmsEditor {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

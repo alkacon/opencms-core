@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditDefaultProvider.java,v $
- * Date   : $Date: 2009/06/04 14:29:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:35 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.2.3 
  */
@@ -121,6 +121,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
     /**
      * @see org.opencms.workplace.editors.directedit.A_CmsDirectEditProvider#init(org.opencms.file.CmsObject, org.opencms.workplace.editors.directedit.CmsDirectEditMode, java.lang.String)
      */
+    @Override
     public void init(CmsObject cms, CmsDirectEditMode mode, String fileName) {
 
         super.init(cms, mode, fileName);
@@ -210,6 +211,7 @@ public class CmsDirectEditDefaultProvider extends A_CmsDirectEditProvider {
      * 
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#isManual(org.opencms.workplace.editors.directedit.CmsDirectEditMode)
      */
+    @Override
     public boolean isManual(CmsDirectEditMode mode) {
 
         return false;

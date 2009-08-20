@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:39 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2009/08/20 11:31:43 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 6.0.0
  */
@@ -554,6 +554,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         m_runtimeProperties.put(paramName, paramValue);

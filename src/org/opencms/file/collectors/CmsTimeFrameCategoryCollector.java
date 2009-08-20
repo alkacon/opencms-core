@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsTimeFrameCategoryCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/20 11:31:33 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -149,7 +149,7 @@ import java.util.List;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 7.0.3
  *
@@ -260,12 +260,6 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
         /** The resource path (folder / file). */
         private String m_fileName;
 
-        /** 
-         * The <code>{@link org.opencms.file.CmsProperty}</code> instances that work as a filter 
-         * (they have to exist on the resource and have the value set like in these).
-         */
-        private CmsProperty[] m_filterProperties;
-
         /** The property to look for a pipe separated list of category strings in.*/
         private CmsProperty m_propertyCategories = new CmsProperty();
 
@@ -322,6 +316,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
          * 
          * @return the count
          */
+        @Override
         public int getCount() {
 
             return m_count;
@@ -332,32 +327,10 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
          * 
          * @return the file name
          */
+        @Override
         public String getFileName() {
 
             return m_fileName;
-        }
-
-        /** 
-         * Returns the <code>{@link org.opencms.file.CmsProperty}</code> instances that work as a filter 
-         * (they have to exist on the resource and have the value set like in these).
-         * <p>
-         * 
-         * Note that the properties returned from this instance are never read from VFS but from a collector parameter
-         * like:
-         * 
-         * <nobr> &lt;cms:contentload collector=&quot;allMappedToUriPriorityDateDesc&quot;
-         * param=&quot;folder|xmlcontent|100|propertySort=title|locale=de&quot;&gt; </nobr>
-         * 
-         * and therefore should not be written to the VFS. They are only used as a data structure to let the
-         * corresponding collector compare properties to that have been read from resources.
-         * <p>
-         * 
-         * @return the <code>{@link org.opencms.file.CmsProperty}</code> instances that work as a filter 
-         *      (they have to exist on the resource and have the value set like in these).
-         */
-        public CmsProperty[] getFilterProperties() {
-
-            return m_filterProperties;
         }
 
         /**
@@ -415,6 +388,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
          * 
          * @return the type
          */
+        @Override
         public int getType() {
 
             return m_type.getTypeId();
@@ -518,6 +492,7 @@ public class CmsTimeFrameCategoryCollector extends A_CmsResourceCollector {
     /**
      * @see org.opencms.file.collectors.A_CmsResourceCollector#getCreateInFolder(org.opencms.file.CmsObject, org.opencms.file.collectors.CmsCollectorData)
      */
+    @Override
     protected String getCreateInFolder(CmsObject cms, CmsCollectorData data) throws CmsException {
 
         return super.getCreateInFolder(cms, data);

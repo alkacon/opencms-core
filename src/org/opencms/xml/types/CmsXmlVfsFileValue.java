@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsFileValue.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/08/20 11:31:34 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 7.0.0 
  */
@@ -117,6 +117,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#generateXml(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.dom4j.Element, java.util.Locale)
      */
+    @Override
     public Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
 
         Element element = root.addElement(getName());
@@ -163,6 +164,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject)
      */
+    @Override
     public String getPlainText(CmsObject cms) {
 
         return getStringValue(cms);
@@ -202,6 +204,7 @@ public class CmsXmlVfsFileValue extends A_CmsXmlContentValue {
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
      */
+    @Override
     public boolean isSearchable() {
 
         // there is no point in searching link values

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsResourceCategoriesList.java,v $
- * Date   : $Date: 2009/06/04 14:29:13 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:30:51 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.9.2
  */
@@ -104,6 +104,7 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_ACTION_REMOVE1) || getParamListAction().equals(LIST_ACTION_REMOVE2)) {
@@ -127,6 +128,7 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -135,6 +137,7 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
     /**
      * @see org.opencms.workplace.commons.A_CmsResourceCategoriesList#getCategories()
      */
+    @Override
     protected List getCategories() throws CmsException {
 
         return getResourceCategories();
@@ -143,6 +146,7 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
     /**
      * @see org.opencms.workplace.commons.A_CmsResourceCategoriesList#setStateActionCol(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setStateActionCol(CmsListMetadata metadata) {
 
         // create column for state change
@@ -158,6 +162,7 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if ((getItem() == null) || ((Boolean)getItem().get(LIST_COLUMN_LEAFS)).booleanValue()) {
@@ -178,6 +183,7 @@ public class CmsResourceCategoriesList extends A_CmsResourceCategoriesList {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 if ((getItem() == null) || ((Boolean)getItem().get(LIST_COLUMN_LEAFS)).booleanValue()) {

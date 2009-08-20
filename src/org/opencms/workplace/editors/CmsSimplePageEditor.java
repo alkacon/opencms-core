@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2009/07/23 13:56:21 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,6 +82,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
+    @Override
     public String getEditorResourceUri() {
 
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
@@ -90,6 +91,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -225,6 +227,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
      * @param save if set to true, the content parameter is not updated
      * @return the prepared content String
      */
+    @Override
     protected String prepareContent(boolean save) {
 
         String content = getParamContent().trim();

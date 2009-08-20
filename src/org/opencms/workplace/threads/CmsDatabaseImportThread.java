@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsDatabaseImportThread.java,v $
- * Date   : $Date: 2009/06/04 14:29:50 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:31:12 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,6 +78,7 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -86,6 +87,7 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         CmsImportParameters parameters = new CmsImportParameters(m_importFile, "/", m_keepPermissions);

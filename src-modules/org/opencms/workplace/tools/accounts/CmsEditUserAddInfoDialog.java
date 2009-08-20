@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserAddInfoDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.6
  */
@@ -123,6 +123,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
     /**
      * Commits the edited user to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -301,6 +302,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
      * 
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -339,6 +341,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
@@ -380,6 +383,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -388,6 +392,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -442,6 +447,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
@@ -461,6 +467,7 @@ public class CmsEditUserAddInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

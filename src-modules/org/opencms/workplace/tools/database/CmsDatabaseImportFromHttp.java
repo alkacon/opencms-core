@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromHttp.java,v $
- * Date   : $Date: 2009/06/04 14:33:46 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/20 11:31:49 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,6 +93,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         try {
@@ -116,6 +117,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getDialogReturnUri()
      */
+    @Override
     public String getDialogReturnUri() {
 
         return DIALOG_URI;
@@ -124,6 +126,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getImportMessage()
      */
+    @Override
     public String getImportMessage() {
 
         return key(Messages.GUI_DATABASE_IMPORT_FILE_0);
@@ -142,6 +145,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getStarttext()
      */
+    @Override
     public String getStarttext() {
 
         return key(Messages.GUI_DATABASE_IMPORT_BLOCK_0);
@@ -160,6 +164,7 @@ public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle

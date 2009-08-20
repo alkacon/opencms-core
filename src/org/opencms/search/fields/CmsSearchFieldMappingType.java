@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMappingType.java,v $
- * Date   : $Date: 2009/06/04 14:29:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.0 
  */
@@ -122,6 +122,7 @@ public final class CmsSearchFieldMappingType extends A_CmsModeIntEnumeration {
     /**
      * @see org.opencms.util.A_CmsModeIntEnumeration#toString()
      */
+    @Override
     public String toString() {
 
         switch (getMode()) {

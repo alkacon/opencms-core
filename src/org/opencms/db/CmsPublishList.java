@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2009/06/04 14:29:17 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/08/20 11:31:11 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 6.0.0
  * 
@@ -389,6 +389,7 @@ public class CmsPublishList implements Externalizable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();
@@ -517,6 +518,7 @@ public class CmsPublishList implements Externalizable {
     /**
      * @see java.lang.Object#finalize()
      */
+    @Override
     protected void finalize() throws Throwable {
 
         try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templatetwo/CmsListBox.java,v $
- * Date   : $Date: 2009/06/04 14:33:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.4
  */
@@ -193,6 +193,7 @@ public class CmsListBox extends CmsJspActionElement {
     /**
      * @see org.opencms.jsp.CmsJspBean#init(javax.servlet.jsp.PageContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         super.init(context, req, res);

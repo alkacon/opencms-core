@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2009/06/10 12:31:09 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.2.0 
  */
@@ -276,6 +276,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
+    @Override
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
@@ -319,6 +320,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      * 
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() {
 
         return EVAL_BODY_BUFFERED;
@@ -379,6 +381,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      * 
      * @return the value of the HTML "id" attribute
      */
+    @Override
     public String getId() {
 
         return getAttribute(ATTR_ID);
@@ -538,6 +541,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         m_attributes = null;
@@ -607,6 +611,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      * 
      * @param value the value of the HTML "id" attribute to set
      */
+    @Override
     public void setId(String value) {
 
         setAttribute(ATTR_ID, value);

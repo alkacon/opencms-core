@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowRoleUsersList.java,v $
- * Date   : $Date: 2009/06/04 14:33:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6
  */
@@ -93,6 +93,7 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     public String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -101,6 +102,7 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -109,6 +111,7 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -117,6 +120,7 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#getUsers(boolean)
      */
+    @Override
     protected List getUsers(boolean withOtherOus) throws CmsException {
 
         return OpenCms.getRoleManager().getUsersOfRole(
@@ -129,6 +133,7 @@ public class CmsShowRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop

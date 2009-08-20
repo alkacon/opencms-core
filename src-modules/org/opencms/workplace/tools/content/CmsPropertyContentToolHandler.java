@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyContentToolHandler.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.workplace.tools.CmsOfflineToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -51,6 +51,7 @@ public class CmsPropertyContentToolHandler extends CmsOfflineToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
      */
+    @Override
     public boolean isEnabled(CmsObject cms) {
 
         return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);
@@ -59,6 +60,7 @@ public class CmsPropertyContentToolHandler extends CmsOfflineToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.file.CmsObject)
      */
+    @Override
     public boolean isVisible(CmsObject cms) {
 
         return OpenCms.getRoleManager().hasRole(cms, CmsRole.WORKPLACE_MANAGER);

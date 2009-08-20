@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsInternalLinkValidationList.java,v $
- * Date   : $Date: 2009/06/04 14:33:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.3 
  */
@@ -102,6 +102,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -110,6 +111,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -118,6 +120,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -131,6 +134,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(512);
@@ -148,6 +152,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -203,6 +208,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -213,6 +219,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // create list item detail for broken links
@@ -233,6 +240,7 @@ public class CmsInternalLinkValidationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMA        

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2009/08/18 09:16:40 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/08/20 11:31:47 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -97,11 +97,13 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

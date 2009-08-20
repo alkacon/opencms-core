@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlDateTimeValue.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/08/20 11:31:33 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,6 +105,7 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#isSearchable()
      */
+    @Override
     public boolean isSearchable() {
 
         // there is no point in searching date/time values
@@ -133,6 +134,7 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
     /**
      * @see org.opencms.xml.types.A_CmsXmlContentValue#getDefault(Locale)
      */
+    @Override
     public String getDefault(Locale locale) {
 
         if (m_defaultValue != null) {
@@ -184,6 +186,7 @@ public class CmsXmlDateTimeValue extends A_CmsXmlValueTextBase {
     /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#validateValue(java.lang.String)
      */
+    @Override
     public boolean validateValue(String value) {
 
         return TYPE_PATTERN.matcher(value).matches();

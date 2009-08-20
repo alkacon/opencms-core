@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDownloadGalleryWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:10 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,6 +66,7 @@ public class CmsDownloadGalleryWidget extends A_CmsGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsGalleryWidget#getNameLower()
      */
+    @Override
     public String getNameLower() {
 
         return "download";
@@ -74,6 +75,7 @@ public class CmsDownloadGalleryWidget extends A_CmsGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsGalleryWidget#getNameUpper()
      */
+    @Override
     public String getNameUpper() {
 
         return "Download";
@@ -90,6 +92,7 @@ public class CmsDownloadGalleryWidget extends A_CmsGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsGalleryWidget#showPreview(java.lang.String)
      */
+    @Override
     public boolean showPreview(String value) {
 
         return CmsStringUtil.isNotEmpty(value) && value.startsWith("/");

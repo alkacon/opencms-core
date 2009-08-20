@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/collectors/TestCategoryResourceCollectors.java,v $
- * Date   : $Date: 2009/06/04 14:35:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:10 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test for the {@link CmsCategoryResourceCollector}.<p>
  * 
  * @author Raphael Schnuck 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
@@ -160,6 +160,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 CmsObject cms = setupOpenCms(null, null, false);
@@ -171,6 +172,7 @@ public class TestCategoryResourceCollectors extends OpenCmsTestCase {
                 }
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/mail/TestCmsMail.java,v $
- * Date   : $Date: 2009/06/04 14:35:33 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/20 11:31:57 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import com.dumbster.smtp.SimpleSmtpServer;
  * @author Florian Heinisch
  * @author Sebastian Himberger
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsMail extends OpenCmsTestCase {
 
@@ -93,6 +93,7 @@ public class TestCmsMail extends OpenCmsTestCase {
             // SMTP Server running locally (c.f. library dumbster-1.6.jar)
             SimpleSmtpServer m_server;
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
@@ -101,6 +102,7 @@ public class TestCmsMail extends OpenCmsTestCase {
 
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

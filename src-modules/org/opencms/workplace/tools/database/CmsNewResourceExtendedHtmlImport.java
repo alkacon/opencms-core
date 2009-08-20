@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsNewResourceExtendedHtmlImport.java,v $
- * Date   : $Date: 2009/06/04 14:33:47 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:31:49 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Anja Roettgers
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  */
 public class CmsNewResourceExtendedHtmlImport extends CmsHtmlImportDialog {
@@ -97,6 +97,7 @@ public class CmsNewResourceExtendedHtmlImport extends CmsHtmlImportDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#dialogButtonsCustom()
      */
+    @Override
     public String dialogButtonsCustom() {
 
         if (m_advanced) {
@@ -125,6 +126,7 @@ public class CmsNewResourceExtendedHtmlImport extends CmsHtmlImportDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         if (m_advanced) {
@@ -152,6 +154,7 @@ public class CmsNewResourceExtendedHtmlImport extends CmsHtmlImportDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         m_advanced = !CmsStringUtil.isEmpty(getParamAction());

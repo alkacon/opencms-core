@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsListResourceLinkRelationExplorerColumn.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:51 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.workplace.list.CmsListItem;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.9.1
  */
@@ -79,6 +79,7 @@ public class CmsListResourceLinkRelationExplorerColumn extends CmsListColumnDefi
     /**
      * @see org.opencms.workplace.list.CmsListColumnDefinition#htmlCell(org.opencms.workplace.list.CmsListItem, boolean)
      */
+    @Override
     public String htmlCell(CmsListItem item, boolean isPrintable) {
 
         if (isPrintable) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2009/06/04 14:29:51 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/08/20 11:31:41 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.lucene.document.Fieldable;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -166,6 +166,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -338,6 +339,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_documentType.hashCode() * 1109 + m_path.hashCode();

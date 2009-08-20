@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2009/06/04 14:35:25 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/08/20 11:31:06 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -104,11 +104,13 @@ public class TestPublishIssues extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsShowSiblingsList.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:52 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import java.util.Map;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.9.2 
  */
@@ -87,6 +87,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -95,6 +96,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -103,6 +105,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -124,6 +127,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
                 /**
                  * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
                  */
+                @Override
                 public List getResources(CmsObject cms, Map params) throws CmsException {
 
                     return getCms().readSiblings(
@@ -134,6 +138,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
                 /**
                  * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
                  */
+                @Override
                 protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
                     // empty
@@ -146,6 +151,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return getList().listJs() + CmsListExplorerColumn.getExplorerStyleDef() + dialogContentStart(getParamTitle());
@@ -154,6 +160,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // empty
@@ -162,6 +169,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -173,6 +181,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
+    @Override
     protected boolean isColumnVisible(int colFlag) {
 
         boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
@@ -190,6 +199,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // empty
@@ -198,6 +208,7 @@ public class CmsShowSiblingsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamResource())) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2009/06/04 14:29:19 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2009/08/20 11:31:39 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  * 
@@ -512,6 +512,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      *
      * @return a basic String representation of this CmsFlexCache entry
      */
+    @Override
     public String toString() {
 
         String str = null;

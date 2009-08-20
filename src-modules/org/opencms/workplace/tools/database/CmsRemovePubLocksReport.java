@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsRemovePubLocksReport.java,v $
- * Date   : $Date: 2009/06/04 14:33:46 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:31:48 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 7.0.2
  */
@@ -102,6 +102,7 @@ public class CmsRemovePubLocksReport extends A_CmsListReport {
      * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread() 
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         List resources = new ArrayList();

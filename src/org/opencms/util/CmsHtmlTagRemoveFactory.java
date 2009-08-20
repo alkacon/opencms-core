@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlTagRemoveFactory.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:45 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.1.8
  */
@@ -109,7 +109,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.8 $
+     * @version $Revision: 1.9 $
      * 
      * @since 6.1.8
      */
@@ -163,6 +163,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         /**
          * @see org.htmlparser.Node#clone()
          */
+        @Override
         public Object clone() throws CloneNotSupportedException {
 
             return m_decorated.clone();
@@ -524,6 +525,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
         /**
          * @see org.htmlparser.Node#toString()
          */
+        @Override
         public String toString() {
 
             return m_decorated.toString();
@@ -620,6 +622,7 @@ public final class CmsHtmlTagRemoveFactory extends PrototypicalNodeFactory {
      * @see org.htmlparser.PrototypicalNodeFactory#createTagNode(org.htmlparser.lexer.Page, int,
      *      int, java.util.Vector)
      */
+    @Override
     public Tag createTagNode(Page arg0, int arg1, int arg2, Vector arg3) {
 
         try {

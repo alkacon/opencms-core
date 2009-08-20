@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/08/20 11:31:05 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -306,6 +306,7 @@ public class CmsAccessControlEntry {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -434,6 +435,7 @@ public class CmsAccessControlEntry {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_permissions != null) {
@@ -539,6 +541,7 @@ public class CmsAccessControlEntry {
      * Returns the String representation of this access control entry object.<p>
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return "[Ace:] "

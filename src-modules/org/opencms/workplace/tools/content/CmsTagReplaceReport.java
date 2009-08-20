@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceReport.java,v $
- * Date   : $Date: 2009/06/04 14:33:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:22 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.1.8
  */
@@ -83,6 +83,7 @@ public class CmsTagReplaceReport extends A_CmsListReport {
      * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         CmsTagReplaceSettings settings = (CmsTagReplaceSettings)((Map)getSettings().getDialogObject()).get(CmsTagReplaceDialog.class.getName());

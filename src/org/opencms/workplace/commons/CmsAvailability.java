@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/20 11:30:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,6 +156,7 @@ public class CmsAvailability extends CmsMultiDialog {
      * 
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         // so that the explorer will be shown, if dialog is opened from e-mail
@@ -685,6 +686,7 @@ public class CmsAvailability extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -723,6 +725,7 @@ public class CmsAvailability extends CmsMultiDialog {
      * @return true, if the operation was performed, otherwise false
      * @throws CmsException if modification is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // check if the current resource is a folder for single operation

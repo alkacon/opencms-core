@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSetCustom.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:05 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -174,6 +174,7 @@ public class CmsPermissionSetCustom extends CmsPermissionSet {
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         return new CmsPermissionSetCustom(m_allowed, m_denied);

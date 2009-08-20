@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeLinkParseable.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.relations.I_CmsLinkParseable;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.0 
  */
@@ -55,6 +55,7 @@ public abstract class A_CmsResourceTypeLinkParseable extends A_CmsResourceType i
     /**
      * @see org.opencms.file.types.I_CmsResourceType#isDirectEditable()
      */
+    @Override
     public boolean isDirectEditable() {
 
         return true;

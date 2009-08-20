@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDropdownAction.java,v $
- * Date   : $Date: 2009/06/04 14:29:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,6 +91,7 @@ public class CmsListDropdownAction extends CmsListIndependentAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);

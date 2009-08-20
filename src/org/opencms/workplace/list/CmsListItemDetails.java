@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemDetails.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/08/20 11:30:41 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,6 +76,7 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
     /**
      * @see org.opencms.workplace.list.CmsListColumnDefinition#setWp(org.opencms.workplace.list.A_CmsListDialog)
      */
+    @Override
     public void setWp(A_CmsListDialog wp) {
 
         super.setWp(wp);
@@ -148,6 +149,7 @@ public class CmsListItemDetails extends CmsListColumnDefinition {
      * 
      * @param listId the id of the list
      */
+    @Override
     public void setListId(String listId) {
 
         m_hideAction.setListId(listId);

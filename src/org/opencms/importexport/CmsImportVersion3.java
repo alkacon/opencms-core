@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2009/06/04 14:29:00 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2009/08/20 11:31:32 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.81 $ 
+ * @version $Revision: 1.82 $ 
  * 
  * @since 6.0.0 
  * 
@@ -178,6 +178,7 @@ public class CmsImportVersion3 extends A_CmsImport {
     /**
      * @see org.opencms.importexport.A_CmsImport#importUser(String, String, String, String, String, String, long, Map, List)
      */
+    @Override
     protected void importUser(
         String name,
         String flags,

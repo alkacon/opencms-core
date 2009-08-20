@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2009/06/04 14:33:44 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/08/20 11:31:13 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -263,6 +263,7 @@ public class CmsTemplateStyleSheet extends CmsTemplateBase {
      * @param req the JSP request 
      * @param res the JSP response 
      */
+    @Override
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         // call initialization of super class

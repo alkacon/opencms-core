@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishMultiLanguageStaticExportHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:16 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.0.3
  * 
@@ -60,6 +60,7 @@ public class CmsAfterPublishMultiLanguageStaticExportHandler extends CmsAfterPub
     /**
      * @see org.opencms.staticexport.CmsAfterPublishStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
      */
+    @Override
     protected List getRelatedFilesToPurge(String exportFileName, String vfsName) {
 
         CmsStaticExportManager manager = OpenCms.getStaticExportManager();

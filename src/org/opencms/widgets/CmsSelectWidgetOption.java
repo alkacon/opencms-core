@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidgetOption.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:28 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -448,6 +448,7 @@ public class CmsSelectWidgetOption {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (!(obj instanceof CmsSelectWidgetOption)) {
@@ -520,6 +521,7 @@ public class CmsSelectWidgetOption {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_hashcode == 0) {
@@ -549,6 +551,7 @@ public class CmsSelectWidgetOption {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer(128);

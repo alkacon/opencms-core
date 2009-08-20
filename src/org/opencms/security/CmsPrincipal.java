@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:05 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.2.0 
  */
@@ -317,6 +317,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -420,6 +421,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_id != null) {

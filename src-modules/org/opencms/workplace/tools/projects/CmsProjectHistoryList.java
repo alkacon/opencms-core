@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectHistoryList.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:31:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,6 +139,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
      * @throws CmsRuntimeException to signal that an action is not supported
      * 
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -151,6 +152,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
      * 
      * @throws CmsRuntimeException to signal that an action is not supported or in case an action failed
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -159,6 +161,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -186,6 +189,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -232,6 +236,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -243,6 +248,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon
@@ -318,6 +324,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add publishing info details
@@ -345,6 +352,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         //noop

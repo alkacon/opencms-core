@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentTab.java,v $
- * Date   : $Date: 2009/04/30 14:50:05 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/08/20 11:31:57 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.xml.content;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsXmlContentTab {
 
@@ -78,6 +78,7 @@ public class CmsXmlContentTab {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -112,6 +113,7 @@ public class CmsXmlContentTab {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getStartName().hashCode();

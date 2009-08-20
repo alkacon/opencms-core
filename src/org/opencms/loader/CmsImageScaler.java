@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageScaler.java,v $
- * Date   : $Date: 2009/06/10 12:31:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/20 11:31:34 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.2.0
  */
@@ -333,6 +333,7 @@ public class CmsImageScaler {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsImageScaler clone = new CmsImageScaler();
@@ -763,6 +764,7 @@ public class CmsImageScaler {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return toString().hashCode();
@@ -1276,6 +1278,7 @@ public class CmsImageScaler {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         if (m_scaleParameters != null) {

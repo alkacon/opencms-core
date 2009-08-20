@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsHistoryDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:55 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:04 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.9.1
  */
@@ -58,6 +58,7 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
     /**
      * @see org.opencms.db.I_CmsHistoryDriver#initSqlManager(String)
      */
+    @Override
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);
@@ -66,6 +67,7 @@ public class CmsHistoryDriver extends org.opencms.db.generic.CmsHistoryDriver {
     /**
      * @see org.opencms.db.I_CmsHistoryDriver#readProjects(org.opencms.db.CmsDbContext)
      */
+    @Override
     public List readProjects(CmsDbContext dbc) throws CmsDataAccessException {
 
         List projects = new ArrayList();

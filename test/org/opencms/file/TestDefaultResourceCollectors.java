@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDefaultResourceCollectors.java,v $
- * Date   : $Date: 2009/06/04 14:35:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,6 +76,7 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
         
         TestSetup wrapper = new TestSetup(suite) {
             
+            @Override
             protected void setUp() {
                 CmsObject cms = setupOpenCms(null, null, false);
                 try {
@@ -85,6 +86,7 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
                 }  
             }
             
+            @Override
             protected void tearDown() {
                 removeOpenCms();
             }

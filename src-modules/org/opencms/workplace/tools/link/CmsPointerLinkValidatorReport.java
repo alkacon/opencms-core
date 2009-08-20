@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/link/CmsPointerLinkValidatorReport.java,v $
- * Date   : $Date: 2009/06/04 14:33:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/20 11:31:35 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,6 +117,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
      * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         return new CmsExternalLinksValidatorThread(getCms());
@@ -125,6 +126,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         addMessages(Messages.get().getBundleName());
@@ -134,6 +136,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

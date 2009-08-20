@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2009/08/20 11:31:38 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,6 +190,7 @@ public class CmsMessages {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -338,6 +339,7 @@ public class CmsMessages {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_locale.hashCode() + (m_bundleName == null ? 0 : m_bundleName.hashCode());
@@ -540,6 +542,7 @@ public class CmsMessages {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2009/06/04 14:29:56 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2009/08/20 11:31:56 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -298,6 +298,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#getNames(java.util.Locale)
      */
+    @Override
     public List getNames(Locale locale) {
 
         Object o = m_elementNames.get(locale);
@@ -320,6 +321,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      * @param locale the locale of the element
      * @return true if the element exists and is not disabled
      */
+    @Override
     public boolean isEnabled(String name, Locale locale) {
 
         CmsXmlHtmlValue value = (CmsXmlHtmlValue)getValue(name, locale);
@@ -460,6 +462,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
      */
+    @Override
     protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
 
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);

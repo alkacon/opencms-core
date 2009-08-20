@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsToolHandler.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/20 11:31:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,6 +61,7 @@ public class CmsProjectsToolHandler extends A_CmsToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#getParameters(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public Map getParameters(CmsWorkplace wp) {
 
         if (OpenCms.getRoleManager().hasRole(wp.getCms(), CmsRole.PROJECT_MANAGER)) {

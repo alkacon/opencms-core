@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2009/06/04 14:29:32 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2009/08/20 11:31:40 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,6 +145,7 @@ public class CmsHtmlReport extends A_CmsReport {
     /**
      * @see org.opencms.report.A_CmsReport#print(java.lang.String, int)
      */
+    @Override
     public synchronized void print(String value, int format) {
 
         StringBuffer buf = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContentModel.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.4 
  */
@@ -151,6 +151,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         if (getAction() == ACTION_CONTINUE) {
@@ -210,6 +211,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
      * 
      * @see org.opencms.workplace.list.A_CmsSelectResourceList#dialogButtons()
      */
+    @Override
     public String dialogButtons() {
 
         if (Boolean.valueOf(getParamNewResourceEditProps()).booleanValue() || CmsPreEditorAction.isPreEditorMode(this)) {
@@ -222,6 +224,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -270,6 +273,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
     /**
      * @see org.opencms.workplace.list.A_CmsSelectResourceList#getListTitle()
      */
+    @Override
     public String getListTitle() {
 
         return key(Messages.GUI_NEWRESOURCE_XMLCONTENT_CHOOSEMODEL_0);
@@ -328,6 +332,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
     /**
      * @see org.opencms.workplace.list.A_CmsSelectResourceList#nextUrl()
      */
+    @Override
     public String nextUrl() {
 
         return VFS_PATH_COMMONS + "newresource_xmlcontent.jsp";
@@ -409,6 +414,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
     /**
      * @see org.opencms.workplace.list.A_CmsSelectResourceList#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get listed model files
@@ -436,6 +442,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
+    @Override
     protected boolean isColumnVisible(int colFlag) {
 
         // only show icon, name, title and datelastmodified columns
@@ -460,6 +467,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
      * 
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -487,6 +495,7 @@ public class CmsNewResourceXmlContentModel extends A_CmsSelectResourceList {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // create list item detail: description

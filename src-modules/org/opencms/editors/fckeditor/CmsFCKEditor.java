@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditor.java,v $
- * Date   : $Date: 2009/07/03 10:36:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:32 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.1.7
  */
@@ -84,6 +84,7 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
+    @Override
     public String getEditorResourceUri() {
 
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
@@ -92,6 +93,7 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         if (CmsStringUtil.isNotEmpty(request.getParameter(PARAM_RESOURCE))) {
@@ -102,6 +104,7 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
     /**
      * @see org.opencms.workplace.editors.CmsSimplePageEditor#prepareContent(boolean)
      */
+    @Override
     protected String prepareContent(boolean save) {
 
         if (save) {

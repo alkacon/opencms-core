@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2009/06/04 14:35:30 $
- * Version: $Revision: 1.109 $
+ * Date   : $Date: 2009/08/20 11:31:55 $
+ * Version: $Revision: 1.110 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -99,7 +99,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.109 $
+ * @version $Revision: 1.110 $
  * 
  * @since 6.0.0
  */
@@ -144,6 +144,7 @@ public class OpenCmsTestCase extends TestCase {
         /**
          * @see org.dom4j.util.NodeComparator#compare(org.dom4j.Node, org.dom4j.Node)
          */
+        @Override
         public int compare(Node n1, Node n2) {
 
             int result = super.compare(n1, n2);

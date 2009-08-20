@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemSelectionAction.java,v $
- * Date   : $Date: 2009/06/04 14:29:26 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,6 +67,7 @@ public class CmsListItemSelectionAction extends CmsListDirectAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         if (!isVisible()) {

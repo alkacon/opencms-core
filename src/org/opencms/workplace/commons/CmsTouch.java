@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsTouch.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/08/20 11:30:52 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -310,6 +310,7 @@ public class CmsTouch extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -346,6 +347,7 @@ public class CmsTouch extends CmsMultiDialog {
      * @return true, if the resource was touched, otherwise false
      * @throws CmsException if touching is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // on folder touch or multi resource operation display "please wait" screen, not for simple file copy

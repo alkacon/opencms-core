@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsProjectDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:46 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2009/08/20 11:31:30 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 6.0.0 
  */
@@ -65,6 +65,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#createPublishJob(org.opencms.db.CmsDbContext, org.opencms.publish.CmsPublishJobInfoBean)
      */
+    @Override
     public void createPublishJob(CmsDbContext dbc, CmsPublishJobInfoBean publishJob) throws CmsDataAccessException {
 
         Connection conn = null;
@@ -111,6 +112,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#writePublishReport(org.opencms.db.CmsDbContext, org.opencms.util.CmsUUID, byte[])
      */
+    @Override
     public void writePublishReport(CmsDbContext dbc, CmsUUID publishId, byte[] content) throws CmsDataAccessException {
 
         internalWritePublishJobData(
@@ -206,6 +208,7 @@ public class CmsProjectDriver extends org.opencms.db.generic.CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#initSqlManager(String)
      */
+    @Override
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);

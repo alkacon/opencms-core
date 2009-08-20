@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormLetter.java,v $
- * Date   : $Date: 2009/06/04 14:33:44 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/20 11:31:12 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -527,6 +527,7 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
      * 
      * @return true if all checked input values are valid, otherwise false
      */
+    @Override
     public boolean validate() {
 
         boolean allOk = true;
@@ -569,6 +570,7 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
     /**
      * @see org.opencms.frontend.templateone.CmsTemplateForm#checkTextsUri()
      */
+    @Override
     protected String checkTextsUri() {
 
         String fileUri = getConfigurationValue("page.form.letter", null);

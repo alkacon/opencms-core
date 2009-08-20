@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowOrgUnitResourceList.java,v $
- * Date   : $Date: 2009/06/04 14:33:39 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.4 
  */
@@ -87,6 +87,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -95,6 +96,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -103,6 +105,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         return m_collector;
@@ -134,6 +137,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -142,6 +146,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no op
@@ -150,6 +155,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         String storedSiteRoot = getCms().getRequestContext().getSiteRoot();
@@ -164,6 +170,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
+    @Override
     protected boolean isColumnVisible(int colFlag) {
 
         boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
@@ -177,6 +184,7 @@ public class CmsShowOrgUnitResourceList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMAs, and remove default search action

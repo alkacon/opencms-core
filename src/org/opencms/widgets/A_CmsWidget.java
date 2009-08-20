@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:11 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/08/20 11:31:28 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,6 +111,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -252,6 +253,7 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getClass().getName().hashCode();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/08/20 11:31:18 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -345,7 +345,7 @@ import org.quartz.Trigger;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -477,6 +477,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      * 
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsScheduledJobInfo result = new CmsScheduledJobInfo();

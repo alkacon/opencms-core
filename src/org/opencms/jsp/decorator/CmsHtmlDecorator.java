@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2009/06/19 08:25:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/20 11:31:50 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.1.3 
  */
@@ -255,6 +255,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
     /**
      * @see org.htmlparser.visitors.NodeVisitor#visitStringNode(org.htmlparser.Text)
      */
+    @Override
     public void visitStringNode(Text text) {
 
         appendText(text.toPlainTextString(), DELIMITERS, true);
@@ -263,6 +264,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
     /**
      * @see org.htmlparser.visitors.NodeVisitor#visitTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitTag(Tag tag) {
 
         super.visitTag(tag);

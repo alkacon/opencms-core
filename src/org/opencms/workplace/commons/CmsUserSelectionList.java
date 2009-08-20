@@ -123,6 +123,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.tools.CmsToolDialog#dialogTitle()
      */
+    @Override
     public String dialogTitle() {
 
         // build title
@@ -146,6 +147,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -154,6 +156,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -202,6 +205,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -210,6 +214,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -253,6 +258,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -281,6 +287,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListDirectJsAction#jsCode()
              */
+            @Override
             public String jsCode() {
 
                 return "window.opener.setUserFormValue('"
@@ -306,6 +313,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // no-op        
@@ -314,6 +322,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op        
@@ -322,6 +331,7 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         try {

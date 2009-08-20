@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsOrgUnitsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:39 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.5.6 
  */
@@ -146,6 +146,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         Iterator itItems = getSelectedItems().iterator();
@@ -169,6 +170,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String ouFqn = getSelectedItem().get(LIST_COLUMN_NAME).toString();
@@ -229,6 +231,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -287,6 +290,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -321,6 +325,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for edit
@@ -336,6 +341,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
              */
+            @Override
             public CmsMessageContainer getHelpText() {
 
                 if (!isEnabled()) {
@@ -347,6 +353,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 if (getItem() != null) {
@@ -360,6 +367,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isEnabled()
              */
+            @Override
             public boolean isEnabled() {
 
                 if (getItem() != null) {
@@ -441,6 +449,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add users details
@@ -493,6 +502,7 @@ public abstract class A_CmsOrgUnitsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop

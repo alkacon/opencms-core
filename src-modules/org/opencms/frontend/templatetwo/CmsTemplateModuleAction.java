@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templatetwo/CmsTemplateModuleAction.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import java.util.Locale;
  * @author Michael Emmerich
  * @author Michael Moossen
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.0.4
  */
@@ -75,6 +75,7 @@ public class CmsTemplateModuleAction extends A_CmsModuleAction {
     /**
      * @see org.opencms.module.A_CmsModuleAction#initialize(org.opencms.file.CmsObject, org.opencms.configuration.CmsConfigurationManager, org.opencms.module.CmsModule)
      */
+    @Override
     public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
 
         super.initialize(adminCms, configurationManager, module);

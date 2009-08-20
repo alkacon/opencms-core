@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2009/06/04 14:33:35 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/08/20 11:30:38 $
+ * Version: $Revision: 1.17 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -62,7 +62,7 @@ import java.util.Map;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,6 +93,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      * 
      * @see org.opencms.report.A_CmsReportThread#getError()
      */
+    @Override
     public Throwable getError() {
 
         return m_error;
@@ -103,6 +104,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      * 
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -113,6 +115,7 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      * 
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         getReport().println(

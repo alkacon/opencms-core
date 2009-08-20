@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsWidgetException.java,v $
- * Date   : $Date: 2009/06/04 14:29:11 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/20 11:31:29 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.workplace.CmsWidgetDialogParameter;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,6 +101,7 @@ public class CmsWidgetException extends CmsException {
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
+    @Override
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         if (cause instanceof CmsWidgetException) {

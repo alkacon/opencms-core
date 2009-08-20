@@ -150,6 +150,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
      */
+    @Override
     public void executeListIndepActions() {
 
         if (getParamListAction().equals(LIST_IACTION_REFRESH)) {
@@ -161,6 +162,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_ACTIVATE)) {
@@ -188,6 +190,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         CmsListItem item = getSelectedItem();
@@ -233,6 +236,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -266,6 +270,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -287,6 +292,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -300,6 +306,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for activation/deactivation
@@ -314,6 +321,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 String usrId = getItem().getId();
@@ -336,6 +344,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 String usrId = getItem().getId();
@@ -366,6 +375,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListDirectJsAction#jsCode()
              */
+            @Override
             public String jsCode() {
 
                 String email = (String)getItem().get(LIST_COLUMN_EMAIL);
@@ -417,6 +427,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add user groups details
@@ -443,6 +454,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add the activate user multi action

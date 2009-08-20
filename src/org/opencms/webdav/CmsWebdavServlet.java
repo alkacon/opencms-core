@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/webdav/CmsWebdavServlet.java,v $
- * Date   : $Date: 2009/06/04 14:29:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:53 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -123,7 +123,7 @@ import org.xml.sax.InputSource;
  * @author Craig R. McClanahan
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.5.6
  */
@@ -422,6 +422,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @throws ServletException if something goes wrong
      */
+    @Override
     public void init() throws ServletException {
 
         if (LOG.isInfoEnabled()) {
@@ -1096,6 +1097,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * 
      * @throws IOException if an input/output error occurs
      */
+    @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         // Get the path to delete
@@ -1202,6 +1204,7 @@ public class CmsWebdavServlet extends HttpServlet {
      *
      * @throws IOException if an input/output error occurs
      */
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // Serve the requested resource, including the data content
@@ -1216,6 +1219,7 @@ public class CmsWebdavServlet extends HttpServlet {
      *
      * @throws IOException if an input/output error occurs
      */
+    @Override
     protected void doHead(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         // Serve the requested resource, without the data content
@@ -1760,6 +1764,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * @param req the servlet request we are processing
      * @param resp the servlet response we are creating
      */
+    @Override
     protected void doOptions(HttpServletRequest req, HttpServletResponse resp) {
 
         resp.addHeader("DAV", "1,2");
@@ -2000,6 +2005,7 @@ public class CmsWebdavServlet extends HttpServlet {
      *
      * @throws IOException if an input/output error occurs
      */
+    @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 
         String path = getRelativePath(req);
@@ -2822,6 +2828,7 @@ public class CmsWebdavServlet extends HttpServlet {
      * @throws IOException if an input/output error occurs
      * @throws ServletException if a servlet-specified error occurs
      */
+    @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String method = req.getMethod();

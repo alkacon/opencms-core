@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/08/20 11:31:24 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.TreeMap;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,6 +101,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         super.addConfigurationParameter(paramName, paramValue);
@@ -114,6 +115,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
+    @Override
     public Map getConfiguration() {
 
         Map result = new TreeMap();
@@ -140,6 +142,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
+    @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {

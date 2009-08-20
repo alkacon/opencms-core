@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/CmsHistorySettingsDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:44 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:17 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.9.1
  */
@@ -94,6 +94,7 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -132,6 +133,7 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#createDialogHtml(java.lang.String)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -156,6 +158,7 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initHistorySettingsObject();
@@ -173,6 +176,7 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -206,6 +210,7 @@ public class CmsHistorySettingsDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle

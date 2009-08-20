@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupProject.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/08/20 11:31:26 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 6.0.0 
  * 
@@ -115,6 +115,7 @@ public class CmsBackupProject extends org.opencms.file.history.CmsHistoryProject
     /**
      * @see org.opencms.file.history.CmsHistoryProject#getOwnerName()
      */
+    @Override
     public String getOwnerName() {
 
         return m_nameOwner;
@@ -123,6 +124,7 @@ public class CmsBackupProject extends org.opencms.file.history.CmsHistoryProject
     /**
      * @see org.opencms.file.history.CmsHistoryProject#getPublishedByName()
      */
+    @Override
     public String getPublishedByName() {
 
         return m_namePublisher;
@@ -131,6 +133,7 @@ public class CmsBackupProject extends org.opencms.file.history.CmsHistoryProject
     /**
      * @see org.opencms.file.history.CmsHistoryProject#getGroupName()
      */
+    @Override
     public String getGroupName() {
 
         return m_nameGroupUsers;
@@ -139,6 +142,7 @@ public class CmsBackupProject extends org.opencms.file.history.CmsHistoryProject
     /**
      * @see org.opencms.file.history.CmsHistoryProject#getManagerGroupName()
      */
+    @Override
     public String getManagerGroupName() {
 
         return m_nameGroupManagers;

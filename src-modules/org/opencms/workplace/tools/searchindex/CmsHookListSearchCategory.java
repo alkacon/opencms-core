@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsHookListSearchCategory.java,v $
- * Date   : $Date: 2009/06/04 14:33:33 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import java.util.List;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -110,6 +110,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
      * 
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onAdded(java.lang.Object, int, java.lang.Object)
      */
+    @Override
     protected void onAdded(Object peer, int index, Object element) {
 
         // nop
@@ -118,6 +119,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
     /**
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onAdded(java.lang.Object, java.lang.Object)
      */
+    @Override
     protected void onAdded(Object peer, Object added) {
 
         // nop
@@ -130,6 +132,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
      * 
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onClear(java.lang.Object)
      */
+    @Override
     protected void onClear(Object peer) {
 
         m_backupCategories = new LinkedList(this);
@@ -139,6 +142,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
      * 
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onCleared(java.lang.Object)
      */
+    @Override
     protected void onCleared(Object peer) {
 
         // nop
@@ -155,6 +159,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
      * 
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onGetCall(java.lang.Object, int)
      */
+    @Override
     protected void onGetCall(Object peer, int index) {
 
         // zero categories are all (first condition)
@@ -166,6 +171,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
     /**
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onIteratorCall(java.lang.Object)
      */
+    @Override
     protected void onIteratorCall(Object peer) {
 
         // nop 
@@ -178,6 +184,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
      * 
      * @see org.opencms.workplace.tools.searchindex.CmsHookList#onRemoved(java.lang.Object, int)
      */
+    @Override
     protected void onRemoved(Object peer, int index) {
 
         ((CmsSearchParameters)peer).setSearchPage(1);

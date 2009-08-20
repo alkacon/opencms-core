@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2009/07/20 10:39:06 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/08/20 11:31:05 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -407,6 +407,7 @@ public final class CmsRole {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -630,6 +631,7 @@ public final class CmsRole {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_roleName.hashCode()
@@ -659,6 +661,7 @@ public final class CmsRole {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.1.2 
  */
@@ -75,6 +75,7 @@ public class CmsContentCheckThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -83,6 +84,7 @@ public class CmsContentCheckThread extends A_CmsReportThread {
     /**
      * The run method which starts the import process.<p>
      */
+    @Override
     public void run() {
 
         try {

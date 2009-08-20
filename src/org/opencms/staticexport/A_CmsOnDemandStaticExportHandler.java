@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/08/20 11:31:16 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  * 
@@ -60,6 +60,7 @@ public abstract class A_CmsOnDemandStaticExportHandler extends A_CmsStaticExport
     /**
      * @see org.opencms.staticexport.I_CmsStaticExportHandler#performEventPublishProject(org.opencms.util.CmsUUID, org.opencms.report.I_CmsReport)
      */
+    @Override
     public void performEventPublishProject(CmsUUID publishHistoryId, I_CmsReport report) {
 
         int count = 0;

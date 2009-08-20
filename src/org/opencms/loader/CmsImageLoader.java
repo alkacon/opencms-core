@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2009/06/04 14:29:07 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:34 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.2.0 
  */
@@ -183,6 +183,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         if (CmsStringUtil.isNotEmpty(paramName) && CmsStringUtil.isNotEmpty(paramValue)) {
@@ -242,6 +243,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#destroy()
      */
+    @Override
     public void destroy() {
 
         m_enabled = false;
@@ -252,6 +254,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
+    @Override
     public Map getConfiguration() {
 
         Map config = super.getConfiguration();
@@ -267,6 +270,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return RESOURCE_LOADER_ID_IMAGE_LOADER;
@@ -275,6 +279,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
+    @Override
     public void initConfiguration() {
 
         if (CmsStringUtil.isEmpty(m_imageRepositoryFolder)) {
@@ -301,6 +306,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     /**
      * @see org.opencms.loader.I_CmsResourceLoader#load(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
+    @Override
     public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
     throws IOException, CmsException {
 

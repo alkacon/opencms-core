@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDateMacroFormatter.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:30:41 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,6 +110,7 @@ public class CmsListDateMacroFormatter extends CmsListMacroFormatter {
     /**
      * @see org.opencms.workplace.list.CmsListMacroFormatter#format(java.lang.Object, java.util.Locale)
      */
+    @Override
     public String format(Object data, Locale locale) {
 
         if (data == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2009/06/04 14:29:13 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/08/20 11:30:51 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -360,6 +360,7 @@ public class CmsDisplayResource extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(settings, request);

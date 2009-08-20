@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldFactory.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:01 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * A factory to create form field instances of a specified type.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public final class CmsFieldFactory {
 
@@ -153,6 +153,7 @@ public final class CmsFieldFactory {
     /**
      * @see java.lang.Object#finalize()
      */
+    @Override
     protected void finalize() throws Throwable {
 
         try {

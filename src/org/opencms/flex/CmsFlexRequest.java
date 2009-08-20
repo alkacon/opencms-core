@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2009/06/04 14:29:19 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2009/08/20 11:31:39 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  */
@@ -304,6 +304,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @see javax.servlet.ServletRequest#getParameter(java.lang.String)
      */
+    @Override
     public String getParameter(String name) {
 
         String[] values = (String[])m_parameters.get(name);
@@ -326,6 +327,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      *  
      * @see javax.servlet.ServletRequest#getParameterMap()
      */
+    @Override
     public Map getParameterMap() {
 
         return m_parameters;
@@ -338,6 +340,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @see javax.servlet.ServletRequest#getParameterNames()
      */
+    @Override
     public Enumeration getParameterNames() {
 
         Vector v = new Vector();
@@ -356,6 +359,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      *          
      * @see javax.servlet.ServletRequest#getParameterValues(java.lang.String)
      */
+    @Override
     public String[] getParameterValues(String name) {
 
         return (String[])m_parameters.get(name);
@@ -369,6 +373,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @return a special RequestDispatcher that allows access to VFS resources
      */
+    @Override
     public javax.servlet.RequestDispatcher getRequestDispatcher(String target) {
 
         String absolutUri = CmsLinkManager.getAbsoluteUri(target, m_controller.getCurrentRequest().getElementUri());
@@ -410,6 +415,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @see javax.servlet.http.HttpServletRequest#getRequestURI()
      */
+    @Override
     public String getRequestURI() {
 
         if (m_requestUri != null) {
@@ -430,6 +436,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @see javax.servlet.http.HttpServletRequest#getRequestURL()
      */
+    @Override
     public StringBuffer getRequestURL() {
 
         if (m_requestUrl != null) {
@@ -453,6 +460,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
      * 
      * @see javax.servlet.http.HttpServletRequestWrapper#getServletPath()
      */
+    @Override
     public String getServletPath() {
 
         // unwrap the request to prevent multiple unneeded attempts to generate missing JSP files
@@ -538,6 +546,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         // return the uri of the element requested for this request, useful in debugging

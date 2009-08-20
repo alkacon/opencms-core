@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishBrokenRelationsList.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/20 11:30:54 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.5.5 
  */
@@ -112,6 +112,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -120,6 +121,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -128,6 +130,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -155,6 +158,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -224,6 +228,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         String oldSite = getCms().getRequestContext().getSiteRoot();
@@ -238,6 +243,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
+    @Override
     protected boolean isColumnVisible(int colFlag) {
 
         boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
@@ -253,6 +259,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -271,6 +278,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         /**
@@ -291,6 +299,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
              */
+            @Override
             public String buttonHtml(CmsWorkplace wp) {
 
                 StringBuffer html = new StringBuffer(1024);
@@ -327,6 +336,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
              */
+            @Override
             public String jsCode(CmsWorkplace wp) {
 
                 return "javascript:showBrokenLinks(false);";
@@ -343,6 +353,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
              */
+            @Override
             public String jsCode(CmsWorkplace wp) {
 
                 return "javascript:showBrokenLinks(true);";
@@ -360,6 +371,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.CmsListItemDetails#getAction()
              */
+            @Override
             public I_CmsListAction getAction() {
 
                 return new CmsListIndependentAction("hide") {
@@ -367,6 +379,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
                     /**
                      * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
                      */
+                    @Override
                     public String buttonHtml(CmsWorkplace wp) {
 
                         return "";
@@ -396,6 +409,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.CmsListItemDetails#getAction()
              */
+            @Override
             public I_CmsListAction getAction() {
 
                 return new CmsListIndependentAction("hide") {
@@ -403,6 +417,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
                     /**
                      * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
                      */
+                    @Override
                     public String buttonHtml(CmsWorkplace wp) {
 
                         return "";
@@ -422,6 +437,7 @@ public class CmsPublishBrokenRelationsList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMAs, and remove default search action

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsListResourceLinkRelationCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:30:54 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.9.1 
  */
@@ -114,6 +114,7 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResource(org.opencms.file.CmsObject, org.opencms.workplace.list.CmsListItem)
      */
+    @Override
     public CmsResource getResource(CmsObject cms, CmsListItem item) {
 
         String itemId;
@@ -143,6 +144,7 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
+    @Override
     public List getResources(CmsObject cms, Map params) {
 
         List allResources = new ArrayList();
@@ -250,6 +252,7 @@ public class CmsListResourceLinkRelationCollector extends A_CmsListResourceColle
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         // noop

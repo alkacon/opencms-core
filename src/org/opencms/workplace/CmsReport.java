@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/08/20 11:30:44 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -409,6 +409,7 @@ public class CmsReport extends CmsMultiDialog {
      * 
      * @return the start html of the page
      */
+    @Override
     public String htmlStart() {
 
         return pageHtml(HTML_START, true);
@@ -575,6 +576,7 @@ public class CmsReport extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -592,6 +594,7 @@ public class CmsReport extends CmsMultiDialog {
      * 
      * @see org.opencms.workplace.CmsMultiDialog#performDialogOperation()
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         throw new CmsException(new CmsMessageContainer(null, ""));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsEmailField.java,v $
- * Date   : $Date: 2009/06/04 14:33:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:31:01 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.frontend.templateone.form;
  * Represents a text input field for an email address.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class CmsEmailField extends CmsTextField {
 
@@ -49,6 +49,7 @@ public class CmsEmailField extends CmsTextField {
     /**
      * @see org.opencms.frontend.templateone.form.I_CmsField#getType()
      */
+    @Override
     public String getType() {
 
         return TYPE;

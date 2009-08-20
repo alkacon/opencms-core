@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/20 11:31:44 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,6 +145,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */
+    @Override
     public void characters(char[] buf, int offset, int len) throws SAXException {
 
         if (len == 0) {
@@ -197,6 +198,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ContentHandler#endDocument()
      */
+    @Override
     public void endDocument() throws SAXException {
 
         try {
@@ -222,6 +224,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ContentHandler#endElement(java.lang.String, java.lang.String, java.lang.String)
      */
+    @Override
     public void endElement(String namespaceURI, String localName, String qualifiedName) throws SAXException {
 
         String elementName = resolveName(localName, qualifiedName);
@@ -335,6 +338,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ContentHandler#startDocument()
      */
+    @Override
     public void startDocument() throws SAXException {
 
         write("<?xml version=\"1.0\" encoding=\"");
@@ -367,6 +371,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /**
      * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
+    @Override
     public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes)
     throws SAXException {
 

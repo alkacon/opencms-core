@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndelete.java,v $
- * Date   : $Date: 2009/06/04 14:29:13 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/08/20 11:30:51 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,6 +129,7 @@ public class CmsUndelete extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -164,6 +165,7 @@ public class CmsUndelete extends CmsMultiDialog {
      * @return true, if the undelete operation is successful, otherwise false
      * @throws CmsException if undeletion is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // check if the current resource is a folder for single operation

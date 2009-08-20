@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFileUploadField.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:01 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -127,6 +127,7 @@ public class CmsFileUploadField extends A_CmsField {
      * 
      * @return {@link CmsFormHandler#ERROR_VALIDATION} if validation of the input value failed
      */
+    @Override
     protected String validateValue() {
 
         // validate non-empty values with given regular expression

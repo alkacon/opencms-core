@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckReport.java,v $
- * Date   : $Date: 2009/06/04 14:33:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.2 
  */
@@ -91,6 +91,7 @@ public class CmsContentCheckReport extends A_CmsListReport {
      * 
      * @throws JspException if dialog actions fail
      */
+    @Override
     public void displayReport() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
@@ -140,6 +141,7 @@ public class CmsContentCheckReport extends A_CmsListReport {
      * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         m_contentCheck = (CmsContentCheck)((Map)getSettings().getDialogObject()).get(getParamClassname());

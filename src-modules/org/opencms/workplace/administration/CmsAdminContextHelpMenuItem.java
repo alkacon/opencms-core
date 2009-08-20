@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminContextHelpMenuItem.java,v $
- * Date   : $Date: 2009/06/04 14:33:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.workplace.CmsWorkplace;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,6 +55,7 @@ public class CmsAdminContextHelpMenuItem extends CmsAdminMenuItem {
     /**
      * @see org.opencms.workplace.administration.CmsAdminMenuItem#itemHtml(CmsWorkplace)
      */
+    @Override
     public String itemHtml(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);

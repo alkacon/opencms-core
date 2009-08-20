@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListOpenResourceAction.java,v $
- * Date   : $Date: 2009/06/04 14:29:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:30:42 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,6 +67,7 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
      */
+    @Override
     public CmsMessageContainer getHelpText() {
 
         if (isEnabled()) {
@@ -78,6 +79,7 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
     /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isEnabled()
      */
+    @Override
     public boolean isEnabled() {
 
         if (getResourceName() != null) {
@@ -89,6 +91,7 @@ public class CmsListOpenResourceAction extends A_CmsListDefaultJsAction {
     /**
      * @see org.opencms.workplace.list.A_CmsListDefaultJsAction#jsCode()
      */
+    @Override
     public String jsCode() {
 
         StringBuffer jsCode = new StringBuffer(256);

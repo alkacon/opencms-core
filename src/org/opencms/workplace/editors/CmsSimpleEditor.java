@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2009/06/04 14:29:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,6 +88,7 @@ public class CmsSimpleEditor extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#actionClear(boolean)
      */
+    @Override
     public void actionClear(boolean forceUnlock) {
 
         boolean modified = Boolean.valueOf(getParamModified()).booleanValue();
@@ -109,6 +110,7 @@ public class CmsSimpleEditor extends CmsEditor {
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
+    @Override
     public void actionExit() throws IOException, JspException, ServletException {
 
         if (getAction() == ACTION_CANCEL) {
@@ -128,6 +130,7 @@ public class CmsSimpleEditor extends CmsEditor {
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
+    @Override
     public void actionSave() throws JspException {
 
         CmsFile editFile = null;
@@ -167,6 +170,7 @@ public class CmsSimpleEditor extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
+    @Override
     public String getEditorResourceUri() {
 
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
@@ -175,6 +179,7 @@ public class CmsSimpleEditor extends CmsEditor {
     /**
      * Initializes the editor content when openening the editor for the first time.<p>
      */
+    @Override
     protected void initContent() {
 
         // save initialized instance of this class in request attribute for included sub-elements
@@ -211,6 +216,7 @@ public class CmsSimpleEditor extends CmsEditor {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

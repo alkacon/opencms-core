@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromHttp.java,v $
- * Date   : $Date: 2009/06/04 14:33:31 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/08/20 11:31:14 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,6 +104,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         try {
@@ -184,6 +185,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getDialogReturnUri()
      */
+    @Override
     public String getDialogReturnUri() {
 
         return DIALOG_URI;
@@ -192,6 +194,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getImportMessage()
      */
+    @Override
     public String getImportMessage() {
 
         return key(Messages.GUI_MODULES_IMPORT_FILE_0);
@@ -200,6 +203,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.administration.A_CmsImportFromHttp#getStarttext()
      */
+    @Override
     public String getStarttext() {
 
         return key(Messages.GUI_MODULES_IMPORT_BLOCK_0);
@@ -208,6 +212,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle

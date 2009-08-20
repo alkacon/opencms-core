@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/08/20 11:30:50 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -156,6 +156,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         if (getAction() == ACTION_OK) {
@@ -176,6 +177,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
      * 
      * @return the button row 
      */
+    @Override
     public String dialogButtons() {
 
         return dialogButtonsOkAdvancedCancel(
@@ -207,6 +209,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceTypeDialog#getParamSelectedType()
      */
+    @Override
     public String getParamSelectedType() {
 
         String item = super.getParamSelectedType();
@@ -229,6 +232,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
      * 
      * @return the html code to add directly before the list inside the form element
      */
+    @Override
     protected String customHtmlBeforeList() {
 
         StringBuffer result = new StringBuffer(256);
@@ -258,6 +262,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(256);
@@ -283,6 +288,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -378,6 +384,7 @@ public class CmsChtype extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // first call of dialog

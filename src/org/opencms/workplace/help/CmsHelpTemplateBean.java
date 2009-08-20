@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2009/06/04 14:29:43 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/08/20 11:31:58 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -720,6 +720,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#checkRole()
      */
+    @Override
     protected void checkRole() throws CmsRoleViolationException {
 
         // needed since these pages are static exported
@@ -855,6 +856,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

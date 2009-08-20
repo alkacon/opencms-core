@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsRolesList.java,v $
- * Date   : $Date: 2009/06/04 14:33:41 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -127,6 +127,7 @@ public class CmsRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throw new UnsupportedOperationException();
@@ -135,6 +136,7 @@ public class CmsRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException, CmsRuntimeException {
 
         String roleName = getSelectedItem().get(LIST_COLUMN_GROUP_NAME).toString();
@@ -175,6 +177,7 @@ public class CmsRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#getIconPath(org.opencms.workplace.list.CmsListItem)
      */
+    @Override
     public String getIconPath(CmsListItem item) {
 
         return PATH_BUTTONS + "role.png";
@@ -183,6 +186,7 @@ public class CmsRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         if (!detailId.equals(LIST_DETAIL_USERS)) {
@@ -226,6 +230,7 @@ public class CmsRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#getRoles()
      */
+    @Override
     protected List getRoles() throws CmsException {
 
         return OpenCms.getRoleManager().getRoles(getCms(), getParamOufqn(), false);
@@ -234,6 +239,7 @@ public class CmsRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -252,6 +258,7 @@ public class CmsRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRolesList#includeOuDetails()
      */
+    @Override
     protected boolean includeOuDetails() {
 
         return false;
@@ -260,6 +267,7 @@ public class CmsRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         super.setIndependentActions(metadata);
@@ -281,6 +289,7 @@ public class CmsRolesList extends A_CmsRolesList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsTwoOrgUnitUsersList.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.workplace.list.CmsTwoListsDialog;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6
  */
@@ -60,6 +60,7 @@ public class CmsTwoOrgUnitUsersList extends CmsTwoListsDialog {
     /**
      * @see org.opencms.workplace.list.CmsTwoListsDialog#defaultActionHtml()
      */
+    @Override
     public String defaultActionHtml() {
 
         StringBuffer result = new StringBuffer(2048);

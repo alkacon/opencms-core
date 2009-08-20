@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2009/06/04 14:35:30 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2009/08/20 11:31:58 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -133,11 +133,13 @@ public class TestCmsImportExport extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

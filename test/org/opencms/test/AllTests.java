@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/AllTests.java,v $
- * Date   : $Date: 2009/06/04 14:35:30 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2009/08/20 11:31:55 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import junit.framework.TestSuite;
  * OpenCms main test suite, executes the individual test suites of all core packages.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 6.0
  */
@@ -126,11 +126,13 @@ public final class AllTests {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 oneTimeSetUp();
             }
 
+            @Override
             protected void tearDown() {
 
                 oneTimeTearDown();

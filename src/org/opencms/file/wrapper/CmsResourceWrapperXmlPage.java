@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/wrapper/CmsResourceWrapperXmlPage.java,v $
- * Date   : $Date: 2009/06/04 14:29:36 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:04 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import java.util.Locale;
  *
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.5.6
  */
@@ -91,6 +91,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#addResourcesToFolder(CmsObject, String, CmsResourceFilter)
      */
+    @Override
     public List addResourcesToFolder(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         CmsResource xmlPage = findXmlPage(cms, resourcename);
@@ -174,6 +175,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#copyResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String, org.opencms.file.CmsResource.CmsResourceCopyMode)
      */
+    @Override
     public boolean copyResource(CmsObject cms, String source, String destination, CmsResourceCopyMode siblingMode)
     throws CmsException, CmsIllegalArgumentException {
 
@@ -241,6 +243,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#createResource(org.opencms.file.CmsObject, java.lang.String, int, byte[], java.util.List)
      */
+    @Override
     public CmsResource createResource(CmsObject cms, String resourcename, int type, byte[] content, List properties)
     throws CmsException, CmsIllegalArgumentException {
 
@@ -341,6 +344,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#deleteResource(CmsObject, String, org.opencms.file.CmsResource.CmsResourceDeleteMode)
      */
+    @Override
     public boolean deleteResource(CmsObject cms, String resourcename, CmsResourceDeleteMode siblingMode)
     throws CmsException {
 
@@ -416,6 +420,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#getLock(org.opencms.file.CmsObject, org.opencms.file.CmsResource)
      */
+    @Override
     public CmsLock getLock(CmsObject cms, CmsResource resource) throws CmsException {
 
         CmsResource xmlPage = cms.readResource(resource.getStructureId());
@@ -451,6 +456,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#lockResource(org.opencms.file.CmsObject, java.lang.String)
      */
+    @Override
     public boolean lockResource(CmsObject cms, String resourcename) throws CmsException {
 
         CmsResource res = findXmlPage(cms, resourcename);
@@ -465,6 +471,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#moveResource(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
      */
+    @Override
     public boolean moveResource(CmsObject cms, String source, String destination)
     throws CmsException, CmsIllegalArgumentException {
 
@@ -526,6 +533,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#readFile(CmsObject, String, CmsResourceFilter)
      */
+    @Override
     public CmsFile readFile(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         // find the xml page this is for
@@ -600,6 +608,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#readResource(CmsObject, String, CmsResourceFilter)
      */
+    @Override
     public CmsResource readResource(CmsObject cms, String resourcename, CmsResourceFilter filter) throws CmsException {
 
         try {
@@ -691,6 +700,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#restoreLink(org.opencms.file.CmsObject, java.lang.String)
      */
+    @Override
     public String restoreLink(CmsObject cms, String uri) {
 
         CmsResource res = findXmlPage(cms, uri);
@@ -704,6 +714,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#rewriteLink(CmsObject, CmsResource)
      */
+    @Override
     public String rewriteLink(CmsObject cms, CmsResource res) {
 
         if (isWrappedResource(cms, res)) {
@@ -721,6 +732,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#unlockResource(org.opencms.file.CmsObject, java.lang.String)
      */
+    @Override
     public boolean unlockResource(CmsObject cms, String resourcename) throws CmsException {
 
         CmsResource res = findXmlPage(cms, resourcename);
@@ -735,6 +747,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#wrapResource(CmsObject, CmsResource)
      */
+    @Override
     public CmsResource wrapResource(CmsObject cms, CmsResource res) {
 
         CmsWrappedResource wrap = new CmsWrappedResource(res);
@@ -745,6 +758,7 @@ public class CmsResourceWrapperXmlPage extends A_CmsResourceWrapper {
     /**
      * @see org.opencms.file.wrapper.A_CmsResourceWrapper#writeFile(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
+    @Override
     public CmsFile writeFile(CmsObject cms, CmsFile resource) throws CmsException {
 
         CmsResource xmlPage = cms.readResource(resource.getStructureId());

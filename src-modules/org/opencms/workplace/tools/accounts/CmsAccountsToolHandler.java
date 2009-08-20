@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2009/06/04 14:33:41 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,6 +123,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#getDisabledHelpText()
      */
+    @Override
     public String getDisabledHelpText() {
 
         if (super.getDisabledHelpText().equals(DEFAULT_DISABLED_HELPTEXT)) {
@@ -140,6 +141,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isEnabled(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public boolean isEnabled(CmsWorkplace wp) {
 
         if (getLink().equals(getPath(GROUPUSERS_FILE))) {
@@ -232,6 +234,7 @@ public class CmsAccountsToolHandler extends CmsDefaultToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isVisible(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public boolean isVisible(CmsWorkplace wp) {
 
         if (getVisibilityFlag().equals(VISIBILITY_NONE)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/postgresql/CmsUpdateDBAlterTables.java,v $
- * Date   : $Date: 2009/06/04 14:31:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,11 +31,11 @@
 
 package org.opencms.setup.update6to7.postgresql;
 
+import org.opencms.setup.CmsSetupDb;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
-
-import org.opencms.setup.CmsSetupDb;
 
 /**
  * PostgreSQL implementation of the generic Alter Table class.<p>
@@ -43,7 +43,7 @@ import org.opencms.setup.CmsSetupDb;
  * @author Ivan Codarin
  * @author Georgi Naplatanov
  *
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  */
@@ -161,6 +161,7 @@ public class CmsUpdateDBAlterTables extends org.opencms.setup.update6to7.generic
     /**
      * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
+    @Override
     public void internalExecute(CmsSetupDb dbCon) throws SQLException {
 
         super.internalExecute(dbCon);

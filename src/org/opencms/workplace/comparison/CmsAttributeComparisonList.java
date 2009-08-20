@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2009/06/04 14:29:34 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,6 +113,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         // forward to the edit module screen  
@@ -130,6 +131,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -216,6 +218,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add the view version action
@@ -224,6 +227,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(org.opencms.workplace.CmsWorkplace)
              */
+            @Override
             public String buttonHtml(CmsWorkplace wp) {
 
                 return ((CmsAttributeComparisonList)wp).getViewVersionButtonHtml(
@@ -238,6 +242,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(org.opencms.workplace.CmsWorkplace)
              */
+            @Override
             public String buttonHtml(CmsWorkplace wp) {
 
                 return ((CmsAttributeComparisonList)wp).getViewVersionButtonHtml(

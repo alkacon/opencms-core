@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsNewsletterContent.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:18 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,6 +79,7 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (!(obj instanceof CmsNewsletterContent)) {
@@ -104,6 +105,7 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_channel.hashCode() + m_content.hashCode() + m_order + m_type.hashCode();

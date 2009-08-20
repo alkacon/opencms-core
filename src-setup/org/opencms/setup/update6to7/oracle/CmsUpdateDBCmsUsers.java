@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/oracle/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2009/06/04 14:31:35 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:30:48 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.List;
  * @author Roland Metzler
  * @author Peter Bonrad
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.0.0
  */
@@ -80,6 +80,7 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.update6to7.generic.Cm
     /**
      * @see org.opencms.setup.update6to7.generic.CmsUpdateDBCmsUsers#createUserDataTable(org.opencms.setup.CmsSetupDb)
      */
+    @Override
     protected void createUserDataTable(CmsSetupDb dbCon) throws SQLException {
 
         String indexTablespace = (String)m_poolData.get("indexTablespace");
@@ -112,6 +113,7 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.update6to7.generic.Cm
     /**
      * @see org.opencms.setup.update6to7.generic.CmsUpdateDBCmsUsers#writeUserInfo(org.opencms.setup.CmsSetupDb, java.lang.String, java.lang.String, java.lang.Object)
      */
+    @Override
     protected void writeUserInfo(CmsSetupDb dbCon, String id, String key, Object value) {
 
         String query = readQuery(QUERY_INSERT_CMS_USERDATA);

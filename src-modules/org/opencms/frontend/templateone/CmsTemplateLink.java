@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateLink.java,v $
- * Date   : $Date: 2009/06/04 14:33:44 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:12 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ package org.opencms.frontend.templateone;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,6 +106,7 @@ public class CmsTemplateLink implements Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -160,6 +161,7 @@ public class CmsTemplateLink implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_order;

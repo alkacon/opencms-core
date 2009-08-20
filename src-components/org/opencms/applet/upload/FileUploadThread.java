@@ -3,8 +3,8 @@ package org.opencms.applet.upload;
 
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadThread.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:31:37 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ package org.opencms.applet.upload;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,6 +59,7 @@ public class FileUploadThread extends Thread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         while (true) {

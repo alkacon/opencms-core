@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestCmsPrincipal.java,v $
- * Date   : $Date: 2009/06/04 14:35:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:48 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,11 +78,13 @@ public class TestCmsPrincipal extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

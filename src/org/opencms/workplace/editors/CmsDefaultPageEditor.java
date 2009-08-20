@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2009/06/05 13:31:39 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -172,6 +172,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#actionClear(boolean)
      */
+    @Override
     public void actionClear(boolean forceUnlock) {
 
         // delete the temporary file        
@@ -254,6 +255,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
+    @Override
     public void actionExit() throws IOException, JspException, ServletException {
 
         if (getAction() == ACTION_CANCEL) {
@@ -290,6 +292,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     /**
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
+    @Override
     public void actionSave() throws JspException {
 
         try {
@@ -598,6 +601,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
      * 
      * @see org.opencms.workplace.editors.CmsEditor#initContent()
      */
+    @Override
     protected void initContent() {
 
         if (CmsStringUtil.isNotEmpty(getParamContent())) {

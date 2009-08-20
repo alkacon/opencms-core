@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:30:52 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.2 
  */
@@ -136,6 +136,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         /**
          * @see java.lang.Object#equals(java.lang.Object)
          */
+        @Override
         public boolean equals(Object obj) {
 
             if (this == obj) {
@@ -161,6 +162,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         /**
          * @see java.lang.Object#hashCode()
          */
+        @Override
         public int hashCode() {
 
             return getVersion().hashCode();
@@ -170,6 +172,7 @@ public class CmsHistoryList extends A_CmsListDialog {
          * 
          * @see java.lang.Object#toString()
          */
+        @Override
         public String toString() {
 
             return m_version.toString();
@@ -354,6 +357,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_MACTION_COMPARE)) {
@@ -382,6 +386,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         if (getParamListAction().equals(LIST_ACTION_RESTORE)) {
@@ -401,6 +406,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return getList().listJs() + dialogContentStart(getParamTitle());
@@ -409,6 +415,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get content
@@ -426,6 +433,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List result = new ArrayList();
@@ -582,6 +590,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         CmsListColumnDefinition previewCol = new CmsListColumnDefinition(LIST_COLUMN_VIEW);
@@ -626,6 +635,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.CmsListResourceIconAction#defButtonHtml(CmsObject, java.lang.String, java.lang.String, java.lang.String, java.lang.String, boolean, java.lang.String, java.lang.String, java.lang.String, boolean)
              */
+            @Override
             public String defButtonHtml(
                 CmsObject cms,
                 String id,
@@ -778,6 +788,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add index source details
@@ -799,6 +810,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add compare action

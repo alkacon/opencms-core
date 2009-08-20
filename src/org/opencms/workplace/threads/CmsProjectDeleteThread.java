@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsProjectDeleteThread.java,v $
- * Date   : $Date: 2009/06/04 14:29:50 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:11 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,6 +70,7 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getError()
      */
+    @Override
     public Throwable getError() {
 
         return m_error;
@@ -78,6 +79,7 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return "";
@@ -86,6 +88,7 @@ public class CmsProjectDeleteThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         try {

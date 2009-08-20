@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionTreePrompt.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:30:43 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import javax.swing.UIManager;
  * 
  * @author Achim Westermann (modification)
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -108,6 +108,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
      * 
      * @see org.apache.tools.ant.Task#execute()
      */
+    @Override
     public void execute() throws org.apache.tools.ant.BuildException {
 
         log("Prompting user for " + m_property);
@@ -193,6 +194,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
      * Initializes this task.
      * <p>
      */
+    @Override
     public void init() {
 
         super.init();
@@ -220,6 +222,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
      * 
      * @see org.apache.tools.ant.Task#log(java.lang.String)
      */
+    @Override
     public void log(String arg0) {
 
         try {
@@ -236,6 +239,7 @@ public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
      * 
      * @see org.apache.tools.ant.Task#log(java.lang.String, int)
      */
+    @Override
     public void log(String arg0, int arg1) {
 
         try {

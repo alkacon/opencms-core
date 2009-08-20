@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/08/20 11:31:25 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 6.0.0 
  */
@@ -195,6 +195,7 @@ public class CmsFolder extends CmsResource {
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         CmsResource clone = new CmsFolder(
@@ -225,6 +226,7 @@ public class CmsFolder extends CmsResource {
      * 
      * @see org.opencms.file.CmsResource#getLength()
      */
+    @Override
     public int getLength() {
 
         return -1;
@@ -235,6 +237,7 @@ public class CmsFolder extends CmsResource {
      * 
      * @see org.opencms.file.CmsResource#getDateContent()
      */
+    @Override
     public long getDateContent() {
 
         return -1;
@@ -245,6 +248,7 @@ public class CmsFolder extends CmsResource {
      * 
      * @see org.opencms.file.CmsResource#isFile()
      */
+    @Override
     public boolean isFile() {
 
         return false;
@@ -255,6 +259,7 @@ public class CmsFolder extends CmsResource {
      * 
      * @see org.opencms.file.CmsResource#isFolder()
      */
+    @Override
     public boolean isFolder() {
 
         return true;

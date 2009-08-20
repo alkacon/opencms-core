@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2009/06/04 14:29:57 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2009/08/20 11:31:55 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,6 +142,7 @@ public final class CmsSite implements Cloneable, Comparable {
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         return new CmsSite(
@@ -178,6 +179,7 @@ public final class CmsSite implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -372,6 +374,7 @@ public final class CmsSite implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_siteRootUUID.hashCode();
@@ -432,6 +435,7 @@ public final class CmsSite implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer(128);

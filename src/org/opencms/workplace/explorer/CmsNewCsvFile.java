@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2009/08/20 11:30:34 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,6 +163,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
      * 
      * @throws JspException if inclusion of error dialog fails
      */
+    @Override
     public void actionUpload() throws JspException {
 
         String newResname = "";

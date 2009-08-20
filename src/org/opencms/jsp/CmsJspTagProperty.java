@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/08/20 11:31:19 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -94,7 +94,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -236,6 +236,7 @@ public class CmsJspTagProperty extends TagSupport {
      * @throws JspException in case somethins goes wrong
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
@@ -304,6 +305,7 @@ public class CmsJspTagProperty extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         super.release();

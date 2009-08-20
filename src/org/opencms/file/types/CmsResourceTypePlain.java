@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypePlain.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/20 11:31:24 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.Set;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,6 +107,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#chtype(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int)
      */
+    @Override
     public void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int type)
     throws CmsException {
 
@@ -118,6 +119,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#deleteResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceDeleteMode)
      */
+    @Override
     public void deleteResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -135,6 +137,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
      * 
      * @see org.opencms.file.types.I_CmsResourceType#getCachePropertyDefault()
      */
+    @Override
     public String getCachePropertyDefault() {
 
         return "always;";
@@ -143,6 +146,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return CmsDumpLoader.RESOURCE_LOADER_ID;
@@ -151,6 +155,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
+    @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
@@ -182,6 +187,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initialize(org.opencms.file.CmsObject)
      */
+    @Override
     public void initialize(CmsObject cms) {
 
         super.initialize(cms);
@@ -195,6 +201,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
      */
+    @Override
     public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
     throws CmsException, CmsIllegalArgumentException {
 
@@ -206,6 +213,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#replaceResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int, byte[], java.util.List)
      */
+    @Override
     public void replaceResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -222,6 +230,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#restoreResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int)
      */
+    @Override
     public void restoreResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int version)
     throws CmsException {
 
@@ -233,6 +242,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, long, boolean)
      */
+    @Override
     public void setDateExpired(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -248,6 +258,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#setDateLastModified(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, long, boolean)
      */
+    @Override
     public void setDateLastModified(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -263,6 +274,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#setDateReleased(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, long, boolean)
      */
+    @Override
     public void setDateReleased(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -278,6 +290,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#undoChanges(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceUndoMode)
      */
+    @Override
     public void undoChanges(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -292,6 +305,7 @@ public class CmsResourceTypePlain extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsFile)
      */
+    @Override
     public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
 
         Set references = getReferencingStrongLinks(cms, resource);

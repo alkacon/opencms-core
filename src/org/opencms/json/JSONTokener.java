@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/json/JSONTokener.java,v $
- * Date   : $Date: 2009/06/04 14:29:42 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:56 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -550,6 +550,7 @@ public class JSONTokener {
      *
      * @return " at character [this.index]"
      */
+    @Override
     public String toString() {
 
         return " at character " + m_index;

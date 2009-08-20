@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2009/07/08 09:42:15 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/08/20 11:30:55 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -801,6 +801,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -861,6 +862,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
      * @return true, if the operation was performed, otherwise false
      * @throws CmsException if operation is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         //on multi resource operation display "please wait" screen

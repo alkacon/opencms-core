@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestAvailability.java,v $
- * Date   : $Date: 2009/06/04 14:35:27 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/20 11:31:09 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import junit.framework.TestSuite;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestAvailability extends OpenCmsTestCase {
 
@@ -81,11 +81,13 @@ public class TestAvailability extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

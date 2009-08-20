@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsResourceInfoDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:15 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:30:54 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,6 +92,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
     /**
      * Commits the edited user to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
         // no saving is done
@@ -146,6 +147,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -167,6 +169,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -175,6 +178,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
@@ -189,6 +193,7 @@ public class CmsResourceInfoDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;

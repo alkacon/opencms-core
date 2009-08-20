@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesListImportReport.java,v $
- * Date   : $Date: 2009/06/04 14:33:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,6 +91,7 @@ public class CmsModulesListImportReport extends A_CmsListReport {
      * 
      * @see org.opencms.workplace.list.A_CmsListReport#initializeThread()
      */
+    @Override
     public I_CmsReportThread initializeThread() {
 
         String modulename = getParamModule();

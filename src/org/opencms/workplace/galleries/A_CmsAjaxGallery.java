@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/A_CmsAjaxGallery.java,v $
- * Date   : $Date: 2009/07/06 08:02:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.5.0 
  */
@@ -1112,6 +1112,7 @@ public abstract class A_CmsAjaxGallery extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

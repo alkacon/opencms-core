@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsColorpickerWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:11 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:31:29 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,7 @@ public class CmsColorpickerWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return getJSIncludeFile(CmsWorkplace.getSkinUri() + "components/widgets/colorpicker.js");
@@ -79,6 +80,7 @@ public class CmsColorpickerWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return "\tinitColorPicker();\n";
@@ -87,6 +89,7 @@ public class CmsColorpickerWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(128);
@@ -154,6 +157,7 @@ public class CmsColorpickerWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
         Map formParameters,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressThread.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:30:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.0.0
  */
@@ -214,6 +214,7 @@ public class CmsProgressThread extends Thread {
     /**
      * @see java.lang.Thread#run()
      */
+    @Override
     public void run() {
 
         try {

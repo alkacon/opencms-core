@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/A_CmsImportFromHttp.java,v $
- * Date   : $Date: 2009/06/04 14:33:50 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.fileupload.FileItem;
  * @author Andreas Zahner 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,7 +135,7 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
                     // file successfully copied to server
                     break;
                 }
-
+                // $FALL-THROUGH$
             case ACTION_DEFAULT:
             default:
                 // ACTION: show dialog (default)
@@ -353,11 +353,13 @@ public abstract class A_CmsImportFromHttp extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected abstract void initMessages();
 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type

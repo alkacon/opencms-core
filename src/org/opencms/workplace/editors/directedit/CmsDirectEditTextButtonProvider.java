@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditTextButtonProvider.java,v $
- * Date   : $Date: 2009/06/04 14:29:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:35 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.opencms.workplace.editors.Messages;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.2.3 
  */
@@ -54,6 +54,7 @@ public class CmsDirectEditTextButtonProvider extends CmsDirectEditDefaultProvide
     /**
      * @see org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider#endDirectEditDisabled()
      */
+    @Override
     public String endDirectEditDisabled() {
 
         return "";
@@ -62,6 +63,7 @@ public class CmsDirectEditTextButtonProvider extends CmsDirectEditDefaultProvide
     /**
      * @see org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider#endDirectEditEnabled()
      */
+    @Override
     public String endDirectEditEnabled() {
 
         String result = "";
@@ -75,6 +77,7 @@ public class CmsDirectEditTextButtonProvider extends CmsDirectEditDefaultProvide
     /**
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#isManual(org.opencms.workplace.editors.directedit.CmsDirectEditMode)
      */
+    @Override
     public boolean isManual(CmsDirectEditMode mode) {
 
         return (mode == CmsDirectEditMode.MANUAL)
@@ -84,6 +87,7 @@ public class CmsDirectEditTextButtonProvider extends CmsDirectEditDefaultProvide
     /**
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#newInstance()
      */
+    @Override
     public I_CmsDirectEditProvider newInstance() {
 
         CmsDirectEditTextButtonProvider result = new CmsDirectEditTextButtonProvider();
@@ -94,6 +98,7 @@ public class CmsDirectEditTextButtonProvider extends CmsDirectEditDefaultProvide
     /**
      * @see org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider#startDirectEditDisabled(org.opencms.workplace.editors.directedit.CmsDirectEditParams, org.opencms.workplace.editors.directedit.CmsDirectEditResourceInfo)
      */
+    @Override
     public String startDirectEditDisabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo) {
 
         StringBuffer result = new StringBuffer(256);
@@ -108,6 +113,7 @@ public class CmsDirectEditTextButtonProvider extends CmsDirectEditDefaultProvide
     /**
      * @see org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider#startDirectEditEnabled(org.opencms.workplace.editors.directedit.CmsDirectEditParams, org.opencms.workplace.editors.directedit.CmsDirectEditResourceInfo)
      */
+    @Override
     public String startDirectEditEnabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo) {
 
         String editId = getNextDirectEditId();

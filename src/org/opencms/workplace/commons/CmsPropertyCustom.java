@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2009/07/08 09:27:11 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/08/20 11:30:51 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,6 +119,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * @param request the HttpServletRequest
      * @throws JspException if problems including sub-elements occur
      */
+    @Override
     public void actionEdit(HttpServletRequest request) throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
@@ -139,6 +140,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * 
      * @return the HTML output String for the edit properties form
      */
+    @Override
     public String buildEditForm() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -186,6 +188,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * 
      * @return the JavaScript to set the property form values delayed
      */
+    @Override
     public String buildSetFormValues() {
 
         StringBuffer result = new StringBuffer(1024);
@@ -236,6 +239,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
      * @param advancedAttributes additional attributes for the "advanced" button
      * @return the button row 
      */
+    @Override
     public String dialogButtonsOkCancelAdvanced(String okAttributes, String cancelAttributes, String advancedAttributes) {
 
         if (isEditable()) {
@@ -532,6 +536,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

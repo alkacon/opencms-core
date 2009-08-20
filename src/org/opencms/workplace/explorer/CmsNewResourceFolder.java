@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2009/06/04 14:29:46 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/08/20 11:30:34 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.7.1 
  */
@@ -235,6 +235,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         if (getAction() == ACTION_CONTINUE) {
@@ -335,6 +336,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceTypeDialog#getParamSelectedType()
      */
+    @Override
     public String getParamSelectedType() {
 
         String item = super.getParamSelectedType();
@@ -381,6 +383,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
      */
+    @Override
     public String paramsAsHidden() {
 
         List exclude = new ArrayList();
@@ -431,6 +434,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
      * 
      * @return the html code to add directly before the list inside the form element
      */
+    @Override
     protected String customHtmlBeforeList() {
 
         StringBuffer result = new StringBuffer();
@@ -476,6 +480,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlEnd()
      */
+    @Override
     protected String customHtmlEnd() {
 
         StringBuffer result = new StringBuffer(256);
@@ -493,6 +498,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(256);
@@ -531,6 +537,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
      */
+    @Override
     protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
 
         switch (button) {
@@ -611,6 +618,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -655,6 +663,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
@@ -681,6 +690,7 @@ public class CmsNewResourceFolder extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceTypeDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);

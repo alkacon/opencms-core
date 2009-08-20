@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportResponseWrapper.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,6 +80,7 @@ public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
     /**
      * @see javax.servlet.http.HttpServletResponse#sendError(int)
      */
+    @Override
     public void sendError(int status) throws IOException {
 
         m_status = status;
@@ -89,6 +90,7 @@ public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
     /**
      * @see javax.servlet.http.HttpServletResponse#sendError(int, java.lang.String)
      */
+    @Override
     public void sendError(int status, String message) throws IOException {
 
         m_status = status;
@@ -98,6 +100,7 @@ public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
     /**
      * @see javax.servlet.http.HttpServletResponseWrapper#setStatus(int)
      */
+    @Override
     public void setStatus(int status) {
 
         m_status = status;
@@ -107,6 +110,7 @@ public class CmsStaticExportResponseWrapper extends HttpServletResponseWrapper {
     /**
      * @see javax.servlet.http.HttpServletResponseWrapper#setStatus(int, java.lang.String)
      */
+    @Override
     public void setStatus(int status, String message) {
 
         m_status = status;

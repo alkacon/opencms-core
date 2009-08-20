@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditButtonSelection.java,v $
- * Date   : $Date: 2009/06/04 14:29:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:35 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ package org.opencms.workplace.editors.directedit;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.2.3
  */
@@ -134,6 +134,7 @@ public final class CmsDirectEditButtonSelection {
      * 
      * @return the selected edit options as a String
      */
+    @Override
     public String toString() {
 
         if (m_stringValue == null) {

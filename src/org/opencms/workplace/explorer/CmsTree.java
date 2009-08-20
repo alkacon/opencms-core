@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/08/20 11:30:34 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -574,6 +574,7 @@ public class CmsTree extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         setIncludeFiles(Boolean.valueOf(request.getParameter(PARAM_INCLUDEFILES)).booleanValue());

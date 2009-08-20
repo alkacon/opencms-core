@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesCollector.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:54 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.0 
  */
@@ -103,6 +103,7 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
+    @Override
     public List getResources(CmsObject cms, Map params) throws CmsException {
 
         CmsUUID projectId = CmsProject.ONLINE_PROJECT_ID;
@@ -144,6 +145,7 @@ public class CmsProjectFilesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         // no-op

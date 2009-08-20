@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsImageWidget.java,v $
- * Date   : $Date: 2009/07/31 10:36:34 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 7.5.0 
  */
@@ -97,6 +97,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject,org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(256);
@@ -108,6 +109,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         return "\tinitVfsImageGallery();\n";
@@ -116,6 +118,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(16);
@@ -357,6 +360,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getWidgetStringValue(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String result = super.getWidgetStringValue(cms, widgetDialog, param);
@@ -386,6 +390,7 @@ public class CmsVfsImageWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
         Map formParameters,

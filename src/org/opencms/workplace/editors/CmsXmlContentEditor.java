@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2009/07/23 13:56:20 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.86 $ 
+ * @version $Revision: 1.87 $ 
  * 
  * @since 6.0.0 
  */
@@ -265,6 +265,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * 
      * @param forceUnlock if true, the resource will be unlocked anyway
      */
+    @Override
     public void actionClear(boolean forceUnlock) {
 
         // delete the temporary file        
@@ -368,6 +369,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
+    @Override
     public void actionExit() throws IOException, JspException, ServletException {
 
         if (getAction() == ACTION_CANCEL) {
@@ -568,6 +570,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
+    @Override
     public void actionSave() throws JspException {
 
         actionSave(getElementLocale());
@@ -681,6 +684,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
+    @Override
     public String getEditorResourceUri() {
 
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
@@ -1057,6 +1061,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /**
      * @see org.opencms.workplace.tools.CmsToolDialog#useNewStyle()
      */
+    @Override
     public boolean useNewStyle() {
 
         return false;
@@ -1065,6 +1070,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /**
      * @see org.opencms.workplace.editors.CmsEditor#commitTempFile()
      */
+    @Override
     protected void commitTempFile() throws CmsException {
 
         super.commitTempFile();
@@ -1077,6 +1083,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * 
      * Not necessary for the xmlcontent editor.<p>
      */
+    @Override
     protected void initContent() {
 
         // nothing to be done for the xmlcontent editor form
@@ -1115,6 +1122,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

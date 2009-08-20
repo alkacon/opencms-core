@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2009/07/08 09:42:15 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/08/20 11:30:54 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -332,6 +332,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -370,6 +371,7 @@ public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
      * @return true, if the resource(s) was/were deleted, otherwise false
      * @throws CmsException if deletion is not successful
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         // check if the current resource is a folder for single operation

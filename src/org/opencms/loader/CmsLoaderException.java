@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsLoaderException.java,v $
- * Date   : $Date: 2009/06/04 14:29:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/08/20 11:31:35 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.main.CmsException;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,6 +73,7 @@ public class CmsLoaderException extends CmsException {
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
+    @Override
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         return new CmsLoaderException(container, cause);

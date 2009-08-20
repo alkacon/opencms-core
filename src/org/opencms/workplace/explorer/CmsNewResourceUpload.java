@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2009/08/20 11:30:34 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -349,7 +349,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         // define the required colors.
         // these are configurable via set
         StringBuffer colors = new StringBuffer();
-        if (appletWindowColors == null || appletWindowColors.size() == 0) {
+        if ((appletWindowColors == null) || (appletWindowColors.size() == 0)) {
             appletWindowColors = DEFAULT_APPLET_WINDOW_COLORS;
         }
         Iterator it = appletWindowColors.entrySet().iterator();
@@ -535,6 +535,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
      * 
      * @throws JspException if including an element fails
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         if (getAction() == ACTION_CANCEL) {
@@ -999,6 +1000,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         String siteRoot = jsp.getRequestContext().getSiteRoot();
@@ -1017,6 +1019,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

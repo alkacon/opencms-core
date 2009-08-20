@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/A_CmsNotification.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:42 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.mail.EmailException;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.5.3
  */
@@ -140,6 +140,7 @@ public abstract class A_CmsNotification extends CmsHtmlMail {
     /**
      * @see org.apache.commons.mail.Email#send()
      */
+    @Override
     public String send() throws EmailException {
 
         String messageID = null;

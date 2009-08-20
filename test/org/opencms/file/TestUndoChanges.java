@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2009/06/04 14:35:28 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/08/20 11:31:07 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
 
@@ -98,11 +98,13 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

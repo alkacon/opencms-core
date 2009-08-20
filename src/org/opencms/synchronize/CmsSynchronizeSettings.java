@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeSettings.java,v $
- * Date   : $Date: 2009/06/04 14:29:56 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/08/20 11:31:46 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -217,6 +217,7 @@ public class CmsSynchronizeSettings implements Serializable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

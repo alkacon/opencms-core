@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2009/06/04 14:29:51 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2009/08/20 11:31:41 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.apache.lucene.index.IndexWriter;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,6 +109,7 @@ public class CmsIndexingThread extends Thread {
      * 
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         if (LOG.isDebugEnabled()) {

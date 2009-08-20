@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsRestoreStateAction.java,v $
- * Date   : $Date: 2009/06/04 14:29:13 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:30:53 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.workplace.list.CmsListDefaultAction;
  * 
  * @author Peter Bonrad
  *  
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  */
 public class CmsRestoreStateAction extends CmsListDefaultAction {
 
@@ -84,6 +84,7 @@ public class CmsRestoreStateAction extends CmsListDefaultAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
      */
+    @Override
     public boolean isVisible() {
 
         String paramResource = getResource();

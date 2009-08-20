@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:50 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/08/20 11:31:46 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,6 +116,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
@@ -131,6 +132,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#dialogButtonsCustom()
      */
+    @Override
     public String dialogButtonsCustom() {
 
         return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[2]);
@@ -224,6 +226,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -247,6 +250,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         setKeyPrefix(KEY_PREFIX);
@@ -290,6 +294,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -298,6 +303,7 @@ public class CmsRfsFileDownloadDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         super.initMessages();

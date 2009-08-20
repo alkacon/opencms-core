@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:22 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2009/08/20 11:30:43 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.69 $ 
+ * @version $Revision: 1.70 $ 
  * 
  * @since 6.0.0 
  */
@@ -292,6 +292,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * 
      * @return 3D block start / end segment
      */
+    @Override
     public String dialogBlockEnd() {
 
         StringBuffer result = new StringBuffer(8);
@@ -307,6 +308,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
      * @param headline the headline String for the block
      * @return 3D block start / end segment
      */
+    @Override
     public String dialogBlockStart(String headline) {
 
         StringBuffer result = new StringBuffer(8);
@@ -403,6 +405,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                 }
                 setAction(ACTION_DEFAULT);
 
+                // $FALL-THROUGH$
             case ACTION_DEFAULT:
             default:
                 // ACTION: show dialog (default)
@@ -636,6 +639,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /**
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
      */
+    @Override
     public String paramsAsHidden() {
 
         if (getAction() != ACTION_ERROR) {
@@ -1476,6 +1480,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type

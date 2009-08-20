@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlWidget.java,v $
- * Date   : $Date: 2009/06/05 13:31:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:29 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.1 
  */
@@ -86,6 +86,7 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
      */
+    @Override
     public String getConfiguration() {
 
         if (super.getConfiguration() != null) {
@@ -107,6 +108,7 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setConfiguration(java.lang.String)
      */
+    @Override
     public void setConfiguration(String configuration) {
 
         super.setConfiguration(configuration);
@@ -116,6 +118,7 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public void setEditorValue(
         CmsObject cms,
         Map formParameters,

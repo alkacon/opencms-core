@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlValidationErrorHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/08/20 11:31:45 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.xml.sax.SAXParseException;
  * 
  * Exceptions caused by warnings are suppressed (but written to the log if level is set to WARN).<p>
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,6 +64,7 @@ public class CmsXmlValidationErrorHandler extends XMLErrorHandler {
     /**
      * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
      */
+    @Override
     public void error(SAXParseException e) {
 
         String message = e.getMessage();
@@ -94,6 +95,7 @@ public class CmsXmlValidationErrorHandler extends XMLErrorHandler {
     /**
      * @see org.dom4j.util.XMLErrorHandler#warning(org.xml.sax.SAXParseException)
      */
+    @Override
     public void warning(SAXParseException e) {
 
         Element element = m_warnings.addElement(WARNING_QNAME);

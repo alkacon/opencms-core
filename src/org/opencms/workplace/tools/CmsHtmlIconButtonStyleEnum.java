@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsHtmlIconButtonStyleEnum.java,v $
- * Date   : $Date: 2009/06/04 14:29:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/20 11:31:06 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,6 +124,7 @@ public final class CmsHtmlIconButtonStyleEnum {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return m_style;

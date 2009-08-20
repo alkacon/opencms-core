@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationCopyResource.java,v $
- * Date   : $Date: 2009/07/23 13:56:21 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/20 11:31:43 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.util.CmsMacroResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -181,6 +181,7 @@ public class CmsConfigurationCopyResource {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

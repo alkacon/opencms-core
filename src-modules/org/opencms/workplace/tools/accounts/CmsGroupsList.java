@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +83,7 @@ public class CmsGroupsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#getGroups()
      */
+    @Override
     protected List getGroups() throws CmsException {
 
         return CmsPrincipal.filterCore(OpenCms.getOrgUnitManager().getGroups(getCms(), getParamOufqn(), false));
@@ -91,6 +92,7 @@ public class CmsGroupsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#setDeleteAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDeleteAction(CmsListColumnDefinition deleteCol) {
 
         CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE);
@@ -103,6 +105,7 @@ public class CmsGroupsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#setEditAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setEditAction(CmsListColumnDefinition editCol) {
 
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);

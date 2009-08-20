@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2009/06/04 14:29:46 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/08/20 11:30:33 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,6 +157,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
      * 
      * @throws JspException if inclusion of error dialog fails
      */
+    @Override
     public void actionCreateResource() throws JspException {
 
         try {
@@ -192,6 +193,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
      *  
      * @return the http URI of the current dialog
      */
+    @Override
     public String getDialogUri() {
 
         if (!useNewStyle()) {
@@ -234,6 +236,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

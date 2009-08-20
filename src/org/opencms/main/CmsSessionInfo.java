@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2009/06/04 14:29:37 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/08/20 11:31:03 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,6 +131,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -257,6 +258,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_userId.hashCode();
@@ -276,6 +278,7 @@ public class CmsSessionInfo implements Comparable, Serializable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer str = new StringBuffer(64);

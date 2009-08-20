@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/json/JSONObject.java,v $
- * Date   : $Date: 2009/06/04 14:29:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/20 11:31:56 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -136,6 +136,7 @@ public class JSONObject {
          * @param object an object to test for nullness
          * @return true if the object parameter is the JSONObject.NULL object or null
          */
+        @Override
         public boolean equals(Object object) {
 
             return object == null || object == this;
@@ -144,6 +145,7 @@ public class JSONObject {
         /**
          * @see Object#hashCode()
          */
+        @Override
         public int hashCode() {
 
             return super.hashCode();
@@ -154,6 +156,7 @@ public class JSONObject {
          * 
          * @return the string "null".
          */
+        @Override
         public String toString() {
 
             return "null";
@@ -165,6 +168,7 @@ public class JSONObject {
          * 
          * @return NULL.
          */
+        @Override
         protected Object clone() {
 
             return this;
@@ -1331,6 +1335,7 @@ public class JSONObject {
      *  with <code>{</code>&nbsp;<small>(left brace)</small> and ending
      *  with <code>}</code>&nbsp;<small>(right brace)</small>.
      */
+    @Override
     public String toString() {
 
         try {

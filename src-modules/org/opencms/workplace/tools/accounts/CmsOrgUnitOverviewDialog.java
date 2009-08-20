@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsOrgUnitOverviewDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:39 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:57 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.6
  */
@@ -66,6 +66,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         // noop
@@ -79,6 +80,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -103,6 +105,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -111,6 +114,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
@@ -128,6 +132,7 @@ public class CmsOrgUnitOverviewDialog extends A_CmsOrgUnitDialog {
      * Initializes the organizational unit object to work with depending on the dialog state and request parameters.<p>
      * 
      */
+    @Override
     protected void initOrgUnitObject() {
 
         try {

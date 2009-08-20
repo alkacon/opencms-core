@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/08/20 11:31:18 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,6 +149,7 @@ public class CmsJspTagContentShow extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
+    @Override
     public int doEndTag() {
 
         if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
@@ -161,6 +162,7 @@ public class CmsJspTagContentShow extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content container" class
@@ -212,6 +214,7 @@ public class CmsJspTagContentShow extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         m_element = null;

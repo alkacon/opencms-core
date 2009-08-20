@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserGroupsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:30:56 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,6 +115,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_REMOVE)) {
@@ -149,6 +150,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         if (m_removeActionIds.contains(getParamListAction())) {
@@ -168,6 +170,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups(boolean)
      */
+    @Override
     protected List getGroups(boolean withOtherOus) throws CmsException {
 
         return getCms().getGroupsOfUser(getParamUsername(), false, withOtherOus);
@@ -176,6 +179,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setDefaultAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDefaultAction(CmsListColumnDefinition nameCol) {
 
         // add default remove action for direct groups
@@ -200,6 +204,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setIconAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setIconAction(CmsListColumnDefinition iconCol) {
 
         // adds a direct group icon
@@ -224,6 +229,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add remove multi action
@@ -239,6 +245,7 @@ public class CmsUserGroupsList extends A_CmsUserGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setStateActionCol(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setStateActionCol(CmsListMetadata metadata) {
 
         // create column for state change

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLoginHelper.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:30:44 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.3 
  */
@@ -224,6 +224,7 @@ public class CmsLoginHelper extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#checkRole()
      */
+    @Override
     protected void checkRole() {
 
         // do not check
@@ -232,6 +233,7 @@ public class CmsLoginHelper extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // empty

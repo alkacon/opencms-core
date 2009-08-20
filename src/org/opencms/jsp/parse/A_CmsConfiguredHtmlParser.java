@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/parse/A_CmsConfiguredHtmlParser.java,v $
- * Date   : $Date: 2009/06/04 14:29:56 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:34 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.1.7
  */
@@ -101,8 +101,8 @@ public abstract class A_CmsConfiguredHtmlParser {
      * 
      * @return the result of subsequent parsing to the &lt;cms:parse&lt; tag implementation
      * 
-     * @throws ParserException if sth. goes wrong at parsing
-     * @throws CmsException if sth. goes wrong at accessing OpenCms core functionality
+     * @throws ParserException if something goes wrong at parsing
+     * @throws CmsException if something goes wrong at accessing OpenCms core functionality
      */
     public String doParse(String html, String encoding, List noAutoCloseTags) throws ParserException, CmsException {
 
@@ -111,11 +111,6 @@ public abstract class A_CmsConfiguredHtmlParser {
         String result = "";
         m_visitor.process(html, encoding);
         result = m_visitor.getResult();
-        // fool Checkstyle - we need to grant this exception for more complex subclasses that e.g.
-        // have to be configured from VFS:
-        if (false) {
-            throw new CmsException(null);
-        }
         return result;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsCategory.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:32 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.9.2
  */
@@ -153,6 +153,7 @@ public class CmsCategory implements Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (!(obj instanceof CmsCategory)) {
@@ -246,6 +247,7 @@ public class CmsCategory implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getPath().hashCode();

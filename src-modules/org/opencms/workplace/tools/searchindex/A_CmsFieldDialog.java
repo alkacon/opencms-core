@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/A_CmsFieldDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:34 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.5
  */
@@ -133,6 +133,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#actionCommit()
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -206,6 +207,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -214,6 +216,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initUserObject();
@@ -223,6 +226,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -270,6 +274,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
      */
+    @Override
     protected void initWorkplaceMembers(CmsJspActionElement jsp) {
 
         m_searchManager = OpenCms.getSearchManager();
@@ -279,6 +284,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation
@@ -308,6 +314,7 @@ public class A_CmsFieldDialog extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (!isNewField()) {

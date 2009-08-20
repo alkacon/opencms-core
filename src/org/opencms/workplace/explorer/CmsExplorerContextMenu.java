@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/20 11:30:34 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,6 +111,7 @@ public class CmsExplorerContextMenu {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsExplorerContextMenu objectClone = new CmsExplorerContextMenu();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckProperty.java,v $
- * Date   : $Date: 2009/06/04 14:33:36 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:31 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.1.2
  */
@@ -127,6 +127,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
      * 
      * @see org.opencms.workplace.tools.content.check.I_CmsContentCheck#executeContentCheck(org.opencms.file.CmsObject, org.opencms.workplace.tools.content.check.CmsContentCheckResource)
      */
+    @Override
     public CmsContentCheckResource executeContentCheck(CmsObject cms, CmsContentCheckResource testResource)
     throws CmsException {
 
@@ -159,6 +160,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
      * 
      * @see org.opencms.workplace.tools.content.check.I_CmsContentCheck#getDialogParameterName()
      */
+    @Override
     public String getDialogParameterName() {
 
         return DIALOG_PARAMETER;
@@ -167,6 +169,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getHelpText()
      */
+    @Override
     public String getHelpText() {
 
         return Messages.get().getBundle().key(Messages.GUI_CHECKCONTENT_CONFIGURATION_PROPERTY_HELP_0);
@@ -175,6 +178,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getIconPath()
      */
+    @Override
     public String getIconPath() {
 
         return ICONPATH;
@@ -183,6 +187,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getLink()
      */
+    @Override
     public String getLink() {
 
         return "/system/workplace/views/admin/admin-editor.jsp?resource=/system/workplace/admin/contenttools/check/plugin/propertycheck/configuration.xml";
@@ -191,6 +196,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.content.check.I_CmsContentCheck#getMessageBundles()
      */
+    @Override
     public List getMessageBundles() {
 
         List messages = new ArrayList();
@@ -201,6 +207,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getName()
      */
+    @Override
     public String getName() {
 
         return NAME;
@@ -209,6 +216,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getPath()
      */
+    @Override
     public String getPath() {
 
         return "/contenttools/checkconfig/checkproperty";
@@ -217,6 +225,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getPosition()
      */
+    @Override
     public float getPosition() {
 
         return 1;
@@ -225,6 +234,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getShortName()
      */
+    @Override
     public String getShortName() {
 
         return NAME;
@@ -233,6 +243,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
     /**
      * @see org.opencms.workplace.tools.content.check.I_CmsContentCheck#init(org.opencms.file.CmsObject)
      */
+    @Override
     public void init(CmsObject cms) {
 
         m_cms = cms;
@@ -244,6 +255,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
      * 
      * @return true if this content check is active, false otherwise.
      */
+    @Override
     public boolean isActive() {
 
         return m_active;
@@ -256,6 +268,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck {
      *
      * @param value true if this content check is set to be active, false otherwise.
      */
+    @Override
     public void setActive(boolean value) {
 
         m_active = value;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsMappingsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.5.5
  */
@@ -161,6 +161,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         CmsSearchManager searchManager = OpenCms.getSearchManager();
@@ -210,6 +211,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws ServletException, IOException {
 
         CmsListItem item = getSelectedItem();
@@ -285,6 +287,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -293,6 +296,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List result = new ArrayList();
@@ -322,6 +326,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create dummy column for corporate design reasons
@@ -374,6 +379,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // empty
@@ -382,6 +388,7 @@ public class CmsMappingsList extends A_CmsEmbeddedListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add add multi action

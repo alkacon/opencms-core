@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsAjaxLinkGallery.java,v $
- * Date   : $Date: 2009/07/03 12:46:04 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Polina Smagina
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.5.0 
  */
@@ -113,6 +113,7 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
     /**
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryItemsTypeId()
      */
+    @Override
     public int getGalleryItemsTypeId() {
 
         return CmsResourceTypePointer.getStaticTypeId();
@@ -121,6 +122,7 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
     /**
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryTypeId()
      */
+    @Override
     public int getGalleryTypeId() {
 
         try {
@@ -137,6 +139,7 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
     /**
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#getGalleryTypeName()
      */
+    @Override
     public String getGalleryTypeName() {
 
         return GALLERYTYPE_NAME;
@@ -152,6 +155,7 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
      * @see org.opencms.workplace.galleries.A_CmsAjaxGallery#buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath)
      *
      */
+    @Override
     protected void buildJsonItemSpecificPart(JSONObject jsonObj, CmsResource res, String sitePath) {
 
         // file target
@@ -181,6 +185,7 @@ public class CmsAjaxLinkGallery extends A_CmsAjaxGallery {
      * @param itemUrl the pointer resource to change the link of 
      * 
      */
+    @Override
     protected void changeItemLinkUrl(String itemUrl) {
 
         try {

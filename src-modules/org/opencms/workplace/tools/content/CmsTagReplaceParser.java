@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceParser.java,v $
- * Date   : $Date: 2009/06/04 14:33:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:22 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.1.7
  * 
@@ -103,6 +103,7 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
      * 
      * @see org.opencms.util.CmsHtmlParser#getTagHtml(org.htmlparser.Tag)
      */
+    @Override
     public String getTagHtml(Tag tag) {
 
         if (CmsStringUtil.isEmpty(tag.getTagName())) {
@@ -143,6 +144,7 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
      * 
      * @throws ParserException if something goes wrong.
      */
+    @Override
     public String process(String html, String encoding) throws ParserException {
 
         // clear from potential previous run:
@@ -165,6 +167,7 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
     /**
      * @see org.opencms.util.CmsHtmlParser#visitEndTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitEndTag(Tag tag) {
 
         boolean change = m_settings.replace(tag);
@@ -177,6 +180,7 @@ public final class CmsTagReplaceParser extends CmsHtmlParser {
     /**
      * @see org.opencms.util.CmsHtmlParser#visitTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitTag(Tag tag) {
 
         boolean change = m_settings.replace(tag);

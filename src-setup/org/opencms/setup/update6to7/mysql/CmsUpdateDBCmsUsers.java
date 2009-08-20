@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/mysql/CmsUpdateDBCmsUsers.java,v $
- * Date   : $Date: 2009/06/04 14:31:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,6 +71,7 @@ public class CmsUpdateDBCmsUsers extends org.opencms.setup.update6to7.generic.Cm
      * 
      * @throws SQLException if soemthing goes wrong
      */
+    @Override
     protected void createUserDataTable(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());

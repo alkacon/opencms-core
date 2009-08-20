@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersList.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,6 +84,7 @@ public class CmsUsersList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getGroupIcon()
      */
+    @Override
     protected String getGroupIcon() {
 
         return PATH_BUTTONS + "group.png";
@@ -92,6 +93,7 @@ public class CmsUsersList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getUsers()
      */
+    @Override
     protected List getUsers() throws CmsException {
 
         return CmsPrincipal.filterCore(OpenCms.getOrgUnitManager().getUsers(getCms(), getParamOufqn(), false));
@@ -100,6 +102,7 @@ public class CmsUsersList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#readUser(java.lang.String)
      */
+    @Override
     protected CmsUser readUser(String name) throws CmsException {
 
         return getCms().readUser(name);
@@ -108,6 +111,7 @@ public class CmsUsersList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setDeleteAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDeleteAction(CmsListColumnDefinition deleteCol) {
 
         CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE);
@@ -120,6 +124,7 @@ public class CmsUsersList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setEditAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setEditAction(CmsListColumnDefinition editCol) {
 
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);

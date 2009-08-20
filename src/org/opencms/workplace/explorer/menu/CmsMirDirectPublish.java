@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirDirectPublish.java,v $
- * Date   : $Date: 2009/06/04 14:29:07 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:30:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.5.6
  */
@@ -59,6 +59,7 @@ public class CmsMirDirectPublish extends A_CmsMenuItemRule {
     /**
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, CmsResourceUtil[])
      */
+    @Override
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
         if (!resourceUtil[0].isInsideProject()) {

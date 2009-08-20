@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/08/20 11:31:19 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,6 +154,7 @@ public class CmsJspTagUser extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws javax.servlet.jsp.JspException {
 
         javax.servlet.ServletRequest req = pageContext.getRequest();
@@ -188,6 +189,7 @@ public class CmsJspTagUser extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         super.release();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/07/08 11:11:35 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2009/08/20 11:31:41 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.76 $ 
+ * @version $Revision: 1.77 $ 
  * 
  * @since 6.0.0 
  */
@@ -296,6 +296,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         /**
          * @see java.lang.Thread#run()
          */
+        @Override
         public void run() {
 
             // create a log report for the output
@@ -324,6 +325,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         /**
          * @see java.lang.Thread#start()
          */
+        @Override
         public synchronized void start() {
 
             m_isAlive = true;

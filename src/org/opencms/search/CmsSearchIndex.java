@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/08/19 11:38:49 $
- * Version: $Revision: 1.77 $
+ * Date   : $Date: 2009/08/20 11:31:41 $
+ * Version: $Revision: 1.78 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.77 $ 
+ * @version $Revision: 1.78 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,6 +120,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         /**
          * @see org.apache.lucene.index.IndexReader#document(int)
          */
+        @Override
         public Document document(int n) throws CorruptIndexException, IOException {
 
             return super.document(n, CONTENT_SELECTOR);
@@ -414,6 +415,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -718,6 +720,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_name != null ? m_name.hashCode() : 0;
@@ -1259,6 +1262,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return getName();

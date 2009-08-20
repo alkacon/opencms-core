@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2009/06/04 14:29:45 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2009/08/20 11:30:33 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -360,6 +360,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      * 
      * @throws JspException if including an element fails
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         if (isCreateIndexMode()) {
@@ -409,6 +410,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         super.actionDialog();
@@ -511,6 +513,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      * 
      * @return the button row 
      */
+    @Override
     public String dialogButtons() {
 
         return dialogButtonsAdvancedNextCancel(
@@ -636,6 +639,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      *
      * @return the paramPage
      */
+    @Override
     public String getParamPage() {
 
         return m_paramPage;
@@ -687,6 +691,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      * 
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
      */
+    @Override
     public String paramsAsHidden() {
 
         String resourceName = getParamResource();
@@ -775,6 +780,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
      *
      * @param paramPage the paramPage to set
      */
+    @Override
     public void setParamPage(String paramPage) {
 
         m_paramPage = paramPage;
@@ -853,6 +859,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(256);
@@ -884,6 +891,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
      */
+    @Override
     protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
 
         attribute = appendDelimiter(attribute);
@@ -904,6 +912,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() {
 
         List ret = new ArrayList();
@@ -1023,6 +1032,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // set the dialog type
@@ -1111,6 +1121,7 @@ public class CmsNewResource extends A_CmsListResourceTypeDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);

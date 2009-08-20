@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:50 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/08/20 11:31:46 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,6 +89,7 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#displayDialog()
      */
+    @Override
     public void displayDialog() throws JspException, IOException, ServletException {
 
         if (!Boolean.valueOf(getParamShowlog()).booleanValue()) {
@@ -143,6 +144,7 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -175,6 +177,7 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         super.defineWidgets();

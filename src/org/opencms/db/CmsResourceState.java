@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsResourceState.java,v $
- * Date   : $Date: 2009/06/04 14:29:16 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:11 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.io.Serializable;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.5.3 
  */
@@ -182,6 +182,7 @@ public class CmsResourceState implements Serializable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return String.valueOf(getState());

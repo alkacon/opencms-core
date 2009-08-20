@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsMergePagesThread.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/08/20 11:31:22 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,6 +70,7 @@ public class CmsMergePagesThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -78,6 +79,7 @@ public class CmsMergePagesThread extends A_CmsReportThread {
     /**
      * The run method which starts the merging process.<p>
      */
+    @Override
     public synchronized void run() {
 
         try {

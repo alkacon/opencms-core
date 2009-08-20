@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeUnknown.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +69,7 @@ public class CmsResourceTypeUnknown extends A_CmsResourceType {
      * 
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return CmsDumpLoader.RESOURCE_LOADER_ID;
@@ -77,6 +78,7 @@ public class CmsResourceTypeUnknown extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
+    @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         // if this class is used this is usually a configuration error

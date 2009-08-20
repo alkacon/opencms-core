@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMenuItemVisibilityMode.java,v $
- * Date   : $Date: 2009/06/04 14:29:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:39 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.A_CmsModeIntEnumeration;
  * 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.6 
  */
@@ -150,6 +150,7 @@ public final class CmsMenuItemVisibilityMode extends A_CmsModeIntEnumeration {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     protected Object clone() {
 
         return new CmsMenuItemVisibilityMode(this.getMode());

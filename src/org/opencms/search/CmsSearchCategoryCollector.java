@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchCategoryCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:31:40 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.lucene.search.IndexSearcher;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,16 +77,6 @@ public class CmsSearchCategoryCollector extends HitCollector {
         CmsCategroyCount() {
 
             m_count = 1;
-        }
-
-        /**
-         * Returns the count.<p>
-         *
-         * @return the count
-         */
-        int getCount() {
-
-            return m_count;
         }
 
         /**
@@ -160,6 +150,7 @@ public class CmsSearchCategoryCollector extends HitCollector {
     /**
      * @see org.apache.lucene.search.HitCollector#collect(int, float)
      */
+    @Override
     public void collect(int id, float score) {
 
         String category = null;
@@ -206,6 +197,7 @@ public class CmsSearchCategoryCollector extends HitCollector {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return formatCategoryMap(getCategoryCountResult());

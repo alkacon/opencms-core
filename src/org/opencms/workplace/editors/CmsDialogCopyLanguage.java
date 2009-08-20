@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogCopyLanguage.java,v $
- * Date   : $Date: 2008/04/14 13:51:36 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.5.6 
  */
@@ -301,6 +301,7 @@ public class CmsDialogCopyLanguage extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

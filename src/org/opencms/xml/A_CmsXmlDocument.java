@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2009/08/20 11:31:45 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -581,6 +581,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         try {

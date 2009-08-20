@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsRebuildSearchIndexDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:35 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:34 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -84,6 +84,7 @@ public class CmsRebuildSearchIndexDialog extends A_CmsEditSearchIndexDialog {
     /**
      * Commits the edited search index to the search manager.<p>
      */
+    @Override
     public void actionCommit() {
 
         List errors = new ArrayList();
@@ -111,6 +112,7 @@ public class CmsRebuildSearchIndexDialog extends A_CmsEditSearchIndexDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(512);

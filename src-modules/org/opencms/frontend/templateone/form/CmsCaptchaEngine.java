@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaEngine.java,v $
- * Date   : $Date: 2009/06/17 12:25:44 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/20 11:31:01 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import com.octo.captcha.image.gimpy.GimpyFactory;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class CmsCaptchaEngine extends ImageCaptchaEngine {
 
@@ -166,6 +166,7 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
      * 
      * @see com.octo.captcha.engine.CaptchaEngine#getFactories()
      */
+    @Override
     public CaptchaFactory[] getFactories() {
 
         return new CaptchaFactory[] {m_factory};
@@ -179,6 +180,7 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
      * 
      * @see com.octo.captcha.engine.CaptchaEngine#setFactories(com.octo.captcha.CaptchaFactory[])
      */
+    @Override
     public void setFactories(CaptchaFactory[] arg0) throws CaptchaEngineException {
 
         // TODO Auto-generated method stub
@@ -189,6 +191,7 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
     *
     * @return a CaptchaFactory
     */
+    @Override
     public com.octo.captcha.image.ImageCaptchaFactory getImageCaptchaFactory() {
 
         return m_factory;

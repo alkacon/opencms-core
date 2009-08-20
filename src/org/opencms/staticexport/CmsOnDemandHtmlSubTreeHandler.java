@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsOnDemandHtmlSubTreeHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/08/20 11:31:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  * 
@@ -55,6 +55,7 @@ public class CmsOnDemandHtmlSubTreeHandler extends A_CmsOnDemandStaticExportHand
     /**
      * @see org.opencms.staticexport.A_CmsOnDemandStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
      */
+    @Override
     protected List getRelatedFilesToPurge(String exportFileName, String vfsName) {
 
         FileFilter htmlFilter = new FileFilter() {

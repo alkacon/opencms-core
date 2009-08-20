@@ -69,6 +69,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
     /**
      * @see org.htmlparser.visitors.NodeVisitor#visitEndTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitEndTag(Tag tag) {
 
         m_appendBr = false;
@@ -82,6 +83,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
     /**
      * @see org.htmlparser.visitors.NodeVisitor#visitStringNode(org.htmlparser.Text)
      */
+    @Override
     public void visitStringNode(Text text) {
 
         appendText(text.toPlainTextString());
@@ -90,6 +92,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
     /**
      * @see org.htmlparser.visitors.NodeVisitor#visitTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitTag(Tag tag) {
 
         m_appendBr = true;

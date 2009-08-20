@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMultiSearchAction.java,v $
- * Date   : $Date: 2009/08/20 11:07:45 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/08/20 11:30:41 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.6
  */
@@ -73,6 +73,7 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
     /**
      * @see org.opencms.workplace.list.CmsListSearchAction#barHtml(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public String barHtml(CmsWorkplace wp) {
 
         if (wp == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2009/07/10 14:33:14 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/08/20 11:31:33 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0 
  */
@@ -105,6 +105,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -170,6 +171,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_hashcode;

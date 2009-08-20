@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsPrintStreamReport.java,v $
- * Date   : $Date: 2009/06/04 14:29:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:40 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.5.5 
  */
@@ -99,6 +99,7 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
     /**
      * @see org.opencms.report.I_CmsReport#getReportUpdate()
      */
+    @Override
     public synchronized String getReportUpdate() {
 
         return "";
@@ -107,6 +108,7 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
     /**
      * @see org.opencms.report.A_CmsReport#print(java.lang.String, int)
      */
+    @Override
     public synchronized void print(String value, int format) {
 
         if (m_writeHtml) {
@@ -148,6 +150,7 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
     /**
      * @see org.opencms.report.I_CmsReport#println()
      */
+    @Override
     public synchronized void println() {
 
         if (m_writeHtml) {
@@ -161,6 +164,7 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
     /**
      * @see org.opencms.report.I_CmsReport#println(java.lang.Throwable)
      */
+    @Override
     public synchronized void println(Throwable t) {
 
         if (m_writeHtml) {
@@ -194,6 +198,7 @@ public class CmsPrintStreamReport extends CmsHtmlReport {
     /**
      * @see org.opencms.report.CmsHtmlReport#getLineBreak()
      */
+    @Override
     protected String getLineBreak() {
 
         return LINEBREAK;

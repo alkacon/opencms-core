@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListReport.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:30:42 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,6 +79,7 @@ public abstract class A_CmsListReport extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         getSettings().setListObject(null);
@@ -125,6 +126,7 @@ public abstract class A_CmsListReport extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

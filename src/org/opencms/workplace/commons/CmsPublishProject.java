@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2009/06/04 14:29:13 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2009/08/20 11:30:52 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -225,6 +225,7 @@ public class CmsPublishProject extends CmsMultiDialog {
      * 
      * @return html code
      */
+    @Override
     public String buildLockConfirmationMessageJS() {
 
         StringBuffer html = new StringBuffer(512);
@@ -265,6 +266,7 @@ public class CmsPublishProject extends CmsMultiDialog {
      * 
      * @throws CmsException if something goes wrong
      */
+    @Override
     public String buildLockDialog() throws CmsException {
 
         CmsLockFilter nonBlockingFilter = CmsLockFilter.FILTER_ALL;
@@ -279,6 +281,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsMultiDialog#buildLockHeaderBox()
      */
+    @Override
     public String buildLockHeaderBox() throws CmsException {
 
         if (isDirectPublish()) {
@@ -405,6 +408,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#getParamFramename()
      */
+    @Override
     public String getParamFramename() {
 
         String fn = super.getParamFramename();
@@ -709,6 +713,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         CmsProgressThread thread = CmsProgressWidget.getProgressThread(getParamProgresskey());
@@ -723,6 +728,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -848,6 +854,7 @@ public class CmsPublishProject extends CmsMultiDialog {
     /**
      * @see org.opencms.workplace.CmsMultiDialog#performDialogOperation()
      */
+    @Override
     protected boolean performDialogOperation() throws CmsException {
 
         CmsPublishList publishList = getSettings().getPublishList();

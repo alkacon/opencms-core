@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceThread.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.1.8
  */
@@ -99,6 +99,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         return getReport().getReportUpdate();
@@ -107,6 +108,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         getReport().println(

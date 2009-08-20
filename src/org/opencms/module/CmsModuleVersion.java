@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleVersion.java,v $
- * Date   : $Date: 2009/06/04 14:29:43 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/08/20 11:31:52 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.opencms.util.CmsStringUtil;
  * So <code>001.002.004.004 = 1.2.3.4</code>. Unrequired leading zeros are automatically
  * stripped from version numbers.<p> 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,6 +109,7 @@ public class CmsModuleVersion implements Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -137,6 +138,7 @@ public class CmsModuleVersion implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_version == null) {
@@ -192,6 +194,7 @@ public class CmsModuleVersion implements Comparable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return getVersion();

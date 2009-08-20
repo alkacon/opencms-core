@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2009/08/20 11:30:43 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -197,6 +197,7 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -213,6 +214,7 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
     /**
      * @see org.opencms.i18n.CmsMessages#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getLocale().hashCode();

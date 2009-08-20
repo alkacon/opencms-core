@@ -88,6 +88,7 @@ public class CmsGroupDemo extends CmsWidgetDialog {
     /**
      * Commits the edited group to the db.<p>
      */
+    @Override
     public void actionCommit() {
 
         // no saving needed
@@ -102,6 +103,7 @@ public class CmsGroupDemo extends CmsWidgetDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -135,6 +137,7 @@ public class CmsGroupDemo extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlEnd()
      */
+    @Override
     protected String defaultActionHtmlEnd() {
 
         return "";
@@ -143,6 +146,7 @@ public class CmsGroupDemo extends CmsWidgetDialog {
     /**
      * Creates the list of widgets for this dialog.<p>
      */
+    @Override
     protected void defineWidgets() {
 
         // initialize the user object to use for the dialog
@@ -160,6 +164,7 @@ public class CmsGroupDemo extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -180,6 +185,7 @@ public class CmsGroupDemo extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -193,6 +199,7 @@ public class CmsGroupDemo extends CmsWidgetDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/postgresql/CmsUpdateDBContentTables.java,v $
- * Date   : $Date: 2009/06/04 14:31:33 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:31 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Map;
  * @author Ivan Codarin
  * @author Georgi Naplatanov
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.0.2
  */
@@ -78,6 +78,7 @@ public class CmsUpdateDBContentTables extends org.opencms.setup.update6to7.gener
     /**
      * @see org.opencms.setup.update6to7.generic.CmsUpdateDBContentTables#createContentsTable(org.opencms.setup.CmsSetupDb)
      */
+    @Override
     protected void createContentsTable(CmsSetupDb dbCon) throws SQLException {
 
         String dataTablespace = (String)m_poolData.get("dataTablespace");
@@ -98,6 +99,7 @@ public class CmsUpdateDBContentTables extends org.opencms.setup.update6to7.gener
     /**
      * @see org.opencms.setup.update6to7.generic.CmsUpdateDBContentTables#transferOnlineContents(org.opencms.setup.CmsSetupDb, int)
      */
+    @Override
     protected void transferOnlineContents(CmsSetupDb dbCon, int pubTag) throws SQLException {
 
         String query = readQuery(QUERY_TRANSFER_ONLINE_CONTENTS);

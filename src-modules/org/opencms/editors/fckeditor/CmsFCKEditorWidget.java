@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2009/07/01 15:46:37 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/20 11:31:32 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import java.util.List;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.1.7
  */
@@ -422,6 +422,7 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(128);
@@ -436,6 +437,7 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitCall(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitCall(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         // creates the FCKeditor instances
@@ -445,6 +447,7 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogInitMethod(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
+    @Override
     public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(64);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/UploadAppletFileChooser.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:37 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import javax.swing.JFileChooser;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  */
 public class UploadAppletFileChooser extends javax.swing.JFileChooser {
@@ -109,6 +109,7 @@ public class UploadAppletFileChooser extends javax.swing.JFileChooser {
     /**
      * @see javax.swing.JFileChooser#createDialog(java.awt.Component)
      */
+    @Override
     protected JDialog createDialog(Component parent) throws HeadlessException {
 
         JDialog dialog = super.createDialog(parent);
@@ -120,6 +121,7 @@ public class UploadAppletFileChooser extends javax.swing.JFileChooser {
     /**
      * @see javax.swing.JFileChooser#showDialog(java.awt.Component, java.lang.String)
      */
+    @Override
     public int showDialog(Component parent, String approveButtonText) throws HeadlessException {
 
         if (approveButtonText != null) {
@@ -129,6 +131,7 @@ public class UploadAppletFileChooser extends javax.swing.JFileChooser {
         m_dialogAccessHack = createDialog(parent);
         m_dialogAccessHack.addWindowListener(new WindowAdapter() {
 
+            @Override
             public void windowClosing(WindowEvent e) {
 
                 m_returnValue = CANCEL_OPTION;

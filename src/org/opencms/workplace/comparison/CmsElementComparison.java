@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparison.java,v $
- * Date   : $Date: 2009/06/04 14:29:34 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:42 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,6 +79,7 @@ public class CmsElementComparison extends CmsAttributeComparison implements Comp
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object o) {
 
         if (this == o) {
@@ -105,6 +106,7 @@ public class CmsElementComparison extends CmsAttributeComparison implements Comp
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_locale.hashCode() + getName().hashCode();

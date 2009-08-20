@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlParser.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:44 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.2.0
  */
@@ -231,6 +231,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     /**
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitEndTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitEndTag(Tag tag) {
 
         if (m_echo) {
@@ -241,6 +242,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     /**
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitRemarkNode(org.htmlparser.Remark)
      */
+    @Override
     public void visitRemarkNode(Remark remark) {
 
         if (m_echo) {
@@ -251,6 +253,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     /**
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitStringNode(org.htmlparser.Text)
      */
+    @Override
     public void visitStringNode(Text text) {
 
         if (m_echo) {
@@ -261,6 +264,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     /**
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitTag(Tag tag) {
 
         if (m_echo) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsConstantMap.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:44 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.util.Set;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 7.0.2
  */
@@ -106,6 +106,7 @@ public class CmsConstantMap implements Map {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -128,6 +129,7 @@ public class CmsConstantMap implements Map {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_constant.hashCode();

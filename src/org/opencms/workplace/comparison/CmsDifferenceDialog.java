@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsDifferenceDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:34 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:31:41 $
+ * Version: $Revision: 1.9 $
  *
  * Copyright (c) 2002 - 2009 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -39,7 +39,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -327,6 +327,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
      * 
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#getCopySource()
      */
+    @Override
     protected String getCopySource() {
 
         return m_copySource;
@@ -336,6 +337,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
      * 
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#getLinesBeforeSkip()
      */
+    @Override
     protected int getLinesBeforeSkip() {
 
         return 2;
@@ -345,6 +347,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
      * 
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#getOriginalSource()
      */
+    @Override
     protected String getOriginalSource() {
 
         return m_originalSource;
@@ -354,6 +357,7 @@ public class CmsDifferenceDialog extends A_CmsDiffViewDialog {
      * 
      * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() {
 
         // noop

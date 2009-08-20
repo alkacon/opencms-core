@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/CmsSetupDb.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:04 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -588,6 +588,7 @@ public class CmsSetupDb extends Object {
     /**
      * @see java.lang.Object#finalize()
      */
+    @Override
     protected void finalize() throws Throwable {
 
         try {

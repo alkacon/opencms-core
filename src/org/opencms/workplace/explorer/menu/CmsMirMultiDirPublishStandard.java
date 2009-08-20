@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/menu/CmsMirMultiDirPublishStandard.java,v $
- * Date   : $Date: 2009/06/04 14:29:06 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:30:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 7.0.2
  */
@@ -59,6 +59,7 @@ public class CmsMirMultiDirPublishStandard extends A_CmsMenuItemRule {
     /**
      * @see org.opencms.workplace.explorer.menu.I_CmsMenuItemRule#getVisibility(org.opencms.file.CmsObject, CmsResourceUtil[])
      */
+    @Override
     public CmsMenuItemVisibilityMode getVisibility(CmsObject cms, CmsResourceUtil[] resourceUtil) {
 
         if (cms.getRequestContext().currentProject().isOnlineProject()) {

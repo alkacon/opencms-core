@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckCollector.java,v $
- * Date   : $Date: 2009/06/04 14:33:36 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  * @author Michael Emmerich
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.2 
  */
@@ -96,6 +96,7 @@ public class CmsContentCheckCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
+    @Override
     public List getResources(CmsObject cms, Map params) {
 
         if (params.containsKey(PARAM_ERROR)) {
@@ -113,6 +114,7 @@ public class CmsContentCheckCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         // no-op

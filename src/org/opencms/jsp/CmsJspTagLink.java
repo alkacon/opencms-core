@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLink.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/08/20 11:31:19 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,6 +95,7 @@ public class CmsJspTagLink extends BodyTagSupport {
      * @return EVAL_PAGE
      * @throws JspException in case something goes wrong
      */
+    @Override
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();

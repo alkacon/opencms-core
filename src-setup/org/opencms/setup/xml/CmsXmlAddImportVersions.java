@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/xml/CmsXmlAddImportVersions.java,v $
- * Date   : $Date: 2009/06/04 14:31:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:47 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.9.2
  */
@@ -74,6 +74,7 @@ public class CmsXmlAddImportVersions extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
      */
+    @Override
     protected boolean executeUpdate(Document document, String xpath) {
 
         Node node = document.selectSingleNode(xpath);
@@ -102,6 +103,7 @@ public class CmsXmlAddImportVersions extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
+    @Override
     protected String getCommonPath() {
 
         // /opencms/importexport/import/importversions
@@ -116,6 +118,7 @@ public class CmsXmlAddImportVersions extends A_CmsSetupXmlUpdate {
     /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
+    @Override
     protected List getXPathsToUpdate() {
 
         if (m_xpaths == null) {

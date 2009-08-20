@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceTypeDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:30:42 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.7.2
  */
@@ -201,6 +201,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
      */
+    @Override
     public void actionDialog() throws JspException, ServletException, IOException {
 
         // set selected type
@@ -239,6 +240,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         // noop
@@ -247,6 +249,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         // noop
@@ -265,6 +268,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
      */
+    @Override
     public String paramsAsHidden() {
 
         List excludes = new ArrayList();
@@ -274,6 +278,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden(java.util.Collection)
      */
+    @Override
     public String paramsAsHidden(Collection excludes) {
 
         excludes.add(PARAM_SELECTED_TYPE);
@@ -305,6 +310,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlEnd()
      */
+    @Override
     protected String customHtmlEnd() {
 
         StringBuffer result = new StringBuffer(256);
@@ -319,6 +325,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#customHtmlStart()
      */
+    @Override
     protected String customHtmlStart() {
 
         StringBuffer result = new StringBuffer(256);
@@ -366,6 +373,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlContent()
      */
+    @Override
     protected String defaultActionHtmlContent() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -395,6 +403,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // get listed resource types
@@ -464,6 +473,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // add column for radio button
@@ -500,6 +510,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // create list item detail: description
@@ -521,6 +532,7 @@ public abstract class A_CmsListResourceTypeDialog extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop

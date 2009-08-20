@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsMimeType.java,v $
- * Date   : $Date: 2009/06/04 14:29:08 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:31:34 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 7.0.0 
  */
@@ -112,6 +112,7 @@ public class CmsMimeType implements Comparable {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -148,6 +149,7 @@ public class CmsMimeType implements Comparable {
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_extension.hashCode();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:48 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/08/20 11:31:54 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,6 +102,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
      */
+    @Override
     public void executeListIndepActions() {
 
         if (getParamListAction().equals(LIST_IACTION_FILTER)) {
@@ -117,6 +118,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -125,6 +127,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -133,6 +136,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -159,6 +163,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getList()
      */
+    @Override
     public CmsHtmlList getList() {
 
         CmsHtmlList list = super.getList();
@@ -194,6 +199,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#refreshList()
      */
+    @Override
     public synchronized void refreshList() {
 
         if (LIST_IACTION_FILTER.equals(getParamListAction())) {
@@ -218,6 +224,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no-details
@@ -226,6 +233,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getProject()
      */
+    @Override
     protected CmsProject getProject() {
 
         CmsUUID projectId = new CmsUUID(getParamProjectid());
@@ -239,6 +247,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -250,6 +259,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         CmsListDropdownAction filterAction = new CmsListDropdownAction(LIST_IACTION_FILTER);
@@ -267,6 +277,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMAs
@@ -275,6 +286,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         try {

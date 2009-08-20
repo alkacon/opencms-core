@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/oracle/CmsUpdateDBCreateIndexes7.java,v $
- * Date   : $Date: 2009/06/04 14:31:36 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:30:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.List;
  * @author Roland Metzler
  * @author Peter Bonrad
  *
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 7.0.0
  */
@@ -92,6 +92,7 @@ public class CmsUpdateDBCreateIndexes7 extends org.opencms.setup.update6to7.gene
     /**
      * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
+    @Override
     protected void internalExecute(CmsSetupDb dbCon) {
 
         System.out.println(new Exception().getStackTrace()[0].toString());

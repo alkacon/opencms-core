@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2009/07/07 13:15:38 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2009/08/20 11:30:34 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -682,6 +682,7 @@ public class CmsExplorer extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         String currentResource = request.getParameter(PARAMETER_RESOURCE);

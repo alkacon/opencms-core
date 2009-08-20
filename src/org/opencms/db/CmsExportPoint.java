@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPoint.java,v $
- * Date   : $Date: 2009/06/04 14:29:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:31:11 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.main.OpenCms;
  *  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0
  */
@@ -80,6 +80,7 @@ public class CmsExportPoint {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -129,6 +130,7 @@ public class CmsExportPoint {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getUri().hashCode();
@@ -183,6 +185,7 @@ public class CmsExportPoint {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return "[" + getClass().getName() + ", uri: " + m_uri + ", destination: " + m_destinationPath + "]";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorFileBrowser.java,v $
- * Date   : $Date: 2009/06/04 14:33:36 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:33 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.1.7
  */
@@ -276,6 +276,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
      * 
      * @param request the current JSP request
      */
+    @Override
     public void fillParamValues(HttpServletRequest request) {
 
         // ensure a multipart request is parsed only once (for "forward" scenarios with reports)
@@ -540,6 +541,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods and check for multipart file items

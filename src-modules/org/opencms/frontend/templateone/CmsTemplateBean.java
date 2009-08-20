@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2009/06/04 14:33:45 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2009/08/20 11:31:12 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
@@ -515,7 +515,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
         if (showMainLink) {
             // less than 10 links defined, main link should be shown
             String defaultLink = (String)m_properties.get(PROPERTY_HEAD_DEFAULTLINK);
-            if (defaultLink != null && !PROPERTY_VALUE_NONE.equals(defaultLink)) {
+            if ((defaultLink != null) && !PROPERTY_VALUE_NONE.equals(defaultLink)) {
                 String url = defaultLink;
                 String text = defaultLink;
                 String target = "";
@@ -814,7 +814,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
             showPageLinks = false;
         }
 
-        if (elementsPresent || size > 0) {
+        if (elementsPresent || (size > 0)) {
             // at least one element or list is present, create writer        
             JspWriter out = getJspContext().getOut();
             String elementName = FOLDER_ELEMENTS + "elements.jsp";
@@ -893,6 +893,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
      * @param req the JSP request 
      * @param res the JSP response 
      */
+    @Override
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         // call initialization of super class

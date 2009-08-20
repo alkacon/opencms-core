@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/08/20 11:31:18 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  * 
@@ -133,6 +133,7 @@ public class CmsJspNavElement implements Comparable {
     /**
      * @see java.lang.Object#equals(Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -325,6 +326,7 @@ public class CmsJspNavElement implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return super.hashCode();

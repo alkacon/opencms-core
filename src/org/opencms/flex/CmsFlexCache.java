@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2009/06/04 14:29:19 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2009/08/20 11:31:39 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 6.0.0 
  * 
@@ -162,6 +162,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
          * 
          * @see LRUMap#removeLRU(LinkEntry)
          */
+        @Override
         protected boolean removeLRU(LinkEntry entry) {
 
             CmsFlexCacheVariation v = (CmsFlexCacheVariation)entry.getValue();
@@ -486,6 +487,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * Clears the cache for finalization.<p>
      * @throws Throwable if something goes wrong
      */
+    @Override
     protected void finalize() throws Throwable {
 
         try {

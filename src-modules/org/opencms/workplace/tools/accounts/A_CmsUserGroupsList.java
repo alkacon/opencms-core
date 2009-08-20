@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.25 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -226,6 +226,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -245,6 +246,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         CmsListItemDetails details = getList().getMetadata().getItemDetailDefinition(LIST_DETAIL_OTHEROU);
@@ -268,6 +270,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
      */
+    @Override
     protected void initializeDetail(String detailId) {
 
         super.initializeDetail(detailId);
@@ -282,6 +285,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -293,6 +297,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -355,6 +360,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add user address details
@@ -364,6 +370,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_HIDE;
@@ -372,6 +379,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((A_CmsUserGroupsList)getWp()).hasGroupsInOtherOus();
@@ -382,6 +390,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_SHOW;
@@ -390,6 +399,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((A_CmsUserGroupsList)getWp()).hasGroupsInOtherOus();
@@ -416,6 +426,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

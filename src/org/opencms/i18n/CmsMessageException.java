@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessageException.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/08/20 11:31:39 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.main.CmsException;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,7 @@ public class CmsMessageException extends CmsException {
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
+    @Override
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         return new CmsMessageException(container, cause);

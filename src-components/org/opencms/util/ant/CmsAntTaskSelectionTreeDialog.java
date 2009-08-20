@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionTreeDialog.java,v $
- * Date   : $Date: 2009/06/04 14:36:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:30:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import javax.swing.tree.TreePath;
  * @author Michael Moossen (original non-tree version)
  * @author Achim Westermann (modified tree version)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.1.6
  * 
@@ -135,6 +135,7 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
 
         addWindowListener(new WindowAdapter() {
 
+            @Override
             public void windowClosed(WindowEvent e) {
 
                 setVisible(false);

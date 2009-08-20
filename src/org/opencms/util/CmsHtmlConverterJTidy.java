@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverterJTidy.java,v $
- * Date   : $Date: 2009/06/30 15:08:33 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/08/20 11:31:45 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.w3c.tidy.Tidy;
  * @author Michael Emmerich 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -168,6 +168,7 @@ public class CmsHtmlConverterJTidy extends A_CmsHtmlConverter {
      * 
      * @throws UnsupportedEncodingException if the encoding set for the conversion is not supported
      */
+    @Override
     public String convertToString(String htmlInput) throws UnsupportedEncodingException {
 
         // initialize the modes

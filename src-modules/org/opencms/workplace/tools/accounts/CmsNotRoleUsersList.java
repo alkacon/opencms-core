@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotRoleUsersList.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:00 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6 
  */
@@ -114,6 +114,7 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         if (getParamListAction().equals(LIST_MACTION_ADD)) {
@@ -140,6 +141,7 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         if (m_addActionIds.contains(getParamListAction())) {
@@ -162,6 +164,7 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#getUsers(boolean)
      */
+    @Override
     protected List getUsers(boolean withOtherOus) throws CmsException {
 
         List roleUsers = OpenCms.getRoleManager().getUsersOfRole(
@@ -182,6 +185,7 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -209,6 +213,7 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 try {
@@ -235,6 +240,7 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsRoleUsersList#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         super.setIndependentActions(metadata);
@@ -245,6 +251,7 @@ public class CmsNotRoleUsersList extends A_CmsRoleUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // add add multi action

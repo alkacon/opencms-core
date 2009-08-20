@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsSimpleMail.java,v $
- * Date   : $Date: 2009/06/04 14:29:48 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:31:58 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.mail.SimpleEmail;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0
  */
@@ -108,6 +108,7 @@ public class CmsSimpleMail extends SimpleEmail {
      * 
      * @throws EmailException if something goes wrong
      */
+    @Override
     public String send() throws EmailException {
 
         String messageID = null;

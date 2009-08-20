@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogProperty.java,v $
- * Date   : $Date: 2009/07/20 13:47:30 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,6 +105,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      * 
      * @return the HTML output String for the edit properties form
      */
+    @Override
     public String buildEditForm() {
 
         CmsMessages messages = Messages.get().getBundle(getLocale());
@@ -236,6 +237,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      * @return true, if the properties were successfully changed, otherwise false
      * @throws CmsException if editing is not successful
      */
+    @Override
     protected boolean performEditOperation(HttpServletRequest request) throws CmsException {
 
         boolean useTempfileProject = Boolean.valueOf(getParamUsetempfileproject()).booleanValue();

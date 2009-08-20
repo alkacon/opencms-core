@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2009/06/04 14:29:19 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2009/08/20 11:31:39 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,6 +118,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         /**
          * @see java.io.OutputStream#close()
          */
+        @Override
         public void close() throws IOException {
 
             if (m_stream != null) {
@@ -132,6 +133,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         /**
          * @see java.io.OutputStream#flush()
          */
+        @Override
         public void flush() throws IOException {
 
             if (LOG.isDebugEnabled()) {
@@ -155,6 +157,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         /**
          * @see java.io.OutputStream#write(byte[], int, int)
          */
+        @Override
         public void write(byte[] b, int off, int len) throws IOException {
 
             m_stream.write(b, off, len);
@@ -166,24 +169,10 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         /**
          * @see java.io.OutputStream#write(int)
          */
+        @Override
         public void write(int b) throws IOException {
 
             m_stream.write(b);
-            if (m_servletStream != null) {
-                m_servletStream.write(b);
-            }
-        }
-
-        /**
-         * Writes an array of bytes only to the included servlet stream,
-         * not to the buffer.<p>
-         *
-         * @param b The bytes to write to the stream
-         * 
-         * @throws IOException In case the write() operation on the included servlet stream raises one
-         */
-        public void writeToServletStream(byte[] b) throws IOException {
-
             if (m_servletStream != null) {
                 m_servletStream.write(b);
             }
@@ -342,6 +331,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.http.HttpServletResponseWrapper#addCookie(javax.servlet.http.Cookie)
      */
+    @Override
     public void addCookie(Cookie cookie) {
 
         if (cookie == null) {
@@ -410,6 +400,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.http.HttpServletResponse#addDateHeader(java.lang.String, long)
      */
+    @Override
     public void addDateHeader(String name, long date) {
 
         addHeader(name, CmsDateUtil.getHeaderDate(date));
@@ -420,6 +411,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.http.HttpServletResponse#addHeader(java.lang.String, java.lang.String)
      */
+    @Override
     public void addHeader(String name, String value) {
 
         if (isSuspended()) {
@@ -465,6 +457,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.http.HttpServletResponse#addIntHeader(java.lang.String, int)
      */
+    @Override
     public void addIntHeader(String name, int value) {
 
         addHeader(name, String.valueOf(value));
@@ -492,6 +485,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * @see javax.servlet.ServletResponseWrapper#flushBuffer()
      */
+    @Override
     public void flushBuffer() throws IOException {
 
         if (OpenCms.getSystemInfo().getServletContainerSettings().isPreventResponseFlush()) {
@@ -526,6 +520,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.ServletResponse#getOutputStream()
      */
+    @Override
     public ServletOutputStream getOutputStream() throws IOException {
 
         if (m_out == null) {
@@ -539,6 +534,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.ServletResponse#getWriter()
      */
+    @Override
     public PrintWriter getWriter() throws IOException {
 
         if (m_writer == null) {
@@ -607,6 +603,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.http.HttpServletResponse#sendRedirect(java.lang.String)
      */
+    @Override
     public void sendRedirect(String location) throws IOException {
 
         // Ignore any redirects after the first one
@@ -651,6 +648,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.ServletResponse#setContentType(java.lang.String)
      */
+    @Override
     public void setContentType(String type) {
 
         if (LOG.isDebugEnabled()) {
@@ -671,6 +669,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.http.HttpServletResponse#setDateHeader(java.lang.String, long)
      */
+    @Override
     public void setDateHeader(String name, long date) {
 
         setHeader(name, CmsDateUtil.getHeaderDate(date));
@@ -681,6 +680,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.http.HttpServletResponse#setHeader(java.lang.String, java.lang.String)
      */
+    @Override
     public void setHeader(String name, String value) {
 
         if (isSuspended()) {
@@ -726,6 +726,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * @see javax.servlet.http.HttpServletResponse#setIntHeader(java.lang.String, int)
      */
+    @Override
     public void setIntHeader(String name, int value) {
 
         setHeader(name, "" + value);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/search/CmsSearchResourcesCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:42 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:57 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.1.0 
  */
@@ -179,6 +179,7 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getResources(org.opencms.file.CmsObject, java.util.Map)
      */
+    @Override
     public List getResources(CmsObject cms, Map params) throws CmsException {
 
         List result = getSearchResults(params);
@@ -214,6 +215,7 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setPage(int)
      */
+    @Override
     public void setPage(int page) {
 
         synchronized (this) {
@@ -226,6 +228,7 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#getInternalResources(org.opencms.file.CmsObject, java.util.Map)
      */
+    @Override
     protected List getInternalResources(CmsObject cms, Map params) throws CmsException {
 
         synchronized (this) {
@@ -239,6 +242,7 @@ public class CmsSearchResourcesCollector extends A_CmsListResourceCollector {
     /**
      * @see org.opencms.workplace.list.A_CmsListResourceCollector#setAdditionalColumns(org.opencms.workplace.list.CmsListItem, org.opencms.workplace.explorer.CmsResourceUtil)
      */
+    @Override
     protected void setAdditionalColumns(CmsListItem item, CmsResourceUtil resUtil) {
 
         item.set(CmsSearchResultsList.LIST_COLUMN_SCORE, new Integer(getSearchResult(item.getId()).getScore()));

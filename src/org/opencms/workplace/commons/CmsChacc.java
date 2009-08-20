@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2009/06/04 14:29:13 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2009/08/20 11:30:53 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -867,6 +867,7 @@ public class CmsChacc extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#htmlStart()
      */
+    @Override
     public String htmlStart() {
 
         StringBuffer result = new StringBuffer(256);
@@ -1059,7 +1060,7 @@ public class CmsChacc extends CmsDialog {
 
         if (!all) {
             String[] array = new String[3];
-            return (String[])Arrays.asList(m_types).subList(0, 3).toArray(array);
+            return Arrays.asList(m_types).subList(0, 3).toArray(array);
         }
         return m_types;
     }
@@ -1087,6 +1088,7 @@ public class CmsChacc extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

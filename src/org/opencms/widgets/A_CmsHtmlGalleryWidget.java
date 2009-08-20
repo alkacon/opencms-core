@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlGalleryWidget.java,v $
- * Date   : $Date: 2009/06/05 13:31:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/08/20 11:31:29 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import org.opencms.workplace.galleries.A_CmsAjaxGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +69,7 @@ public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
     /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
+    @Override
     public String getDialogWidget(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
         String id = param.getId();
@@ -152,6 +153,7 @@ public abstract class A_CmsHtmlGalleryWidget extends A_CmsGalleryWidget {
     /**
      * @see org.opencms.widgets.A_CmsGalleryWidget#showPreview(java.lang.String)
      */
+    @Override
     public boolean showPreview(String value) {
 
         // not required for HTML display galleries

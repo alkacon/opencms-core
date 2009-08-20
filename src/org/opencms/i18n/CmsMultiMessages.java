@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/08/20 11:31:39 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,6 +171,7 @@ public class CmsMultiMessages extends CmsMessages {
     /**
      * @see org.opencms.i18n.CmsMessages#getString(java.lang.String)
      */
+    @Override
     public String getString(String keyName) {
 
         return resolveKey(keyName);
@@ -179,6 +180,7 @@ public class CmsMultiMessages extends CmsMessages {
     /**
      * @see org.opencms.i18n.CmsMessages#isInitialized()
      */
+    @Override
     public boolean isInitialized() {
 
         return (m_messages != null) && !m_messages.isEmpty();
@@ -187,6 +189,7 @@ public class CmsMultiMessages extends CmsMessages {
     /**
      * @see org.opencms.i18n.CmsMessages#key(java.lang.String, boolean)
      */
+    @Override
     public String key(String keyName, boolean allowNull) {
 
         // special implementation since we uses several bundles for the messages

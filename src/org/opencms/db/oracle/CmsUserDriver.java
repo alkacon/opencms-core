@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:46 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2009/08/20 11:31:30 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.60 $
+ * @version $Revision: 1.61 $
  * 
  * @since 6.0.0 
  */
@@ -92,6 +92,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#initSqlManager(String)
      */
+    @Override
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);
@@ -100,6 +101,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * @see org.opencms.db.I_CmsUserDriver#writeUserInfo(CmsDbContext, CmsUUID, String, Object)
      */
+    @Override
     public void writeUserInfo(CmsDbContext dbc, CmsUUID userId, String key, Object value) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;

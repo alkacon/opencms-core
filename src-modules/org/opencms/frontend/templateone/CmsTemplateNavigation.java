@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2009/06/04 14:33:45 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2009/08/20 11:31:12 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,7 +239,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
         int deltaLevel = currentLevel - startLevel;
 
         // check if navigation is shown
-        boolean showNavigation = deltaLevel > 3 || (deltaLevel == 3 && currentPage.isInNavigation());
+        boolean showNavigation = (deltaLevel > 3) || ((deltaLevel == 3) && currentPage.isInNavigation());
 
         if (showNavigation) {
             // create the navigation row
@@ -612,7 +612,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
                 // check if current element is shown when left navigation follows head menu
                 if (showNavLeftSelected()) {
-                    if (level <= 1 && !uri.startsWith(resName)) {
+                    if ((level <= 1) && !uri.startsWith(resName)) {
                         // do not show element, does not belong to selected area
                         showElement = false;
                     }
@@ -816,7 +816,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
             Map properties = new HashMap(3);
             properties.put(CmsPropertyDefinition.PROPERTY_NAVTEXT, text);
             properties.put(CmsPropertyDefinition.PROPERTY_NAVINFO, target);
-            if (showHeadNavImages() && menuLevel == 0) {
+            if (showHeadNavImages() && (menuLevel == 0)) {
                 // put head navigation image info to Map
                 String image = m_headNavConfiguration.getStringValue(getCmsObject(), linkPath + "/link.image", locale);
                 if (CmsStringUtil.isEmpty(image)) {
@@ -941,7 +941,8 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                     result.append("\" target=\"");
                     result.append(target);
                     result.append("\"");
-                    if ((ne.isFolderLink() && hasSubMenuEntries(navEntries)) || (manualConfig && navEntries.size() > 0)) {
+                    if ((ne.isFolderLink() && hasSubMenuEntries(navEntries))
+                        || (manualConfig && (navEntries.size() > 0))) {
                         // sub menu(s) present, create special entry
                         result.append(" onmouseover=\"menuItemMouseover(event, '");
                         result.append(prefix);
@@ -1051,6 +1052,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
      * @param req the JSP request 
      * @param res the JSP response 
      */
+    @Override
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         // call initialization of super class
@@ -1155,7 +1157,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
      */
     public boolean showNavLeftElement() {
 
-        return (getNavLeftElementUri() != null && !CmsTemplateBean.PROPERTY_VALUE_NONE.equals(getNavLeftElementUri()));
+        return ((getNavLeftElementUri() != null) && !CmsTemplateBean.PROPERTY_VALUE_NONE.equals(getNavLeftElementUri()));
     }
 
     /**
@@ -1237,7 +1239,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                     folderName,
                     CmsPropertyDefinition.PROPERTY_DEFAULT_FILE,
                     false).getValue();
-                if (defaultFileName != null && fileName.equals(defaultFileName)) {
+                if ((defaultFileName != null) && fileName.equals(defaultFileName)) {
                     // property was set and the requested file name matches the default file name
                     return true;
                 }

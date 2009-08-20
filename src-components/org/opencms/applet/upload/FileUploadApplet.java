@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2009/06/08 12:01:22 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/08/20 11:31:37 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -482,6 +482,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     /**
      * @see java.applet.Applet#destroy()
      */
+    @Override
     public void destroy() {
 
         // NOOP
@@ -612,6 +613,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     /**
      * @see java.applet.Applet#init()
      */
+    @Override
     public void init() {
 
         // has to be first before any gui components are created
@@ -732,6 +734,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     /**
      * @see java.awt.Component#paint(Graphics)
      */
+    @Override
     public void paint(Graphics g) {
 
         // create the box
@@ -1035,6 +1038,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     /**
      * @see java.applet.Applet#start()
      */
+    @Override
     public void start() {
 
         if (m_certificateAccepted) {
@@ -1050,6 +1054,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     /**
      * @see java.applet.Applet#stop()
      */
+    @Override
     public void stop() {
 
         m_runner = null;
@@ -1090,6 +1095,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     /**
      * @see java.awt.Component#update(java.awt.Graphics)
      */
+    @Override
     public void update(Graphics g) {
 
         paint(g);

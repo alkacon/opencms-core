@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsModuleReplaceThread.java,v $
- * Date   : $Date: 2009/06/04 14:29:50 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/08/20 11:31:12 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,6 +102,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
     /**
      * @see org.opencms.report.A_CmsReportThread#getReportUpdate()
      */
+    @Override
     public String getReportUpdate() {
 
         switch (m_phase) {
@@ -125,6 +126,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         if (LOG.isDebugEnabled()) {

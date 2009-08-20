@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDeletedResources.java,v $
- * Date   : $Date: 2009/06/04 14:29:12 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:54 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.9.1
  */
@@ -366,6 +366,7 @@ public class CmsDeletedResources extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#paramsAsHidden()
      */
+    @Override
     public String paramsAsHidden() {
 
         List excludes = new ArrayList();
@@ -406,6 +407,7 @@ public class CmsDeletedResources extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);

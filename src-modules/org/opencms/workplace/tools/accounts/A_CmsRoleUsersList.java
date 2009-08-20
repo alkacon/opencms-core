@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsRoleUsersList.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:30:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import java.util.List;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6
  */
@@ -192,6 +192,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -200,6 +201,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -237,6 +239,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
      */
+    @Override
     protected void initializeDetail(String detailId) {
 
         super.initializeDetail(detailId);
@@ -251,6 +254,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -266,6 +270,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.CmsListDirectAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
              */
+            @Override
             public String buttonHtml(CmsWorkplace wp) {
 
                 if (!isVisible()) {
@@ -288,6 +293,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
              */
+            @Override
             public CmsMessageContainer getHelpText() {
 
                 try {
@@ -320,6 +326,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 try {
@@ -352,6 +359,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
              */
+            @Override
             public CmsMessageContainer getName() {
 
                 try {
@@ -421,6 +429,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add other ou button
@@ -432,6 +441,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_HIDE;
@@ -440,6 +450,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((A_CmsRoleUsersList)getWp()).hasUsersInOtherOus();
@@ -450,6 +461,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_SHOW;
@@ -458,6 +470,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((A_CmsRoleUsersList)getWp()).hasUsersInOtherOus();
@@ -477,6 +490,7 @@ public abstract class A_CmsRoleUsersList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters

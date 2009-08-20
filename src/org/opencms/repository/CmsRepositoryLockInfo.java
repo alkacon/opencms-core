@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/CmsRepositoryLockInfo.java,v $
- * Date   : $Date: 2009/06/04 14:29:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.util.Date;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.2.4
  */
@@ -273,6 +273,7 @@ public class CmsRepositoryLockInfo {
      * 
      * @return a string representation of this lock
      */
+    @Override
     public String toString() {
 
         String result = "Type:" + m_type + "\n";

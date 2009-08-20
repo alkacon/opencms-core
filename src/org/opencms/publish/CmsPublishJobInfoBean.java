@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishJobInfoBean.java,v $
- * Date   : $Date: 2009/06/04 14:29:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.5.5
  */
@@ -361,6 +361,7 @@ public final class CmsPublishJobInfoBean {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

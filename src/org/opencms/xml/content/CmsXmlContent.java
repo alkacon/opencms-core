@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2009/08/20 11:31:57 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -79,7 +79,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  */
@@ -431,6 +431,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#isAutoCorrectionEnabled()
      */
+    @Override
     public boolean isAutoCorrectionEnabled() {
 
         return m_autoCorrectionEnabled;
@@ -525,6 +526,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#getBookmark(java.lang.String)
      */
+    @Override
     protected Object getBookmark(String bookmark) {
 
         // allows package classes to directly access the bookmark information of the XML content 
@@ -534,6 +536,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#getBookmarks()
      */
+    @Override
     protected Set getBookmarks() {
 
         // allows package classes to directly access the bookmark information of the XML content 
@@ -588,6 +591,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
      */
+    @Override
     protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
 
         m_document = document;

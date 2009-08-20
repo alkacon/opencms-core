@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLockedResourcesList.java,v $
- * Date   : $Date: 2009/06/04 14:29:13 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:50 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,6 +115,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -123,6 +124,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -131,6 +133,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         return m_collector;
@@ -149,6 +152,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // no-details
@@ -157,6 +161,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
+    @Override
     protected void initMessages() {
 
         // add specific dialog resource bundle
@@ -168,6 +173,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
+    @Override
     protected boolean isColumnVisible(int colFlag) {
 
         boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
@@ -182,6 +188,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -202,6 +209,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
                     /**
                      * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getIconPath()
                      */
+                    @Override
                     public String getIconPath() {
 
                         if (((Boolean)getItem().get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
@@ -213,6 +221,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
                     /**
                      * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getName()
                      */
+                    @Override
                     public CmsMessageContainer getName() {
 
                         if (((Boolean)getItem().get(LIST_COLUMN_IS_RELATED)).booleanValue()) {
@@ -237,6 +246,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         /**
@@ -257,6 +267,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.CmsListIndependentAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
              */
+            @Override
             public String buttonHtml(CmsWorkplace wp) {
 
                 StringBuffer html = new StringBuffer(1024);
@@ -340,6 +351,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
              */
+            @Override
             public String jsCode(CmsWorkplace wp) {
 
                 return getRequestLink(wp, false);
@@ -354,6 +366,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListIndependentJsAction#jsCode(CmsWorkplace)
              */
+            @Override
             public String jsCode(CmsWorkplace wp) {
 
                 return getRequestLink(wp, true);
@@ -378,6 +391,7 @@ public class CmsLockedResourcesList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no LMAs, and remove default search action

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2009/08/20 11:31:24 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 6.0.0 
  */
@@ -364,6 +364,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see #isIdentical(I_CmsResourceType)
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -471,6 +472,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see #getTypeId()
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getTypeId();
@@ -763,6 +765,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer output = new StringBuffer();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolRootHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:05 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.file.CmsObject;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,6 +98,7 @@ public class CmsToolRootHandler extends A_CmsToolHandler {
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#setup(org.opencms.file.CmsObject, org.opencms.workplace.tools.CmsToolRootHandler, java.lang.String)
      */
+    @Override
     public boolean setup(CmsObject cms, CmsToolRootHandler root, String resourcePath) {
 
         setDisabledHelpText(getHelpText());

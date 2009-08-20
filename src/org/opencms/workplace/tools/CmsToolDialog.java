@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2009/06/04 14:29:20 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2009/08/20 11:31:06 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -355,6 +355,7 @@ public class CmsToolDialog extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#pageBody(int, java.lang.String, java.lang.String)
      */
+    @Override
     public String pageBody(int segment, String className, String parameters) {
 
         if (!useNewStyle()) {
@@ -403,6 +404,7 @@ public class CmsToolDialog extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#pageHtmlStyle(int, java.lang.String, java.lang.String)
      */
+    @Override
     public String pageHtmlStyle(int segment, String title, String stylesheet) {
 
         if (!useNewStyle() || (segment != HTML_START)) {
@@ -508,6 +510,7 @@ public class CmsToolDialog extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         fillParamValues(request);

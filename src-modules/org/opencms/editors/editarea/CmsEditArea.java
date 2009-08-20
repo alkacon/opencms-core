@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/editarea/CmsEditArea.java,v $
- * Date   : $Date: 2009/06/04 14:33:49 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/20 11:32:00 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.0.5
  */
@@ -118,6 +118,7 @@ public class CmsEditArea extends CmsSimpleEditor {
     /**
      * @see org.opencms.workplace.editors.CmsSimpleEditor#getEditorResourceUri()
      */
+    @Override
     public String getEditorResourceUri() {
 
         return getSkinUri() + SUBPATH_EDITAREA;

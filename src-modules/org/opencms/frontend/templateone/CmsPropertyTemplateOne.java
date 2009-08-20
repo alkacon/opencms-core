@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2009/06/04 14:33:45 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2009/08/20 11:31:12 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -179,6 +179,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom {
      * @param request the HttpServletRequest
      * @throws JspException if problems including sub-elements occur
      */
+    @Override
     public void actionEdit(HttpServletRequest request) throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
@@ -244,6 +245,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom {
      * 
      * @return the HTML output String for the edit properties form
      */
+    @Override
     public String buildEditForm() {
 
         CmsMessages messages = Messages.get().getBundle(getLocale());
@@ -344,6 +346,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom {
      * 
      * @return the JavaScript to set the property form values delayed
      */
+    @Override
     public String buildSetFormValues() {
 
         StringBuffer result = new StringBuffer(1024);
@@ -399,6 +402,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom {
     /**
      * @see org.opencms.workplace.I_CmsDialogHandler#getDialogHandler()
      */
+    @Override
     public String getDialogHandler() {
 
         return CmsDialogSelector.DIALOG_PROPERTY;
@@ -407,6 +411,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom {
     /**
      * @see org.opencms.workplace.I_CmsDialogHandler#getDialogUri(java.lang.String, CmsJspActionElement)
      */
+    @Override
     public String getDialogUri(String resource, CmsJspActionElement jsp) {
 
         try {
@@ -459,6 +464,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom {
      * @return true, if the properties were successfully changed, otherwise false
      * @throws CmsException if editing is not successful
      */
+    @Override
     protected boolean performEditOperation(HttpServletRequest request) throws CmsException {
 
         boolean useTempfileProject = Boolean.valueOf(getParamUsetempfileproject()).booleanValue();

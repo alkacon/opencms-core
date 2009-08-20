@@ -84,6 +84,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
      * 
      * @see org.apache.tools.ant.Task#execute()
      */
+    @Override
     public void execute() throws BuildException {
 
         boolean isAttr = (m_attribute != null && m_attribute.trim().length() > 0);

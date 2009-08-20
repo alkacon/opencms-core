@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsDependencyIconAction.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:30:58 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,7 @@ public class CmsDependencyIconAction extends CmsListResourceIconAction {
     /**
      * @see org.opencms.workplace.list.CmsListDirectAction#buttonHtml(org.opencms.workplace.CmsWorkplace)
      */
+    @Override
     public String buttonHtml(CmsWorkplace wp) {
 
         if (!isVisible()) {
@@ -97,6 +98,7 @@ public class CmsDependencyIconAction extends CmsListResourceIconAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
      */
+    @Override
     public String getIconPath() {
 
         if (m_type == CmsDependencyIconActionType.USER) {
@@ -121,6 +123,7 @@ public class CmsDependencyIconAction extends CmsListResourceIconAction {
     /**
      * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
      */
+    @Override
     public boolean isVisible() {
 
         boolean visible = false;

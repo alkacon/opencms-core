@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/08/20 11:31:20 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,6 +102,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
     /**
      * @see javax.servlet.jsp.tagext.TagSupport#doAfterBody()
      */
+    @Override
     public int doAfterBody() {
 
         if (hasMoreContent()) {
@@ -115,6 +116,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
+    @Override
     public int doEndTag() {
 
         if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
@@ -127,6 +129,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content container" class
@@ -247,6 +250,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentC
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         m_element = null;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagDecorate.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/20 11:31:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.1.3 
  */
@@ -136,6 +136,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
      * @return EVAL_PAGE
      * @throws JspException in case soemthing goes wrong
      */
+    @Override
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();

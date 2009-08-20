@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mssql/CmsVfsDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.db.generic.CmsSqlManager;
  *
  * @author Andras Balogh
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *
  * @since 6.0.0
  */
@@ -47,6 +47,7 @@ public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
     /**
      * @see org.opencms.db.I_CmsVfsDriver#initSqlManager(String)
      */
+    @Override
     public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
         return CmsSqlManager.getInstance(classname);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPrincipalSelectionList.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:55 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.6 
  */
@@ -221,6 +221,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.tools.CmsToolDialog#dialogTitle()
      */
+    @Override
     public String dialogTitle() {
 
         // build title
@@ -247,6 +248,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
      */
+    @Override
     public void executeListIndepActions() {
 
         if (LIST_IACTION_USERS.equals(getParamListAction())) {
@@ -262,6 +264,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -270,6 +273,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws CmsRuntimeException {
 
         throwListUnsupportedActionException();
@@ -377,6 +381,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // noop
@@ -385,6 +390,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
@@ -505,6 +511,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#initializeDetail(java.lang.String)
      */
+    @Override
     protected void initializeDetail(String detailId) {
 
         super.initializeDetail(detailId);
@@ -519,6 +526,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         // create column for icon display
@@ -534,6 +542,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return ((CmsPrincipalSelectionList)getWp()).getIconPath(getItem());
@@ -561,6 +570,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.list.A_CmsListDirectJsAction#jsCode()
              */
+            @Override
             public String jsCode() {
 
                 return "window.opener.setPrincipalFormValue("
@@ -598,6 +608,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         // add other ou button
@@ -608,6 +619,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
              */
+            @Override
             public CmsMessageContainer getHelpText() {
 
                 if (getWp().getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
@@ -620,6 +632,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_HIDE;
@@ -628,6 +641,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
              */
+            @Override
             public CmsMessageContainer getName() {
 
                 if (getWp().getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
@@ -640,6 +654,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((CmsPrincipalSelectionList)getWp()).hasPrincipalsInOtherOus();
@@ -650,6 +665,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getHelpText()
              */
+            @Override
             public CmsMessageContainer getHelpText() {
 
                 if (getWp().getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
@@ -662,6 +678,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 return A_CmsListDialog.ICON_DETAILS_SHOW;
@@ -670,6 +687,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
              */
+            @Override
             public CmsMessageContainer getName() {
 
                 if (getWp().getList().getMetadata().getIndependentAction(LIST_IACTION_USERS).isVisible()) {
@@ -682,6 +700,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
              */
+            @Override
             public boolean isVisible() {
 
                 return ((CmsPrincipalSelectionList)getWp()).hasPrincipalsInOtherOus();
@@ -710,6 +729,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op        
@@ -718,6 +738,7 @@ public class CmsPrincipalSelectionList extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         try {

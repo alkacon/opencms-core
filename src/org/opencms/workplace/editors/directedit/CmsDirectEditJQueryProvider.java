@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/CmsDirectEditJQueryProvider.java,v $
- * Date   : $Date: 2009/06/04 14:29:22 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:35 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.opencms.workplace.editors.Messages;
  * 
  * @author Anja Roettgers
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 7.0.3
  */
@@ -61,6 +61,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
      * 
      * @see org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider#getDirectEditIncludes(org.opencms.workplace.editors.directedit.CmsDirectEditParams)
      */
+    @Override
     public String getDirectEditIncludes(CmsDirectEditParams params) {
 
         m_closeLink = getLink(params.getLinkForClose());
@@ -70,6 +71,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
     /**
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#init(org.opencms.file.CmsObject, org.opencms.workplace.editors.directedit.CmsDirectEditMode, java.lang.String)
      */
+    @Override
     public void init(CmsObject cms, CmsDirectEditMode mode, String fileName) {
 
         if (CmsStringUtil.isEmpty(fileName)) {
@@ -81,6 +83,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
     /**
      * @see org.opencms.workplace.editors.directedit.I_CmsDirectEditProvider#newInstance()
      */
+    @Override
     public I_CmsDirectEditProvider newInstance() {
 
         CmsDirectEditJQueryProvider result = new CmsDirectEditJQueryProvider();
@@ -92,6 +95,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
      * 
      * @see org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider#startDirectEditDisabled(org.opencms.workplace.editors.directedit.CmsDirectEditParams, org.opencms.workplace.editors.directedit.CmsDirectEditResourceInfo)
      */
+    @Override
     public String startDirectEditDisabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo) {
 
         return appendDirectEditData(params, false);
@@ -101,6 +105,7 @@ public class CmsDirectEditJQueryProvider extends CmsDirectEditDefaultProvider {
      * 
      * @see org.opencms.workplace.editors.directedit.CmsDirectEditDefaultProvider#startDirectEditEnabled(org.opencms.workplace.editors.directedit.CmsDirectEditParams, org.opencms.workplace.editors.directedit.CmsDirectEditResourceInfo)
      */
+    @Override
     public String startDirectEditEnabled(CmsDirectEditParams params, CmsDirectEditResourceInfo resourceInfo) {
 
         return appendDirectEditData(params, false);

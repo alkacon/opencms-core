@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/publish/CmsPublishReport.java,v $
- * Date   : $Date: 2009/06/04 14:29:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/20 11:31:52 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.5.5 
  */
@@ -127,6 +127,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.A_CmsReport#addError(java.lang.Object)
      */
+    @Override
     public void addError(Object obj) {
 
         if (!m_busy && (m_report != null)) {
@@ -140,6 +141,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.A_CmsReport#addWarning(java.lang.Object)
      */
+    @Override
     public void addWarning(Object obj) {
 
         if (!m_busy && (m_report != null)) {
@@ -163,6 +165,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.A_CmsReport#getErrors()
      */
+    @Override
     public List getErrors() {
 
         if (m_report != null) {
@@ -174,6 +177,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.CmsPrintStreamReport#getReportUpdate()
      */
+    @Override
     public synchronized String getReportUpdate() {
 
         if (m_report != null) {
@@ -185,6 +189,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.A_CmsReport#getWarnings()
      */
+    @Override
     public List getWarnings() {
 
         if (m_report != null) {
@@ -196,6 +201,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.A_CmsReport#print(org.opencms.i18n.CmsMessageContainer)
      */
+    @Override
     public void print(CmsMessageContainer container) {
 
         if (!m_busy && (m_report != null)) {
@@ -209,6 +215,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.A_CmsReport#print(org.opencms.i18n.CmsMessageContainer, int)
      */
+    @Override
     public void print(CmsMessageContainer container, int format) {
 
         if (!m_busy && (m_report != null)) {
@@ -222,6 +229,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.CmsPrintStreamReport#println()
      */
+    @Override
     public synchronized void println() {
 
         if (!m_busy && (m_report != null)) {
@@ -235,6 +243,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.A_CmsReport#println(org.opencms.i18n.CmsMessageContainer)
      */
+    @Override
     public void println(CmsMessageContainer container) {
 
         if (!m_busy && (m_report != null)) {
@@ -248,6 +257,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.A_CmsReport#println(org.opencms.i18n.CmsMessageContainer, int)
      */
+    @Override
     public void println(CmsMessageContainer container, int format) {
 
         if (!m_busy && (m_report != null)) {
@@ -261,6 +271,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.CmsPrintStreamReport#println(java.lang.Throwable)
      */
+    @Override
     public synchronized void println(Throwable t) {
 
         if (!m_busy && (m_report != null)) {
@@ -274,6 +285,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.A_CmsReport#printMessageWithParam(org.opencms.i18n.CmsMessageContainer, java.lang.Object)
      */
+    @Override
     public void printMessageWithParam(CmsMessageContainer container, Object param) {
 
         if (!m_busy && (m_report != null)) {
@@ -287,6 +299,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.A_CmsReport#printMessageWithParam(int, int, org.opencms.i18n.CmsMessageContainer, java.lang.Object)
      */
+    @Override
     public void printMessageWithParam(int m, int n, CmsMessageContainer container, Object param) {
 
         if (!m_busy && (m_report != null)) {
@@ -300,6 +313,7 @@ public class CmsPublishReport extends CmsPrintStreamReport {
     /**
      * @see org.opencms.report.A_CmsReport#resetRuntime()
      */
+    @Override
     public void resetRuntime() {
 
         if (!m_busy && (m_report != null)) {

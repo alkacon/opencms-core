@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/parse/Attic/DivTag.java,v $
- * Date   : $Date: 2009/06/04 14:29:56 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/08/20 11:31:34 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.htmlparser.tags.Div;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.2.2
  *
@@ -59,6 +59,7 @@ public class DivTag extends TagNode {
     /**
      * @see org.htmlparser.nodes.TagNode#getEnders()
      */
+    @Override
     public String[] getEnders() {
 
         return m_mimicked.getEnders();
@@ -67,6 +68,7 @@ public class DivTag extends TagNode {
     /**
      * @see org.htmlparser.nodes.TagNode#getIds()
      */
+    @Override
     public String[] getIds() {
 
         return m_mimicked.getIds();

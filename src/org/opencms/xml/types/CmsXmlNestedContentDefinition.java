@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlNestedContentDefinition.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/08/20 11:31:34 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,6 +103,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue {
     /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#generateXml(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.dom4j.Element, java.util.Locale)
      */
+    @Override
     public Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
 
         // create the XML base node for the nested content definition
@@ -152,6 +153,7 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue {
      *  
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#isSimpleType()
      */
+    @Override
     public boolean isSimpleType() {
 
         return false;

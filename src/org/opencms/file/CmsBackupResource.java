@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/08/20 11:31:26 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 6.0.0 
  * 
@@ -146,6 +146,7 @@ public class CmsBackupResource extends CmsHistoryFile {
     /**
      * @see org.opencms.file.history.CmsHistoryFile#getBackupId()
      */
+    @Override
     public CmsUUID getBackupId() {
 
         return m_backupId;
@@ -154,6 +155,7 @@ public class CmsBackupResource extends CmsHistoryFile {
     /**
      * @see org.opencms.file.history.CmsHistoryFile#getCreatedByName()
      */
+    @Override
     public String getCreatedByName() {
 
         return m_userCreatedName;
@@ -162,6 +164,7 @@ public class CmsBackupResource extends CmsHistoryFile {
     /**
      * @see org.opencms.file.history.CmsHistoryFile#getLastModifiedByName()
      */
+    @Override
     public String getLastModifiedByName() {
 
         return m_userLastModifiedName;

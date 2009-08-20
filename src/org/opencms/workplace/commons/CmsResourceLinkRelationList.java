@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsResourceLinkRelationList.java,v $
- * Date   : $Date: 2009/06/04 14:29:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:30:50 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.9.1 
  */
@@ -110,6 +110,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
+    @Override
     public void executeListMultiActions() {
 
         throwListUnsupportedActionException();
@@ -118,6 +119,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
@@ -136,6 +138,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getCollector()
      */
+    @Override
     public I_CmsListResourceCollector getCollector() {
 
         if (m_collector == null) {
@@ -197,6 +200,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
      */
+    @Override
     protected String defaultActionHtmlStart() {
 
         return getList().listJs() + CmsListExplorerColumn.getExplorerStyleDef() + dialogContentStart(getParamTitle());
@@ -205,6 +209,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         // empty
@@ -213,6 +218,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#getListItems()
      */
+    @Override
     protected List getListItems() throws CmsException {
 
         List newItems = new ArrayList();
@@ -243,6 +249,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -256,6 +263,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.list.CmsListResourceProjStateAction#getIconPath()
              */
+            @Override
             public String getIconPath() {
 
                 if (((CmsResourceLinkRelationList)getWp()).getBrokenLinks() != null) {
@@ -269,6 +277,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
             /**
              * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getName()
              */
+            @Override
             public CmsMessageContainer getName() {
 
                 if (((CmsResourceLinkRelationList)getWp()).getBrokenLinks() != null) {
@@ -291,6 +300,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListExplorerDialog#isColumnVisible(int)
      */
+    @Override
     protected boolean isColumnVisible(int colFlag) {
 
         boolean isVisible = (colFlag == CmsUserSettings.FILELIST_TITLE);
@@ -308,6 +318,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // empty
@@ -316,6 +327,7 @@ public class CmsResourceLinkRelationList extends A_CmsListExplorerDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamResource())) {

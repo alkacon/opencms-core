@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2009/07/08 09:27:11 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2009/08/20 11:30:50 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -278,6 +278,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * 
      * @throws JspException if including an element fails
      */
+    @Override
     public void actionCloseDialog() throws JspException {
 
         if ((getAction() == ACTION_SAVE_EDIT) && MODE_WIZARD_CREATEINDEX.equals(getParamDialogmode())) {
@@ -668,6 +669,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     /**
      * @see org.opencms.workplace.CmsTabDialog#getTabParameterOrder()
      */
+    @Override
     public List getTabParameterOrder() {
 
         ArrayList orderList = new ArrayList(2);
@@ -679,6 +681,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     /**
      * @see org.opencms.workplace.CmsTabDialog#getTabs()
      */
+    @Override
     public List getTabs() {
 
         ArrayList tabList = new ArrayList(2);
@@ -754,6 +757,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     /**
      * @see org.opencms.workplace.CmsDialog#dialogButtonsHtml(java.lang.StringBuffer, int, java.lang.String)
      */
+    @Override
     protected void dialogButtonsHtml(StringBuffer result, int button, String attribute) {
 
         attribute = appendDelimiter(attribute);
@@ -822,6 +826,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataImportDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/08/20 11:31:01 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.5.6
  */
@@ -109,6 +109,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
@@ -177,6 +178,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#dialogButtonsCustom()
      */
+    @Override
     public String dialogButtonsCustom() {
 
         StringBuffer result = new StringBuffer(256);
@@ -239,6 +241,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -266,6 +269,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#defaultActionHtmlContent()
      */
+    @Override
     protected String defaultActionHtmlContent() {
 
         StringBuffer result = new StringBuffer(2048);
@@ -288,6 +292,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initImportObject();
@@ -306,6 +311,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.CmsWidgetDialog#fillWidgetValues(javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void fillWidgetValues(HttpServletRequest request) {
 
         Map parameters;
@@ -408,6 +414,7 @@ public class CmsUserDataImportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation

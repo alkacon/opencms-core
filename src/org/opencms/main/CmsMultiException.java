@@ -47,7 +47,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 2.0.0 
  */
@@ -118,6 +118,7 @@ public class CmsMultiException extends CmsException {
     /** 
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
+    @Override
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         if (cause instanceof CmsMultiException) {
@@ -143,6 +144,7 @@ public class CmsMultiException extends CmsException {
      * 
      * @see java.lang.Throwable#getLocalizedMessage()
      */
+    @Override
     public String getLocalizedMessage() {
 
         if (m_exceptions.isEmpty()) {
@@ -165,6 +167,7 @@ public class CmsMultiException extends CmsException {
      *  
      * @see org.opencms.main.I_CmsThrowable#getLocalizedMessage(java.util.Locale)
      */
+    @Override
     public String getLocalizedMessage(Locale locale) {
 
         if (m_exceptions.isEmpty()) {

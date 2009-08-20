@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/A_CmsMessageBundle.java,v $
- * Date   : $Date: 2009/06/04 14:29:32 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2009/08/20 11:31:38 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58 $
+ * @version $Revision: 1.59 $
  * 
  * @since 6.0.0
  */
@@ -166,6 +166,7 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

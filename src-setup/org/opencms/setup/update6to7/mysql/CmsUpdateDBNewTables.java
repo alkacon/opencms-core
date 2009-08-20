@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/update6to7/mysql/CmsUpdateDBNewTables.java,v $
- * Date   : $Date: 2009/06/04 14:31:34 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/08/20 11:31:47 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,6 +73,7 @@ public class CmsUpdateDBNewTables extends org.opencms.setup.update6to7.generic.C
     /**
      * @see org.opencms.setup.update6to7.A_CmsUpdateDBPart#internalExecute(org.opencms.setup.CmsSetupDb)
      */
+    @Override
     protected void internalExecute(CmsSetupDb dbCon) throws SQLException {
 
         System.out.println(new Exception().getStackTrace()[0].toString());

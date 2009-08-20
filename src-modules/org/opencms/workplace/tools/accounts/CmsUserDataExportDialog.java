@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDataExportDialog.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/08/20 11:30:58 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.7.1
  */
@@ -90,6 +90,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#actionCommit()
      */
+    @Override
     public void actionCommit() throws IOException, ServletException {
 
         List errors = new ArrayList();
@@ -110,6 +111,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
      * @param dialog the dialog (page) to get the HTML for
      * @return the dialog HTML for all defined widgets of the named dialog (page)
      */
+    @Override
     protected String createDialogHtml(String dialog) {
 
         StringBuffer result = new StringBuffer(1024);
@@ -142,6 +144,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#defineWidgets()
      */
+    @Override
     protected void defineWidgets() {
 
         initExportObject();
@@ -168,6 +171,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUserDataImexportDialog#getPageArray()
      */
+    @Override
     protected String[] getPageArray() {
 
         return PAGES;
@@ -198,6 +202,7 @@ public class CmsUserDataExportDialog extends A_CmsUserDataImexportDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // initialize parameters and dialog actions in super implementation

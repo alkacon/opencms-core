@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersAllOrgUnitsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/20 11:30:56 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.5.6 
  */
@@ -104,6 +104,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#executeListSingleActions()
      */
+    @Override
     public void executeListSingleActions() throws IOException, ServletException {
 
         String userId = getSelectedItem().getId();
@@ -129,6 +130,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#fillDetails(java.lang.String)
      */
+    @Override
     protected void fillDetails(String detailId) {
 
         super.fillDetails(detailId);
@@ -157,6 +159,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getGroupIcon()
      */
+    @Override
     protected String getGroupIcon() {
 
         return null;
@@ -165,6 +168,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getUsers()
      */
+    @Override
     protected List getUsers() throws CmsException {
 
         return CmsPrincipal.filterCore(OpenCms.getRoleManager().getManageableUsers(getCms(), "", true));
@@ -173,6 +177,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#readUser(java.lang.String)
      */
+    @Override
     protected CmsUser readUser(String name) throws CmsException {
 
         return getCms().readUser(name);
@@ -181,6 +186,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setColumns(CmsListMetadata metadata) {
 
         super.setColumns(metadata);
@@ -202,6 +208,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setDeleteAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setDeleteAction(CmsListColumnDefinition deleteCol) {
 
         // noop
@@ -210,6 +217,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setEditAction(org.opencms.workplace.list.CmsListColumnDefinition)
      */
+    @Override
     protected void setEditAction(CmsListColumnDefinition editCol) {
 
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_OVERVIEW);
@@ -222,6 +230,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setIndependentActions(CmsListMetadata metadata) {
 
         super.setIndependentActions(metadata);
@@ -250,6 +259,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
+    @Override
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // noop
@@ -258,6 +268,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setUserData(org.opencms.file.CmsUser, org.opencms.workplace.list.CmsListItem)
      */
+    @Override
     protected void setUserData(CmsUser user, CmsListItem item) {
 
         super.setUserData(user, item);
@@ -267,6 +278,7 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
+    @Override
     protected void validateParamaters() throws Exception {
 
         // no param check needed

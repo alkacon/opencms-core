@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbIoException.java,v $
- * Date   : $Date: 2009/06/04 14:29:17 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/20 11:31:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.main.CmsException;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0
  */
@@ -72,6 +72,7 @@ public class CmsDbIoException extends CmsDbException {
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
+    @Override
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         return new CmsDbIoException(container, cause);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2009/08/13 12:31:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/08/20 11:31:01 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -169,7 +169,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 7.0.4
  * 
@@ -182,7 +182,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.16 $
+     * @version $Revision: 1.17 $
      * 
      * @since 6.1.6
      * 
@@ -191,45 +191,6 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
 
         /** The resource to select. */
         private CmsResource m_resource;
-
-        /**
-         * Creates a non-default select option with the resource to select, the resource's name as the display text and
-         * no help text.
-         * <p>
-         * 
-         * @param cms
-         *            needed to remove the site root from the resource path.
-         * 
-         * @param resource
-         *            The resource of this selection.
-         * 
-         */
-        public CmsResourceSelectWidgetOption(CmsObject cms, CmsResource resource) {
-
-            this(cms, resource, false);
-
-        }
-
-        /**
-         * Creates a select option with the resource to select, the resource's name as the display text and no help text
-         * that is potentially the default selection (argument isDefault).
-         * <p>
-         * 
-         * @param cms
-         *            needed to remove the site root from the resource path.
-         * 
-         * @param resource
-         *            The resource of this selection.
-         * 
-         * @param isDefault
-         *            true, if this option is the default option (preselected.
-         * 
-         */
-        public CmsResourceSelectWidgetOption(CmsObject cms, CmsResource resource, boolean isDefault) {
-
-            this(cms, resource, isDefault, resource.getName());
-
-        }
 
         /**
          * 
@@ -307,7 +268,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.16 $
+     * @version $Revision: 1.17 $
      * 
      * @since 6.1.6
      * 
@@ -521,6 +482,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
     /**
      * @see org.opencms.widgets.CmsSelectWidget#newInstance()
      */
+    @Override
     public I_CmsWidget newInstance() {
 
         return new CmsSelectWidgetXmlcontentType(getConfiguration());
@@ -559,6 +521,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * @throws CmsIllegalArgumentException
      *             if the "folder" property of the configuration does not denote a folder within the VFS.
      */
+    @Override
     protected List parseSelectOptions(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param)
     throws CmsIllegalArgumentException {
 

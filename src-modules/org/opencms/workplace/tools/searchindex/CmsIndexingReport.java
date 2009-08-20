@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReport.java,v $
- * Date   : $Date: 2009/06/04 14:33:34 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/20 11:30:36 $
+ * Version: $Revision: 1.12 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,6 +120,7 @@ public class CmsIndexingReport extends CmsReport {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2009/07/20 13:47:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/08/20 11:31:27 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -458,6 +458,7 @@ public class CmsDialogElements extends CmsDialog {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/08/20 11:31:24 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,6 +116,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         super.addConfigurationParameter(paramName, paramValue);
@@ -127,6 +128,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
      */
+    @Override
     public CmsResource createResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -183,6 +185,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getCachePropertyDefault()
      */
+    @Override
     public String getCachePropertyDefault() {
 
         return "element;locale;";
@@ -191,6 +194,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
+    @Override
     public Map getConfiguration() {
 
         Map result = new TreeMap();
@@ -207,6 +211,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return CmsXmlContentLoader.RESOURCE_LOADER_ID;
@@ -286,6 +291,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsSecurityManager, CmsFile)
      */
+    @Override
     public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
 
         // check if the user has write access and if resource is locked

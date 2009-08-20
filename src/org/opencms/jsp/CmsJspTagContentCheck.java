@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentCheck.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/08/20 11:31:18 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,6 +119,7 @@ public class CmsJspTagContentCheck extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#doEndTag()
      */
+    @Override
     public int doEndTag() {
 
         if (OpenCms.getSystemInfo().getServletContainerSettings().isReleaseTagsAfterEnd()) {
@@ -131,6 +132,7 @@ public class CmsJspTagContentCheck extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content load" class
@@ -213,6 +215,7 @@ public class CmsJspTagContentCheck extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         m_checkall = false;
