@@ -47,24 +47,24 @@
 
      // decorate new input boxes
      var form = document.forms[LIST_SEARCH_DATA.FORM]; 
-     var colSel = "input[name^=listColFilter]";
-     var $searchButton = $sbar.siblings('span.link').eq(0);
-     var submitFn = $searchButton.attr('onclick');
-     $searchButton.attr('onclick', '');
+     var colSel = "input[name^=listColFilter"; // missing end bracket
+     var $searchButton = $sbar.siblings("span.link").eq(0);
+     var submitFn = $searchButton.attr("onclick");
+     $searchButton.attr("onclick", "");
      var com = function() {
        var data = "";
        var cols = LIST_SEARCH_DATA.COLUMNS;
        var n = cols.length;
        while (n--) {
-         var $ctl = $(colSel + cols[n]);
-         if ($ctl.val() === title && $ctl.hasClass(blurClass)) {
+         var $ctl = $(colSel + cols[n] + "]");
+         if ($ctl.val() === $ctl.attr("title") && $ctl.hasClass("blur")) {
            $ctl.val('');
          } else {
            data += cols[n];
            data += "#";
            data += $ctl.val();
            if (n > 0) {
-             data += '|';
+             data += "|";
            }
          }
        }
@@ -75,7 +75,7 @@
        com();
        submitFn();
      });     
-     $(colSel).hint().keypress(function (e) {  
+     $(colSel + "]").hint().keypress(function (e) {  
        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {  
          com();
          submitFn();
