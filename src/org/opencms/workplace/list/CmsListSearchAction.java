@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
- * Date   : $Date: 2009/08/20 11:30:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/08/20 12:20:35 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,8 +163,6 @@ public class CmsListSearchAction extends A_CmsListSearchAction {
      * @param filter the string to filter
      * 
      * @return the filtered sublist
-     * 
-     * @deprecated use {@link #filter(List)}
      */
     public List filter(List items, String filter) {
 
