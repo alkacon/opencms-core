@@ -219,9 +219,9 @@
             var element = cms.data.elements[elemId];
             var isNew = element.status == cms.data.STATUS_NEW;
             var _openDialog = function(path, id, afterClose) {
-                var dialogWidth=self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
-                dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
-                var dialogHeight=self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
+            var dialogWidth=self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
+            dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
+            var dialogHeight=self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
                 var iFrameHeight=dialogHeight - 126;
                cms.data.BACKLINK_URL = cms.data.BACKLINK_URL.replace("/opencms/opencms", "");
                var editorLink = cms.data.EDITOR_URL + '?resource=' + path + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
@@ -256,12 +256,12 @@
                         $('a.ui-dialog-titlebar-close').hide();
                     },
         			close : function() {
-        				$('#toolbar button.ui-state-active[name!="Edit"]').trigger('click');
-                        editorDialog.empty().dialog('destroy');
+        				editorDialog.empty().dialog('destroy');
                      cms.data.reloadElement(id, function() {
+                         // to reset the mode we turn it off and on again
                          var activeButton = $("#toolbar button.ui-state-active");
-                         toggleMode.apply(activeButton.get(0))
-                         toggleMode.apply(activeButton.get(0))
+                         activeButton.trigger('click');
+                         activeButton.trigger('click');
                      });
         			},
         			zIndex :10000
