@@ -150,11 +150,11 @@
       }
    };
    
-   var addHandles = cms.toolbar.addHandles = function(elem, adeMode, isMoving){
+   var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving){
         var handleDiv=$('<div class="cms-handle"></div>').appendTo(elem);
         
         var handles = {
-            'edit': $('<a class="cms-edit"></a>').click(openEditDialog),
+            'edit': cms.data.elements[elemId].allowEdit ? $('<a class="cms-edit cms-edit-enabled"></a>').click(openEditDialog) : $('<a class="cms-edit cms-edit-locked" title="locked by " onclick="return false;"></a>') ,
             'move': $('<a class="cms-move"></a>').mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd),
             'delete': $('<a class="cms-delete"></a>').click(deleteItem)
         };
@@ -194,16 +194,11 @@
       } else {
          $('button.ui-state-active').trigger('click');
          // enabling edit mode
-         $(sortitems).each(function() {
+         $(cms.util.getContainerSelector()).children('.cms-element').each(function() {
             var elem = $(this).css('position', 'relative');
                 var elemId=elem.attr('rel');
                 if (elemId && cms.data.elements[elemId]){
-                   if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked){
-                        addHandles(elem, adeMode);
-                   }else{
-                    // Append edit-locked-handle
-                   }
-
+                   addHandles(elem, elemId, adeMode);
                 }
             
          });

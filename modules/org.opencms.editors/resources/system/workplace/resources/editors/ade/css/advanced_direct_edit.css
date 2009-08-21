@@ -287,6 +287,14 @@ div.cms-highlight-container {
     
 }
 
+.cms-helper-border{
+    border: 1px solid #aaaaaa;
+}
+
+.cms-helper-background{
+    background-color: #ffffff;
+}
+
 /** Icons and handles **/
 div.cms-move {
     background: transparent url(images/16x16/ocms_de_move_i.png) repeat scroll 0 50%;
@@ -366,16 +374,28 @@ span.cms-check-icon-inactive {
     background-image: url(images/16x16/checkbox_empty_16x16.png);
 }
 
-.cms-edit{
+.cms-edit-enabled{
     background: transparent url(images/16x16/ocms_de_editor_i.png) no-repeat scroll 50% 50%;
 }
 
-div.ui-widget-header a.cms-edit{
+div.ui-widget-header a.cms-edit-enabled{
     background-image: url(images/16x16/ocms_de_editor_sw.png);
 }
 
-.cms-edit:hover, div.ui-widget-header a.cms-edit:hover{
+.cms-edit-enabled:hover, div.ui-widget-header a.cms-edit-enabled:hover{
     background-image: url(images/16x16/ocms_de_editor_a.png);
+}
+
+.cms-edit-locked{
+    background: transparent url(images/16x16/ocms_de_lock_i.png) no-repeat scroll 50% 50%;
+}
+
+div.ui-widget-header a.cms-edit-locked{
+    background-image: url(images/16x16/ocms_de_lock_sw.png);
+}
+
+.cms-edit-locked:hover, div.ui-widget-header a.cms-edit-locked:hover{
+    background-image: url(images/16x16/ocms_de_lock_a.png);
 }
 
 .cms-move {

@@ -65,26 +65,26 @@
             'position': 'absolute',
             'zIndex': sortable.options.zIndex
          }).addClass('ui-sortable-helper cms-element').attr('rel', sortable.cmsItem.id).appendTo('#' + container.name);
-         cms.toolbar.addHandles(sortable.cmsHelpers[container.name], cms.toolbar.timer.adeMode ? cms.toolbar.timer.adeMode : 'move', true);
+         cms.toolbar.addHandles(sortable.cmsHelpers[container.name], sortable.cmsResource_id, cms.toolbar.timer.adeMode ? cms.toolbar.timer.adeMode : 'move', true);
          if (sortable.cmsStartContainerId != cms.toolbar.currentMenuItems) {
             $('a.cms-move', sortable.cmsHelpers[container.name]).mousedown(movePreparation).mouseup(moveEnd);
          }
          
          // to increase visibility of the helper
          if (helperElem.css('background-color')=='transparent' && helperElem.css('background-image')=='none'){
-             helperElem.css('background-color', '#ffffff');
+             helperElem.addClass('cms-helper-background');
          }
          if (!helperElem.css('border') || !helperElem.css('border')=='none' || helperElem.css('border')==''){
-             helperElem.css('border', '1px solid #aaaaaa');
+             helperElem.addClass('cms-helper-border');
          }
       } else {
          sortable.cmsHelpers[container.name] = sortable.helper;
          // to increase visibility of the helper
          if (sortable.helper.css('background-color')=='transparent' && sortable.helper.css('background-image')=='none'){
-             sortable.helper.css('background-color', '#ffffff');
+             sortable.helper.addClass('cms-helper-background');
          }
          if (!sortable.helper.css('border') || sortable.helper.css('border')=='none' || sortable.helper.css('border')==''){
-             sortable.helper.css('border', '1px solid #aaaaaa');
+             sortable.helper.addClass('cms-helper-border');
          }
          sortable.cmsOver = true;
       }
@@ -269,7 +269,7 @@
          if (isMenuContainer(startContainer)) {
             orgPlaceholder.replaceWith(helpers[startContainer]);
             helpers[startContainer].removeClass('ui-sortable-helper');
-            cms.util.clearAttributes(helpers[startContainer].get(0).style, ['width', 'height', 'top', 'left', 'position', 'opacity', 'zIndex', 'display', 'border', 'background-color']);
+            cms.util.clearAttributes(helpers[startContainer].get(0).style, ['width', 'height', 'top', 'left', 'position', 'opacity', 'zIndex', 'display']);
             $('div.cms-handle', currentItem).remove();
             $('button.ui-state-active').trigger('click');
             
@@ -294,10 +294,10 @@
             if (container_name == startContainer &&
             endContainer == cms.html.favoriteListId) {
                var helperStyle = helper.get(0).style;
-               helper.removeClass('ui-sortable-helper');
+               helper.removeClass('ui-sortable-helper cms-helper-border cms-helper-background');
                // reset position (?) of helper that was dragged to favorites,
                // but don't remove it
-               cms.util.clearAttributes(helperStyle, ['width', 'height', 'top', 'left', 'opacity', 'zIndex', 'display', 'border', 'background-color']);
+               cms.util.clearAttributes(helperStyle, ['width', 'height', 'top', 'left', 'opacity', 'zIndex', 'display']);
                
                // reset handles
                var handleDiv=$('div.cms-handle',helper);
@@ -328,17 +328,19 @@
       
       hoverOut();
       
-      cms.util.clearAttributes(currentItem.get(0).style, ['top', 'left', 'zIndex', 'display', 'border', 'background-color']);
-      if ($.browser.msie) {
-         currentItem.get(0).style.removeAttribute('filter');
-         
-         // ui.self.currentItem.get(0).style.removeAttribute('position');
-      
-      } else if (currentItem) {
-      
-         // ui.self.currentItem.get(0).style.position='';
-         currentItem.get(0).style.opacity = '';
-      }
+      cms.util.clearAttributes(currentItem.get(0).style, ['top', 'left', 'zIndex', 'display']);
+      currentItem.removeClass('cms-helper-border cms-helper-background');
+      // opacity is no longer used
+//      if ($.browser.msie) {
+//         currentItem.get(0).style.removeAttribute('filter');
+//         
+//         // ui.self.currentItem.get(0).style.removeAttribute('position');
+//      
+//      } else if (currentItem) {
+//      
+//         // ui.self.currentItem.get(0).style.position='';
+//         currentItem.get(0).style.opacity = '';
+//      }
       updateContainer(startContainer);
       updateContainer(endContainer);
       if (endContainer != cms.html.favoriteListId) cms.toolbar.setPageChanged(true);
