@@ -4,19 +4,19 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.5.0</opencms_version>
-		<createdate>Thu, 13 Aug 2009 09:14:06 GMT</createdate>
+		<createdate>Fri, 21 Aug 2009 09:47:33 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
 	<module>
 		<name>org.opencms.workplace.ade.demo</name>
 		<nicename><![CDATA[OpenCms 8 ADE Demo]]></nicename>
-		<group>OpenCms Editors</group>        
+		<group>OpenCms Editors</group>
 		<class/>
 		<description><![CDATA[p>This module contains a demo for the new OpenCms 8 Advanced Direct Edit feature.</p>
 <p>This module is not needed, since it is just a quick start demo.</p>
 <p><i>(c) 2009 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.6.0</version>
+		<version>7.6.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jul 2009 08:00:00 GMT</datecreated>
@@ -34,379 +34,6 @@
 		<parameters/>
 	</module>
 	<files>
-		<file>
-			<destination>system</destination>
-			<type>folder</type>
-			<uuidstructure>a482044b-81a3-11de-9b82-dd9f629b113b</uuidstructure>
-			<datelastmodified>Wed, 05 Aug 2009 09:37:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 05 Aug 2009 09:37:50 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules</destination>
-			<type>folder</type>
-			<uuidstructure>a515e014-81a3-11de-9b82-dd9f629b113b</uuidstructure>
-			<datelastmodified>Wed, 05 Aug 2009 09:37:51 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 05 Aug 2009 09:37:51 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.ade.demo</destination>
-			<type>folder</type>
-			<uuidstructure>43d91ebe-8284-11de-ac1e-dd9f629b113b</uuidstructure>
-			<datelastmodified>Thu, 06 Aug 2009 12:25:45 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 12:25:45 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.ade.demo/elements</destination>
-			<type>folder</type>
-			<uuidstructure>43e776a2-8284-11de-ac1e-dd9f629b113b</uuidstructure>
-			<datelastmodified>Thu, 06 Aug 2009 12:25:45 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 12:25:45 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/elements/event_default.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/elements/event_default.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>6e55ec2b-8276-11de-ac1e-dd9f629b113b</uuidstructure>
-			<uuidresource>6e55ec2c-8276-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 14:34:34 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 10:46:43 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/elements/event_left_column.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/elements/event_left_column.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>390c2614-8277-11de-ac1e-dd9f629b113b</uuidstructure>
-			<uuidresource>390c2615-8277-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 14:35:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 10:52:23 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/elements/event_main_column.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/elements/event_main_column.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>576ba57f-8741-11de-83d4-dd9f629b113b</uuidstructure>
-			<uuidresource>576ba580-8741-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 14:35:30 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Aug 2009 13:09:17 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/elements/event_right_column.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/elements/event_right_column.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>38d8586c-8741-11de-83d4-dd9f629b113b</uuidstructure>
-			<uuidresource>38d8586d-8741-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 14:36:07 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Aug 2009 13:08:26 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/elements/news_default.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/elements/news_default.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>0dd29605-8276-11de-ac1e-dd9f629b113b</uuidstructure>
-			<uuidresource>0dd29606-8276-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 14:36:32 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 10:44:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/elements/news_left_column.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/elements/news_left_column.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>cc9d0dee-8276-11de-ac1e-dd9f629b113b</uuidstructure>
-			<uuidresource>cc9d0def-8276-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 14:36:56 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 10:49:21 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/elements/news_main_column.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/elements/news_main_column.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>3eb2fb1d-873f-11de-83d4-dd9f629b113b</uuidstructure>
-			<uuidresource>3eb2fb1e-873f-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 14:37:30 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Aug 2009 12:54:17 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/elements/news_right_column.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/elements/news_right_column.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>d55e1ce1-8276-11de-ac1e-dd9f629b113b</uuidstructure>
-			<uuidresource>d55e1ce2-8276-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 14:38:31 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 10:49:36 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.ade.demo/pages</destination>
-			<type>folder</type>
-			<uuidstructure>490220d3-8289-11de-ac1e-dd9f629b113b</uuidstructure>
-			<datelastmodified>Thu, 06 Aug 2009 13:01:41 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 13:01:41 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/pages/event.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/pages/event.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>538f6445-8289-11de-ac1e-dd9f629b113b</uuidstructure>
-			<uuidresource>538f6446-8289-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 06 Aug 2009 13:03:34 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 13:01:59 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/pages/news.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/pages/news.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>83b80918-8289-11de-ac1e-dd9f629b113b</uuidstructure>
-			<uuidresource>83b80919-8289-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 06 Aug 2009 13:03:42 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 13:03:19 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.ade.demo/schemas</destination>
-			<type>folder</type>
-			<uuidstructure>29717d50-8288-11de-ac1e-dd9f629b113b</uuidstructure>
-			<datelastmodified>Thu, 06 Aug 2009 12:53:39 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 12:53:39 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/schemas/event.xsd</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/schemas/event.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>3689b162-8288-11de-ac1e-dd9f629b113b</uuidstructure>
-			<uuidresource>3689b163-8288-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 13 Aug 2009 08:35:48 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 12:54:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/schemas/news.xsd</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/schemas/news.xsd</destination>
-			<type>plain</type>
-			<uuidstructure>36934e54-8288-11de-ac1e-dd9f629b113b</uuidstructure>
-			<uuidresource>36934e55-8288-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 13 Aug 2009 08:36:11 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 12:54:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.workplace.ade.demo/templates</destination>
-			<type>folder</type>
-			<uuidstructure>43e04ab0-8284-11de-ac1e-dd9f629b113b</uuidstructure>
-			<datelastmodified>Thu, 06 Aug 2009 12:25:45 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 12:25:45 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/templates/main.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/templates/main.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>039eff25-873d-11de-83d4-dd9f629b113b</uuidstructure>
-			<uuidresource>039eff26-873d-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 13 Aug 2009 08:25:17 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Aug 2009 12:38:19 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[OpenCms Template Two]]></value>
-				</property>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[uri;element]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>template-elements</name>
-					<value><![CDATA[body*|Body Element,body2|Bottom Element]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.workplace.ade.demo/templates/template.jsp</source>
-			<destination>system/modules/org.opencms.workplace.ade.demo/templates/template.jsp</destination>
-			<type>jsp</type>
-			<uuidstructure>4ec24fba-8282-11de-ac1e-dd9f629b113b</uuidstructure>
-			<uuidresource>4ec24fbb-8282-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 06 Aug 2009 14:45:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 06 Aug 2009 12:11:44 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<relations/>
-			<accesscontrol/>
-		</file>
 		<file>
 			<destination>demo</destination>
 			<type>folder</type>
@@ -464,7 +91,7 @@
 			<type>ttevent</type>
 			<uuidstructure>6b856225-8288-11de-ac1e-dd9f629b113b</uuidstructure>
 			<uuidresource>6b856226-8288-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 06 Aug 2009 12:56:31 GMT</datelastmodified>
+			<datelastmodified>Mon, 17 Aug 2009 12:10:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 06 Aug 2009 12:55:29 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -473,7 +100,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Floristika 2008 in Dresden]]></value>
+					<value><![CDATA[Floristika 2008 in Ober-Ammergau]]></value>
 				</property>
 				<property>
 					<name>calendar.enddate</name>
@@ -519,6 +146,51 @@
 				<property type="shared">
 					<name>template-elements</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/event.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demo/info</destination>
+			<type>folder</type>
+			<uuidstructure>3469ac00-8d89-11de-a1de-7713e07de9e6</uuidstructure>
+			<datelastmodified>Thu, 20 Aug 2009 12:58:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 20 Aug 2009 12:58:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demo/info/info_0001.html</source>
+			<destination>demo/info/info_0001.html</destination>
+			<type>ttnews</type>
+			<uuidstructure>4d392492-8d89-11de-a1de-7713e07de9e6</uuidstructure>
+			<uuidresource>4d392493-8d89-11de-a1de-7713e07de9e6</uuidresource>
+			<datelastmodified>Thu, 20 Aug 2009 15:47:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 20 Aug 2009 12:59:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New Flowerservice!]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1199487600000]]></value>
+				</property>
+				<property>
+					<name>style.preset</name>
+					<value><![CDATA[/demo/_config_/layouts/threecolumns]]></value>
+				</property>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/news.jsp]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -575,7 +247,7 @@
 			<type>ttnews</type>
 			<uuidstructure>612ee620-8288-11de-ac1e-dd9f629b113b</uuidstructure>
 			<uuidresource>612ee621-8288-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 06 Aug 2009 12:56:15 GMT</datelastmodified>
+			<datelastmodified>Thu, 20 Aug 2009 13:45:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 06 Aug 2009 12:55:12 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -583,7 +255,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Flower of the year 2009]]></value>
+					<value><![CDATA[Flower of the year 2111]]></value>
 				</property>
 				<property>
 					<name>collector.date</name>
@@ -592,6 +264,1010 @@
 				<property type="shared">
 					<name>template-elements</name>
 					<value><![CDATA[/system/modules/org.opencms.frontend.templatetwo.demo/pages/news.jsp]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<uuidstructure>8f86669b-87f9-11de-9875-7713e07de9e6</uuidstructure>
+			<datelastmodified>Thu, 13 Aug 2009 11:07:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Aug 2009 11:07:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<uuidstructure>90156064-87f9-11de-9875-7713e07de9e6</uuidstructure>
+			<datelastmodified>Thu, 13 Aug 2009 11:08:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Aug 2009 11:08:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
+					<flags>514</flags>
+					<permissionset>
+						<allowed>5</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo</destination>
+			<type>folder</type>
+			<uuidstructure>43d91ebe-8284-11de-ac1e-dd9f629b113b</uuidstructure>
+			<datelastmodified>Thu, 06 Aug 2009 12:25:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 12:25:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/elements</destination>
+			<type>folder</type>
+			<uuidstructure>43e776a2-8284-11de-ac1e-dd9f629b113b</uuidstructure>
+			<datelastmodified>Thu, 06 Aug 2009 12:25:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 12:25:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/elements/event_default.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/elements/event_default.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>6e55ec2b-8276-11de-ac1e-dd9f629b113b</uuidstructure>
+			<uuidresource>6e55ec2c-8276-11de-ac1e-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 12 Aug 2009 14:34:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 10:46:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/elements/event_left_column.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/elements/event_left_column.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>390c2614-8277-11de-ac1e-dd9f629b113b</uuidstructure>
+			<uuidresource>390c2615-8277-11de-ac1e-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 20 Aug 2009 10:25:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 10:52:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/elements/event_main_column.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/elements/event_main_column.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>576ba57f-8741-11de-83d4-dd9f629b113b</uuidstructure>
+			<uuidresource>576ba580-8741-11de-83d4-dd9f629b113b</uuidresource>
+			<datelastmodified>Fri, 21 Aug 2009 09:02:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 13:09:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/elements/event_right_column.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/elements/event_right_column.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>38d8586c-8741-11de-83d4-dd9f629b113b</uuidstructure>
+			<uuidresource>38d8586d-8741-11de-83d4-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 20 Aug 2009 10:44:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 13:08:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/elements/info_bottom_column.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/elements/info_bottom_column.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>0acf7e9f-8d89-11de-a1de-7713e07de9e6</uuidstructure>
+			<uuidresource>0acf7ea0-8d89-11de-a1de-7713e07de9e6</uuidresource>
+			<datelastmodified>Thu, 20 Aug 2009 15:49:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 20 Aug 2009 12:57:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/elements/info_default.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/elements/info_default.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>0b0d7204-8d89-11de-a1de-7713e07de9e6</uuidstructure>
+			<uuidresource>0b0d7205-8d89-11de-a1de-7713e07de9e6</uuidresource>
+			<datelastmodified>Thu, 20 Aug 2009 12:57:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 20 Aug 2009 12:57:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/elements/news_default.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/elements/news_default.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>0dd29605-8276-11de-ac1e-dd9f629b113b</uuidstructure>
+			<uuidresource>0dd29606-8276-11de-ac1e-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 12 Aug 2009 14:36:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 10:44:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/elements/news_left_column.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/elements/news_left_column.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>cc9d0dee-8276-11de-ac1e-dd9f629b113b</uuidstructure>
+			<uuidresource>cc9d0def-8276-11de-ac1e-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 20 Aug 2009 10:25:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 10:49:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/elements/news_main_column.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/elements/news_main_column.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>3eb2fb1d-873f-11de-83d4-dd9f629b113b</uuidstructure>
+			<uuidresource>3eb2fb1e-873f-11de-83d4-dd9f629b113b</uuidresource>
+			<datelastmodified>Fri, 21 Aug 2009 09:02:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 12:54:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/elements/news_right_column.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/elements/news_right_column.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>d55e1ce1-8276-11de-ac1e-dd9f629b113b</uuidstructure>
+			<uuidresource>d55e1ce2-8276-11de-ac1e-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 20 Aug 2009 10:44:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 10:49:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/pages</destination>
+			<type>folder</type>
+			<uuidstructure>490220d3-8289-11de-ac1e-dd9f629b113b</uuidstructure>
+			<datelastmodified>Thu, 06 Aug 2009 13:01:41 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 13:01:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources</destination>
+			<type>folder</type>
+			<uuidstructure>19825954-8cd1-11de-9438-7713e07de9e6</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2009 15:00:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:00:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/css</destination>
+			<type>folder</type>
+			<uuidstructure>332156e6-8cd1-11de-9438-7713e07de9e6</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2009 15:01:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:01:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/css/nav_left.css</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/css/nav_left.css</destination>
+			<type>plain</type>
+			<uuidstructure>33285bc8-8cd1-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>33285bc9-8cd1-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Thu, 21 Feb 2008 11:44:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:01:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/css/patch_ie.css</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/css/patch_ie.css</destination>
+			<type>plain</type>
+			<uuidstructure>332f87ba-8cd1-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>332f87bb-8cd1-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Sat, 01 Mar 2008 09:25:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:01:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/css/style.css</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/css/style.css</destination>
+			<type>jsp</type>
+			<uuidstructure>3336b3ac-8cd1-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>3336b3ad-8cd1-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 21 Aug 2009 08:31:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:01:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[site;params=(preset,style)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/images</destination>
+			<type>folder</type>
+			<uuidstructure>d94cf184-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2009 15:20:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Template images Template Two]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/images/bg_blue.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/images/bg_blue.gif</destination>
+			<type>image</type>
+			<uuidstructure>d9566767-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>d9566768-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Thu, 07 Feb 2008 16:46:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:15,h:600]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/images/bg_box_header.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/images/bg_box_header.gif</destination>
+			<type>image</type>
+			<uuidstructure>d95d935a-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>d95d935b-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Mon, 11 Feb 2008 11:26:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:26]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/images/bg_header.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/images/bg_header.gif</destination>
+			<type>image</type>
+			<uuidstructure>d964bf4d-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>d964bf4e-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Thu, 07 Feb 2008 16:46:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:10,h:120]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/images/bg_red.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/images/bg_red.gif</destination>
+			<type>image</type>
+			<uuidstructure>d96beb40-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>d96beb41-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 08:30:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:15,h:600]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/images/gradient.png</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/images/gradient.png</destination>
+			<type>image</type>
+			<uuidstructure>d9731733-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>d9731734-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Thu, 14 Feb 2008 15:02:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:26]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus</destination>
+			<type>folder</type>
+			<uuidstructure>c7831c0a-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2009 15:20:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Resources for the different menus]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin</destination>
+			<type>folder</type>
+			<uuidstructure>c78cb8fd-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2009 15:20:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/style.css</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/style.css</destination>
+			<type>plain</type>
+			<uuidstructure>c7c10f80-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7c10f81-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 15:54:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/images</destination>
+			<type>folder</type>
+			<uuidstructure>c793bddf-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2009 15:20:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/images/dolphin_bg-ON.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/images/dolphin_bg-ON.gif</destination>
+			<type>image</type>
+			<uuidstructure>c79ae9d1-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c79ae9d2-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 15:54:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:33]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/images/dolphin_bg-OVER.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/images/dolphin_bg-OVER.gif</destination>
+			<type>image</type>
+			<uuidstructure>c7a215c4-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7a215c5-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 15:54:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:29]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/images/dolphin_bg.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/images/dolphin_bg.gif</destination>
+			<type>image</type>
+			<uuidstructure>c7abb2b7-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7abb2b8-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 15:54:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:29]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/images/dolphin_left-ON.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/images/dolphin_left-ON.gif</destination>
+			<type>image</type>
+			<uuidstructure>c7b2deaa-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7b2deab-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 15:54:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:225,h:33]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/images/dolphin_right-ON.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/dolphin/images/dolphin_right-ON.gif</destination>
+			<type>image</type>
+			<uuidstructure>c7b9e38d-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7b9e38e-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 15:54:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:225,h:33]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/skeleton</destination>
+			<type>folder</type>
+			<uuidstructure>c7c5f182-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2009 15:20:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/skeleton/skeleton.css</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/skeleton/skeleton.css</destination>
+			<type>plain</type>
+			<uuidstructure>c7ccf664-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7ccf665-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 15:54:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/skeleton/stuHover.js</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/skeleton/stuHover.js</destination>
+			<type>plain</type>
+			<uuidstructure>c7d1d866-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7d1d867-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Thu, 07 Feb 2008 16:46:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/slidingdoors</destination>
+			<type>folder</type>
+			<uuidstructure>c7d90458-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2009 15:20:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/slidingdoors/left_both.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/slidingdoors/left_both.gif</destination>
+			<type>image</type>
+			<uuidstructure>c7e0093a-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7e0093b-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Thu, 07 Feb 2008 16:46:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:9,h:300]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/slidingdoors/right_both.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/slidingdoors/right_both.gif</destination>
+			<type>image</type>
+			<uuidstructure>c7e7352d-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7e7352e-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Thu, 07 Feb 2008 16:46:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:400,h:300]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/slidingdoors/slidingdoors.css</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/slidingdoors/slidingdoors.css</destination>
+			<type>plain</type>
+			<uuidstructure>c7ec1730-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7ec1731-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 13:54:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/slidingdoors/tab-left.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/slidingdoors/tab-left.gif</destination>
+			<type>image</type>
+			<uuidstructure>c7f31c12-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7f31c13-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 12:00:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:10,h:249]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/slidingdoors/tab-right.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/slidingdoors/tab-right.gif</destination>
+			<type>image</type>
+			<uuidstructure>c7fa4805-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c7fa4806-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 12:00:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:370,h:249]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/style2</destination>
+			<type>folder</type>
+			<uuidstructure>c80173f8-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2009 15:20:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/style2/style.css</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/style2/style.css</destination>
+			<type>plain</type>
+			<uuidstructure>c822deb2-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c822deb3-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 22 Feb 2008 09:48:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/style2/images</destination>
+			<type>folder</type>
+			<uuidstructure>c8089fea-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<datelastmodified>Wed, 19 Aug 2009 15:20:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/style2/images/bgOFF.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/style2/images/bgOFF.gif</destination>
+			<type>image</type>
+			<uuidstructure>c81486cc-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c81486cd-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 16:42:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:25]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/resources/menus/style2/images/bgON.gif</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/resources/menus/style2/images/bgON.gif</destination>
+			<type>image</type>
+			<uuidstructure>c81bb2bf-8cd3-11de-9438-7713e07de9e6</uuidstructure>
+			<uuidresource>c81bb2c0-8cd3-11de-9438-7713e07de9e6</uuidresource>
+			<datelastmodified>Fri, 15 Feb 2008 16:42:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 19 Aug 2009 15:20:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:1,h:25]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/schemas</destination>
+			<type>folder</type>
+			<uuidstructure>29717d50-8288-11de-ac1e-dd9f629b113b</uuidstructure>
+			<datelastmodified>Thu, 06 Aug 2009 12:53:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 12:53:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/schemas/event.xsd</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/schemas/event.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>3689b162-8288-11de-ac1e-dd9f629b113b</uuidstructure>
+			<uuidresource>3689b163-8288-11de-ac1e-dd9f629b113b</uuidresource>
+			<datelastmodified>Wed, 19 Aug 2009 12:21:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 12:54:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/schemas/info.xsd</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/schemas/info.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>0af33342-8d89-11de-a1de-7713e07de9e6</uuidstructure>
+			<uuidresource>0af33343-8d89-11de-a1de-7713e07de9e6</uuidresource>
+			<datelastmodified>Thu, 20 Aug 2009 13:59:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 20 Aug 2009 12:57:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/schemas/news.xsd</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/schemas/news.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>36934e54-8288-11de-ac1e-dd9f629b113b</uuidstructure>
+			<uuidresource>36934e55-8288-11de-ac1e-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 13 Aug 2009 08:36:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 12:54:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/templates</destination>
+			<type>folder</type>
+			<uuidstructure>43e04ab0-8284-11de-ac1e-dd9f629b113b</uuidstructure>
+			<datelastmodified>Thu, 06 Aug 2009 12:25:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 12:25:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/templates/main.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/templates/main.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>039eff25-873d-11de-83d4-dd9f629b113b</uuidstructure>
+			<uuidresource>039eff26-873d-11de-83d4-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 20 Aug 2009 12:57:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 12:38:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Template Two]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;element]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[body*|Body Element,body2|Bottom Element]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/templates/template.jsp</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/templates/template.jsp</destination>
+			<type>jsp</type>
+			<uuidstructure>4ec24fba-8282-11de-ac1e-dd9f629b113b</uuidstructure>
+			<uuidresource>4ec24fbb-8282-11de-ac1e-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 06 Aug 2009 14:45:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 06 Aug 2009 12:11:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -653,7 +1329,7 @@
 			<type>containerpage</type>
 			<uuidstructure>e5308d4d-873e-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>e5308d4e-873e-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 13 Aug 2009 08:25:32 GMT</datelastmodified>
+			<datelastmodified>Thu, 20 Aug 2009 14:02:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 12:51:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>

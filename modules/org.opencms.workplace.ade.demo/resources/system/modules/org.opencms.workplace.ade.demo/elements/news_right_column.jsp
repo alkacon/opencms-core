@@ -3,9 +3,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <cms:contentload collector="singleFile" param="%(opencms.uri)" >
-<div>
+<div class="box box_schema2">
 	<!-- Title Section of the news -->
-	<h2><cms:contentshow element="Title" /></h2>
+	<h4><cms:contentshow element="Title" /></h4>
 	<cms:contentcheck ifexists="SubTitle">
 		<p><cms:contentshow element="SubTitle" /></p>
 	</cms:contentcheck>
@@ -32,7 +32,7 @@
 			</div>
 		</cms:contentloop>
 		<!-- Optional headline of the paragraph -->
-		<cms:contentcheck ifexists="Headline"><h3><cms:contentshow element="Headline" /></h3></cms:contentcheck>
+		<cms:contentcheck ifexists="Headline"><h5><cms:contentshow element="Headline" /></h5></cms:contentcheck>
 	</cms:contentloop>
 	<!-- Author of the news -->
 	<p>

@@ -7,9 +7,9 @@
 <fmt:bundle basename="org/opencms/frontend/templatetwo/demo/messages">
 <cms:contentload collector="singleFile" param="%(opencms.uri)" >
 	<cms:contentaccess var="event" scope="page" />
-	<div class="view-event">
+	<div class="view-event box box_schema1">
 		<!-- Title of the event -->
-		<h2><cms:contentshow element="Title" /></h2>
+		<h4><cms:contentshow element="Title" /></h4>
 		<!-- Event Dates -->
 		<p>
 			<label><fmt:message key="tt.event.start" /></label>

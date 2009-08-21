@@ -7,9 +7,9 @@
 <fmt:bundle basename="org/opencms/frontend/templatetwo/demo/messages">
 <cms:contentload collector="singleFile" param="%(opencms.uri)" >
 	<cms:contentaccess var="event" scope="page" />
-	<div class="view-event">
+	<div class="view-event box box_schema2">
 		<!-- Title of the event -->
-		<h2><cms:contentshow element="Title" /></h2>
+		<h4><cms:contentshow element="Title" /></h4>
 		<!-- Event Dates -->
 		<p>
 			<label><fmt:message key="tt.event.start" /></label>
@@ -39,7 +39,6 @@
 				<cms:contentshow element="EventDates/DateRemark" />
 			</c:if>
 		</p>
-		<hr class="separator" />
 		<!-- Paragraph of the event -->
 		<cms:contentloop element="Paragraph">
 			<cms:contentloop element="Image">
@@ -64,8 +63,6 @@
 			</cms:contentloop>
 			<!-- The optional headline of the paragraph -->
 			<cms:contentcheck ifexists="Headline"><h3><cms:contentshow element="Headline" /></h3></cms:contentcheck>
-			
-			<hr class="separator" />
 		</cms:contentloop>
 	</div>
 </cms:contentload>

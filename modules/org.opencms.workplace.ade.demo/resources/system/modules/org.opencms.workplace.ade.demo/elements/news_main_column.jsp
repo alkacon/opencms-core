@@ -34,7 +34,7 @@
 		<!-- Optional headline of the paragraph -->
 		<cms:contentcheck ifexists="Headline"><h3><cms:contentshow element="Headline" /></h3></cms:contentcheck>
 		<!-- Text of the paragraph -->
-		<p><cms:contentshow element="Text" /></p>
+		<cms:contentshow element="Text" />
 		<!-- Optional links of the paragraph -->
 		<cms:contentcheck ifexists="Links">
 			<ul>
@@ -63,5 +63,6 @@
 			<c:otherwise><cms:contentshow element="Author" /></c:otherwise>
 		</c:choose>
 	</p>
+	<br />
 </div>
 </cms:contentload>

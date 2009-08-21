@@ -27,16 +27,14 @@
 	<meta name="robots" content="index, follow" >
 	<meta name="revisit-after" content="7 days" >
 
-	<link href="<cms:link>/system/modules/org.opencms.frontend.templatetwo/resources/menus/style2/style.css</cms:link>" rel="stylesheet" type="text/css">		
+	<link href="<cms:link>/system/modules/org.opencms.workplace.ade.demo/resources/menus/style2/style.css</cms:link>" rel="stylesheet" type="text/css"> 
 	
-	<link href="<cms:link>/system/modules/org.opencms.frontend.templatetwo/resources/css/nav_left.css</cms:link>" rel="stylesheet" type="text/css">		
+	<link href="<cms:link>/system/modules/org.opencms.workplace.ade.demo/resources/css/nav_left.css</cms:link>" rel="stylesheet" type="text/css">		
 		
-	<link href="<cms:link>/system/modules/org.opencms.frontend.templatetwo/resources/css/style.css?preset=/demo_en/_config_/layout/threecolumns&amp;style=/demo_en/_config_/layout/style</cms:link>" rel="stylesheet" type="text/css">
+	<link href="<cms:link>/system/modules/org.opencms.workplace.ade.demo/resources/css/style.css?preset=/demo_en/_config_/layout/threecolumns&amp;style=/demo_en/_config_/layout/style</cms:link>" rel="stylesheet" type="text/css">
 	<!--[if lte IE 6]>
-		<link href="<cms:link>/system/modules/org.opencms.frontend.templatetwo/resources/css/patch_ie.css</cms:link>" rel="stylesheet" type="text/css">
+		<link href="<cms:link>/system/modules/org.opencms.workplace.ade.demo/resources/css/patch_ie.css</cms:link>" rel="stylesheet" type="text/css">
 	<![endif]-->
-
-	<link href="<cms:link>/system/modules/org.opencms.frontend.templatetwo.demo/resources/css/style.css</cms:link>" rel="stylesheet" type="text/css">
 
 	<cms:enable-ade/>
 </head>
@@ -127,6 +125,12 @@
 				<div class="clear">&nbsp;</div>
 			</div>
 			<!-- end: center column -->
+			<br clear="all" />
+			<!-- begin: bottom column -->
+			<div id="bottom_cont">
+				<cms:container name="bottom_cont" type="bottomColumn" maxElements="3" />
+			</div>
+			<!-- end: bottom column -->
 		</div>
 		<!-- end: content area -->
 		

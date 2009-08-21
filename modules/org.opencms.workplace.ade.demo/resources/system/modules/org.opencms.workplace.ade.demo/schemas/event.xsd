@@ -40,7 +40,7 @@
 				<mapping element="Availability/Priority" mapto="property:collector.priority" />
 			</mappings>
 			<layouts>
-				<layout element="Teaser" widget="HtmlWidget" configuration="height:100px,link"/>
+				<layout element="Teaser" widget="HtmlWidget" configuration="height:100px,link,image,downloadgallery,linkgallery,htmlgallery,tablegallery,table,formatselect"/>
 			</layouts>
 			<defaults>
 				<default element="Availability/Priority" value="1" />

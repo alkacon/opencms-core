@@ -66,9 +66,10 @@
 			<cms:contentcheck ifexists="Headline"><h3><cms:contentshow element="Headline" /></h3></cms:contentcheck>
 			
 			<!-- The text content of the paragraph -->	
-			<p><cms:contentshow element="Text" /></p>
+			<cms:contentshow element="Text" />
 			<hr class="separator" />
 		</cms:contentloop>
+		<br />
 	</div>
 </cms:contentload>
 </fmt:bundle>

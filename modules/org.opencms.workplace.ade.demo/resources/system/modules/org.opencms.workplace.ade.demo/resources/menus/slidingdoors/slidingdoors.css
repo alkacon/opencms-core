@@ -1,0 +1,57 @@
+@charset "UTF-8";
+
+@media all
+{
+  /* A modified version of A List Apart - http://alistapart.com/articles/slidingdoors2/ */
+  #nav_main {
+    float: left;
+    width: 100%;
+    border-bottom: 1px #000 solid;
+  }
+  
+  #nav_main ul {
+    list-style: none;
+  }
+  
+  #nav_main li {
+    float: left;
+    display: inline;
+    background: url("tab-right.gif") no-repeat right top;
+    margin: 0 0 0 9px;
+    padding: 0;
+  }
+  
+  #nav_main a {
+    float: left;
+    display: block;
+    position: relative;
+    left: -9px;
+    margin-right: -9px;
+    width: .1em;
+    background: url("tab-left.gif") no-repeat left top;
+    padding: 5px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #765;
+  }
+  
+  #nav_main > ul a {width: auto;}
+  
+  /* Commented Backslash Hack hides rule from IE5-Mac \*/
+  #nav_main a {float: none;}
+  /* End IE5-Mac hack */
+  
+  #nav_main a:hover {
+    color: #333;
+  }
+  
+  /* not for IE5.x or IE6 */
+  #nav_main li:hover, #nav_main li:hover a {
+    background-position:100% -125px;
+    color:#333;
+  }
+  
+  #nav_main li:hover a {
+    background-position:0 -125px;
+  }
+}
