@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlVfsImageValue.java,v $
- * Date   : $Date: 2009/08/20 11:31:34 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/21 15:09:44 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 7.5.0 
  */
@@ -80,7 +80,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
     private String m_format;
 
     /** Holds the parameters of the URL. */
-    private Map m_parameters;
+    private Map<String, String[]> m_parameters;
 
     /** The scale options of the image. */
     private String m_scaleOptions;
@@ -299,7 +299,7 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
         }
 
         // get the request parameters from the provided value
-        Map params = getParameterMap(value);
+        Map<String, String[]> params = getParameterMap(value);
 
         // create description element if present as parameter
         String desc = getParameterValue(cms, params, PARAM_DESCRIPTION);
@@ -331,9 +331,9 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
      * @param url the url String to get the parameters from
      * @return the parameters as Map
      */
-    private Map getParameterMap(String url) {
+    private Map<String, String[]> getParameterMap(String url) {
 
-        Map result = new HashMap();
+        Map<String, String[]> result = new HashMap<String, String[]>();
         if (CmsStringUtil.isNotEmpty(url)) {
             int pos = url.indexOf(CmsRequestUtil.URL_DELIMITER);
             if (pos >= 0) {
@@ -351,10 +351,10 @@ public class CmsXmlVfsImageValue extends CmsXmlVfsFileValue {
      * @param key the parameter name
      * @return the value of the parameter or an empty String
      */
-    private String getParameterValue(CmsObject cms, Map parameterMap, String key) {
+    private String getParameterValue(CmsObject cms, Map<String, String[]> parameterMap, String key) {
 
         String result = null;
-        String[] params = ((String[])parameterMap.get(key));
+        String[] params = parameterMap.get(key);
         if ((params != null) && (params.length > 0)) {
             result = params[0];
         }

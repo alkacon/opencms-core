@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2009/07/08 11:11:35 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2009/08/21 15:09:42 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,13 +76,13 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     private static final Log LOG = CmsLog.getLog(CmsXmlEntityResolver.class);
 
     /** A temporary cache for XML content definitions. */
-    private static Map m_cacheContentDefinitions;
+    private static Map<String, CmsXmlContentDefinition> m_cacheContentDefinitions;
 
     /** A permanent cache to avoid multiple readings of often used files from the VFS. */
-    private static Map m_cachePermanent;
+    private static Map<String, byte[]> m_cachePermanent;
 
     /** A temporary cache to avoid multiple readings of often used files from the VFS. */
-    private static Map m_cacheTemporary;
+    private static Map<String, byte[]> m_cacheTemporary;
 
     /** The location of the XML page XML schema. */
     private static final String XMLPAGE_OLD_DTD_LOCATION = "org/opencms/xml/page/xmlpage.dtd";
@@ -159,39 +159,39 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     private static void initCaches() {
 
         if (m_cacheTemporary == null) {
-            LRUMap cacheTemporary = new LRUMap(128);
+            Map<String, byte[]> cacheTemporary = new LRUMap(128);
             m_cacheTemporary = Collections.synchronizedMap(cacheTemporary);
 
-            HashMap cachePermanent = new HashMap(32);
+            Map<String, byte[]> cachePermanent = new HashMap<String, byte[]>(32);
             m_cachePermanent = Collections.synchronizedMap(cachePermanent);
 
-            LRUMap cacheContentDefinitions = new LRUMap(64);
+            Map<String, CmsXmlContentDefinition> cacheContentDefinitions = new LRUMap(64);
             m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
         }
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             if ((OpenCms.getMemoryMonitor() != null)
                 && !OpenCms.getMemoryMonitor().isMonitoring(CmsXmlEntityResolver.class.getName() + ".cacheTemporary")) {
                 // reinitialize the caches after the memory monitor is set up                
-                LRUMap cacheTemporary = new LRUMap(128);
+                Map<String, byte[]> cacheTemporary = new LRUMap(128);
                 cacheTemporary.putAll(m_cacheTemporary);
                 m_cacheTemporary = Collections.synchronizedMap(cacheTemporary);
-                // map must be of type "LRUMap" so that memory monitor can acecss all information
+                // map must be of type "LRUMap" so that memory monitor can access all information
                 OpenCms.getMemoryMonitor().register(
                     CmsXmlEntityResolver.class.getName() + ".cacheTemporary",
                     cacheTemporary);
 
-                HashMap cachePermanent = new HashMap(32);
+                Map<String, byte[]> cachePermanent = new HashMap<String, byte[]>(32);
                 cachePermanent.putAll(m_cachePermanent);
                 m_cachePermanent = Collections.synchronizedMap(cachePermanent);
-                // map must be of type "HashMap" so that memory monitor can acecss all information
+                // map must be of type "HashMap" so that memory monitor can access all information
                 OpenCms.getMemoryMonitor().register(
                     CmsXmlEntityResolver.class.getName() + ".cachePermanent",
                     cachePermanent);
 
-                LRUMap cacheContentDefinitions = new LRUMap(64);
+                Map<String, CmsXmlContentDefinition> cacheContentDefinitions = new LRUMap(64);
                 cacheContentDefinitions.putAll(m_cacheContentDefinitions);
                 m_cacheContentDefinitions = Collections.synchronizedMap(cacheContentDefinitions);
-                // map must be of type "LRUMap" so that memory monitor can acecss all information
+                // map must be of type "LRUMap" so that memory monitor can access all information
                 OpenCms.getMemoryMonitor().register(
                     CmsXmlEntityResolver.class.getName() + ".cacheContentDefinitions",
                     cacheContentDefinitions);
@@ -258,7 +258,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     public CmsXmlContentDefinition getCachedContentDefinition(String systemId) {
 
         String cacheKey = getCacheKeyForCurrentProject(systemId);
-        CmsXmlContentDefinition result = (CmsXmlContentDefinition)m_cacheContentDefinitions.get(cacheKey);
+        CmsXmlContentDefinition result = m_cacheContentDefinitions.get(cacheKey);
         if ((result != null) && LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_CACHE_LOOKUP_SUCCEEDED_1, cacheKey));
         }
@@ -272,7 +272,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
         // lookup the system id caches first
         byte[] content;
-        content = (byte[])m_cachePermanent.get(systemId);
+        content = m_cachePermanent.get(systemId);
         if (content != null) {
 
             // permanent cache contains system id
@@ -310,7 +310,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             String cacheSystemId = systemId.substring(OPENCMS_SCHEME.length() - 1);
             String cacheKey = getCacheKey(cacheSystemId, m_cms.getRequestContext().currentProject().isOnlineProject());
             // look up temporary cache
-            content = (byte[])m_cacheTemporary.get(cacheKey);
+            content = m_cacheTemporary.get(cacheKey);
             if (content != null) {
                 return new InputSource(new ByteArrayInputStream(content));
             }

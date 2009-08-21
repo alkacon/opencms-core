@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/08/21 15:09:43 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,12 +146,12 @@ public final class CmsXmlUtils {
             // this is a complex path over more then 1 node
             StringBuffer result = new StringBuffer(path.length() + 32);
 
-            // split the path into subelements
-            List elements = CmsStringUtil.splitAsList(path, '/');
+            // split the path into sub elements
+            List<String> elements = CmsStringUtil.splitAsList(path, '/');
             int end = elements.size() - 1;
             for (int i = 0; i <= end; i++) {
                 // append [i] to path element if required 
-                result.append(createXpathElementCheck((String)elements.get(i), (i == end) ? index : 1));
+                result.append(createXpathElementCheck(elements.get(i), (i == end) ? index : 1));
                 if (i < end) {
                     // append path delimiter if not final path element
                     result.append('/');
@@ -489,11 +489,11 @@ public final class CmsXmlUtils {
             StringBuffer result = new StringBuffer(path.length() + 32);
 
             // split the path into sub-elements
-            List elements = CmsStringUtil.splitAsList(path, '/');
+            List<String> elements = CmsStringUtil.splitAsList(path, '/');
             int end = elements.size() - 1;
             for (int i = 0; i <= end; i++) {
                 // remove [i] from path element if required 
-                result.append(removeXpathIndex((String)elements.get(i)));
+                result.append(removeXpathIndex(elements.get(i)));
                 if (i < end) {
                     // append path delimiter if not final path element
                     result.append('/');

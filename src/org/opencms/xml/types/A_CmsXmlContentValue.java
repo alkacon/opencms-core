@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2009/08/20 11:31:34 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2009/08/21 15:09:44 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -178,15 +178,12 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(I_CmsXmlSchemaType obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof I_CmsXmlSchemaType) {
-            return getTypeName().compareTo(((I_CmsXmlSchemaType)obj).getTypeName());
-        }
-        return 0;
+        return getTypeName().compareTo((obj).getTypeName());
     }
 
     /**
@@ -506,11 +503,12 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
      * 
      * @param moveUp if true, move up, otherwise move down
      */
+    @SuppressWarnings("unchecked")
     protected void moveValue(boolean moveUp) {
 
         Element e = getElement();
         Element parent = e.getParent();
-        List siblings = parent.elements();
+        List<Element> siblings = parent.elements();
         int idx = siblings.indexOf(e);
         int newIdx = moveUp ? idx + 1 : idx - 1;
         siblings.remove(idx);

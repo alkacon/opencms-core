@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/08/21 15:09:43 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,7 +77,7 @@ public interface I_CmsXmlDocument {
      * @throws CmsXmlException in case non of the source locales did not exist, 
      *      or the destination locale already exists in the document, or if something else goes wrong
      */
-    void copyLocale(List possibleSources, Locale destination) throws CmsXmlException;
+    void copyLocale(List<Locale> possibleSources, Locale destination) throws CmsXmlException;
 
     /**
      * Copies the content of the given source locale to the given destination locale in this XML document.<p>
@@ -146,7 +146,7 @@ public interface I_CmsXmlDocument {
      * 
      * @return a List of all locales that have at last one value in this XML document
      */
-    List getLocales();
+    List<Locale> getLocales();
 
     /**
      * Returns a List of all locales that have at least one element with the given path in this XML document.<p>
@@ -156,7 +156,7 @@ public interface I_CmsXmlDocument {
      * @param path the path to look up the locale List for
      * @return a List of all locales that have at least one element with the given path in this XML document
      */
-    List getLocales(String path);
+    List<Locale> getLocales(String path);
 
     /**
      * Returns a List of all available elements paths (Strings) used in this document for the given locale.<p>
@@ -168,7 +168,7 @@ public interface I_CmsXmlDocument {
      * 
      * @see #getValues(Locale)
      */
-    List getNames(Locale locale);
+    List<String> getNames(Locale locale);
 
     /**
      * Returns the first content value for the given path as a String,
@@ -237,7 +237,7 @@ public interface I_CmsXmlDocument {
      * 
      * @see #getNames(Locale)
      */
-    List getValues(Locale locale);
+    List<I_CmsXmlContentValue> getValues(Locale locale);
 
     /**
      * Returns all content values (of type {@link I_CmsXmlContentValue}) with the given path
@@ -251,7 +251,7 @@ public interface I_CmsXmlDocument {
      * @return all content values (of type {@link I_CmsXmlContentValue}) with the given path 
      *      available in this document for the given locale
      */
-    List getValues(String path, Locale locale);
+    List<I_CmsXmlContentValue> getValues(String path, Locale locale);
 
     /**
      * Returns <code>true</code> if the given locale exists in this XML document.<p>

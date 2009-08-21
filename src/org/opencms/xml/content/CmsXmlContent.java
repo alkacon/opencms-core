@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2009/08/20 11:31:57 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2009/08/21 15:09:43 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -79,7 +80,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
@@ -255,7 +256,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         }
 
         // read the XML siblings from the parent node
-        List siblings = parentElement.elements(elementName);
+        List<Element> siblings = CmsXmlGenericWrapper.elements(parentElement, elementName);
 
         int insertIndex;
         if (siblings.size() > 0) {
@@ -279,7 +280,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
             // check for offset required to append beyond last position
             int offset = (index == siblings.size()) ? 1 : 0;
             // get the element from the parent at the selected position
-            Element sibling = (Element)siblings.get(index - offset);
+            Element sibling = siblings.get(index - offset);
             // check position of the node in the parent node content
             insertIndex = sibling.getParent().content().indexOf(sibling) + offset;
         } else {
@@ -300,20 +301,20 @@ public class CmsXmlContent extends A_CmsXmlDocument {
             } else {
 
                 // create a list of all element names that should occur before the selected type
-                List previousTypeNames = new ArrayList();
+                List<String> previousTypeNames = new ArrayList<String>();
                 for (int i = 0; i < typeIndex; i++) {
-                    I_CmsXmlSchemaType t = (I_CmsXmlSchemaType)contentDefinition.getTypeSequence().get(i);
+                    I_CmsXmlSchemaType t = contentDefinition.getTypeSequence().get(i);
                     previousTypeNames.add(t.getName());
                 }
 
                 // iterate all elements of the parent node
-                Iterator i = parentElement.content().iterator();
+                Iterator<Node> i = CmsXmlGenericWrapper.content(parentElement).iterator();
                 int pos = 0;
                 while (i.hasNext()) {
-                    Node node = (Node)i.next();
+                    Node node = i.next();
                     if (node instanceof Element) {
                         if (!previousTypeNames.contains(node.getName())) {
-                            // the element name is NOT in the list of names that occure before the selected type, 
+                            // the element name is NOT in the list of names that occurs before the selected type, 
                             // so it must be an element that occurs AFTER the type
                             break;
                         }
@@ -332,7 +333,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
         // return the value instance that was stored in the bookmarks 
         // just returning "newValue" isn't enough since this instance is NOT stored in the bookmarks
-        return (I_CmsXmlContentValue)getBookmark(getBookmarkName(newValue.getPath(), locale));
+        return getBookmark(getBookmarkName(newValue.getPath(), locale));
     }
 
     /**
@@ -343,7 +344,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      * @param elements the set of elements to copy
      * @throws CmsXmlException if something goes wrong
      */
-    public void copyLocale(Locale source, Locale destination, Set elements) throws CmsXmlException {
+    public void copyLocale(Locale source, Locale destination, Set<String> elements) throws CmsXmlException {
 
         if (!hasLocale(source)) {
             throw new CmsXmlException(Messages.get().container(
@@ -358,10 +359,10 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
         Element sourceElement = null;
         Element rootNode = m_document.getRootElement();
-        Iterator i = rootNode.elementIterator();
+        Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(rootNode);
         String localeStr = source.toString();
         while (i.hasNext()) {
-            Element element = (Element)i.next();
+            Element element = i.next();
             String language = element.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE, null);
             if ((language != null) && (localeStr.equals(language))) {
                 // detach node with the locale
@@ -451,7 +452,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         I_CmsXmlContentValue value = getValue(name, locale, index);
 
         // check for the min / max occurs constrains
-        List values = getValues(name, locale);
+        List<I_CmsXmlContentValue> values = getValues(name, locale);
         if (values.size() <= value.getMinOccurs()) {
             // must not allow removing an element if min occurs would be violated
             throw new CmsRuntimeException(Messages.get().container(
@@ -505,20 +506,20 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      * Visits all values of this XML content with the given value visitor.<p>
      * 
      * Please note that the order in which the values are visited may NOT be the
-     * order they apper in the XML document. It is ensured that the the parent 
+     * order they appear in the XML document. It is ensured that the the parent 
      * of a nested value is visited before the element it contains.<p>
      * 
      * @param visitor the value visitor implementation to visit the values with
      */
     public void visitAllValuesWith(I_CmsXmlContentValueVisitor visitor) {
 
-        List bookmarks = new ArrayList(getBookmarks());
+        List<String> bookmarks = new ArrayList<String>(getBookmarks());
         Collections.sort(bookmarks);
 
         for (int i = 0; i < bookmarks.size(); i++) {
 
-            String key = (String)bookmarks.get(i);
-            I_CmsXmlContentValue value = (I_CmsXmlContentValue)getBookmark(key);
+            String key = bookmarks.get(i);
+            I_CmsXmlContentValue value = getBookmark(key);
             visitor.visit(value);
         }
     }
@@ -527,7 +528,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      * @see org.opencms.xml.A_CmsXmlDocument#getBookmark(java.lang.String)
      */
     @Override
-    protected Object getBookmark(String bookmark) {
+    protected I_CmsXmlContentValue getBookmark(String bookmark) {
 
         // allows package classes to directly access the bookmark information of the XML content 
         return super.getBookmark(bookmark);
@@ -537,7 +538,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      * @see org.opencms.xml.A_CmsXmlDocument#getBookmarks()
      */
     @Override
-    protected Set getBookmarks() {
+    protected Set<String> getBookmarks() {
 
         // allows package classes to directly access the bookmark information of the XML content 
         return super.getBookmarks();
@@ -555,9 +556,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     protected Element getLocaleNode(Locale locale) throws CmsRuntimeException {
 
         String localeStr = locale.toString();
-        Iterator i = m_document.getRootElement().elements().iterator();
+        Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement());
         while (i.hasNext()) {
-            Element element = (Element)i.next();
+            Element element = i.next();
             if (localeStr.equals(element.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE))) {
                 // language element found, return it
                 return element;
@@ -597,14 +598,14 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         m_document = document;
         m_contentDefinition = definition;
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
-        m_elementLocales = new HashMap();
-        m_elementNames = new HashMap();
-        m_locales = new HashSet();
+        m_elementLocales = new HashMap<String, Set<Locale>>();
+        m_elementNames = new HashMap<Locale, Set<String>>();
+        m_locales = new HashSet<Locale>();
         clearBookmarks();
 
         // initialize the bookmarks
-        for (Iterator i = m_document.getRootElement().elementIterator(); i.hasNext();) {
-            Element node = (Element)i.next();
+        for (Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement()); i.hasNext();) {
+            Element node = i.next();
             try {
                 Locale locale = CmsLocaleManager.getLocale(node.attribute(
                     CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
@@ -651,7 +652,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         // detatch the XML element from the appended position in order to insert it at the required position
         element.detach();
         // add the XML element at the required position in the parent XML node 
-        parent.content().add(insertIndex, element);
+        CmsXmlGenericWrapper.content(parent).add(insertIndex, element);
         // create the type and return it
         I_CmsXmlContentValue value = type.createValue(this, element, locale);
         // generate the default value again - required for nested mappings because only now the full path is available  
@@ -713,9 +714,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         String previousName = null;
 
         // first remove all non-element node (i.e. white space text nodes)
-        List content = root.content();
+        List<Node> content = CmsXmlGenericWrapper.content(root);
         for (int i = content.size() - 1; i >= 0; i--) {
-            Node node = (Node)content.get(i);
+            Node node = content.get(i);
             if (!(node instanceof Element)) {
                 // this node is not an element, so it must be a white space text node, remove it
                 content.remove(i);
@@ -723,7 +724,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         }
 
         // iterate all elements again
-        for (Iterator i = root.content().iterator(); i.hasNext();) {
+        for (Iterator<Node> i = CmsXmlGenericWrapper.content(root).iterator(); i.hasNext();) {
 
             // node must be an element since all non-elements were removed
             Element element = (Element)i.next();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/08/21 15:09:43 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,14 +55,14 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsXmlContentHandler {
 
     /** List of all allowed attribute mapping names, for fast lookup. */
-    List ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(new String[] {"datereleased", "dateexpired"}));
+    List<String> ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(new String[] {"datereleased", "dateexpired"}));
 
     /** Prefix for attribute mappings. */
     String MAPTO_ATTRIBUTE = "attribute:";
@@ -176,7 +176,7 @@ public interface I_CmsXmlContentHandler {
      * 
      * @return the tabs to be displayed in the editor
      */
-    List getTabs();
+    List<CmsXmlContentTab> getTabs();
 
     /**
      * Initializes this content handler for the given XML content definition by

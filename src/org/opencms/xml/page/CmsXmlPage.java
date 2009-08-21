@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2009/08/20 11:31:56 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2009/08/21 15:09:44 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,6 +46,7 @@ import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContentErrorHandler;
 import org.opencms.xml.types.CmsXmlHtmlValue;
@@ -82,7 +83,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -205,8 +206,8 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         Element page = null;
 
         // search if a page for the selected language is already available
-        for (Iterator i = pages.elementIterator(NODE_PAGE); i.hasNext();) {
-            Element nextPage = (Element)i.next();
+        for (Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(pages, NODE_PAGE); i.hasNext();) {
+            Element nextPage = i.next();
             String language = nextPage.attributeValue(ATTRIBUTE_LANGUAGE);
             if (localeStr.equals(language)) {
                 // a page for the selected language was found
@@ -299,19 +300,19 @@ public class CmsXmlPage extends A_CmsXmlDocument {
      * @see org.opencms.xml.A_CmsXmlDocument#getNames(java.util.Locale)
      */
     @Override
-    public List getNames(Locale locale) {
+    public List<String> getNames(Locale locale) {
 
-        Object o = m_elementNames.get(locale);
-        if (o != null) {
-            List result = new ArrayList(8);
-            Iterator i = ((Set)o).iterator();
+        Set<String> sn = m_elementNames.get(locale);
+        if (sn != null) {
+            List<String> result = new ArrayList<String>();
+            Iterator<String> i = sn.iterator();
             while (i.hasNext()) {
-                String path = (String)i.next();
+                String path = i.next();
                 result.add(CmsXmlUtils.removeXpathIndex(path));
             }
             return result;
         }
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 
     /**
@@ -467,9 +468,9 @@ public class CmsXmlPage extends A_CmsXmlDocument {
 
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
         m_document = document;
-        m_elementLocales = new HashMap();
-        m_elementNames = new HashMap();
-        m_locales = new HashSet();
+        m_elementLocales = new HashMap<String, Set<Locale>>();
+        m_elementNames = new HashMap<Locale, Set<String>>();
+        m_locales = new HashSet<Locale>();
 
         // convert pre 5.3.6 XML page documents
         if (!NODE_PAGES.equals(m_document.getRootElement().getName())) {
@@ -480,13 +481,13 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         clearBookmarks();
         Element pages = m_document.getRootElement();
         try {
-            for (Iterator i = pages.elementIterator(NODE_PAGE); i.hasNext();) {
+            for (Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(pages, NODE_PAGE); i.hasNext();) {
 
-                Element page = (Element)i.next();
+                Element page = i.next();
                 Locale locale = CmsLocaleManager.getLocale(page.attributeValue(ATTRIBUTE_LANGUAGE));
-                for (Iterator j = page.elementIterator(NODE_ELEMENT); j.hasNext();) {
+                for (Iterator<Element> j = CmsXmlGenericWrapper.elementIterator(page, NODE_ELEMENT); j.hasNext();) {
 
-                    Element element = (Element)j.next();
+                    Element element = j.next();
                     String name = element.attributeValue(ATTRIBUTE_NAME);
 
                     String elementEnabled = element.attributeValue(ATTRIBUTE_ENABLED);
@@ -537,25 +538,26 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
         root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, XMLPAGE_XSD_SYSTEM_ID);
 
-        Map pages = new HashMap();
+        Map<String, Element> pages = new HashMap<String, Element>();
 
-        if (m_document.getRootElement() != null && m_document.getRootElement().element(NODE_ELEMENTS) != null) {
-            for (Iterator i = m_document.getRootElement().element(NODE_ELEMENTS).elementIterator(NODE_ELEMENT); i.hasNext();) {
-    
-                Element elem = (Element)i.next();
+        if ((m_document.getRootElement() != null) && (m_document.getRootElement().element(NODE_ELEMENTS) != null)) {
+            for (Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement().element(
+                NODE_ELEMENTS), NODE_ELEMENT); i.hasNext();) {
+
+                Element elem = i.next();
                 try {
                     String elementName = elem.attributeValue(ATTRIBUTE_NAME);
                     String elementLang = elem.attributeValue(ATTRIBUTE_LANGUAGE);
                     String elementEnabled = elem.attributeValue(ATTRIBUTE_ENABLED);
                     boolean enabled = (elementEnabled == null) ? true : Boolean.valueOf(elementEnabled).booleanValue();
-    
-                    Element page = (Element)pages.get(elementLang);
+
+                    Element page = pages.get(elementLang);
                     if (page == null) {
                         // no page available for the language, add one
                         page = root.addElement(NODE_PAGE).addAttribute(ATTRIBUTE_LANGUAGE, elementLang);
                         pages.put(elementLang, page);
                     }
-    
+
                     Element newElement = page.addElement(NODE_ELEMENT).addAttribute(ATTRIBUTE_NAME, elementName);
                     if (!enabled) {
                         newElement.addAttribute(ATTRIBUTE_ENABLED, String.valueOf(enabled));
@@ -568,7 +570,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                     if (content != null) {
                         newElement.add(content.createCopy());
                     }
-    
+
                 } catch (NullPointerException e) {
                     LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_PAGE_CONVERT_CONTENT_0), e);
                 }

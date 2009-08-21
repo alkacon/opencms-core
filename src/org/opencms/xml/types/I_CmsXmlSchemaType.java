@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/08/21 15:09:44 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,13 +59,13 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
  */
-public interface I_CmsXmlSchemaType extends Comparable {
+public interface I_CmsXmlSchemaType extends Comparable<I_CmsXmlSchemaType> {
 
     /** The schema instance namespace. */
     Namespace XSI_NAMESPACE = Namespace.get("xsi", "http://www.w3.org/2001/XMLSchema-instance");

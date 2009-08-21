@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueSequence.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/08/21 15:09:44 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,7 +63,7 @@ public class CmsXmlContentValueSequence {
     private I_CmsXmlSchemaType m_schemaType;
 
     /** The list of XML content values for the selected schema type and locale in the XML content. */
-    private List m_values;
+    private List<I_CmsXmlContentValue> m_values;
 
     /**
      * Generates a new content sequence element from the given type, content and content definition.<p>
@@ -184,7 +184,7 @@ public class CmsXmlContentValueSequence {
      */
     public I_CmsXmlContentValue getValue(int index) {
 
-        return (I_CmsXmlContentValue)m_values.get(index);
+        return m_values.get(index);
     }
 
     /**
@@ -194,7 +194,7 @@ public class CmsXmlContentValueSequence {
      * 
      * @see CmsXmlContentValueSequence#getValue(int)
      */
-    public List getValues() {
+    public List<I_CmsXmlContentValue> getValues() {
 
         return m_values;
     }

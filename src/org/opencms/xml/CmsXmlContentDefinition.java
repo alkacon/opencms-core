@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2009/08/20 11:31:45 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2009/08/21 15:09:43 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,12 +150,12 @@ public class CmsXmlContentDefinition implements Cloneable {
     private I_CmsXmlContentHandler m_contentHandler;
 
     /** The set of included additional XML content definitions. */
-    private Set m_includes;
+    private Set<CmsXmlContentDefinition> m_includes;
 
     /** The inner element name of the content definition (type sequence). */
     private String m_innerName;
 
-    /** The outer element name of the content definition (languange sequence). */
+    /** The outer element name of the content definition (language sequence). */
     private String m_outerName;
 
     /** The location from which the XML schema was read (XML system id). */
@@ -165,10 +165,10 @@ public class CmsXmlContentDefinition implements Cloneable {
     private String m_typeName;
 
     /** The Map of configured types. */
-    private Map m_types;
+    private Map<String, I_CmsXmlSchemaType> m_types;
 
     /** The type sequence. */
-    private List m_typeSequence;
+    private List<I_CmsXmlSchemaType> m_typeSequence;
 
     /** The XML document from which the schema was unmarshalled. */
     private Document m_schemaDocument;
@@ -181,6 +181,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public CmsXmlContentDefinition(String innerName, String schemaLocation) {
 
+        // TODO: this constructor can be removed or made 'protected', schemas should be only created from files   
         this(innerName + "s", innerName, schemaLocation);
     }
 
@@ -193,12 +194,13 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public CmsXmlContentDefinition(String outerName, String innerName, String schemaLocation) {
 
+        // TODO: this constructor can be removed or made 'protected', schemas should be only created from files   
         m_outerName = outerName;
         m_innerName = innerName;
         setInnerName(innerName);
-        m_typeSequence = new ArrayList();
-        m_types = new HashMap();
-        m_includes = new HashSet();
+        m_typeSequence = new ArrayList<I_CmsXmlSchemaType>();
+        m_types = new HashMap<String, I_CmsXmlSchemaType>();
+        m_includes = new HashSet<CmsXmlContentDefinition>();
         m_schemaLocation = schemaLocation;
         m_contentHandler = new CmsDefaultXmlContentHandler();
     }
@@ -448,8 +450,6 @@ public class CmsXmlContentDefinition implements Cloneable {
                 new Integer(element.attributeCount())));
         }
 
-        List attributes = element.attributes();
-
         for (int i = 0; i < requiredAttributes.length; i++) {
             String attributeName = requiredAttributes[i];
             if (element.attribute(attributeName) == null) {
@@ -460,10 +460,10 @@ public class CmsXmlContentDefinition implements Cloneable {
             }
         }
 
-        List rA = Arrays.asList(requiredAttributes);
-        List oA = Arrays.asList(optionalAttributes);
+        List<String> rA = Arrays.asList(requiredAttributes);
+        List<String> oA = Arrays.asList(optionalAttributes);
 
-        for (int i = 0; i < attributes.size(); i++) {
+        for (int i = 0; i < element.attributes().size(); i++) {
             String attributeName = element.attribute(i).getName();
             if (!rA.contains(attributeName) && !oA.contains(attributeName)) {
                 throw new CmsXmlException(Messages.get().container(
@@ -484,15 +484,16 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * @throws CmsXmlException if the validation fails
      */
-    protected static CmsXmlComplexTypeSequence validateComplexTypeSequence(Element element, Set includes)
-    throws CmsXmlException {
+    protected static CmsXmlComplexTypeSequence validateComplexTypeSequence(
+        Element element,
+        Set<CmsXmlContentDefinition> includes) throws CmsXmlException {
 
         validateAttributesExists(element, new String[] {XSD_ATTRIBUTE_NAME}, new String[0]);
 
         String name = validateAttribute(element, XSD_ATTRIBUTE_NAME, null);
 
         // now check the type definition list
-        List mainElements = element.elements();
+        List<Element> mainElements = CmsXmlGenericWrapper.elements(element);
         if ((mainElements.size() != 1) && (mainElements.size() != 2)) {
             throw new CmsXmlException(Messages.get().container(
                 Messages.ERR_TS_SUBELEMENT_COUNT_2,
@@ -504,7 +505,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         if (mainElements.size() == 2) {
             // two elements in the master list: the second must be the "language" attribute definition
 
-            Element typeAttribute = (Element)mainElements.get(1);
+            Element typeAttribute = mainElements.get(1);
             if (!XSD_NODE_ATTRIBUTE.equals(typeAttribute.getQName())) {
                 throw new CmsXmlException(Messages.get().container(
                     Messages.ERR_CD_ELEMENT_NAME_3,
@@ -524,7 +525,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         }
 
         // check the main element type sequence
-        Element typeSequence = (Element)mainElements.get(0);
+        Element typeSequence = mainElements.get(0);
         if (!XSD_NODE_SEQUENCE.equals(typeSequence.getQName())) {
             throw new CmsXmlException(Messages.get().container(
                 Messages.ERR_CD_ELEMENT_NAME_3,
@@ -534,7 +535,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         }
 
         // check the type definition sequence
-        List typeSequenceElements = typeSequence.elements();
+        List<Element> typeSequenceElements = CmsXmlGenericWrapper.elements(typeSequence);
         if (typeSequenceElements.size() < 1) {
             throw new CmsXmlException(Messages.get().container(
                 Messages.ERR_TS_SUBELEMENT_TOOFEW_3,
@@ -544,20 +545,20 @@ public class CmsXmlContentDefinition implements Cloneable {
         }
 
         // now add all type definitions from the schema
-        List sequence = new ArrayList();
+        List<I_CmsXmlSchemaType> sequence = new ArrayList<I_CmsXmlSchemaType>();
 
         if (hasLanguageAttribute) {
             // only generate types for sequence node with language attribute
 
             CmsXmlContentTypeManager typeManager = OpenCms.getXmlContentTypeManager();
-            Iterator i = typeSequenceElements.iterator();
+            Iterator<Element> i = typeSequenceElements.iterator();
             while (i.hasNext()) {
-                sequence.add(typeManager.getContentType((Element)i.next(), includes));
+                sequence.add(typeManager.getContentType(i.next(), includes));
             }
         } else {
             // generate a nested content definition for the main type sequence
 
-            Element e = (Element)typeSequenceElements.get(0);
+            Element e = typeSequenceElements.get(0);
             String typeName = validateAttribute(e, XSD_ATTRIBUTE_NAME, null);
             String minOccurs = validateAttribute(e, XSD_ATTRIBUTE_MIN_OCCURS, XSD_ATTRIBUTE_VALUE_ZERO);
             String maxOccurs = validateAttribute(e, XSD_ATTRIBUTE_MAX_OCCURS, XSD_ATTRIBUTE_VALUE_UNBOUNDED);
@@ -616,13 +617,13 @@ public class CmsXmlContentDefinition implements Cloneable {
             throw new CmsXmlException(Messages.get().container(Messages.ERR_CD_NO_SCHEMA_NODE_0));
         }
 
-        List includes = root.elements(XSD_NODE_INCLUDE);
+        List<Element> includes = CmsXmlGenericWrapper.elements(root, XSD_NODE_INCLUDE);
         if (includes.size() < 1) {
             // one include is required
             throw new CmsXmlException(Messages.get().container(Messages.ERR_CD_ONE_INCLUDE_REQUIRED_0));
         }
 
-        Element include = (Element)includes.get(0);
+        Element include = includes.get(0);
         String target = validateAttribute(include, XSD_ATTRIBUTE_SCHEMA_LOCATION, null);
         if (!XSD_INCLUDE_OPENCMS.equals(target)) {
             // the first include must point to the default OpenCms standard schema include
@@ -632,12 +633,12 @@ public class CmsXmlContentDefinition implements Cloneable {
                 target));
         }
 
-        Set nestedDefinitions = new HashSet();
+        Set<CmsXmlContentDefinition> nestedDefinitions = new HashSet<CmsXmlContentDefinition>();
         if (includes.size() > 1) {
             // resolve additional, nested include calls
             for (int i = 1; i < includes.size(); i++) {
 
-                Element inc = (Element)includes.get(i);
+                Element inc = includes.get(i);
                 String schemaLoc = validateAttribute(inc, XSD_ATTRIBUTE_SCHEMA_LOCATION, null);
                 InputSource source = null;
                 try {
@@ -650,7 +651,7 @@ public class CmsXmlContentDefinition implements Cloneable {
             }
         }
 
-        List elements = root.elements(XSD_NODE_ELEMENT);
+        List<Element> elements = CmsXmlGenericWrapper.elements(root, XSD_NODE_ELEMENT);
         if (elements.size() != 1) {
             // only one root element is allowed
             throw new CmsXmlException(Messages.get().container(
@@ -660,11 +661,11 @@ public class CmsXmlContentDefinition implements Cloneable {
         }
 
         // collect the data from the root element node
-        Element main = (Element)elements.get(0);
+        Element main = elements.get(0);
         String name = validateAttribute(main, XSD_ATTRIBUTE_NAME, null);
 
         // now process the complex types
-        List complexTypes = root.elements(XSD_NODE_COMPLEXTYPE);
+        List<Element> complexTypes = CmsXmlGenericWrapper.elements(root, XSD_NODE_COMPLEXTYPE);
         if (complexTypes.size() != 2) {
             // exactly two complex types are required
             throw new CmsXmlException(Messages.get().container(
@@ -680,48 +681,48 @@ public class CmsXmlContentDefinition implements Cloneable {
         // set the schema document
         result.m_schemaDocument = document;
 
-        List complexTypeData = new ArrayList();
-        Iterator ct = complexTypes.iterator();
+        List<CmsXmlComplexTypeSequence> complexTypeData = new ArrayList<CmsXmlComplexTypeSequence>();
+        Iterator<Element> ct = complexTypes.iterator();
         while (ct.hasNext()) {
-            Element e = (Element)ct.next();
+            Element e = ct.next();
             CmsXmlComplexTypeSequence sequence = validateComplexTypeSequence(e, nestedDefinitions);
             complexTypeData.add(sequence);
         }
 
         // get the outer element sequence, this must be the first element 
-        CmsXmlComplexTypeSequence outerSequence = (CmsXmlComplexTypeSequence)complexTypeData.get(0);
-        CmsXmlNestedContentDefinition outer = (CmsXmlNestedContentDefinition)outerSequence.m_sequence.get(0);
+        CmsXmlComplexTypeSequence outerSequence = complexTypeData.get(0);
+        CmsXmlNestedContentDefinition outer = (CmsXmlNestedContentDefinition)outerSequence.getSequence().get(0);
 
         // make sure the inner and outer element names are as required
         String outerTypeName = createTypeName(name);
         String innerTypeName = createTypeName(outer.getName());
-        validateAttribute((Element)complexTypes.get(0), XSD_ATTRIBUTE_NAME, outerTypeName);
-        validateAttribute((Element)complexTypes.get(1), XSD_ATTRIBUTE_NAME, innerTypeName);
+        validateAttribute(complexTypes.get(0), XSD_ATTRIBUTE_NAME, outerTypeName);
+        validateAttribute(complexTypes.get(1), XSD_ATTRIBUTE_NAME, innerTypeName);
         validateAttribute(main, XSD_ATTRIBUTE_TYPE, outerTypeName);
 
         // the inner name is the element name set in the outer sequence
         result.setInnerName(outer.getName());
 
         // get the inner element sequence, this must be the second element 
-        CmsXmlComplexTypeSequence innerSequence = (CmsXmlComplexTypeSequence)complexTypeData.get(1);
+        CmsXmlComplexTypeSequence innerSequence = complexTypeData.get(1);
 
         // add the types from the main sequence node
-        Iterator it = innerSequence.m_sequence.iterator();
+        Iterator<I_CmsXmlSchemaType> it = innerSequence.getSequence().iterator();
         while (it.hasNext()) {
-            result.addType((I_CmsXmlSchemaType)it.next());
+            result.addType(it.next());
         }
 
         // resolve the XML content handler information
-        List annotations = root.elements(XSD_NODE_ANNOTATION);
+        List<Element> annotations = CmsXmlGenericWrapper.elements(root, XSD_NODE_ANNOTATION);
         I_CmsXmlContentHandler contentHandler = null;
         Element appInfoElement = null;
 
         if (annotations.size() > 0) {
-            List appinfos = ((Element)annotations.get(0)).elements(XSD_NODE_APPINFO);
+            List<Element> appinfos = CmsXmlGenericWrapper.elements(annotations.get(0), XSD_NODE_APPINFO);
 
             if (appinfos.size() > 0) {
                 // the first appinfo node contains the specific XML content data 
-                appInfoElement = (Element)appinfos.get(0);
+                appInfoElement = appinfos.get(0);
 
                 // check for a special content handler in the appinfo node
                 Element handlerElement = appInfoElement.element("handler");
@@ -758,7 +759,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     /**
      * Adds the missing default XML according to this content definition to the given document element.<p>  
      * 
-     * In case the root element already contains subnodes, only missing subnodes are added.<p>
+     * In case the root element already contains sub nodes, only missing sub nodes are added.<p>
      * 
      * @param cms the current users OpenCms context
      * @param document the document where the XML is added in (required for default XML generation)
@@ -769,16 +770,16 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public Element addDefaultXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
 
-        Iterator i = m_typeSequence.iterator();
+        Iterator<I_CmsXmlSchemaType> i = m_typeSequence.iterator();
         int currentPos = 0;
-        List allElements = root.elements();
+        List<Element> allElements = CmsXmlGenericWrapper.elements(root);
 
         while (i.hasNext()) {
-            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
+            I_CmsXmlSchemaType type = i.next();
 
             // check how many elements of this type already exist in the XML
             String elementName = type.getName();
-            List elements = root.elements(elementName);
+            List<Element> elements = CmsXmlGenericWrapper.elements(root, elementName);
 
             currentPos += elements.size();
             for (int j = elements.size(); j < type.getMinOccurs(); j++) {
@@ -870,9 +871,9 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public Element createDefaultXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
 
-        Iterator i = m_typeSequence.iterator();
+        Iterator<I_CmsXmlSchemaType> i = m_typeSequence.iterator();
         while (i.hasNext()) {
-            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
+            I_CmsXmlSchemaType type = i.next();
             for (int j = 0; j < type.getMinOccurs(); j++) {
                 Element typeElement = type.generateXml(cms, document, root, locale);
                 // need to check for default value again because of the appinfo "mappings" node
@@ -982,7 +983,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * @return the set of nested (included) XML content definitions
      */
-    public Set getIncludes() {
+    public Set<CmsXmlContentDefinition> getIncludes() {
 
         return m_includes;
     }
@@ -1025,9 +1026,9 @@ public class CmsXmlContentDefinition implements Cloneable {
             include.addAttribute(XSD_ATTRIBUTE_SCHEMA_LOCATION, XSD_INCLUDE_OPENCMS);
 
             if (m_includes.size() > 0) {
-                Iterator i = m_includes.iterator();
+                Iterator<CmsXmlContentDefinition> i = m_includes.iterator();
                 while (i.hasNext()) {
-                    CmsXmlContentDefinition definition = (CmsXmlContentDefinition)i.next();
+                    CmsXmlContentDefinition definition = i.next();
                     root.addElement(XSD_NODE_INCLUDE).addAttribute(
                         XSD_ATTRIBUTE_SCHEMA_LOCATION,
                         definition.m_schemaLocation);
@@ -1056,9 +1057,9 @@ public class CmsXmlContentDefinition implements Cloneable {
 
             Element mainSequence = main.addElement(XSD_NODE_SEQUENCE);
 
-            Iterator i = m_typeSequence.iterator();
+            Iterator<I_CmsXmlSchemaType> i = m_typeSequence.iterator();
             while (i.hasNext()) {
-                I_CmsXmlSchemaType schemaType = (I_CmsXmlSchemaType)i.next();
+                I_CmsXmlSchemaType schemaType = i.next();
                 schemaType.appendXmlSchema(mainSequence);
             }
 
@@ -1094,7 +1095,7 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         String path = CmsXmlUtils.getFirstXpathElement(elementPath);
 
-        I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)m_types.get(path);
+        I_CmsXmlSchemaType type = m_types.get(path);
         if (type == null) {
             // no node with the given path defined in schema
             return null;
@@ -1117,7 +1118,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * @return the internal set of schema type names
      */
-    public Set getSchemaTypes() {
+    public Set<String> getSchemaTypes() {
 
         return m_types.keySet();
     }
@@ -1137,7 +1138,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      *
      * @return the type sequence, contains instances of {@link I_CmsXmlSchemaType}
      */
-    public List getTypeSequence() {
+    public List<I_CmsXmlSchemaType> getTypeSequence() {
 
         return m_typeSequence;
     }
