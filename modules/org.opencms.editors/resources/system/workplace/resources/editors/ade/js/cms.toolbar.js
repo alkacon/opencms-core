@@ -93,8 +93,9 @@
        timer.id=setTimeout("cms.toolbar.showAddButtons()", 1000);
        timer.handleDiv=handleDiv;
        timer.adeMode=adeMode;
-  }     
-
+       
+   }
+   
    var showAddButtons = cms.toolbar.showAddButtons = function(){
        timer.id = null;
        timer.handleDiv.addClass('ui-widget-header').css({'width': '72px', 'right': '-48px'}).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
@@ -120,9 +121,9 @@
          // enabling edit mode
          $(sortitems).each(function() {
             var elem = $(this).css('position', 'relative');
-            var elemId = elem.attr('rel');
-            if (elemId && cms.data.elements[elemId]) {
-               if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
+                var elemId=elem.attr('rel');
+                if (elemId && cms.data.elements[elemId]){
+                    if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked){
                         var handleDiv=$('<div class="cms-handle"></div>').appendTo(elem).hover(function(){
                             cms.move.hoverIn(elem, 2);
                             startHoverTimeout(handleDiv, 'edit');
@@ -130,18 +131,19 @@
                             stopHover();
                         });
                         $('<a class="cms-edit"></a>').appendTo(handleDiv).click(function(){
-                     openEditDialog(elemId);
-                  });
+                            openEditDialog(elemId);
+                        });
                         $('<a class="cms-move"></a>').css('display', 'none').appendTo(handleDiv);
                         $('<a class="cms-delete"></a>').css('display', 'none').appendTo(handleDiv).click(deleteItem);
                         handleDiv.css({
                             'left': handleDiv.position().left,
                             'width': 24
                         });
-               } else {
-                              // Append edit-locked-handle
-               }
-            }
+                    }else{
+                    // Append edit-locked-handle
+                    }
+
+                }
             
          });
          button.addClass('ui-state-active');
@@ -212,57 +214,58 @@
    
     var openEditDialog = cms.toolbar.openEditDialog = function(){
         var elemId=$(this).closest('.cms-element').attr('rel');
-      if (elemId && cms.data.elements[elemId]) {
-         if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
+        if (elemId && cms.data.elements[elemId]) {
+            if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
             var element = cms.data.elements[elemId];
             var isNew = element.status == cms.data.STATUS_NEW;
             var _openDialog = function(path, id, afterClose) {
-               var dialogWidth = self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
-               dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
-               var dialogHeight = self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
-               var iFrameHeight = dialogHeight - 126;
+                var dialogWidth=self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
+                dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
+                var dialogHeight=self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
+                var iFrameHeight=dialogHeight - 126;
                cms.data.BACKLINK_URL = cms.data.BACKLINK_URL.replace("/opencms/opencms", "");
                var editorLink = cms.data.EDITOR_URL + '?resource=' + path + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
-               var editorFrame = '<iframe style="border:none; width:100%; height:' + iFrameHeight + 'px;" name="cmsAdvancedDirectEditor" src="' + editorLink + '"></iframe>';
-               var editorDialog = $('#cms-editor');
-               if (!editorDialog.length) {
+                var editorFrame='<iframe style="border:none; width:100%; height:'+iFrameHeight+'px;" name="cmsAdvancedDirectEditor" src="'+editorLink+'"></iframe>';
+                var editorDialog=$('#cms-editor');
+                if (!editorDialog.length){
                   editorDialog = $('<div id="cms-editor"  rel="' + id + '"></div>').appendTo(document.body);
-               } else {
+                }else{
                   editorDialog.empty().attr('rel', id);
-               }
-               
-               
+                }
+                
+                
                editorDialog.append('<div class="cms-editor-subtitle">Resource: ' + path + '</div>').append(editorFrame);
-               editorDialog.dialog({
-                  width: dialogWidth - 50,
-                  height: dialogHeight - 60,
-                  title: "Editor",
-                  modal: true,
-                  autoOpen: true,
-                  closeOnEscape: false,
-                  draggable: true,
-                  resizable: true,
-                  resize: function(event, ui) {
-                     $('#cms-editor iframe').height(ui.size.height - 70);
-                  },
-                  resizeStop: function(event, ui) {
-                     $('#cms-editor iframe').height(ui.size.height - 70);
-                  },
-                  position: ['center', -20],
-                  open: function(event, ui) {
-                     $('a.ui-dialog-titlebar-close').hide();
-                  },
-                  close: function() {
-                     $('#toolbar button.ui-state-active[name!="Edit"]').trigger('click');
-                     editorDialog.empty().dialog('destroy');
+                editorDialog.dialog( {
+        			width :dialogWidth-50,
+                    height : dialogHeight - 60,
+        			title :"Editor",
+        			modal :true,
+        			autoOpen :true,
+                    closeOnEscape : false,
+        			draggable :true,
+        			resizable :true,
+                    resize : function(event, ui){
+                        $('#cms-editor iframe').height(ui.size.height-70);
+                    },
+                    resizeStop : function(event, ui){
+                        $('#cms-editor iframe').height(ui.size.height-70);
+                    },
+        			position : [ 'center', -20 ],
+                    open : function(event, ui){
+                        $('#cms_appendbox').css('z-index', 10005).append(editorDialog.parent());
+                        $('a.ui-dialog-titlebar-close').hide();
+                    },
+        			close : function() {
+        				$('#toolbar button.ui-state-active[name!="Edit"]').trigger('click');
+                        editorDialog.empty().dialog('destroy');
                      cms.data.reloadElement(id, function() {
                          var activeButton = $("#toolbar button.ui-state-active");
                          toggleMode.apply(activeButton.get(0))
                          toggleMode.apply(activeButton.get(0))
                      });
-                  },
-                  zIndex: 10000
-               });
+        			},
+        			zIndex :10000
+        		});
             }
             if (element.status == cms.data.STATUS_NEW) {
                cms.data.createResource(element.type, function(path, id) {
@@ -280,9 +283,9 @@
                
             }
          }
-      }
-   }
-   
+        }
+    }
+
    var removeToolbar = cms.toolbar.removeToolbar = function() {
       $('#toolbar').remove();
       $(document.body).css('margin-top', oldBodyMarginTop + 'px');
@@ -316,7 +319,7 @@
       return false;
    };
    
-   
+      
    var addToolbar = cms.toolbar.addToolbar = function() {
       $(window).unload(onUnload);
       initSaveDialog();
@@ -327,9 +330,9 @@
       bodyEl.append(cms.html.createMenu(cms.html.favoriteMenuId));
       bodyEl.append(cms.html.createMenu(cms.html.newMenuId));
       bodyEl.append(cms.html.favoriteDialog);
-      
+      bodyEl.append('<div id="cms_appendbox"></div>');
       bodyEl.append(cms.html.createMenu(cms.html.recentMenuId));
-      resetFavList();
+	  resetFavList();
       bodyEl.append('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>');
       $('#show-button').click(toggleToolbar);
       $('#toolbar button[name="Edit"], #toolbar button[name="Move"], #toolbar button[name="Delete"]').click(toggleMode);
@@ -340,7 +343,7 @@
          toggleList(this, cms.html.favoriteMenuId);
       });
       
-      $('button[name="Save"]').click(showSaveDialog).hide();
+      $('button[name="Save"]').click(showSaveDialog);
       
       $('button[name="Recent"]').click(function() {
          toggleList(this, cms.html.recentMenuId);
@@ -350,7 +353,9 @@
          toggleList(this, cms.html.newMenuId);
       });
       $('#toolbar button, #show-button').mouseover(function() {
-         $(this).addClass('ui-state-hover');
+         if (!$(this).hasClass('cms-deactivated')){
+             $(this).addClass('ui-state-hover');
+         }
       }).mouseout(function() {
          $(this).removeClass('ui-state-hover');
       });
@@ -361,8 +366,7 @@
       initFavDialog();
       resetNewList();
    };
-   
-   
+      
    
    var destroyMove=function(){
        var containerSelector=cms.util.getContainerSelector();
@@ -397,7 +401,7 @@
             opacity: 0.6
        });
          
-       $(containerSelector).children('.cms-element:visible').css('position', 'relative');
+       $(containerSelector).css('position', 'relative');
        $(containerSelector + ', #' + cms.html.favoriteListId).sortable({
             connectWith: containerSelector + ', #' + cms.html.favoriteListId,
             placeholder: 'cms-placeholder',
@@ -406,8 +410,12 @@
             beforeStop: cms.move.beforeStopFunction,
             over: cms.move.overAdd,
             out: cms.move.outAdd,
+            change: function(event, ui){
+                cms.move.hoverOut(ui.helper.parent());
+                cms.move.hoverInner(ui.helper.parent(), 2, true);
+            },
             tolerance: 'pointer',
-            opacity: 0.7,
+ //           opacity: 0.7,
             stop: cms.move.stopAdd,
             cursorAt: {
                right: 10,
@@ -420,9 +428,9 @@
             deactivate: function(event, ui) {
                $('#' + cms.html.favoriteListId + ' li').hide(200);
                $('#' + cms.html.favoriteMenuId).css('visibility', 'hidden');
-               //$('a.cms-move').show();
+               $('.cms-handle').show();
                if ($.browser.msie) {
-                  setTimeout("$('.cms-element').css('display','block')", 10);
+                  setTimeout("$('.cms-element').css('display','block')", 50);
                }
             }
          });
@@ -430,7 +438,7 @@
    
    var toggleMove = cms.toolbar.toggleMove = function(el) {
       var button = $(this);
-      var containerSelector = cms.util.getContainerSelector();
+      var containerSelector=cms.util.getContainerSelector();
       if (button.hasClass('ui-state-active')) {
          // disabling move-mode
          $(containerSelector + ', #' + cms.html.favoriteListId).sortable('destroy');
@@ -439,7 +447,7 @@
          list.css('display', 'none');
          list.get(0).style.visibility = '';
          $('#' + cms.html.favoriteListId).get(0).style.height = '';
-         resetFavList();
+			resetFavList();
          $('a.cms-move').remove();
          button.removeClass('ui-state-active');
       } else {
@@ -447,23 +455,29 @@
          // enabling move mode
          $(containerSelector).children('.cms-element:visible').each(
 			function() {
-            var elem = $(this).css('position', 'relative');
-            if (elem.hasClass('cms-subcontainer') && (/left|right/).test(elem.css('float'))) {
-               var pos = cms.util.getElementPosition(elem);
-               var dimensions = cms.util.getInnerDimensions(elem, 1);
-               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
-                  cms.move.hoverInner(elem, 2, false);
-               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd).css('left', dimensions.left - pos.left + dimensions.width - 20);
-            } else {
-               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
-                  if (elem.hasClass('cms-subcontainer')) {
-                     cms.move.hoverInner(elem, 2, false);
-                  } else {
-                     cms.move.hoverIn(elem, 2);
-                  }
-               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd);
-            }
-            
+                var elem = $(this).css('position', 'relative');
+                        if (elem.hasClass('cms-subcontainer') && (/left|right/).test(elem.css('float'))) {
+                            var pos = cms.util.getElementPosition(elem);
+                            var dimensions = cms.util.getInnerDimensions(elem, 1);
+                            $('<a class="cms-handle cms-move"></a>')
+                                .appendTo(elem).hover(function() {
+                                    cms.move.hoverInner(elem, 2, false);
+                                }, cms.move.hoverOut)
+                                .mousedown(cms.move.movePreparation)
+                                .mouseup(cms.move.moveEnd)
+                                .css('left', dimensions.left - pos.left + dimensions.width - 20);
+                        }else{
+                            $('<a class="cms-handle cms-move"></a>').appendTo(elem)
+								.hover( function() {
+                                    if (elem.hasClass('cms-subcontainer')) {
+                                        cms.move.hoverInner(elem, 2, false);
+                                    } else {
+                                        cms.move.hoverIn(elem, 2);
+                                    }
+                                }, cms.move.hoverOut).mousedown(cms.move.movePreparation)
+								.mouseup(cms.move.moveEnd);
+                        }
+
          });
          
          var list = $('#' + cms.html.favoriteMenuId);
@@ -475,7 +489,7 @@
             display: 'block',
             visibility: 'hidden'
          });
-         $('#' + cms.html.favoriteListId).css('height', '40px');
+			$('#'+cms.html.favoriteListId).css('height', '40px');
          $('div.ui-widget-shadow', list).css({
             top: 0,
             left: -4,
@@ -503,7 +517,7 @@
             },
             zIndex: 20000,
             handle: 'a.cms-move',
-            items: '.cms-element',
+				items :'.cms-element',
             revert: true,
             deactivate: function(event, ui) {
                $('#' + cms.html.favoriteListId + ' li').hide(200);
@@ -534,11 +548,12 @@
          cms.toolbar.currentMenuItems = newMenuItems
          var loadFunction;
          if (newMenuItems == cms.html.favoriteListId) {
-            resetFavList();
-            loadFunction = cms.data.loadFavorites;
-         } else if (newMenuItems == cms.html.recentListId) {
-            resetRecentList();
-            loadFunction = cms.data.loadRecent;
+             resetFavList();
+             loadFunction = cms.data.loadFavorites;
+         } else
+         if (newMenuItems == cms.html.recentListId) {
+             resetRecentList();
+             loadFunction = cms.data.loadRecent;
          } else {
             loadFunction = function(f) {
                f();
@@ -551,53 +566,53 @@
          // * current menu
          loadFunction(function() {
             if (!button.hasClass("ui-state-active")) return;
-            list = $('#' + cms.toolbar.currentMenu);
-            $('.cms-head', list).each(function() {
-               var elem = $(this);
-               $('<a class="cms-handle cms-move"></a>').appendTo(elem);
+         list = $('#' + cms.toolbar.currentMenu);
+         $('.cms-head', list).each(function() {
+            var elem = $(this);
+            $('<a class="cms-handle cms-move"></a>').appendTo(elem);
+         });
+         list.appendTo('#toolbar_content').css({
+            /* position : 'fixed', */
+            top: 35,
+            left: $(buttonElem).position().left - 217
+         }).slideDown(100, function() {
+            $('div.ui-widget-shadow', list).css({
+               top: 0,
+               left: -4,
+               width: list.outerWidth() + 8,
+               height: list.outerHeight() + 2,
+               border: '0px solid',
+               opacity: 0.6
             });
-            list.appendTo('#toolbar_content').css({
-               /* position : 'fixed', */
-               top: 35,
-               left: $(buttonElem).position().left - 217
-            }).slideDown(100, function() {
-               $('div.ui-widget-shadow', list).css({
-                  top: 0,
-                  left: -4,
-                  width: list.outerWidth() + 8,
-                  height: list.outerHeight() + 2,
-                  border: '0px solid',
-                  opacity: 0.6
-               });
-            });
-            $(cms.util.getContainerSelector()).children('*:visible').css('position', 'relative');
+         });
+         $(cms.util.getContainerSelector()).css('position', 'relative').children('*:visible').css('position', 'relative');
+         // * current menu
+         $(cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems).sortable({
             // * current menu
-            $(cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems).sortable({
-               // * current menu
-               connectWith: cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems,
-               placeholder: 'placeholder',
-               dropOnEmpty: true,
-               start: cms.move.startAdd,
-               beforeStop: cms.move.beforeStopFunction,
-               over: cms.move.overAdd,
-               out: cms.move.outAdd,
-               tolerance: 'pointer',
-               opacity: 0.7,
-               stop: cms.move.stopAdd,
-               cursorAt: {
-                  right: 15,
-                  top: 10
-               },
-               handle: 'a.cms-move',
-               items: sortitems + ', li.cms-item',
-               revert: 100,
-               deactivate: function(event, ui) {
-                  $('a.cms-move', $(this)).removeClass('cms-trigger');
-                  if ($.browser.msie) {
-                     setTimeout("$(sortitems).css('display','block')", 10);
-                  }
+            connectWith: cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems,
+            placeholder: 'placeholder',
+            dropOnEmpty: true,
+            start: cms.move.startAdd,
+            beforeStop: cms.move.beforeStopFunction,
+            over: cms.move.overAdd,
+            out: cms.move.outAdd,
+            tolerance: 'pointer',
+            opacity: 0.7,
+            stop: cms.move.stopAdd,
+            cursorAt: {
+               right: 15,
+               top: 10
+            },
+            handle: 'a.cms-move',
+            items: sortitems + ', li.cms-item',
+            revert: 100,
+            deactivate: function(event, ui) {
+               $('a.cms-move', $(this)).removeClass('cms-trigger');
+               if ($.browser.msie) {
+                  setTimeout("$(sortitems).css('display','block')", 10);
                }
-            });
+            }
+         });
          });
       }
    };
@@ -771,9 +786,9 @@
          autoOpen: false,
          buttons: {
             Cancel: function() {
-               $(this).dialog('close');
-               $('button[name="Save"]').removeClass('ui-state-active');
-               
+              $(this).dialog('close');
+              $('button[name="Save"]').removeClass('ui-state-active');
+              
             },
             'Save': function() {
                $(this).dialog('close');
@@ -785,40 +800,42 @@
          resizable: false,
          modal: true,
          zIndex: 10000
-      
+         
       });
    }
    
    
    
    var showSaveDialog = function() {
-      $('button[name="Save"]').addClass('ui-state-active');
-      $('#cms-save-dialog').dialog('open');
+        if (!$(this).hasClass('cms-deactivated')) {
+            $('button[name="Save"]').addClass('ui-state-active');
+            $('#cms-save-dialog').dialog('open');
+        }
    }
    
    var savePage = cms.toolbar.savePage = function() {
-      //cms.data.saveContainers(...) 
-      setPageChanged(false);
+       //cms.data.saveContainers(...) 
+       setPageChanged(false);
    }
    
    var pageChanged = cms.toolbar.pageChanged = false;
    var setPageChanged = cms.toolbar.setPageChanged = function(newValue) {
-      pageChanged = cms.toolbar.pageChanged = true;
-      if (newValue) {
-         $('button[name="Save"]').show();
-      } else {
-         $('button[name="Save"]').hide();
-      }
+       pageChanged = cms.toolbar.pageChanged = true;
+       if (newValue) {
+           $('#toolbar button[name="Save"], #toolbar button[name="Reset"]').removeClass('cms-deactivated');
+       } else {
+           $('#toolbar button[name="Save"], #toolbar button[name="Reset"]').addClass('cms-deactivated');
+       }    
    }
    
    var onUnload = cms.toolbar.onUnload = function() {
-      if (cms.toolbar.pageChanged) {
-         var saveChanges = window.confirm("Do you want to save your changes made on " + window.location.href + "?\n (Cancel will discard changes)");
-         if (saveChanges) {
-            cms.toolbar.savePage();
-            //alert("Changes saved.")
-         }
-      }
+       if (cms.toolbar.pageChanged) {
+           var saveChanges = window.confirm("Do you want to save your changes made on " +window.location.href + "?\n (Cancel will discard changes)");
+           if (saveChanges) {
+               cms.toolbar.savePage();
+               //alert("Changes saved.")
+           }
+       }
    }
    
    //==================================================================================================================

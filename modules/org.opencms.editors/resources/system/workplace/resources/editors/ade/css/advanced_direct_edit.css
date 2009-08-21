@@ -115,7 +115,7 @@ div.cms-button {
     background-image: url(images/24x24/ade_move_sw.png)
 }
 
-.ui-state-default .cms-icon-reset {
+button.cms-deactivated span.cms-icon-reset {
     background-image: url(images/24x24/ade_exit_sw.png)
 }
 
@@ -143,7 +143,7 @@ div.cms-button {
     background-image: url(images/24x24/ade_sitemap_sw.png)
 }
 
-.ui-state-default .cms-icon-save {
+button.cms-deactivated span.cms-icon-save {
     background-image: url(images/24x24/ade_save_sw.png)
 }
 
@@ -159,7 +159,7 @@ div.cms-button {
     background-image: url(images/24x24/ade_move.png)
 }
 
-.ui-state-hover span.cms-icon-reset {
+.ui-state-default .cms-icon-reset {
     background-image: url(images/24x24/ade_exit.png)
 }
 
@@ -187,7 +187,7 @@ div.cms-button {
     background-image: url(images/24x24/ade_sitemap.png)
 }
 
-.ui-state-hover span.cms-icon-save {
+.ui-state-default .cms-icon-save{
     background-image: url(images/24x24/ade_save.png)
 }
 
@@ -231,28 +231,29 @@ div.cms-subcontainer-start, div.cms-subcontainer-end{
 
 /** Highlighting effect **/
 div.cms-highlight-container {
-    background-color: #AACCFF;
+    background-color: #AACCFF !important;
 }
 
 .cms-hovering, .hovering {
-    position: absolute;
-    overflow: hidden;
+    position: absolute !important;
+    overflow: hidden !important;
+    margin: 0 !important;
 }
 
 .cms-hovering-top, .hovering-top {
-    background: transparent url(images/ocms_de_t.gif) repeat scroll 0 50%;
+    background: transparent url(images/ocms_de_t.gif) repeat scroll 0 50% !important;
 }
 
 .cms-hovering-right, .hovering-right {
-    background: transparent url(images/ocms_de_r.gif) repeat scroll 0 50%;
+    background: transparent url(images/ocms_de_r.gif) repeat scroll 0 50% !important;
 }
 
 .cms-hovering-left, .hovering-left {
-    background: transparent url(images/ocms_de_l.gif) repeat scroll 0 50%;
+    background: transparent url(images/ocms_de_l.gif) repeat scroll 0 50% !important;
 }
 
 .cms-hovering-bottom, .hovering-bottom {
-    background: transparent url(images/ocms_de_b.gif) repeat scroll 0 50%;
+    background: transparent url(images/ocms_de_b.gif) repeat scroll 0 50% !important;
 }
 
 .hovered, #still-in-use {
@@ -260,14 +261,14 @@ div.cms-highlight-container {
 }
 
 /** sortable placeholder **/
-.cms-placeholder, .placeholder {
+.cms-placeholder{
     border: 2px dotted black;
     visibility: visible !important;
     height: 10px;
     position: relative;
 }
 
-.cms-placeholder *, .placeholder * {
+.cms-placeholder *{
     visibility: hidden;
 }
 
@@ -275,6 +276,15 @@ div.cms-highlight-container {
     margin: 0 0 2px 10px !important;
     width: 290px !important;
     height: 35px !important;
+}
+
+.ui-sortable{
+    min-height: 35px;
+}
+
+.ui-sortable-helper{
+    
+    
 }
 
 /** Icons and handles **/
@@ -292,8 +302,11 @@ div.cms-move {
 }
 
 div.cms-handle{
+    margin: 0 !important;
+    padding: 0 !important;
     height: auto;
     width: auto;
+    z-index: 100;
 }
 
 div.cms-handle a{
@@ -309,7 +322,6 @@ div.ui-widget-header a.ui-corner-all{
 
 div.ui-widget-header a.ui-corner-all:hover{
     background-color: #ffffff;
-    border-color: #222222;
 }
 
 .cms-led-icon {
@@ -358,7 +370,11 @@ span.cms-check-icon-inactive {
     background: transparent url(images/16x16/ocms_de_editor_i.png) no-repeat scroll 50% 50%;
 }
 
-.cms-edit:hover, div.ui-widget-header a.cms-edit{
+div.ui-widget-header a.cms-edit{
+    background-image: url(images/16x16/ocms_de_editor_sw.png);
+}
+
+.cms-edit:hover, div.ui-widget-header a.cms-edit:hover{
     background-image: url(images/16x16/ocms_de_editor_a.png);
 }
 
@@ -366,7 +382,11 @@ span.cms-check-icon-inactive {
     background: transparent url(images/16x16/ocms_de_move_i.png) no-repeat scroll 50% 50%;
 }
 
-.cms-move:hover, div.ui-widget-header a.cms-move {
+div.ui-widget-header a.cms-move{
+    background-image: url(images/16x16/ocms_de_move_sw.png);
+}
+
+.cms-move:hover, div.ui-widget-header a.cms-move:hover {
     background-image: url(images/16x16/ocms_de_move_a.png);
 }
 
@@ -374,7 +394,11 @@ span.cms-check-icon-inactive {
     background: transparent url(images/16x16/ocms_de_delete_i.png) no-repeat scroll 50% 50%;
 }
 
-.cms-delete:hover, div.ui-widget-header a.cms-delete {
+div.ui-widget-header a.cms-delete {
+    background-image: url(images/16x16/ocms_de_delete_sw.png);
+}
+
+.cms-delete:hover, div.ui-widget-header a.cms-delete:hover {
     background-image: url(images/16x16/ocms_de_delete_a.png);
 }
 
@@ -559,7 +583,9 @@ li.jTreePlacement, li.jTreePlaceholder {
 }
 
 #appendBox, #cms_appendbox {
-    position: relative;
+    position: absolute;
+    top: 0px;
+    left: 0px;
 }
 
 
