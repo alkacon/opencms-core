@@ -94,46 +94,6 @@
       })
    }
    
-   var addDummyTypes = function() {
-      var news = {
-         "id": "news",
-         "navText": "news (navText)",
-         "title": "news (title)",
-         "file": null,
-         "date": null,
-         "user": null,
-         "type": "news",
-         "contents": {
-            "leftColumn": "<div class=\"box box_schema2\" rel=\"news\"><h4>(Title)</h4><div class=\"boxbody\"><p>(Content)</p></div></div>"
-         },
-         "subItems": null,
-         "allowMove": true,
-         "allowEdit": true,
-         "locked": false,
-         "status": cms.data.STATUS_NEW
-      };
-      var event = {
-         "id": "event",
-         "navText": "event (navText)",
-         "title": "event (title)",
-         "file": null,
-         "date": null,
-         "user": null,
-         "type": "event",
-         "contents": {
-            "leftColumn": "<div class=\"box box_schema2\" rel=\"event\"><h4>(Title)</h4><div class=\"boxbody\"><p>(Content)</p></div></div>"
-         },
-         "subItems": null,
-         "allowMove": true,
-         "allowEdit": true,
-         "locked": false,
-         "status": cms.data.STATUS_NEW
-      };
-      cms.data.elements["news"] = news;
-      cms.data.elements["event"] = event;
-      
-   }
-   
    var loadJSON = cms.data.loadJSON = function(data, afterLoad) {
    
       $.extend(data, {
@@ -247,7 +207,18 @@
    
    var persistContainers = cms.data.persistContainers = function(afterSave) {
    
-      postJSON(OBJ_CNT, cms.data.containers, afterSave);
+      $.each(cms.data.containers, function(key, cnt) {
+          // cms.data.containers[key]
+          cnt.formatters = [];
+          var cntType = cnt.type;
+          $.each(cnt.elements, function() {
+              cnt.formatters.push(cms.data.elements[this].formatters[cntType]);
+          });
+      });
+      postJSON(OBJ_CNT, {
+          "containers": cms.data.containers,
+          "locale": locale
+      }, afterSave);
    }
    
    var persistFavorites = cms.data.persistFavorites = function(afterSave) {

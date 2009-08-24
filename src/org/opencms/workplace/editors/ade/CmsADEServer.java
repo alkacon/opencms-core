@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/08/13 10:47:34 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/08/24 13:34:59 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,9 +31,11 @@
 
 package org.opencms.workplace.editors.ade;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -43,11 +45,17 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.6
  */
@@ -92,6 +100,9 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** JSON property constant file. */
     public static final String P_FILE = "file";
+
+    /** JSON property constant formatters. */
+    public static final String P_FORMATTERS = "formatters";
 
     /** JSON property constant id. */
     public static final String P_ID = "id";
@@ -172,6 +183,9 @@ public class CmsADEServer extends CmsJspActionElement {
     protected static final String PARAMETER_ELEM = "elem";
 
     /** Request parameter name constant. */
+    protected static final String PARAMETER_LOCALE = "locale";
+
+    /** Request parameter name constant. */
     protected static final String PARAMETER_OBJ = "obj";
 
     /** Request parameter name constant. */
@@ -183,8 +197,6 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEServer.class);
-
-    // TODO: idea, once here processed replace the loader version in cache
 
     /**
      * Constructor.<p>
@@ -274,14 +286,28 @@ public class CmsADEServer extends CmsJspActionElement {
                     PARAMETER_ELEM));
                 return result;
             }
-            // TODO: handle id list
             JSONObject resElements = new JSONObject();
-            resElements.put(elemParam, CmsADEElementManager.getInstance().getElementData(
-                getCmsObject(),
-                CmsADEElementManager.getInstance().parseId(elemParam),
-                urlParam,
-                getRequest(),
-                getResponse()));
+            if (elemParam.startsWith("[")) {
+                // element list
+                JSONArray elems = new JSONArray(elemParam);
+                for (int i = 0; i < elems.length(); i++) {
+                    String elem = elems.getString(i);
+                    resElements.put(elem, CmsADEElementManager.getInstance().getElementData(
+                        getCmsObject(),
+                        CmsADEElementManager.getInstance().parseId(elem),
+                        urlParam,
+                        getRequest(),
+                        getResponse()));
+                }
+            } else {
+                // single element
+                resElements.put(elemParam, CmsADEElementManager.getInstance().getElementData(
+                    getCmsObject(),
+                    CmsADEElementManager.getInstance().parseId(elemParam),
+                    urlParam,
+                    getRequest(),
+                    getResponse()));
+            }
             result.put(P_ELEMENTS, resElements);
         } else if (objParam.equals(OBJ_FAV)) {
             result.put(P_FAVORITES, CmsADEElementManager.getInstance().getFavoriteList(
@@ -343,7 +369,22 @@ public class CmsADEServer extends CmsJspActionElement {
             JSONArray list = new JSONArray(dataParam);
             CmsADEElementManager.getInstance().setRecentList(getCmsObject(), list);
         } else if (objParam.equals(OBJ_CNT)) {
-            // TODO: implement
+            String urlParam = getRequest().getParameter(PARAMETER_URL);
+            if (urlParam == null) {
+                result.put(RES_ERROR, Messages.get().getBundle().key(
+                    Messages.ERR_JSON_MISSING_PARAMETER_1,
+                    PARAMETER_URL));
+                return result;
+            }
+            String dataParam = getRequest().getParameter(PARAMETER_DATA);
+            if (dataParam == null) {
+                result.put(RES_ERROR, Messages.get().getBundle().key(
+                    Messages.ERR_JSON_MISSING_PARAMETER_1,
+                    PARAMETER_DATA));
+                return result;
+            }
+            JSONObject cntPage = new JSONObject(dataParam);
+            setContainerPage(urlParam, cntPage);
         } else {
             result.put(RES_ERROR, Messages.get().getBundle().key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
@@ -356,14 +397,14 @@ public class CmsADEServer extends CmsJspActionElement {
     /**
      * Returns the data for the given container page.<p>
      * 
-     * @param url the url of the container page to use
+     * @param uri the uri of the container page to use
      * 
      * @return the data for the given container page
      * 
      * @throws CmsException if something goes wrong with the cms context
      * @throws JSONException if something goes wrong with the JSON manipulation
      */
-    protected JSONObject getContainerPage(String url) throws CmsException, JSONException {
+    protected JSONObject getContainerPage(String uri) throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
 
@@ -376,9 +417,9 @@ public class CmsADEServer extends CmsJspActionElement {
         result.put(P_LOCALE, cms.getRequestContext().getLocale().toString());
 
         // get the container page itself
-        CmsResource containerPage = cms.readResource(url);
+        CmsResource containerPage = cms.readResource(uri);
         JSONObject containers = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
-        Collection types = CmsADEElementManager.getInstance().getContainerPageTypes(cms, url);
+        Collection types = CmsADEElementManager.getInstance().getContainerPageTypes(cms, uri);
 
         Map<String, String> ids = new HashMap<String, String>();
 
@@ -441,7 +482,7 @@ public class CmsADEServer extends CmsJspActionElement {
         JSONArray resFavorites = CmsADEElementManager.getInstance().getFavoriteList(
             cms,
             resElements,
-            url,
+            uri,
             getRequest(),
             getResponse());
         result.put(P_FAVORITES, resFavorites);
@@ -449,12 +490,83 @@ public class CmsADEServer extends CmsJspActionElement {
         JSONArray resRecent = CmsADEElementManager.getInstance().getRecentList(
             cms,
             resElements,
-            url,
+            uri,
             getRequest(),
             getResponse());
         result.put(P_RECENT, resRecent);
 
         return result;
+    }
+
+    /**
+     * Saves the new state of the container page.<p>
+     * 
+     * @param uri the uri of the container page to save
+     * @param cntPage the container page data
+     * 
+     * @throws CmsException if something goes wrong with the cms context
+     * @throws JSONException if something goes wrong with the JSON manipulation
+     */
+    protected void setContainerPage(String uri, JSONObject cntPage) throws CmsException, JSONException {
+
+        CmsObject cms = getCmsObject();
+        cms.lockResourceTemporary(uri);
+        CmsFile containerPage = cms.readFile(uri);
+        CmsXmlContent xmlCnt = CmsXmlContentFactory.unmarshal(cms, containerPage);
+
+        Locale locale = CmsLocaleManager.getLocale(cntPage.getString(P_LOCALE));
+        if (xmlCnt.hasLocale(locale)) {
+            // remove the locale 
+            xmlCnt.removeLocale(locale);
+        }
+        xmlCnt.addLocale(cms, locale);
+
+        JSONObject cnts = cntPage.getJSONObject(P_CONTAINERS);
+        int cntCount = 0;
+        Iterator itCnt = cnts.keys();
+        while (itCnt.hasNext()) {
+            String cntKey = (String)itCnt.next();
+            JSONObject cnt = cnts.getJSONObject(cntKey);
+
+            I_CmsXmlContentValue cntValue = xmlCnt.getValue(CmsContainerPageLoader.N_CONTAINER, locale, cntCount);
+            if (cntValue == null) {
+                cntValue = xmlCnt.addValue(cms, CmsContainerPageLoader.N_CONTAINER, locale, cntCount);
+            }
+
+            String name = cnt.getString(P_NAME);
+            xmlCnt.getValue(CmsXmlUtils.concatXpath(cntValue.getPath(), CmsContainerPageLoader.N_NAME), locale, 0).setStringValue(
+                cms,
+                name);
+
+            String type = cnt.getString(P_TYPE);
+            xmlCnt.getValue(CmsXmlUtils.concatXpath(cntValue.getPath(), CmsContainerPageLoader.N_TYPE), locale, 0).setStringValue(
+                cms,
+                type);
+
+            JSONArray elems = cnt.getJSONArray(P_ELEMENTS);
+            for (int i = 0; i < elems.length(); i++) {
+                String elem = elems.getString(i);
+
+                CmsUUID id = CmsADEElementManager.getInstance().parseId(elem);
+                CmsResource res = cms.readResource(id);
+
+                String formatter = cnt.getJSONArray(P_FORMATTERS).getString(i);
+
+                I_CmsXmlContentValue elemValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
+                    cntValue.getPath(),
+                    CmsContainerPageLoader.N_ELEMENT), locale, i);
+                xmlCnt.getValue(CmsXmlUtils.concatXpath(elemValue.getPath(), CmsContainerPageLoader.N_URI), locale, 0).setStringValue(
+                    cms,
+                    cms.getSitePath(res));
+                xmlCnt.getValue(
+                    CmsXmlUtils.concatXpath(elemValue.getPath(), CmsContainerPageLoader.N_FORMATTER),
+                    locale,
+                    0).setStringValue(cms, formatter);
+            }
+            cntCount++;
+        }
+        containerPage.setContents(xmlCnt.marshal());
+        cms.writeFile(containerPage);
     }
 
 }

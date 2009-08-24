@@ -786,7 +786,8 @@
               
             },
             'Save': function() {
-               $(this).dialog('close');
+               // TODO: may be we can disable the dialog here
+               // $(this).dialog('disable');
                $('button[name="Save"]').removeClass('ui-state-active');
                savePage();
             }
@@ -805,17 +806,21 @@
         if (!$(this).hasClass('cms-deactivated')) {
             $('button[name="Save"]').addClass('ui-state-active');
             $('#cms-save-dialog').dialog('open');
+            
         }
    }
    
    var savePage = cms.toolbar.savePage = function() {
-       //cms.data.saveContainers(...) 
-       setPageChanged(false);
+       
+       cms.data.persistContainers(function() {
+           $('#cms-save-dialog').dialog('close');
+           setPageChanged(false);
+       });
    }
    
    var pageChanged = cms.toolbar.pageChanged = false;
    var setPageChanged = cms.toolbar.setPageChanged = function(newValue) {
-       pageChanged = cms.toolbar.pageChanged = true;
+       pageChanged = cms.toolbar.pageChanged = newValue;
        if (newValue) {
            $('#toolbar button[name="Save"], #toolbar button[name="Reset"]').removeClass('cms-deactivated');
        } else {

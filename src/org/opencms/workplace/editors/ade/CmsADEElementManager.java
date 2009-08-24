@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEElementManager.java,v $
- * Date   : $Date: 2009/08/13 10:47:35 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/08/24 13:34:59 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.6
  */
@@ -233,6 +233,9 @@ public final class CmsADEElementManager {
         // add formatted elements
         JSONObject resContents = new JSONObject();
         resElement.put(CmsADEServer.P_CONTENTS, resContents);
+        // add formatter uris
+        JSONObject formatters = new JSONObject();
+        resElement.put(CmsADEServer.P_FORMATTERS, formatters);
         // TODO: this may not be performing well
         CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
         Iterator it = content.getContentDefinition().getContentHandler().getFormatters().entrySet().iterator();
@@ -244,6 +247,7 @@ public final class CmsADEElementManager {
                 continue;
             }
             String formatterUri = (String)entry.getValue();
+            formatters.put(type, formatterUri);
             // execute the formatter jsp for the given element
             try {
                 String jspResult = getElementContent(cms, resource, formatterUri, req, res);
