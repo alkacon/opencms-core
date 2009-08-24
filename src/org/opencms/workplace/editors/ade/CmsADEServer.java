@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/08/24 13:34:59 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/08/24 15:30:35 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 7.6
  */
@@ -176,6 +176,12 @@ public class CmsADEServer extends CmsJspActionElement {
     /** Request parameter obj value constant. */
     protected static final String OBJ_REC = "rec";
 
+    /** Request parameter obj value constant. */
+    protected static final String OBJ_NEW = "new";
+
+    /** Request parameter obj value constant. */
+    protected static final String PARAMETER_TYPE = "type";
+
     /** Request parameter name constant. */
     protected static final String PARAMETER_DATA = "data";
 
@@ -190,6 +196,11 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** Request parameter name constant. */
     protected static final String PARAMETER_URL = "url";
+
+    /**
+     * Path to the configuration file 
+     */
+    protected static final String NEW_CONFIG_PATH = "/system/workplace/editors/ade/type_config.xml";
 
     /** Container page loader reference. */
     private static final CmsContainerPageLoader LOADER = (CmsContainerPageLoader)OpenCms.getResourceManager().getLoader(
@@ -263,7 +274,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws JSONException if there is any problem with JSON
      * @throws CmsException if there is a problem with the cms context
      */
-    protected JSONObject executeActionGet() throws CmsException, JSONException {
+    protected JSONObject executeActionGet() throws CmsException, JSONException, Exception {
 
         JSONObject result = new JSONObject();
         String objParam = getRequest().getParameter(PARAMETER_OBJ);
@@ -385,6 +396,35 @@ public class CmsADEServer extends CmsJspActionElement {
             }
             JSONObject cntPage = new JSONObject(dataParam);
             setContainerPage(urlParam, cntPage);
+
+        } else if (objParam.equals(OBJ_NEW)) {
+            CmsObject cms = getCmsObject();
+            String dataParam = getRequest().getParameter(PARAMETER_DATA);
+            if (dataParam == null) {
+                result.put(RES_ERROR, Messages.get().getBundle().key(
+                    Messages.ERR_JSON_MISSING_PARAMETER_1,
+                    PARAMETER_DATA));
+                return result;
+            }
+            JSONArray dataArray = new JSONArray(dataParam);
+            String type = dataArray.getString(0);
+
+            try {
+                CmsADEElementCreator elemCreator = new CmsADEElementCreator(
+                    cms,
+                    "/system/workplace/editors/ade/type_config.xml");
+
+                CmsResource newResource = elemCreator.createElement(cms, type);
+                result.put(P_ID, "ade_" + newResource.getStructureId().toString());
+                result.put(P_FILE, cms.getSitePath(newResource));
+            } catch (Exception e) {
+                LOG.error(e);
+                for (StackTraceElement el : e.getStackTrace()) {
+                    LOG.error("at " + el.toString());
+                }
+                result.put(RES_ERROR, e.toString());
+            }
+
         } else {
             result.put(RES_ERROR, Messages.get().getBundle().key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
@@ -404,7 +444,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws CmsException if something goes wrong with the cms context
      * @throws JSONException if something goes wrong with the JSON manipulation
      */
-    protected JSONObject getContainerPage(String uri) throws CmsException, JSONException {
+    protected JSONObject getContainerPage(String uri) throws CmsException, JSONException, Exception {
 
         CmsObject cms = getCmsObject();
 
@@ -416,10 +456,26 @@ public class CmsADEServer extends CmsJspActionElement {
         result.put(P_CONTAINERS, resContainers);
         result.put(P_LOCALE, cms.getRequestContext().getLocale().toString());
 
+        CmsADEElementCreator creator = new CmsADEElementCreator(cms, "/system/workplace/editors/ade/type_config.xml");
+        Map<String, CmsADETypeConfigurationItem> typeConfig = creator.getConfiguration();
         // get the container page itself
         CmsResource containerPage = cms.readResource(uri);
         JSONObject containers = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
         Collection types = CmsADEElementManager.getInstance().getContainerPageTypes(cms, uri);
+
+        for (String type : typeConfig.keySet()) {
+            String elementUri = typeConfig.get(type).getSourceFile();
+            JSONObject resElement = CmsADEElementManager.getInstance().getElementData(
+                cms,
+                cms.readResource(elementUri),
+                types,
+                getRequest(),
+                getResponse());
+            resElement.put(P_ID, type);
+            resElement.put(P_STATUS, "n");
+            resElement.put(P_TYPE, type);
+            resElements.put(type, resElement);
+        }
 
         Map<String, String> ids = new HashMap<String, String>();
 

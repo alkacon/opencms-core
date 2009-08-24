@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ADETypeConfigurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/editors/ade/schemas/type_config.xsd">
+  <ADETypeConfiguration language="en">
+    <ADEType>
+      <Source><![CDATA[/demo/news/news_0001.html]]></Source>
+      <Destination><![CDATA[/demo/news/news_%(number).html]]></Destination>
+    </ADEType>
+    <ADEType>
+      <Source><![CDATA[/demo/events/event_0001.html]]></Source>
+      <Destination><![CDATA[/demo/events/event_%(number).html]]></Destination>
+    </ADEType>
+  </ADETypeConfiguration>
+</ADETypeConfigurations>
