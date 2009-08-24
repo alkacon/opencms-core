@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/08/20 11:31:41 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2009/08/24 13:32:10 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.78 $ 
+ * @version $Revision: 1.79 $ 
  * 
  * @since 6.0.0 
  */
@@ -987,8 +987,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     booleanFieldsQuery.add(shouldOccur, BooleanClause.Occur.MUST);
                 }
                 fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
-                // set query to parameters in order to be somehow backward compatible
-                params.setQuery(fieldsQuery.toString());
             } else if ((params.getFields() != null) && (params.getFields().size() > 0)) {
                 // no individual field queries have been defined, so use one query for all fields 
                 BooleanQuery booleanFieldsQuery = new BooleanQuery();
