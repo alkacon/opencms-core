@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/list.js,v $
- * Date   : $Date: 2009/06/04 14:42:01 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/24 06:43:05 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,7 +28,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-
 /**
  * Executes a list action.<p>
  *
@@ -38,25 +37,26 @@
  * @param listItem the affected list item
  */
 function listAction(listId, action, confirmation, listItem) {
-	var form = document.forms[listId + '-form'];
-	
-	// use the param content as default
-	var confText = confirmation;
-        var confEl = document.getElementById(confirmation);
-	if (confEl) {
-	   // try to user the param as an id of a div tag, and use its content
-	   confText = confEl.firstChild.nodeValue;
-	}
-	if (confText != 'null' && confText != '') {
-	  if (!confirm(confText)) {
-	    return false;
-	  }
-	}
-	form.action.value='listsingleaction';
-	form.listaction.value=action;
-	form.selitems.value=listItem;
-	submitForm(form);
-        return true;
+    
+   var form = document.forms[listId + '-form'];
+   
+   // use the param content as default
+   var confText = confirmation;
+   var confEl = document.getElementById(confirmation);
+   if (confEl) {
+      // try to user the param as an id of a div tag, and use its content
+      confText = confEl.firstChild.nodeValue;
+   }
+   if (confText != 'null' && confText != '') {
+      if (!confirm(confText)) {
+         return false;
+      }
+   }
+   form.action.value = 'listsingleaction';
+   form.listaction.value = action;
+   form.selitems.value = listItem;
+   submitForm(form);
+   return true;
 }
 
 /**
@@ -64,19 +64,20 @@ function listAction(listId, action, confirmation, listItem) {
  *
  * @param listId the id of the list
  * @param action the id of the independent action to execute
- * @param confirmation a confirmation text 
+ * @param confirmation a confirmation text
  */
 function listIndepAction(listId, action, confirmation) {
-	var form = document.forms[listId + '-form'];
-	if (confirmation!='null' && confirmation!='') {
-		if (!confirm(confirmation)) {
-			return false;
-		}
-	}
-	form.action.value='listindependentaction';
-	form.listaction.value=action;
-	submitForm(form);
-        return true;
+    
+   var form = document.forms[listId + '-form'];
+   if (confirmation != 'null' && confirmation != '') {
+      if (!confirm(confirmation)) {
+         return false;
+      }
+   }
+   form.action.value = 'listindependentaction';
+   form.listaction.value = action;
+   submitForm(form);
+   return true;
 }
 
 /**
@@ -85,15 +86,16 @@ function listIndepAction(listId, action, confirmation) {
  * @param listId the id of the list
  */
 function listSelect(listId) {
-	var form = document.forms[listId + '-form'];
-	for (var i = 0 ; i < form.elements.length; i++) {
-		if ((form.elements[i].type == 'checkbox') && (form.elements[i].name == 'listMultiAction')) {
-			if (!(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {
-				form.elements[i].checked = form.listSelectAll.checked;
-			}
-		}
-	}
-	return true;
+    
+   var form = document.forms[listId + '-form'];
+   for (var i = 0; i < form.elements.length; i++) {
+      if ((form.elements[i].type == 'checkbox') && (form.elements[i].name == 'listMultiAction')) {
+         if (!(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {
+            form.elements[i].checked = form.listSelectAll.checked;
+         }
+      }
+   }
+   return true;
 }
 
 /**
@@ -102,37 +104,38 @@ function listSelect(listId) {
  * @param listId the id of the list
  * @param action the id of the multi action to execute
  * @param confirmation a confirmation text
- * @param noselectionhelp a help text displayed when there are no selected items 
+ * @param noselectionhelp a help text displayed when there are no selected items
  */
 function listMAction(listId, action, confirmation, noselectionhelp) {
-	var form = document.forms[listId + '-form'];
-	var count = 0;
-	var listItems = '';
-	for (var i = 0 ; i < form.elements.length; i++) {
-		if ((form.elements[i].type == 'checkbox') && (form.elements[i].name == 'listMultiAction')) {
-			if (form.elements[i].checked && !(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {
-				count++;
-				if (listItems!='') {
-					listItems = listItems + '|';
-				}
-				listItems = listItems + form.elements[i].value;
-			}
-		}
-	}
-	if (count==0) {
-		alert(noselectionhelp);
-		return false;
-	}
-	if (confirmation!='null' && confirmation!='') {
-		if (!confirm(confirmation)) {
-			return false;
-		}
-	}
-	form.action.value='listmultiaction';
-	form.listaction.value=action;
-	form.selitems.value=listItems;
-	submitForm(form);
-        return true;
+    
+   var form = document.forms[listId + '-form'];
+   var count = 0;
+   var listItems = '';
+   for (var i = 0; i < form.elements.length; i++) {
+      if ((form.elements[i].type == 'checkbox') && (form.elements[i].name == 'listMultiAction')) {
+         if (form.elements[i].checked && !(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {
+            count++;
+            if (listItems != '') {
+               listItems = listItems + '|';
+            }
+            listItems = listItems + form.elements[i].value;
+         }
+      }
+   }
+   if (count == 0) {
+      alert(noselectionhelp);
+      return false;
+   }
+   if (confirmation != 'null' && confirmation != '') {
+      if (!confirm(confirmation)) {
+         return false;
+      }
+   }
+   form.action.value = 'listmultiaction';
+   form.listaction.value = action;
+   form.selitems.value = listItems;
+   submitForm(form);
+   return true;
 }
 
 /**
@@ -143,20 +146,21 @@ function listMAction(listId, action, confirmation, noselectionhelp) {
  * @param confirmation a confirmation text
  */
 function listSearchAction(listId, action, confirmation) {
-	var form = document.forms[listId + '-form'];
-	if (confirmation!='null' && confirmation!='') {
-		if (!confirm(confirmation)) {
-			return false;
-		}
-	}
-	form.action.value = 'listsearch';
-	if (action=='showall') {
-		form.searchfilter.value = '';
-	} else if (action=='search') {
-		form.searchfilter.value = form.listSearchFilter.value;
-	}
-	submitForm(form);
-	return true;
+    
+   var form = document.forms[listId + '-form'];
+   if (confirmation != 'null' && confirmation != '') {
+      if (!confirm(confirmation)) {
+         return false;
+      }
+   }
+   form.action.value = 'listsearch';
+   if (action == 'showall') {
+      form.searchfilter.value = '';
+   } else if (action == 'search') {
+      form.searchfilter.value = form.listSearchFilter.value;
+   }
+   submitForm(form);
+   return true;
 }
 
 /**
@@ -166,10 +170,11 @@ function listSearchAction(listId, action, confirmation) {
  * @param column the id of the column to sort
  */
 function listSort(listId, column) {
-	var form = document.forms[listId + '-form'];
-	form.action.value = 'listsort';
-	form.sortcol.value = column;
-	submitForm(form);
+    
+   var form = document.forms[listId + '-form'];
+   form.action.value = 'listsort';
+   form.sortcol.value = column;
+   submitForm(form);
 }
 
 /**
@@ -179,10 +184,11 @@ function listSort(listId, column) {
  * @param page the page number to set
  */
 function listSetPage(listId, page) {
-	var form = document.forms[listId + '-form'];
-	form.action.value = 'listselectpage';
-	form.page.value = page;
-	submitForm(form);
+    
+   var form = document.forms[listId + '-form'];
+   form.action.value = 'listselectpage';
+   form.page.value = page;
+   submitForm(form);
 }
 
 /**
@@ -195,39 +201,101 @@ function listSetPage(listId, page) {
  * @param relatedActionIds a comma separated list of the related list item selection action ids
  */
 function listRSelMAction(listId, action, confirmation, noselectionhelp, relatedActionIds) {
-	var form = document.forms[listId + '-form'];
-	var count = 0;
-	var listItems = '';
-	var actionIds = relatedActionIds.split(',');
-	var selections = actionIds.length;
-	for (var j = 0 ; j < selections; j++) {
-		var id = listId + actionIds[j];
-		for (var i = 0 ; i < form.elements.length; i++) {
-			if ((form.elements[i].type == 'radio') && (form.elements[i].name == id)) {
-				if (!form.elements[i].disabled && form.elements[i].checked) {
-				    if (listItems.indexOf(form.elements[i].value)<0) {
-						count++;
-						if (listItems!='') {
-							listItems = listItems + '|';
-						}
-						listItems = listItems + form.elements[i].value;
-					}
-				}
-			}
-		}
-	}
-	if (count!=selections) {
-		alert(noselectionhelp);
-		return false;
-	}
-	if (confirmation!='null' && confirmation!='') {
-		if (!confirm(confirmation)) {
-			return false;
-		}
-	}
-	form.action.value='listmultiaction';
-	form.listaction.value=action;
-	form.selitems.value=listItems;
-	submitForm(form);
-        return true;
+    
+   var form = document.forms[listId + '-form'];
+   var count = 0;
+   var listItems = '';
+   var actionIds = relatedActionIds.split(',');
+   var selections = actionIds.length;
+   for (var j = 0; j < selections; j++) {
+      var id = listId + actionIds[j];
+      for (var i = 0; i < form.elements.length; i++) {
+         if ((form.elements[i].type == 'radio') && (form.elements[i].name == id)) {
+            if (!form.elements[i].disabled && form.elements[i].checked) {
+               if (listItems.indexOf(form.elements[i].value) < 0) {
+                  count++;
+                  if (listItems != '') {
+                     listItems = listItems + '|';
+                  }
+                  listItems = listItems + form.elements[i].value;
+               }
+            }
+         }
+      }
+   }
+   if (count != selections) {
+      alert(noselectionhelp);
+      return false;
+   }
+   if (confirmation != 'null' && confirmation != '') {
+      if (!confirm(confirmation)) {
+         return false;
+      }
+   }
+   form.action.value = 'listmultiaction';
+   form.listaction.value = action;
+   form.selitems.value = listItems;
+   submitForm(form);
+   return true;
 }
+
+(function($) {
+
+   /* @see org.opencms.workplace.list.CmsListMultiSearchAction#barHtml(CmsWorkplace) */
+   $(document).ready(function() {
+	  // is there any search field?
+      if (!window.LIST_SEARCH_DATA) {
+    	  return;
+      }
+      try {
+         // hide search bar
+         var $sbar = $("#" + LIST_SEARCH_DATA.SEARCH_BAR_INPUT_ID);
+         
+         // decorate new input boxes
+         var form = document.forms[LIST_SEARCH_DATA.FORM];
+         var colSel = "input[name^=listColFilter"; // missing end bracket
+         var $searchButton = $sbar.siblings("span.link").eq(0);
+         var submitFn = $searchButton.attr("onclick");
+         $searchButton.attr("onclick", "");
+         var com = function() {
+            var data = "";
+            var cols = LIST_SEARCH_DATA.COLUMNS;
+            var n = cols.length;
+            while (n--) {
+               var $ctl = $(colSel + cols[n] + "]");
+               if ($ctl.val() === $ctl.attr("title") &&
+               $ctl.hasClass("blur")) {
+                  $ctl.val('');
+               } else {
+                  data += cols[n];
+                  data += "#";
+                  data += $ctl.val();
+                  if (n > 0) {
+                     data += "|";
+                  }
+               }
+            }
+            $sbar.val(data);
+            return true;
+         };
+         $searchButton.click(function() {
+            com();
+            submitFn();
+         });
+         $(colSel + "]").hint().keypress(function(e) {
+            if ((e.which && e.which == 13) ||
+            (e.keyCode && e.keyCode == 13)) {
+               com();
+               submitFn();
+               return false;
+            } else {
+               return true;
+            }
+         });
+         
+      } catch (e) {
+         alert(e);
+      }
+   });
+   
+})(window.jQuery);

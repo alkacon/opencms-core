@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2009/08/20 12:36:16 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2009/08/24 06:43:05 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -53,7 +53,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -565,6 +565,12 @@ public class CmsHtmlList {
 
         StringBuffer js = new StringBuffer(1024);
         CmsMessages messages = Messages.get().getBundle(getWp().getLocale());
+        js.append("<script type='text/javascript' src='");
+        js.append(CmsWorkplace.getSkinUri());
+        js.append("jquery/unpacked/jquery.js'></script>\n");
+        js.append("<script type='text/javascript' src='");
+        js.append(CmsWorkplace.getSkinUri());
+        js.append("jquery/unpacked/jquery.hint.js'></script>\n");
         js.append("<script type='text/javascript' src='");
         js.append(CmsWorkplace.getSkinUri());
         js.append("admin/javascript/list.js'></script>\n");

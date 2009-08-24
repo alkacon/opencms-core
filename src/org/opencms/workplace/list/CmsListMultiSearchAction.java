@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMultiSearchAction.java,v $
- * Date   : $Date: 2009/08/20 11:30:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/24 06:43:05 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.6
  */
@@ -114,7 +114,6 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
         html.append("<script type=\"text/javascript\">\n");
         html.append("var LIST_SEARCH_DATA = {\n");
         html.append("SEARCH_BAR_INPUT_ID: \"").append(SEARCH_BAR_INPUT_ID).append("\",\n");
-        html.append("WORKPLACE_SKIN_URI: \"").append(CmsWorkplace.getSkinUri()).append("\",\n");
         html.append("FORM: \"").append(getListId() + "-form").append("\",\n");
         html.append("COLUMNS: [");
         it = getColumns().iterator();
@@ -128,12 +127,6 @@ public class CmsListMultiSearchAction extends CmsListSearchAction {
         html.append("]\n");
         html.append("};\n");
         html.append("</script>\n");
-        html.append("<script type=\"text/javascript\" src=\"");
-        html.append(CmsWorkplace.getSkinUri()).append("jquery/packed/jquery.js");
-        html.append("\"></script>\n");
-        html.append("<script type=\"text/javascript\" src=\"");
-        html.append(CmsWorkplace.getSkinUri()).append("admin/javascript/list-multisearch.js");
-        html.append("\"></script>\n");
 
         return html.toString();
     }

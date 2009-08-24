@@ -348,21 +348,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/admin/javascript/list-multisearch.js</source>
-			<destination>system/workplace/resources/admin/javascript/list-multisearch.js</destination>
-			<type>plain</type>
-			<uuidstructure>96af9bf9-11b7-13db-945d-fdbae480bac9</uuidstructure>
-			<uuidresource>bccd3d62-d34d-45d9-b717-b92084fd9bc1</uuidresource>
-			<datelastmodified>Wed, 07 Feb 2007 11:31:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/resources/list</destination>
 			<type>folder</type>
 			<uuidstructure>96b20cfc-11b7-11db-91cd-fdbae480bac9</uuidstructure>

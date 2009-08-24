@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2009/08/20 11:31:13 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/08/24 06:43:05 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,6 +48,7 @@ import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
+import org.opencms.workplace.list.CmsListMultiSearchAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.CmsListSearchAction;
 import org.opencms.workplace.tools.CmsToolDialog;
@@ -70,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -511,7 +512,7 @@ public class CmsModulesList extends A_CmsListDialog {
         metadata.addItemDetails(restypesDetails);
 
         // makes the list searchable
-        CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_NAME));
+        CmsListSearchAction searchAction = new CmsListMultiSearchAction(metadata.getColumnDefinition(LIST_COLUMN_NAME));
         searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_GROUP));
         metadata.setSearchAction(searchAction);
 
