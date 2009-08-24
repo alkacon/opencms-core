@@ -2100,7 +2100,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery UI 1.7.1]]></value>
+					<value><![CDATA[JQuery UI 1.7.2]]></value>
 				</property>
 			</properties>
 			<relations/>
@@ -2258,7 +2258,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[JQuery UI 1.7.1]]></value>
+					<value><![CDATA[JQuery UI 1.7.2]]></value>
 				</property>
 			</properties>
 			<relations/>
