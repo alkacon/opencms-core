@@ -159,7 +159,7 @@
       if (ui.self.cmsStartContainerId == cms.html.newListId) {
          var typeElem = cms.data.elements[ui.self.cmsResource_id];
          if (typeElem) {
-            var newItem = ui.self.cmsItem = cms.util.createInstanceForNewItem(typeElem.type);
+            var newItem = ui.self.cmsItem = cms.util.createInstanceForNewItem(typeElem.id);
             ui.self.cmsResource_id = newItem.id;
          }
       } else {

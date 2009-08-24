@@ -14,6 +14,7 @@
    var OBJ_FAV = "fav";
    var OBJ_CNT = "cnt";
    var OBJ_ELEM = "elem";
+   var OBJ_NEW = "new";
    
    // shortcuts
    var CURRENT_URI = cms.data.CURRENT_URI;
@@ -88,11 +89,12 @@
             if (jsonData.newCounter) {
                newCounter = cms.data.newCounter = jsonData.newCounter;
             }
-            addDummyTypes();
+            //addDummyTypes();
             afterLoad();
          }
       })
    }
+   
    
    var loadJSON = cms.data.loadJSON = function(data, afterLoad) {
    
@@ -154,10 +156,10 @@
    }
    
    var createResource = cms.data.createResource = function(type, afterCreate) {
-      afterCreate("/demo_en/new_news.html", "ade_1b2ba42a-8c0a-11de-affd-f538a2445923");
-      //       postJSON('create', type, function(data) {
-      //           afterCreate(data.path, data.id);
-      //       });
+      //afterCreate("/demo_en/new_news.html", "ade_1b2ba42a-8c0a-11de-affd-f538a2445923");
+      postJSON(OBJ_NEW, [type], function(data) {
+         if (afterCreate) afterCreate(data.file, data.id);
+      });
    }
    
    var reloadElement = cms.data.reloadElement = function(id, afterReload) {
