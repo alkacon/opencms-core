@@ -85,16 +85,6 @@
                     <param name="schema">/system/workplace/editors/ade/schemas/type_config.xsd</param>
                 </type>
             </resourcetypes>
-            <explorertypes>
-                <explorertype name="ade_type_config" key="fileicon.ade_type_config" icon="layoutpage.gif" reference="xmlcontent">
-                    <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=ade_type_config" order="20"/>
-                    <accesscontrol>
-                        <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-                    </accesscontrol>
-                </explorertype>
-            </explorertypes>
-
-			</resourcetypes>
 			<collectors>
 				<collector class="org.opencms.file.collectors.CmsPriorityResourceCollector" order="100" />
 				<collector class="org.opencms.file.collectors.CmsDefaultResourceCollector" order="110" />
