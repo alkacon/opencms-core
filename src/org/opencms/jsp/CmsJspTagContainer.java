@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/08/13 10:47:30 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/08/25 13:20:23 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6 
  */
@@ -172,22 +173,49 @@ public class CmsJspTagContainer extends TagSupport {
         for (int i = 0; i < renderElems; i++) {
             JSONObject element = elements.optJSONObject(i);
             String elementUri = element.optString(CmsContainerPageLoader.N_URI);
-            String elementFormatter = element.optString(CmsContainerPageLoader.N_FORMATTER);
 
             CmsResource resUri = cms.readResource(elementUri);
-            // execute the formatter jsp for the given element uri
-            String jspResult = CmsADEElementManager.getInstance().getElementContent(
-                cms,
-                resUri,
-                elementFormatter,
-                (HttpServletRequest)req,
-                (HttpServletResponse)res);
+            if (resUri.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
+                // get the subcontainer data from cache
+                JSONObject sublocaleData = LOADER.getCache(cms, resUri, cms.getRequestContext().getLocale());
+                // get the subcontainer
+                JSONObject subcontainer = sublocaleData.optJSONObject(sublocaleData.names().optString(0));
+                // iterate the subelements
+                JSONArray subelements = subcontainer.optJSONArray(CmsContainerPageLoader.N_ELEMENT);
 
-            // TODO: would this be better??
+                for (int j = 0; j < subelements.length(); j++) {
+                    JSONObject subelement = subelements.optJSONObject(j);
+                    String subelementUri = subelement.optString(CmsContainerPageLoader.N_URI);
+                    String subelementFormatter = subelement.optString(CmsContainerPageLoader.N_FORMATTER);
+
+                    CmsResource subresUri = cms.readResource(subelementUri);
+                    // execute the formatter jsp for the given element uri
+                    String jspResult = CmsADEElementManager.getInstance().getElementContent(
+                        cms,
+                        subresUri,
+                        subelementFormatter,
+                        (HttpServletRequest)req,
+                        (HttpServletResponse)res);
+
+                    // write the result
+                    res.getWriter().println(jspResult);
+                }
+            } else {
+                String elementFormatter = element.optString(CmsContainerPageLoader.N_FORMATTER);
+                // execute the formatter jsp for the given element uri
+                String jspResult = CmsADEElementManager.getInstance().getElementContent(
+                    cms,
+                    resUri,
+                    elementFormatter,
+                    (HttpServletRequest)req,
+                    (HttpServletResponse)res);
+
+                // write the result
+                res.getWriter().println(jspResult);
+            }
+
+            // TODO: would not this be better??
             // CmsJspTagInclude.includeTagAction(pageContext, uri, null, false, null, request, response);
-
-            // write the result
-            res.getWriter().println(jspResult);
         }
     }
 
