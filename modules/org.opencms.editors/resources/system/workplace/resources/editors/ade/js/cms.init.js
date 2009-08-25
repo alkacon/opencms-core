@@ -82,3 +82,28 @@ $.extend($.ui.sortable.prototype, {
 
 	}
 })
+
+   /**
+    * Application entry point.
+    */
+   $('document').ready(function() {
+       // TODO: may be it is better to load the toolbar after successfully loading the data
+      $('.cms-item a.ui-icon').live('click', cms.toolbar.toggleAdditionalInfo);
+      cms.toolbar.addToolbar();
+      $('.cms-item-list div.cms-additional div').jHelperTip({
+         trigger: 'hover',
+         source: 'attribute',
+         attrName: 'alt',
+         topOff: -30,
+         opacity: 0.8,
+         live: true
+      });
+      cms.data.loadAllData(function(ok) {
+         if (ok) {
+            cms.data.fillContainers();
+         } else {
+                  // TODO
+         }
+      });
+   });
+   

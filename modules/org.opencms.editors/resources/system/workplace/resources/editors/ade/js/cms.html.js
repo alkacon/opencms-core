@@ -1,35 +1,39 @@
-(function(cms){
-    
-var recentMenuId=cms.html.recentMenuId='recentlist';
-var recentListId=cms.html.recentListId='recent_list_items';
-var favoriteMenuId=cms.html.favoriteMenuId='favoritelist';
-var favoriteListId=cms.html.favoriteListId='favorite_list_items';
-var favoriteDialogId=cms.html.favoriteDialogId='fav-dialog';
-var publishDialogId=cms.html.publishDialogId='publishlist';
-var toolbarId=cms.html.toolbarId='toolbar';
+(function(cms) {
 
+   var recentMenuId = cms.html.recentMenuId = 'recentlist';
+   var recentListId = cms.html.recentListId = 'recent_list_items';
+   var favoriteMenuId = cms.html.favoriteMenuId = 'favoritelist';
+   var favoriteListId = cms.html.favoriteListId = 'favorite_list_items';
+   var favoriteDialogId = cms.html.favoriteDialogId = 'fav-dialog';
+   var publishDialogId = cms.html.publishDialogId = 'publishlist';
+   var toolbarId = cms.html.toolbarId = 'toolbar';
+   
    var newMenuId = cms.html.newMenuId = 'cms-new';
    var newListId = cms.html.newListId = 'cms-new-list';
    
-
-var recentList = cms.html.recentList = '<div id="'+recentMenuId+'" class="cms-menu">\
+   
+   var recentList = cms.html.recentList = '<div id="' + recentMenuId + '" class="cms-menu">\
     <div class="connect ui-corner-top"></div>\
     <div class="ui-widget-shadow ui-corner-all"></div>\
     <div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
-        <ul id="'+recentListId+'" class="cms-item-list"></ul>\
+        <ul id="' +
+   recentListId +
+   '" class="cms-item-list"></ul>\
     </div></div>';
-
-
-var favoriteList = cms.html.favoriteList = '<div id="'+favoriteMenuId+'" class="cms-menu">\
+   
+   
+   var favoriteList = cms.html.favoriteList = '<div id="' + favoriteMenuId + '" class="cms-menu">\
 	<div class="connect ui-corner-top"></div>\
 	<div class="ui-widget-shadow ui-corner-all"></div>\
 	<div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
-	    <ul id="'+favoriteListId+'" class="cms-item-list">\
+	    <ul id="' +
+   favoriteListId +
+   '" class="cms-item-list">\
 	        <button id="fav-edit" name="Edit_Favorites" title="Edit Favorites" class="ui-state-default ui-corner-all">Edit Favorites</button>\
 	    </ul>\
 	</div></div>';
-
-var publishDialog = cms.html.publishDialog = '<div id="'+publishDialogId+'" class="cms-dialog">\
+   
+   var publishDialog = cms.html.publishDialog = '<div id="' + publishDialogId + '" class="cms-dialog">\
 	<form action="#">\
 	    <ul  class="cms-item-list"><li class="cms-item">\
             <div class="cms-left">\
@@ -75,75 +79,75 @@ var publishDialog = cms.html.publishDialog = '<div id="'+publishDialogId+'" clas
 	        </li>\
 	    </ul>\
 	</form></div>';
-    
-var createMenu = cms.html.createMenu = function(menuId){
-    var listId='';
-    var addMenuItem = '';
-    if (menuId == favoriteMenuId) {
-        listId = favoriteListId;
-        addMenuItem='<button id="fav-edit" name="Edit_Favorites" title="Edit Favorites" class="ui-state-default ui-corner-all cms-edit-favorites">Edit Favorites</button>';
-    }else if (menuId == recentMenuId){
-        listId = recentListId;
+   
+   var createMenu = cms.html.createMenu = function(menuId) {
+      var listId = '';
+      var addMenuItem = '';
+      if (menuId == favoriteMenuId) {
+         listId = favoriteListId;
+         addMenuItem = '<button id="fav-edit" name="Edit_Favorites" title="Edit Favorites" class="ui-state-default ui-corner-all cms-edit-favorites">Edit Favorites</button>';
+      } else if (menuId == recentMenuId) {
+         listId = recentListId;
       } else {
          listId = menuId + "-list";
-    }
-    
+      }
+      
       var html = ['<div id="', menuId, '" class="cms-menu" style="display:none">\
     	<div class="connect ui-corner-top"></div>\
     	<div class="ui-widget-shadow ui-corner-all"></div>\
     	<div class="ui-widget-content ui-corner-bottom ui-corner-tl">\
-    	    <ul id="', listId, '" class="cms-item-list">', addMenuItem,'</ul>\
+    	    <ul id="', listId, '" class="cms-item-list">', addMenuItem, '</ul>\
     	</div></div>'];
-        
-    return html.join('');
-}
-
-var favoriteDialog= cms.html.favoriteDialog = '<div id="'+favoriteDialogId+'" class="cms-dialog"><ul class="cms-item-list"></ul></div>';
-
-var createItemFavDialogHtml = cms.html.createItemFavDialogHtml = function(item) {
+      
+      return html.join('');
+   }
+   
+   var favoriteDialog = cms.html.favoriteDialog = '<div id="' + favoriteDialogId + '" class="cms-dialog"><ul class="cms-item-list"></ul></div>';
+   
+   var createItemFavDialogHtml = cms.html.createItemFavDialogHtml = function(item) {
       var html = ['<li class="cms-item" rel="', item.id, '">\
 		<div class="cms-left">\
 			<span class="cms-delete-icon" ></span>\
 		</div>\
 		<div class="cms-left ui-widget-content">\
 			<div class="cms-head ui-state-hover">\
-				<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>',item.navText,'</div>\
-				<span class="cms-title">',item.title,'</span>\
+				<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>', item.navText, '</div>\
+				<span class="cms-title">', item.title, '</span>\
 				<span class="cms-file-icon"></span>\
 				<a class="cms-move cms-handle"></a>\
 			</div>\
 			<div class="cms-additional">\
-				<div alt="File:',item.file,'"><span class="left">File:</span>',item.file,'</div>\
-				<div alt="Date:',item.date,'"><span class="left">Date:</span>',item.date,'</div>\
-				<div alt="User:',item.user,'"><span class="left">User:</span>',item.user,'</div>\
-				<div alt="Type:',item.type,'"><span class="left">Type:</span>',item.type,'</div>\
+				<div alt="File:', item.file, '"><span class="left">File:</span>', item.file, '</div>\
+				<div alt="Date:', item.date, '"><span class="left">Date:</span>', item.date, '</div>\
+				<div alt="User:', item.user, '"><span class="left">User:</span>', item.user, '</div>\
+				<div alt="Type:', item.type, '"><span class="left">Type:</span>', item.type, '</div>\
 			</div>\
 		</div>\
 		<br clear="all" />\
 	</li>'];
-	return html.join('');
-}
-var createItemFavListHtml = cms.html.createItemFavListHtml = function(item) {
+      return html.join('');
+   }
+   var createItemFavListHtml = cms.html.createItemFavListHtml = function(item) {
       var html = ['<li class="cms-item"  rel="', item.id, '">\
 			<div class=" ui-widget-content">\
 				<div class="cms-head ui-state-hover">\
-					<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>',item.navText,'</div>\
-					<span class="cms-title">',item.title,'</span>\
+					<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>', item.navText, '</div>\
+					<span class="cms-title">', item.title, '</span>\
 					<span class="cms-file-icon"></span>\
 				</div>\
 				<div class="cms-additional">\
-					<div alt="File: ',item.file,'"><span class="cms-left">File:</span>',item.file,'</div>\
-					<div alt="Date: ',item.date,'"><span class="cms-left">Date:</span>',item.date,'</div>\
-					<div alt="User: ',item.user,'"><span class="cms-left">User:</span>',item.user,'</div>\
-					<div alt="Type: ',item.type,'"><span class="cms-left">Type:</span>',item.type,'</div>\
+					<div alt="File: ', item.file, '"><span class="cms-left">File:</span>', item.file, '</div>\
+					<div alt="Date: ', item.date, '"><span class="cms-left">Date:</span>', item.date, '</div>\
+					<div alt="User: ', item.user, '"><span class="cms-left">User:</span>', item.user, '</div>\
+					<div alt="Type: ', item.type, '"><span class="cms-left">Type:</span>', item.type, '</div>\
 				</div>\
 			</div>\
 			\
 		</li>'];
-	return html.join('');
-}
-
-var toolbar = cms.html.toolbar = '<div id="'+toolbarId+'">\
+      return html.join('');
+   }
+   
+   var toolbar = cms.html.toolbar = '<div id="' + toolbarId + '">\
 	<div class="ui-widget-shadow"></div>\
 	<div id="toolbar_background" class="ui-widget-header cms-toolbar-background">\
 	    <div id="toolbar_content" class="cms-toolbar-content">\
@@ -160,6 +164,6 @@ var toolbar = cms.html.toolbar = '<div id="'+toolbarId+'">\
             <button name="Publish" title="Publish" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-publish"/>&nbsp;</button>\
         </div>\
      </div></div>';
-
-
+   
+   
 })(cms);

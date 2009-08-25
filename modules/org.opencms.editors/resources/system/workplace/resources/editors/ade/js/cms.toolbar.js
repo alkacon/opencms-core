@@ -15,8 +15,6 @@
    var showPublishList = cms.toolbar.showPublishList = function() {
       var button = $(this);
       if (button.hasClass('ui-state-active')) {
-      
-      
          button.removeClass('ui-state-active');
       } else {
          $('button.ui-state-active').trigger('click');
@@ -74,39 +72,48 @@
          $('button.ui-state-active').trigger('click');
          
          // enabling delete mode
-			$(deleteitems).each(
-					function() {
+         $(cms.data.deleteitems).each(function() {
             var elem = $(this).css('position', 'relative');
-						$('<a class="cms-handle cms-delete"></a>').appendTo(
-								elem).hover( function() {
+            $('<a class="cms-handle cms-delete"></a>').appendTo(elem).hover(function() {
                cms.move.hoverIn(elem, 2)
             }, cms.move.hoverOut).click(deleteItem);
          });
          button.addClass('ui-state-active');
       }
    };
-   var timer = cms.toolbar.timer = {id: null, handleDiv: null, adeMode: null};
-   var startHoverTimeout = cms.toolbar.startHoverTimeout = function(handleDiv, adeMode){
-       if (timer.id){
-           clearTimeout(timer.id);
-       }
-       timer.id=setTimeout("cms.toolbar.showAddButtons()", 1000);
-       timer.handleDiv=handleDiv;
-       timer.adeMode=adeMode;
-  }     
-
-   var showAddButtons = cms.toolbar.showAddButtons = function(){
-       timer.id = null;
-       timer.handleDiv.addClass('ui-widget-header').css({'width': '72px', 'right': '-48px'}).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
+   var timer = cms.toolbar.timer = {
+      id: null,
+      handleDiv: null,
+      adeMode: null
+   };
+   var startHoverTimeout = cms.toolbar.startHoverTimeout = function(handleDiv, adeMode) {
+      if (timer.id) {
+         clearTimeout(timer.id);
+      }
+      timer.id = setTimeout("cms.toolbar.showAddButtons()", 1000);
+      timer.handleDiv = handleDiv;
+      timer.adeMode = adeMode;
+      
    }
    
-   var stopHover = cms.toolbar.stopHover = function(){
-       if (timer.id){
-           clearTimeout(timer.id);
-           timer.id = null;
-       }
-       cms.move.hoverOut();
-       timer.handleDiv.removeClass('ui-widget-header').css({'width': '24px', 'right': '0px'}).children().removeClass('ui-corner-all ui-state-default').not('a.cms-'+timer.adeMode).css('display', 'none');
+   var showAddButtons = cms.toolbar.showAddButtons = function() {
+      timer.id = null;
+      timer.handleDiv.addClass('ui-widget-header').css({
+         'width': '72px',
+         'right': '-48px'
+      }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
+   }
+   
+   var stopHover = cms.toolbar.stopHover = function() {
+      if (timer.id) {
+         clearTimeout(timer.id);
+         timer.id = null;
+      }
+      cms.move.hoverOut();
+      timer.handleDiv.removeClass('ui-widget-header').css({
+         'width': '24px',
+         'right': '0px'
+      }).children().removeClass('ui-corner-all ui-state-default').not('a.cms-' + timer.adeMode).css('display', 'none');
    }
    
    var toggleEdit = cms.toolbar.toggleEdit = function() {
@@ -118,29 +125,30 @@
       } else {
          $('button.ui-state-active').trigger('click');
          // enabling edit mode
-         $(sortitems).each(function() {
+         $(cms.data.sortitems).each(function() {
             var elem = $(this).css('position', 'relative');
             var elemId = elem.attr('rel');
             if (elemId && cms.data.elements[elemId]) {
                if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
-                        var handleDiv=$('<div class="cms-handle"></div>').appendTo(elem).hover(function(){
-                            cms.move.hoverIn(elem, 2);
-                            startHoverTimeout(handleDiv, 'edit');
-                        }, function() {
-                            stopHover();
-                        });
-                        $('<a class="cms-edit"></a>').appendTo(handleDiv).click(function(){
+                  var handleDiv = $('<div class="cms-handle"></div>').appendTo(elem).hover(function() {
+                     cms.move.hoverIn(elem, 2);
+                     startHoverTimeout(handleDiv, 'edit');
+                  }, function() {
+                     stopHover();
+                  });
+                  $('<a class="cms-edit"></a>').appendTo(handleDiv).click(function() {
                      openEditDialog(elemId);
                   });
-                        $('<a class="cms-move"></a>').css('display', 'none').appendTo(handleDiv);
-                        $('<a class="cms-delete"></a>').css('display', 'none').appendTo(handleDiv).click(deleteItem);
-                        handleDiv.css({
-                            'left': handleDiv.position().left,
-                            'width': 24
-                        });
+                  $('<a class="cms-move"></a>').css('display', 'none').appendTo(handleDiv);
+                  $('<a class="cms-delete"></a>').css('display', 'none').appendTo(handleDiv).click(deleteItem);
+                  handleDiv.css({
+                     'left': handleDiv.position().left,
+                     'width': 24
+                  });
                } else {
                               // Append edit-locked-handle
                }
+               
             }
             
          });
@@ -148,42 +156,42 @@
       }
    };
    
-   var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving){
-        var handleDiv=$('<div class="cms-handle"></div>').appendTo(elem);
-        
-        var handles = {
-            'edit': cms.data.elements[elemId].allowEdit ? $('<a class="cms-edit cms-edit-enabled"></a>').click(openEditDialog) : $('<a class="cms-edit cms-edit-locked" title="locked by " onclick="return false;"></a>') ,
-            'move': $('<a class="cms-move"></a>').mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd),
-            'delete': $('<a class="cms-delete"></a>').click(deleteItem)
-        };
-        handles[adeMode].appendTo(handleDiv);
-        for (handleName in handles){
-            if (handleName != adeMode){
-                handles[handleName].appendTo(handleDiv).css('display', 'none');
-            }
-        }
-        if (isMoving){
-            if (adeMode != 'move') {
-                handles[adeMode].css('display', 'none');
-                handles['move'].css('display', 'block');
-            }
-        }else{
-            handleDiv.hover(function(){
-                cms.move.hoverIn(elem, 2);
-                startHoverTimeout(handleDiv, adeMode);
-            }, function() {
-                stopHover();
-            });
-        }
-        handleDiv.css({
-            'right': '0px',
-            'width': '24px'
-        });
+   var addHandles = cms.toolbar.addHandles = function(elem, elemId, adeMode, isMoving) {
+      var handleDiv = $('<div class="cms-handle"></div>').appendTo(elem);
+      
+      var handles = {
+         'edit': cms.data.elements[elemId].allowEdit ? $('<a class="cms-edit cms-edit-enabled"></a>').click(openEditDialog) : $('<a class="cms-edit cms-edit-locked" title="locked by " onclick="return false;"></a>'),
+         'move': $('<a class="cms-move"></a>').mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd),
+         'delete': $('<a class="cms-delete"></a>').click(deleteItem)
+      };
+      handles[adeMode].appendTo(handleDiv);
+      for (handleName in handles) {
+         if (handleName != adeMode) {
+            handles[handleName].appendTo(handleDiv).css('display', 'none');
+         }
+      }
+      if (isMoving) {
+         if (adeMode != 'move') {
+            handles[adeMode].css('display', 'none');
+            handles['move'].css('display', 'block');
+         }
+      } else {
+         handleDiv.hover(function() {
+            cms.move.hoverIn(elem, 2);
+            startHoverTimeout(handleDiv, adeMode);
+         }, function() {
+            stopHover();
+         });
+      }
+      handleDiv.css({
+         'right': '0px',
+         'width': '24px'
+      });
    }
    
    var toggleMode = cms.toolbar.toggleMode = function() {
       var button = $(this);
-      var adeMode=button.attr('name').toLowerCase();
+      var adeMode = button.attr('name').toLowerCase();
       if (button.hasClass('ui-state-active')) {
          // disabling edit mode
          destroyMove();
@@ -194,10 +202,10 @@
          // enabling edit mode
          $(cms.util.getContainerSelector()).children('.cms-element').each(function() {
             var elem = $(this).css('position', 'relative');
-                var elemId=elem.attr('rel');
-                if (elemId && cms.data.elements[elemId]){
-                   addHandles(elem, elemId, adeMode);
-                }
+            var elemId = elem.attr('rel');
+            if (elemId && cms.data.elements[elemId]) {
+               addHandles(elem, elemId, adeMode);
+            }
             
          });
          initMove();
@@ -205,8 +213,8 @@
       }
    };
    
-    var openEditDialog = cms.toolbar.openEditDialog = function(){
-        var elemId=$(this).closest('.cms-element').attr('rel');
+   var openEditDialog = cms.toolbar.openEditDialog = function() {
+      var elemId = $(this).closest('.cms-element').attr('rel');
       if (elemId && cms.data.elements[elemId]) {
          if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
             var element = cms.data.elements[elemId];
@@ -216,7 +224,6 @@
                dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
                var dialogHeight = self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
                var iFrameHeight = dialogHeight - 126;
-               cms.data.BACKLINK_URL = cms.data.BACKLINK_URL.replace("/opencms/opencms", "");
                var editorLink = cms.data.EDITOR_URL + '?resource=' + path + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
                var editorFrame = '<iframe style="border:none; width:100%; height:' + iFrameHeight + 'px;" name="cmsAdvancedDirectEditor" src="' + editorLink + '"></iframe>';
                var editorDialog = $('#cms-editor');
@@ -225,7 +232,6 @@
                } else {
                   editorDialog.empty().attr('rel', id);
                }
-               
                
                editorDialog.append('<div class="cms-editor-subtitle">Resource: ' + path + '</div>').append(editorFrame);
                editorDialog.dialog({
@@ -245,30 +251,38 @@
                   },
                   position: ['center', -20],
                   open: function(event, ui) {
-                        $('#cms_appendbox').css('z-index', 10005).append(editorDialog.parent());
+                     $('#cms_appendbox').css('z-index', 10005).append(editorDialog.parent());
                      $('a.ui-dialog-titlebar-close').hide();
                   },
                   close: function() {
                      editorDialog.empty().dialog('destroy');
-                     cms.data.reloadElement(id, function() {
-                         // to reset the mode we turn it off and on again
-                         var activeButton = $("#toolbar button.ui-state-active");
-                         activeButton.trigger('click');
-                         activeButton.trigger('click');
+                     cms.data.reloadElement(id, function(ok) {
+                        if (ok) {
+                           // to reset the mode we turn it off and on again
+                           var activeButton = $("#toolbar button.ui-state-active");
+                           activeButton.trigger('click');
+                           activeButton.trigger('click');
+                        } else {
+                                                // TODO
+                        }
                      });
                   },
                   zIndex: 10000
                });
             }
             if (element.status == cms.data.STATUS_NEW) {
-               cms.data.createResource(element.type, function(path, id) {
+               cms.data.createResource(element.type, function(ok, id, uri) {
+                   if (!ok) {
+                       // TODO
+                       return;
+                   }
                   var elem = cms.data.elements[elemId];
                   delete cms.data.elements[elemId];
                   cms.data.elements[id] = elem;
                   elem.id = id;
                   elem.status = cms.data.STATUS_CREATED;
                   cms.util.replaceNewElement(elemId, id);
-                  _openDialog(path, id);
+                  _openDialog(uri, id);
                });
                
             } else {
@@ -329,8 +343,8 @@
       bodyEl.append('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>');
       $('#show-button').click(toggleToolbar);
       $('#toolbar button[name="Edit"], #toolbar button[name="Move"], #toolbar button[name="Delete"]').click(toggleMode);
-//      $('#toolbar button[name="Move"]').click(toggleMode);
-//      $('#toolbar button[name="Delete"]').click(toggleMode);
+      //      $('#toolbar button[name="Move"]').click(toggleMode);
+      //      $('#toolbar button[name="Delete"]').click(toggleMode);
       $('#toolbar button[name="Publish"]').click(showPublishList);
       $('#toolbar button[name="Favorites"]').click(function() {
          toggleList(this, cms.html.favoriteMenuId);
@@ -346,8 +360,8 @@
          toggleList(this, cms.html.newMenuId);
       });
       $('#toolbar button, #show-button').mouseover(function() {
-         if (!$(this).hasClass('cms-deactivated')){
-         $(this).addClass('ui-state-hover');
+         if (!$(this).hasClass('cms-deactivated')) {
+            $(this).addClass('ui-state-hover');
          }
       }).mouseout(function() {
          $(this).removeClass('ui-state-hover');
@@ -360,73 +374,72 @@
    };
    
    
-   
-   var destroyMove=function(){
-       var containerSelector=cms.util.getContainerSelector();
-       $(containerSelector + ', #' + cms.html.favoriteListId).sortable('destroy');
-       var list = $('#' + cms.html.favoriteMenuId);
-       $('li.cms-item, button', list).css('display', 'block');
-       list.css('display', 'none');
-       list.get(0).style.visibility = '';
-       $('#' + cms.html.favoriteListId).get(0).style.height = '';
-	   resetFavList();
- //      $('a.cms-move').remove();
+   var destroyMove = function() {
+      var containerSelector = cms.util.getContainerSelector();
+      $(containerSelector + ', #' + cms.html.favoriteListId).sortable('destroy');
+      var list = $('#' + cms.html.favoriteMenuId);
+      $('li.cms-item, button', list).css('display', 'block');
+      list.css('display', 'none');
+      list.get(0).style.visibility = '';
+      $('#' + cms.html.favoriteListId).get(0).style.height = '';
+      resetFavList();
+      //      $('a.cms-move').remove();
    }
    
-   var initMove=function(){
-       var containerSelector=cms.util.getContainerSelector();
-       var list = $('#' + cms.html.favoriteMenuId);
-       var favbutton = $('button[name="Favorites"]');
-       $('li.cms-item, button', list).css('display', 'none');
-       list.appendTo('#toolbar_content').css({
-            top: 35,
-            left: favbutton.position().left - 217,
-            display: 'block',
-            visibility: 'hidden'
-       });
-	   $('#'+cms.html.favoriteListId).css('height', '40px');
-       $('div.ui-widget-shadow', list).css({
-            top: 0,
-            left: -4,
-            width: list.outerWidth() + 8,
-            height: list.outerHeight() + 2,
-            border: '0px solid',
-            opacity: 0.6
-       });
-         
-       $(containerSelector).css('position', 'relative');
-       $(containerSelector + ', #' + cms.html.favoriteListId).sortable({
-            connectWith: containerSelector + ', #' + cms.html.favoriteListId,
-            placeholder: 'cms-placeholder',
-            dropOnEmpty: true,
-            start: cms.move.startAdd,
-            beforeStop: cms.move.beforeStopFunction,
-            over: cms.move.overAdd,
-            out: cms.move.outAdd,
-            change: function(event, ui){
-                cms.move.hoverOut(ui.helper.parent());
-                cms.move.hoverInner(ui.helper.parent(), 2, true);
-            },
-            tolerance: 'pointer',
- //           opacity: 0.7,
-            stop: cms.move.stopAdd,
-            cursorAt: {
-               right: 10,
-               top: 10
-            },
-            zIndex: 20000,
-            handle: 'a.cms-move',
-				items :'.cms-element',
-            revert: true,
-            deactivate: function(event, ui) {
-               $('#' + cms.html.favoriteListId + ' li').hide(200);
-               $('#' + cms.html.favoriteMenuId).css('visibility', 'hidden');
-               $('.cms-handle').show();
-               if ($.browser.msie) {
-                  setTimeout("$('.cms-element').css('display','block')", 50);
-               }
+   var initMove = function() {
+      var containerSelector = cms.util.getContainerSelector();
+      var list = $('#' + cms.html.favoriteMenuId);
+      var favbutton = $('button[name="Favorites"]');
+      $('li.cms-item, button', list).css('display', 'none');
+      list.appendTo('#toolbar_content').css({
+         top: 35,
+         left: favbutton.position().left - 217,
+         display: 'block',
+         visibility: 'hidden'
+      });
+      $('#' + cms.html.favoriteListId).css('height', '40px');
+      $('div.ui-widget-shadow', list).css({
+         top: 0,
+         left: -4,
+         width: list.outerWidth() + 8,
+         height: list.outerHeight() + 2,
+         border: '0px solid',
+         opacity: 0.6
+      });
+      
+      $(containerSelector).css('position', 'relative');
+      $(containerSelector + ', #' + cms.html.favoriteListId).sortable({
+         connectWith: containerSelector + ', #' + cms.html.favoriteListId,
+         placeholder: 'cms-placeholder',
+         dropOnEmpty: true,
+         start: cms.move.startAdd,
+         beforeStop: cms.move.beforeStopFunction,
+         over: cms.move.overAdd,
+         out: cms.move.outAdd,
+         change: function(event, ui) {
+            cms.move.hoverOut(ui.helper.parent());
+            cms.move.hoverInner(ui.helper.parent(), 2, true);
+         },
+         tolerance: 'pointer',
+         //           opacity: 0.7,
+         stop: cms.move.stopAdd,
+         cursorAt: {
+            right: 10,
+            top: 10
+         },
+         zIndex: 20000,
+         handle: 'a.cms-move',
+         items: '.cms-element',
+         revert: true,
+         deactivate: function(event, ui) {
+            $('#' + cms.html.favoriteListId + ' li').hide(200);
+            $('#' + cms.html.favoriteMenuId).css('visibility', 'hidden');
+            $('.cms-handle').show();
+            if ($.browser.msie) {
+               setTimeout("$('.cms-element').css('display','block')", 50);
             }
-         });
+         }
+      });
    }
    
    var toggleMove = cms.toolbar.toggleMove = function(el) {
@@ -446,29 +459,22 @@
       } else {
          $('button.ui-state-active').trigger('click');
          // enabling move mode
-         $(containerSelector).children('.cms-element:visible').each(
-			function() {
+         $(containerSelector).children('.cms-element:visible').each(function() {
             var elem = $(this).css('position', 'relative');
             if (elem.hasClass('cms-subcontainer') && (/left|right/).test(elem.css('float'))) {
                var pos = cms.util.getElementPosition(elem);
                var dimensions = cms.util.getInnerDimensions(elem, 1);
-                            $('<a class="cms-handle cms-move"></a>')
-                                .appendTo(elem).hover(function() {
+               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
                   cms.move.hoverInner(elem, 2, false);
-                                }, cms.move.hoverOut)
-                                .mousedown(cms.move.movePreparation)
-                                .mouseup(cms.move.moveEnd)
-                                .css('left', dimensions.left - pos.left + dimensions.width - 20);
+               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd).css('left', dimensions.left - pos.left + dimensions.width - 20);
             } else {
-                            $('<a class="cms-handle cms-move"></a>').appendTo(elem)
-								.hover( function() {
+               $('<a class="cms-handle cms-move"></a>').appendTo(elem).hover(function() {
                   if (elem.hasClass('cms-subcontainer')) {
                      cms.move.hoverInner(elem, 2, false);
                   } else {
                      cms.move.hoverIn(elem, 2);
                   }
-                                }, cms.move.hoverOut).mousedown(cms.move.movePreparation)
-								.mouseup(cms.move.moveEnd);
+               }, cms.move.hoverOut).mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd);
             }
             
          });
@@ -531,7 +537,6 @@
       var button = $(buttonElem);
       var newMenuItems = $('#' + newMenu).find("ul").attr('id');
       if (button.hasClass('ui-state-active')) {
-      
          $(cms.util.getContainerSelector() + ', ' + sortmenus).sortable('destroy');
          $(menuHandles).remove();
          $(menus).hide();
@@ -543,11 +548,11 @@
          if (newMenuItems == cms.html.favoriteListId) {
             resetFavList();
             loadFunction = cms.data.loadFavorites;
-         } else
-         if (newMenuItems == cms.html.recentListId) {
+         } else if (newMenuItems == cms.html.recentListId) {
             resetRecentList();
             loadFunction = cms.data.loadRecent;
          } else {
+            // TODO: please comment!!
             loadFunction = function(f) {
                f();
             }
@@ -557,8 +562,14 @@
          button.addClass('ui-state-active');
          // enabling move-mode
          // * current menu
-         loadFunction(function() {
-            if (!button.hasClass("ui-state-active")) return;
+         loadFunction(function(ok, data) {
+            if (!ok) {
+               // TODO
+               return;
+            }
+            if (!button.hasClass("ui-state-active")) {
+               return;
+            }
             list = $('#' + cms.toolbar.currentMenu);
             $('.cms-head', list).each(function() {
                var elem = $(this);
@@ -578,7 +589,7 @@
                   opacity: 0.6
                });
             });
-         $(cms.util.getContainerSelector()).css('position', 'relative').children('*:visible').css('position', 'relative');
+            $(cms.util.getContainerSelector()).css('position', 'relative').children('*:visible').css('position', 'relative');
             // * current menu
             $(cms.util.getContainerSelector() + ', #' + cms.toolbar.currentMenuItems).sortable({
                // * current menu
@@ -597,12 +608,15 @@
                   top: 10
                },
                handle: 'a.cms-move',
-               items: sortitems + ', li.cms-item',
+               items: cms.data.sortitems + ', li.cms-item',
                revert: 100,
                deactivate: function(event, ui) {
                   $('a.cms-move', $(this)).removeClass('cms-trigger');
                   if ($.browser.msie) {
-                     setTimeout("$(sortitems).css('display','block')", 10);
+                     // TODO: please comment this kind of code!!!
+                     setTimeout(function() {
+                        $(cms.data.sortitems).css('display', 'block');
+                     }, 10);
                   }
                }
             });
@@ -631,7 +645,11 @@
    var favEditOK = cms.toolbar.favEditOK = function() {
       $(this).dialog("close");
       saveFavorites();
-      cms.data.persistFavorites();
+      cms.data.persistFavorites(function(ok) {
+         if (!ok) {
+                  // TODO
+         }
+      });
    }
    
    var favEditCancel = cms.toolbar.favEditCancel = function() {
@@ -754,7 +772,6 @@
 	</li>'];
       return html.join('');
    };
-   
    var resetNewList = cms.toolbar.resetNewList = function() {
       $('#' + cms.html.newMenuId + " li.cms-item").remove();
       var $newlist = $('#' + cms.html.newMenuId + " ul");
@@ -767,7 +784,11 @@
    
    var addToRecent = cms.toolbar.addToRecent = function(itemId) {
       cms.util.addUnique(cms.toolbar.recent, itemId, cms.toolbar.recentSize);
-      cms.data.persistRecent();
+      cms.data.persistRecent(function(ok) {
+         if (!ok) {
+                  // TODO
+         }
+      });
    }
    
    
@@ -803,27 +824,30 @@
    
    
    var showSaveDialog = function() {
-        if (!$(this).hasClass('cms-deactivated')) {
-      $('button[name="Save"]').addClass('ui-state-active');
-      $('#cms-save-dialog').dialog('open');
-   }
+      if (!$(this).hasClass('cms-deactivated')) {
+         $('button[name="Save"]').addClass('ui-state-active');
+         $('#cms-save-dialog').dialog('open');
+         
+      }
    }
    
    var savePage = cms.toolbar.savePage = function() {
-
-       cms.data.persistContainers(function() {
-           $('#cms-save-dialog').dialog('close');
-           setPageChanged(false);
-       });
+   
+      cms.data.persistContainers(function(ok) {
+         $('#cms-save-dialog').dialog('close');
+         if (ok) {
+            setPageChanged(false);
+         }
+      });
    }
    
    var pageChanged = cms.toolbar.pageChanged = false;
    var setPageChanged = cms.toolbar.setPageChanged = function(newValue) {
       pageChanged = cms.toolbar.pageChanged = newValue;
       if (newValue) {
-           $('#toolbar button[name="Save"], #toolbar button[name="Reset"]').removeClass('cms-deactivated');
+         $('#toolbar button[name="Save"], #toolbar button[name="Reset"]').removeClass('cms-deactivated');
       } else {
-           $('#toolbar button[name="Save"], #toolbar button[name="Reset"]').addClass('cms-deactivated');
+         $('#toolbar button[name="Save"], #toolbar button[name="Reset"]').addClass('cms-deactivated');
       }
    }
    
@@ -837,7 +861,7 @@
       }
    }
    
-   //==================================================================================================================
+   //===========================================================================================================
    var resetRecentList = cms.toolbar.resetRecentList = function() {
       $("#" + cms.html.recentMenuId + " li.cms-item").remove();
       var $recentlist = $("#" + cms.html.recentListId);

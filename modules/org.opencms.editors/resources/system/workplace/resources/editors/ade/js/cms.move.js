@@ -9,11 +9,11 @@
    }
    
    var movePreparation = cms.move.movePreparation = function(event) {
-      if (cms.toolbar.timer.id){
-          clearTimeout(cms.toolbar.timer.id);
-          cms.toolbar.timer.id=null;
+      if (cms.toolbar.timer.id) {
+         clearTimeout(cms.toolbar.timer.id);
+         cms.toolbar.timer.id = null;
       }
-      var thisHandleDiv=$(this).closest('.cms-handle').unbind('mouseenter').unbind('mouseleave');
+      var thisHandleDiv = $(this).closest('.cms-handle').unbind('mouseenter').unbind('mouseleave');
       thisHandleDiv.children().removeClass('ui-corner-all ui-state-default');
       hoverOut();
       $('div.cms-handle').not(thisHandleDiv).hide();
@@ -21,19 +21,19 @@
    }
    
    var moveEnd = cms.move.moveEnd = function(event) {
-      var handleDiv=$(this).closest('.cms-handle');
+      var handleDiv = $(this).closest('.cms-handle');
       if (handleDiv) {
-          handleDiv.hover(function() {
-              cms.move.hoverIn($(this).closest('.cms-element'), 2);
-              cms.toolbar.startHoverTimeout(handleDiv, cms.toolbar.timer.adeMode);
-          }, function() {
-              cms.toolbar.stopHover();
-          });
+         handleDiv.hover(function() {
+            cms.move.hoverIn($(this).closest('.cms-element'), 2);
+            cms.toolbar.startHoverTimeout(handleDiv, cms.toolbar.timer.adeMode);
+         }, function() {
+            cms.toolbar.stopHover();
+         });
       }
       
-      if ('move'!=cms.toolbar.timer.adeMode){
-          $(this).hide();
-          handleDiv.children('.cms-'+cms.toolbar.timer.adeMode).show();
+      if ('move' != cms.toolbar.timer.adeMode) {
+         $(this).hide();
+         handleDiv.children('.cms-' + cms.toolbar.timer.adeMode).show();
       }
    }
    
@@ -71,20 +71,20 @@
          }
          
          // to increase visibility of the helper
-         if (helperElem.css('background-color')=='transparent' && helperElem.css('background-image')=='none'){
-             helperElem.addClass('cms-helper-background');
+         if (helperElem.css('background-color') == 'transparent' && helperElem.css('background-image') == 'none') {
+            helperElem.addClass('cms-helper-background');
          }
-         if (!helperElem.css('border') || !helperElem.css('border')=='none' || helperElem.css('border')==''){
-             helperElem.addClass('cms-helper-border');
+         if (!helperElem.css('border') || !helperElem.css('border') == 'none' || helperElem.css('border') == '') {
+            helperElem.addClass('cms-helper-border');
          }
       } else {
          sortable.cmsHelpers[container.name] = sortable.helper;
          // to increase visibility of the helper
-         if (sortable.helper.css('background-color')=='transparent' && sortable.helper.css('background-image')=='none'){
-             sortable.helper.addClass('cms-helper-background');
+         if (sortable.helper.css('background-color') == 'transparent' && sortable.helper.css('background-image') == 'none') {
+            sortable.helper.addClass('cms-helper-background');
          }
-         if (!sortable.helper.css('border') || sortable.helper.css('border')=='none' || sortable.helper.css('border')==''){
-             sortable.helper.addClass('cms-helper-border');
+         if (!sortable.helper.css('border') || sortable.helper.css('border') == 'none' || sortable.helper.css('border') == '') {
+            sortable.helper.addClass('cms-helper-border');
          }
          sortable.cmsOver = true;
       }
@@ -98,7 +98,7 @@
       sortable.placeholder = elem;
       
       $('.cms-additional', sortable.currentItem).hide();
-
+      
       sortable.helper.appendTo('#cms_appendbox');
       
       $('#' + sortable.cmsStartContainerId).closest('.cms-menu').css('display', 'none');
@@ -155,7 +155,7 @@
       ui.self.cmsCurrentContainerId = ui.self.cmsStartContainerId;
       ui.self.cmsResource_id = ui.self.currentItem.attr('rel');
       
-     
+      
       if (ui.self.cmsStartContainerId == cms.html.newListId) {
          var typeElem = cms.data.elements[ui.self.cmsResource_id];
          if (typeElem) {
@@ -174,7 +174,7 @@
          top: ui.self.offset.top,
          left: ui.self.offset.left
       };
-
+      
       
       
       ui.self.cmsHelpers = {};
@@ -277,14 +277,18 @@
          } else {
             if (endContainer == cms.html.favoriteListId) {
                cms.util.addUnique(cms.toolbar.favorites, ui.self.cmsResource_id);
-               cms.data.persistFavorites(function() {});
+               cms.data.persistFavorites(function(ok) {
+                  if (!ok) {
+                      // TODO
+                  }
+               });
                
             }
             orgPlaceholder.remove();
             // add item to endContainer
          }
          if (endContainer != cms.html.favoriteListId && startContainer != cms.html.newListId) {
-             cms.toolbar.addToRecent(ui.self.cmsResource_id);
+            cms.toolbar.addToRecent(ui.self.cmsResource_id);
          }
       }
       for (var container_name in helpers) {
@@ -300,16 +304,16 @@
                cms.util.clearAttributes(helperStyle, ['width', 'height', 'top', 'left', 'opacity', 'zIndex', 'display']);
                
                // reset handles
-               var handleDiv=$('div.cms-handle',helper);
+               var handleDiv = $('div.cms-handle', helper);
                handleDiv.hover(function() {
                   cms.move.hoverIn(helper, 2);
                   cms.toolbar.startHoverTimeout(handleDiv, cms.toolbar.timer.adeMode);
                }, function() {
                   cms.toolbar.stopHover();
                });
-               if ('move'!=cms.toolbar.timer.adeMode){
+               if ('move' != cms.toolbar.timer.adeMode) {
                   handleDiv.children('.cms-move').hide();
-                  handleDiv.children('.cms-'+cms.toolbar.timer.adeMode).show();
+                  handleDiv.children('.cms-' + cms.toolbar.timer.adeMode).show();
                }
                
                helperStyle.position = 'relative';
@@ -331,19 +335,20 @@
       cms.util.clearAttributes(currentItem.get(0).style, ['top', 'left', 'zIndex', 'display']);
       currentItem.removeClass('cms-helper-border cms-helper-background');
       // opacity is no longer used
-//      if ($.browser.msie) {
-//         currentItem.get(0).style.removeAttribute('filter');
-//         
-//         // ui.self.currentItem.get(0).style.removeAttribute('position');
-//      
-//      } else if (currentItem) {
-//      
-//         // ui.self.currentItem.get(0).style.position='';
-//         currentItem.get(0).style.opacity = '';
-//      }
+      //      if ($.browser.msie) {
+      //         currentItem.get(0).style.removeAttribute('filter');
+      //         
+      //         // ui.self.currentItem.get(0).style.removeAttribute('position');
+      //      
+      //      } else if (currentItem) {
+      //      
+      //         // ui.self.currentItem.get(0).style.position='';
+      //         currentItem.get(0).style.opacity = '';
+      //      }
       updateContainer(startContainer);
       updateContainer(endContainer);
-      if (endContainer != cms.html.favoriteListId) cms.toolbar.setPageChanged(true);
+      if (endContainer != cms.html.favoriteListId) 
+         cms.toolbar.setPageChanged(true);
    }
    
    
@@ -444,7 +449,7 @@
    }
    
    var hoverIn = cms.move.hoverIn = function(elem, hOff) {
-      
+   
       var tHeight = elem.outerHeight();
       var tWidth = elem.outerWidth();
       var hWidth = 2;
@@ -453,33 +458,33 @@
       
       
       if (elem.css('position') == 'relative') {
-        // if position relative highlighting div's are appended to the element itself
-        var tlrTop = - (hOff + hWidth);
-        var tblLeft = - (hOff + hWidth);
-        // top
-        $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(btWidth).css('top', tlrTop).css('left', tblLeft).appendTo(elem);
-        
-        // right
-        $('<div class="cms-hovering cms-hovering-right"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tWidth + hOff).appendTo(elem);
-        // left
-        $('<div class="cms-hovering cms-hovering-left"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tblLeft).appendTo(elem);
-        // bottom
-        $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(btWidth).css('top', tHeight + hOff).css('left', tblLeft).appendTo(elem);  
+         // if position relative highlighting div's are appended to the element itself
+         var tlrTop = -(hOff + hWidth);
+         var tblLeft = -(hOff + hWidth);
+         // top
+         $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(btWidth).css('top', tlrTop).css('left', tblLeft).appendTo(elem);
+         
+         // right
+         $('<div class="cms-hovering cms-hovering-right"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tWidth + hOff).appendTo(elem);
+         // left
+         $('<div class="cms-hovering cms-hovering-left"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tblLeft).appendTo(elem);
+         // bottom
+         $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(btWidth).css('top', tHeight + hOff).css('left', tblLeft).appendTo(elem);
       } else {
-        // if position not relative highlighting div's are appended to the body element
-        var position = cms.util.getElementPosition(elem);
-        var tlrTop = position.top - (hOff + hWidth);
-        var tblLeft = position.left - (hOff + hWidth);
-        // top
-        $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(btWidth).css('top', tlrTop).css('left', tblLeft).appendTo(document.body);
-        
-        // right
-        $('<div class="cms-hovering cms-hovering-right"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', position.left + tWidth + hOff).appendTo(document.body);
-        // left
-        $('<div class="cms-hovering cms-hovering-left"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tblLeft).appendTo(document.body);
-        // bottom
-        $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(btWidth).css('top', position.top + tHeight + hOff).css('left', tblLeft).appendTo(document.body);
-     }
+         // if position not relative highlighting div's are appended to the body element
+         var position = cms.util.getElementPosition(elem);
+         var tlrTop = position.top - (hOff + hWidth);
+         var tblLeft = position.left - (hOff + hWidth);
+         // top
+         $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(btWidth).css('top', tlrTop).css('left', tblLeft).appendTo(document.body);
+         
+         // right
+         $('<div class="cms-hovering cms-hovering-right"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', position.left + tWidth + hOff).appendTo(document.body);
+         // left
+         $('<div class="cms-hovering cms-hovering-left"></div>').height(lrHeight).width(hWidth).css('top', tlrTop).css('left', tblLeft).appendTo(document.body);
+         // bottom
+         $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(btWidth).css('top', position.top + tHeight + hOff).css('left', tblLeft).appendTo(document.body);
+      }
    }
    
    var hoverInner = cms.move.hoverInner = function(elem, hOff, showBackground) {
@@ -488,14 +493,14 @@
       var elemPos = cms.util.getElementPosition(elem);
       var hWidth = 2;
       var inner = {
-          top: dimension.top - (elemPos.top + hOff),
-          left: dimension.left - (elemPos.left + hOff),
-          height: dimension.height + 2 * hOff,
-          width: dimension.width + 2 * hOff
+         top: dimension.top - (elemPos.top + hOff),
+         left: dimension.left - (elemPos.left + hOff),
+         height: dimension.height + 2 * hOff,
+         width: dimension.width + 2 * hOff
       };
       if (showBackground) {
          // inner
-
+         
          $('<div class="cms-highlight-container" style="position: absolute; z-index:0; top: ' +
          inner.top +
          'px; left: ' +
@@ -508,45 +513,45 @@
       }
       
       if (elem.css('position') == 'relative') {
-        // top
-        $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);
-        // right
-        $('<div class="cms-hovering cms-hovering-right"></div>').height(inner.height + 2 * hWidth).width(hWidth).css('top', inner.top - hWidth).css('left', inner.left + inner.width + hOff).appendTo(elem);
-        // left
-        $('<div class="cms-hovering cms-hovering-left"></div>').height(inner.height + 2 * hWidth).width(hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);
-        // bottom
-        $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top + inner.height).css('left', inner.left - hWidth).appendTo(elem);
+         // top
+         $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);
+         // right
+         $('<div class="cms-hovering cms-hovering-right"></div>').height(inner.height + 2 * hWidth).width(hWidth).css('top', inner.top - hWidth).css('left', inner.left + inner.width + hOff).appendTo(elem);
+         // left
+         $('<div class="cms-hovering cms-hovering-left"></div>').height(inner.height + 2 * hWidth).width(hWidth).css('top', inner.top - hWidth).css('left', inner.left - hWidth).appendTo(elem);
+         // bottom
+         $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(inner.width + 2 * hWidth).css('top', inner.top + inner.height).css('left', inner.left - hWidth).appendTo(elem);
       } else {
-        // top
-        $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(dimension.width + 2 * (hOff + hWidth)).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
-        // right
-        $('<div class="cms-hovering cms-hovering-right"></div>').height(dimension.height + 2 * (hOff + hWidth)).width(hWidth).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left + dimension.width + hOff).appendTo(document.body);
-        // left
-        $('<div class="cms-hovering cms-hovering-left"></div>').height(dimension.height + 2 * (hOff + hWidth)).width(hWidth).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
-        // bottom
-        $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(dimension.width + 2 * (hOff + hWidth)).css('top', dimension.top + dimension.height + hOff).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
-    }
+         // top
+         $('<div class="cms-hovering cms-hovering-top"></div>').height(hWidth).width(dimension.width + 2 * (hOff + hWidth)).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
+         // right
+         $('<div class="cms-hovering cms-hovering-right"></div>').height(dimension.height + 2 * (hOff + hWidth)).width(hWidth).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left + dimension.width + hOff).appendTo(document.body);
+         // left
+         $('<div class="cms-hovering cms-hovering-left"></div>').height(dimension.height + 2 * (hOff + hWidth)).width(hWidth).css('top', dimension.top - (hOff + hWidth)).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
+         // bottom
+         $('<div class="cms-hovering cms-hovering-bottom"></div>').height(hWidth).width(dimension.width + 2 * (hOff + hWidth)).css('top', dimension.top + dimension.height + hOff).css('left', dimension.left - (hOff + hWidth)).appendTo(document.body);
+      }
    }
    var hoverOut = cms.move.hoverOut = function(context) {
-      if (context){
-          $('div.cms-hovering, div.cms-highlight-container', context).remove();
+      if (context) {
+         $('div.cms-hovering, div.cms-highlight-container', context).remove();
       } else {
-          $('div.cms-hovering, div.cms-highlight-container').remove();
+         $('div.cms-hovering, div.cms-highlight-container').remove();
       }
    };
    var setHelper = cms.move.setHelper = function(sortable, id) {
       sortable.helper.css('display', 'none');
       sortable.helper = sortable.cmsHelpers[id].css('display', 'block');
       sortable.currentItem = sortable.cmsHelpers[id];
-      sortable.placeholder.attr('class', sortable.currentItem.attr('class')+ ' cms-placeholder').removeClass('ui-sortable-helper');
+      sortable.placeholder.attr('class', sortable.currentItem.attr('class') + ' cms-placeholder').removeClass('ui-sortable-helper');
       refreshHelperPositions(sortable);
    };
    
    var setHelperObj = cms.move.setHelperObj = function(sortable, helper) {
-       sortable.helper.css('display', 'none');
-       sortable.helper = helper;
-       sortable.currentItem = helper;
-       refreshHelperPositions(sortable);
+      sortable.helper.css('display', 'none');
+      sortable.helper = helper;
+      sortable.currentItem = helper;
+      refreshHelperPositions(sortable);
    }
    
    var refreshHelperPositions = cms.move.refreshHelperPositions = function(sortable) {

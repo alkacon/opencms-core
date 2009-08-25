@@ -1,41 +1,99 @@
 ﻿(function(cms) {
 
+   /** Element state 'new' constant. */
+   var /** String */ STATUS_NEW = cms.data.STATUS_NEW = 'n';
    
-   var STATUS_NEW = cms.data.STATUS_NEW = 'n';
-   var STATUS_CREATED = cms.data.STATUS_CREATED = 'nc';
-   var STATUS_UNCHANGED = cms.data.STATUS_UNCHANGED = 'u';
-   var STATUS_CHANGED = cms.data.STATUS_CHANGED = 'c';
+   /** Element state 'created' constant. */
+   var /** String */ STATUS_CREATED = cms.data.STATUS_CREATED = 'nc';
    
-   var AJAX_TIMEOUT = 5000;
+   /** Element state 'unchanged' constant. */
+   var /** String */ STATUS_UNCHANGED = cms.data.STATUS_UNCHANGED = 'u';
    
-   // obj parameter value constants
-   var OBJ_ALL = "all";
-   var OBJ_REC = "rec";
-   var OBJ_FAV = "fav";
-   var OBJ_CNT = "cnt";
-   var OBJ_ELEM = "elem";
-   var OBJ_NEW = "new";
+   /** Element state 'changed' constant. */
+   var /** String */ STATUS_CHANGED = cms.data.STATUS_CHANGED = 'c';
    
-   // shortcuts
-   var CURRENT_URI = cms.data.CURRENT_URI;
-   var BACKLINK_URL = cms.data.BACKLINK_URL;
-   var EDITOR_URL = cms.data.EDITOR_URL;
-   var SERVER_GET_URL = cms.data.SERVER_GET_URL;
-   var SERVER_SET_URL = cms.data.SERVER_SET_URL;
+   /** Timeout in ms for ajax requests. */
+   var /** long */ AJAX_TIMEOUT = 5000;
    
-   // error messages
-   var JSON_PARSE_ERROR = "ERROR: Couldn't parse JSON data";
-   var AJAX_LOAD_ERROR = "ERROR: couldn't load data from server";
-   var AJAX_SENT_ERROR = "ERROR: couldn't send data to server";
+   /** Parameter 'obj' value 'all' constant. */
+   var /** String */ OBJ_ALL = 'all';
    
-   // data definition with initial values
-   var elements = cms.data.elements = {};
-   var containers = cms.data.containers = {};
-   var locale = cms.data.locale = "en";
+   /** Parameter 'obj' value 'rec' constant. */
+   var /** String */ OBJ_REC = 'rec';
    
-   var newCounter = cms.data.newCounter = 0;
+   /** Parameter 'obj' value 'fav' constant. */
+   var /** String */ OBJ_FAV = 'fav';
    
-   var prepareLoadedElements = cms.data.prepareLoadedElements = function(elements) {
+   /** Parameter 'obj' value 'cnt' constant. */
+   var /** String */ OBJ_CNT = 'cnt';
+   
+   /** Parameter 'obj' value 'elem' constant. */
+   var /** String */ OBJ_ELEM = 'elem';
+   
+   /** Parameter 'obj' value 'new' constant. */
+   var /** String */ OBJ_NEW = 'new';
+   
+   /** Editors back link uri. */
+   var /** String */ BACKLINK_URL = cms.data.BACKLINK_URL = '/system/workplace/editors/ade/backlink.jsp';
+   
+   /**  
+    * The current container page uri.
+    * @see /system/workplace/editors/ade/include.txt
+    */
+   var /** String */ CURRENT_URI = cms.data.CURRENT_URI;
+   
+   /**  
+    * The xml content editor url.
+    * @see /system/workplace/editors/ade/include.txt
+    */
+   var /** String */ EDITOR_URL = cms.data.EDITOR_URL;
+   
+   /**  
+    * The url for 'get' requests.
+    * @see /system/workplace/editors/ade/include.txt
+    */
+   var /** String */ SERVER_GET_URL = cms.data.SERVER_GET_URL;
+   
+   /**  
+    * The url for 'set' requests.
+    * @see /system/workplace/editors/ade/include.txt
+    */
+   var /** String */ SERVER_SET_URL = cms.data.SERVER_SET_URL;
+   
+   /** Generic error message for json parse errors. */
+   var /** String */ JSON_PARSE_ERROR = 'ERROR: Couldn\'t parse JSON data';
+   
+   /** Generic error message for ajax load errors. */
+   var /** String */ AJAX_LOAD_ERROR = 'ERROR: couldn\'t load data from server';
+   
+   /** Generic error message for ajax post errors. */
+   var /** String */ AJAX_SENT_ERROR = 'ERROR: couldn\'t send data to server';
+   
+   /** Centralized repository for element objects. */
+   var /** Object */ elements = cms.data.elements = {};
+   
+   /** Centralized repository for container objects. */
+   var /** Object */ containers = cms.data.containers = {};
+   
+   /** The current locale used to render the container page. */
+   var /** String */ locale = cms.data.locale = 'en';
+   
+   /** Selector for sortable items. */
+   var /** int */ newCounter = cms.data.newCounter = 0;
+   
+   /** Selector for sortable items. */
+   var /** String */ sortitems = cms.data.sortitems = '.cms-element';
+   
+   /** Selector for deletable items. */
+   var /** String */ deleteitems = cms.data.deleteitems = '.cms-element';
+   
+   /**
+    * .<p>
+    *
+    * @param {Object} elements
+    */
+   var prepareLoadedElements = cms.data.prepareLoadedElements = /** void */ function(/** Object */elements) {
+   
       for (var id in elements) {
          var element = elements[id];
          for (var containerType in element.contents) {
@@ -47,29 +105,36 @@
       }
    }
    
-   
-   var loadAllData = cms.data.loadAllData = function(afterLoad) {
+   /**
+    * .<p>
+    *
+    * @param {Function} afterLoad
+    */
+   var loadAllData = cms.data.loadAllData = /** void */ function(/** void Function(boolean) */afterLoad) {
    
       $.ajax({
-         url: SERVER_GET_URL,
-         data: {
-            obj: OBJ_ALL,
-            url: CURRENT_URI
+         'url': SERVER_GET_URL,
+         'data': {
+            'obj': OBJ_ALL,
+            'url': CURRENT_URI
          },
-         timeout: AJAX_TIMEOUT,
-         error: function(xhr, status, error) {
+         'timeout': AJAX_TIMEOUT,
+         'error': function(xhr, status, error) {
             alert(AJAX_LOAD_ERROR);
+            afterLoad(false);
          },
-         success: function(data) {
+         'success': function(data) {
             try {
                var jsonData = JSON.parse(data);
             } catch (e) {
                alert(JSON_PARSE_ERROR);
+               afterLoad(false);
                return;
             }
             prepareLoadedElements(jsonData);
-            if (jsonData.state == "error") {
+            if (jsonData.state == 'error') {
                alert(jsonData.error);
+               afterLoad(false);
                return;
             }
             
@@ -85,202 +150,233 @@
             if (jsonData.elements) {
                elements = cms.data.elements = jsonData.elements;
             }
-            
             if (jsonData.newCounter) {
                newCounter = cms.data.newCounter = jsonData.newCounter;
             }
-            //addDummyTypes();
-            afterLoad();
+            afterLoad(true);
          }
       })
    }
    
-   
-   var loadJSON = cms.data.loadJSON = function(data, afterLoad) {
+   /**
+    * .<p>
+    *
+    * @param {Object} data
+    * @param {Function} afterLoad
+    */
+   var loadJSON = cms.data.loadJSON = /** void */ function(/** Object */data, /** void Function(boolean, Object) */ afterLoad) {
    
       $.extend(data, {
-         url: CURRENT_URI
+         'url': CURRENT_URI
       });
       $.ajax({
-         url: SERVER_GET_URL,
-         data: data,
-         timeout: AJAX_TIMEOUT,
-         error: function(xhr, status, error) {
+         'url': SERVER_GET_URL,
+         'data': data,
+         'timeout': AJAX_TIMEOUT,
+         'error': function(xhr, status, error) {
             alert(AJAX_LOAD_ERROR);
+            afterLoad(false, {});
          },
-         success: function(data) {
+         'success': function(data) {
             try {
                var jsonData = JSON.parse(data);
             } catch (e) {
                alert(JSON_PARSE_ERROR);
+               afterLoad(false, {});
                return;
             }
-            if (jsonData.state == "error") {
+            if (jsonData.state == 'error') {
                alert(jsonData.error);
+               afterLoad(false, jsonData);
                return;
             }
-            afterLoad(jsonData);
+            afterLoad(true, jsonData);
          }
       });
    }
    
-   var postJSON = cms.data.postJSON = function(obj, data, afterPost) {
+   /**
+    * .<p>
+    *
+    * @param {String} obj
+    * @param {Object} data
+    * @param {Function} afterPost
+    */
+   var postJSON = cms.data.postJSON = /** void */ function(/** String */obj, /** Object */ data, /** void Function(boolean, Object) */ afterPost) {
    
       $.ajax({
-         url: SERVER_SET_URL,
-         data: {
-            url: CURRENT_URI,
-            obj: obj,
-            data: JSON.stringify(data)
+         'url': SERVER_SET_URL,
+         'data': {
+            'url': CURRENT_URI,
+            'obj': obj,
+            'data': JSON.stringify(data)
          },
-         type: 'POST',
-         timeout: AJAX_TIMEOUT,
-         error: function(xhr, status, error) {
+         'type': 'POST',
+         'timeout': AJAX_TIMEOUT,
+         'error': function(xhr, status, error) {
             alert(AJAX_SENT_ERROR);
+            afterPost(false);
          },
-         success: function(data) {
+         'success': function(data) {
             try {
                var jsonData = JSON.parse(data);
             } catch (e) {
                alert(JSON_PARSE_ERROR);
+               afterPost(false, {});
                return;
             }
-            if (jsonData.state == "error") {
+            if (jsonData.state == 'error') {
                alert(jsonData.error);
+               afterPost(false, jsonData);
                return;
             }
-            if ($.isFunction(afterPost)) 
-               afterPost(jsonData);
+            afterPost(true, jsonData);
          }
       });
    }
    
-   var createResource = cms.data.createResource = function(type, afterCreate) {
-      //afterCreate("/demo_en/new_news.html", "ade_1b2ba42a-8c0a-11de-affd-f538a2445923");
-      postJSON(OBJ_NEW, [type], function(data) {
-         if (afterCreate) afterCreate(data.file, data.id);
+   /**
+    * .<p>
+    *
+    * @param {String} type
+    * @param {Function} afterCreate
+    *
+    * @see cms.toolbar.openEditDialog
+    */
+   var createResource = cms.data.createResource = /** void */ function(/** String */type, /** void Function(boolean, String, String) */ afterCreate) {
+   
+      postJSON(OBJ_NEW, [type], function(ok, data) {
+         afterCreate(ok, data.id, data.file);
       });
    }
    
-   var reloadElement = cms.data.reloadElement = function(id, afterReload) {
+   /**
+    * .<p>
+    *
+    * @param {String} id
+    * @param {Function} afterReload
+    */
+   var reloadElement = cms.data.reloadElement = /** void */ function(/** String */id, /** void Function(boolean, data) */ afterReload) {
    
       loadJSON({
-         obj: OBJ_ELEM,
-         elem: id
-      }, function(data) {
-         cms.data.elements[id] = data.elements[id];
-         fillContainers();
-         if (afterReload) 
-            afterReload(data);
-      });
-   }
-   
-   var loadElements = cms.data.loadElements = function(ids) {
-   
-      loadJSON({
-         obj: OBJ_ELEM,
-         elem: JSON.stringify(ids)
-      }, function(data) {
-         for (var id in ids) {
+         'obj': OBJ_ELEM,
+         'elem': id
+      }, function(ok, data) {
+         if (ok) {
             cms.data.elements[id] = data.elements[id];
+            fillContainers();
          }
+         afterReload(ok, data);
       });
    }
    
-   var loadFavorites = cms.data.loadFavorites = function(afterFavoritesLoad) {
+   /**
+    * .<p>
+    *
+    * @param {String} ids
+    * @param {Function} afterLoad
+    */
+   // TODO: not used yet
+   var loadElements = cms.data.loadElements = /** void */ function(/** Array<String> */ids, /** void Function(boolean, data) */ afterLoad) {
+   
+      loadJSON({
+         'obj': OBJ_ELEM,
+         'elem': JSON.stringify(ids)
+      }, function(ok, data) {
+         if (ok) {
+            for (var id in ids) {
+               cms.data.elements[id] = data.elements[id];
+            }
+         }
+         afterLoad(ok, data);
+      });
+   }
+   
+   /**
+    * .<p>
+    *
+    * @param {Function} afterFavoritesLoad
+    */
+   var loadFavorites = cms.data.loadFavorites = /** void */ function(/** void Function(boolean, data) */afterFavoritesLoad) {
    
       loadJSON({
          obj: OBJ_FAV
       }, function(data) {
-         cms.toolbar.favorites = data.favorites;
-         afterFavoritesLoad();
+         if (ok) {
+            cms.toolbar.favorites = data.favorites;
+         }
+         afterFavoritesLoad(ok, data);
       });
    }
    
-   var loadRecent = cms.data.loadRecent = function(afterRecentLoad) {
+   /**
+    * .<p>
+    *
+    * @param {Function} afterRecentLoad
+    */
+   var loadRecent = cms.data.loadRecent = /** void */ function(/** void Function(boolean, data) */afterRecentLoad) {
    
       loadJSON({
          obj: OBJ_REC
-      }, function(data) {
-         cms.toolbar.recent = data.recent;
-         afterRecentLoad();
+      }, function(ok, data) {
+         if (ok) {
+            cms.toolbar.recent = data.recent;
+         }
+         afterRecentLoad(ok, data);
       });
    }
    
-   var persistContainers = cms.data.persistContainers = function(afterSave) {
+   /**
+    * .<p>
+    *
+    * @param {Function} afterSave
+    */
+   var persistContainers = cms.data.persistContainers = /** void */ function(/** void Function(boolean, data) */afterSave) {
    
+      // add formatter uris, just to improve performance
       $.each(cms.data.containers, function(key, cnt) {
-          // cms.data.containers[key]
-          cnt.formatters = [];
-          var cntType = cnt.type;
-          $.each(cnt.elements, function() {
-              cnt.formatters.push(cms.data.elements[this].formatters[cntType]);
-          });
+         cnt.formatters = [];
+         var cntType = cnt.type;
+         $.each(cnt.elements, function() {
+            cnt.formatters.push(cms.data.elements[this].formatters[cntType]);
+         });
       });
       postJSON(OBJ_CNT, {
-          "containers": cms.data.containers,
-          "locale": locale
+         'containers': cms.data.containers,
+         'locale': locale
       }, afterSave);
    }
    
-   var persistFavorites = cms.data.persistFavorites = function(afterSave) {
+   /**
+    * .<p>
+    *
+    * @param {Function} afterSave
+    */
+   var persistFavorites = cms.data.persistFavorites = /** void */ function(/** void Function(boolean, data) */afterSave) {
    
       postJSON(OBJ_FAV, cms.toolbar.favorites, afterSave);
    }
    
-   var persistRecent = cms.data.persistRecent = function(afterSave) {
+   /**
+    * .<p>
+    *
+    * @param {Function} afterSave
+    */
+   var persistRecent = cms.data.persistRecent = /** void */ function(/** void Function(boolean, data) */afterSave) {
    
       postJSON(OBJ_REC, cms.toolbar.recent, afterSave);
    }
    
-   var serialize = function() {
-   
-      var ser = {
-         'container': []
-      };
-      $(sortlist).each(function(i) {
-         ser.container[i] = {
-            'id': $(this).attr('id'),
-            'elements': []
-         };
-         $(this).children().each(function(ie, elem) {
-            ser.container[i].elements[ie] = {
-               'id': $(elem).attr('id'),
-               'index': ie
-            }
-         });
-      });
-      $('body').append('<p>' + JSON.stringify(ser) + '</p>');
-      
-   };
-   
-   var getSerializeString = function() {
-   
-      var ser = {
-         'container': []
-      };
-      $(sortlist).each(function(i) {
-         ser.container[i] = {
-            'id': $(this).attr('id'),
-            'elements': []
-         };
-         $(this).children().each(function(ie, elem) {
-            ser.container[i].elements[ie] = {
-               'id': $(elem).attr('id'),
-               'index': ie
-            }
-         });
-      });
-      return JSON.stringify(ser);
-   };
-   
-   var fillContainers = cms.data.fillContainers = function() {
+   /**
+    * .<p>
+    */
+   var fillContainers = cms.data.fillContainers = /** void */ function() {
       for (var containerName in containers) {
          $('#' + containerName + ' > *').remove();
          var elementIds = containers[containerName].elements;
          for (var i = 0; i < elementIds.length; i++) {
             var elem = elements[elementIds[i]];
-
+            
             var html = '';
             var isSubcontainer = false;
             if (elem.subItems) {
@@ -317,4 +413,46 @@
          }
       }
    }
+   
+   ///////// these function are for debugging /////////////
+   var serialize = function() {
+   
+      var ser = {
+         'container': []
+      };
+      $(sortlist).each(function(i) {
+         ser.container[i] = {
+            'id': $(this).attr('id'),
+            'elements': []
+         };
+         $(this).children().each(function(ie, elem) {
+            ser.container[i].elements[ie] = {
+               'id': $(elem).attr('id'),
+               'index': ie
+            }
+         });
+      });
+      $('body').append('<p>' + JSON.stringify(ser) + '</p>');
+   };
+   
+   var getSerializeString = function() {
+   
+      var ser = {
+         'container': []
+      };
+      $(sortlist).each(function(i) {
+         ser.container[i] = {
+            'id': $(this).attr('id'),
+            'elements': []
+         };
+         $(this).children().each(function(ie, elem) {
+            ser.container[i].elements[ie] = {
+               'id': $(elem).attr('id'),
+               'index': ie
+            }
+         });
+      });
+      return JSON.stringify(ser);
+   };
+   
 })(cms);
