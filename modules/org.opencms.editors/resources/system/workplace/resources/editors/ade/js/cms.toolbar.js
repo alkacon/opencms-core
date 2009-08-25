@@ -554,7 +554,7 @@
          } else {
             // TODO: please comment!!
             loadFunction = function(f) {
-               f();
+               f(true);
             }
          }
          
