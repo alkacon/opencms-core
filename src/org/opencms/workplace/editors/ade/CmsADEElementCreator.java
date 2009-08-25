@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEElementCreator.java,v $
- * Date   : $Date: 2009/08/25 10:37:25 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/08/25 13:18:21 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,28 +60,23 @@ import java.util.Set;
  * 
  * XML files in the VFS can be used to configure which files are used as
  * prototypes for new elements, and which file names are used for the new
- * elements. 
- * 
+ * elements.<p> 
  */
 public class CmsADEElementCreator {
 
-    /** The tag name of the configuration for a single type.<p> */
-    public static String N_ADE_TYPE = "ADEType";
+    /** The tag name of the configuration for a single type. */
+    public static final String N_ADE_TYPE = "ADEType";
 
-    /** The tag name of the source file in the type configuration.<p>*/
-    public static String N_SOURCE = "Source";
+    /** The tag name of the source file in the type configuration. */
+    public static final String N_SOURCE = "Source";
 
-    /** The tag name of the destination in the type configuration.<p> */
-    public static String N_DESTINATION = "Destination";
+    /** The tag name of the destination in the type configuration. */
+    public static final String N_DESTINATION = "Destination";
 
-    /**
-     * The macro name for new file name patterns. 
-     */
+    /** The macro name for new file name patterns. */
     public static final String MACRO_NUMBER = "number";
 
-    /**
-     * The format used for the macro replacement.
-     */
+    /** The format used for the macro replacement. */
     public static final String FILE_NUMBER_FORMAT = "%0.5d";
 
     private Map<String, CmsADETypeConfigurationItem> m_configuration;
@@ -89,9 +84,10 @@ public class CmsADEElementCreator {
     /**
      * Constructs a new instance.<p>
      * 
-     *  @param cms the CmsObject used for reading the configuration
-     *  @param configPath the VFS path of the configuration file. 
-     *  @throws CmsException if something goes wrong
+     * @param cms the CmsObject used for reading the configuration
+     * @param configPath the VFS path of the configuration file
+     *  
+     * @throws CmsException if something goes wrong
      */
     public CmsADEElementCreator(CmsObject cms, String configPath)
     throws CmsException {
@@ -107,18 +103,20 @@ public class CmsADEElementCreator {
      * 
      * The pattern consists of a path which may contain the macro %(number), which 
      * will be replaced by the first 5-digit sequence for which the resulting file name is not already
-     * used.
+     * used.<p>
      * 
      * Although this method is synchronized, it may still return a used file name in the unlikely
      * case that it is called after a previous call to this method, but before the resulting file name
-     * was used to create a file.  
+     * was used to create a file.<p>  
      * 
-     * This method was adapted from the method A_CmsResourceCollector#getCreateInFolder
+     * This method was adapted from the method {@link org.opencms.file.collectors.A_CmsResourceCollector}<code>#getCreateInFolder</code>.<p>
      *
-     * @param cms the CmsObject used for checking the existence of file names.
-     * @param pattern the pattern for new files. 
-     * @return the new file name. 
-     * @throws CmsException if something goes wrong.
+     * @param cms the CmsObject used for checking the existence of file names
+     * @param pattern the pattern for new files
+     * 
+     * @return the new file name
+     * 
+     * @throws CmsException if something goes wrong
      */
     public static synchronized String getNewFileName(CmsObject cms, String pattern) throws CmsException {
 
@@ -150,9 +148,12 @@ public class CmsADEElementCreator {
 
     /**
      * Helper method for retrieving the OpenCms type name for a given type id.<p>
+     * 
      * @param typeId the id of the type
+     * 
      * @return the name of the type
-     * @throws CmsException
+     * 
+     * @throws CmsException if something goes wrong
      */
     private static String getTypeName(int typeId) throws CmsException {
 
@@ -161,10 +162,13 @@ public class CmsADEElementCreator {
 
     /**
      * Creates a new element of a given type at the configured location.<p>
-     * @param cms the CmsObject used for creating the new element.
-     * @param type the type of the element to be created.
-     * @return the CmsResource representing the newly created element.
-     * @throws CmsException if something goes wrong.
+     * 
+     * @param cms the CmsObject used for creating the new element
+     * @param type the type of the element to be created
+     * 
+     * @return the CmsResource representing the newly created element
+     * 
+     * @throws CmsException if something goes wrong
      */
     public CmsResource createElement(CmsObject cms, String type) throws CmsException {
 
@@ -178,7 +182,7 @@ public class CmsADEElementCreator {
     /**
      * Returns the configuration as an unmodifiable map.<p>
      * 
-     * @return the configuration as an unmodifiable map.
+     * @return the configuration as an unmodifiable map
      */
     public Map<String, CmsADETypeConfigurationItem> getConfiguration() {
 
@@ -194,11 +198,12 @@ public class CmsADEElementCreator {
      *  <li>the request context's locale</li>
      *  <li>the default locale</li>
      *  <li>the first locale available in the XML content</li>
-     * </ul>
+     * </ul><p>
      *
-     * @param cms the CmsObject to use for VFS operations.
+     * @param cms the CmsObject to use for VFS operations
      * @param content the XML content with the type configuration
-     * @throws CmsException if something goes wrong.
+     * 
+     * @throws CmsException if something goes wrong
      */
     public void parseConfiguration(CmsObject cms, I_CmsXmlDocument content) throws CmsException {
 
@@ -232,6 +237,5 @@ public class CmsADEElementCreator {
             String type = getTypeName(resource.getTypeId());
             m_configuration.put(type, configItem);
         }
-
     }
 }
