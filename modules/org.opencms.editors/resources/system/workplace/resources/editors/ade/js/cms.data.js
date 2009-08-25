@@ -78,6 +78,12 @@
    /** The current locale used to render the container page. */
    var /** String */ locale = cms.data.locale = 'en';
    
+   /** If the container page itself can be edited, ie. move and delete elements. */
+   var /** boolean */ allowEdit = cms.data.allowEdit = true;
+   
+   /** The name of the user that has locked the container page. */
+   var /** String */ lockedBy = cms.data.lockedBy = '';
+   
    /** Selector for sortable items. */
    var /** int */ newCounter = cms.data.newCounter = 0;
    
@@ -132,7 +138,7 @@
                return;
             }
             prepareLoadedElements(jsonData.elements);
-            if (jsonData.state == "error") {
+            if (jsonData.state == 'error') {
                alert(jsonData.error);
                afterLoad(false);
                return;
@@ -150,13 +156,21 @@
             if (jsonData.elements) {
                elements = cms.data.elements = jsonData.elements;
             }
-            
             if (jsonData.newCounter) {
                newCounter = cms.data.newCounter = jsonData.newCounter;
             }
+            if (jsonData.locale) {
+               locale = cms.data.locale = jsonData.locale;
+            }
+            if (jsonData.allowEdit) {
+               allowEdit = cms.data.allowEdit = jsonData.allowEdit;
+            }
+            if (jsonData.locked) {
+               lockedBy = cms.data.lockedBy = jsonData.locked;
+            }
             afterLoad(true);
          }
-      })
+      });
    }
    
    /**
@@ -257,15 +271,15 @@
     * @param {String} id
     * @param {Function} afterReload
     */
-   var reloadElement = cms.data.reloadElement = /** void */ function(/** String */id, /** void Function(boolean, data) */ afterReload) {
+   var reloadElement = cms.data.reloadElement = /** void */ function(/** String */id, /** void Function(boolean, Object) */ afterReload) {
    
       loadJSON({
          'obj': OBJ_ELEM,
          'elem': id
       }, function(ok, data) {
          if (ok) {
-         cms.data.elements[id] = data.elements[id];
-         fillContainers();
+            cms.data.elements[id] = data.elements[id];
+            fillContainers();
          }
          afterReload(ok, data);
       });
@@ -278,16 +292,16 @@
     * @param {Function} afterLoad
     */
    // TODO: not used yet
-   var loadElements = cms.data.loadElements = /** void */ function(/** Array<String> */ids, /** void Function(boolean, data) */ afterLoad) {
+   var loadElements = cms.data.loadElements = /** void */ function(/** Array<String> */ids, /** void Function(boolean, Object) */ afterLoad) {
    
       loadJSON({
          'obj': OBJ_ELEM,
          'elem': JSON.stringify(ids)
       }, function(ok, data) {
          if (ok) {
-         for (var id in ids) {
-            cms.data.elements[id] = data.elements[id];
-         }
+            for (var id in ids) {
+               cms.data.elements[id] = data.elements[id];
+            }
          }
          afterLoad(ok, data);
       });
@@ -298,13 +312,13 @@
     *
     * @param {Function} afterFavoritesLoad
     */
-   var loadFavorites = cms.data.loadFavorites = /** void */ function(/** void Function(boolean, data) */afterFavoritesLoad) {
+   var loadFavorites = cms.data.loadFavorites = /** void */ function(/** void Function(boolean, Object) */afterFavoritesLoad) {
    
       loadJSON({
          obj: OBJ_FAV
       }, function(ok, data) {
          if (ok) {
-         cms.toolbar.favorites = data.favorites;
+            cms.toolbar.favorites = data.favorites;
          }
          afterFavoritesLoad(ok, data);
       });
@@ -315,13 +329,13 @@
     *
     * @param {Function} afterRecentLoad
     */
-   var loadRecent = cms.data.loadRecent = /** void */ function(/** void Function(boolean, data) */afterRecentLoad) {
+   var loadRecent = cms.data.loadRecent = /** void */ function(/** void Function(boolean, Object) */afterRecentLoad) {
    
       loadJSON({
          obj: OBJ_REC
       }, function(ok, data) {
          if (ok) {
-         cms.toolbar.recent = data.recent;
+            cms.toolbar.recent = data.recent;
          }
          afterRecentLoad(ok, data);
       });
@@ -332,20 +346,31 @@
     *
     * @param {Function} afterSave
     */
-   var persistContainers = cms.data.persistContainers = /** void */ function(/** void Function(boolean, data) */afterSave) {
+   var persistContainers = cms.data.persistContainers = /** void */ function(/** void Function(boolean, Object) */afterSave) {
    
-      // add formatter uris, just to improve performance
-      $.each(cms.data.containers, function(key, cnt) {
-          cnt.formatters = [];
-          var cntType = cnt.type;
-          $.each(cnt.elements, function() {
-              cnt.formatters.push(cms.data.elements[this].formatters[cntType]);
-          });
-      });
-      postJSON(OBJ_CNT, {
-         'containers': cms.data.containers,
+      // create new object with additional info,
+      // like formatter & element uris, just to improve performance
+      var cnts = {
          'locale': locale
-      }, afterSave);
+      };
+      $.each(cms.data.containers, function(key, dataCnt) {
+         cnts[key] = {
+            'name': dataCnt.name,
+            'type': dataCnt.type,
+            'elements': []
+         };
+         var cntType = dataCnt.type;
+         $.each(dataCnt.elements, function() {
+            var elem = {
+               'id': this,
+               'uri': cms.data.elements[this].file,
+               'formatter': cms.data.elements[this].formatters[cntType]
+            };
+            cnts[key].elements.push(elem);
+         });
+      });
+      // send the data
+      postJSON(OBJ_CNT, cnts, afterSave);
    }
    
    /**
@@ -353,7 +378,7 @@
     *
     * @param {Function} afterSave
     */
-   var persistFavorites = cms.data.persistFavorites = /** void */ function(/** void Function(boolean, data) */afterSave) {
+   var persistFavorites = cms.data.persistFavorites = /** void */ function(/** void Function(boolean, Object) */afterSave) {
    
       postJSON(OBJ_FAV, cms.toolbar.favorites, afterSave);
    }
@@ -363,7 +388,7 @@
     *
     * @param {Function} afterSave
     */
-   var persistRecent = cms.data.persistRecent = /** void */ function(/** void Function(boolean, data) */afterSave) {
+   var persistRecent = cms.data.persistRecent = /** void */ function(/** void Function(boolean, Object) */afterSave) {
    
       postJSON(OBJ_REC, cms.toolbar.recent, afterSave);
    }
@@ -372,12 +397,13 @@
     * .<p>
     */
    var fillContainers = cms.data.fillContainers = /** void */ function() {
+   
       for (var containerName in containers) {
          $('#' + containerName + ' > *').remove();
          var elementIds = containers[containerName].elements;
          for (var i = 0; i < elementIds.length; i++) {
             var elem = elements[elementIds[i]];
-
+            
             var html = '';
             var isSubcontainer = false;
             if (elem.subItems) {

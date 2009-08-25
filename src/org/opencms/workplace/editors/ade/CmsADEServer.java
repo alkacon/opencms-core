@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/08/25 10:37:25 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/08/25 13:19:35 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
-import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 7.6
  */
@@ -100,6 +100,9 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** JSON property constant file. */
     public static final String P_FILE = "file";
+
+    /** JSON property constant formatter. */
+    public static final String P_FORMATTER = "formatter";
 
     /** JSON property constant formatters. */
     public static final String P_FORMATTERS = "formatters";
@@ -137,6 +140,9 @@ public class CmsADEServer extends CmsJspActionElement {
     /** JSON property constant file. */
     public static final String P_TYPE = "type";
 
+    /** JSON property constant uri. */
+    public static final String P_URI = "uri";
+
     /** JSON property constant file. */
     public static final String P_USER = "user";
 
@@ -161,6 +167,11 @@ public class CmsADEServer extends CmsJspActionElement {
     /** Mime type constant. */
     protected static final String MIMETYPE_APPLICATION_JSON = "application/json";
 
+    /**
+     * Path to the configuration file. 
+     */
+    protected static final String NEW_CONFIG_PATH = "/system/workplace/editors/ade/type_config.xml";
+
     /** Request parameter obj value constant. */
     protected static final String OBJ_ALL = "all";
 
@@ -174,13 +185,10 @@ public class CmsADEServer extends CmsJspActionElement {
     protected static final String OBJ_FAV = "fav";
 
     /** Request parameter obj value constant. */
-    protected static final String OBJ_REC = "rec";
-
-    /** Request parameter obj value constant. */
     protected static final String OBJ_NEW = "new";
 
     /** Request parameter obj value constant. */
-    protected static final String PARAMETER_TYPE = "type";
+    protected static final String OBJ_REC = "rec";
 
     /** Request parameter name constant. */
     protected static final String PARAMETER_DATA = "data";
@@ -194,13 +202,11 @@ public class CmsADEServer extends CmsJspActionElement {
     /** Request parameter name constant. */
     protected static final String PARAMETER_OBJ = "obj";
 
+    /** Request parameter obj value constant. */
+    protected static final String PARAMETER_TYPE = "type";
+
     /** Request parameter name constant. */
     protected static final String PARAMETER_URL = "url";
-
-    /**
-     * Path to the configuration file. 
-     */
-    protected static final String NEW_CONFIG_PATH = "/system/workplace/editors/ade/type_config.xml";
 
     /** Container page loader reference. */
     private static final CmsContainerPageLoader LOADER = (CmsContainerPageLoader)OpenCms.getResourceManager().getLoader(
@@ -418,10 +424,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 result.put(P_ID, "ade_" + newResource.getStructureId().toString());
                 result.put(P_FILE, cms.getSitePath(newResource));
             } catch (Exception e) {
-                LOG.error(e);
-                for (StackTraceElement el : e.getStackTrace()) {
-                    LOG.error("at " + el.toString());
-                }
+                LOG.error(e.getLocalizedMessage(), e);
                 result.put(RES_ERROR, e.toString());
             }
 
@@ -458,6 +461,11 @@ public class CmsADEServer extends CmsJspActionElement {
 
         // get the container page itself
         CmsResource containerPage = cms.readResource(uri);
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, containerPage);
+        result.put(CmsADEServer.P_ALLOWEDIT, resUtil.getLock().isLockableBy(cms.getRequestContext().currentUser())
+            && resUtil.isEditable());
+        result.put(CmsADEServer.P_LOCKED, resUtil.getLockedByName());
+
         JSONObject containers = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
         Collection types = CmsADEElementManager.getInstance().getContainerPageTypes(cms, uri);
 
@@ -479,7 +487,6 @@ public class CmsADEServer extends CmsJspActionElement {
         }
 
         Map<String, String> ids = new HashMap<String, String>();
-
         Iterator itKeys = containers.keys();
         while (itKeys.hasNext()) {
             String containerName = (String)itKeys.next();
@@ -602,19 +609,17 @@ public class CmsADEServer extends CmsJspActionElement {
 
             JSONArray elems = cnt.getJSONArray(P_ELEMENTS);
             for (int i = 0; i < elems.length(); i++) {
-                String elem = elems.getString(i);
+                JSONObject elem = cnt.getJSONArray(P_ELEMENTS).getJSONObject(i);
 
-                CmsUUID id = CmsADEElementManager.getInstance().parseId(elem);
-                CmsResource res = cms.readResource(id);
-
-                String formatter = cnt.getJSONArray(P_FORMATTERS).getString(i);
+                String formatter = elem.getString(P_FORMATTER);
+                String elemUri = elem.getString(P_URI);
 
                 I_CmsXmlContentValue elemValue = xmlCnt.addValue(cms, CmsXmlUtils.concatXpath(
                     cntValue.getPath(),
                     CmsContainerPageLoader.N_ELEMENT), locale, i);
                 xmlCnt.getValue(CmsXmlUtils.concatXpath(elemValue.getPath(), CmsContainerPageLoader.N_URI), locale, 0).setStringValue(
                     cms,
-                    cms.getSitePath(res));
+                    elemUri);
                 xmlCnt.getValue(
                     CmsXmlUtils.concatXpath(elemValue.getPath(), CmsContainerPageLoader.N_FORMATTER),
                     locale,
