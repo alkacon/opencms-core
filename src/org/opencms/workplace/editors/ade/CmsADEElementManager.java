@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEElementManager.java,v $
- * Date   : $Date: 2009/08/24 13:34:59 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/08/25 13:20:06 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -45,6 +46,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -70,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 7.6
  */
@@ -223,42 +225,66 @@ public final class CmsADEElementManager {
             resource,
             CmsPropertyDefinition.PROPERTY_TITLE,
             false).getValue(""));
-        // TODO: fix this info
-        resElement.put(CmsADEServer.P_TYPE, "news");
-        resElement.put(CmsADEServer.P_SUBITEMS, (String)null);
-        resElement.put(CmsADEServer.P_ALLOWMOVE, true);
-        resElement.put(CmsADEServer.P_ALLOWEDIT, true);
-        resElement.put(CmsADEServer.P_LOCKED, false);
-        resElement.put(CmsADEServer.P_STATUS, "u");
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+        resElement.put(CmsADEServer.P_ALLOWEDIT, resUtil.getLock().isLockableBy(cms.getRequestContext().currentUser())
+            && resUtil.isEditable());
+        resElement.put(CmsADEServer.P_LOCKED, resUtil.getLockedByName());
+        resElement.put(CmsADEServer.P_STATUS, "" + resUtil.getStateAbbreviation());
         // add formatted elements
         JSONObject resContents = new JSONObject();
         resElement.put(CmsADEServer.P_CONTENTS, resContents);
         // add formatter uris
         JSONObject formatters = new JSONObject();
         resElement.put(CmsADEServer.P_FORMATTERS, formatters);
-        // TODO: this may not be performing well
-        CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
-        Iterator it = content.getContentDefinition().getContentHandler().getFormatters().entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            String type = (String)entry.getKey();
-            if (!types.contains(type) && !type.equals(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE)) {
-                // skip not supported types
-                continue;
+        if (resource.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
+            Iterator itTypes = types.iterator();
+            while (itTypes.hasNext()) {
+                String type = (String)itTypes.next();
+                formatters.put(type, ""); // empty formatters
+                resContents.put(type, ""); // empty contents
             }
-            String formatterUri = (String)entry.getValue();
-            formatters.put(type, formatterUri);
-            // execute the formatter jsp for the given element
-            try {
-                String jspResult = getElementContent(cms, resource, formatterUri, req, res);
-                // set the results
-                resContents.put(type, jspResult);
-            } catch (Exception e) {
-                LOG.error(Messages.get().getBundle().key(
-                    Messages.ERR_GENERATE_FORMATTED_ELEMENT_3,
-                    cms.getSitePath(resource),
-                    formatterUri,
-                    type), e);
+            // this container page should contain exactly one container
+            JSONObject containers = LOADER.getCache(cms, resource, cms.getRequestContext().getLocale());
+            JSONObject container = containers.getJSONObject(containers.names().getString(0));
+
+            // add subitems
+            JSONArray subitems = new JSONArray();
+            resElement.put(CmsADEServer.P_SUBITEMS, subitems);
+            // iterate the elements
+            JSONArray elements = container.optJSONArray(CmsContainerPageLoader.N_ELEMENT);
+            // get the actual number of elements to render
+            int renderElems = elements.length();
+            for (int i = 0; i < renderElems; i++) {
+                JSONObject element = elements.optJSONObject(i);
+                String id = element.optString(CmsContainerPageLoader.N_ID);
+                // collect ids
+                subitems.put(CmsADEElementManager.ADE_ID_PREFIX + id.toString());
+            }
+        } else {
+            // TODO: this may not be performing well
+            CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
+            Iterator it = content.getContentDefinition().getContentHandler().getFormatters().entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry)it.next();
+                String type = (String)entry.getKey();
+                if (!types.contains(type) && !type.equals(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE)) {
+                    // skip not supported types
+                    continue;
+                }
+                String formatterUri = (String)entry.getValue();
+                formatters.put(type, formatterUri);
+                // execute the formatter jsp for the given element
+                try {
+                    String jspResult = getElementContent(cms, resource, formatterUri, req, res);
+                    // set the results
+                    resContents.put(type, jspResult);
+                } catch (Exception e) {
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_GENERATE_FORMATTED_ELEMENT_3,
+                        cms.getSitePath(resource),
+                        formatterUri,
+                        type), e);
+                }
             }
         }
 
