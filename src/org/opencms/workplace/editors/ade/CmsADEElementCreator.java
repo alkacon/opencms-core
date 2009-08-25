@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEElementCreator.java,v $
- * Date   : $Date: 2009/08/25 13:18:21 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/08/25 15:03:34 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.json.JSONObject;
+import org.opencms.loader.CmsContainerPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
@@ -64,34 +66,42 @@ import java.util.Set;
  */
 public class CmsADEElementCreator {
 
-    /** The tag name of the configuration for a single type. */
-    public static final String N_ADE_TYPE = "ADEType";
-
-    /** The tag name of the source file in the type configuration. */
-    public static final String N_SOURCE = "Source";
-
-    /** The tag name of the destination in the type configuration. */
-    public static final String N_DESTINATION = "Destination";
+    /** The format used for the macro replacement. */
+    public static final String FILE_NUMBER_FORMAT = "%0.5d";
 
     /** The macro name for new file name patterns. */
     public static final String MACRO_NUMBER = "number";
 
-    /** The format used for the macro replacement. */
-    public static final String FILE_NUMBER_FORMAT = "%0.5d";
+    /** The tag name of the configuration for a single type. */
+    public static final String N_ADE_TYPE = "ADEType";
 
+    /** The tag name of the destination in the type configuration. */
+    public static final String N_DESTINATION = "Destination";
+
+    /** The tag name of the source file in the type configuration. */
+    public static final String N_SOURCE = "Source";
+
+    /** Container page loader reference. */
+    private static final CmsContainerPageLoader LOADER = (CmsContainerPageLoader)OpenCms.getResourceManager().getLoader(
+        CmsContainerPageLoader.RESOURCE_LOADER_ID);
+
+    /** Configuration data, read from xml content. */
     private Map<String, CmsADETypeConfigurationItem> m_configuration;
 
     /**
      * Constructs a new instance.<p>
      * 
-     * @param cms the CmsObject used for reading the configuration
-     * @param configPath the VFS path of the configuration file
+     * @param cms the cms context used for reading the configuration
+     * @param containerPage the container page
      *  
      * @throws CmsException if something goes wrong
      */
-    public CmsADEElementCreator(CmsObject cms, String configPath)
+    public CmsADEElementCreator(CmsObject cms, CmsResource containerPage)
     throws CmsException {
 
+        JSONObject localeData = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
+        String configPath = localeData.optString(CmsContainerPageLoader.N_NEW_CONFIG, "");
+        // configPath the VFS path of the configuration file
         m_configuration = new HashMap<String, CmsADETypeConfigurationItem>();
         CmsFile configFile = cms.readFile(configPath);
         I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(cms, configFile);

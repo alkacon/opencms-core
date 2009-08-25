@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsContainerPageLoader.java,v $
- * Date   : $Date: 2009/08/25 13:19:03 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/08/25 15:03:33 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.6
  */
@@ -90,6 +90,9 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
     /** Xml content node constant name. */
     public static final String N_NAME = "Name";
 
+    /** JSON cache element name constant. */
+    public static final String N_NEW_CONFIG = "NewConfig";
+
     /** Xml content node constant type. */
     public static final String N_TYPE = "Type";
 
@@ -98,6 +101,9 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
 
     /** The id of this loader. */
     public static final int RESOURCE_LOADER_ID = 11;
+
+    /** property name constant. */
+    protected static final String PROPERTY_CONTAINER_NEW_CONFIG = "container-new-config";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContainerPageLoader.class);
@@ -167,7 +173,7 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
                 return null;
             }
         }
-        return containerPageBean.optJSONObject(locale.toString()).optJSONObject(CmsContainerPageLoader.N_CONTAINER);
+        return containerPageBean.optJSONObject(locale.toString());
     }
 
     /**
@@ -198,10 +204,14 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
      * @return the json object for the given content 
      * 
      * @throws JSONException should not happen
+     * @throws CmsException if something goes wrong
      */
-    public JSONObject jsonify(CmsObject cms, CmsXmlContent content) throws JSONException {
+    public JSONObject jsonify(CmsObject cms, CmsXmlContent content) throws JSONException, CmsException {
 
         JSONObject result = new JSONObject();
+        // will be the same for every locale
+        String newConfigPath = cms.readPropertyObject(content.getFile(), PROPERTY_CONTAINER_NEW_CONFIG, true).getValue(
+            "");
         // iterate over every locale
         Iterator itLocales = content.getLocales().iterator();
         while (itLocales.hasNext()) {
@@ -246,8 +256,9 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
                 containerList.put(name, containerBean);
             }
             JSONObject localeData = new JSONObject();
-            localeData.put(N_LOCALE, locale.toString());
             localeData.put(N_CONTAINER, containerList);
+            localeData.put(N_LOCALE, locale.toString());
+            localeData.put(N_NEW_CONFIG, newConfigPath);
             // add locale data
             result.put(locale.toString(), localeData);
         }

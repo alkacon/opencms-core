@@ -260,8 +260,11 @@
     */
    var createResource = cms.data.createResource = /** void */ function(/** String */type, /** void Function(boolean, String, String) */ afterCreate) {
    
-      postJSON(OBJ_NEW, [type], function(ok, data) {
-         afterCreate(ok, data.id, data.file);
+      loadJSON({
+          'obj': OBJ_NEW,
+          'data': type
+      }, function(ok, data) {
+         afterCreate(ok, data.id, data.uri);
       });
    }
    

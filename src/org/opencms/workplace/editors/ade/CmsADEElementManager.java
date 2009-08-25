@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEElementManager.java,v $
- * Date   : $Date: 2009/08/25 13:20:06 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/08/25 15:03:34 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 7.6
  */
@@ -140,7 +140,8 @@ public final class CmsADEElementManager {
         Set types = new HashSet();
         // get the container page itself
         CmsResource containerPage = cms.readResource(containerPageUri);
-        JSONObject containers = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
+        JSONObject localeData = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
+        JSONObject containers = localeData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
         Iterator itKeys = containers.keys();
         while (itKeys.hasNext()) {
             String containerName = (String)itKeys.next();
@@ -244,7 +245,8 @@ public final class CmsADEElementManager {
                 resContents.put(type, ""); // empty contents
             }
             // this container page should contain exactly one container
-            JSONObject containers = LOADER.getCache(cms, resource, cms.getRequestContext().getLocale());
+            JSONObject localeData = LOADER.getCache(cms, resource, cms.getRequestContext().getLocale());
+            JSONObject containers = localeData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
             JSONObject container = containers.getJSONObject(containers.names().getString(0));
 
             // add subitems

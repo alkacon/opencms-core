@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/08/25 13:19:35 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/08/25 15:03:34 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $
+ * @version $Revision: 1.1.2.6 $
  * 
  * @since 7.6
  */
@@ -166,11 +166,6 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** Mime type constant. */
     protected static final String MIMETYPE_APPLICATION_JSON = "application/json";
-
-    /**
-     * Path to the configuration file. 
-     */
-    protected static final String NEW_CONFIG_PATH = "/system/workplace/editors/ade/type_config.xml";
 
     /** Request parameter obj value constant. */
     protected static final String OBJ_ALL = "all";
@@ -294,8 +289,10 @@ public class CmsADEServer extends CmsJspActionElement {
             return result;
         }
         if (objParam.equals(OBJ_ALL)) {
+            // first load, get everything
             result = getContainerPage(urlParam);
         } else if (objParam.equals(OBJ_ELEM)) {
+            // get element data
             String elemParam = getRequest().getParameter(PARAMETER_ELEM);
             if (elemParam == null) {
                 result.put(RES_ERROR, Messages.get().getBundle().key(
@@ -327,6 +324,7 @@ public class CmsADEServer extends CmsJspActionElement {
             }
             result.put(P_ELEMENTS, resElements);
         } else if (objParam.equals(OBJ_FAV)) {
+            // get the favorite list
             result.put(P_FAVORITES, CmsADEElementManager.getInstance().getFavoriteList(
                 getCmsObject(),
                 null,
@@ -334,12 +332,32 @@ public class CmsADEServer extends CmsJspActionElement {
                 getRequest(),
                 getResponse()));
         } else if (objParam.equals(OBJ_REC)) {
+            // get recent list
             result.put(P_RECENT, CmsADEElementManager.getInstance().getRecentList(
                 getCmsObject(),
                 null,
                 urlParam,
                 getRequest(),
                 getResponse()));
+        } else if (objParam.equals(OBJ_NEW)) {
+            // get a new element
+            String dataParam = getRequest().getParameter(PARAMETER_DATA);
+            if (dataParam == null) {
+                result.put(RES_ERROR, Messages.get().getBundle().key(
+                    Messages.ERR_JSON_MISSING_PARAMETER_1,
+                    PARAMETER_DATA));
+                return result;
+            }
+            String type = dataParam;
+
+            CmsObject cms = getCmsObject();
+            CmsADEElementCreator elemCreator = new CmsADEElementCreator(
+                cms,
+                cms.readResource(cms.getRequestContext().getUri()));
+
+            CmsResource newResource = elemCreator.createElement(cms, type);
+            result.put(P_ID, CmsADEElementManager.ADE_ID_PREFIX + newResource.getStructureId().toString());
+            result.put(P_URI, cms.getSitePath(newResource));
         } else {
             result.put(RES_ERROR, Messages.get().getBundle().key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
@@ -366,6 +384,7 @@ public class CmsADEServer extends CmsJspActionElement {
             return result;
         }
         if (objParam.equals(OBJ_FAV)) {
+            // save the favorite list
             String dataParam = getRequest().getParameter(PARAMETER_DATA);
             if (dataParam == null) {
                 result.put(RES_ERROR, Messages.get().getBundle().key(
@@ -376,6 +395,7 @@ public class CmsADEServer extends CmsJspActionElement {
             JSONArray list = new JSONArray(dataParam);
             CmsADEElementManager.getInstance().setFavoriteList(getCmsObject(), list);
         } else if (objParam.equals(OBJ_REC)) {
+            // save the recent list
             String dataParam = getRequest().getParameter(PARAMETER_DATA);
             if (dataParam == null) {
                 result.put(RES_ERROR, Messages.get().getBundle().key(
@@ -386,6 +406,7 @@ public class CmsADEServer extends CmsJspActionElement {
             JSONArray list = new JSONArray(dataParam);
             CmsADEElementManager.getInstance().setRecentList(getCmsObject(), list);
         } else if (objParam.equals(OBJ_CNT)) {
+            // save the container page
             String urlParam = getRequest().getParameter(PARAMETER_URL);
             if (urlParam == null) {
                 result.put(RES_ERROR, Messages.get().getBundle().key(
@@ -402,32 +423,6 @@ public class CmsADEServer extends CmsJspActionElement {
             }
             JSONObject cntPage = new JSONObject(dataParam);
             setContainerPage(urlParam, cntPage);
-
-        } else if (objParam.equals(OBJ_NEW)) {
-            CmsObject cms = getCmsObject();
-            String dataParam = getRequest().getParameter(PARAMETER_DATA);
-            if (dataParam == null) {
-                result.put(RES_ERROR, Messages.get().getBundle().key(
-                    Messages.ERR_JSON_MISSING_PARAMETER_1,
-                    PARAMETER_DATA));
-                return result;
-            }
-            JSONArray dataArray = new JSONArray(dataParam);
-            String type = dataArray.getString(0);
-
-            try {
-                CmsADEElementCreator elemCreator = new CmsADEElementCreator(
-                    cms,
-                    "/system/workplace/editors/ade/type_config.xml");
-
-                CmsResource newResource = elemCreator.createElement(cms, type);
-                result.put(P_ID, "ade_" + newResource.getStructureId().toString());
-                result.put(P_FILE, cms.getSitePath(newResource));
-            } catch (Exception e) {
-                LOG.error(e.getLocalizedMessage(), e);
-                result.put(RES_ERROR, e.toString());
-            }
-
         } else {
             result.put(RES_ERROR, Messages.get().getBundle().key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
@@ -466,10 +461,8 @@ public class CmsADEServer extends CmsJspActionElement {
             && resUtil.isEditable());
         result.put(CmsADEServer.P_LOCKED, resUtil.getLockedByName());
 
-        JSONObject containers = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
         Collection types = CmsADEElementManager.getInstance().getContainerPageTypes(cms, uri);
-
-        CmsADEElementCreator creator = new CmsADEElementCreator(cms, "/system/workplace/editors/ade/type_config.xml");
+        CmsADEElementCreator creator = new CmsADEElementCreator(cms, containerPage);
         Map<String, CmsADETypeConfigurationItem> typeConfig = creator.getConfiguration();
         for (Map.Entry<String, CmsADETypeConfigurationItem> entry : typeConfig.entrySet()) {
             String type = entry.getKey();
@@ -487,6 +480,8 @@ public class CmsADEServer extends CmsJspActionElement {
         }
 
         Map<String, String> ids = new HashMap<String, String>();
+        JSONObject localeData = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
+        JSONObject containers = localeData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
         Iterator itKeys = containers.keys();
         while (itKeys.hasNext()) {
             String containerName = (String)itKeys.next();

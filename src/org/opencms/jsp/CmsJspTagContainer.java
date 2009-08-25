@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/08/25 13:20:23 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/08/25 15:03:34 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.6 
  */
@@ -116,9 +116,10 @@ public class CmsJspTagContainer extends TagSupport {
         // get the container page itself
         CmsResource containerPage = cms.readResource(cms.getRequestContext().getUri());
         JSONObject localeData = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
+        JSONObject cntData = localeData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
 
         // get the container
-        if (!localeData.has(containerName)) {
+        if (!cntData.has(containerName)) {
             LOG.warn(Messages.get().container(
                 Messages.LOG_CONTAINER_NOT_FOUND_3,
                 cms.getSitePath(containerPage),
@@ -126,7 +127,7 @@ public class CmsJspTagContainer extends TagSupport {
                 containerName).key());
             return;
         }
-        JSONObject container = localeData.optJSONObject(containerName);
+        JSONObject container = cntData.optJSONObject(containerName);
 
         // validate the type
         if (!containerType.equals(container.optString(CmsContainerPageLoader.N_TYPE))) {
@@ -178,8 +179,9 @@ public class CmsJspTagContainer extends TagSupport {
             if (resUri.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
                 // get the subcontainer data from cache
                 JSONObject sublocaleData = LOADER.getCache(cms, resUri, cms.getRequestContext().getLocale());
-                // get the subcontainer
-                JSONObject subcontainer = sublocaleData.optJSONObject(sublocaleData.names().optString(0));
+                // get the first subcontainer
+                JSONObject subcontainers = sublocaleData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
+                JSONObject subcontainer = subcontainers.optJSONObject(sublocaleData.names().optString(0));
                 // iterate the subelements
                 JSONArray subelements = subcontainer.optJSONArray(CmsContainerPageLoader.N_ELEMENT);
 
