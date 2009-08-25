@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/Messages.java,v $
- * Date   : $Date: 2009/08/13 10:47:35 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/08/25 10:37:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,6 +65,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SERVER_EXCEPTION_1 = "ERR_SERVER_EXCEPTION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_TYPE_CONFIG_1 = "ERR_NO_TYPE_CONFIG_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_CACHE_MATCHED_OFFLINE_2 = "LOG_DEBUG_CACHE_MATCHED_OFFLINE_2";

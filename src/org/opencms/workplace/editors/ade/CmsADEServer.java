@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/08/24 15:30:35 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/08/25 10:37:25 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 7.6
  */
@@ -198,7 +198,7 @@ public class CmsADEServer extends CmsJspActionElement {
     protected static final String PARAMETER_URL = "url";
 
     /**
-     * Path to the configuration file 
+     * Path to the configuration file. 
      */
     protected static final String NEW_CONFIG_PATH = "/system/workplace/editors/ade/type_config.xml";
 
@@ -274,7 +274,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws JSONException if there is any problem with JSON
      * @throws CmsException if there is a problem with the cms context
      */
-    protected JSONObject executeActionGet() throws CmsException, JSONException, Exception {
+    protected JSONObject executeActionGet() throws CmsException, JSONException {
 
         JSONObject result = new JSONObject();
         String objParam = getRequest().getParameter(PARAMETER_OBJ);
@@ -444,7 +444,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws CmsException if something goes wrong with the cms context
      * @throws JSONException if something goes wrong with the JSON manipulation
      */
-    protected JSONObject getContainerPage(String uri) throws CmsException, JSONException, Exception {
+    protected JSONObject getContainerPage(String uri) throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
 
@@ -456,15 +456,16 @@ public class CmsADEServer extends CmsJspActionElement {
         result.put(P_CONTAINERS, resContainers);
         result.put(P_LOCALE, cms.getRequestContext().getLocale().toString());
 
-        CmsADEElementCreator creator = new CmsADEElementCreator(cms, "/system/workplace/editors/ade/type_config.xml");
-        Map<String, CmsADETypeConfigurationItem> typeConfig = creator.getConfiguration();
         // get the container page itself
         CmsResource containerPage = cms.readResource(uri);
         JSONObject containers = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
         Collection types = CmsADEElementManager.getInstance().getContainerPageTypes(cms, uri);
 
-        for (String type : typeConfig.keySet()) {
-            String elementUri = typeConfig.get(type).getSourceFile();
+        CmsADEElementCreator creator = new CmsADEElementCreator(cms, "/system/workplace/editors/ade/type_config.xml");
+        Map<String, CmsADETypeConfigurationItem> typeConfig = creator.getConfiguration();
+        for (Map.Entry<String, CmsADETypeConfigurationItem> entry : typeConfig.entrySet()) {
+            String type = entry.getKey();
+            String elementUri = entry.getValue().getSourceFile();
             JSONObject resElement = CmsADEElementManager.getInstance().getElementData(
                 cms,
                 cms.readResource(elementUri),

@@ -13,7 +13,7 @@
     
     <xsd:complexType name="OpenCmsADEType">
         <xsd:sequence>    
-            <xsd:element name="Source" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="Source" type="OpenCmsVfsFile" minOccurs="1" maxOccurs="1" />
             <xsd:element name="Destination" type="OpenCmsString" minOccurs="1" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="language" type="OpenCmsLocale" use="optional" />
@@ -21,6 +21,9 @@
     
     <xsd:annotation>
         <xsd:appinfo>
+        <layouts>
+        	<layout element="Destination"  widget="StringWidget" />
+        </layouts>
         </xsd:appinfo>
     </xsd:annotation>
 </xsd:schema>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEElementCreator.java,v $
- * Date   : $Date: 2009/08/24 15:30:35 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/08/25 10:37:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,26 +35,25 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /**
  * Class for managing the creation of new content elements in ADE.<p>
@@ -66,15 +65,15 @@ import org.w3c.dom.NodeList;
  */
 public class CmsADEElementCreator {
 
-    /**
-     * The tag name for a configuration.
-     */
-    public static final String TAG_CONFIG = "ADETypeConfiguration";
+    /** The tag name of the configuration for a single type.<p> */
+    public static String N_ADE_TYPE = "ADEType";
 
-    /**
-     * The tag name for the configuration of a single type.
-    */
-    public static final String TAG_TYPE = "ADEType";
+    /** The tag name of the source file in the type configuration.<p>*/
+    public static String N_SOURCE = "Source";
+
+    /** The tag name of the destination in the type configuration.<p> */
+    public static String N_DESTINATION = "Destination";
+
     /**
      * The macro name for new file name patterns. 
      */
@@ -85,16 +84,6 @@ public class CmsADEElementCreator {
      */
     public static final String FILE_NUMBER_FORMAT = "%0.5d";
 
-    /**
-     * The "."-separated XML path for the tag which stores the source file of a type.
-     */
-    public static final String XML_PATH_SOURCE = "Source";
-
-    /**
-     * The "."-separated XML path for the tag which stores the creation destination of a type.
-     */
-    public static final String XML_PATH_DESTINATION = "Destination";
-
     private Map<String, CmsADETypeConfigurationItem> m_configuration;
 
     /**
@@ -102,107 +91,15 @@ public class CmsADEElementCreator {
      * 
      *  @param cms the CmsObject used for reading the configuration
      *  @param configPath the VFS path of the configuration file. 
-     *  @throws Exception if something goes wrong
+     *  @throws CmsException if something goes wrong
      */
     public CmsADEElementCreator(CmsObject cms, String configPath)
-    throws Exception {
+    throws CmsException {
 
         m_configuration = new HashMap<String, CmsADETypeConfigurationItem>();
-        parseConfiguration(cms, readConfiguration(cms, configPath));
-    }
-
-    /**
-     * Helper method for getting a nested sub-element of an XML element.<p>
-     * 
-     * @param elem the element from which a sub-element should be retrieved 
-     * @param path the path of the sub-element, consisting of a "."-separated list of tag names.
-     * @return the sub-element at the given path
-     */
-    private Element getSubElement(Element elem, String path) {
-
-        String[] tags = path.split("\\.");
-        for (String tag : tags) {
-            elem = (Element)elem.getElementsByTagName(tag).item(0);
-        }
-        return elem;
-
-    }
-
-    /**
-     * Helper method for retrieving the OpenCms type name for a given type id.<p>
-     * @param typeId the id of the type
-     * @return the name of the type
-     * @throws CmsException
-     */
-    private static String getTypeName(int typeId) throws CmsException {
-
-        return OpenCms.getResourceManager().getResourceType(typeId).getTypeName();
-    }
-
-    /**
-     * Reads the configuration from an XML file in the VFS.<p>
-     * 
-     * @param cms the CmsObject used for reading the configuration
-     * @param configPath the path of the configuration file
-     * @return the XML DOM element of the configuration
-     * @throws Exception if the reading or parsing goes wrong. 
-     */
-    protected Element readConfiguration(CmsObject cms, String configPath) throws Exception {
-
-        CmsFile file = cms.readFile(configPath);
-        byte[] contents = file.getContents();
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-        Document document = builder.parse(new ByteArrayInputStream(contents));
-        Element element = document.getDocumentElement();
-        NodeList configurations = element.getElementsByTagName(TAG_CONFIG);
-        return (Element)configurations.item(0);
-    }
-
-    /**
-     * Configures this element based on the configuration in an XML DOM tree.<p> 
-     * @param cms the CmsObject used for determining the types of files in the configuration. 
-     * @param config the XML DOM tree containing the configuration
-     * @throws CmsException if something goes wrong.
-     */
-    protected void parseConfiguration(CmsObject cms, Element config) throws CmsException {
-
-        NodeList nodes = config.getElementsByTagName(TAG_TYPE);
-        for (int i = 0; i < nodes.getLength(); i++) {
-            Element configElem = (Element)nodes.item(i);
-            String sourceFileName = getSubElement(configElem, XML_PATH_SOURCE).getTextContent();
-            String destination = getSubElement(configElem, XML_PATH_DESTINATION).getTextContent();
-            CmsFile sourceFile = cms.readFile(sourceFileName);
-            CmsADETypeConfigurationItem item = new CmsADETypeConfigurationItem(sourceFileName, destination);
-            m_configuration.put(getTypeName(sourceFile.getTypeId()), item);
-        }
-    }
-
-    /**
-     * Returns the configuration as an unmodifiable map.<p>
-     * 
-     * @return the configuration as an unmodifiable map.
-     */
-    public Map<String, CmsADETypeConfigurationItem> getConfiguration() {
-
-        return Collections.unmodifiableMap(m_configuration);
-    }
-
-    /**
-     * Creates a new element of a given type at the configured location.<p>
-     * @param cms the CmsObject used for creating the new element.
-     * @param type the type of the element to be created.
-     * @return the CmsResource representing the newly created element.
-     * @throws CmsException if something goes wrong.
-     */
-    public CmsResource createElement(CmsObject cms, String type) throws CmsException {
-
-        CmsADETypeConfigurationItem configItem = m_configuration.get(type);
-        CmsResource resource = cms.readResource(configItem.getSourceFile());
-        String destination = configItem.getDestination();
-        String newFileName = getNewFileName(cms, destination);
-        cms.copyResource(cms.getSitePath(resource), newFileName);
-        return cms.readResource(newFileName);
+        CmsFile configFile = cms.readFile(configPath);
+        I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(cms, configFile);
+        parseConfiguration(cms, content);
     }
 
     /**
@@ -226,7 +123,7 @@ public class CmsADEElementCreator {
     public static synchronized String getNewFileName(CmsObject cms, String pattern) throws CmsException {
 
         // this method was adapted from A_CmsResourceCollector#getCreateInFolder
-
+        pattern = cms.getRequestContext().removeSiteRoot(pattern);
         PrintfFormat format = new PrintfFormat(FILE_NUMBER_FORMAT);
         String folderName = CmsResource.getFolderPath(pattern);
         List resources = cms.readResources(folderName, CmsResourceFilter.ALL, false);
@@ -251,4 +148,90 @@ public class CmsADEElementCreator {
         return checkFileName;
     }
 
+    /**
+     * Helper method for retrieving the OpenCms type name for a given type id.<p>
+     * @param typeId the id of the type
+     * @return the name of the type
+     * @throws CmsException
+     */
+    private static String getTypeName(int typeId) throws CmsException {
+
+        return OpenCms.getResourceManager().getResourceType(typeId).getTypeName();
+    }
+
+    /**
+     * Creates a new element of a given type at the configured location.<p>
+     * @param cms the CmsObject used for creating the new element.
+     * @param type the type of the element to be created.
+     * @return the CmsResource representing the newly created element.
+     * @throws CmsException if something goes wrong.
+     */
+    public CmsResource createElement(CmsObject cms, String type) throws CmsException {
+
+        CmsADETypeConfigurationItem configItem = m_configuration.get(type);
+        String destination = configItem.getDestination();
+        String newFileName = getNewFileName(cms, destination);
+        cms.copyResource(configItem.getSourceFile(), newFileName);
+        return cms.readResource(newFileName);
+    }
+
+    /**
+     * Returns the configuration as an unmodifiable map.<p>
+     * 
+     * @return the configuration as an unmodifiable map.
+     */
+    public Map<String, CmsADETypeConfigurationItem> getConfiguration() {
+
+        return Collections.unmodifiableMap(m_configuration);
+    }
+
+    /**
+     * Parses a type configuration contained in an XML content.<p>
+     * 
+     * This method uses the first locale from the following list which has a corresponding
+     * element in the XML content:
+     * <ul>
+     *  <li>the request context's locale</li>
+     *  <li>the default locale</li>
+     *  <li>the first locale available in the XML content</li>
+     * </ul>
+     *
+     * @param cms the CmsObject to use for VFS operations.
+     * @param content the XML content with the type configuration
+     * @throws CmsException if something goes wrong.
+     */
+    public void parseConfiguration(CmsObject cms, I_CmsXmlDocument content) throws CmsException {
+
+        Locale currentLocale = cms.getRequestContext().getLocale();
+        Locale defaultLocale = CmsLocaleManager.getDefaultLocale();
+        Locale locale = null;
+        if (content.hasLocale(currentLocale)) {
+            locale = currentLocale;
+        } else if (content.hasLocale(defaultLocale)) {
+            locale = defaultLocale;
+        } else {
+            List locales = content.getLocales();
+            if (locales.size() == 0) {
+
+                throw new CmsException(Messages.get().container(
+                    Messages.ERR_NO_TYPE_CONFIG_1,
+                    content.getFile().getRootPath()));
+            }
+            locale = (Locale)locales.get(0);
+        }
+
+        Iterator itTypes = content.getValues(N_ADE_TYPE, locale).iterator();
+        while (itTypes.hasNext()) {
+            I_CmsXmlContentValue xmlType = (I_CmsXmlContentValue)itTypes.next();
+            String typePath = xmlType.getPath();
+            String source = content.getValue(CmsXmlUtils.concatXpath(typePath, N_SOURCE), locale).getStringValue(cms);
+            String destination = content.getValue(CmsXmlUtils.concatXpath(typePath, N_DESTINATION), locale).getStringValue(
+                cms);
+            CmsADETypeConfigurationItem configItem = new CmsADETypeConfigurationItem(source, destination);
+            CmsResource resource = cms.readResource(source);
+            String type = getTypeName(resource.getTypeId());
+            m_configuration.put(type, configItem);
+        }
+
+    }
 }

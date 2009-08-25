@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADETypeConfigurationItem.java,v $
- * Date   : $Date: 2009/08/24 15:30:35 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/08/25 10:37:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,22 +31,47 @@
 
 package org.opencms.workplace.editors.ade;
 
+/**
+ * A single item of the ADE file type configuration.<p>
+ * 
+ * A configuration item describes which file should be used as a template for new 
+ * content elements, and at which location in the VFS they should be created.
+ * It does not contain a type, since the type is given by the type of the source file.
+ * 
+ */
 public class CmsADETypeConfigurationItem {
 
+    /** The destination uri pattern. */
     private final String m_destination;
+
+    /** The source file. */
     private final String m_sourceFile;
 
+    /** 
+     * Creates a new type configuration item.<p> 
+     * @param sourceFile the source file uri
+     * @param destination the destination uri pattern
+     **/
     public CmsADETypeConfigurationItem(String sourceFile, String destination) {
 
         m_destination = destination;
         m_sourceFile = sourceFile;
     }
 
+    /**
+     * Gets the destination uri pattern.<p>
+     * For example /demo/news/news_%(number).html
+     * @return the destination uri pattern
+     */
     public String getDestination() {
 
         return m_destination;
     }
 
+    /**
+     * Gets the source file uri.<p> 
+     * @return the source file uri.
+     */
     public String getSourceFile() {
 
         return m_sourceFile;
