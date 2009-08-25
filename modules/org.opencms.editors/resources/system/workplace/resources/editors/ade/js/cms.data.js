@@ -301,7 +301,7 @@
    
       loadJSON({
          obj: OBJ_FAV
-      }, function(data) {
+      }, function(ok, data) {
          if (ok) {
             cms.toolbar.favorites = data.favorites;
          }
