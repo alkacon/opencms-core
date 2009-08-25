@@ -131,8 +131,8 @@
                afterLoad(false);
                return;
             }
-            prepareLoadedElements(jsonData);
-            if (jsonData.state == 'error') {
+            prepareLoadedElements(jsonData.elements);
+            if (jsonData.state == "error") {
                alert(jsonData.error);
                afterLoad(false);
                return;
@@ -150,6 +150,7 @@
             if (jsonData.elements) {
                elements = cms.data.elements = jsonData.elements;
             }
+            
             if (jsonData.newCounter) {
                newCounter = cms.data.newCounter = jsonData.newCounter;
             }
@@ -263,8 +264,8 @@
          'elem': id
       }, function(ok, data) {
          if (ok) {
-            cms.data.elements[id] = data.elements[id];
-            fillContainers();
+         cms.data.elements[id] = data.elements[id];
+         fillContainers();
          }
          afterReload(ok, data);
       });
@@ -284,9 +285,9 @@
          'elem': JSON.stringify(ids)
       }, function(ok, data) {
          if (ok) {
-            for (var id in ids) {
-               cms.data.elements[id] = data.elements[id];
-            }
+         for (var id in ids) {
+            cms.data.elements[id] = data.elements[id];
+         }
          }
          afterLoad(ok, data);
       });
@@ -303,7 +304,7 @@
          obj: OBJ_FAV
       }, function(ok, data) {
          if (ok) {
-            cms.toolbar.favorites = data.favorites;
+         cms.toolbar.favorites = data.favorites;
          }
          afterFavoritesLoad(ok, data);
       });
@@ -320,7 +321,7 @@
          obj: OBJ_REC
       }, function(ok, data) {
          if (ok) {
-            cms.toolbar.recent = data.recent;
+         cms.toolbar.recent = data.recent;
          }
          afterRecentLoad(ok, data);
       });
@@ -335,11 +336,11 @@
    
       // add formatter uris, just to improve performance
       $.each(cms.data.containers, function(key, cnt) {
-         cnt.formatters = [];
-         var cntType = cnt.type;
-         $.each(cnt.elements, function() {
-            cnt.formatters.push(cms.data.elements[this].formatters[cntType]);
-         });
+          cnt.formatters = [];
+          var cntType = cnt.type;
+          $.each(cnt.elements, function() {
+              cnt.formatters.push(cms.data.elements[this].formatters[cntType]);
+          });
       });
       postJSON(OBJ_CNT, {
          'containers': cms.data.containers,
@@ -376,7 +377,7 @@
          var elementIds = containers[containerName].elements;
          for (var i = 0; i < elementIds.length; i++) {
             var elem = elements[elementIds[i]];
-            
+
             var html = '';
             var isSubcontainer = false;
             if (elem.subItems) {
