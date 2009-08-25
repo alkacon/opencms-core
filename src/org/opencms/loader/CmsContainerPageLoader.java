@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsContainerPageLoader.java,v $
- * Date   : $Date: 2009/08/13 10:47:26 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/08/25 13:19:03 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,11 +39,14 @@ import org.opencms.json.JSONObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.editors.ade.CmsContainerPageCache;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.CmsXmlVfsFileValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Iterator;
@@ -60,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6
  */
@@ -74,6 +77,9 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
 
     /** Xml content node constant formatter. */
     public static final String N_FORMATTER = "Formatter";
+
+    /** Xml content node constant uri. */
+    public static final String N_ID = "Id";
 
     /** JSON cache element name constant. */
     public static final String N_LOCALE = "Locale";
@@ -221,12 +227,16 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
                     I_CmsXmlContentValue element = (I_CmsXmlContentValue)itElements.next();
                     String elementPath = element.getPath();
                     // get uri and formatter
-                    String uri = content.getValue(CmsXmlUtils.concatXpath(elementPath, N_URI), locale).getStringValue(
-                        cms);
-                    // TODO: subcontainers 
+                    CmsLink link = ((CmsXmlVfsFileValue)content.getValue(
+                        CmsXmlUtils.concatXpath(elementPath, N_URI),
+                        locale)).getLink(cms);
+                    String uri = link.getVfsUri();
+                    CmsUUID id = link.getStructureId();
+
                     String formatter = content.getValue(CmsXmlUtils.concatXpath(elementPath, N_FORMATTER), locale).getStringValue(
                         cms);
                     JSONObject elemBean = new JSONObject();
+                    elemBean.put(N_ID, id.toString());
                     elemBean.put(N_URI, uri);
                     elemBean.put(N_FORMATTER, formatter);
                     // add element to container
