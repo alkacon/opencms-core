@@ -9,7 +9,6 @@
     <script type="text/javascript">
       var cms = {
         data:{
-          "BACKLINK_URL"   : "%(backlinkUri)",
           "EDITOR_URL"     : "%(editorUri)",
           "SERVER_GET_URL" : "%(serverGetUri)",
           "SERVER_SET_URL" : "%(serverSetUri)",
@@ -23,25 +22,3 @@
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.move.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.toolbar.js"></script>
     <script type="text/javascript" src="%(skinUri)editors/ade/js/cms.sitemap.js"></script>
-    <script type="text/javascript">
-      // TODO: WHY IS THIS A CONSTANT?!!
-      var sortlist = '#left, #right, #maincnt';
-      var sortitems = '.cms-element';
-      var deleteitems = sortitems;
-      $('document').ready(function() {
-        $('.cms-item a.ui-icon').live('click', cms.toolbar.toggleAdditionalInfo);
-        cms.toolbar.addToolbar();
-        $('.cms-item-list div.cms-additional div').jHelperTip({
-            trigger: 'hover',
-            source: 'attribute',
-            attrName: 'alt',
-            topOff: -30,
-            opacity: 0.8,
-            live: true
-        });
-        cms.data.loadAllData(function() {
-           cms.data.fillContainers();
-           cms.toolbar.resetNewList();
-        });
-      });
-    </script>
