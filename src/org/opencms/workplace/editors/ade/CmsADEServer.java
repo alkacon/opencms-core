@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/08/26 12:28:54 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2009/08/26 12:59:32 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 7.6
  */
@@ -341,12 +341,18 @@ public class CmsADEServer extends CmsJspActionElement {
                     PARAMETER_DATA));
                 return result;
             }
+            String containerPageUri = getRequest().getParameter(PARAMETER_URL);
+            if (containerPageUri == null) {
+                result.put(RES_ERROR, Messages.get().getBundle().key(
+                    Messages.ERR_JSON_MISSING_PARAMETER_1,
+                    PARAMETER_URL));
+                return result;
+            }
+
             String type = dataParam;
 
             CmsObject cms = getCmsObject();
-            CmsADEElementCreator elemCreator = new CmsADEElementCreator(
-                cms,
-                cms.readResource(cms.getRequestContext().getUri()));
+            CmsADEElementCreator elemCreator = new CmsADEElementCreator(cms, cms.readResource(containerPageUri));
 
             CmsResource newResource = elemCreator.createElement(cms, type);
             result.put(P_ID, CmsADEElementUtil.ADE_ID_PREFIX + newResource.getStructureId().toString());

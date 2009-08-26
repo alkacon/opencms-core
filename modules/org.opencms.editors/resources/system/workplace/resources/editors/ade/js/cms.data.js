@@ -155,6 +155,7 @@
             }
             if (jsonData.elements) {
                elements = cms.data.elements = jsonData.elements;
+               _initNewCounter(elements);
             }
             if (jsonData.newCounter) {
                newCounter = cms.data.newCounter = jsonData.newCounter;
@@ -261,8 +262,10 @@
    var createResource = cms.data.createResource = /** void */ function(/** String */type, /** void Function(boolean, String, String) */ afterCreate) {
    
       loadJSON({
-          'obj': OBJ_NEW,
-          'data': type
+         'obj': OBJ_NEW,
+         'data': type,
+         'uri': cms.data.CURRENT_URI
+      
       }, function(ok, data) {
          afterCreate(ok, data.id, data.uri);
       });
@@ -443,6 +446,21 @@
          }
       }
    }
+   
+   /**
+    * Initializes the counter for new elements by generating the first unused element id
+    * @param {Object} elements the map in which to look for existing element ids
+    */
+   var _initNewCounter = function(/*Object*/elements) {
+      var newCounter = 0;
+      do {
+         newCounter += 1;
+         var newName = "new_" + newCounter;
+      } while (cms.data.elements[newName]);
+      cms.data.newCounter = newCounter;
+   }
+   
+   
    
    ///////// these function are for debugging /////////////
    var serialize = function() {

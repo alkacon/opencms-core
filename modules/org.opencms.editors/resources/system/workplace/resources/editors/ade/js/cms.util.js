@@ -179,8 +179,8 @@
    
    var replaceNewElement = cms.util.replaceNewElement = function(oldName, newName) {
       for (var containerName in cms.data.containers) {
-           var container = cms.data.containers[containerName];
-           container.elements = replaceListElements(container.elements, oldName, newName);      
+         var container = cms.data.containers[containerName];
+         container.elements = replaceListElements(container.elements, oldName, newName);
       }
    }
    
@@ -207,9 +207,11 @@
    
    var createInstanceForNewItem = cms.util.createInstanceForNewItem = function(type) {
       var element = cms.util.deepCopy(cms.data.elements[type]);
-      var newId = "new:"+type +"-"+ (cms.data.newCounter++);
+      var newId = "new_" + (cms.data.newCounter++);
       element.id = newId;
-      cms.data.prepareLoadedElements({1:element});
+      cms.data.prepareLoadedElements({
+         1: element
+      });
       cms.data.elements[newId] = element;
       return element;
    }
@@ -218,8 +220,16 @@
    
    
    var deepCopy = cms.util.deepCopy = function(obj) {
-       return JSON.parse(JSON.stringify(obj));
+      return JSON.parse(JSON.stringify(obj));
    }
    
+   /**
+    * Converts a jquery object to HTML.<p>
+    * Only use this for jquery objects which don't have elements attached to the DOM.
+    * @param {Object} $jquery the jquery object to convert to html.
+    */
+   var jqueryToHtml = cms.util.jqueryToHtml = function($jquery) {
+      return $jquery.appendTo("<div></div>").parent().html();
+   }
    
 })(cms);

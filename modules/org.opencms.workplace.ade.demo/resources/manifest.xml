@@ -25,7 +25,9 @@
 		<dependencies>
 			<dependency name="org.opencms.editors" version="7.6.0"/>
 		</dependencies>
-		<exportpoints/>
+        <exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.workplace.ade.demo/classes/" destination="WEB-INF/classes/"/>
+		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.workplace.ade.demo/"/>
 			<resource uri="/demo/"/>

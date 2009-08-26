@@ -15,6 +15,8 @@
    var showPublishList = cms.toolbar.showPublishList = function() {
       var button = $(this);
       if (button.hasClass('ui-state-active')) {
+      
+      
          button.removeClass('ui-state-active');
       } else {
          $('button.ui-state-active').trigger('click');
@@ -93,7 +95,6 @@
       timer.id = setTimeout("cms.toolbar.showAddButtons()", 1000);
       timer.handleDiv = handleDiv;
       timer.adeMode = adeMode;
-      
    }
    
    var showAddButtons = cms.toolbar.showAddButtons = function() {
@@ -148,7 +149,6 @@
                } else {
                               // Append edit-locked-handle
                }
-               
             }
             
          });
@@ -233,6 +233,7 @@
                   editorDialog.empty().attr('rel', id);
                }
                
+               
                editorDialog.append('<div class="cms-editor-subtitle">Resource: ' + path + '</div>').append(editorFrame);
                editorDialog.dialog({
                   width: dialogWidth - 50,
@@ -272,10 +273,10 @@
             }
             if (element.status == cms.data.STATUS_NEW) {
                cms.data.createResource(element.type, function(ok, id, uri) {
-                   if (!ok) {
-                       // TODO
-                       return;
-                   }
+                  if (!ok) {
+                     // TODO
+                     return;
+                  }
                   var elem = cms.data.elements[elemId];
                   delete cms.data.elements[elemId];
                   cms.data.elements[id] = elem;
@@ -372,6 +373,7 @@
       
       initFavDialog();
    };
+   
    
    
    var destroyMove = function() {
@@ -537,6 +539,7 @@
       var button = $(buttonElem);
       var newMenuItems = $('#' + newMenu).find("ul").attr('id');
       if (button.hasClass('ui-state-active')) {
+      
          $(cms.util.getContainerSelector() + ', ' + sortmenus).sortable('destroy');
          $(menuHandles).remove();
          $(menus).hide();
@@ -546,15 +549,16 @@
          cms.toolbar.currentMenuItems = newMenuItems
          var loadFunction;
          if (newMenuItems == cms.html.favoriteListId) {
-            resetFavList();
+            //resetFavList();
             loadFunction = cms.data.loadFavorites;
          } else if (newMenuItems == cms.html.recentListId) {
-            resetRecentList();
+            //resetRecentList();
             loadFunction = cms.data.loadRecent;
          } else {
-            // TODO: please comment!!
-            loadFunction = function(f) {
-               f(true);
+            // set a dummy load function that will immediately 
+            // execute its callback
+            loadFunction = function(callback) {
+               callback(true, null);
             }
          }
          
@@ -567,6 +571,10 @@
                // TODO
                return;
             }
+            if (newMenuItems == cms.html.favoriteListId) 
+               resetFavList();
+            if (newMenuItems == cms.html.recentListId) 
+               resetRecentList();
             if (!button.hasClass("ui-state-active")) {
                return;
             }
@@ -702,7 +710,6 @@
    
    var showFavDialog = cms.toolbar.showFavDialog = function() {
       var button = $(this);
-      $("#fav-dialog li").show(); // Make "deleted" items show up again
       if (button.hasClass("ui-state-active")) {
          button.removeClass("ui-state-active");
       } else {
@@ -772,13 +779,17 @@
 	</li>'];
       return html.join('');
    };
+   
+   
    var resetNewList = cms.toolbar.resetNewList = function() {
       $('#' + cms.html.newMenuId + " li.cms-item").remove();
       var $newlist = $('#' + cms.html.newMenuId + " ul");
       for (var key in cms.data.elements) {
-          if (cms.data.elements[key].status != cms.data.STATUS_NEW) continue;
-      
-         $newlist.append(createNewListItemHtml(key, key));
+         if (cms.data.elements[key].status != cms.data.STATUS_NEW) { 
+            continue;
+         }
+         
+         $newlist.append(cms.html.createItemFavListHtml(cms.data.elements[key]));
       }
    }
    
@@ -827,7 +838,6 @@
       if (!$(this).hasClass('cms-deactivated')) {
          $('button[name="Save"]').addClass('ui-state-active');
          $('#cms-save-dialog').dialog('open');
-         
       }
    }
    

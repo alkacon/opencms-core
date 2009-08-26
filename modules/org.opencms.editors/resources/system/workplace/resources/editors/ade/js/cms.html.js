@@ -103,48 +103,29 @@
    }
    
    var favoriteDialog = cms.html.favoriteDialog = '<div id="' + favoriteDialogId + '" class="cms-dialog"><ul class="cms-item-list"></ul></div>';
+   var deleteIcon = '<div class="cms-left"><span class="cms-delete-icon"></span></div>';
    
-   var createItemFavDialogHtml = cms.html.createItemFavDialogHtml = function(item) {
-      var html = ['<li class="cms-item" rel="', item.id, '">\
-		<div class="cms-left">\
-			<span class="cms-delete-icon" ></span>\
-		</div>\
-		<div class="cms-left ui-widget-content">\
-			<div class="cms-head ui-state-hover">\
-				<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>', item.navText, '</div>\
-				<span class="cms-title">', item.title, '</span>\
-				<span class="cms-file-icon"></span>\
-				<a class="cms-move cms-handle"></a>\
-			</div>\
-			<div class="cms-additional">\
-				<div alt="File:', item.file, '"><span class="left">File:</span>', item.file, '</div>\
-				<div alt="Date:', item.date, '"><span class="left">Date:</span>', item.date, '</div>\
-				<div alt="User:', item.user, '"><span class="left">User:</span>', item.user, '</div>\
-				<div alt="Type:', item.type, '"><span class="left">Type:</span>', item.type, '</div>\
-			</div>\
-		</div>\
-		<br clear="all" />\
-	</li>'];
-      return html.join('');
+   /**
+    * Creates the HTML for an item in the favorite dialog from an element.<p>
+    * @param {Object} item the element for which to generate the HTML
+    * @return the HTML for the element
+    */
+   var createItemFavDialogHtml = cms.html.createItemFavDialogHtml = /*Html*/ function(/*Element*/item) {
+      var $content = $(item.contents['_DEFAULT_']);
+      $content.prepend(deleteIcon);
+      // hack needed to make the delete icon visible
+      $('.ui-widget-content', $content).addClass("cms-left");
+      return cms.util.jqueryToHtml($content);
    }
+   
+   
+   /**
+    * Creates the HTML for an item in the New/Fav/Recent menu from an element.<p>
+    *
+    * @param {Object} item the element for which the HTML should be generated
+    */
    var createItemFavListHtml = cms.html.createItemFavListHtml = function(item) {
-      var html = ['<li class="cms-item"  rel="', item.id, '">\
-			<div class=" ui-widget-content">\
-				<div class="cms-head ui-state-hover">\
-					<div class="cms-navtext"><a class="cms-left ui-icon ui-icon-triangle-1-e"></a>', item.navText, '</div>\
-					<span class="cms-title">', item.title, '</span>\
-					<span class="cms-file-icon"></span>\
-				</div>\
-				<div class="cms-additional">\
-					<div alt="File: ', item.file, '"><span class="cms-left">File:</span>', item.file, '</div>\
-					<div alt="Date: ', item.date, '"><span class="cms-left">Date:</span>', item.date, '</div>\
-					<div alt="User: ', item.user, '"><span class="cms-left">User:</span>', item.user, '</div>\
-					<div alt="Type: ', item.type, '"><span class="cms-left">Type:</span>', item.type, '</div>\
-				</div>\
-			</div>\
-			\
-		</li>'];
-      return html.join('');
+      return $(item.contents['_DEFAULT_']);
    }
    
    var toolbar = cms.html.toolbar = '<div id="' + toolbarId + '">\
