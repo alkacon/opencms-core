@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageHandler.java,v $
- * Date   : $Date: 2009/08/13 10:47:35 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/08/26 12:59:04 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,11 +44,11 @@ import java.util.Iterator;
 import java.util.Locale;
 
 /**
- * Container page handler to validate consistency.
+ * Container page handler to validate consistency.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.6
  */

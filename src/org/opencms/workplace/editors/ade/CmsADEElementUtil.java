@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEElementUtil.java,v $
- * Date   : $Date: 2009/08/26 12:28:54 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/08/26 12:59:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.6
  */
@@ -202,7 +202,7 @@ public final class CmsADEElementUtil {
                 subitems.put(CmsADEElementUtil.ADE_ID_PREFIX + id.toString());
             }
         } else {
-            // TODO: this may not be performing well
+            // TODO: this may not be performing well, any way to access the content handler without unmarshal??
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(resource));
             Iterator it = content.getContentDefinition().getContentHandler().getFormatters().entrySet().iterator();
             while (it.hasNext()) {

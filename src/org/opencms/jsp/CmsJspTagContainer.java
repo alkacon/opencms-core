@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/08/26 12:28:39 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/08/26 12:59:05 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 7.6 
  */
@@ -183,7 +183,7 @@ public class CmsJspTagContainer extends TagSupport {
                     String subelementUri = subelement.optString(CmsContainerPageLoader.N_URI);
                     String subelementFormatter = subelement.optString(CmsContainerPageLoader.N_FORMATTER);
 
-                    // HACK: use the __element param for the element uri
+                    // HACK: we use the __element param for the element uri
                     // execute the formatter jsp for the given element uri
                     CmsJspTagInclude.includeTagAction(
                         pageContext,
@@ -193,24 +193,13 @@ public class CmsJspTagContainer extends TagSupport {
                         null,
                         req,
                         res);
-
-                    // CmsResource subresUri = cms.readResource(subelementUri);
-                    // execute the formatter jsp for the given element uri
-                    // String jspResult = elemUtil.getElementContent(subresUri, subelementFormatter);
-                    // write the result
-                    // res.getWriter().println(jspResult);
                 }
             } else {
                 String elementFormatter = element.optString(CmsContainerPageLoader.N_FORMATTER);
 
-                // HACK: use the __element param for the element uri
+                // HACK: we use the __element param for the element uri
                 // execute the formatter jsp for the given element uri
                 CmsJspTagInclude.includeTagAction(pageContext, elementFormatter, elementUri, false, null, req, res);
-
-                // execute the formatter jsp for the given element uri
-                // String jspResult = elemUtil.getElementContent(resUri, elementFormatter);
-                // write the result
-                //res.getWriter().println(jspResult);
             }
         }
     }
