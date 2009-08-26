@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchCategoryCollector.java,v $
- * Date   : $Date: 2009/08/20 11:31:40 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/26 07:48:53 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,14 +56,14 @@ import org.apache.lucene.search.IndexSearcher;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchCategoryCollector extends HitCollector {
 
     /**
-     * Class with an increasable counter to avoid multiple look ups and 
+     * Class with an increasing counter to avoid multiple look ups and 
      * object creations when dealing with the category count.<p>
      */
     private static class CmsCategroyCount {
@@ -105,9 +105,9 @@ public class CmsSearchCategoryCollector extends HitCollector {
     private static final Log LOG = CmsLog.getLog(CmsSearchCategoryCollector.class);
 
     /** The internal map of the categories found. */
-    private Map m_categories;
+    private Map<String, CmsCategroyCount> m_categories;
 
-    /** The indes searcher used. */
+    /** The index searcher used. */
     private IndexSearcher m_searcher;
 
     /**
@@ -119,7 +119,7 @@ public class CmsSearchCategoryCollector extends HitCollector {
 
         super();
         m_searcher = searcher;
-        m_categories = new HashMap();
+        m_categories = new HashMap<String, CmsCategroyCount>();
     }
 
     /**
@@ -129,19 +129,17 @@ public class CmsSearchCategoryCollector extends HitCollector {
      * @param categories the map to format
      * @return the formatted category map
      */
-    public static final String formatCategoryMap(Map categories) {
+    public static final String formatCategoryMap(Map<String, Integer> categories) {
 
         StringBuffer result = new StringBuffer(256);
         result.append("Total categories: ");
         result.append(categories.size());
         result.append('\n');
-        Iterator i = categories.entrySet().iterator();
+        Iterator<Map.Entry<String, Integer>> i = categories.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            String category = (String)entry.getKey();
-            Integer count = (Integer)entry.getValue();
-            result.append(CmsStringUtil.padRight(category, 30));
-            result.append(count.intValue());
+            Map.Entry<String, Integer> entry = i.next();
+            result.append(CmsStringUtil.padRight(entry.getKey(), 30));
+            result.append(entry.getValue().intValue());
             result.append('\n');
         }
         return result.toString();
@@ -167,7 +165,7 @@ public class CmsSearchCategoryCollector extends HitCollector {
         if (category == null) {
             category = UNKNOWN_CATEGORY;
         }
-        CmsCategroyCount count = (CmsCategroyCount)m_categories.get(category);
+        CmsCategroyCount count = m_categories.get(category);
         if (count != null) {
             count.inc();
         } else {
@@ -182,14 +180,13 @@ public class CmsSearchCategoryCollector extends HitCollector {
      * 
      * @return the category count result
      */
-    public Map getCategoryCountResult() {
+    public Map<String, Integer> getCategoryCountResult() {
 
-        Map result = new TreeMap();
-        Iterator i = m_categories.keySet().iterator();
+        Map<String, Integer> result = new TreeMap<String, Integer>();
+        Iterator<Map.Entry<String, CmsCategroyCount>> i = m_categories.entrySet().iterator();
         while (i.hasNext()) {
-            String category = (String)i.next();
-            CmsCategroyCount count = (CmsCategroyCount)m_categories.get(category);
-            result.put(category, count.toInteger());
+            Map.Entry<String, CmsCategroyCount> entry = i.next();
+            result.put(entry.getKey(), entry.getValue().toInteger());
         }
         return result;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2009/06/04 14:29:51 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2009/08/26 07:48:53 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.lucene.index.Term;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,7 +78,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     /**
      * @see org.opencms.search.I_CmsIndexer#deleteResources(org.apache.lucene.index.IndexWriter, java.util.List)
      */
-    public void deleteResources(IndexWriter indexWriter, List resourcesToDelete) {
+    public void deleteResources(IndexWriter indexWriter, List<CmsPublishedResource> resourcesToDelete) {
 
         if ((resourcesToDelete == null) || resourcesToDelete.isEmpty()) {
             // nothing to delete
@@ -86,12 +86,12 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         }
 
         // contains all resources already deleted to avoid multiple deleting in case of siblings
-        List resourcesAlreadyDeleted = new ArrayList(resourcesToDelete.size());
+        List<String> resourcesAlreadyDeleted = new ArrayList<String>(resourcesToDelete.size());
 
-        Iterator i = resourcesToDelete.iterator();
+        Iterator<CmsPublishedResource> i = resourcesToDelete.iterator();
         while (i.hasNext()) {
             // iterate all resources in the given list of resources to delete
-            CmsPublishedResource res = (CmsPublishedResource)i.next();
+            CmsPublishedResource res = i.next();
             String rootPath = res.getRootPath();
             if (!resourcesAlreadyDeleted.contains(rootPath)) {
                 // ensure siblings are only deleted once per update
@@ -107,15 +107,17 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     /**
      * @see org.opencms.search.I_CmsIndexer#getUpdateData(org.opencms.search.CmsSearchIndexSource, java.util.List)
      */
-    public CmsSearchIndexUpdateData getUpdateData(CmsSearchIndexSource source, List publishedResources) {
+    public CmsSearchIndexUpdateData getUpdateData(
+        CmsSearchIndexSource source,
+        List<CmsPublishedResource> publishedResources) {
 
         // create a new update collection from this indexer and the given index source
         CmsSearchIndexUpdateData result = new CmsSearchIndexUpdateData(source, this);
 
-        Iterator i = publishedResources.iterator();
+        Iterator<CmsPublishedResource> i = publishedResources.iterator();
         while (i.hasNext()) {
             // check all published resources if they match this indexer / source
-            CmsPublishedResource pubRes = (CmsPublishedResource)i.next();
+            CmsPublishedResource pubRes = i.next();
             // VFS resources will always have a structure id
             if (!pubRes.getStructureId().isNullUUID()) {
                 // use utility method from CmsProject to check if published resource is "inside" this index source
@@ -148,12 +150,12 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     public void rebuildIndex(IndexWriter writer, CmsIndexingThreadManager threadManager, CmsSearchIndexSource source)
     throws CmsIndexException {
 
-        List resourceNames = source.getResourcesNames();
-        Iterator i = resourceNames.iterator();
+        List<String> resourceNames = source.getResourcesNames();
+        Iterator<String> i = resourceNames.iterator();
         while (i.hasNext()) {
             // read the resources from all configured source folders
-            String resourceName = (String)i.next();
-            List resources = null;
+            String resourceName = i.next();
+            List<CmsResource> resources = null;
             try {
                 // read all resources (only files) below the given path
                 resources = m_cms.readResources(resourceName, CmsResourceFilter.DEFAULT.addRequireFile());
@@ -173,10 +175,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             }
             if (resources != null) {
                 // iterate all resources found in the folder
-                Iterator j = resources.iterator();
+                Iterator<CmsResource> j = resources.iterator();
                 while (j.hasNext()) {
                     // now update all the resources individually
-                    CmsResource resource = (CmsResource)j.next();
+                    CmsResource resource = j.next();
                     updateResource(writer, threadManager, resource);
                 }
             }
@@ -186,8 +188,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     /**
      * @see org.opencms.search.I_CmsIndexer#updateResources(org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager, java.util.List)
      */
-    public void updateResources(IndexWriter writer, CmsIndexingThreadManager threadManager, List resourcesToUpdate)
-    throws CmsIndexException {
+    public void updateResources(
+        IndexWriter writer,
+        CmsIndexingThreadManager threadManager,
+        List<CmsPublishedResource> resourcesToUpdate) throws CmsIndexException {
 
         if ((resourcesToUpdate == null) || resourcesToUpdate.isEmpty()) {
             // nothing to update
@@ -195,12 +199,12 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         }
 
         // contains all resources already updated to avoid multiple updates in case of siblings
-        List resourcesAlreadyUpdated = new ArrayList(resourcesToUpdate.size());
+        List<String> resourcesAlreadyUpdated = new ArrayList<String>(resourcesToUpdate.size());
 
         // index all resources that in the given list
-        Iterator i = resourcesToUpdate.iterator();
+        Iterator<CmsPublishedResource> i = resourcesToUpdate.iterator();
         while (i.hasNext()) {
-            CmsPublishedResource res = (CmsPublishedResource)i.next();
+            CmsPublishedResource res = i.next();
             CmsResource resource = null;
             try {
                 resource = m_cms.readResource(res.getRootPath());

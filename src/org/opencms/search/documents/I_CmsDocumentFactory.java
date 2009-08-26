@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/I_CmsDocumentFactory.java,v $
- * Date   : $Date: 2009/06/04 14:29:01 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/08/26 07:48:52 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.lucene.document.Document;
  * @author Thomas Weckert 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,7 +112,7 @@ public interface I_CmsDocumentFactory extends I_CmsSearchExtractor {
      * 
      * @throws CmsException if something goes wrong
      */
-    List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException;
+    List<String> getDocumentKeys(List<String> resourceTypes, List<String> mimeTypes) throws CmsException;
 
     /**
      * Returns the name of this document type factory.<p>

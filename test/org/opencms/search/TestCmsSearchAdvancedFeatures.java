@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2009/08/20 11:31:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/08/26 07:49:12 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -124,7 +124,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         echo("Testing searching with limiting to time ranges");
 
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
         String query = "OpenCms";
 
         searchBean.init(cms);
@@ -210,7 +210,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         echo("Testing searching with multiple search roots");
 
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
         String query = "OpenCms";
 
         searchBean.init(cms);
@@ -258,7 +258,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
         String query = "OpenCms";
 
         // apply search categories to some folders
@@ -291,7 +291,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         System.out.println("Result sorted by relevance:");
         TestCmsSearch.printResults(searchResult, cms);
 
-        Map categories = searchBean.getSearchResultCategories();
+        Map<String, Integer> categories = searchBean.getSearchResultCategories();
         // make sure categories where found
         assertNotNull(categories);
         // print the categories 
@@ -351,7 +351,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         echo("Testing searching in search results");
 
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
         String query = "OpenCms";
 
         searchBean.init(cms);
@@ -487,7 +487,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
         String query = "OpenCms";
 
         // update the search index used
@@ -509,9 +509,9 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         System.out.println("Result sorted by title:");
         TestCmsSearch.printResults(searchResult, cms);
 
-        Iterator i = searchResult.iterator();
+        Iterator<CmsSearchResult> i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             if (lastTitle != null) {
                 // make sure result is sorted correctly
                 assertTrue(lastTitle.compareTo(res.getField(CmsSearchField.FIELD_TITLE)) <= 0);
@@ -528,7 +528,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             if (lastTime > 0) {
                 // make sure result is sorted correctly
                 assertTrue(lastTime >= res.getDateLastModified().getTime());

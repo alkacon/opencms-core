@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2009/08/20 11:31:57 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/08/26 07:49:14 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 6.0.0
  */
@@ -132,7 +132,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         echo("Testing XML page comment handling");
 
         String filename = "/folder1/subfolder11/test2.html";
-        List properties = new ArrayList();
+        List<CmsProperty> properties = new ArrayList<CmsProperty>();
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, UTF8, null));
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
         String content = CmsXmlPageFactory.createDocument(Locale.ENGLISH, UTF8);
@@ -195,7 +195,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
         String filename = "/folder1/subfolder11/test_param_1.html";
         String content = CmsXmlPageFactory.createDocument(Locale.ENGLISH, UTF8);
-        List properties = new ArrayList();
+        List<CmsProperty> properties = new ArrayList<CmsProperty>();
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, UTF8, null));
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
         properties.add(new CmsProperty(CmsXmlPage.PROPERTY_ALLOW_RELATIVE, CmsStringUtil.FALSE, null));
@@ -248,7 +248,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
         String filename = "/folder1/subfolder11/test1.html";
         String content = CmsXmlPageFactory.createDocument(Locale.ENGLISH, UTF8);
-        List properties = new ArrayList();
+        List<CmsProperty> properties = new ArrayList<CmsProperty>();
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, UTF8, null));
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
         properties.add(new CmsProperty(CmsXmlPage.PROPERTY_ALLOW_RELATIVE, CmsStringUtil.FALSE, null));
@@ -322,7 +322,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         String filename = "xmlpageint.html";
 
         String content = CmsXmlPageFactory.createDocument(Locale.ENGLISH, UTF8);
-        List properties = new ArrayList();
+        List<CmsProperty> properties = new ArrayList<CmsProperty>();
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, UTF8, null));
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
         properties.add(new CmsProperty(CmsXmlPage.PROPERTY_ALLOW_RELATIVE, CmsStringUtil.FALSE, null));

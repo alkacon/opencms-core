@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2009/08/20 11:31:40 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/26 07:48:53 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,16 +190,16 @@ public class CmsSearchParameters {
     private boolean m_calculateCategories;
 
     /** The list of categories to limit the search to. */
-    private List m_categories;
+    private List<String> m_categories;
 
     /** Indicates if all fields should be used for generating the excerpt, regardless if they have been searched or not. */
     private boolean m_excerptOnlySearchedFields;
 
     /** The map of individual search field queries. */
-    private List m_fieldQueries;
+    private List<CmsSearchFieldQuery> m_fieldQueries;
 
     /** The list of search index fields to search in. */
-    private List m_fields;
+    private List<String> m_fields;
 
     /** The index to search. */
     private CmsSearchIndex m_index;
@@ -226,10 +226,10 @@ public class CmsSearchParameters {
     private int m_queryLength;
 
     /** The list of resource types to limit the search to. */
-    private List m_resourceTypes;
+    private List<String> m_resourceTypes;
 
     /** Only resource that are sub-resource of one of the search roots are included in the search result. */
-    private List m_roots;
+    private List<String> m_roots;
 
     /** The sort order for the search. */
     private Sort m_sort;
@@ -279,27 +279,27 @@ public class CmsSearchParameters {
      */
     public CmsSearchParameters(
         String query,
-        List fields,
-        List roots,
-        List categories,
-        List resourceTypes,
+        List<String> fields,
+        List<String> roots,
+        List<String> categories,
+        List<String> resourceTypes,
         boolean calculateCategories,
         Sort sort) {
 
         super();
         m_query = (query == null) ? "" : query;
         if (fields == null) {
-            fields = new ArrayList(2);
+            fields = new ArrayList<String>(2);
             fields.add(CmsSearchIndex.DOC_META_FIELDS[0]);
             fields.add(CmsSearchIndex.DOC_META_FIELDS[1]);
         }
         m_fields = fields;
         if (roots == null) {
-            roots = new ArrayList();
+            roots = new ArrayList<String>(2);
         }
         m_roots = roots;
-        m_categories = (categories == null) ? new ArrayList() : categories;
-        m_resourceTypes = (resourceTypes == null) ? new ArrayList() : resourceTypes;
+        m_categories = (categories == null) ? new ArrayList<String>() : categories;
+        m_resourceTypes = (resourceTypes == null) ? new ArrayList<String>() : resourceTypes;
         m_calculateCategories = calculateCategories;
         // null sort is allowed default
         m_sort = sort;
@@ -327,8 +327,8 @@ public class CmsSearchParameters {
     public void addFieldQuery(CmsSearchFieldQuery query) {
 
         if (m_fieldQueries == null) {
-            m_fieldQueries = new ArrayList();
-            m_fields = new ArrayList();
+            m_fieldQueries = new ArrayList<CmsSearchFieldQuery>();
+            m_fields = new ArrayList<String>();
         }
         m_fieldQueries.add(query);
         // add the used field used in the fields query to the list of fields used in the search
@@ -370,7 +370,7 @@ public class CmsSearchParameters {
      *
      * @return the list of categories to limit the search to
      */
-    public List getCategories() {
+    public List<String> getCategories() {
 
         return m_categories;
     }
@@ -392,7 +392,7 @@ public class CmsSearchParameters {
      *
      * @since 7.5.1
      */
-    public List getFieldQueries() {
+    public List<CmsSearchFieldQuery> getFieldQueries() {
 
         return m_fieldQueries;
     }
@@ -402,7 +402,7 @@ public class CmsSearchParameters {
      *
      * @return the list of search index field names (Strings) to search in
      */
-    public List getFields() {
+    public List<String> getFields() {
 
         return m_fields;
     }
@@ -494,7 +494,7 @@ public class CmsSearchParameters {
      *
      * @since 7.5.1
      */
-    public List getResourceTypes() {
+    public List<String> getResourceTypes() {
 
         return m_resourceTypes;
     }
@@ -506,7 +506,7 @@ public class CmsSearchParameters {
      * 
      * @return the list of strings of search roots to use
      */
-    public List getRoots() {
+    public List<String> getRoots() {
 
         return m_roots;
     }
@@ -663,7 +663,7 @@ public class CmsSearchParameters {
         }
 
         // restrict fields
-        List fields = null;
+        List<String> fields = null;
         if ((m_fields != null) && (m_fields.size() > 0)) {
             if ((restriction.getFields() != null) && (restriction.getFields().size() > 0)) {
                 fields = ListUtils.intersection(m_fields, restriction.getFields());
@@ -675,7 +675,7 @@ public class CmsSearchParameters {
         }
 
         // restrict roots
-        List roots = null;
+        List<String> roots = null;
         if ((m_roots != null) && (m_roots.size() > 0)) {
             if ((restriction.getRoots() != null) && (restriction.getRoots().size() > 0)) {
                 roots = ListUtils.intersection(m_roots, restriction.getRoots());
@@ -689,7 +689,7 @@ public class CmsSearchParameters {
         }
 
         // restrict categories
-        List categories = null;
+        List<String> categories = null;
         if ((m_categories != null) && (m_categories.size() > 0)) {
             if ((restriction.getCategories() != null) && (restriction.getCategories().size() > 0)) {
                 categories = ListUtils.intersection(m_categories, restriction.getCategories());
@@ -701,7 +701,7 @@ public class CmsSearchParameters {
         }
 
         // restrict resource types
-        List resourceTypes = null;
+        List<String> resourceTypes = null;
         if ((m_resourceTypes != null) && (m_resourceTypes.size() > 0)) {
             if ((restriction.getResourceTypes() != null) && (restriction.getResourceTypes().size() > 0)) {
                 resourceTypes = ListUtils.intersection(m_resourceTypes, restriction.getResourceTypes());
@@ -740,7 +740,7 @@ public class CmsSearchParameters {
      * 
      * @param categories the list of categories (strings) of this parameters
      */
-    public void setCategories(List categories) {
+    public void setCategories(List<String> categories) {
 
         m_categories = categories;
     }
@@ -774,7 +774,7 @@ public class CmsSearchParameters {
      * 
      * @param fields the list of strings of names of fields to search in to set
      */
-    public void setFields(List fields) {
+    public void setFields(List<String> fields) {
 
         m_fields = fields;
     }
@@ -893,7 +893,7 @@ public class CmsSearchParameters {
      *
      * @since 7.5.1
      */
-    public void setResourceTypes(List resourceTypes) {
+    public void setResourceTypes(List<String> resourceTypes) {
 
         m_resourceTypes = resourceTypes;
     }
@@ -903,7 +903,7 @@ public class CmsSearchParameters {
      * 
      * @param roots  the list of strings of roots to search under for the search to set
      */
-    public void setRoots(List roots) {
+    public void setRoots(List<String> roots) {
 
         m_roots = roots;
     }
@@ -1018,7 +1018,7 @@ public class CmsSearchParameters {
 
         if ((getCategories() != null) && (getCategories().size() > 0)) {
             result.append("&category=");
-            Iterator it = getCategories().iterator();
+            Iterator<String> it = getCategories().iterator();
             while (it.hasNext()) {
                 result.append(it.next());
                 if (it.hasNext()) {
@@ -1029,9 +1029,9 @@ public class CmsSearchParameters {
 
         if ((getRoots() != null) && (getRoots().size() > 0)) {
             result.append("&searchRoots=");
-            Iterator it = getRoots().iterator();
+            Iterator<String> it = getRoots().iterator();
             while (it.hasNext()) {
-                result.append(CmsEncoder.encode((String)it.next()));
+                result.append(CmsEncoder.encode(it.next()));
                 if (it.hasNext()) {
                     result.append(',');
                 }
@@ -1118,10 +1118,10 @@ public class CmsSearchParameters {
         return result.toString();
     }
 
-    private String toSeparatedString(List stringList, char c) {
+    private String toSeparatedString(List<String> stringList, char c) {
 
         StringBuffer result = new StringBuffer();
-        Iterator it = stringList.iterator();
+        Iterator<String> it = stringList.iterator();
         while (it.hasNext()) {
             result.append(it.next());
             if (it.hasNext()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractor.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/26 07:48:54 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,7 +122,11 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
      * @param content a buffer where to append the content item
      * @param contentItems the Map of individual content items
      */
-    protected void combineContentItem(String itemValue, String itemKey, StringBuffer content, Map contentItems) {
+    protected void combineContentItem(
+        String itemValue,
+        String itemKey,
+        StringBuffer content,
+        Map<String, String> contentItems) {
 
         if (CmsStringUtil.isNotEmpty(itemValue)) {
             contentItems.put(itemKey, itemValue);

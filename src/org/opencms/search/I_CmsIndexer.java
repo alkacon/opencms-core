@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/I_CmsIndexer.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/08/26 07:48:52 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.search;
 
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.report.I_CmsReport;
 
@@ -47,7 +48,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,7 +62,8 @@ public interface I_CmsIndexer {
      * 
      * @throws CmsIndexException if something goes wrong
      */
-    void deleteResources(IndexWriter indexWriter, List resourcesToDelete) throws CmsIndexException;
+    void deleteResources(IndexWriter indexWriter, List<CmsPublishedResource> resourcesToDelete)
+    throws CmsIndexException;
 
     /**
      * Calculates the data for an incremental search index update.<p>
@@ -73,7 +75,7 @@ public interface I_CmsIndexer {
      * 
      * @throws CmsIndexException if something goes wrong
      */
-    CmsSearchIndexUpdateData getUpdateData(CmsSearchIndexSource source, List publishedResources)
+    CmsSearchIndexUpdateData getUpdateData(CmsSearchIndexSource source, List<CmsPublishedResource> publishedResources)
     throws CmsIndexException;
 
     /**
@@ -111,6 +113,8 @@ public interface I_CmsIndexer {
      * 
      * @throws CmsIndexException if something goes wrong
      */
-    void updateResources(IndexWriter writer, CmsIndexingThreadManager threadManager, List resourcesToUpdate)
-    throws CmsIndexException;
+    void updateResources(
+        IndexWriter writer,
+        CmsIndexingThreadManager threadManager,
+        List<CmsPublishedResource> resourcesToUpdate) throws CmsIndexException;
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestMsExcelExtraction.java,v $
- * Date   : $Date: 2009/06/04 14:35:32 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/26 07:49:13 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,15 +64,15 @@ public class TestMsExcelExtraction extends TestCase {
 
         // extract the content
         I_CmsExtractionResult extractionResult = CmsExtractorMsExcel.getExtractor().extractText(in);
-        Map items = extractionResult.getContentItems();
+        Map<String, String> items = extractionResult.getContentItems();
 
         System.out.println("\n\n---------------------------------------------------------------");
         System.out.println("Extracted from MS Excel:");
-        Iterator i = items.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> i = items.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry e = (Map.Entry)i.next();
-            System.out.println("\nKey: " + e.getKey());            
-            System.out.println("Value: " + e.getValue());            
+            Map.Entry<String, String> e = i.next();
+            System.out.println("\nKey: " + e.getKey());
+            System.out.println("Value: " + e.getValue());
         }
 
         assertEquals(10, items.size());
@@ -80,7 +80,7 @@ public class TestMsExcelExtraction extends TestCase {
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();
         assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
-                
+
         assertTrue(result.indexOf("Alkacon Software") > -1);
         assertTrue(result.indexOf("The OpenCms experts") > -1);
         assertTrue(result.indexOf("Some content here.") > -1);
@@ -96,6 +96,6 @@ public class TestMsExcelExtraction extends TestCase {
         assertEquals("This is the comment", items.get(I_CmsExtractionResult.ITEM_COMMENTS));
         assertEquals("Key1, Key2", items.get(I_CmsExtractionResult.ITEM_KEYWORDS));
         assertEquals("M. Manager", items.get(I_CmsExtractionResult.ITEM_MANAGER));
-        assertEquals("This is the category", items.get(I_CmsExtractionResult.ITEM_CATEGORY));        
+        assertEquals("This is the category", items.get(I_CmsExtractionResult.ITEM_CATEGORY));
     }
 }

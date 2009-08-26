@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/I_CmsExtractionResult.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/26 07:48:54 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,7 +118,7 @@ public interface I_CmsExtractionResult {
      * 
      * @return the extracted content as individual items
      */
-    Map getContentItems();
+    Map<String, String> getContentItems();
 
     /**
      * Releases the information stored in this extraction result, to free up the memory used.<p>

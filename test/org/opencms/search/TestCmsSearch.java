@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2009/08/20 11:31:47 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/08/26 07:49:12 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import junit.framework.TestSuite;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -138,12 +138,12 @@ public class TestCmsSearch extends OpenCmsTestCase {
         cmsSearchBean.init(cms);
         cmsSearchBean.setIndex(INDEX_OFFLINE);
         cmsSearchBean.setSearchRoot("/types/");
-        List results;
+        List<CmsSearchResult> results;
 
         cmsSearchBean.setQuery("+Alkacon +OpenCms +Text");
         results = cmsSearchBean.getSearchResult();
         assertEquals(1, results.size());
-        assertEquals("/sites/default/types/text.txt", ((CmsSearchResult)results.get(0)).getPath());
+        assertEquals("/sites/default/types/text.txt", (results.get(0)).getPath());
     }
 
     /**
@@ -197,7 +197,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         CmsSearch cmsSearchBean = new CmsSearch();
         cmsSearchBean.init(cms);
         cmsSearchBean.setIndex(INDEX_OFFLINE);
-        List results;
+        List<CmsSearchResult> results;
 
         cms.createUser("test", "test", "", null);
         cms.loginUser("test", "test");
@@ -219,8 +219,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
         duration += System.currentTimeMillis();
         echo("Search1: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
-        for (Iterator i = results.iterator(); i.hasNext();) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+        for (Iterator<CmsSearchResult> i = results.iterator(); i.hasNext();) {
+            CmsSearchResult res = i.next();
             echo(res.getPath() + res.getExcerpt());
         }
 
@@ -230,8 +230,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
         duration += System.currentTimeMillis();
         echo("Search2: " + cmsSearchBean.getSearchResultCount() + " results found, total duration: " + duration + " ms");
 
-        for (Iterator i = results.iterator(); i.hasNext();) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+        for (Iterator<CmsSearchResult> i = results.iterator(); i.hasNext();) {
+            CmsSearchResult res = i.next();
             echo(res.getPath() + res.getExcerpt());
         }
 
@@ -360,7 +360,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
             cmsSearchBean.setParameters(parameters);
         }
 
-        List results = cmsSearchBean.getSearchResult();
+        List<CmsSearchResult> results = cmsSearchBean.getSearchResult();
         printResults(results, cms);
         assertEquals(expected, results.size());
     }
@@ -378,22 +378,22 @@ public class TestCmsSearch extends OpenCmsTestCase {
         CmsSearch cmsSearchBean = new CmsSearch();
         cmsSearchBean.init(cms);
         cmsSearchBean.setIndex(INDEX_OFFLINE);
-        List results;
+        List<CmsSearchResult> results;
 
         cmsSearchBean.setQuery(">>SearchEgg1<<");
         results = cmsSearchBean.getSearchResult();
         assertEquals(1, results.size());
-        assertEquals("/sites/default/xmlcontent/article_0001.html", ((CmsSearchResult)results.get(0)).getPath());
+        assertEquals("/sites/default/xmlcontent/article_0001.html", results.get(0).getPath());
 
         cmsSearchBean.setQuery(">>SearchEgg2<<");
         results = cmsSearchBean.getSearchResult();
         assertEquals(1, results.size());
-        assertEquals("/sites/default/xmlcontent/article_0002.html", ((CmsSearchResult)results.get(0)).getPath());
+        assertEquals("/sites/default/xmlcontent/article_0002.html", results.get(0).getPath());
 
         cmsSearchBean.setQuery(">>SearchEgg3<<");
         results = cmsSearchBean.getSearchResult();
         assertEquals(1, results.size());
-        assertEquals("/sites/default/xmlcontent/article_0003.html", ((CmsSearchResult)results.get(0)).getPath());
+        assertEquals("/sites/default/xmlcontent/article_0003.html", results.get(0).getPath());
 
         // check (on console) that the file does contain a link to the /xmlcontent/ folder 
         CmsFile article4 = cms.readFile("/xmlcontent/article_0004.html");
@@ -404,7 +404,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         cmsSearchBean.setQuery("xmlcontent");
         results = cmsSearchBean.getSearchResult();
         assertEquals(1, results.size());
-        assertEquals("/sites/default/xmlcontent/article_0003.html", ((CmsSearchResult)results.get(0)).getPath());
+        assertEquals("/sites/default/xmlcontent/article_0003.html", (results.get(0)).getPath());
         // assertEquals("/sites/default/xmlcontent/article_0004.html", ((CmsSearchResult)results.get(1)).getPath());
     }
 
@@ -438,7 +438,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         searchBean.init(getCmsObject());
         searchBean.setIndex(INDEX_TEST);
@@ -447,7 +447,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         // assert one file is found in the default site     
         searchResult = searchBean.getSearchResult();
         assertEquals(1, searchResult.size());
-        assertEquals("/sites/default/xmlcontent/article_0001.html", ((CmsSearchResult)searchResult.get(0)).getPath());
+        assertEquals("/sites/default/xmlcontent/article_0001.html", searchResult.get(0).getPath());
 
         // change seach root and assert no more files are found
         searchBean.setSearchRoot("/folder1/");
@@ -493,21 +493,21 @@ public class TestCmsSearch extends OpenCmsTestCase {
         CmsSearch cmsSearchBean = new CmsSearch();
         cmsSearchBean.init(cms);
         cmsSearchBean.setIndex(INDEX_TEST);
-        List results;
+        List<CmsSearchResult> results;
 
         cmsSearchBean.setSearchRoot("/");
         cmsSearchBean.setQuery("+Alkacon +OpenCms");
         results = cmsSearchBean.getSearchResult();
         TestCmsSearch.printResults(results, cms);
         assertEquals(8, results.size());
-        assertEquals("/sites/default" + folderName + "text.txt", ((CmsSearchResult)results.get(0)).getPath());
+        assertEquals("/sites/default" + folderName + "text.txt", results.get(0).getPath());
 
         cmsSearchBean.setSearchRoot(folderName);
         cmsSearchBean.setQuery("+Alkacon +OpenCms");
         results = cmsSearchBean.getSearchResult();
         TestCmsSearch.printResults(results, cms);
         assertEquals(1, results.size());
-        assertEquals("/sites/default" + folderName + "text.txt", ((CmsSearchResult)results.get(0)).getPath());
+        assertEquals("/sites/default" + folderName + "text.txt", results.get(0).getPath());
     }
 
     /**
@@ -516,7 +516,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
      * @param searchResult the list to print
      * @param cms the current OpenCms user context
      */
-    public static void printResults(List searchResult, CmsObject cms) {
+    public static void printResults(List<CmsSearchResult> searchResult, CmsObject cms) {
 
         printResults(searchResult, cms, false);
     }
@@ -528,14 +528,14 @@ public class TestCmsSearch extends OpenCmsTestCase {
      * @param cms the current OpenCms user context
      * @param showExcerpt if <code>true</code>, the generated excerpt is also displayed
      */
-    public static void printResults(List searchResult, CmsObject cms, boolean showExcerpt) {
+    public static void printResults(List<CmsSearchResult> searchResult, CmsObject cms, boolean showExcerpt) {
 
-        Iterator i = searchResult.iterator();
+        Iterator<CmsSearchResult> i = searchResult.iterator();
         int count = 0;
         int colPath = 0;
         int colTitle = 0;
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             String path = cms.getRequestContext().removeSiteRoot(res.getPath());
             colPath = Math.max(colPath, path.length() + 3);
             String title = res.getField(CmsSearchField.FIELD_TITLE);
@@ -548,7 +548,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         }
         i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             count++;
             System.out.print(CmsStringUtil.padRight("" + count, 4));
             System.out.print(CmsStringUtil.padRight(cms.getRequestContext().removeSiteRoot(res.getPath()), colPath));

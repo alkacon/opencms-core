@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlContent.java,v $
- * Date   : $Date: 2009/08/20 11:32:00 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/26 07:48:52 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,6 +52,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Lucene document factory class to extract index data from an OpenCms VFS resource 
@@ -65,7 +66,7 @@ import java.util.Locale;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,7 +100,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
             String absolutePath = cms.getSitePath(file);
             A_CmsXmlDocument xmlContent = CmsXmlContentFactory.unmarshal(cms, file);
 
-            List locales = xmlContent.getLocales();
+            List<Locale> locales = xmlContent.getLocales();
             if (locales.size() == 0) {
                 locales = OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath);
             }
@@ -108,11 +109,11 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
                 OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath),
                 locales);
 
-            List elements = xmlContent.getNames(locale);
+            List<String> elements = xmlContent.getNames(locale);
             StringBuffer content = new StringBuffer();
-            HashMap items = new HashMap();
-            for (Iterator i = elements.iterator(); i.hasNext();) {
-                String xpath = (String)i.next();
+            Map<String, String> items = new HashMap<String, String>();
+            for (Iterator<String> i = elements.iterator(); i.hasNext();) {
+                String xpath = i.next();
                 // xpath will have the form "Text[1]" or "Nested[1]/Text[1]"
                 I_CmsXmlContentValue value = xmlContent.getValue(xpath, locale);
                 if (value.getContentDefinition().getContentHandler().isSearchable(value)) {
@@ -139,13 +140,13 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
      * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
      */
     @Override
-    public List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException {
+    public List<String> getDocumentKeys(List<String> resourceTypes, List<String> mimeTypes) throws CmsException {
 
         if (resourceTypes.contains("*")) {
             // we need to find all configured XML content types
-            ArrayList allTypes = new ArrayList();
-            for (Iterator i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
-                I_CmsResourceType resourceType = (I_CmsResourceType)i.next();
+            List<String> allTypes = new ArrayList<String>();
+            for (Iterator<I_CmsResourceType> i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
+                I_CmsResourceType resourceType = i.next();
                 if ((resourceType instanceof CmsResourceTypeXmlContent)
                 // either we need a configured schema, or another class name (which must then contain an inline schema)
                     && (((CmsResourceTypeXmlContent)resourceType).getConfiguration().containsKey(

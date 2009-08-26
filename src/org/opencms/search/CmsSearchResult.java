@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2009/08/20 11:31:41 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/08/26 07:48:52 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,11 +52,11 @@ import org.apache.lucene.document.Fieldable;
  * @author Alexander Kandzior
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
+public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable<CmsSearchResult> {
 
     /** The creation date of this search result. */
     protected Date m_dateCreated;
@@ -77,7 +77,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     protected int m_score;
 
     /** Holds the values of the search result fields. */
-    Map m_fields;
+    Map<String, String> m_fields;
 
     /** Contains the pre-calculated memory size. */
     private int m_memorySize;
@@ -93,11 +93,11 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
 
         m_score = score;
         m_excerpt = excerpt;
-        m_fields = new HashMap();
+        m_fields = new HashMap<String, String>();
 
-        Iterator i = doc.getFields().iterator();
+        Iterator<Fieldable> i = doc.getFields().iterator();
         while (i.hasNext()) {
-            Fieldable field = (Fieldable)i.next();
+            Fieldable field = i.next();
             if ((field != null) && field.isStored()) {
                 // content can be displayed only if it has been stored in the field
                 String name = field.name();
@@ -152,15 +152,12 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsSearchResult obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof CmsSearchResult) {
-            return ((CmsSearchResult)obj).m_score - m_score;
-        }
-        return 0;
+        return obj.m_score - m_score;
     }
 
     /**
@@ -255,7 +252,7 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
      */
     public String getField(String fieldName) {
 
-        return (String)m_fields.get(fieldName);
+        return m_fields.get(fieldName);
     }
 
     /**
@@ -288,9 +285,9 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
                 result += CmsMemoryMonitor.getMemorySize(m_path);
             }
             if (m_fields != null) {
-                Iterator entries = m_fields.entrySet().iterator();
+                Iterator<Map.Entry<String, String>> entries = m_fields.entrySet().iterator();
                 while (entries.hasNext()) {
-                    Map.Entry entry = (Map.Entry)entries.next();
+                    Map.Entry<String, String> entry = entries.next();
                     result += CmsMemoryMonitor.getMemorySize(entry.getKey());
                     result += CmsMemoryMonitor.getMemorySize(entry.getValue());
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractionResult.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/26 07:48:55 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,7 +59,7 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
     private static final long serialVersionUID = 1465447302192195154L;
 
     /** The extracted individual content items. */
-    private Map m_contentItems;
+    private Map<String, String> m_contentItems;
 
     /** The serialized version of this object. */
     private byte[] m_serializedVersion;
@@ -81,12 +81,12 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
      * @param content the extracted content
      * @param contentItems the individual extracted content items
      */
-    public CmsExtractionResult(String content, Map contentItems) {
+    public CmsExtractionResult(String content, Map<String, String> contentItems) {
 
         if (contentItems != null) {
             m_contentItems = contentItems;
         } else {
-            m_contentItems = new HashMap();
+            m_contentItems = new HashMap<String, String>();
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(content)) {
             m_contentItems.put(ITEM_CONTENT, content);
@@ -148,13 +148,13 @@ public class CmsExtractionResult implements I_CmsExtractionResult, Serializable 
      */
     public String getContent() {
 
-        return (String)m_contentItems.get(ITEM_CONTENT);
+        return m_contentItems.get(ITEM_CONTENT);
     }
 
     /**
      * @see org.opencms.search.extractors.I_CmsExtractionResult#getContentItems()
      */
-    public Map getContentItems() {
+    public Map<String, String> getContentItems() {
 
         return m_contentItems;
     }

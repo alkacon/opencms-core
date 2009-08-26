@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestXmlDocumentExtraction.java,v $
- * Date   : $Date: 2009/08/20 11:31:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/26 07:49:13 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Tests the text extraction for <code>xmlpage</code> and <code>xmlcontent</code> resources.<p>
  * 
  * @author Alexander Kandzior
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestXmlDocumentExtraction extends OpenCmsTestCase {
 
@@ -97,7 +97,7 @@ public class TestXmlDocumentExtraction extends OpenCmsTestCase {
 
         return wrapper;
     }
-    
+
     /**
      * Tests the <code>xmlpage</code> content extraction.<p>
      *
@@ -112,7 +112,7 @@ public class TestXmlDocumentExtraction extends OpenCmsTestCase {
         index.setLocale(Locale.ENGLISH);
 
         I_CmsExtractionResult extractionResult = doc.extractContent(cms, resource, index);
-        Map items = extractionResult.getContentItems();
+        Map<String, String> items = extractionResult.getContentItems();
         assertEquals(3, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey("body"));
@@ -133,10 +133,10 @@ public class TestXmlDocumentExtraction extends OpenCmsTestCase {
         index.setLocale(Locale.ENGLISH);
 
         I_CmsExtractionResult extractionResult = doc.extractContent(cms, resource, index);
-        Map items = extractionResult.getContentItems();
-        Iterator i = items.entrySet().iterator();
+        Map<String, String> items = extractionResult.getContentItems();
+        Iterator<Map.Entry<String, String>> i = items.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
+            Map.Entry<String, String> entry = i.next();
             System.out.println(entry.getKey());
         }
 

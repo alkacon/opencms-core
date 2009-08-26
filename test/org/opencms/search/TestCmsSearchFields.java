@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchFields.java,v $
- * Date   : $Date: 2009/08/20 11:31:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/26 07:49:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in special fields of extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestCmsSearchFields extends OpenCmsTestCase {
 
@@ -124,7 +124,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         // The following "non-standard" mapping is set in the "opencms-search.xml" for this test case:
         //
@@ -172,7 +172,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         searchBean.init(cms);
         searchBean.setIndex(INDEX_ONLINE);
@@ -235,7 +235,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         searchBean.init(cms);
         searchBean.setIndex(INDEX_ONLINE);
@@ -271,7 +271,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         searchBean.init(cms);
         searchBean.setIndex(INDEX_ONLINE);
@@ -287,10 +287,10 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         assertNotNull(searchResult);
         System.out.println("\n\nResults found searching in 'special' index field, some excerpts should be available:");
         TestCmsSearch.printResults(searchResult, cms, true);
-        Iterator i = searchResult.iterator();
+        Iterator<CmsSearchResult> i = searchResult.iterator();
         boolean excerptFound = false;
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             // not all results have excerpts, some are images 
             excerptFound |= CmsStringUtil.isNotEmpty(res.getExcerpt());
         }
@@ -305,7 +305,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         TestCmsSearch.printResults(searchResult, cms, true);
         i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             assertTrue(CmsStringUtil.isEmpty(res.getExcerpt()));
         }
 
@@ -319,7 +319,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         excerptFound = false;
         i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             // not all results have excerpts, some are images 
             excerptFound |= CmsStringUtil.isNotEmpty(res.getExcerpt());
         }
@@ -338,7 +338,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         searchBean.init(cms);
         searchBean.setIndex(INDEX_ONLINE);
@@ -358,10 +358,10 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         TestCmsSearch.printResults(searchResult, cms);
         assertEquals(7, searchResult.size());
 
-        Iterator i = searchResult.iterator();
+        Iterator<CmsSearchResult> i = searchResult.iterator();
         boolean excerptFound = false;
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             if (CmsStringUtil.isNotEmpty(res.getExcerpt())) {
                 excerptFound = true;
                 System.out.println(res.getPath() + ":");
@@ -382,7 +382,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         i = searchResult.iterator();
         excerptFound = false;
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             if (CmsStringUtil.isNotEmpty(res.getExcerpt())) {
                 excerptFound = true;
                 System.out.println(res.getPath() + ":");
@@ -405,7 +405,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         i = searchResult.iterator();
         excerptFound = false;
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             if (CmsStringUtil.isNotEmpty(res.getExcerpt())) {
                 excerptFound = true;
                 System.out.println(res.getPath() + ":");
@@ -427,7 +427,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         searchBean.init(cms);
         searchBean.setIndex(INDEX_ONLINE);

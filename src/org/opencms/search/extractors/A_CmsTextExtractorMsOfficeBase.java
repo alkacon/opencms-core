@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractorMsOfficeBase.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/08/26 07:48:54 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,7 +119,7 @@ public abstract class A_CmsTextExtractorMsOfficeBase extends A_CmsTextExtractor 
      */
     protected I_CmsExtractionResult createExtractionResult(String rawContent) {
 
-        Map contentItems = new HashMap();
+        Map<String, String> contentItems = new HashMap<String, String>();
         if (CmsStringUtil.isNotEmpty(rawContent)) {
             contentItems.put(I_CmsExtractionResult.ITEM_RAW, rawContent);
         }

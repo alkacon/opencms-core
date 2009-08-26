@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestPdfExtraction.java,v $
- * Date   : $Date: 2009/06/04 14:35:31 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/26 07:49:13 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -28,7 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 package org.opencms.search.extractors;
 
 import java.io.InputStream;
@@ -41,45 +41,46 @@ import junit.framework.TestCase;
  * Tests the text extraction form a Pdf file.<p>
  */
 public class TestPdfExtraction extends TestCase {
-    
+
     /**
      * Default JUnit constructor.<p>
      * 
      * @param arg0 JUnit parameters
      */
     public TestPdfExtraction(String arg0) {
+
         super(arg0);
     }
-    
+
     /**
      * Tests the basic Pdf extraction.<p>
      *
      * @throws Exception if the test fails
      */
     public void testBasicPdfExtraction() throws Exception {
-        
+
         // open an input stream for the test file        
         InputStream in = getClass().getClassLoader().getResourceAsStream("org/opencms/search/extractors/test1.pdf");
-        
+
         // extract the content
         I_CmsExtractionResult extractionResult = CmsExtractorPdf.getExtractor().extractText(in);
-        Map items = extractionResult.getContentItems();
-        
+        Map<String, String> items = extractionResult.getContentItems();
+
         System.out.println("\n\n---------------------------------------------------------------");
         System.out.println("Extracted from PDF:");
-        Iterator i = items.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> i = items.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry e = (Map.Entry)i.next();
-            System.out.println("\nKey: " + e.getKey());            
-            System.out.println("Value: " + e.getValue());            
+            Map.Entry<String, String> e = i.next();
+            System.out.println("\nKey: " + e.getKey());
+            System.out.println("Value: " + e.getValue());
         }
-        
+
         assertEquals(8, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();
-        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));        
-        
+        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
+
         assertTrue(result.indexOf("Alkacon Software") > -1);
         assertTrue(result.indexOf("The OpenCms experts") > -1);
         assertTrue(result.indexOf("Some content here.") > -1);
@@ -87,12 +88,12 @@ public class TestPdfExtraction extends TestCase {
         assertTrue(result.indexOf("Some content on a second sheet.") > -1);
         assertTrue(result.indexOf("Some content on the third sheet.") > -1);
         assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac") > -1);
-        
+
         assertEquals("Alkacon Software - The OpenCms experts", items.get(I_CmsExtractionResult.ITEM_TITLE));
         assertEquals("This is the subject", items.get(I_CmsExtractionResult.ITEM_SUBJECT));
         assertEquals("Alexander Kandzior", items.get(I_CmsExtractionResult.ITEM_AUTHOR));
         assertEquals("Key1, Key2", items.get(I_CmsExtractionResult.ITEM_KEYWORDS));
         assertEquals("Microsoft Excel", items.get(I_CmsExtractionResult.ITEM_CREATOR));
         assertEquals("Jaws PDF Creator v4.0.24", items.get(I_CmsExtractionResult.ITEM_PRODUCER));
-    }    
+    }
 }

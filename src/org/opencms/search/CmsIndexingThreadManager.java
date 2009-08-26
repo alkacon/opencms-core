@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:51 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/08/26 07:48:53 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,7 +127,7 @@ public class CmsIndexingThreadManager {
 
         if (!excludeFromIndex) {
             // check if any resource default locale has a match with the index locale, if not skip resource
-            List locales = OpenCms.getLocaleManager().getDefaultLocales(cms, res);
+            List<Locale> locales = OpenCms.getLocaleManager().getDefaultLocales(cms, res);
             Locale match = OpenCms.getLocaleManager().getFirstMatchingLocale(
                 Collections.singletonList(index.getLocale()),
                 locales);

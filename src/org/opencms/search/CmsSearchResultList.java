@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResultList.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/26 07:48:53 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,17 +40,17 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearchResultList extends ArrayList {
+public class CmsSearchResultList extends ArrayList<CmsSearchResult> {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 606716301025993114L;
 
     /** The (otional) categories found in the last the search. */
-    private Map m_categories;
+    private Map<String, Integer> m_categories;
 
     /** The total size of all results found in the last search. */
     private int m_hitCount;
@@ -81,7 +81,7 @@ public class CmsSearchResultList extends ArrayList {
      * 
      * @see CmsSearch#getCalculateCategories()
      */
-    public Map getCategories() {
+    public Map<String, Integer> getCategories() {
 
         return m_categories;
     }
@@ -106,7 +106,7 @@ public class CmsSearchResultList extends ArrayList {
      * 
      * @see CmsSearch#setCalculateCategories(boolean)
      */
-    public void setCategories(Map categories) {
+    public void setCategories(Map<String, Integer> categories) {
 
         m_categories = categories;
     }

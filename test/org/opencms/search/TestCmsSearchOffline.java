@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchOffline.java,v $
- * Date   : $Date: 2009/08/20 11:31:48 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/26 07:49:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsSearchOffline extends OpenCmsTestCase {
 
@@ -132,7 +132,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         searchBean.init(getCmsObject());
         searchBean.setIndex(INDEX_SPECIAL);
@@ -141,7 +141,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         // assert one file is found in the default site     
         searchResult = searchBean.getSearchResult();
         assertEquals(1, searchResult.size());
-        assertEquals("/sites/default/xmlcontent/article_0001.html", ((CmsSearchResult)searchResult.get(0)).getPath());
+        assertEquals("/sites/default/xmlcontent/article_0001.html", searchResult.get(0).getPath());
     }
 
     /**
@@ -171,14 +171,14 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
         cmsSearchBean.init(cms);
         cmsSearchBean.setIndex(INDEX_SPECIAL);
         cmsSearchBean.setSearchRoot("/");
-        List results;
+        List<CmsSearchResult> results;
 
         cmsSearchBean.setQuery("+Alkacon +OpenCms");
         results = cmsSearchBean.getSearchResult();
 
         TestCmsSearch.printResults(results, cms);
         assertEquals(8, results.size());
-        assertEquals("/sites/default/test/test.txt", ((CmsSearchResult)results.get(7)).getPath());
+        assertEquals("/sites/default/test/test.txt", results.get(7).getPath());
 
         cms.writePropertyObject(fileName, new CmsProperty(
             CmsPropertyDefinition.PROPERTY_TITLE,
@@ -193,7 +193,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
 
         TestCmsSearch.printResults(results, cms);
         assertEquals(8, results.size());
-        assertEquals("/sites/default/test/test.txt", ((CmsSearchResult)results.get(1)).getPath());
+        assertEquals("/sites/default/test/test.txt", (results.get(1)).getPath());
 
         // delete a resource
         String deleteFileName = "/types/text.txt";
@@ -208,7 +208,7 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
 
         TestCmsSearch.printResults(results, cms);
         assertEquals(7, results.size());
-        assertEquals("/sites/default/test/test.txt", ((CmsSearchResult)results.get(0)).getPath());
+        assertEquals("/sites/default/test/test.txt", (results.get(0)).getPath());
 
         // move a resource
         String moveFileName = "/test/test_moved.txt";
@@ -222,6 +222,6 @@ public class TestCmsSearchOffline extends OpenCmsTestCase {
 
         TestCmsSearch.printResults(results, cms);
         assertEquals(7, results.size());
-        assertEquals("/sites/default/test/test_moved.txt", ((CmsSearchResult)results.get(0)).getPath());
+        assertEquals("/sites/default/test/test_moved.txt", (results.get(0)).getPath());
     }
 }

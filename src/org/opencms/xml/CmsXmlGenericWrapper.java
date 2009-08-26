@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlGenericWrapper.java,v $
- * Date   : $Date: 2009/08/21 15:09:43 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/08/26 07:48:55 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.xml;
 import java.util.Iterator;
 import java.util.List;
 
+import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.QName;
@@ -43,7 +44,7 @@ import org.dom4j.QName;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.5.1 
  */
@@ -136,5 +137,19 @@ public final class CmsXmlGenericWrapper {
     public static Iterator<Element> elementIterator(Element element, String name) {
 
         return element.elementIterator(name);
+    }
+
+    /**
+     * Provides a type safe / generic wrapper for {@link Document#selectNodes(String)}.<p>
+     * 
+     * @param doc the document to select the nodes from
+     * @param xpathExpression the XPATH expression to select
+     * 
+     * @return type safe access to {@link Document#selectNodes(String)}
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Node> selectNodes(Document doc, String xpathExpression) {
+
+        return doc.selectNodes(xpathExpression);
     }
 }

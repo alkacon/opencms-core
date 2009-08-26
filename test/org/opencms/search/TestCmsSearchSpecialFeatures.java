@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchSpecialFeatures.java,v $
- * Date   : $Date: 2009/08/20 11:31:47 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/26 07:49:12 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.lucene.document.Document;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
 
@@ -135,7 +135,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         searchBean.init(getCmsObject());
         searchBean.setIndex(INDEX_SPECIAL);
@@ -144,7 +144,7 @@ public class TestCmsSearchSpecialFeatures extends OpenCmsTestCase {
         // assert one file is found in the default site     
         searchResult = searchBean.getSearchResult();
         assertEquals(1, searchResult.size());
-        assertEquals("/sites/default/xmlcontent/article_0001.html", ((CmsSearchResult)searchResult.get(0)).getPath());
+        assertEquals("/sites/default/xmlcontent/article_0001.html", (searchResult.get(0)).getPath());
     }
 
     /**

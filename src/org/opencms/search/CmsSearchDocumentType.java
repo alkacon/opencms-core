@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchDocumentType.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/08/26 07:48:53 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,21 +54,21 @@ public class CmsSearchDocumentType {
     private String m_className;
 
     /** The mimetype to trigger the document factory class. */
-    private List m_mimeTypes;
+    private List<String> m_mimeTypes;
 
     /** The logical key/name of this document type. */
     private String m_name;
 
     /** A list of Cms resource types to trigger the document factory. */
-    private List m_resourceTypes;
+    private List<String> m_resourceTypes;
 
     /**
      * Default constructor.<p>
      */
     public CmsSearchDocumentType() {
 
-        m_resourceTypes = new ArrayList();
-        m_mimeTypes = new ArrayList();
+        m_resourceTypes = new ArrayList<String>();
+        m_mimeTypes = new ArrayList<String>();
     }
 
     /**
@@ -106,7 +106,7 @@ public class CmsSearchDocumentType {
      *
      * @return the mimetypes to trigger the document factory class
      */
-    public List getMimeTypes() {
+    public List<String> getMimeTypes() {
 
         return m_mimeTypes;
     }
@@ -126,7 +126,7 @@ public class CmsSearchDocumentType {
      *
      * @return the list of Cms resource types to trigger the document factory
      */
-    public List getResourceTypes() {
+    public List<String> getResourceTypes() {
 
         return m_resourceTypes;
     }
@@ -146,7 +146,7 @@ public class CmsSearchDocumentType {
      *
      * @param mimetypes the mimetypes to trigger the document factory class
      */
-    public void setMimeTypes(List mimetypes) {
+    public void setMimeTypes(List<String> mimetypes) {
 
         m_mimeTypes = mimetypes;
     }
@@ -166,7 +166,7 @@ public class CmsSearchDocumentType {
      *
      * @param resourceTypes the list of Cms resource types to trigger the document factory
      */
-    public void setResourceTypes(List resourceTypes) {
+    public void setResourceTypes(List<String> resourceTypes) {
 
         m_resourceTypes = resourceTypes;
     }

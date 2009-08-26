@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestMsPowerPointExtraction.java,v $
- * Date   : $Date: 2009/06/04 14:35:31 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/26 07:49:13 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,23 +64,23 @@ public class TestMsPowerPointExtraction extends TestCase {
 
         // extract the content
         I_CmsExtractionResult extractionResult = CmsExtractorMsPowerPoint.getExtractor().extractText(in);
-        Map items = extractionResult.getContentItems();
+        Map<String, String> items = extractionResult.getContentItems();
 
         System.out.println("\n\n---------------------------------------------------------------");
         System.out.println("Extracted from MS PowerPoint:");
-        Iterator i = items.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> i = items.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry e = (Map.Entry)i.next();
-            System.out.println("\nKey: " + e.getKey());            
-            System.out.println("Value: " + e.getValue());            
+            Map.Entry<String, String> e = i.next();
+            System.out.println("\nKey: " + e.getKey());
+            System.out.println("Value: " + e.getValue());
         }
 
         assertEquals(10, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
-        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));        
+        assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();
-        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));        
-        
+        assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
+
         assertTrue(result.indexOf("Alkacon Software") > -1);
         assertTrue(result.indexOf("The OpenCms experts") > -1);
         assertTrue(result.indexOf("Some content here.") > -1);
@@ -90,7 +90,7 @@ public class TestMsPowerPointExtraction extends TestCase {
         // NOTE: Euro symbol conversion fails - possible reason is that Extraction method class handles only ISO
         // this is "äöüÄÖÜß"
         assertTrue(result.indexOf("\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df") > -1);
-        
+
         assertEquals("Alkacon Software - The OpenCms experts", items.get(I_CmsExtractionResult.ITEM_TITLE));
         assertEquals("This is the subject", items.get(I_CmsExtractionResult.ITEM_SUBJECT));
         assertEquals("Alexander Kandzior", items.get(I_CmsExtractionResult.ITEM_AUTHOR));

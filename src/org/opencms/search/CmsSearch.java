@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2009/08/19 11:38:49 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2009/08/26 07:48:54 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -72,7 +71,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,7 +81,7 @@ public class CmsSearch {
     private static final Log LOG = CmsLog.getLog(CmsSearch.class);
 
     /** The result categories of a search. */
-    protected Map m_categoriesFound;
+    protected Map<String, Integer> m_categoriesFound;
 
     /** The cms object. */
     protected transient CmsObject m_cms;
@@ -96,7 +95,7 @@ public class CmsSearch {
     /** The number of pages for the result list. */
     protected int m_pageCount;
 
-    /** The restriction for the search parameters, used for "search in seach result". */
+    /** The restriction for the search parameters, used for "search in search result". */
     protected CmsSearchParameters m_parameterRestriction;
 
     /** The search parameters used for searching, build out of the given individual parameter values. */
@@ -106,7 +105,7 @@ public class CmsSearch {
     protected String m_prevUrl;
 
     /** The current search result. */
-    protected List m_result;
+    protected List<CmsSearchResult> m_result;
 
     /** The search parameter String. */
     protected String m_searchParameters;
@@ -239,8 +238,8 @@ public class CmsSearch {
      */
     public String[] getCategories() {
 
-        List l = m_parameters.getCategories();
-        return (String[])l.toArray(new String[l.size()]);
+        List<String> l = m_parameters.getCategories();
+        return l.toArray(new String[l.size()]);
     }
 
     /**
@@ -264,7 +263,7 @@ public class CmsSearch {
             return "";
         }
         StringBuffer result = new StringBuffer();
-        Iterator it = m_parameters.getFields().iterator();
+        Iterator<String> it = m_parameters.getFields().iterator();
         while (it.hasNext()) {
             result.append(it.next());
             result.append(" ");
@@ -320,9 +319,9 @@ public class CmsSearch {
      *  
      * @return a map with String URLs
      */
-    public Map getPageLinks() {
+    public Map<Integer, String> getPageLinks() {
 
-        Map links = new TreeMap();
+        Map<Integer, String> links = new TreeMap<Integer, String>();
         if (m_pageCount <= 1) {
             return links;
         }
@@ -439,7 +438,7 @@ public class CmsSearch {
      * 
      * @return the search result (may be empty) or null if no index or query was set before
      */
-    public List getSearchResult() {
+    public List<CmsSearchResult> getSearchResult() {
 
         if ((m_cms != null)
             && (m_result == null)
@@ -450,9 +449,9 @@ public class CmsSearch {
 
                 if (m_parameters.getFieldQueries() != null) {
                     // check all field queries if the length of the query is ok
-                    Iterator i = m_parameters.getFieldQueries().iterator();
+                    Iterator<CmsSearchParameters.CmsSearchFieldQuery> i = m_parameters.getFieldQueries().iterator();
                     while (i.hasNext()) {
-                        CmsSearchParameters.CmsSearchFieldQuery fq = (CmsSearchParameters.CmsSearchFieldQuery)i.next();
+                        CmsSearchParameters.CmsSearchFieldQuery fq = i.next();
                         if (CmsStringUtil.isEmpty(fq.getSearchQuery())
                             || (fq.getSearchQuery().trim().length() < getQueryLength())) {
 
@@ -499,7 +498,7 @@ public class CmsSearch {
                         m_nextUrl = url + (m_parameters.getSearchPage() + 1);
                     }
                 } else {
-                    m_result = Collections.EMPTY_LIST;
+                    m_result = Collections.emptyList();
                     m_searchResultCount = 0;
                     m_categoriesFound = null;
                     m_pageCount = 0;
@@ -532,7 +531,7 @@ public class CmsSearch {
      * @see CmsSearch#getCalculateCategories()
      * @see CmsSearch#setCalculateCategories(boolean)
      */
-    public Map getSearchResultCategories() {
+    public Map<String, Integer> getSearchResultCategories() {
 
         return m_categoriesFound;
     }
@@ -562,8 +561,8 @@ public class CmsSearch {
      */
     public String[] getSearchRoots() {
 
-        List l = m_parameters.getRoots();
-        return (String[])l.toArray(new String[l.size()]);
+        List<String> l = m_parameters.getRoots();
+        return l.toArray(new String[l.size()]);
     }
 
     /**
@@ -618,7 +617,7 @@ public class CmsSearch {
      */
     public void setCategories(String[] categories) {
 
-        List setCategories = new ArrayList();
+        List<String> setCategories = new ArrayList<String>();
         if (categories != null) {
             if (categories.length != 0) {
                 // ensure all categories are not null, trimmed, not-empty and lowercased
@@ -846,7 +845,7 @@ public class CmsSearch {
      */
     public void setSearchRoots(String[] searchRoots) {
 
-        List l = new LinkedList(Arrays.asList(searchRoots));
+        List<String> l = new ArrayList<String>(Arrays.asList(searchRoots));
         m_parameters.setRoots(l);
         resetLastResult();
     }

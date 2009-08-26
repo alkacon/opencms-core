@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2009/08/20 11:31:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/26 07:48:55 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 7.0.0 
  */
@@ -162,7 +162,7 @@ public class CmsSearchField {
     private boolean m_indexed;
 
     /** The search field mappings. */
-    private List m_mappings;
+    private List<CmsSearchFieldMapping> m_mappings;
 
     /** The name of the field. */
     private String m_name;
@@ -178,7 +178,7 @@ public class CmsSearchField {
      */
     public CmsSearchField() {
 
-        m_mappings = new ArrayList();
+        m_mappings = new ArrayList<CmsSearchFieldMapping>();
         m_boost = BOOST_DEFAULT;
     }
 
@@ -429,7 +429,7 @@ public class CmsSearchField {
      * 
      * @return the mappings for this field
      */
-    public List getMappings() {
+    public List<CmsSearchFieldMapping> getMappings() {
 
         return m_mappings;
     }
@@ -581,7 +581,7 @@ public class CmsSearchField {
      */
     public void setAnalyzer(String analyzer) throws Exception {
 
-        Class analyzerClass;
+        Class<?> analyzerClass;
         try {
             analyzerClass = Class.forName(analyzer);
         } catch (ClassNotFoundException e) {
