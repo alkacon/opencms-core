@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2009/08/26 08:16:17 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -62,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,10 +83,10 @@ public class CmsLocaleManager implements I_CmsEventListener {
     private static Locale m_defaultLocale;
 
     /** The set of available locale names. */
-    private List m_availableLocales;
+    private List<Locale> m_availableLocales;
 
     /** The default locale names (must be a subset of the available locale names). */
-    private List m_defaultLocales;
+    private List<Locale> m_defaultLocales;
 
     /** Indicates if the locale manager is fully initialized. */
     private boolean m_initialized;
@@ -101,8 +100,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
     public CmsLocaleManager() {
 
         setDefaultLocale();
-        m_availableLocales = new ArrayList();
-        m_defaultLocales = new ArrayList();
+        m_availableLocales = new ArrayList<Locale>();
+        m_defaultLocales = new ArrayList<Locale>();
         m_localeHandler = new CmsDefaultLocaleHandler();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_I18N_CONFIG_START_0));
@@ -121,8 +120,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
         setDefaultLocale();
         m_initialized = false;
 
-        m_availableLocales = new ArrayList();
-        m_defaultLocales = new ArrayList();
+        m_availableLocales = new ArrayList<Locale>();
+        m_defaultLocales = new ArrayList<Locale>();
         m_localeHandler = new CmsDefaultLocaleHandler();
 
         m_defaultLocale = defaultLocale;
@@ -201,15 +200,15 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * An empty String is returned if the input is <code>null</code>, or contains no elements.<p>
      * 
-     * @param localeNames the locale names to generate a String from
+     * @param locales the locales to generate a String from
      * 
      * @return the locale names from the given List of locales as a comma separated String
      */
-    public static String getLocaleNames(List localeNames) {
+    public static String getLocaleNames(List<Locale> locales) {
 
         StringBuffer result = new StringBuffer();
-        if (localeNames != null) {
-            Iterator i = localeNames.iterator();
+        if (locales != null) {
+            Iterator<Locale> i = locales.iterator();
             while (i.hasNext()) {
                 result.append(i.next().toString());
                 if (i.hasNext()) {
@@ -226,9 +225,9 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * @param localeNames array of locale names
      * @return a List of locales derived from the given locale names
      */
-    public static List getLocales(List localeNames) {
+    public static List<Locale> getLocales(List<String> localeNames) {
 
-        List result = new ArrayList(localeNames.size());
+        List<Locale> result = new ArrayList<Locale>(localeNames.size());
         for (int i = 0; i < localeNames.size(); i++) {
             result.add(getLocale(localeNames.get(i).toString().trim()));
         }
@@ -241,7 +240,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * @param localeNames a comma-separated string of locale names
      * @return a List of locales derived from the given locale names
      */
-    public static List getLocales(String localeNames) {
+    public static List<Locale> getLocales(String localeNames) {
 
         if (localeNames == null) {
             return null;
@@ -426,7 +425,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * @see #getDefaultLocales()
      */
-    public List getAvailableLocales() {
+    public List<Locale> getAvailableLocales() {
 
         return m_availableLocales;
     }
@@ -441,7 +440,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * @see #getAvailableLocales()
      */
-    public List getAvailableLocales(CmsObject cms, String resourceName) {
+    public List<Locale> getAvailableLocales(CmsObject cms, String resourceName) {
 
         String availableNames = null;
         try {
@@ -453,7 +452,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
             // noop
         }
 
-        List result = null;
+        List<Locale> result = null;
         if (availableNames != null) {
             result = getAvailableLocales(availableNames);
         }
@@ -475,7 +474,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * @see #getAvailableLocales()
      */
-    public List getAvailableLocales(String names) {
+    public List<Locale> getAvailableLocales(String names) {
 
         return checkLocaleNames(getLocales(names));
     }
@@ -490,7 +489,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * @return the best matching locale name or null if no name matches
      */
-    public Locale getBestMatchingLocale(Locale requestedLocale, List defaults, Collection available) {
+    public Locale getBestMatchingLocale(Locale requestedLocale, List<Locale> defaults, List<Locale> available) {
 
         if ((available == null) || available.isEmpty()) {
             // no locales are available at all
@@ -553,10 +552,10 @@ public class CmsLocaleManager implements I_CmsEventListener {
      */
     public Locale getDefaultLocale(CmsObject cms, String resourceName) {
 
-        List defaultLocales = getDefaultLocales(cms, resourceName);
+        List<Locale> defaultLocales = getDefaultLocales(cms, resourceName);
         Locale result;
         if (defaultLocales.size() > 0) {
-            result = (Locale)defaultLocales.get(0);
+            result = defaultLocales.get(0);
         } else {
             result = getDefaultLocale();
         }
@@ -590,7 +589,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * @see #getAvailableLocales()
      */
-    public List getDefaultLocales() {
+    public List<Locale> getDefaultLocales() {
 
         return m_defaultLocales;
     }
@@ -625,7 +624,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * @since 7.0.2
      */
-    public List getDefaultLocales(CmsObject cms, CmsResource resource) {
+    public List<Locale> getDefaultLocales(CmsObject cms, CmsResource resource) {
 
         String defaultNames = null;
         try {
@@ -664,7 +663,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * @see #getDefaultLocale(CmsObject, String)
      * @see #getDefaultLocales(CmsObject, CmsResource) 
      */
-    public List getDefaultLocales(CmsObject cms, String resourceName) {
+    public List<Locale> getDefaultLocales(CmsObject cms, String resourceName) {
 
         String defaultNames = null;
         try {
@@ -685,13 +684,13 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * @return the first precise or simplified match, or <code>null</code> in case no match is found
      */
-    public Locale getFirstMatchingLocale(List locales, Collection available) {
+    public Locale getFirstMatchingLocale(List<Locale> locales, List<Locale> available) {
 
-        Iterator i;
+        Iterator<Locale> i;
         // first try a precise match
         i = locales.iterator();
         while (i.hasNext()) {
-            Locale locale = (Locale)i.next();
+            Locale locale = i.next();
             if (available.contains(locale)) {
                 // precise match
                 return locale;
@@ -701,7 +700,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // now try a match only with language and country
         i = locales.iterator();
         while (i.hasNext()) {
-            Locale locale = (Locale)i.next();
+            Locale locale = i.next();
             if (locale.getVariant().length() > 0) {
                 // the locale has a variant, try to match without the variant
                 locale = new Locale(locale.getLanguage(), locale.getCountry(), "");
@@ -715,7 +714,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // finally try a match only with language
         i = locales.iterator();
         while (i.hasNext()) {
-            Locale locale = (Locale)i.next();
+            Locale locale = i.next();
             if (locale.getCountry().length() > 0) {
                 // the locale has a country, try to match without the country
                 locale = new Locale(locale.getLanguage(), "", "");
@@ -753,9 +752,9 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // check if this is a request against a Workplace folder
         if (OpenCms.getSiteManager().isWorkplaceRequest(req)) {
             // The list of configured localized workplace folders
-            List wpLocalizedFolders = OpenCms.getWorkplaceManager().getLocalizedFolders();
+            List<String> wpLocalizedFolders = OpenCms.getWorkplaceManager().getLocalizedFolders();
             for (int i = wpLocalizedFolders.size() - 1; i >= 0; i--) {
-                if (resource.startsWith((String)wpLocalizedFolders.get(i))) {
+                if (resource.startsWith(wpLocalizedFolders.get(i))) {
                     // use the workplace locale handler for this resource
                     i18nInfo = OpenCms.getWorkplaceManager().getI18nInfo(req, user, project, resource);
                     break;
@@ -829,7 +828,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         // init the locale handler
         m_localeHandler.initHandler(cms);
         // set default locale 
-        m_defaultLocale = (Locale)m_defaultLocales.get(0);
+        m_defaultLocale = m_defaultLocales.get(0);
         // set initialized status
         m_initialized = true;
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -877,15 +876,15 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * @param locales List of locales to check
      * @return list of available locales derived from the given locale names
      */
-    private List checkLocaleNames(List locales) {
+    private List<Locale> checkLocaleNames(List<Locale> locales) {
 
         if (locales == null) {
             return null;
         }
-        List result = new ArrayList();
-        Iterator i = locales.iterator();
+        List<Locale> result = new ArrayList<Locale>();
+        Iterator<Locale> i = locales.iterator();
         while (i.hasNext()) {
-            Locale locale = (Locale)i.next();
+            Locale locale = i.next();
             if (m_availableLocales.contains(locale)) {
                 result.add(locale);
             }
@@ -917,9 +916,9 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * 
      * @return an array of default locales for the given default names
      */
-    private List getDefaultLocales(String defaultNames) {
+    private List<Locale> getDefaultLocales(String defaultNames) {
 
-        List result = null;
+        List<Locale> result = null;
         if (defaultNames != null) {
             result = getAvailableLocales(defaultNames);
         }
