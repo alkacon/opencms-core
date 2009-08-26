@@ -5,7 +5,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <fmt:setLocale value="${cms:vfs(pageContext).requestContext.locale}" />
 <fmt:bundle basename="org/opencms/frontend/templatetwo/demo/messages">
-<cms:contentload collector="singleFile" param="%(opencms.uri)" >
+<cms:contentload collector="singleFile" param="%(opencms.element)" >
 	<cms:contentaccess var="event" scope="page" />
 	<div class="view-event box box_schema2">
 		<!-- Title of the event -->

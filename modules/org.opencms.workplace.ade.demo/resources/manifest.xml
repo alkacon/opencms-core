@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.5.0</opencms_version>
-		<createdate>Fri, 21 Aug 2009 09:47:33 GMT</createdate>
+		<createdate>Wed, 26 Aug 2009 12:16:28 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[p>This module contains a demo for the new OpenCms 8 Advanced Direct Edit feature.</p>
 <p>This module is not needed, since it is just a quick start demo.</p>
 <p><i>(c) 2009 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.6.2</version>
+		<version>7.6.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jul 2009 08:00:00 GMT</datecreated>
@@ -58,7 +58,7 @@
 			<type>containerpage</type>
 			<uuidstructure>116dec2d-81af-11de-9e2b-dd9f629b113b</uuidstructure>
 			<uuidresource>116dec2e-81af-11de-9e2b-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 06 Aug 2009 14:35:32 GMT</datelastmodified>
+			<datelastmodified>Tue, 25 Aug 2009 12:47:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 Aug 2009 10:59:37 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -272,10 +272,10 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<uuidstructure>8f86669b-87f9-11de-9875-7713e07de9e6</uuidstructure>
-			<datelastmodified>Thu, 13 Aug 2009 11:07:59 GMT</datelastmodified>
+			<uuidstructure>a482044b-81a3-11de-9b82-dd9f629b113b</uuidstructure>
+			<datelastmodified>Wed, 05 Aug 2009 09:37:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 13 Aug 2009 11:07:59 GMT</datecreated>
+			<datecreated>Wed, 05 Aug 2009 09:37:50 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -294,10 +294,10 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<uuidstructure>90156064-87f9-11de-9875-7713e07de9e6</uuidstructure>
-			<datelastmodified>Thu, 13 Aug 2009 11:08:00 GMT</datelastmodified>
+			<uuidstructure>a515e014-81a3-11de-9b82-dd9f629b113b</uuidstructure>
+			<datelastmodified>Wed, 05 Aug 2009 09:37:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 13 Aug 2009 11:08:00 GMT</datecreated>
+			<datecreated>Wed, 05 Aug 2009 09:37:51 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -345,12 +345,16 @@
 			<type>jsp</type>
 			<uuidstructure>6e55ec2b-8276-11de-ac1e-dd9f629b113b</uuidstructure>
 			<uuidresource>6e55ec2c-8276-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 14:34:34 GMT</datelastmodified>
+			<datelastmodified>Wed, 26 Aug 2009 12:11:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 06 Aug 2009 10:46:43 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -365,12 +369,16 @@
 			<type>jsp</type>
 			<uuidstructure>390c2614-8277-11de-ac1e-dd9f629b113b</uuidstructure>
 			<uuidresource>390c2615-8277-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 20 Aug 2009 10:25:44 GMT</datelastmodified>
+			<datelastmodified>Wed, 26 Aug 2009 12:11:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 06 Aug 2009 10:52:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -385,12 +393,16 @@
 			<type>jsp</type>
 			<uuidstructure>576ba57f-8741-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>576ba580-8741-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Fri, 21 Aug 2009 09:02:58 GMT</datelastmodified>
+			<datelastmodified>Wed, 26 Aug 2009 12:11:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:09:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -405,12 +417,16 @@
 			<type>jsp</type>
 			<uuidstructure>38d8586c-8741-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>38d8586d-8741-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 20 Aug 2009 10:44:27 GMT</datelastmodified>
+			<datelastmodified>Wed, 26 Aug 2009 12:11:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:08:26 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -425,12 +441,16 @@
 			<type>jsp</type>
 			<uuidstructure>0acf7e9f-8d89-11de-a1de-7713e07de9e6</uuidstructure>
 			<uuidresource>0acf7ea0-8d89-11de-a1de-7713e07de9e6</uuidresource>
-			<datelastmodified>Thu, 20 Aug 2009 15:49:03 GMT</datelastmodified>
+			<datelastmodified>Wed, 26 Aug 2009 12:11:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 20 Aug 2009 12:57:39 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -445,12 +465,16 @@
 			<type>jsp</type>
 			<uuidstructure>0b0d7204-8d89-11de-a1de-7713e07de9e6</uuidstructure>
 			<uuidresource>0b0d7205-8d89-11de-a1de-7713e07de9e6</uuidresource>
-			<datelastmodified>Thu, 20 Aug 2009 12:57:40 GMT</datelastmodified>
+			<datelastmodified>Wed, 26 Aug 2009 12:11:34 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 20 Aug 2009 12:57:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -465,12 +489,16 @@
 			<type>jsp</type>
 			<uuidstructure>0dd29605-8276-11de-ac1e-dd9f629b113b</uuidstructure>
 			<uuidresource>0dd29606-8276-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 14:36:32 GMT</datelastmodified>
+			<datelastmodified>Wed, 26 Aug 2009 12:11:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 06 Aug 2009 10:44:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -485,12 +513,16 @@
 			<type>jsp</type>
 			<uuidstructure>cc9d0dee-8276-11de-ac1e-dd9f629b113b</uuidstructure>
 			<uuidresource>cc9d0def-8276-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 20 Aug 2009 10:25:43 GMT</datelastmodified>
+			<datelastmodified>Wed, 26 Aug 2009 12:11:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 06 Aug 2009 10:49:21 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -505,12 +537,16 @@
 			<type>jsp</type>
 			<uuidstructure>3eb2fb1d-873f-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>3eb2fb1e-873f-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Fri, 21 Aug 2009 09:02:58 GMT</datelastmodified>
+			<datelastmodified>Wed, 26 Aug 2009 12:11:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 12:54:17 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -525,12 +561,16 @@
 			<type>jsp</type>
 			<uuidstructure>d55e1ce1-8276-11de-ac1e-dd9f629b113b</uuidstructure>
 			<uuidresource>d55e1ce2-8276-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 20 Aug 2009 10:44:27 GMT</datelastmodified>
+			<datelastmodified>Wed, 26 Aug 2009 12:11:59 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 06 Aug 2009 10:49:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[element]]></value>
+				</property>
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
@@ -1169,7 +1209,7 @@
 			<type>plain</type>
 			<uuidstructure>3689b162-8288-11de-ac1e-dd9f629b113b</uuidstructure>
 			<uuidresource>3689b163-8288-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 19 Aug 2009 12:21:34 GMT</datelastmodified>
+			<datelastmodified>Tue, 25 Aug 2009 12:34:26 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 06 Aug 2009 12:54:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1199,7 +1239,7 @@
 			<type>plain</type>
 			<uuidstructure>36934e54-8288-11de-ac1e-dd9f629b113b</uuidstructure>
 			<uuidresource>36934e55-8288-11de-ac1e-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 13 Aug 2009 08:36:11 GMT</datelastmodified>
+			<datelastmodified>Tue, 25 Aug 2009 12:43:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 06 Aug 2009 12:54:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1329,7 +1369,7 @@
 			<type>containerpage</type>
 			<uuidstructure>e5308d4d-873e-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>e5308d4e-873e-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 20 Aug 2009 14:02:44 GMT</datelastmodified>
+			<datelastmodified>Wed, 26 Aug 2009 09:30:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 12:51:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>

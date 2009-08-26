@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/08/26 12:28:39 $
+ * Version: $Revision: 1.28.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.28.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,7 +166,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
         "remoteaddress", // 4
         "webapp", // 5
         "webbasepath", // 6 
-        "version" // 7 
+        "version", // 7
+        "element" // 8
     };
 
     /** The "magic" commands wrapped in a List. */
@@ -598,6 +600,12 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                     case 7:
                         // version
                         value = OpenCms.getSystemInfo().getVersionNumber();
+                        break;
+                    case 8:
+                        // element
+                        if (m_jspPageContext != null) {
+                            value = m_jspPageContext.getRequest().getParameter(I_CmsResourceLoader.PARAMETER_ELEMENT);
+                        }
                         break;
                     default:
                         // return the key "as is"

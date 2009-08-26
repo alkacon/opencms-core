@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/08/25 15:03:34 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/08/26 12:28:39 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,15 +43,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.editors.ade.CmsADEElementManager;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -63,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.6 
  */
@@ -99,8 +93,7 @@ public class CmsJspTagContainer extends TagSupport {
      * @param res the current response
      * 
      * @throws CmsException if something goes wrong
-     * @throws IOException if there is a problem writing to the response
-     * @throws ServletException if there is some problem calling the jsp formatter
+     * @throws JspException if there is some problem calling the jsp formatter
      */
     public static void containerTagAction(
         PageContext pageContext,
@@ -108,7 +101,7 @@ public class CmsJspTagContainer extends TagSupport {
         String containerType,
         String containerMaxElements,
         ServletRequest req,
-        ServletResponse res) throws CmsException, IOException, ServletException {
+        ServletResponse res) throws CmsException, JspException {
 
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
@@ -181,7 +174,7 @@ public class CmsJspTagContainer extends TagSupport {
                 JSONObject sublocaleData = LOADER.getCache(cms, resUri, cms.getRequestContext().getLocale());
                 // get the first subcontainer
                 JSONObject subcontainers = sublocaleData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
-                JSONObject subcontainer = subcontainers.optJSONObject(sublocaleData.names().optString(0));
+                JSONObject subcontainer = subcontainers.optJSONObject(subcontainers.names().optString(0));
                 // iterate the subelements
                 JSONArray subelements = subcontainer.optJSONArray(CmsContainerPageLoader.N_ELEMENT);
 
@@ -190,34 +183,35 @@ public class CmsJspTagContainer extends TagSupport {
                     String subelementUri = subelement.optString(CmsContainerPageLoader.N_URI);
                     String subelementFormatter = subelement.optString(CmsContainerPageLoader.N_FORMATTER);
 
-                    CmsResource subresUri = cms.readResource(subelementUri);
+                    // HACK: use the __element param for the element uri
                     // execute the formatter jsp for the given element uri
-                    String jspResult = CmsADEElementManager.getInstance().getElementContent(
-                        cms,
-                        subresUri,
+                    CmsJspTagInclude.includeTagAction(
+                        pageContext,
                         subelementFormatter,
-                        (HttpServletRequest)req,
-                        (HttpServletResponse)res);
+                        subelementUri,
+                        false,
+                        null,
+                        req,
+                        res);
 
+                    // CmsResource subresUri = cms.readResource(subelementUri);
+                    // execute the formatter jsp for the given element uri
+                    // String jspResult = elemUtil.getElementContent(subresUri, subelementFormatter);
                     // write the result
-                    res.getWriter().println(jspResult);
+                    // res.getWriter().println(jspResult);
                 }
             } else {
                 String elementFormatter = element.optString(CmsContainerPageLoader.N_FORMATTER);
+
+                // HACK: use the __element param for the element uri
                 // execute the formatter jsp for the given element uri
-                String jspResult = CmsADEElementManager.getInstance().getElementContent(
-                    cms,
-                    resUri,
-                    elementFormatter,
-                    (HttpServletRequest)req,
-                    (HttpServletResponse)res);
+                CmsJspTagInclude.includeTagAction(pageContext, elementFormatter, elementUri, false, null, req, res);
 
+                // execute the formatter jsp for the given element uri
+                // String jspResult = elemUtil.getElementContent(resUri, elementFormatter);
                 // write the result
-                res.getWriter().println(jspResult);
+                //res.getWriter().println(jspResult);
             }
-
-            // TODO: would not this be better??
-            // CmsJspTagInclude.includeTagAction(pageContext, uri, null, false, null, request, response);
         }
     }
 
