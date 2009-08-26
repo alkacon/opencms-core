@@ -21,7 +21,7 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<handler class="org.opencms.workplace.editors.ade.CmsContainerPageHandler"/>
-			<resourcebundle name="org.opencms.workplace.editors.ade.workplace"/>
+			<resourcebundle name="org.opencms.workplace.editors.ade.messages"/>
 			<mappings/>
 			<layouts/>
 			<validationrules/>
