@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2009/08/21 15:09:42 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2009/08/26 11:26:07 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -837,7 +837,7 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
      * "normalized" for the bookmark lookup. 
      * 
      * This is required to find names like "title/subtitle" which are stored
-     * internally as "title[0]/subtitle[0)" in the bookmarks. 
+     * internally as "title[0]/subtitle[0]" in the bookmarks. 
      * 
      * @param path the path to look up 
      * @param locale the locale to look up

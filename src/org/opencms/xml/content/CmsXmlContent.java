@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2009/08/21 15:09:43 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2009/08/26 11:26:07 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  */
@@ -649,7 +649,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
         // first generate the XML element for the new value
         Element element = type.generateXml(cms, this, parent, locale);
-        // detatch the XML element from the appended position in order to insert it at the required position
+        // detach the XML element from the appended position in order to insert it at the required position
         element.detach();
         // add the XML element at the required position in the parent XML node 
         CmsXmlGenericWrapper.content(parent).add(insertIndex, element);
@@ -713,66 +713,61 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         int count = 1;
         String previousName = null;
 
-        // first remove all non-element node (i.e. white space text nodes)
-        List<Node> content = CmsXmlGenericWrapper.content(root);
-        for (int i = content.size() - 1; i >= 0; i--) {
-            Node node = content.get(i);
+        // iterate all XML nodes 
+        for (Iterator<Node> i = CmsXmlGenericWrapper.content(root).iterator(); i.hasNext();) {
+            Node node = i.next();
             if (!(node instanceof Element)) {
                 // this node is not an element, so it must be a white space text node, remove it
-                content.remove(i);
-            }
-        }
-
-        // iterate all elements again
-        for (Iterator<Node> i = CmsXmlGenericWrapper.content(root).iterator(); i.hasNext();) {
-
-            // node must be an element since all non-elements were removed
-            Element element = (Element)i.next();
-
-            // check if this is a new node, if so reset the node counter
-            String name = element.getName();
-            if ((previousName == null) || !previousName.equals(name)) {
-                previousName = name;
-                count = 1;
-            }
-
-            // build the Xpath expression for the current node
-            String path;
-            if (rootPath != null) {
-                StringBuffer b = new StringBuffer(rootPath.length() + name.length() + 6);
-                b.append(rootPath);
-                b.append('/');
-                b.append(CmsXmlUtils.createXpathElement(name, count));
-                path = b.toString();
+                node.detach();
             } else {
-                path = CmsXmlUtils.createXpathElement(name, count);
-            }
+                // node must be an element 
+                Element element = (Element)node;
 
-            // create a XML content value element
-            I_CmsXmlSchemaType schemaType = definition.getSchemaType(name);
-
-            if (schemaType != null) {
-                // directly add simple type to schema
-                I_CmsXmlContentValue value = schemaType.createValue(this, element, locale);
-                addBookmark(path, locale, true, value);
-
-                if (!schemaType.isSimpleType()) {
-                    // recurse for nested schema
-                    CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)schemaType;
-                    processSchemaNode(element, path, locale, nestedSchema.getNestedContentDefinition());
+                // check if this is a new node, if so reset the node counter
+                String name = element.getName();
+                if ((previousName == null) || !previousName.equals(name)) {
+                    previousName = name;
+                    count = 1;
                 }
-            } else {
-                // unknown XML node name according to schema
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
-                        name,
-                        definition.getSchemaLocation()));
-                }
-            }
 
-            // increase the node counter
-            count++;
+                // build the Xpath expression for the current node
+                String path;
+                if (rootPath != null) {
+                    StringBuffer b = new StringBuffer(rootPath.length() + name.length() + 6);
+                    b.append(rootPath);
+                    b.append('/');
+                    b.append(CmsXmlUtils.createXpathElement(name, count));
+                    path = b.toString();
+                } else {
+                    path = CmsXmlUtils.createXpathElement(name, count);
+                }
+
+                // create a XML content value element
+                I_CmsXmlSchemaType schemaType = definition.getSchemaType(name);
+
+                if (schemaType != null) {
+                    // directly add simple type to schema
+                    I_CmsXmlContentValue value = schemaType.createValue(this, element, locale);
+                    addBookmark(path, locale, true, value);
+
+                    if (!schemaType.isSimpleType()) {
+                        // recurse for nested schema
+                        CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)schemaType;
+                        processSchemaNode(element, path, locale, nestedSchema.getNestedContentDefinition());
+                    }
+                } else {
+                    // unknown XML node name according to schema
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().getBundle().key(
+                            Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
+                            name,
+                            definition.getSchemaLocation()));
+                    }
+                }
+
+                // increase the node counter
+                count++;
+            }
         }
     }
 }

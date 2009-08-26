@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueSequence.java,v $
- * Date   : $Date: 2009/08/21 15:09:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/08/26 11:26:07 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,7 +83,7 @@ public class CmsXmlContentValueSequence {
     }
 
     /**
-     * Adds a value element of the sequence type at the seleted index to the XML content document.<p> 
+     * Adds a value element of the sequence type at the selected index to the XML content document.<p> 
      * 
      * @param cms the current users OpenCms context
      * @param index the index where to add the new value element
