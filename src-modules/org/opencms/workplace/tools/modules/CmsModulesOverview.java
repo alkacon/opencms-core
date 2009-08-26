@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesOverview.java,v $
- * Date   : $Date: 2009/08/20 11:31:14 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/08/26 10:30:00 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -196,6 +196,7 @@ public class CmsModulesOverview extends CmsWidgetDialog {
     protected void defineWidgets() {
 
         initModule();
+        setKeyPrefix(CmsModulesEditBase.KEY_PREFIX);
 
         addWidget(new CmsWidgetDialogParameter(m_module, "name", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "niceName", PAGES[0], new CmsDisplayWidget()));
