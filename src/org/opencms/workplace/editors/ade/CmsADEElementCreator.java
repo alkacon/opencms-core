@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEElementCreator.java,v $
- * Date   : $Date: 2009/08/25 15:03:34 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/08/26 07:58:18 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,6 +63,12 @@ import java.util.Set;
  * XML files in the VFS can be used to configure which files are used as
  * prototypes for new elements, and which file names are used for the new
  * elements.<p> 
+ * 
+ * @author Georg Westenberger
+ * 
+ * @version $Revision: 1.1.2.5 $ 
+ * 
+ * @since 7.6 
  */
 public class CmsADEElementCreator {
 
