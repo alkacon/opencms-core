@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/08/25 15:03:34 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2009/08/26 12:28:54 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.workplace.editors.ade;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.json.JSONArray;
@@ -54,9 +55,11 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,11 +74,41 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 7.6
  */
 public class CmsADEServer extends CmsJspActionElement {
+
+    /** Request path constant. */
+    public static final String ACTION_GET = "/system/workplace/editors/ade/get.jsp";
+
+    /** Request path constant. */
+    public static final String ACTION_SET = "/system/workplace/editors/ade/set.jsp";
+
+    /** User additional info key constant. */
+    public static final String ADDINFO_ADE_FAVORITE_LIST = "ADE_FAVORITE_LIST";
+
+    /** Mime type constant. */
+    public static final String MIMETYPE_APPLICATION_JSON = "application/json";
+
+    /** Request parameter obj value constant. */
+    public static final String OBJ_ALL = "all";
+
+    /** Request parameter obj value constant. */
+    public static final String OBJ_CNT = "cnt";
+
+    /** Request parameter obj value constant. */
+    public static final Object OBJ_ELEM = "elem";
+
+    /** Request parameter obj value constant. */
+    public static final String OBJ_FAV = "fav";
+
+    /** Request parameter obj value constant. */
+    public static final String OBJ_NEW = "new";
+
+    /** Request parameter obj value constant. */
+    public static final String OBJ_REC = "rec";
 
     /** JSON property constant file. */
     public static final String P_ALLOWEDIT = "allowEdit";
@@ -146,6 +179,24 @@ public class CmsADEServer extends CmsJspActionElement {
     /** JSON property constant file. */
     public static final String P_USER = "user";
 
+    /** Request parameter name constant. */
+    public static final String PARAMETER_DATA = "data";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_ELEM = "elem";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_LOCALE = "locale";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_OBJ = "obj";
+
+    /** Request parameter obj value constant. */
+    public static final String PARAMETER_TYPE = "type";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_URL = "url";
+
     /** JSON response property constant. */
     public static final String RES_ERROR = "error";
 
@@ -157,51 +208,6 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** JSON response state value constant. */
     public static final String RES_STATE_OK = "ok";
-
-    /** Request path constant. */
-    protected static final String ACTION_GET = "/system/workplace/editors/ade/get.jsp";
-
-    /** Request path constant. */
-    protected static final String ACTION_SET = "/system/workplace/editors/ade/set.jsp";
-
-    /** Mime type constant. */
-    protected static final String MIMETYPE_APPLICATION_JSON = "application/json";
-
-    /** Request parameter obj value constant. */
-    protected static final String OBJ_ALL = "all";
-
-    /** Request parameter obj value constant. */
-    protected static final String OBJ_CNT = "cnt";
-
-    /** Request parameter obj value constant. */
-    protected static final Object OBJ_ELEM = "elem";
-
-    /** Request parameter obj value constant. */
-    protected static final String OBJ_FAV = "fav";
-
-    /** Request parameter obj value constant. */
-    protected static final String OBJ_NEW = "new";
-
-    /** Request parameter obj value constant. */
-    protected static final String OBJ_REC = "rec";
-
-    /** Request parameter name constant. */
-    protected static final String PARAMETER_DATA = "data";
-
-    /** Request parameter name constant. */
-    protected static final String PARAMETER_ELEM = "elem";
-
-    /** Request parameter name constant. */
-    protected static final String PARAMETER_LOCALE = "locale";
-
-    /** Request parameter name constant. */
-    protected static final String PARAMETER_OBJ = "obj";
-
-    /** Request parameter obj value constant. */
-    protected static final String PARAMETER_TYPE = "type";
-
-    /** Request parameter name constant. */
-    protected static final String PARAMETER_URL = "url";
 
     /** Container page loader reference. */
     private static final CmsContainerPageLoader LOADER = (CmsContainerPageLoader)OpenCms.getResourceManager().getLoader(
@@ -300,43 +306,30 @@ public class CmsADEServer extends CmsJspActionElement {
                     PARAMETER_ELEM));
                 return result;
             }
+            CmsADEElementUtil elemUtil = new CmsADEElementUtil(getCmsObject(), getRequest(), getResponse());
+            Collection<String> types = getContainerPageTypes(urlParam);
             JSONObject resElements = new JSONObject();
             if (elemParam.startsWith("[")) {
                 // element list
                 JSONArray elems = new JSONArray(elemParam);
                 for (int i = 0; i < elems.length(); i++) {
                     String elem = elems.getString(i);
-                    resElements.put(elem, CmsADEElementManager.getInstance().getElementData(
-                        getCmsObject(),
-                        CmsADEElementManager.getInstance().parseId(elem),
-                        urlParam,
-                        getRequest(),
-                        getResponse()));
+                    resElements.put(elem, elemUtil.getElementData(CmsADEElementUtil.parseId(elem), types));
                 }
             } else {
                 // single element
-                resElements.put(elemParam, CmsADEElementManager.getInstance().getElementData(
-                    getCmsObject(),
-                    CmsADEElementManager.getInstance().parseId(elemParam),
-                    urlParam,
-                    getRequest(),
-                    getResponse()));
+                resElements.put(elemParam, elemUtil.getElementData(CmsADEElementUtil.parseId(elemParam), types));
             }
             result.put(P_ELEMENTS, resElements);
         } else if (objParam.equals(OBJ_FAV)) {
             // get the favorite list
-            result.put(P_FAVORITES, CmsADEElementManager.getInstance().getFavoriteList(
-                getCmsObject(),
-                null,
-                urlParam,
-                getRequest(),
-                getResponse()));
+            result.put(P_FAVORITES, getFavoriteList(null, getContainerPageTypes(urlParam)));
         } else if (objParam.equals(OBJ_REC)) {
             // get recent list
-            result.put(P_RECENT, CmsADEElementManager.getInstance().getRecentList(
+            result.put(P_RECENT, CmsADERecentListManager.getInstance().getRecentList(
                 getCmsObject(),
                 null,
-                urlParam,
+                getContainerPageTypes(urlParam),
                 getRequest(),
                 getResponse()));
         } else if (objParam.equals(OBJ_NEW)) {
@@ -356,7 +349,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 cms.readResource(cms.getRequestContext().getUri()));
 
             CmsResource newResource = elemCreator.createElement(cms, type);
-            result.put(P_ID, CmsADEElementManager.ADE_ID_PREFIX + newResource.getStructureId().toString());
+            result.put(P_ID, CmsADEElementUtil.ADE_ID_PREFIX + newResource.getStructureId().toString());
             result.put(P_URI, cms.getSitePath(newResource));
         } else {
             result.put(RES_ERROR, Messages.get().getBundle().key(
@@ -393,7 +386,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 return result;
             }
             JSONArray list = new JSONArray(dataParam);
-            CmsADEElementManager.getInstance().setFavoriteList(getCmsObject(), list);
+            setFavoriteList(getCmsObject(), list);
         } else if (objParam.equals(OBJ_REC)) {
             // save the recent list
             String dataParam = getRequest().getParameter(PARAMETER_DATA);
@@ -404,7 +397,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 return result;
             }
             JSONArray list = new JSONArray(dataParam);
-            CmsADEElementManager.getInstance().setRecentList(getCmsObject(), list);
+            CmsADERecentListManager.getInstance().setRecentList(getCmsObject(), list);
         } else if (objParam.equals(OBJ_CNT)) {
             // save the container page
             String urlParam = getRequest().getParameter(PARAMETER_URL);
@@ -461,18 +454,15 @@ public class CmsADEServer extends CmsJspActionElement {
             && resUtil.isEditable());
         result.put(CmsADEServer.P_LOCKED, resUtil.getLockedByName());
 
-        Collection types = CmsADEElementManager.getInstance().getContainerPageTypes(cms, uri);
+        CmsADEElementUtil elemUtil = new CmsADEElementUtil(cms, getRequest(), getResponse());
+        Collection types = getContainerPageTypes(uri);
         CmsADEElementCreator creator = new CmsADEElementCreator(cms, containerPage);
         Map<String, CmsADETypeConfigurationItem> typeConfig = creator.getConfiguration();
         for (Map.Entry<String, CmsADETypeConfigurationItem> entry : typeConfig.entrySet()) {
             String type = entry.getKey();
             String elementUri = entry.getValue().getSourceFile();
-            JSONObject resElement = CmsADEElementManager.getInstance().getElementData(
-                cms,
-                cms.readResource(elementUri),
-                types,
-                getRequest(),
-                getResponse());
+            JSONObject resElement = elemUtil.getElementData(elementUri, types);
+            // overwrite some special field for new files
             resElement.put(P_ID, type);
             resElement.put(P_STATUS, "n");
             resElement.put(P_TYPE, type);
@@ -521,12 +511,7 @@ public class CmsADEServer extends CmsJspActionElement {
                     continue;
                 }
                 // get the element data
-                JSONObject resElement = CmsADEElementManager.getInstance().getElementData(
-                    cms,
-                    cms.readResource(elementUri),
-                    types,
-                    getRequest(),
-                    getResponse());
+                JSONObject resElement = elemUtil.getElementData(elementUri, types);
                 // store element data
                 id = resElement.getString(P_ID);
                 ids.put(elementUri, id);
@@ -538,23 +523,100 @@ public class CmsADEServer extends CmsJspActionElement {
             resContainers.put(name, resContainer);
         }
         // get the favorites
-        JSONArray resFavorites = CmsADEElementManager.getInstance().getFavoriteList(
-            cms,
-            resElements,
-            uri,
-            getRequest(),
-            getResponse());
+        JSONArray resFavorites = getFavoriteList(resElements, types);
         result.put(P_FAVORITES, resFavorites);
         // get the recent list
-        JSONArray resRecent = CmsADEElementManager.getInstance().getRecentList(
+        JSONArray resRecent = CmsADERecentListManager.getInstance().getRecentList(
             cms,
             resElements,
-            uri,
+            types,
             getRequest(),
             getResponse());
         result.put(P_RECENT, resRecent);
 
         return result;
+    }
+
+    /**
+     * Returns all types of containers from the given container page.<p>
+     * 
+     * @param containerPageUri the container page uri
+     * 
+     * @return a collection of types as strings
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws JSONException if there is a problem with the json manipulation
+     */
+    protected Collection<String> getContainerPageTypes(String containerPageUri) throws CmsException, JSONException {
+
+        CmsObject cms = getCmsObject();
+        Set<String> types = new HashSet<String>();
+        // get the container page itself
+        CmsResource containerPage = cms.readResource(containerPageUri);
+        JSONObject localeData = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
+        JSONObject containers = localeData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
+        Iterator<String> itKeys = containers.keys();
+        while (itKeys.hasNext()) {
+            String containerName = itKeys.next();
+            JSONObject container = containers.getJSONObject(containerName);
+            // get the type
+            String type = container.getString(CmsContainerPageLoader.N_TYPE);
+            types.add(type);
+        }
+        return types;
+    }
+
+    /**
+     * Returns the current user's favorites list.<p>
+     * 
+     * @param resElements the current page's element list
+     * @param types the supported container page types
+     * 
+     * @return the current user's favorites list
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws JSONException if something goes wrong in the json manipulation
+     */
+    protected JSONArray getFavoriteList(JSONObject resElements, Collection<String> types)
+    throws JSONException, CmsException {
+
+        CmsObject cms = getCmsObject();
+        HttpServletRequest req = getRequest();
+        HttpServletResponse res = getResponse();
+
+        CmsADEElementUtil elemUtil = new CmsADEElementUtil(cms, req, res);
+
+        JSONArray result = getFavoriteListFromStore(cms);
+
+        // iterate the list and create the missing elements
+        for (int i = 0; i < result.length(); i++) {
+            String id = result.optString(i);
+            if ((resElements != null) && !resElements.has(id)) {
+                resElements.put(id, elemUtil.getElementData(CmsADEElementUtil.parseId(id), types));
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the cached list, or creates it if not available.<p>
+     * 
+     * @param cms the current cms context
+     * 
+     * @return the cached recent list
+     * 
+     * @throws JSONException if something goes wrong
+     */
+    protected JSONArray getFavoriteListFromStore(CmsObject cms) throws JSONException {
+
+        CmsUser user = cms.getRequestContext().currentUser();
+        String favListStr = (String)user.getAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST);
+        JSONArray favoriteList = new JSONArray();
+        if (favListStr != null) {
+            favoriteList = new JSONArray(favListStr);
+        }
+        return favoriteList;
     }
 
     /**
@@ -626,4 +688,18 @@ public class CmsADEServer extends CmsJspActionElement {
         cms.writeFile(containerPage);
     }
 
+    /**
+     * Sets the favorite list.<p>
+     * 
+     * @param cms the cms context
+     * @param list the element id list
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void setFavoriteList(CmsObject cms, JSONArray list) throws CmsException {
+
+        CmsUser user = cms.getRequestContext().currentUser();
+        user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, list.toString());
+        cms.writeUser(user);
+    }
 }
