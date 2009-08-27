@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishScheduled.java,v $
- * Date   : $Date: 2009/08/20 11:30:52 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/27 12:31:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsContextInfo;
@@ -43,6 +44,7 @@ import org.opencms.scheduler.jobs.CmsPublishScheduledJob;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
+import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
@@ -72,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 7.5.1
  */
@@ -84,11 +86,11 @@ public class CmsPublishScheduled extends CmsDialog {
     /** Request parameter name for the activation of the notification. */
     public static final String PARAM_ENABLE_NOTIFICATION = "enablenotification";
 
-    /** Request parameter name for the reset publish date. */
-    public static final String PARAM_RESETPUBLISHSCHEDULED = "resetpublishscheduled";
-
     /** Request parameter name for the publish date. */
     public static final String PARAM_PUBLISHSCHEDULEDDATE = "publishscheduleddate";
+
+    /** Request parameter name for the reset publish date. */
+    public static final String PARAM_RESETPUBLISHSCHEDULED = "resetpublishscheduled";
 
     /** The parameter for publish scheduled date. */
     private String m_paramPublishscheduleddate;
@@ -119,6 +121,7 @@ public class CmsPublishScheduled extends CmsDialog {
      * 
      * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
      */
+    @SuppressWarnings("unchecked")
     @Override
     public void actionCloseDialog() throws JspException {
 
@@ -269,21 +272,25 @@ public class CmsPublishScheduled extends CmsDialog {
         cmsAdmin.getRequestContext().setSiteRoot(cms.getRequestContext().getSiteRoot());
 
         // create the temporary project, which is deleted after publishing
-        String projectName = "publishscheduled_" + date + "_" + resource;
-        projectName = projectName.replace("/", "_");
+        // the publish scheduled date in project name
+        String dateTime = CmsDateUtil.getDateTime(date, DateFormat.SHORT, getCms().getRequestContext().getLocale());
+        // the resource name to publish scheduled
+        String resName = CmsResource.getName(resource);
+        String projectName = key(Messages.GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2, new Object[] {resName, dateTime});
+        // the HTML encoding for slashes is necessary because of the slashes in english date time format
+        // in project names slahes are not allowed, because these are separators for organizaional units
+        projectName = projectName.replace("/", "&#47;");
+        // create the project
         CmsProject tmpProject = cmsAdmin.createProject(
             projectName,
-            "Publish scheduled project created for user "
-                + cms.getRequestContext().currentUser().getName()
-                + " for resource "
-                + resource
-                + ". Publish time is "
-                + date,
+            "",
             CmsRole.WORKPLACE_USER.getGroupName(),
             CmsRole.PROJECT_MANAGER.getGroupName(),
             CmsProject.PROJECT_TYPE_TEMPORARY);
-        // make the project invisible
-        tmpProject.setFlags(CmsProject.PROJECT_FLAG_HIDDEN);
+        // make the project invisible for all users
+        tmpProject.setHidden(true);
+        // write the project to the database
+        cmsAdmin.writeProject(tmpProject);
         // set project as current project
         cmsAdmin.getRequestContext().setCurrentProject(tmpProject);
         cms.getRequestContext().setCurrentProject(tmpProject);
@@ -339,7 +346,7 @@ public class CmsPublishScheduled extends CmsDialog {
         contextInfo.setProjectName(projectName);
         contextInfo.setUserName(cmsAdmin.getRequestContext().currentUser().getName());
         // create the job schedule parameter
-        SortedMap params = new TreeMap();
+        SortedMap<String, String> params = new TreeMap<String, String>();
         // the user to send mail to
         params.put(CmsPublishScheduledJob.PARAM_USER, userName);
         // the job name

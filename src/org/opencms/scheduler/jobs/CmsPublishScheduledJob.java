@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishScheduledJob.java,v $
- * Date   : $Date: 2009/08/13 12:30:16 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2009/08/27 12:31:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 7.5.1
  */
@@ -86,6 +86,7 @@ public class CmsPublishScheduledJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
      */
+    @SuppressWarnings("unchecked")
     public synchronized String launch(CmsObject cms, Map parameters) throws Exception {
 
         Date jobStart = new Date();
@@ -106,9 +107,9 @@ public class CmsPublishScheduledJob implements I_CmsScheduledJob {
             }
 
             // change lock for the resources if necessary
-            Iterator iter = cms.readProjectResources(project).iterator();
+            Iterator<String> iter = cms.readProjectResources(project).iterator();
             while (iter.hasNext()) {
-                String resource = (String)iter.next();
+                String resource = iter.next();
                 // get current lock from file
                 CmsLock lock = cms.getLock(resource);
                 // prove is current lock from current but not in current project
@@ -148,9 +149,9 @@ public class CmsPublishScheduledJob implements I_CmsScheduledJob {
             // the job id
             String jobId = "";
             // iterate over all jobs to find the current one
-            Iterator iter = OpenCms.getScheduleManager().getJobs().iterator();
+            Iterator<CmsScheduledJobInfo> iter = OpenCms.getScheduleManager().getJobs().iterator();
             while (iter.hasNext()) {
-                CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)iter.next();
+                CmsScheduledJobInfo jobInfo = iter.next();
                 // the current job is found with the job name
                 if (jobInfo.getJobName().equals(jobName)) {
                     // get the current job id

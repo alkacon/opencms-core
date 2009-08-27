@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2009/08/13 12:30:16 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2009/08/27 12:31:59 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -148,6 +148,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_PUBLISH_LIST_CREATION_0 = "ERR_PUBLISH_LIST_CREATION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1 = "ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_REDIRECT_INDEXPAGE_DIALOG_1 = "ERR_REDIRECT_INDEXPAGE_DIALOG_1";
 
     /** Message constant for key in the resource bundle. */
@@ -161,9 +164,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESTORE_SELECTED_RESOURCES_1 = "ERR_RESTORE_SELECTED_RESOURCES_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1 = "ERR_PUBLISH_SCHEDULED_DATE_IN_PAST_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TOUCH_MULTI_0 = "ERR_TOUCH_MULTI_0";
@@ -652,13 +652,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LABEL_DATE_LAST_MODIFIED_0 = "GUI_LABEL_DATE_LAST_MODIFIED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_DATE_PUBLISH_SCHEDULED_0 = "GUI_LABEL_DATE_PUBLISH_SCHEDULED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_DATE_RELEASED_0 = "GUI_LABEL_DATE_RELEASED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_DATE_RESET_PUBLISH_SCHEDULED_0 = "GUI_LABEL_DATE_RESET_PUBLISH_SCHEDULED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_DATE_PUBLISH_SCHEDULED_0 = "GUI_LABEL_DATE_PUBLISH_SCHEDULED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_DELETE_0 = "GUI_LABEL_DELETE_0";
@@ -1375,6 +1375,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PUBLISH_RESOURCES_TITLE_0 = "GUI_PUBLISH_RESOURCES_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_SCHEDULED_0 = "GUI_PUBLISH_SCHEDULED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2 = "GUI_PUBLISH_SCHEDULED_PROJECT_NAME_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PUBLISH_SCHEDULED_SETTINGS_1 = "GUI_PUBLISH_SCHEDULED_SETTINGS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_SITE_RELATION_2 = "GUI_PUBLISH_SITE_RELATION_2";
 
     /** Message constant for key in the resource bundle. */
@@ -1469,12 +1478,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SYNCHRONIZATION_INFO_0 = "GUI_SYNCHRONIZATION_INFO_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_SCHEDULED_0 = "GUI_PUBLISH_SCHEDULED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_PUBLISH_SCHEDULED_SETTINGS_1 = "GUI_PUBLISH_SCHEDULED_SETTINGS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TOUCH_0 = "GUI_TOUCH_0";
