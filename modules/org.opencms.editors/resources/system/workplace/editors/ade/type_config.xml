@@ -3,12 +3,55 @@
 <ADETypeConfigurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/workplace/editors/ade/schemas/type_config.xsd">
   <ADETypeConfiguration language="en">
     <ADEType>
-      <Source><![CDATA[/demo/news/news_0001.html]]></Source>
-      <Destination><![CDATA[/demo/news/news_%(number).html]]></Destination>
+      <Source>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/demo/events/event_0001.html]]></target>
+          <uuid>6b856225-8288-11de-ac1e-dd9f629b113b</uuid>
+        </link>
+      </Source>
+      <Destination>
+        <Folder>
+          <link type="WEAK">
+            <target><![CDATA[/sites/default/demo/events/]]></target>
+            <uuid>4e44acb8-8288-11de-ac1e-dd9f629b113b</uuid>
+          </link>
+        </Folder>
+        <Pattern><![CDATA[event_%(number).html]]></Pattern>
+      </Destination>
     </ADEType>
     <ADEType>
-      <Source><![CDATA[/demo/events/event_0001.html]]></Source>
-      <Destination><![CDATA[/demo/events/event_%(number).html]]></Destination>
+      <Source>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/demo/news/news_0001.html]]></target>
+          <uuid>6104058a-8288-11de-ac1e-dd9f629b113b</uuid>
+        </link>
+      </Source>
+      <Destination>
+        <Folder>
+          <link type="WEAK">
+            <target><![CDATA[/sites/default/demo/news/]]></target>
+            <uuid>48773b46-8288-11de-ac1e-dd9f629b113b</uuid>
+          </link>
+        </Folder>
+        <Pattern><![CDATA[news_%(number).html]]></Pattern>
+      </Destination>
+    </ADEType>
+    <ADEType>
+      <Source>
+        <link type="WEAK">
+          <target><![CDATA[/sites/default/demo/info/info_0001.html]]></target>
+          <uuid>4d392492-8d89-11de-a1de-7713e07de9e6</uuid>
+        </link>
+      </Source>
+      <Destination>
+        <Folder>
+          <link type="WEAK">
+            <target><![CDATA[/sites/default/demo/info/]]></target>
+            <uuid>3469ac00-8d89-11de-a1de-7713e07de9e6</uuid>
+          </link>
+        </Folder>
+        <Pattern><![CDATA[info_%(number).html]]></Pattern>
+      </Destination>
     </ADEType>
   </ADETypeConfiguration>
 </ADETypeConfigurations>
