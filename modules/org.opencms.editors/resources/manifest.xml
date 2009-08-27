@@ -213,6 +213,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/editors/ade/type_config.xml</source>
+			<destination>system/workplace/editors/ade/type_config.xml</destination>
+			<type>ade_type_config</type>
+			<uuidstructure>efc0cf62-8744-1fde-8dd4-dd9f629b113b</uuidstructure>
+			<uuidresource>efc0cf63-87e4-11de-8314-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 13 Aug 2009 09:04:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 12 Aug 2009 13:35:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/editors/ade/set.jsp</destination>
 			<type>jsp</type>
 			<uuidstructure>a5fe2174-8595-11de-97fc-dd9f629b113b</uuidstructure>
