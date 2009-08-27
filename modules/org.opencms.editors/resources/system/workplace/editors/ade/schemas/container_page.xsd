@@ -26,6 +26,10 @@
 			<layouts/>
 			<validationrules/>
 			<defaults/>
+			<relations>
+				<relation element="Containers/Elements/Uri" type="strong" invalidate="parent" />
+				<relation element="Containers/Elements/Formatter" type="strong" invalidate="parent" />
+			</relations>
 		</xsd:appinfo>
 
 	</xsd:annotation>  
