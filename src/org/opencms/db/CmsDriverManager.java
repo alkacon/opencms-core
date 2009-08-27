@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2009/08/03 12:38:02 $
- * Version: $Revision: 1.639 $
+ * Date   : $Date: 2009/08/27 08:05:06 $
+ * Version: $Revision: 1.639.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -5280,8 +5280,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsEvent beforePublishEvent = new CmsEvent(I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT, eventData);
             OpenCms.fireCmsEvent(beforePublishEvent);
         } catch (Throwable t) {
-            report.addError(t);
-            report.println(t);
+            if (report != null) {
+                report.addError(t);
+                report.println(t);
+            }
+            if (LOG.isErrorEnabled()) {
+                LOG.error(t.getLocalizedMessage(), t);
+            }
         }
 
         // lock all resources with the special publish lock
