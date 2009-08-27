@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/08/13 10:47:28 $
- * Version: $Revision: 1.64.2.1 $
+ * Date   : $Date: 2009/08/27 14:44:47 $
+ * Version: $Revision: 1.64.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.64.2.1 $ 
+ * @version $Revision: 1.64.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -266,7 +266,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     protected Map m_elementWidgets;
 
     /** The configured formatters. */
-    protected Map m_formatters;
+    protected Map<String, String> m_formatters;
 
     /** The resource bundle name to be used for localization of this content handler. */
     protected String m_messageBundleName;
@@ -392,7 +392,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /**
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getFormatters()
      */
-    public Map getFormatters() {
+    public Map<String, String> getFormatters() {
 
         return Collections.unmodifiableMap(m_formatters);
     }
@@ -1361,7 +1361,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_previewLocation = null;
         m_modelFolder = null;
         m_tabs = new ArrayList();
-        m_formatters = new HashMap();
+        m_formatters = new HashMap<String, String>();
     }
 
     /**
