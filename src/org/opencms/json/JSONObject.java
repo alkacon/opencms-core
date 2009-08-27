@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/json/JSONObject.java,v $
- * Date   : $Date: 2009/06/04 14:29:42 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/08/27 14:45:14 $
+ * Version: $Revision: 1.2.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -138,7 +138,7 @@ public class JSONObject {
          */
         public boolean equals(Object object) {
 
-            return object == null || object == this;
+            return (object == null) || (object == this);
         }
 
         /**
@@ -402,7 +402,7 @@ public class JSONObject {
         // Shave off trailing zeros and decimal point, if possible.
 
         String s = Double.toString(d);
-        if (s.indexOf('.') > 0 && s.indexOf('e') < 0 && s.indexOf('E') < 0) {
+        if ((s.indexOf('.') > 0) && (s.indexOf('e') < 0) && (s.indexOf('E') < 0)) {
             while (s.endsWith("0")) {
                 s = s.substring(0, s.length() - 1);
             }
@@ -476,7 +476,7 @@ public class JSONObject {
         // Shave off trailing zeros and decimal point, if possible.
 
         String s = n.toString();
-        if (s.indexOf('.') > 0 && s.indexOf('e') < 0 && s.indexOf('E') < 0) {
+        if ((s.indexOf('.') > 0) && (s.indexOf('e') < 0) && (s.indexOf('E') < 0)) {
             while (s.endsWith("0")) {
                 s = s.substring(0, s.length() - 1);
             }
@@ -500,7 +500,7 @@ public class JSONObject {
      */
     public static String quote(String string) {
 
-        if (string == null || string.length() == 0) {
+        if ((string == null) || (string.length() == 0)) {
             return "\"\"";
         }
 
@@ -543,7 +543,7 @@ public class JSONObject {
                     sb.append("\\r");
                     break;
                 default:
-                    if (c < ' ' || (c >= '\u0080' && c < '\u00a0') || (c >= '\u2000' && c < '\u2100')) {
+                    if ((c < ' ') || ((c >= '\u0080') && (c < '\u00a0')) || ((c >= '\u2000') && (c < '\u2100'))) {
                         t = "000" + Integer.toHexString(c);
                         sb.append("\\u" + t.substring(t.length() - 4));
                     } else {
@@ -600,7 +600,7 @@ public class JSONObject {
      */
     static String valueToString(Object value) throws JSONException {
 
-        if (value == null || value.equals(null)) {
+        if ((value == null) || value.equals(null)) {
             return "null";
         }
         if (value instanceof I_JSONString) {
@@ -618,7 +618,7 @@ public class JSONObject {
         if (value instanceof Number) {
             return numberToString((Number)value);
         }
-        if (value instanceof Boolean || value instanceof JSONObject || value instanceof JSONArray) {
+        if ((value instanceof Boolean) || (value instanceof JSONObject) || (value instanceof JSONArray)) {
             return value.toString();
         }
         if (value instanceof Map) {
@@ -650,7 +650,7 @@ public class JSONObject {
      */
     static String valueToString(Object value, int indentFactor, int indent) throws JSONException {
 
-        if (value == null || value.equals(null)) {
+        if ((value == null) || value.equals(null)) {
             return "null";
         }
         try {
@@ -769,9 +769,9 @@ public class JSONObject {
     public boolean getBoolean(String key) throws JSONException {
 
         Object o = get(key);
-        if (o.equals(Boolean.FALSE) || (o instanceof String && ((String)o).equalsIgnoreCase("false"))) {
+        if (o.equals(Boolean.FALSE) || ((o instanceof String) && ((String)o).equalsIgnoreCase("false"))) {
             return false;
-        } else if (o.equals(Boolean.TRUE) || (o instanceof String && ((String)o).equalsIgnoreCase("true"))) {
+        } else if (o.equals(Boolean.TRUE) || ((o instanceof String) && ((String)o).equalsIgnoreCase("true"))) {
             return true;
         }
         throw new JSONException("JSONObject[" + quote(key) + "] is not a Boolean.");
@@ -914,6 +914,39 @@ public class JSONObject {
     public int length() {
 
         return this.m_map.size();
+    }
+
+    /**
+     * Merges the current JSON object with the given one, modifying the this.<p>
+     * 
+     * @param jo the JSON object to merge
+     * @param overwrite if to overwrite values
+     * @param deep if to recurse in object values
+     * 
+     * @throws JSONException if a value is a non-finite number
+     * 
+     * @author Michael Moossen
+     * 
+     * @since 7.6
+     */
+    public void merge(JSONObject jo, boolean overwrite, boolean deep) throws JSONException {
+
+        Iterator it = jo.keys();
+        while (it.hasNext()) {
+            String key = (String)it.next();
+            if (!has(key)) {
+                put(key, jo.get(key));
+                continue;
+            }
+            boolean recurse = deep && (jo.optJSONObject(key) != null) && (optJSONObject(key) != null);
+            if (overwrite && !recurse) {
+                put(key, jo.get(key));
+                continue;
+            }
+            if (recurse) {
+                getJSONObject(key).merge(jo.getJSONObject(key), overwrite, deep);
+            }
+        }
     }
 
     /**
@@ -1266,7 +1299,7 @@ public class JSONObject {
      */
     public JSONObject putOpt(String key, Object value) throws JSONException {
 
-        if (key != null && value != null) {
+        if ((key != null) && (value != null)) {
             put(key, value);
         }
         return this;
@@ -1307,7 +1340,7 @@ public class JSONObject {
      */
     public JSONArray toJSONArray(JSONArray names) throws JSONException {
 
-        if (names == null || names.length() == 0) {
+        if ((names == null) || (names.length() == 0)) {
             return null;
         }
         JSONArray ja = new JSONArray();
@@ -1503,7 +1536,9 @@ public class JSONObject {
                 } else if (name.startsWith("is")) {
                     key = name.substring(2);
                 }
-                if (key.length() > 0 && Character.isUpperCase(key.charAt(0)) && method.getParameterTypes().length == 0) {
+                if ((key.length() > 0)
+                    && Character.isUpperCase(key.charAt(0))
+                    && (method.getParameterTypes().length == 0)) {
                     if (key.length() == 1) {
                         key = key.toLowerCase();
                     } else if (!Character.isUpperCase(key.charAt(1))) {
@@ -1523,7 +1558,7 @@ public class JSONObject {
                         m_map.put(key, result);
                     } else {
                         if (result.getClass().getPackage().getName().startsWith("java")
-                            || result.getClass().getClassLoader() == null) {
+                            || (result.getClass().getClassLoader() == null)) {
                             m_map.put(key, result.toString());
                         } else { //User defined Objects
                             m_map.put(key, new JSONObject(result, includeSuperClass));
