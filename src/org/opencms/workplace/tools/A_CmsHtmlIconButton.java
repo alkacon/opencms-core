@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2009/06/04 14:29:20 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/08/27 09:38:12 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -221,7 +221,12 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         html.append(">");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)) {
             html.append("<img src='");
-            html.append(CmsWorkplace.getSkinUri());
+            if (!iconPath.startsWith("/")) {
+                html.append(CmsWorkplace.getSkinUri());
+            } else {
+                // if the iconPath starts with a / add the OpenCmsContext
+                html.append(OpenCms.getSystemInfo().getOpenCmsContext());
+            }
             if (!enabled) {
                 StringBuffer icon = new StringBuffer(128);
                 icon.append(iconPath.substring(0, iconPath.lastIndexOf('.')));
