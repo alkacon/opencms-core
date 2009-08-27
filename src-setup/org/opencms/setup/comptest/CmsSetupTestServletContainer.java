@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/comptest/CmsSetupTestServletContainer.java,v $
- * Date   : $Date: 2009/06/04 14:31:35 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/08/27 12:45:26 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.setup.CmsSetupBean;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.1.8 
  */
@@ -46,14 +46,6 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
 
     /** The test name. */
     public static final String TEST_NAME = "Servlet Container";
-
-    /**
-     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
-     */
-    public String getName() {
-
-        return TEST_NAME;
-    }
 
     /**
      * @see org.opencms.setup.comptest.I_CmsSetupTest#execute(org.opencms.setup.CmsSetupBean)
@@ -72,7 +64,11 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
                 "Please be sure that during the Setup Wizard, the web application auto-redeployment feature is deactivated. One way to achieve this, is to set the '<code>dependency-check-interval</code>' option in your <code>resin.conf</code> configuration file to <code>-1</code> or something big like <code>2000s</code>."},
             {
                 "IBM WebSphere Application Server/6",
-                "The only limitation found so far, is that when using the <code>sendRedirect</code> method you have always to use an absolute path."}};
+                "The only limitation found so far, is that when using the <code>sendRedirect</code> method you have always to use an absolute path."},
+            {"Sun GlassFish Enterprise Server v2.1", null},
+            {
+                "GlassFish/v3",
+                "GlassFish/v3 is not a stable release and subject to major changes. Please prefer a stable release."}};
 
         String[][] unsupportedContainers = {
             {"Tomcat Web Server/3", "Tomcat 3.x is no longer supported. Please use at least Tomcat 4.1 instead."},
@@ -104,6 +100,14 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
             testResult.setGreen();
         }
         return testResult;
+    }
+
+    /**
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
+     */
+    public String getName() {
+
+        return TEST_NAME;
     }
 
     /** 

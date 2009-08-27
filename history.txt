@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/08/18 09:16:40 $
- * Version: $Revision: 1.1122 $
+ * Date   : $Date: 2009/08/27 12:45:26 $
+ * Version: $Revision: 1.1123 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,8 @@ OpenCms 7.5.1 - month day, 2009
 ! Added content tool "Convert XML contents" to convert XML contents in specified folder
 ! Added option to limit full text search to certain resource types only
 ! Added "fields query" option to full text search by which you can search for different terms in several fields
+! Added support for servlet container Sun GlassFish Enterprise Server v2.1
+! Added support for servlet container GlassFish/v3 (preview release, builds later than 25-Aug-2009)
 * Fixed issue with OU users being unable to work after OU resource has been renamed 
 * Fixed issue with pointer targets being stored in XML contents (instead of the uri to pointers) when selecting them from link gallery
 * Fixed issue with transfer permissions of a deleted user to another user
