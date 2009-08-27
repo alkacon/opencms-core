@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEElementUtil.java,v $
- * Date   : $Date: 2009/08/26 12:59:05 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
+ * Date   : $Date: 2009/08/27 14:46:18 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,6 @@ import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
-import org.opencms.loader.CmsContainerPageLoader;
 import org.opencms.loader.CmsTemplateLoaderFacade;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -66,21 +65,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.1 $
  * 
  * @since 7.6
  */
-public final class CmsADEElementUtil {
+public final class CmsElementUtil {
 
     /** HTML id prefix constant. */
-    protected static final String ADE_ID_PREFIX = "ade_";
-
-    /** Container page loader reference. */
-    private static final CmsContainerPageLoader LOADER = (CmsContainerPageLoader)OpenCms.getResourceManager().getLoader(
-        CmsContainerPageLoader.RESOURCE_LOADER_ID);
+    private static final String ADE_ID_PREFIX = "ade_";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsADEElementUtil.class);
+    private static final Log LOG = CmsLog.getLog(CmsElementUtil.class);
 
     /** The cms context. */
     private CmsObject m_cms;
@@ -98,7 +93,7 @@ public final class CmsADEElementUtil {
      * @param req the http request
      * @param res the http response
      */
-    public CmsADEElementUtil(CmsObject cms, HttpServletRequest req, HttpServletResponse res) {
+    public CmsElementUtil(CmsObject cms, HttpServletRequest req, HttpServletResponse res) {
 
         m_cms = cms;
         m_req = req;
@@ -106,10 +101,43 @@ public final class CmsADEElementUtil {
     }
 
     /**
+     * Creates a valid html id from an uuid.<p>
+     * 
+     * @param id the uuid
+     * 
+     * @return the generated html id
+     */
+    public static String createId(CmsUUID id) {
+
+        return ADE_ID_PREFIX + id.toString();
+    }
+
+    /**
+     * Parses an element id.<p>
+     * 
+     * @param id the element id
+     * 
+     * @return the corresponding structure id
+     * 
+     * @throws CmsIllegalArgumentException if the id has not the right format
+     */
+    public static CmsUUID parseId(String id) throws CmsIllegalArgumentException {
+
+        if ((id == null) || (!id.startsWith(ADE_ID_PREFIX))) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_ID_1, id));
+        }
+        try {
+            return new CmsUUID(id.substring(ADE_ID_PREFIX.length()));
+        } catch (NumberFormatException e) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_ID_1, id));
+        }
+    }
+
+    /**
      * Returns the content of an element when rendered with the given formatter.<p> 
      * 
      * @param resource the element resource
-     * @param formatterUri the formatter uri
+     * @param formatter the formatter uri
      * 
      * @return generated html code
      * 
@@ -117,13 +145,11 @@ public final class CmsADEElementUtil {
      * @throws ServletException if a jsp related error occurs
      * @throws IOException if a jsp related error occurs
      */
-    public String getElementContent(CmsResource resource, String formatterUri)
+    public String getElementContent(CmsResource resource, CmsResource formatter)
     throws CmsException, ServletException, IOException {
 
-        CmsResource resFormatter = m_cms.readResource(formatterUri);
-
         CmsTemplateLoaderFacade loaderFacade = new CmsTemplateLoaderFacade(OpenCms.getResourceManager().getLoader(
-            resFormatter), resource, resFormatter);
+            formatter), resource, formatter);
 
         CmsResource loaderRes = loaderFacade.getLoaderStartResource();
         // TODO: is this going to be cached? most likely not! any alternative?
@@ -152,7 +178,7 @@ public final class CmsADEElementUtil {
 
         // create new json object for the element
         JSONObject resElement = new JSONObject();
-        resElement.put(CmsADEServer.P_ID, CmsADEElementUtil.ADE_ID_PREFIX + resource.getStructureId().toString());
+        resElement.put(CmsADEServer.P_ID, CmsElementUtil.ADE_ID_PREFIX + resource.getStructureId().toString());
         resElement.put(CmsADEServer.P_FILE, m_cms.getSitePath(resource));
         resElement.put(CmsADEServer.P_DATE, resource.getDateLastModified());
         resElement.put(CmsADEServer.P_USER, m_cms.readUser(resource.getUserLastModified()).getName());
@@ -184,22 +210,20 @@ public final class CmsADEElementUtil {
                 resContents.put(type, ""); // empty contents
             }
             // this container page should contain exactly one container
-            JSONObject localeData = LOADER.getCache(m_cms, resource, m_cms.getRequestContext().getLocale());
-            JSONObject containers = localeData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
-            JSONObject container = containers.getJSONObject(containers.names().getString(0));
+            CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
+                m_cms,
+                resource,
+                m_cms.getRequestContext().getLocale());
+            CmsContainerBean container = cntPage.getContainers().values().iterator().next();
 
             // add subitems
             JSONArray subitems = new JSONArray();
             resElement.put(CmsADEServer.P_SUBITEMS, subitems);
             // iterate the elements
-            JSONArray elements = container.optJSONArray(CmsContainerPageLoader.N_ELEMENT);
-            // get the actual number of elements to render
-            int renderElems = elements.length();
-            for (int i = 0; i < renderElems; i++) {
-                JSONObject element = elements.optJSONObject(i);
-                String id = element.optString(CmsContainerPageLoader.N_ID);
+            for (CmsContainerElementBean element : container.getElements()) {
+                CmsUUID id = element.getElement().getStructureId();
                 // collect ids
-                subitems.put(CmsADEElementUtil.ADE_ID_PREFIX + id.toString());
+                subitems.put(createId(id));
             }
         } else {
             // TODO: this may not be performing well, any way to access the content handler without unmarshal??
@@ -216,7 +240,7 @@ public final class CmsADEElementUtil {
                 formatters.put(type, formatterUri);
                 // execute the formatter jsp for the given element
                 try {
-                    String jspResult = getElementContent(resource, formatterUri);
+                    String jspResult = getElementContent(resource, m_cms.readResource(formatterUri));
                     // set the results
                     resContents.put(type, jspResult);
                 } catch (Exception e) {
@@ -262,26 +286,5 @@ public final class CmsADEElementUtil {
     public JSONObject getElementData(String elementUri, Collection<String> types) throws CmsException, JSONException {
 
         return getElementData(m_cms.readResource(elementUri), types);
-    }
-
-    /**
-     * Parses an element id.<p>
-     * 
-     * @param id the element id
-     * 
-     * @return the corresponding structure id
-     * 
-     * @throws CmsIllegalArgumentException if the id has not the right format
-     */
-    public static CmsUUID parseId(String id) throws CmsIllegalArgumentException {
-
-        if ((id == null) || (!id.startsWith(ADE_ID_PREFIX))) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_ID_1, id));
-        }
-        try {
-            return new CmsUUID(id.substring(ADE_ID_PREFIX.length()));
-        } catch (NumberFormatException e) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_ID_1, id));
-        }
     }
 }

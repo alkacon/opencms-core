@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2009/08/13 10:47:26 $
- * Version: $Revision: 1.22.2.1 $
+ * Date   : $Date: 2009/08/27 14:46:19 $
+ * Version: $Revision: 1.22.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.22.2.1 $ 
+ * @version $Revision: 1.22.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,9 +65,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_POINTER_FILE_1 = "ERR_INVALID_POINTER_FILE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_JSON_EXCEPTION_1 = "ERR_JSON_EXCEPTION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOADER_JSP_ACCESS_1 = "ERR_LOADER_JSP_ACCESS_1";
@@ -203,12 +200,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_COLLECTOR_BAD_ORDER_NUMBER_1 = "LOG_COLLECTOR_BAD_ORDER_NUMBER_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2 = "LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_CONTAINER_PAGE_NOT_FOUND_1 = "LOG_CONTAINER_PAGE_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CONTENT_COLLECTOR_CLASS_NOT_FOUND_1 = "LOG_CONTENT_COLLECTOR_CLASS_NOT_FOUND_1";

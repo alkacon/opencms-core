@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/08/26 12:59:05 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/08/27 14:46:20 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,14 +35,15 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.flex.CmsFlexController;
-import org.opencms.json.JSONArray;
-import org.opencms.json.JSONException;
-import org.opencms.json.JSONObject;
-import org.opencms.loader.CmsContainerPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.editors.ade.CmsContainerBean;
+import org.opencms.workplace.editors.ade.CmsContainerElementBean;
+import org.opencms.workplace.editors.ade.CmsContainerPageBean;
+import org.opencms.workplace.editors.ade.CmsContainerPageCache;
+
+import java.util.Locale;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -57,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.6 
  */
@@ -77,10 +78,6 @@ public class CmsJspTagContainer extends TagSupport {
 
     /** The type attribute value. */
     private String m_type;
-
-    /** Container page loader reference. */
-    private static final CmsContainerPageLoader LOADER = (CmsContainerPageLoader)OpenCms.getResourceManager().getLoader(
-        CmsContainerPageLoader.RESOURCE_LOADER_ID);
 
     /**
      * Internal action method.<p>
@@ -108,29 +105,28 @@ public class CmsJspTagContainer extends TagSupport {
 
         // get the container page itself
         CmsResource containerPage = cms.readResource(cms.getRequestContext().getUri());
-        JSONObject localeData = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
-        JSONObject cntData = localeData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
+        CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
+            cms,
+            containerPage,
+            cms.getRequestContext().getLocale());
+        Locale locale = cntPage.getLocale();
 
         // get the container
-        if (!cntData.has(containerName)) {
+        if (!cntPage.getContainers().containsKey(containerName)) {
             LOG.warn(Messages.get().container(
                 Messages.LOG_CONTAINER_NOT_FOUND_3,
                 cms.getSitePath(containerPage),
-                localeData.optString(CmsContainerPageLoader.N_LOCALE),
+                locale,
                 containerName).key());
             return;
         }
-        JSONObject container = cntData.optJSONObject(containerName);
+        CmsContainerBean container = cntPage.getContainers().get(containerName);
 
         // validate the type
-        if (!containerType.equals(container.optString(CmsContainerPageLoader.N_TYPE))) {
+        if (!containerType.equals(container.getType())) {
             LOG.warn(Messages.get().container(
                 Messages.LOG_WRONG_CONTAINER_TYPE_4,
-                new Object[] {
-                    cms.getSitePath(containerPage),
-                    localeData.optString(CmsContainerPageLoader.N_LOCALE),
-                    containerName,
-                    containerType}).key());
+                new Object[] {cms.getSitePath(containerPage), locale, containerName, containerType}).key());
         }
 
         // get the maximal number of elements
@@ -141,47 +137,38 @@ public class CmsJspTagContainer extends TagSupport {
             } catch (NumberFormatException e) {
                 LOG.warn(Messages.get().container(
                     Messages.LOG_WRONG_CONTAINER_MAXELEMENTS_4,
-                    new Object[] {
-                        cms.getSitePath(containerPage),
-                        localeData.optString(CmsContainerPageLoader.N_LOCALE),
-                        containerName,
-                        containerMaxElements}).key());
+                    new Object[] {cms.getSitePath(containerPage), locale, containerName, containerMaxElements}).key());
             }
             // actualize the cache
-            try {
-                container.put(CmsContainerPageLoader.N_MAXELEMENTS, maxElements);
-            } catch (JSONException e) {
-                // should never happen
-                LOG.warn(e.getMessage(), e);
-            }
+            container.setMaxElements(maxElements);
         }
 
-        // iterate the elements
-        JSONArray elements = container.optJSONArray(CmsContainerPageLoader.N_ELEMENT);
         // get the actual number of elements to render
-        int renderElems = elements.length();
+        int renderElems = container.getElements().size();
         if ((maxElements > -1) && (renderElems > maxElements)) {
             renderElems = maxElements;
         }
 
-        for (int i = 0; i < renderElems; i++) {
-            JSONObject element = elements.optJSONObject(i);
-            String elementUri = element.optString(CmsContainerPageLoader.N_URI);
+        // iterate the elements
+        for (CmsContainerElementBean element : container.getElements()) {
+            if (renderElems < 1) {
+                break;
+            }
+            renderElems--;
 
-            CmsResource resUri = cms.readResource(elementUri);
+            CmsResource resUri = element.getElement();
             if (resUri.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
                 // get the subcontainer data from cache
-                JSONObject sublocaleData = LOADER.getCache(cms, resUri, cms.getRequestContext().getLocale());
+                CmsContainerPageBean subcntPage = CmsContainerPageCache.getInstance().getCache(
+                    cms,
+                    resUri,
+                    cms.getRequestContext().getLocale());
                 // get the first subcontainer
-                JSONObject subcontainers = sublocaleData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
-                JSONObject subcontainer = subcontainers.optJSONObject(subcontainers.names().optString(0));
+                CmsContainerBean subcontainer = subcntPage.getContainers().values().iterator().next();
                 // iterate the subelements
-                JSONArray subelements = subcontainer.optJSONArray(CmsContainerPageLoader.N_ELEMENT);
-
-                for (int j = 0; j < subelements.length(); j++) {
-                    JSONObject subelement = subelements.optJSONObject(j);
-                    String subelementUri = subelement.optString(CmsContainerPageLoader.N_URI);
-                    String subelementFormatter = subelement.optString(CmsContainerPageLoader.N_FORMATTER);
+                for (CmsContainerElementBean subelement : subcontainer.getElements()) {
+                    String subelementUri = cms.getSitePath(subelement.getElement());
+                    String subelementFormatter = cms.getSitePath(subelement.getFormatter());
 
                     // HACK: we use the __element param for the element uri
                     // execute the formatter jsp for the given element uri
@@ -195,7 +182,8 @@ public class CmsJspTagContainer extends TagSupport {
                         res);
                 }
             } else {
-                String elementFormatter = element.optString(CmsContainerPageLoader.N_FORMATTER);
+                String elementUri = cms.getSitePath(element.getElement());
+                String elementFormatter = cms.getSitePath(element.getFormatter());
 
                 // HACK: we use the __element param for the element uri
                 // execute the formatter jsp for the given element uri

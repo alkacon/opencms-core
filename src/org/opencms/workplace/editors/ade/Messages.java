@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/Messages.java,v $
- * Date   : $Date: 2009/08/25 10:37:25 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/08/27 14:46:18 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,11 +39,20 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFIG_NOT_FOUND_3 = "ERR_CONFIG_NOT_FOUND_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFIG_NOT_SET_2 = "ERR_CONFIG_NOT_SET_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CONFIG_WRONG_TYPE_3 = "ERR_CONFIG_WRONG_TYPE_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DUPLICATE_NAME_1 = "ERR_DUPLICATE_NAME_1";
@@ -55,6 +64,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_ID_1 = "ERR_INVALID_ID_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_JSON_EXCEPTION_1 = "ERR_JSON_EXCEPTION_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_JSON_INVALID_ACTION_URL_1 = "ERR_JSON_INVALID_ACTION_URL_1";
 
     /** Message constant for key in the resource bundle. */
@@ -64,10 +76,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_JSON_WRONG_PARAMETER_VALUE_2 = "ERR_JSON_WRONG_PARAMETER_VALUE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_NO_TYPE_CONFIG_1 = "ERR_NO_TYPE_CONFIG_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SERVER_EXCEPTION_1 = "ERR_SERVER_EXCEPTION_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_NO_TYPE_CONFIG_1 = "ERR_NO_TYPE_CONFIG_1";
+    public static final String LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2 = "LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_CONTAINER_PAGE_NOT_FOUND_1 = "LOG_CONTAINER_PAGE_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_CACHE_MATCHED_OFFLINE_2 = "LOG_DEBUG_CACHE_MATCHED_OFFLINE_2";

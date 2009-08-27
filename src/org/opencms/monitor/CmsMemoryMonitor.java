@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2009/08/13 10:47:37 $
- * Version: $Revision: 1.69.2.1 $
+ * Date   : $Date: 2009/08/27 14:46:19 $
+ * Version: $Revision: 1.69.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexCache.CmsFlexCacheVariation;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.json.JSONObject;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.mail.CmsMailTransport;
@@ -71,6 +70,7 @@ import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
+import org.opencms.workplace.editors.ade.CmsContainerPageBean;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 
@@ -102,7 +102,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.69.2.1 $ 
+ * @version $Revision: 1.69.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -505,7 +505,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param containerPage the object to cache
      * @param online if to cache in online or offline project
      */
-    public void cacheContainerPages(String key, JSONObject containerPage, boolean online) {
+    public void cacheContainerPages(String key, Map<Locale, CmsContainerPageBean> containerPage, boolean online) {
 
         if (online) {
             m_containerPagesOnline.put(key, containerPage);
@@ -1125,12 +1125,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return  the cached container page or <code>null</code> if not found
      */
-    public JSONObject getCacheContainerPage(String key, boolean online) {
+    public Map<Locale, CmsContainerPageBean> getCacheContainerPage(String key, boolean online) {
 
         if (online) {
-            return (JSONObject)m_containerPagesOnline.get(key);
+            return (Map<Locale, CmsContainerPageBean>)m_containerPagesOnline.get(key);
         } else {
-            return (JSONObject)m_containerPagesOffline.get(key);
+            return (Map<Locale, CmsContainerPageBean>)m_containerPagesOffline.get(key);
         }
     }
 

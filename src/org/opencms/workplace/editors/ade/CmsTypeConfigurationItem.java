@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADETypeConfigurationItem.java,v $
- * Date   : $Date: 2009/08/26 07:58:18 $
- * Version: $Revision: 1.1.2.3 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsTypeConfigurationItem.java,v $
+ * Date   : $Date: 2009/08/27 14:46:19 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,11 +41,11 @@ package org.opencms.workplace.editors.ade;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 7.6 
  */
-public class CmsADETypeConfigurationItem {
+public class CmsTypeConfigurationItem {
 
     /** The destination uri pattern. */
     private final String m_destination;
@@ -59,7 +59,7 @@ public class CmsADETypeConfigurationItem {
      * @param sourceFile the source file uri
      * @param destination the destination uri pattern
      **/
-    public CmsADETypeConfigurationItem(String sourceFile, String destination) {
+    public CmsTypeConfigurationItem(String sourceFile, String destination) {
 
         m_destination = destination;
         m_sourceFile = sourceFile;

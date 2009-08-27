@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEElementCreator.java,v $
- * Date   : $Date: 2009/08/26 07:58:18 $
- * Version: $Revision: 1.1.2.5 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementCreator.java,v $
+ * Date   : $Date: 2009/08/27 14:46:19 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,8 +36,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.json.JSONObject;
-import org.opencms.loader.CmsContainerPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
@@ -66,11 +64,11 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 7.6 
  */
-public class CmsADEElementCreator {
+public class CmsElementCreator {
 
     /** The format used for the macro replacement. */
     public static final String FILE_NUMBER_FORMAT = "%0.5d";
@@ -87,29 +85,29 @@ public class CmsADEElementCreator {
     /** The tag name of the source file in the type configuration. */
     public static final String N_SOURCE = "Source";
 
-    /** Container page loader reference. */
-    private static final CmsContainerPageLoader LOADER = (CmsContainerPageLoader)OpenCms.getResourceManager().getLoader(
-        CmsContainerPageLoader.RESOURCE_LOADER_ID);
+    /** The tag name of the source file in the type configuration. */
+    public static final String N_FOLDER = "Folder";
+
+    /** The tag name of the source file in the type configuration. */
+    public static final String N_PATTERN = "Pattern";
 
     /** Configuration data, read from xml content. */
-    private Map<String, CmsADETypeConfigurationItem> m_configuration;
+    private Map<String, CmsTypeConfigurationItem> m_configuration;
 
     /**
      * Constructs a new instance.<p>
      * 
      * @param cms the cms context used for reading the configuration
-     * @param containerPage the container page
+     * @param config the configuration file
      *  
      * @throws CmsException if something goes wrong
      */
-    public CmsADEElementCreator(CmsObject cms, CmsResource containerPage)
+    public CmsElementCreator(CmsObject cms, CmsResource config)
     throws CmsException {
 
-        JSONObject localeData = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
-        String configPath = localeData.optString(CmsContainerPageLoader.N_NEW_CONFIG, "");
-        // configPath the VFS path of the configuration file
-        m_configuration = new HashMap<String, CmsADETypeConfigurationItem>();
-        CmsFile configFile = cms.readFile(configPath);
+        m_configuration = new HashMap<String, CmsTypeConfigurationItem>();
+
+        CmsFile configFile = cms.readFile(config);
         I_CmsXmlDocument content = CmsXmlContentFactory.unmarshal(cms, configFile);
         parseConfiguration(cms, content);
     }
@@ -188,7 +186,7 @@ public class CmsADEElementCreator {
      */
     public CmsResource createElement(CmsObject cms, String type) throws CmsException {
 
-        CmsADETypeConfigurationItem configItem = m_configuration.get(type);
+        CmsTypeConfigurationItem configItem = m_configuration.get(type);
         String destination = configItem.getDestination();
         String newFileName = getNewFileName(cms, destination);
         cms.copyResource(configItem.getSourceFile(), newFileName);
@@ -200,7 +198,7 @@ public class CmsADEElementCreator {
      * 
      * @return the configuration as an unmodifiable map
      */
-    public Map<String, CmsADETypeConfigurationItem> getConfiguration() {
+    public Map<String, CmsTypeConfigurationItem> getConfiguration() {
 
         return Collections.unmodifiableMap(m_configuration);
     }
@@ -246,9 +244,13 @@ public class CmsADEElementCreator {
             I_CmsXmlContentValue xmlType = (I_CmsXmlContentValue)itTypes.next();
             String typePath = xmlType.getPath();
             String source = content.getValue(CmsXmlUtils.concatXpath(typePath, N_SOURCE), locale).getStringValue(cms);
-            String destination = content.getValue(CmsXmlUtils.concatXpath(typePath, N_DESTINATION), locale).getStringValue(
-                cms);
-            CmsADETypeConfigurationItem configItem = new CmsADETypeConfigurationItem(source, destination);
+            String destination = content.getValue(
+                CmsXmlUtils.concatXpath(typePath, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER)),
+                locale).getStringValue(cms);
+            destination += content.getValue(
+                CmsXmlUtils.concatXpath(typePath, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN)),
+                locale).getStringValue(cms);
+            CmsTypeConfigurationItem configItem = new CmsTypeConfigurationItem(source, destination);
             CmsResource resource = cms.readResource(source);
             String type = getTypeName(resource.getTypeId());
             m_configuration.put(type, configItem);

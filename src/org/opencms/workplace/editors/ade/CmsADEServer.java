@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/08/26 12:59:32 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2009/08/27 14:46:19 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.editors.ade;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -44,8 +45,11 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsContainerPageLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
+import org.opencms.search.CmsSearch;
+import org.opencms.search.CmsSearchParameters;
+import org.opencms.search.CmsSearchResult;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
@@ -54,9 +58,9 @@ import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -74,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.8 $
+ * @version $Revision: 1.1.2.9 $
  * 
  * @since 7.6
  */
@@ -110,6 +114,9 @@ public class CmsADEServer extends CmsJspActionElement {
     /** Request parameter obj value constant. */
     public static final String OBJ_REC = "rec";
 
+    /** Request parameter obj value constant. */
+    public static final String OBJ_SEARCH = "search";
+
     /** JSON property constant file. */
     public static final String P_ALLOWEDIT = "allowEdit";
 
@@ -127,6 +134,9 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** JSON property constant element. */
     public static final String P_ELEMENTS = "elements";
+
+    /** JSON property constant element. */
+    public static final String P_HASMORE = "hasmore";
 
     /** JSON property constant favorites. */
     public static final String P_FAVORITES = "favorites";
@@ -183,6 +193,15 @@ public class CmsADEServer extends CmsJspActionElement {
     public static final String PARAMETER_DATA = "data";
 
     /** Request parameter name constant. */
+    public static final String PARAMETER_TEXT = "text";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_LOCATION = "location";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_PAGE = "page";
+
+    /** Request parameter name constant. */
     public static final String PARAMETER_ELEM = "elem";
 
     /** Request parameter name constant. */
@@ -208,10 +227,6 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** JSON response state value constant. */
     public static final String RES_STATE_OK = "ok";
-
-    /** Container page loader reference. */
-    private static final CmsContainerPageLoader LOADER = (CmsContainerPageLoader)OpenCms.getResourceManager().getLoader(
-        CmsContainerPageLoader.RESOURCE_LOADER_ID);
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEServer.class);
@@ -284,64 +299,88 @@ public class CmsADEServer extends CmsJspActionElement {
     protected JSONObject executeActionGet() throws CmsException, JSONException {
 
         JSONObject result = new JSONObject();
-        String objParam = getRequest().getParameter(PARAMETER_OBJ);
+
+        HttpServletRequest request = getRequest();
+
+        String objParam = request.getParameter(PARAMETER_OBJ);
         if (objParam == null) {
             result.put(RES_ERROR, Messages.get().getBundle().key(Messages.ERR_JSON_MISSING_PARAMETER_1, PARAMETER_OBJ));
             return result;
         }
-        String urlParam = getRequest().getParameter(PARAMETER_URL);
+        String urlParam = request.getParameter(PARAMETER_URL);
         if (urlParam == null) {
             result.put(RES_ERROR, Messages.get().getBundle().key(Messages.ERR_JSON_MISSING_PARAMETER_1, PARAMETER_URL));
             return result;
         }
+
+        CmsObject cms = getCmsObject();
+        CmsResource cntPageRes = cms.readResource(urlParam);
+        CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
+            cms,
+            cntPageRes,
+            cms.getRequestContext().getLocale());
+
         if (objParam.equals(OBJ_ALL)) {
             // first load, get everything
-            result = getContainerPage(urlParam);
+            result = getContainerPage(cntPageRes, cntPage);
         } else if (objParam.equals(OBJ_ELEM)) {
             // get element data
-            String elemParam = getRequest().getParameter(PARAMETER_ELEM);
+            String elemParam = request.getParameter(PARAMETER_ELEM);
             if (elemParam == null) {
                 result.put(RES_ERROR, Messages.get().getBundle().key(
                     Messages.ERR_JSON_MISSING_PARAMETER_1,
                     PARAMETER_ELEM));
                 return result;
             }
-            CmsADEElementUtil elemUtil = new CmsADEElementUtil(getCmsObject(), getRequest(), getResponse());
-            Collection<String> types = getContainerPageTypes(urlParam);
+            CmsElementUtil elemUtil = new CmsElementUtil(cms, request, getResponse());
             JSONObject resElements = new JSONObject();
             if (elemParam.startsWith("[")) {
                 // element list
                 JSONArray elems = new JSONArray(elemParam);
                 for (int i = 0; i < elems.length(); i++) {
                     String elem = elems.getString(i);
-                    resElements.put(elem, elemUtil.getElementData(CmsADEElementUtil.parseId(elem), types));
+                    resElements.put(elem, elemUtil.getElementData(CmsElementUtil.parseId(elem), cntPage.getTypes()));
                 }
             } else {
                 // single element
-                resElements.put(elemParam, elemUtil.getElementData(CmsADEElementUtil.parseId(elemParam), types));
+                resElements.put(elemParam, elemUtil.getElementData(
+                    CmsElementUtil.parseId(elemParam),
+                    cntPage.getTypes()));
             }
             result.put(P_ELEMENTS, resElements);
         } else if (objParam.equals(OBJ_FAV)) {
             // get the favorite list
-            result.put(P_FAVORITES, getFavoriteList(null, getContainerPageTypes(urlParam)));
+            result.put(P_FAVORITES, getFavoriteList(null, cntPage.getTypes()));
         } else if (objParam.equals(OBJ_REC)) {
             // get recent list
-            result.put(P_RECENT, CmsADERecentListManager.getInstance().getRecentList(
-                getCmsObject(),
+            result.put(P_RECENT, CmsRecentListManager.getInstance().getRecentList(
+                cms,
                 null,
-                getContainerPageTypes(urlParam),
-                getRequest(),
+                cntPage.getTypes(),
+                request,
                 getResponse()));
+        } else if (objParam.equals(OBJ_SEARCH)) {
+            // search items
+            String containerPageUri = request.getParameter(PARAMETER_URL);
+            if (containerPageUri == null) {
+                result.put(RES_ERROR, Messages.get().getBundle().key(
+                    Messages.ERR_JSON_MISSING_PARAMETER_1,
+                    PARAMETER_URL));
+                return result;
+            }
+            CmsSearchOptions searchOptions = new CmsSearchOptions(request);
+            JSONObject searchResult = getSearchResult(searchOptions, cntPage.getTypes());
+            result.merge(searchResult, true, false);
         } else if (objParam.equals(OBJ_NEW)) {
             // get a new element
-            String dataParam = getRequest().getParameter(PARAMETER_DATA);
+            String dataParam = request.getParameter(PARAMETER_DATA);
             if (dataParam == null) {
                 result.put(RES_ERROR, Messages.get().getBundle().key(
                     Messages.ERR_JSON_MISSING_PARAMETER_1,
                     PARAMETER_DATA));
                 return result;
             }
-            String containerPageUri = getRequest().getParameter(PARAMETER_URL);
+            String containerPageUri = request.getParameter(PARAMETER_URL);
             if (containerPageUri == null) {
                 result.put(RES_ERROR, Messages.get().getBundle().key(
                     Messages.ERR_JSON_MISSING_PARAMETER_1,
@@ -350,12 +389,10 @@ public class CmsADEServer extends CmsJspActionElement {
             }
 
             String type = dataParam;
-
-            CmsObject cms = getCmsObject();
-            CmsADEElementCreator elemCreator = new CmsADEElementCreator(cms, cms.readResource(containerPageUri));
+            CmsElementCreator elemCreator = new CmsElementCreator(cms, cms.readResource(containerPageUri));
 
             CmsResource newResource = elemCreator.createElement(cms, type);
-            result.put(P_ID, CmsADEElementUtil.ADE_ID_PREFIX + newResource.getStructureId().toString());
+            result.put(P_ID, CmsElementUtil.createId(newResource.getStructureId()));
             result.put(P_URI, cms.getSitePath(newResource));
         } else {
             result.put(RES_ERROR, Messages.get().getBundle().key(
@@ -363,6 +400,66 @@ public class CmsADEServer extends CmsJspActionElement {
                 PARAMETER_OBJ,
                 objParam));
         }
+        return result;
+    }
+
+    /**
+     * Returns elements for the search result matching the given options.<p>
+     * 
+     * @param options the search options
+     * @param types the supported container types
+     * 
+     * @return JSON object with 2 properties, {@link #P_ELEMENTS} and {@link #P_HASMORE}
+     * 
+     * @throws JSONException if something goes wrong
+     */
+    protected JSONObject getSearchResult(CmsSearchOptions options, Set<String> types) throws JSONException {
+
+        CmsObject cms = getCmsObject();
+
+        JSONObject result = new JSONObject();
+        JSONObject elements = new JSONObject();
+        result.put(P_ELEMENTS, elements);
+
+        // get the configured search index 
+        String indexName = new CmsUserSettings(cms.getRequestContext().currentUser()).getWorkplaceSearchIndexName();
+
+        // set the search parameters
+        CmsSearchParameters params = new CmsSearchParameters(options.getText());
+        params.setIndex(indexName);
+        params.setMatchesPerPage(10);
+        params.setSearchPage(options.getPage() + 1);
+
+        // search
+        CmsSearch searchBean = new CmsSearch();
+        searchBean.init(cms);
+        searchBean.setParameters(params);
+        searchBean.setSearchRoot(options.getLocation());
+        List searchResults = searchBean.getSearchResult();
+
+        // helper
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse());
+
+        // iterate result list and generate the elements
+        Iterator it = searchResults.iterator();
+        while (it.hasNext()) {
+            CmsSearchResult sr = (CmsSearchResult)it.next();
+            // get the element data
+            String uri = cms.getRequestContext().removeSiteRoot(sr.getPath());
+            try {
+                JSONObject resElement = elemUtil.getElementData(uri, types);
+                // store element data
+                elements.put(resElement.getString(P_ID), resElement);
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+
+        // check if there are more search pages
+        int results = searchBean.getSearchPage() * searchBean.getMatchesPerPage();
+        boolean hasMore = (searchBean.getSearchResultCount() > results);
+        result.put(P_HASMORE, hasMore);
+
         return result;
     }
 
@@ -403,7 +500,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 return result;
             }
             JSONArray list = new JSONArray(dataParam);
-            CmsADERecentListManager.getInstance().setRecentList(getCmsObject(), list);
+            CmsRecentListManager.getInstance().setRecentList(getCmsObject(), list);
         } else if (objParam.equals(OBJ_CNT)) {
             // save the container page
             String urlParam = getRequest().getParameter(PARAMETER_URL);
@@ -434,14 +531,16 @@ public class CmsADEServer extends CmsJspActionElement {
     /**
      * Returns the data for the given container page.<p>
      * 
-     * @param uri the uri of the container page to use
+     * @param resource the container page's resource 
+     * @param cntPage the container page to use
      * 
      * @return the data for the given container page
      * 
      * @throws CmsException if something goes wrong with the cms context
      * @throws JSONException if something goes wrong with the JSON manipulation
      */
-    protected JSONObject getContainerPage(String uri) throws CmsException, JSONException {
+    protected JSONObject getContainerPage(CmsResource resource, CmsContainerPageBean cntPage)
+    throws CmsException, JSONException {
 
         CmsObject cms = getCmsObject();
 
@@ -454,17 +553,17 @@ public class CmsADEServer extends CmsJspActionElement {
         result.put(P_LOCALE, cms.getRequestContext().getLocale().toString());
 
         // get the container page itself
-        CmsResource containerPage = cms.readResource(uri);
-        CmsResourceUtil resUtil = new CmsResourceUtil(cms, containerPage);
+        CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
         result.put(CmsADEServer.P_ALLOWEDIT, resUtil.getLock().isLockableBy(cms.getRequestContext().currentUser())
             && resUtil.isEditable());
         result.put(CmsADEServer.P_LOCKED, resUtil.getLockedByName());
 
-        CmsADEElementUtil elemUtil = new CmsADEElementUtil(cms, getRequest(), getResponse());
-        Collection types = getContainerPageTypes(uri);
-        CmsADEElementCreator creator = new CmsADEElementCreator(cms, containerPage);
-        Map<String, CmsADETypeConfigurationItem> typeConfig = creator.getConfiguration();
-        for (Map.Entry<String, CmsADETypeConfigurationItem> entry : typeConfig.entrySet()) {
+        Set<String> types = cntPage.getTypes();
+
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse());
+        CmsElementCreator creator = new CmsElementCreator(cms, cntPage.getNewConfig());
+        Map<String, CmsTypeConfigurationItem> typeConfig = creator.getConfiguration();
+        for (Map.Entry<String, CmsTypeConfigurationItem> entry : typeConfig.entrySet()) {
             String type = entry.getKey();
             String elementUri = entry.getValue().getSourceFile();
             JSONObject resElement = elemUtil.getElementData(elementUri, types);
@@ -475,64 +574,53 @@ public class CmsADEServer extends CmsJspActionElement {
             resElements.put(type, resElement);
         }
 
-        Map<String, String> ids = new HashMap<String, String>();
-        JSONObject localeData = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
-        JSONObject containers = localeData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
-        Iterator itKeys = containers.keys();
-        while (itKeys.hasNext()) {
-            String containerName = (String)itKeys.next();
-            JSONObject container = containers.getJSONObject(containerName);
-
-            // get the name
-            String name = container.getString(CmsContainerPageLoader.N_NAME);
-            // get the type
-            String type = container.getString(CmsContainerPageLoader.N_TYPE);
-            // get the maximal elements
-            int maxElements = container.getInt(CmsContainerPageLoader.N_MAXELEMENTS);
+        Set<CmsUUID> ids = new HashSet<CmsUUID>();
+        for (Map.Entry<String, CmsContainerBean> entry : cntPage.getContainers().entrySet()) {
+            CmsContainerBean container = entry.getValue();
 
             // set the container data
             JSONObject resContainer = new JSONObject();
-            resContainer.put(P_NAME, name);
-            resContainer.put(P_TYPE, type);
-            resContainer.put(P_MAXELEMENTS, maxElements);
+            resContainer.put(P_NAME, container.getName());
+            resContainer.put(P_TYPE, container.getType());
+            resContainer.put(P_MAXELEMENTS, container.getMaxElements());
             JSONArray resContainerElems = new JSONArray();
             resContainer.put(P_ELEMENTS, resContainerElems);
 
-            // iterate the elements
-            JSONArray elements = container.optJSONArray(CmsContainerPageLoader.N_ELEMENT);
             // get the actual number of elements to render
-            int renderElems = elements.length();
-            if ((maxElements > -1) && (renderElems > maxElements)) {
-                renderElems = maxElements;
+            int renderElems = container.getElements().size();
+            if ((container.getMaxElements() > -1) && (renderElems > container.getMaxElements())) {
+                renderElems = container.getMaxElements();
             }
-            for (int i = 0; i < renderElems; i++) {
-                JSONObject element = elements.optJSONObject(i);
-                String elementUri = element.optString(CmsContainerPageLoader.N_URI);
+            // iterate the elements
+            for (CmsContainerElementBean element : container.getElements()) {
+                if (renderElems < 1) {
+                    break;
+                }
+                renderElems--;
 
                 // check if the element already exists
-                String id = ids.get(elementUri);
-                if (id != null) {
+                String id = CmsElementUtil.createId(element.getElement().getStructureId());
+                if (ids.contains(element.getElement().getStructureId())) {
                     // collect ids
                     resContainerElems.put(id);
                     continue;
                 }
                 // get the element data
-                JSONObject resElement = elemUtil.getElementData(elementUri, types);
+                JSONObject resElement = elemUtil.getElementData(element.getElement(), types);
                 // store element data
-                id = resElement.getString(P_ID);
-                ids.put(elementUri, id);
+                ids.add(element.getElement().getStructureId());
                 resElements.put(id, resElement);
                 // collect ids
                 resContainerElems.put(id);
             }
 
-            resContainers.put(name, resContainer);
+            resContainers.put(container.getName(), resContainer);
         }
         // get the favorites
         JSONArray resFavorites = getFavoriteList(resElements, types);
         result.put(P_FAVORITES, resFavorites);
         // get the recent list
-        JSONArray resRecent = CmsADERecentListManager.getInstance().getRecentList(
+        JSONArray resRecent = CmsRecentListManager.getInstance().getRecentList(
             cms,
             resElements,
             types,
@@ -541,35 +629,6 @@ public class CmsADEServer extends CmsJspActionElement {
         result.put(P_RECENT, resRecent);
 
         return result;
-    }
-
-    /**
-     * Returns all types of containers from the given container page.<p>
-     * 
-     * @param containerPageUri the container page uri
-     * 
-     * @return a collection of types as strings
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws JSONException if there is a problem with the json manipulation
-     */
-    protected Collection<String> getContainerPageTypes(String containerPageUri) throws CmsException, JSONException {
-
-        CmsObject cms = getCmsObject();
-        Set<String> types = new HashSet<String>();
-        // get the container page itself
-        CmsResource containerPage = cms.readResource(containerPageUri);
-        JSONObject localeData = LOADER.getCache(cms, containerPage, cms.getRequestContext().getLocale());
-        JSONObject containers = localeData.optJSONObject(CmsContainerPageLoader.N_CONTAINER);
-        Iterator<String> itKeys = containers.keys();
-        while (itKeys.hasNext()) {
-            String containerName = itKeys.next();
-            JSONObject container = containers.getJSONObject(containerName);
-            // get the type
-            String type = container.getString(CmsContainerPageLoader.N_TYPE);
-            types.add(type);
-        }
-        return types;
     }
 
     /**
@@ -590,7 +649,7 @@ public class CmsADEServer extends CmsJspActionElement {
         HttpServletRequest req = getRequest();
         HttpServletResponse res = getResponse();
 
-        CmsADEElementUtil elemUtil = new CmsADEElementUtil(cms, req, res);
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, req, res);
 
         JSONArray result = getFavoriteListFromStore(cms);
 
@@ -598,7 +657,7 @@ public class CmsADEServer extends CmsJspActionElement {
         for (int i = 0; i < result.length(); i++) {
             String id = result.optString(i);
             if ((resElements != null) && !resElements.has(id)) {
-                resElements.put(id, elemUtil.getElementData(CmsADEElementUtil.parseId(id), types));
+                resElements.put(id, elemUtil.getElementData(CmsElementUtil.parseId(id), types));
             }
         }
 

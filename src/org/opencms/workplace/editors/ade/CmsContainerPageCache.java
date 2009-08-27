@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageCache.java,v $
- * Date   : $Date: 2009/08/13 10:47:35 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/08/27 14:46:18 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,13 +33,24 @@ package org.opencms.workplace.editors.ade;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.json.JSONObject;
+import org.opencms.loader.CmsContainerPageLoader;
 import org.opencms.main.CmsEvent;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
@@ -48,19 +59,25 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6 
  */
-public class CmsContainerPageCache implements I_CmsEventListener {
+public final class CmsContainerPageCache implements I_CmsEventListener {
+
+    /** property name constant. */
+    protected static final String PROPERTY_CONTAINER_NEW_CONFIG = "container-new-config";
 
     /** The log to use (static for performance reasons).<p> */
     private static final Log LOG = CmsLog.getLog(CmsContainerPageCache.class);
 
+    /** The singleton instance. */
+    private static CmsContainerPageCache m_instance;
+
     /**
      * Default Constructor.<p>
      */
-    public CmsContainerPageCache() {
+    private CmsContainerPageCache() {
 
         // add this class as an event handler to the cms event listener
         OpenCms.addCmsEventListener(this, new int[] {
@@ -73,6 +90,19 @@ public class CmsContainerPageCache implements I_CmsEventListener {
             I_CmsEventListener.EVENT_CLEAR_CACHES,
             I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES,
             I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES});
+    }
+
+    /** 
+     * Returns the singleton instance.<p> 
+     * 
+     * @return the singleton instance
+     */
+    public static CmsContainerPageCache getInstance() {
+
+        if (m_instance == null) {
+            m_instance = new CmsContainerPageCache();
+        }
+        return m_instance;
     }
 
     /**
@@ -129,35 +159,90 @@ public class CmsContainerPageCache implements I_CmsEventListener {
     }
 
     /**
-     * Returns the cached JSON object for the given resource.<p>
+     * Returns the cached container page object for the given resource.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource to look for
+     * @param locale the locale
+     *  
+     * @return the cached container page object
+     */
+    public CmsContainerPageBean getCache(CmsObject cms, CmsResource resource, Locale locale) {
+
+        // get the cached content
+        Map<Locale, CmsContainerPageBean> containerPageBean = get(cms, resource);
+        if (containerPageBean == null) {
+            // container page not yet in cache
+            try {
+                // try to load it
+                CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
+                CmsContainerPageCache.getInstance().setCache(cms, resource, content);
+            } catch (CmsException e) {
+                // something really bad happened
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_CONTAINER_PAGE_NOT_FOUND_1,
+                    cms.getSitePath(resource)), e);
+                return null;
+            }
+            containerPageBean = get(cms, resource);
+            if (containerPageBean == null) {
+                // container page is still not in cache, should never happen
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_CONTAINER_PAGE_NOT_FOUND_1,
+                    cms.getSitePath(resource)));
+                return null;
+            }
+        }
+        // get the locale data
+        if (!containerPageBean.containsKey(locale)) {
+            LOG.warn(Messages.get().container(
+                Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
+                cms.getSitePath(resource),
+                locale.toString()).key());
+            locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(cms, resource).get(0);
+            if (!containerPageBean.containsKey(locale.toString())) {
+                // locale not found!!
+                LOG.error(Messages.get().container(
+                    Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
+                    cms.getSitePath(resource),
+                    locale).key());
+                return null;
+            }
+        }
+        return containerPageBean.get(locale);
+    }
+
+    /**
+     * It first checks if the given container page is already cached, and only if not
+     * the container page will be cached.<p>
+     * 
+     * @param cms the current cms context
+     * @param resource the container page itself
+     * @param content the xml content on the container page
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setCache(CmsObject cms, CmsResource resource, CmsXmlContent content) throws CmsException {
+
+        if (get(cms, resource) == null) {
+            set(cms, resource, serialize(cms, content));
+        }
+    }
+
+    /**
+     * Returns the cached object for the given resource.<p>
      * 
      * @param cms the cms context
      * @param resource the resource to look for
      *  
-     * @return the cached JSON object
+     * @return the cached object
      */
-    public JSONObject get(CmsObject cms, CmsResource resource) {
+    protected Map<Locale, CmsContainerPageBean> get(CmsObject cms, CmsResource resource) {
 
         if (cms.getRequestContext().currentProject().isOnlineProject()) {
             return lookupOnline(resource.getStructureId().toString());
         } else {
             return lookupOffline(resource.getStructureId().toString());
-        }
-    }
-
-    /**
-     * Sets the cached JSON object for the given resource.<p>
-     * 
-     * @param cms the cms context
-     * @param resource the resource to set the cache for
-     * @param object the JSON object to cache
-     */
-    public void set(CmsObject cms, CmsResource resource, JSONObject object) {
-
-        if (cms.getRequestContext().currentProject().isOnlineProject()) {
-            setCacheOnline(resource.getStructureId().toString(), object);
-        } else {
-            setCacheOffline(resource.getStructureId().toString(), object);
         }
     }
 
@@ -168,9 +253,9 @@ public class CmsContainerPageCache implements I_CmsEventListener {
      * 
      * @return the cached object or <code>null</code> if not cached
      */
-    protected JSONObject lookupOffline(String cacheKey) {
+    protected Map<Locale, CmsContainerPageBean> lookupOffline(String cacheKey) {
 
-        JSONObject retValue = OpenCms.getMemoryMonitor().getCacheContainerPage(cacheKey, false);
+        Map<Locale, CmsContainerPageBean> retValue = OpenCms.getMemoryMonitor().getCacheContainerPage(cacheKey, false);
         if (LOG.isDebugEnabled()) {
             if (retValue == null) {
                 LOG.debug(Messages.get().getBundle().key(
@@ -193,9 +278,9 @@ public class CmsContainerPageCache implements I_CmsEventListener {
      * 
      * @return the cached object or <code>null</code> if not cached
      */
-    protected JSONObject lookupOnline(String cacheKey) {
+    protected Map<Locale, CmsContainerPageBean> lookupOnline(String cacheKey) {
 
-        JSONObject retValue = OpenCms.getMemoryMonitor().getCacheContainerPage(cacheKey, true);
+        Map<Locale, CmsContainerPageBean> retValue = OpenCms.getMemoryMonitor().getCacheContainerPage(cacheKey, true);
         if (LOG.isDebugEnabled()) {
             if (retValue == null) {
                 LOG.debug(Messages.get().getBundle().key(
@@ -212,12 +297,125 @@ public class CmsContainerPageCache implements I_CmsEventListener {
     }
 
     /**
+     * Creates a new cachable object from the xml content.<p>
+     * 
+     * @param cms the cms context
+     * @param content the xml content
+     * 
+     * @return the cachable object for the given content 
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected Map<Locale, CmsContainerPageBean> serialize(CmsObject cms, CmsXmlContent content) throws CmsException {
+
+        Map<Locale, CmsContainerPageBean> result = new HashMap<Locale, CmsContainerPageBean>();
+
+        // get the new element configuration file, will be the same for every locale
+        String cfgPath = cms.readPropertyObject(content.getFile(), PROPERTY_CONTAINER_NEW_CONFIG, true).getValue("");
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(cfgPath)) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_CONFIG_NOT_SET_2,
+                cms.getSitePath(content.getFile()),
+                PROPERTY_CONTAINER_NEW_CONFIG));
+        }
+        CmsResource newConfigRes;
+        try {
+            newConfigRes = cms.readResource(cfgPath);
+        } catch (Exception e) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_CONFIG_NOT_FOUND_3,
+                cms.getSitePath(content.getFile()),
+                PROPERTY_CONTAINER_NEW_CONFIG,
+                cfgPath));
+        }
+        if (newConfigRes.getTypeId() != 14) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_CONFIG_WRONG_TYPE_3,
+                cms.getSitePath(content.getFile()),
+                PROPERTY_CONTAINER_NEW_CONFIG,
+                cfgPath));
+        }
+
+        // iterate over every locale
+        Iterator itLocales = content.getLocales().iterator();
+        while (itLocales.hasNext()) {
+            Locale locale = (Locale)itLocales.next();
+
+            CmsContainerPageBean cntPage = new CmsContainerPageBean(locale, newConfigRes);
+
+            // iterate over every container in the given locale
+            Iterator itContainers = content.getValues(CmsContainerPageLoader.N_CONTAINER, locale).iterator();
+            while (itContainers.hasNext()) {
+                I_CmsXmlContentValue container = (I_CmsXmlContentValue)itContainers.next();
+                String containerPath = container.getPath();
+                // get the name and type
+                String name = content.getValue(
+                    CmsXmlUtils.concatXpath(containerPath, CmsContainerPageLoader.N_NAME),
+                    locale).getStringValue(cms);
+                String type = content.getValue(
+                    CmsXmlUtils.concatXpath(containerPath, CmsContainerPageLoader.N_TYPE),
+                    locale).getStringValue(cms);
+
+                // HACK: maxElem will be updated later while executing the template
+                CmsContainerBean cnt = new CmsContainerBean(name, type, -1);
+
+                // iterate over the container elements
+                Iterator itElements = content.getValues(
+                    CmsXmlUtils.concatXpath(containerPath, CmsContainerPageLoader.N_ELEMENT),
+                    locale).iterator();
+                while (itElements.hasNext()) {
+                    I_CmsXmlContentValue element = (I_CmsXmlContentValue)itElements.next();
+                    String elementPath = element.getPath();
+                    // get uri and formatter
+                    String elemUri = content.getValue(
+                        CmsXmlUtils.concatXpath(elementPath, CmsContainerPageLoader.N_URI),
+                        locale).getStringValue(cms);
+                    CmsResource elemRes = cms.readResource(elemUri);
+
+                    String formatter = content.getValue(
+                        CmsXmlUtils.concatXpath(elementPath, CmsContainerPageLoader.N_FORMATTER),
+                        locale).getStringValue(cms);
+                    CmsResource formatterRes = cms.readResource(formatter);
+
+                    CmsContainerElementBean elem = new CmsContainerElementBean(elemRes, formatterRes);
+
+                    // add element to container
+                    cnt.addElement(elem);
+                }
+                // add container to container page
+                cntPage.addContainer(cnt);
+            }
+
+            // collect containers
+            result.put(locale, cntPage);
+        }
+
+        return result;
+    }
+
+    /**
+     * Sets the cached object for the given resource.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource to set the cache for
+     * @param object the object to cache
+     */
+    protected void set(CmsObject cms, CmsResource resource, Map<Locale, CmsContainerPageBean> object) {
+
+        if (cms.getRequestContext().currentProject().isOnlineProject()) {
+            setCacheOnline(resource.getStructureId().toString(), object);
+        } else {
+            setCacheOffline(resource.getStructureId().toString(), object);
+        }
+    }
+
+    /**
      * Sets a new cached value for the given key in the offline project.<p>
      * 
      * @param cacheKey key to lookup
      * @param data the value to cache
      */
-    protected void setCacheOffline(String cacheKey, JSONObject data) {
+    protected void setCacheOffline(String cacheKey, Map<Locale, CmsContainerPageBean> data) {
 
         OpenCms.getMemoryMonitor().cacheContainerPages(cacheKey, data, false);
         if (LOG.isDebugEnabled()) {
@@ -233,7 +431,7 @@ public class CmsContainerPageCache implements I_CmsEventListener {
      * @param cacheKey key to lookup
      * @param data the value to cache
      */
-    protected void setCacheOnline(String cacheKey, JSONObject data) {
+    protected void setCacheOnline(String cacheKey, Map<Locale, CmsContainerPageBean> data) {
 
         OpenCms.getMemoryMonitor().cacheContainerPages(cacheKey, data, true);
         if (LOG.isDebugEnabled()) {

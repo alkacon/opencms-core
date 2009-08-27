@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADERecentListManager.java,v $
- * Date   : $Date: 2009/08/26 12:28:54 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsRecentListManager.java,v $
+ * Date   : $Date: 2009/08/27 14:46:18 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @since 7.6
  */
-public final class CmsADERecentListManager {
+public final class CmsRecentListManager {
 
     /** User additional info key constant. */
     private static final String ADDINFO_ADE_RECENTLIST_SIZE = "ADE_RECENTLIST_SIZE";
@@ -70,10 +70,10 @@ public final class CmsADERecentListManager {
     private static final int DEFAULT_RECENT_LIST_SIZE = 10;
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsADERecentListManager.class);
+    private static final Log LOG = CmsLog.getLog(CmsRecentListManager.class);
 
     /** Singleton instance. */
-    private static CmsADERecentListManager m_instance;
+    private static CmsRecentListManager m_instance;
 
     /** Recent list cache. */
     private Map<String, List<CmsUUID>> m_recentListCache;
@@ -81,7 +81,7 @@ public final class CmsADERecentListManager {
     /**
      * Creates a new instance.<p>
      */
-    private CmsADERecentListManager() {
+    private CmsRecentListManager() {
 
         m_recentListCache = new HashMap<String, List<CmsUUID>>();
     }
@@ -91,10 +91,10 @@ public final class CmsADERecentListManager {
      * 
      * @return the singleton instance
      */
-    public static CmsADERecentListManager getInstance() {
+    public static CmsRecentListManager getInstance() {
 
         if (m_instance == null) {
-            m_instance = new CmsADERecentListManager();
+            m_instance = new CmsRecentListManager();
         }
         return m_instance;
     }
@@ -120,14 +120,14 @@ public final class CmsADERecentListManager {
         HttpServletRequest req,
         HttpServletResponse res) throws JSONException, CmsException {
 
-        CmsADEElementUtil elemUtil = new CmsADEElementUtil(cms, req, res);
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, req, res);
 
         JSONArray result = new JSONArray();
         // get the cached list
         List<CmsUUID> recentList = getRecentListFromCache(cms);
         // iterate the list and create the missing elements
         for (CmsUUID structureId : recentList) {
-            String id = CmsADEElementUtil.ADE_ID_PREFIX + structureId.toString();
+            String id = CmsElementUtil.createId(structureId);
             result.put(id);
             if ((resElements != null) && !resElements.has(id)) {
                 resElements.put(id, elemUtil.getElementData(structureId, types));
@@ -149,7 +149,7 @@ public final class CmsADERecentListManager {
         recentList.clear();
         for (int i = 0; i < list.length(); i++) {
             try {
-                recentList.add(CmsADEElementUtil.parseId(list.optString(i)));
+                recentList.add(CmsElementUtil.parseId(list.optString(i)));
             } catch (CmsIllegalArgumentException t) {
                 LOG.warn(Messages.get().container(Messages.ERR_INVALID_ID_1, list.optString(i)), t);
             }
