@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2009/08/28 14:21:12 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -731,5 +731,18 @@ public final class CmsEncoder {
             }
         }
         return decode(preparedSource.toString(), encoding);
+    }
+
+    /**
+     * A simple method to avoid injection.<p>
+     * 
+     * Replaces all single quotes to double single quotes in the value parameter of the sql statement.<p> 
+     * 
+     * @param source the String to escape SQL from
+     * @return the escaped value of the parameter source
+     */
+    public static String escapeSql(String source) {
+
+        return source.replaceAll("'", "''");
     }
 }
