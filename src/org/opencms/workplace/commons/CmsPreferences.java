@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2009/08/20 11:30:53 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2009/08/28 14:46:55 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -97,7 +97,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.46 $
+ * @version $Revision: 1.47 $
  * 
  * @since 6.0.0
  */
@@ -346,7 +346,7 @@ public class CmsPreferences extends CmsTabDialog {
                     // set selected editor for this resource type
                     m_userSettings.setPreferredEditor(
                         paramName.substring(PARAM_PREFERREDEDITOR_PREFIX.length()),
-                        CmsEncoder.decode(paramValue));
+                        CmsEncoder.escapeSql(CmsEncoder.escapeXml(CmsEncoder.decode(paramValue))));
                 } else {
                     // reset preferred editor for this resource type
                     m_userSettings.setPreferredEditor(paramName.substring(PARAM_PREFERREDEDITOR_PREFIX.length()), null);
@@ -357,7 +357,7 @@ public class CmsPreferences extends CmsTabDialog {
                     // set the selected start gallery for the gallery type
                     m_userSettings.setStartGallery(
                         paramName.substring(PARAM_STARTGALLERY_PREFIX.length()),
-                        CmsEncoder.decode(paramValue));
+                        CmsEncoder.escapeSql(CmsEncoder.escapeXml(CmsEncoder.decode(paramValue))));
                 }
             }
         }
@@ -369,6 +369,10 @@ public class CmsPreferences extends CmsTabDialog {
             m_userSettings.save(getCms());
         } catch (CmsException e) {
             // should usually never happen
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
+            }
+        } catch (NullPointerException e) {
             if (LOG.isInfoEnabled()) {
                 LOG.info(e.getLocalizedMessage());
             }
@@ -2093,7 +2097,7 @@ public class CmsPreferences extends CmsTabDialog {
             if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX) || paramName.startsWith(PARAM_STARTGALLERY_PREFIX)) {
                 String paramValue = request.getParameter(paramName);
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(paramValue)) {
-                    map.put(paramName, CmsEncoder.decode(paramValue));
+                    map.put(paramName, CmsEncoder.escapeSql(CmsEncoder.escapeXml(CmsEncoder.decode(paramValue))));
                 }
             }
         }
@@ -2152,7 +2156,7 @@ public class CmsPreferences extends CmsTabDialog {
         // first check presence of the setting in request parameter
         String preSelection = request.getParameter(PARAM_PREFERREDEDITOR_PREFIX + resourceType);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(preSelection)) {
-            return CmsEncoder.decode(preSelection);
+            return CmsEncoder.escapeSql(CmsEncoder.escapeXml(CmsEncoder.decode(preSelection)));
         } else {
             // no value found in request, check current user settings (not the member!)
             CmsUserSettings userSettings = new CmsUserSettings(getSettings().getUser());
@@ -2173,7 +2177,7 @@ public class CmsPreferences extends CmsTabDialog {
         // first check presence of the setting in request parameter
         String preSelection = request.getParameter(PARAM_STARTGALLERY_PREFIX + galleryType);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(preSelection)) {
-            return CmsEncoder.decode(preSelection);
+            return CmsEncoder.escapeSql(CmsEncoder.escapeXml(CmsEncoder.decode(preSelection)));
         } else {
             // no value found in request, check current user settings (not the member!)
             CmsUserSettings userSettings = new CmsUserSettings(getSettings().getUser());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2009/08/20 11:30:44 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2009/08/28 14:46:55 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.95 $ 
+ * @version $Revision: 1.96 $ 
  * 
  * @since 6.0.0 
  */
@@ -401,7 +401,7 @@ public class CmsFrameset extends CmsWorkplace {
             }
         }
         // append the frame name to the startup uri
-        return CmsRequestUtil.appendParameter(result, CmsFrameset.PARAM_WP_FRAME, FRAMES[2]);
+        return CmsEncoder.escapeXml(CmsRequestUtil.appendParameter(result, CmsFrameset.PARAM_WP_FRAME, FRAMES[2]));
     }
 
     /**

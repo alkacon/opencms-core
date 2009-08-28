@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2009/08/20 11:30:44 $
- * Version: $Revision: 1.104 $
+ * Date   : $Date: 2009/08/28 14:46:55 $
+ * Version: $Revision: 1.105 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.workplace;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLockFilter;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.104 $ 
+ * @version $Revision: 1.105 $ 
  * 
  * @since 6.0.0 
  */
@@ -1656,7 +1657,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public void setParamResource(String value) {
 
-        m_paramResource = value;
+        m_paramResource = CmsEncoder.escapeXml(value);
     }
 
     /**
@@ -1666,7 +1667,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public void setParamTitle(String value) {
 
-        m_paramTitle = value;
+        m_paramTitle = CmsEncoder.escapeXml(value);
     }
 
     /**

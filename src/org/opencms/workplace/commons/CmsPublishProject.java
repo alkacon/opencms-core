@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2009/08/20 11:30:52 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2009/08/28 14:46:55 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsDefaultUserSettings;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockFilter;
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -677,7 +678,7 @@ public class CmsPublishProject extends CmsMultiDialog {
      */
     public void setParamProjectname(String value) {
 
-        m_paramProjectname = value;
+        m_paramProjectname = CmsEncoder.escapeXml(value);
     }
 
     /**

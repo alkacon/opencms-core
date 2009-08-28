@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2009/08/20 11:30:34 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2009/08/28 14:46:41 $
+ * Version: $Revision: 1.47 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,6 +54,7 @@ import org.opencms.workplace.galleries.A_CmsAjaxGallery;
 import org.opencms.workplace.list.I_CmsListResourceCollector;
 import org.opencms.workplace.tools.CmsToolManager;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
@@ -75,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.47 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,6 +93,12 @@ public class CmsExplorer extends CmsWorkplace {
 
     /** The "list" view selection. */
     public static final String VIEW_LIST = "listview";
+
+    /** All views as array. */
+    public static final String[] VIEWS = {VIEW_EXPLORER, VIEW_GALLERY, VIEW_LIST};
+
+    /** All views as list. */
+    public static final List VIEWS_LIST = Arrays.asList(VIEWS);
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorer.class);
@@ -685,10 +692,14 @@ public class CmsExplorer extends CmsWorkplace {
     @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
-        String currentResource = request.getParameter(PARAMETER_RESOURCE);
-        String mode = request.getParameter(PARAMETER_MODE);
+        String currentResource = CmsEncoder.escapeXml(request.getParameter(PARAMETER_RESOURCE));
+        String mode = CmsEncoder.escapeXml(request.getParameter(PARAMETER_MODE));
         if (CmsStringUtil.isNotEmpty(mode)) {
-            settings.setExplorerMode(mode);
+            if (VIEWS_LIST.contains(mode)) {
+                settings.setExplorerMode(mode);
+            } else {
+                settings.setExplorerMode(VIEW_EXPLORER);
+            }
         } else {
             // null argument, use explorer view if no other view currently specified
             if (!(VIEW_GALLERY.equals(settings.getExplorerMode()) || VIEW_LIST.equals(settings.getExplorerMode()))) {
@@ -696,7 +707,7 @@ public class CmsExplorer extends CmsWorkplace {
             }
         }
 
-        m_uri = request.getParameter(PARAMETER_URI);
+        m_uri = CmsEncoder.escapeXml(request.getParameter(PARAMETER_URI));
 
         if (CmsStringUtil.isNotEmpty(currentResource) && folderExists(getCms(), currentResource)) {
             // resource is a folder, set resource name
@@ -710,7 +721,7 @@ public class CmsExplorer extends CmsWorkplace {
             }
         }
 
-        String selectedPage = request.getParameter(PARAMETER_PAGE);
+        String selectedPage = CmsEncoder.escapeXml(request.getParameter(PARAMETER_PAGE));
         if (selectedPage != null) {
             int page = 1;
             try {
@@ -746,7 +757,7 @@ public class CmsExplorer extends CmsWorkplace {
         }
 
         // the flat url 
-        settings.setExplorerFlaturl(request.getParameter(PARAMETER_FLATURL));
+        settings.setExplorerFlaturl(CmsEncoder.escapeXml(request.getParameter(PARAMETER_FLATURL)));
     }
 
     /**

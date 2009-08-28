@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2009/08/20 11:30:41 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/08/28 14:46:55 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -67,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,8 +130,9 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             "\">\n");
         html.append("\t\t<title>\n");
         html.append("\t\t\t").append(
-            key(org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_1, new Object[] {getSettings().getUser().getFullName()})).append(
-            "\n");
+            key(
+                org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_1,
+                new Object[] {getSettings().getUser().getFullName()})).append("\n");
         html.append("\t\t</title>\n");
         html.append("\t</head>\n");
         html.append("\t<frameset rows='57,*' border='0' frameborder='0' framespacing='0'>\n");
@@ -287,7 +289,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
                     result.append("<input type=\"hidden\" name=\"");
                     result.append(param);
                     result.append("\" value=\"");
-                    result.append(value[i]);
+                    result.append(CmsEncoder.escapeXml(value[i]));
                     result.append("\">\n");
                 }
             }
