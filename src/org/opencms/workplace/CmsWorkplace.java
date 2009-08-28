@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.177 $
+ * Date   : $Date: 2009/08/28 14:23:56 $
+ * Version: $Revision: 1.178 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.177 $ 
+ * @version $Revision: 1.178 $ 
  * 
  * @since 6.0.0 
  */
@@ -1848,7 +1848,9 @@ public abstract class CmsWorkplace {
     protected String decodeParamValue(String paramName, String paramValue) {
 
         if ((paramName != null) && (paramValue != null)) {
-            return CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
+            return CmsEncoder.escapeSql(CmsEncoder.escapeXml(CmsEncoder.decode(
+                paramValue,
+                getCms().getRequestContext().getEncoding())));
         } else {
             return null;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpSearchResultView.java,v $
- * Date   : $Date: 2009/06/04 14:29:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/08/28 14:26:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -166,13 +166,17 @@ public class CmsHelpSearchResultView {
                 result.append("\n<!-- ").append(search.getLastException().toString());
                 result.append(" //-->\n");
             } else {
-                result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_NOMATCH_1, search.getQuery()));
+                result.append(messages.key(
+                    org.opencms.search.Messages.GUI_HELP_SEARCH_NOMATCH_1,
+                    CmsEncoder.escapeXml(search.getQuery())));
                 result.append("\n");
             }
             result.append("</p>\n");
         } else if ((action != null) && (searchResult.size() <= 0)) {
             result.append("<p class=\"formerror\">\n");
-            result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_NOMATCH_1, search.getQuery()));
+            result.append(messages.key(
+                org.opencms.search.Messages.GUI_HELP_SEARCH_NOMATCH_1,
+                CmsEncoder.escapeXml(search.getQuery())));
             result.append("\n");
             result.append("</p>\n");
         } else if ((action != null) && (searchResult.size() > 0)) {

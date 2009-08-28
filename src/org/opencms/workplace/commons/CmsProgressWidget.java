@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsProgressWidget.java,v $
- * Date   : $Date: 2009/06/04 14:29:13 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/28 14:25:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 7.0.0
  */
@@ -149,7 +149,8 @@ public class CmsProgressWidget {
         }
 
         // find the key from the request
-        m_key = getJsp().getRequest().getParameter(PARAMETER_KEY);
+        String key = getJsp().getRequest().getParameter(PARAMETER_KEY);
+        m_key = CmsStringUtil.escapeHtml(key);
         if (m_key == null) {
             // generate unique key
             m_key = new CmsUUID().toString();
