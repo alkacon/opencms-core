@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2009/08/31 09:02:59 $
+ * Version: $Revision: 1.45.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.45.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,6 +138,26 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
         // try to find the localized key
         return wp.keyDefault(GUI_RESOURCE_TYPE_PREFIX + name, name);
+    }
+
+    /**
+     * Returns the nice name of the given resource type name.<p>
+     * 
+     * It will look up a key with the prefix {@link #GUI_RESOURCE_TYPE_PREFIX} 
+     * and the given name appended.<p>
+     * 
+     * If this key is not found, the value of 
+     * the name input will be returned.<p>
+     * 
+     * @param locale the right locale to use
+     * @param name the resource type name to generate the nice name for
+     * 
+     * @return the nice name of the given resource type name
+     */
+    public static String getResourceName(Locale locale, String name) {
+
+        // try to find the localized key
+        return OpenCms.getWorkplaceManager().getMessages(locale).keyDefault(GUI_RESOURCE_TYPE_PREFIX + name, name);
     }
 
     /**
