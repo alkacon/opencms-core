@@ -329,6 +329,124 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/classes</destination>
+			<type>folder</type>
+			<uuidstructure>5cda0b7d-9605-11de-b8c2-dd9f629b113b</uuidstructure>
+			<datelastmodified>Mon, 31 Aug 2009 08:16:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 31 Aug 2009 08:07:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/classes/org</destination>
+			<type>folder</type>
+			<uuidstructure>6401197f-9605-11de-b8c2-dd9f629b113b</uuidstructure>
+			<datelastmodified>Mon, 31 Aug 2009 08:16:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 31 Aug 2009 08:07:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/classes/org/opencms</destination>
+			<type>folder</type>
+			<uuidstructure>6ae55221-9605-11de-b8c2-dd9f629b113b</uuidstructure>
+			<datelastmodified>Mon, 31 Aug 2009 08:16:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 31 Aug 2009 08:08:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/classes/org/opencms/workplace</destination>
+			<type>folder</type>
+			<uuidstructure>71717fb3-9605-11de-b8c2-dd9f629b113b</uuidstructure>
+			<datelastmodified>Mon, 31 Aug 2009 08:16:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 31 Aug 2009 08:08:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/classes/org/opencms/workplace/ade</destination>
+			<type>folder</type>
+			<uuidstructure>77bad7e5-9605-11de-b8c2-dd9f629b113b</uuidstructure>
+			<datelastmodified>Mon, 31 Aug 2009 08:16:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 31 Aug 2009 08:08:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.ade.demo/classes/org/opencms/workplace/ade/demo</destination>
+			<type>folder</type>
+			<uuidstructure>7ebe0a37-9605-11de-b8c2-dd9f629b113b</uuidstructure>
+			<datelastmodified>Mon, 31 Aug 2009 08:16:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 31 Aug 2009 08:08:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/classes/org/opencms/workplace/ade/demo/messages.properties</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/classes/org/opencms/workplace/ade/demo/messages.properties</destination>
+			<type>plain</type>
+			<uuidstructure>8d6df549-9605-11de-b8c2-dd9f629b113b</uuidstructure>
+			<uuidresource>8d6df54a-9605-11de-b8c2-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 08:16:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 31 Aug 2009 08:09:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.ade.demo/classes/org/opencms/workplace/ade/demo/messages_de.properties</source>
+			<destination>system/modules/org.opencms.workplace.ade.demo/classes/org/opencms/workplace/ade/demo/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidstructure>ca39ec4c-9605-11de-b8c2-dd9f629b113b</uuidstructure>
+			<uuidresource>ca39ec4d-9605-11de-b8c2-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 08:16:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 31 Aug 2009 08:10:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/modules/org.opencms.workplace.ade.demo/elements</destination>
 			<type>folder</type>
 			<uuidstructure>43e776a2-8284-11de-ac1e-dd9f629b113b</uuidstructure>
