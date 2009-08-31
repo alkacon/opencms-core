@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/08/27 14:46:19 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2009/08/31 09:04:34 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.9 $
+ * @version $Revision: 1.1.2.10 $
  * 
  * @since 7.6
  */
@@ -135,9 +135,6 @@ public class CmsADEServer extends CmsJspActionElement {
     /** JSON property constant element. */
     public static final String P_ELEMENTS = "elements";
 
-    /** JSON property constant element. */
-    public static final String P_HASMORE = "hasmore";
-
     /** JSON property constant favorites. */
     public static final String P_FAVORITES = "favorites";
 
@@ -149,6 +146,9 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** JSON property constant formatters. */
     public static final String P_FORMATTERS = "formatters";
+
+    /** JSON property constant element. */
+    public static final String P_HASMORE = "hasmore";
 
     /** JSON property constant id. */
     public static final String P_ID = "id";
@@ -193,22 +193,22 @@ public class CmsADEServer extends CmsJspActionElement {
     public static final String PARAMETER_DATA = "data";
 
     /** Request parameter name constant. */
-    public static final String PARAMETER_TEXT = "text";
-
-    /** Request parameter name constant. */
-    public static final String PARAMETER_LOCATION = "location";
-
-    /** Request parameter name constant. */
-    public static final String PARAMETER_PAGE = "page";
-
-    /** Request parameter name constant. */
     public static final String PARAMETER_ELEM = "elem";
 
     /** Request parameter name constant. */
     public static final String PARAMETER_LOCALE = "locale";
 
     /** Request parameter name constant. */
+    public static final String PARAMETER_LOCATION = "location";
+
+    /** Request parameter name constant. */
     public static final String PARAMETER_OBJ = "obj";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_PAGE = "page";
+
+    /** Request parameter name constant. */
+    public static final String PARAMETER_TEXT = "text";
 
     /** Request parameter obj value constant. */
     public static final String PARAMETER_TYPE = "type";
@@ -400,66 +400,6 @@ public class CmsADEServer extends CmsJspActionElement {
                 PARAMETER_OBJ,
                 objParam));
         }
-        return result;
-    }
-
-    /**
-     * Returns elements for the search result matching the given options.<p>
-     * 
-     * @param options the search options
-     * @param types the supported container types
-     * 
-     * @return JSON object with 2 properties, {@link #P_ELEMENTS} and {@link #P_HASMORE}
-     * 
-     * @throws JSONException if something goes wrong
-     */
-    protected JSONObject getSearchResult(CmsSearchOptions options, Set<String> types) throws JSONException {
-
-        CmsObject cms = getCmsObject();
-
-        JSONObject result = new JSONObject();
-        JSONObject elements = new JSONObject();
-        result.put(P_ELEMENTS, elements);
-
-        // get the configured search index 
-        String indexName = new CmsUserSettings(cms.getRequestContext().currentUser()).getWorkplaceSearchIndexName();
-
-        // set the search parameters
-        CmsSearchParameters params = new CmsSearchParameters(options.getText());
-        params.setIndex(indexName);
-        params.setMatchesPerPage(10);
-        params.setSearchPage(options.getPage() + 1);
-
-        // search
-        CmsSearch searchBean = new CmsSearch();
-        searchBean.init(cms);
-        searchBean.setParameters(params);
-        searchBean.setSearchRoot(options.getLocation());
-        List searchResults = searchBean.getSearchResult();
-
-        // helper
-        CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse());
-
-        // iterate result list and generate the elements
-        Iterator it = searchResults.iterator();
-        while (it.hasNext()) {
-            CmsSearchResult sr = (CmsSearchResult)it.next();
-            // get the element data
-            String uri = cms.getRequestContext().removeSiteRoot(sr.getPath());
-            try {
-                JSONObject resElement = elemUtil.getElementData(uri, types);
-                // store element data
-                elements.put(resElement.getString(P_ID), resElement);
-            } catch (Exception e) {
-                LOG.warn(e.getLocalizedMessage(), e);
-            }
-        }
-
-        // check if there are more search pages
-        int results = searchBean.getSearchPage() * searchBean.getMatchesPerPage();
-        boolean hasMore = (searchBean.getSearchResultCount() > results);
-        result.put(P_HASMORE, hasMore);
-
         return result;
     }
 
@@ -682,6 +622,66 @@ public class CmsADEServer extends CmsJspActionElement {
             favoriteList = new JSONArray(favListStr);
         }
         return favoriteList;
+    }
+
+    /**
+     * Returns elements for the search result matching the given options.<p>
+     * 
+     * @param options the search options
+     * @param types the supported container types
+     * 
+     * @return JSON object with 2 properties, {@link #P_ELEMENTS} and {@link #P_HASMORE}
+     * 
+     * @throws JSONException if something goes wrong
+     */
+    protected JSONObject getSearchResult(CmsSearchOptions options, Set<String> types) throws JSONException {
+
+        CmsObject cms = getCmsObject();
+
+        JSONObject result = new JSONObject();
+        JSONArray elements = new JSONArray();
+        result.put(P_ELEMENTS, elements);
+
+        // get the configured search index 
+        String indexName = new CmsUserSettings(cms.getRequestContext().currentUser()).getWorkplaceSearchIndexName();
+
+        // set the search parameters
+        CmsSearchParameters params = new CmsSearchParameters(options.getText());
+        params.setIndex(indexName);
+        params.setMatchesPerPage(10);
+        params.setSearchPage(options.getPage() + 1);
+
+        // search
+        CmsSearch searchBean = new CmsSearch();
+        searchBean.init(cms);
+        searchBean.setParameters(params);
+        searchBean.setSearchRoot(options.getLocation());
+        List searchResults = searchBean.getSearchResult();
+
+        // helper
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse());
+
+        // iterate result list and generate the elements
+        Iterator it = searchResults.iterator();
+        while (it.hasNext()) {
+            CmsSearchResult sr = (CmsSearchResult)it.next();
+            // get the element data
+            String uri = cms.getRequestContext().removeSiteRoot(sr.getPath());
+            try {
+                JSONObject resElement = elemUtil.getElementData(uri, types);
+                // store element data
+                elements.put(resElement);
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+
+        // check if there are more search pages
+        int results = searchBean.getSearchPage() * searchBean.getMatchesPerPage();
+        boolean hasMore = (searchBean.getSearchResultCount() > results);
+        result.put(P_HASMORE, hasMore);
+
+        return result;
     }
 
     /**
