@@ -21,7 +21,8 @@
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.workplace.editors.ade.messages"/>
 			<relations>
-				<relation element="ADEType/Source" type="strong" invalidate="parent" />
+				<relation element="ADEType/Source" type="strong" invalidate="false" />
+				<relation element="ADEType/Destination/Folder" type="strong" invalidate="false" />
 			</relations>
         </xsd:appinfo>
     </xsd:annotation>
