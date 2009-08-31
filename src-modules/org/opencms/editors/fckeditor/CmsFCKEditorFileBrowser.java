@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorFileBrowser.java,v $
- * Date   : $Date: 2009/08/20 11:31:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/08/31 15:09:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.1.7
  */
@@ -209,7 +209,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
     private Document m_document;
 
     /** The list of multi part file items (if available). */
-    private List m_multiPartFileItems;
+    private List<FileItem> m_multiPartFileItems;
 
     /** The Command parameter. */
     private String m_paramCommand;
@@ -505,10 +505,10 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
         }
 
         try {
-            List resources = getCms().readResources(getParamCurrentFolder(), filter, false);
-            Iterator i = resources.iterator();
+            List<CmsResource> resources = getCms().readResources(getParamCurrentFolder(), filter, false);
+            Iterator<CmsResource> i = resources.iterator();
             while (i.hasNext()) {
-                CmsResource res = (CmsResource)i.next();
+                CmsResource res = i.next();
                 if (res.isFolder()) {
                     // resource is a folder, create folder node
                     Element folder = folders.addElement(NODE_FOLDER);
@@ -586,10 +586,10 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
         String errorCode = ERROR_UPLOAD_OK;
         try {
             // get the file item from the multipart request
-            Iterator i = m_multiPartFileItems.iterator();
+            Iterator<FileItem> i = m_multiPartFileItems.iterator();
             FileItem fi = null;
             while (i.hasNext()) {
-                fi = (FileItem)i.next();
+                fi = i.next();
                 if (fi.getName() != null) {
                     // found the file object, leave iteration
                     break;
@@ -618,7 +618,7 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
                 if (title.lastIndexOf('.') != -1) {
                     title = title.substring(0, title.lastIndexOf('.'));
                 }
-                List properties = new ArrayList(1);
+                List<CmsProperty> properties = new ArrayList<CmsProperty>(1);
                 CmsProperty titleProp = new CmsProperty();
                 titleProp.setName(CmsPropertyDefinition.PROPERTY_TITLE);
                 if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
