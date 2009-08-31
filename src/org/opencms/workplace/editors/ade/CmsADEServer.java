@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/08/31 09:04:34 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2009/08/31 09:37:24 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,6 +50,7 @@ import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
@@ -78,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.10 $
+ * @version $Revision: 1.1.2.11 $
  * 
  * @since 7.6
  */
@@ -182,6 +183,9 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** JSON property constant file. */
     public static final String P_TYPE = "type";
+
+    /** JSON response property constant. */
+    public static final String P_TYPENAME = "typename";
 
     /** JSON property constant uri. */
     public static final String P_URI = "uri";
@@ -494,26 +498,18 @@ public class CmsADEServer extends CmsJspActionElement {
 
         // get the container page itself
         CmsResourceUtil resUtil = new CmsResourceUtil(cms, resource);
+        Set<String> types = cntPage.getTypes();
+
+        // collect some basic data
         result.put(CmsADEServer.P_ALLOWEDIT, resUtil.getLock().isLockableBy(cms.getRequestContext().currentUser())
             && resUtil.isEditable());
         result.put(CmsADEServer.P_LOCKED, resUtil.getLockedByName());
 
-        Set<String> types = cntPage.getTypes();
+        // collect new elements
+        resElements.merge(getNewElements(cntPage.getNewConfig(), types), false, false);
 
+        // collect page elements
         CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse());
-        CmsElementCreator creator = new CmsElementCreator(cms, cntPage.getNewConfig());
-        Map<String, CmsTypeConfigurationItem> typeConfig = creator.getConfiguration();
-        for (Map.Entry<String, CmsTypeConfigurationItem> entry : typeConfig.entrySet()) {
-            String type = entry.getKey();
-            String elementUri = entry.getValue().getSourceFile();
-            JSONObject resElement = elemUtil.getElementData(elementUri, types);
-            // overwrite some special field for new files
-            resElement.put(P_ID, type);
-            resElement.put(P_STATUS, "n");
-            resElement.put(P_TYPE, type);
-            resElements.put(type, resElement);
-        }
-
         Set<CmsUUID> ids = new HashSet<CmsUUID>();
         for (Map.Entry<String, CmsContainerBean> entry : cntPage.getContainers().entrySet()) {
             CmsContainerBean container = entry.getValue();
@@ -534,15 +530,16 @@ public class CmsADEServer extends CmsJspActionElement {
             // iterate the elements
             for (CmsContainerElementBean element : container.getElements()) {
                 if (renderElems < 1) {
+                    // just collect as many elements as allowed in the template
                     break;
                 }
                 renderElems--;
 
                 // check if the element already exists
                 String id = CmsElementUtil.createId(element.getElement().getStructureId());
+                // collect ids
+                resContainerElems.put(id);
                 if (ids.contains(element.getElement().getStructureId())) {
-                    // collect ids
-                    resContainerElems.put(id);
                     continue;
                 }
                 // get the element data
@@ -550,16 +547,14 @@ public class CmsADEServer extends CmsJspActionElement {
                 // store element data
                 ids.add(element.getElement().getStructureId());
                 resElements.put(id, resElement);
-                // collect ids
-                resContainerElems.put(id);
             }
 
             resContainers.put(container.getName(), resContainer);
         }
-        // get the favorites
+        // collect the favorites
         JSONArray resFavorites = getFavoriteList(resElements, types);
         result.put(P_FAVORITES, resFavorites);
-        // get the recent list
+        // collect the recent list
         JSONArray resRecent = CmsRecentListManager.getInstance().getRecentList(
             cms,
             resElements,
@@ -622,6 +617,39 @@ public class CmsADEServer extends CmsJspActionElement {
             favoriteList = new JSONArray(favListStr);
         }
         return favoriteList;
+    }
+
+    /**
+     * Returns the data for new elements from the given configuration file.<p>
+     * 
+     * @param newConfig the configuration file to use 
+     * @param types the supported container page types
+     * 
+     * @return the data for the given container page
+     * 
+     * @throws CmsException if something goes wrong with the cms context
+     * @throws JSONException if something goes wrong with the JSON manipulation
+     */
+    protected JSONObject getNewElements(CmsResource newConfig, Set<String> types) throws CmsException, JSONException {
+
+        JSONObject resElements = new JSONObject();
+        CmsElementUtil elemUtil = new CmsElementUtil(getCmsObject(), getRequest(), getResponse());
+        CmsElementCreator creator = new CmsElementCreator(getCmsObject(), newConfig);
+        Map<String, CmsTypeConfigurationItem> typeConfig = creator.getConfiguration();
+        for (Map.Entry<String, CmsTypeConfigurationItem> entry : typeConfig.entrySet()) {
+            String type = entry.getKey();
+            String elementUri = entry.getValue().getSourceFile();
+            JSONObject resElement = elemUtil.getElementData(elementUri, types);
+            // overwrite some special fields for new elements
+            resElement.put(P_ID, type);
+            resElement.put(P_STATUS, "x");
+            resElement.put(P_TYPE, type);
+            resElement.put(P_TYPENAME, CmsWorkplaceMessages.getResourceName(
+                getCmsObject().getRequestContext().getLocale(),
+                type));
+            resElements.put(type, resElement);
+        }
+        return resElements;
     }
 
     /**
