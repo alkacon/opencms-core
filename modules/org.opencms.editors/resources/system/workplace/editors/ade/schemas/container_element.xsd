@@ -21,13 +21,14 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.workplace.editors.ade.messages"/>
-			<mappings/>
-			<layouts/>
 			<validationrules>
 				<rule element="Uri" regex=".+" type="error" message="%(key.err.uri.notempty)" />
 				<rule element="Formatter" regex=".+" type="error" message="%(key.err.formatter.notempty)" />
 			</validationrules>
-			<defaults/>
+			<relations>
+				<relation element="Uri" type="strong" invalidate="false" />
+				<relation element="Formatter" type="strong" invalidate="false" />
+			</relations>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

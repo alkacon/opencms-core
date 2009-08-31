@@ -22,14 +22,6 @@
 		<xsd:appinfo>
 			<handler class="org.opencms.workplace.editors.ade.CmsContainerPageHandler"/>
 			<resourcebundle name="org.opencms.workplace.editors.ade.messages"/>
-			<mappings/>
-			<layouts/>
-			<validationrules/>
-			<defaults/>
-			<relations>
-				<relation element="Containers/Elements/Uri" type="strong" invalidate="false" />
-				<relation element="Containers/Elements/Formatter" type="strong" invalidate="false" />
-			</relations>
 		</xsd:appinfo>
 
 	</xsd:annotation>  

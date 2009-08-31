@@ -20,7 +20,9 @@
     <xsd:annotation>
         <xsd:appinfo>
 			<resourcebundle name="org.opencms.workplace.editors.ade.messages"/>
-	        <layouts/>
+			<relations>
+				<relation element="Folder" type="strong" invalidate="false" />
+			</relations>
         </xsd:appinfo>
     </xsd:annotation>
 </xsd:schema>
