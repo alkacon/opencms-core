@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidgetOption.java,v $
- * Date   : $Date: 2009/08/31 15:09:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/09/01 13:24:43 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import java.util.Map;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.1
  */
@@ -98,7 +98,7 @@ public class CmsHtmlWidgetOption {
     public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;selectall;removeformat;-;cut;copy;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
         + "[;alignleft;aligncenter;alignright;justify;-;orderedlist;unorderedlist;-;outdent;indent;];"
         + "[;source;-;formatselect;editorlink;link;anchor;unlink;];"
-        + "[;imagegallery;downloadgallery;linkgallery;htmlgallery;tablegallery;-;table;-;specialchar;-;print;-;fitwindow;]";
+        + "[;imagegallery;downloadgallery;linkgallery;htmlgallery;tablegallery;-;table;-;specialchar;-;print;spellcheck;-;fitwindow;]";
 
     /** The default button bar configuration as List. */
     public static final List<String> BUTTONBAR_DEFAULT_LIST = CmsStringUtil.splitAsList(BUTTONBAR_DEFAULT, ';');
@@ -157,6 +157,9 @@ public class CmsHtmlWidgetOption {
     /** Option for the "source" code mode. */
     public static final String OPTION_SOURCE = "source";
 
+    /** Option for the "spell check" dialog. */
+    public static final String OPTION_SPELLCHECK = "spellcheck";
+
     /** Option for the styles XML VFS path to use in the widget area. */
     public static final String OPTION_STYLES = "stylesxml:";
 
@@ -176,6 +179,7 @@ public class CmsHtmlWidgetOption {
         OPTION_LINK,
         OPTION_REPLACE,
         OPTION_SOURCE,
+        OPTION_SPELLCHECK,
         OPTION_TABLE,
         OPTION_UNLINK,
         CmsAjaxImageGallery.GALLERYTYPE_NAME,
