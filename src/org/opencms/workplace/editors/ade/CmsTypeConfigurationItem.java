@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsTypeConfigurationItem.java,v $
- * Date   : $Date: 2009/08/27 14:46:19 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/01 13:15:26 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,14 +41,17 @@ package org.opencms.workplace.editors.ade;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6 
  */
 public class CmsTypeConfigurationItem {
 
-    /** The destination uri pattern. */
-    private final String m_destination;
+    /** The destination folder uri. */
+    private final String m_folder;
+
+    /** The file pattern. */
+    private final String m_pattern;
 
     /** The source file. */
     private final String m_sourceFile;
@@ -57,12 +60,14 @@ public class CmsTypeConfigurationItem {
      * Creates a new type configuration item.<p> 
      * 
      * @param sourceFile the source file uri
-     * @param destination the destination uri pattern
+     * @param destinationFolder the destination folder uri
+     * @param pattern the file pattern
      **/
-    public CmsTypeConfigurationItem(String sourceFile, String destination) {
+    public CmsTypeConfigurationItem(String sourceFile, String destinationFolder, String pattern) {
 
-        m_destination = destination;
         m_sourceFile = sourceFile;
+        m_folder = destinationFolder;
+        m_pattern = pattern;
     }
 
     /**
@@ -74,7 +79,27 @@ public class CmsTypeConfigurationItem {
      */
     public String getDestination() {
 
-        return m_destination;
+        return m_folder + m_pattern;
+    }
+
+    /**
+     * Returns the destination folder uri.<p>
+     *
+     * @return the destination folder uri
+     */
+    public String getFolder() {
+
+        return m_folder;
+    }
+
+    /**
+     * Returns the file pattern.<p>
+     *
+     * @return the file pattern
+     */
+    public String getPattern() {
+
+        return m_pattern;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/09/01 09:19:08 $
- * Version: $Revision: 1.1.2.13 $
+ * Date   : $Date: 2009/09/01 13:15:26 $
+ * Version: $Revision: 1.1.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.13 $
+ * @version $Revision: 1.1.2.14 $
  * 
  * @since 7.6
  */
@@ -388,7 +388,7 @@ public class CmsADEServer extends CmsJspActionElement {
                     PARAMETER_ELEM));
                 return result;
             }
-            CmsElementUtil elemUtil = new CmsElementUtil(cms, request, getResponse());
+            CmsElementUtil elemUtil = new CmsElementUtil(cms, request, getResponse(), urlParam);
             JSONObject resElements = new JSONObject();
             if (elemParam.startsWith("[")) {
                 // element list
@@ -568,7 +568,8 @@ public class CmsADEServer extends CmsJspActionElement {
         resElements.merge(getNewElements(cntPage.getNewConfig(), types), true, false);
 
         // collect page elements
-        CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse());
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse(), getRequest().getParameter(
+            PARAMETER_URL));
         Set<CmsUUID> ids = new HashSet<CmsUUID>();
         for (Map.Entry<String, CmsContainerBean> entry : cntPage.getContainers().entrySet()) {
             CmsContainerBean container = entry.getValue();
@@ -634,11 +635,11 @@ public class CmsADEServer extends CmsJspActionElement {
     protected JSONArray getFavoriteList(JSONObject resElements, Collection<String> types)
     throws JSONException, CmsException {
 
-        CmsObject cms = getCmsObject();
-        HttpServletRequest req = getRequest();
-        HttpServletResponse res = getResponse();
-
-        CmsElementUtil elemUtil = new CmsElementUtil(cms, req, res);
+        CmsElementUtil elemUtil = new CmsElementUtil(
+            getCmsObject(),
+            getRequest(),
+            getResponse(),
+            getRequest().getParameter(PARAMETER_URL));
 
         JSONArray result = getFavoriteListFromStore();
 
@@ -704,7 +705,11 @@ public class CmsADEServer extends CmsJspActionElement {
     protected JSONObject getNewElements(CmsResource newConfig, Set<String> types) throws CmsException, JSONException {
 
         JSONObject resElements = new JSONObject();
-        CmsElementUtil elemUtil = new CmsElementUtil(getCmsObject(), getRequest(), getResponse());
+        CmsElementUtil elemUtil = new CmsElementUtil(
+            getCmsObject(),
+            getRequest(),
+            getResponse(),
+            getRequest().getParameter(PARAMETER_URL));
         CmsElementCreator creator = new CmsElementCreator(getCmsObject(), newConfig);
         Map<String, CmsTypeConfigurationItem> typeConfig = creator.getConfiguration();
         for (Map.Entry<String, CmsTypeConfigurationItem> entry : typeConfig.entrySet()) {
@@ -737,7 +742,11 @@ public class CmsADEServer extends CmsJspActionElement {
     protected JSONArray getRecentList(JSONObject resElements, Collection<String> types)
     throws JSONException, CmsException {
 
-        CmsElementUtil elemUtil = new CmsElementUtil(getCmsObject(), getRequest(), getResponse());
+        CmsElementUtil elemUtil = new CmsElementUtil(
+            getCmsObject(),
+            getRequest(),
+            getResponse(),
+            getRequest().getParameter(PARAMETER_URL));
 
         JSONArray result = new JSONArray();
         // get the cached list
@@ -829,7 +838,8 @@ public class CmsADEServer extends CmsJspActionElement {
         List<CmsSearchResult> searchResults = searchBean.getSearchResult();
 
         // helper
-        CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse());
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse(), getRequest().getParameter(
+            PARAMETER_URL));
 
         // iterate result list and generate the elements
         Iterator<CmsSearchResult> it = searchResults.iterator();

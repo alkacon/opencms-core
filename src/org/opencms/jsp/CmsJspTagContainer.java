@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/09/01 08:31:36 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2009/09/01 13:15:27 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,12 +38,15 @@ import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.editors.ade.CmsADEServer;
 import org.opencms.workplace.editors.ade.CmsContainerBean;
 import org.opencms.workplace.editors.ade.CmsContainerElementBean;
 import org.opencms.workplace.editors.ade.CmsContainerPageBean;
 import org.opencms.workplace.editors.ade.CmsContainerPageCache;
 
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -58,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 7.6 
  */
@@ -156,6 +159,9 @@ public class CmsJspTagContainer extends TagSupport {
             }
             renderElems--;
 
+            Map<String, String[]> params = Collections.singletonMap(
+                CmsADEServer.PARAMETER_URL,
+                new String[] {cms.getRequestContext().getUri()});
             CmsResource resUri = element.getElement();
             if (resUri.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
                 // get the subcontainer data from cache
@@ -177,7 +183,7 @@ public class CmsJspTagContainer extends TagSupport {
                         subelementFormatter,
                         subelementUri,
                         false,
-                        null,
+                        params,
                         req,
                         res);
                 }
@@ -187,7 +193,7 @@ public class CmsJspTagContainer extends TagSupport {
 
                 // HACK: we use the __element param for the element uri
                 // execute the formatter jsp for the given element uri
-                CmsJspTagInclude.includeTagAction(pageContext, elementFormatter, elementUri, false, null, req, res);
+                CmsJspTagInclude.includeTagAction(pageContext, elementFormatter, elementUri, false, params, req, res);
             }
         }
     }

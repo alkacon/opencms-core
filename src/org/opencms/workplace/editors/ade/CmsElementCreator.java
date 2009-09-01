@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementCreator.java,v $
- * Date   : $Date: 2009/09/01 08:44:20 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/09/01 13:15:26 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.6 
  */
@@ -83,13 +83,13 @@ public class CmsElementCreator {
     public static final String N_DESTINATION = "Destination";
 
     /** The tag name of the source file in the type configuration. */
-    public static final String N_SOURCE = "Source";
-
-    /** The tag name of the source file in the type configuration. */
     public static final String N_FOLDER = "Folder";
 
     /** The tag name of the source file in the type configuration. */
     public static final String N_PATTERN = "Pattern";
+
+    /** The tag name of the source file in the type configuration. */
+    public static final String N_SOURCE = "Source";
 
     /** Configuration data, read from xml content. */
     private Map<String, CmsTypeConfigurationItem> m_configuration;
@@ -243,13 +243,13 @@ public class CmsElementCreator {
             I_CmsXmlContentValue xmlType = itTypes.next();
             String typePath = xmlType.getPath();
             String source = content.getValue(CmsXmlUtils.concatXpath(typePath, N_SOURCE), locale).getStringValue(cms);
-            String destination = content.getValue(
+            String folder = content.getValue(
                 CmsXmlUtils.concatXpath(typePath, CmsXmlUtils.concatXpath(N_DESTINATION, N_FOLDER)),
                 locale).getStringValue(cms);
-            destination += content.getValue(
+            String pattern = content.getValue(
                 CmsXmlUtils.concatXpath(typePath, CmsXmlUtils.concatXpath(N_DESTINATION, N_PATTERN)),
                 locale).getStringValue(cms);
-            CmsTypeConfigurationItem configItem = new CmsTypeConfigurationItem(source, destination);
+            CmsTypeConfigurationItem configItem = new CmsTypeConfigurationItem(source, folder, pattern);
             CmsResource resource = cms.readResource(source);
             String type = getTypeName(resource.getTypeId());
             m_configuration.put(type, configItem);

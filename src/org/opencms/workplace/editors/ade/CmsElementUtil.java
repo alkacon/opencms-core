@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/09/01 08:44:21 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/09/01 13:15:26 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeContainerPage;
+import org.opencms.flex.CmsFlexController;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -51,6 +52,7 @@ import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -65,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 7.6
  */
@@ -86,18 +88,23 @@ public final class CmsElementUtil {
     /** The http response. */
     private HttpServletResponse m_res;
 
+    /** Content generation parameters. */
+    private Map<String, String[]> m_params;
+
     /**
      * Creates a new instance.<p>
      * 
      * @param cms the cms context
      * @param req the http request
      * @param res the http response
+     * @param uri the container page uri
      */
-    public CmsElementUtil(CmsObject cms, HttpServletRequest req, HttpServletResponse res) {
+    public CmsElementUtil(CmsObject cms, HttpServletRequest req, HttpServletResponse res, String uri) {
 
         m_cms = cms;
         m_req = req;
         m_res = res;
+        m_params = Collections.singletonMap(CmsADEServer.PARAMETER_URL, new String[] {uri});
     }
 
     /**
@@ -152,13 +159,16 @@ public final class CmsElementUtil {
             formatter), resource, formatter);
 
         CmsResource loaderRes = loaderFacade.getLoaderStartResource();
+
+        // HACK: only way to pass parameters to the dump method!!
+        CmsFlexController.getController(m_req).getCurrentRequest().addParameterMap(m_params);
         // TODO: is this going to be cached? most likely not! any alternative?
-        // HACK: use the __element param for the element uri
+        // HACK: use the __element param for the element uri! 
         return new String(loaderFacade.getLoader().dump(
             m_cms,
             loaderRes,
             m_cms.getSitePath(resource),
-            null,
+            m_cms.getRequestContext().getLocale(),
             m_req,
             m_res));
     }
