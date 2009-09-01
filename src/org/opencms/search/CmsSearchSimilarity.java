@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchSimilarity.java,v $
- * Date   : $Date: 2009/06/04 14:29:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/09/01 09:24:18 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.apache.lucene.search.DefaultSimilarity;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,6 +76,7 @@ public class CmsSearchSimilarity extends DefaultSimilarity {
      * 
      * @see org.apache.lucene.search.Similarity#lengthNorm(java.lang.String, int)
      */
+    @Override
     public float lengthNorm(String fieldName, int numTerms) {
 
         if (fieldName.equals(CmsSearchField.FIELD_CONTENT)) {

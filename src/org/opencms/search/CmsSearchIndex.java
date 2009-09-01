@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/06/04 14:29:51 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2009/09/01 09:24:17 $
+ * Version: $Revision: 1.75.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -90,7 +90,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.75 $ 
+ * @version $Revision: 1.75.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,6 +120,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         /**
          * @see org.apache.lucene.index.IndexReader#document(int)
          */
+        @Override
         public Document document(int n) throws CorruptIndexException, IOException {
 
             return super.document(n, CONTENT_SELECTOR);
@@ -200,7 +201,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
 
     /** The list of configured index sources. */
-    protected List m_sources;
+    protected List<CmsSearchIndexSource> m_sources;
 
     /** The configured Lucene analyzer used for this index. */
     private Analyzer m_analyzer;
@@ -214,17 +215,17 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The excerpt mode for this index. */
     private boolean m_createExcerpt;
 
-    /** The content extraction mode for this index. */
-    private boolean m_extractContent;
-
     /** Map of display query filters to use. */
-    private Map m_displayFilters;
+    private Map<String, Filter> m_displayFilters;
 
     /** Document types of folders/channels. */
-    private Map m_documenttypes;
+    private Map<String, List<String>> m_documenttypes;
 
     /** An internal enabled flag, used to disable the index if for instance the configured project does not exist. */
     private boolean m_enabled;
+
+    /** The content extraction mode for this index. */
+    private boolean m_extractContent;
 
     /** The search field configuration of this index. */
     private CmsSearchFieldConfiguration m_fieldConfiguration;
@@ -269,10 +270,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     private IndexSearcher m_searcher;
 
     /** The configured sources for this index. */
-    private List m_sourceNames;
+    private List<String> m_sourceNames;
 
     /**
-     * Default constructor only intended to be used by the xml configuration. <p>
+     * Default constructor only intended to be used by the XML configuration. <p>
      * 
      * It is recommended to use the constructor <code>{@link #CmsSearchIndex(String)}</code> 
      * as it enforces the mandatory name argument. <p>
@@ -280,8 +281,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     public CmsSearchIndex() {
 
-        m_sourceNames = new ArrayList();
-        m_documenttypes = new HashMap();
+        m_sourceNames = new ArrayList<String>();
+        m_documenttypes = new HashMap<String, List<String>>();
         m_createExcerpt = true;
         m_extractContent = true;
         m_checkTimeRange = true;
@@ -414,6 +415,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -438,9 +440,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public Map<String, Object> getConfiguration() {
 
-        Map result = new TreeMap();
+        Map<String, Object> result = new TreeMap<String, Object>();
         if (getPriority() > 0) {
             result.put(PRIORITY, new Integer(m_priority));
         }
@@ -522,9 +524,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             I_CmsDocumentFactory result = OpenCms.getSearchManager().getDocumentFactory(res);
             if (result != null) {
                 // check the path of the resource if it matches with one (or more) of the configured index sources
-                Iterator i = m_sources.iterator();
+                Iterator<CmsSearchIndexSource> i = m_sources.iterator();
                 while (i.hasNext()) {
-                    CmsSearchIndexSource source = (CmsSearchIndexSource)i.next();
+                    CmsSearchIndexSource source = i.next();
                     if (source.isIndexing(res.getRootPath(), result.getName())) {
                         // we found an index source that indexes the resource
                         return result;
@@ -700,7 +702,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * @return a list with all configured sources names of this search index
      */
-    public List getSourceNames() {
+    public List<String> getSourceNames() {
 
         return m_sourceNames;
     }
@@ -710,7 +712,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * @return all configured index sources of this search index
      */
-    public List getSources() {
+    public List<CmsSearchIndexSource> getSources() {
 
         return m_sources;
     }
@@ -718,6 +720,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_name != null ? m_name.hashCode() : 0;
@@ -745,10 +748,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         String sourceName = null;
         CmsSearchIndexSource indexSource = null;
-        List searchIndexSourceDocumentTypes = null;
-        List resourceNames = null;
+        List<String> searchIndexSourceDocumentTypes = null;
+        List<String> resourceNames = null;
         String resourceName = null;
-        m_sources = new ArrayList();
+        m_sources = new ArrayList<CmsSearchIndexSource>();
 
         m_path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             OpenCms.getSearchManager().getDirectory() + "/" + m_name);
@@ -756,7 +759,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         for (int i = 0, n = m_sourceNames.size(); i < n; i++) {
 
             try {
-                sourceName = (String)m_sourceNames.get(i);
+                sourceName = m_sourceNames.get(i);
                 indexSource = OpenCms.getSearchManager().getIndexSource(sourceName);
                 m_sources.add(indexSource);
 
@@ -764,7 +767,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 searchIndexSourceDocumentTypes = indexSource.getDocumentTypes();
                 for (int j = 0, m = resourceNames.size(); j < m; j++) {
 
-                    resourceName = (String)resourceNames.get(j);
+                    resourceName = resourceNames.get(j);
                     m_documenttypes.put(resourceName, searchIndexSourceDocumentTypes);
                 }
             } catch (Exception e) {
@@ -927,7 +930,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             if ((params.getRoots() != null) && (params.getRoots().size() > 0)) {
                 // add the all configured search roots with will request context
                 for (int i = 0; i < params.getRoots().size(); i++) {
-                    String searchRoot = searchCms.getRequestContext().addSiteRoot((String)params.getRoots().get(i));
+                    String searchRoot = searchCms.getRequestContext().addSiteRoot(params.getRoots().get(i));
                     extendPathFilter(pathFilter, searchRoot);
                 }
             } else {
@@ -944,16 +947,53 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     params.getCategories()), BooleanClause.Occur.MUST));
             }
 
+            if ((params.getResourceTypes() != null) && (params.getResourceTypes().size() > 0)) {
+                // add query resource types (if required)
+                filter.add(new FilterClause(getMultiTermQueryFilter(
+                    CmsSearchField.FIELD_TYPE,
+                    params.getResourceTypes()), BooleanClause.Occur.MUST));
+            }
+
             // the search query to use, will be constructed in the next lines 
             BooleanQuery query = new BooleanQuery();
             // store separate fields query for excerpt highlighting  
             Query fieldsQuery;
-            if ((params.getFields() != null) && (params.getFields().size() > 0)) {
+            if (params.getFieldQueries() != null) {
+                // each field has an individual query
+                BooleanQuery mustOccur = null;
+                BooleanQuery shouldOccur = null;
+                Iterator<CmsSearchParameters.CmsSearchFieldQuery> i = params.getFieldQueries().iterator();
+                while (i.hasNext()) {
+                    CmsSearchParameters.CmsSearchFieldQuery fq = i.next();
+                    // add one sub-query for each defined field
+                    QueryParser p = new QueryParser(fq.getFieldName(), getAnalyzer());
+                    if (BooleanClause.Occur.SHOULD.equals(fq.getOccur())) {
+                        if (shouldOccur == null) {
+                            shouldOccur = new BooleanQuery();
+                        }
+                        shouldOccur.add(p.parse(fq.getSearchQuery()), fq.getOccur());
+                    } else {
+                        if (mustOccur == null) {
+                            mustOccur = new BooleanQuery();
+                        }
+                        mustOccur.add(p.parse(fq.getSearchQuery()), fq.getOccur());
+                    }
+                }
+                BooleanQuery booleanFieldsQuery = new BooleanQuery();
+                if (mustOccur != null) {
+                    booleanFieldsQuery.add(mustOccur, BooleanClause.Occur.MUST);
+                }
+                if (shouldOccur != null) {
+                    booleanFieldsQuery.add(shouldOccur, BooleanClause.Occur.MUST);
+                }
+                fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
+            } else if ((params.getFields() != null) && (params.getFields().size() > 0)) {
+                // no individual field queries have been defined, so use one query for all fields 
                 BooleanQuery booleanFieldsQuery = new BooleanQuery();
                 // this is a "regular" query over one or more fields
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                 for (int i = 0; i < params.getFields().size(); i++) {
-                    QueryParser p = new QueryParser((String)params.getFields().get(i), getAnalyzer());
+                    QueryParser p = new QueryParser(params.getFields().get(i), getAnalyzer());
                     booleanFieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
                 }
                 fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
@@ -962,6 +1002,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, getAnalyzer());
                 fieldsQuery = getSearcher().rewrite(p.parse(params.getQuery()));
             }
+
             // finally add the field queries to the main query
             query.add(fieldsQuery, BooleanClause.Occur.MUST);
 
@@ -1144,10 +1185,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // check if already used, but only if the name was modified: 
             // this is important as unmodifiable DisplayWidgets will also invoke this...
             if (!name.equals(m_name)) {
-                // don't mess with xml-configuration
+                // don't mess with XML configuration
                 if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
                     // not needed at startup and additionally getSearchManager may return null
-                    Iterator itIdxNames = OpenCms.getSearchManager().getIndexNames().iterator();
+                    Iterator<String> itIdxNames = OpenCms.getSearchManager().getIndexNames().iterator();
                     while (itIdxNames.hasNext()) {
                         if (itIdxNames.next().equals(name)) {
                             throw new CmsIllegalArgumentException(Messages.get().container(
@@ -1219,6 +1260,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return getName();
@@ -1246,7 +1288,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * @return a cached Lucene term query filter for the given field and terms
      */
-    protected Filter getMultiTermQueryFilter(String field, List terms) {
+    protected Filter getMultiTermQueryFilter(String field, List<String> terms) {
 
         return getMultiTermQueryFilter(field, null, terms);
     }
@@ -1273,7 +1315,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * 
      * @return a cached Lucene term query filter for the given field and terms
      */
-    protected Filter getMultiTermQueryFilter(String field, String termsStr, List termsList) {
+    protected Filter getMultiTermQueryFilter(String field, String termsStr, List<String> termsList) {
 
         if (termsStr == null) {
             StringBuffer buf = new StringBuffer(64);
@@ -1285,14 +1327,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
             termsStr = buf.toString();
         }
-        Filter result = (Filter)m_displayFilters.get((new StringBuffer(64)).append(field).append('|').append(termsStr).toString());
+        Filter result = m_displayFilters.get((new StringBuffer(64)).append(field).append('|').append(termsStr).toString());
         if (result == null) {
             TermsFilter filter = new TermsFilter();
             if (termsList == null) {
                 termsList = CmsStringUtil.splitAsList(termsStr, ' ');
             }
             for (int i = 0; i < termsList.size(); i++) {
-                filter.addTerm(new Term(field, (String)termsList.get(i)));
+                filter.addTerm(new Term(field, termsList.get(i)));
             }
             result = new CachingWrapperFilter(filter);
             m_displayFilters.put(field + termsStr, result);
@@ -1386,7 +1428,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             if (IndexReader.indexExists(m_path)) {
                 IndexReader reader = new LazyContentReader(IndexReader.open(m_path));
                 m_searcher = new IndexSearcher(reader);
-                m_displayFilters = new HashMap();
+                m_displayFilters = new HashMap<String, Filter>();
             }
         } catch (IOException e) {
             LOG.error(Messages.get().getBundle().key(Messages.ERR_INDEX_SEARCHER_1, getName()), e);

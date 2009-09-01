@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndexUpdateData.java,v $
- * Date   : $Date: 2009/06/04 14:29:51 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/01 09:24:17 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.1
  */
@@ -51,10 +51,10 @@ public class CmsSearchIndexUpdateData {
     private I_CmsIndexer m_indexer;
 
     /** List of <code>{@link org.opencms.db.CmsPublishedResource}</code> instances that must be deleted. */
-    private List m_resourcesToDelete;
+    private List<CmsPublishedResource> m_resourcesToDelete;
 
     /** List of <code>{@link org.opencms.db.CmsPublishedResource}</code> instances that must be updated. */
-    private List m_resourcesToUpdate;
+    private List<CmsPublishedResource> m_resourcesToUpdate;
 
     /** The search index source of this update collection. */
     private CmsSearchIndexSource m_source;
@@ -69,8 +69,8 @@ public class CmsSearchIndexUpdateData {
 
         m_source = source;
         m_indexer = indexer;
-        m_resourcesToDelete = new ArrayList();
-        m_resourcesToUpdate = new ArrayList();
+        m_resourcesToDelete = new ArrayList<CmsPublishedResource>();
+        m_resourcesToUpdate = new ArrayList<CmsPublishedResource>();
     }
 
     /**
@@ -108,7 +108,7 @@ public class CmsSearchIndexUpdateData {
      * 
      * @return the list of <code>{@link org.opencms.db.CmsPublishedResource}</code> instances that must be deleted
      */
-    public List getResourcesToDelete() {
+    public List<CmsPublishedResource> getResourcesToDelete() {
 
         return m_resourcesToDelete;
     }
@@ -118,7 +118,7 @@ public class CmsSearchIndexUpdateData {
      * 
      * @return the list of <code>{@link org.opencms.db.CmsPublishedResource}</code> instances that must be updated
      */
-    public List getResourcesToUpdate() {
+    public List<CmsPublishedResource> getResourcesToUpdate() {
 
         return m_resourcesToUpdate;
     }

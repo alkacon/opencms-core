@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/07/08 11:11:35 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2009/09/01 09:24:17 $
+ * Version: $Revision: 1.76.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -67,7 +67,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -87,7 +86,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.76 $ 
+ * @version $Revision: 1.76.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -148,14 +147,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         private boolean m_isEventRegistered;
 
         /** The list of resources to index. */
-        private List m_resourcesToIndex;
+        private List<CmsPublishedResource> m_resourcesToIndex;
 
         /**
          * Initializes the offline index handler.<p>
          */
         protected CmsSearchOfflineHandler() {
 
-            m_resourcesToIndex = new ArrayList();
+            m_resourcesToIndex = new ArrayList<CmsPublishedResource>();
         }
 
         /**
@@ -171,7 +170,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
                 case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
                     // a resource has been modified - offline indexes require (re)indexing
-                    List resources = Collections.singletonList(event.getData().get(I_CmsEventListener.KEY_RESOURCE));
+                    List<CmsResource> resources = Collections.singletonList((CmsResource)event.getData().get(
+                        I_CmsEventListener.KEY_RESOURCE));
                     reIndexResources(resources);
                     break;
                 case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
@@ -180,7 +180,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 case I_CmsEventListener.EVENT_RESOURCE_COPIED:
                 case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
                     // a list of resources has been modified - offline indexes require (re)indexing
-                    reIndexResources((List)event.getData().get(I_CmsEventListener.KEY_RESOURCES));
+                    reIndexResources((List<CmsResource>)event.getData().get(I_CmsEventListener.KEY_RESOURCES));
                     break;
                 default:
                     // no operation
@@ -192,7 +192,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          * 
          * @param resourcesToIndex the list of {@link CmsPublishedResource} objects to be indexed
          */
-        protected synchronized void addResourcesToIndex(List resourcesToIndex) {
+        protected synchronized void addResourcesToIndex(List<CmsPublishedResource> resourcesToIndex) {
 
             m_resourcesToIndex.addAll(resourcesToIndex);
         }
@@ -202,10 +202,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          *
          * @return the resources to index
          */
-        protected synchronized List getResourcesToIndex() {
+        protected synchronized List<CmsPublishedResource> getResourcesToIndex() {
 
-            List temp = m_resourcesToIndex;
-            m_resourcesToIndex = new ArrayList();
+            List<CmsPublishedResource> temp = m_resourcesToIndex;
+            m_resourcesToIndex = new ArrayList<CmsPublishedResource>();
             return temp;
         }
 
@@ -255,12 +255,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          * 
          * @param resources a list of {@link CmsResource} objects to update in the offline indexes
          */
-        protected synchronized void reIndexResources(List resources) {
+        protected synchronized void reIndexResources(List<CmsResource> resources) {
 
-            List resourcesToIndex = new ArrayList(resources.size());
-            Iterator r = resources.iterator();
+            List<CmsPublishedResource> resourcesToIndex = new ArrayList<CmsPublishedResource>(resources.size());
+            Iterator<CmsResource> r = resources.iterator();
             while (r.hasNext()) {
-                CmsResource res = (CmsResource)r.next();
+                CmsResource res = r.next();
                 CmsPublishedResource pubRes = new CmsPublishedResource(res);
                 resourcesToIndex.add(pubRes);
             }
@@ -296,13 +296,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         /**
          * @see java.lang.Thread#run()
          */
+        @Override
         public void run() {
 
             // create a log report for the output
             I_CmsReport report = new CmsLogReport(m_adminCms.getRequestContext().getLocale(), CmsSearchManager.class);
             try {
                 while (m_isAlive) {
-                    List resourcesToIndex = getResourcesToIndex();
+                    List<CmsPublishedResource> resourcesToIndex = getResourcesToIndex();
                     if (resourcesToIndex.size() > 0) {
                         // only start indexing if there is at least one resource
                         updateIndexOffline(report, resourcesToIndex);
@@ -324,6 +325,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         /**
          * @see java.lang.Thread#start()
          */
+        @Override
         public synchronized void start() {
 
             m_isAlive = true;
@@ -336,12 +338,12 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
          * 
          * @return the list of resource to update in the offline index
          */
-        protected List getResourcesToIndex() {
+        protected List<CmsPublishedResource> getResourcesToIndex() {
 
-            List resourcesToIndex = m_handler.getResourcesToIndex();
-            List result = new ArrayList(resourcesToIndex.size());
+            List<CmsPublishedResource> resourcesToIndex = m_handler.getResourcesToIndex();
+            List<CmsPublishedResource> result = new ArrayList<CmsPublishedResource>(resourcesToIndex.size());
 
-            Iterator i = resourcesToIndex.iterator();
+            Iterator<CmsPublishedResource> i = resourcesToIndex.iterator();
             while (i.hasNext()) {
                 Object o = i.next();
                 CmsPublishedResource pubRes = (CmsPublishedResource)o;
@@ -350,7 +352,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     // resource not already contained in the update list
                     result.add(pubRes);
                 } else {
-                    CmsPublishedResource curRes = (CmsPublishedResource)result.get(pos);
+                    CmsPublishedResource curRes = result.get(pos);
                     if ((pubRes.getState() != curRes.getState())
                         || (pubRes.getMovedState() != curRes.getMovedState())
                         || !pubRes.getRootPath().equals(curRes.getRootPath())) {
@@ -398,19 +400,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     protected CmsObject m_adminCms;
 
     /** The list of indexes that are configured for offline index mode. */
-    protected List m_offlineIndexes;
+    protected List<CmsSearchIndex> m_offlineIndexes;
 
     /** The thread used of offline indexing. */
     protected CmsSearchOfflineIndexThread m_offlineIndexThread;
 
     /** Configured analyzers for languages using &lt;analyzer&gt;. */
-    private HashMap m_analyzers;
+    private HashMap<Locale, CmsSearchAnalyzer> m_analyzers;
 
     /** A map of document factory configurations. */
-    private List m_documentTypeConfigs;
+    private List<CmsSearchDocumentType> m_documentTypeConfigs;
 
     /** A map of document factories keyed by their matching Cms resource types and/or mimetypes. */
-    private Map m_documentTypes;
+    private Map<String, I_CmsDocumentFactory> m_documentTypes;
 
     /** The max age for extraction results to remain in the cache. */
     private float m_extractionCacheMaxAge;
@@ -419,7 +421,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     private CmsExtractionResultCache m_extractionResultCache;
 
     /** Contains the available field configurations. */
-    private Map m_fieldConfigurations;
+    private Map<String, CmsSearchFieldConfiguration> m_fieldConfigurations;
 
     /** The force unlock type. */
     private CmsSearchForceUnlockMode m_forceUnlockMode;
@@ -428,13 +430,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     private I_CmsTermHighlighter m_highlighter;
 
     /** A list of search indexes. */
-    private List m_indexes;
+    private List<CmsSearchIndex> m_indexes;
 
     /** Seconds to wait for an index lock. */
     private int m_indexLockMaxWaitSeconds = 10;
 
     /** Configured index sources. */
-    private Map m_indexSources;
+    private Map<String, CmsSearchIndexSource> m_indexSources;
 
     /** The max. char. length of the excerpt in the search result. */
     private int m_maxExcerptLength;
@@ -456,17 +458,17 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public CmsSearchManager() {
 
-        m_documentTypes = new HashMap();
-        m_documentTypeConfigs = new ArrayList();
-        m_analyzers = new HashMap();
-        m_indexes = new ArrayList();
-        m_indexSources = new TreeMap();
+        m_documentTypes = new HashMap<String, I_CmsDocumentFactory>();
+        m_documentTypeConfigs = new ArrayList<CmsSearchDocumentType>();
+        m_analyzers = new HashMap<Locale, CmsSearchAnalyzer>();
+        m_indexes = new ArrayList<CmsSearchIndex>();
+        m_indexSources = new TreeMap<String, CmsSearchIndexSource>();
         m_extractionCacheMaxAge = DEFAULT_EXTRACTION_CACHE_MAX_AGE;
         m_maxExcerptLength = DEFAULT_EXCERPT_LENGTH;
         m_offlineHandler = new CmsSearchOfflineHandler();
         m_offlineUpdateFrequency = DEFAULT_OFFLINE_UPDATE_FREQNENCY;
 
-        m_fieldConfigurations = new HashMap();
+        m_fieldConfigurations = new HashMap<String, CmsSearchFieldConfiguration>();
         // make sure we have a "standard" field configuration
         addFieldConfiguration(CmsSearchFieldConfiguration.DEFAULT_STANDARD);
 
@@ -587,7 +589,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_REBUILD_SEARCHINDEXES:
-                List indexNames = null;
+                List<String> indexNames = null;
                 if ((event.getData() != null)
                     && CmsStringUtil.isNotEmptyOrWhitespaceOnly((String)event.getData().get(
                         I_CmsEventListener.KEY_INDEX_NAMES))) {
@@ -652,16 +654,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         Analyzer analyzer = null;
         String className = null;
 
-        CmsSearchAnalyzer analyzerConf = (CmsSearchAnalyzer)m_analyzers.get(locale);
+        CmsSearchAnalyzer analyzerConf = m_analyzers.get(locale);
         if (analyzerConf == null) {
             throw new CmsSearchException(Messages.get().container(Messages.ERR_ANALYZER_NOT_FOUND_1, locale));
         }
 
         try {
             className = analyzerConf.getClassName();
-            Class analyzerClass = Class.forName(className);
+            Class<?> analyzerClass = Class.forName(className);
 
-            // added param for snowball analyzer
+            // added parameter for snowball analyzer
             String stemmerAlgorithm = analyzerConf.getStemmerAlgorithm();
             if (stemmerAlgorithm != null) {
                 analyzer = (Analyzer)analyzerClass.getDeclaredConstructor(new Class[] {String.class}).newInstance(
@@ -684,7 +686,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @return an unmodifiable view of the Analyzers Map
      */
-    public Map getAnalyzers() {
+    public Map<Locale, CmsSearchAnalyzer> getAnalyzers() {
 
         return Collections.unmodifiableMap(m_analyzers);
     }
@@ -698,7 +700,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public CmsSearchAnalyzer getCmsSearchAnalyzer(Locale locale) {
 
-        return (CmsSearchAnalyzer)m_analyzers.get(locale);
+        return m_analyzers.get(locale);
     }
 
     /**
@@ -722,7 +724,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         // this is really used only for the search manager GUI, 
         // so performance is not an issue and no lookup map is generated
         for (int i = 0; i < m_documentTypeConfigs.size(); i++) {
-            CmsSearchDocumentType type = (CmsSearchDocumentType)m_documentTypeConfigs.get(i);
+            CmsSearchDocumentType type = m_documentTypeConfigs.get(i);
             if (type.getName().equals(name)) {
                 return type;
             }
@@ -735,7 +737,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      *
      * @return an unmodifiable view (read-only) of the DocumentTypeConfigs Map
      */
-    public List getDocumentTypeConfigs() {
+    public List<CmsSearchDocumentType> getDocumentTypeConfigs() {
 
         return Collections.unmodifiableList(m_documentTypeConfigs);
     }
@@ -761,7 +763,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public CmsSearchFieldConfiguration getFieldConfiguration(String name) {
 
-        return (CmsSearchFieldConfiguration)m_fieldConfigurations.get(name);
+        return m_fieldConfigurations.get(name);
     }
 
     /**
@@ -769,9 +771,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @return the unmodifieable List of configured {@link CmsSearchFieldConfiguration} entries
      */
-    public List getFieldConfigurations() {
+    public List<CmsSearchFieldConfiguration> getFieldConfigurations() {
 
-        List result = new ArrayList(m_fieldConfigurations.values());
+        List<CmsSearchFieldConfiguration> result = new ArrayList<CmsSearchFieldConfiguration>(
+            m_fieldConfigurations.values());
         Collections.sort(result);
         return Collections.unmodifiableList(result);
     }
@@ -806,7 +809,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public CmsSearchIndex getIndex(String indexName) {
 
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
-            CmsSearchIndex searchIndex = (CmsSearchIndex)m_indexes.get(i);
+            CmsSearchIndex searchIndex = m_indexes.get(i);
 
             if (indexName.equalsIgnoreCase(searchIndex.getName())) {
                 return searchIndex;
@@ -831,11 +834,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @return list of names
      */
-    public List getIndexNames() {
+    public List<String> getIndexNames() {
 
-        List indexNames = new ArrayList();
+        List<String> indexNames = new ArrayList<String>();
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
-            indexNames.add(((CmsSearchIndex)m_indexes.get(i)).getName());
+            indexNames.add((m_indexes.get(i)).getName());
         }
 
         return indexNames;
@@ -849,7 +852,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public CmsSearchIndexSource getIndexSource(String sourceName) {
 
-        return (CmsSearchIndexSource)m_indexSources.get(sourceName);
+        return m_indexSources.get(sourceName);
     }
 
     /**
@@ -877,7 +880,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @return an unmodifiable list of all configured <code>{@link CmsSearchIndex}</code> instances
      */
-    public List getSearchIndexes() {
+    public List<CmsSearchIndex> getSearchIndexes() {
 
         return Collections.unmodifiableList(m_indexes);
     }
@@ -887,7 +890,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @return an unmodifiable view (read-only) of the SearchIndexSources Map
      */
-    public Map getSearchIndexSources() {
+    public Map<String, CmsSearchIndexSource> getSearchIndexSources() {
 
         return Collections.unmodifiableMap(m_indexSources);
     }
@@ -956,10 +959,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public void initOfflineIndexes() {
 
         // check which indexes are configured as offline indexes
-        List offlineIndexes = new ArrayList();
-        Iterator i = m_indexes.iterator();
+        List<CmsSearchIndex> offlineIndexes = new ArrayList<CmsSearchIndex>();
+        Iterator<CmsSearchIndex> i = m_indexes.iterator();
         while (i.hasNext()) {
-            CmsSearchIndex index = (CmsSearchIndex)i.next();
+            CmsSearchIndex index = i.next();
             if (CmsSearchIndex.REBUILD_MODE_OFFLINE.equals(index.getRebuildMode())) {
                 // this is an offline index
                 offlineIndexes.add(index);
@@ -993,11 +996,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsSearchManager.class);
         }
 
-        List updateList = null;
+        List<String> updateList = null;
         String indexList = (String)parameters.get(JOB_PARAM_INDEXLIST);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(indexList)) {
             // index list has been provided as job parameter
-            updateList = new ArrayList();
+            updateList = new ArrayList<String>();
             String[] indexNames = CmsStringUtil.splitAsArray(indexList, '|');
             for (int i = 0; i < indexNames.length; i++) {
                 // check if the index actually exists
@@ -1045,7 +1048,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsMessageContainer container = null;
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
             // iterate all configured search indexes
-            CmsSearchIndex searchIndex = (CmsSearchIndex)m_indexes.get(i);
+            CmsSearchIndex searchIndex = m_indexes.get(i);
             try {
                 // update the index 
                 updateIndex(searchIndex, report, null);
@@ -1091,11 +1094,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      */
-    public synchronized void rebuildIndexes(List indexNames, I_CmsReport report) throws CmsException {
+    public synchronized void rebuildIndexes(List<String> indexNames, I_CmsReport report) throws CmsException {
 
-        Iterator i = indexNames.iterator();
+        Iterator<String> i = indexNames.iterator();
         while (i.hasNext()) {
-            String indexName = (String)i.next();
+            String indexName = i.next();
             // get the search index by name
             CmsSearchIndex index = getIndex(indexName);
             if (index != null) {
@@ -1133,13 +1136,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 fieldConfiguration.getName()));
         }
         // validation if removal will be granted
-        Iterator itIndexes = m_indexes.iterator();
+        Iterator<CmsSearchIndex> itIndexes = m_indexes.iterator();
         CmsSearchIndex idx;
-        // the list for collecting indexes that use the given fieldconfiguration
-        List referrers = new LinkedList();
+        // the list for collecting indexes that use the given field configuration
+        List<CmsSearchIndex> referrers = new ArrayList<CmsSearchIndex>();
         CmsSearchFieldConfiguration refFieldConfig;
         while (itIndexes.hasNext()) {
-            idx = (CmsSearchIndex)itIndexes.next();
+            idx = itIndexes.next();
             refFieldConfig = idx.getFieldConfiguration();
             if (refFieldConfig.equals(fieldConfiguration)) {
                 referrers.add(idx);
@@ -1244,11 +1247,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @param indexNames the names of the index to remove
      */
-    public void removeSearchIndexes(List indexNames) {
+    public void removeSearchIndexes(List<String> indexNames) {
 
-        Iterator i = indexNames.iterator();
+        Iterator<String> i = indexNames.iterator();
         while (i.hasNext()) {
-            String indexName = (String)i.next();
+            String indexName = i.next();
             // get the search index by name
             CmsSearchIndex index = getIndex(indexName);
             if (index != null) {
@@ -1277,14 +1280,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public boolean removeSearchIndexSource(CmsSearchIndexSource indexsource) throws CmsIllegalStateException {
 
         // validation if removal will be granted
-        Iterator itIndexes = m_indexes.iterator();
+        Iterator<CmsSearchIndex> itIndexes = m_indexes.iterator();
         CmsSearchIndex idx;
-        // the list for collecting indexes that use the given indexdsource
-        List referrers = new LinkedList();
-        // the current list of referred indexsources of the iterated index
-        List refsources;
+        // the list for collecting indexes that use the given index source
+        List<CmsSearchIndex> referrers = new ArrayList<CmsSearchIndex>();
+        // the current list of referred index sources of the iterated index
+        List<CmsSearchIndexSource> refsources;
         while (itIndexes.hasNext()) {
-            idx = (CmsSearchIndex)itIndexes.next();
+            idx = itIndexes.next();
             refsources = idx.getSources();
             if (refsources != null) {
                 if (refsources.contains(indexsource)) {
@@ -1472,9 +1475,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if (m_offlineIndexThread != null) {
             m_offlineIndexThread.shutDown();
         }
-        Iterator i = m_indexes.iterator();
+        Iterator<CmsSearchIndex> i = m_indexes.iterator();
         while (i.hasNext()) {
-            CmsSearchIndex index = (CmsSearchIndex)i.next();
+            CmsSearchIndex index = i.next();
             try {
                 index.shutDown();
             } catch (IOException e) {
@@ -1606,10 +1609,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // create the factory lookup key for the document
             String documentTypeKey = A_CmsVfsDocument.getDocumentKey(typeName, mimeType);
             // check if a setting is available for this specific MIME type
-            result = (I_CmsDocumentFactory)m_documentTypes.get(documentTypeKey);
+            result = m_documentTypes.get(documentTypeKey);
             if (result == null) {
                 // no setting is available, try to use a generic setting without MIME type
-                result = (I_CmsDocumentFactory)m_documentTypes.get(A_CmsVfsDocument.getDocumentKey(typeName, null));
+                result = m_documentTypes.get(A_CmsVfsDocument.getDocumentKey(typeName, null));
                 // please note: the result may still be null
             }
         }
@@ -1617,15 +1620,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Returns the set of names of all configured documenttypes.<p>
+     * Returns the set of names of all configured document types.<p>
      * 
-     * @return the set of names of all configured documenttypes
+     * @return the set of names of all configured document types
      */
-    protected List getDocumentTypes() {
+    protected List<String> getDocumentTypes() {
 
-        List names = new ArrayList();
-        for (Iterator i = m_documentTypes.values().iterator(); i.hasNext();) {
-            I_CmsDocumentFactory factory = (I_CmsDocumentFactory)i.next();
+        List<String> names = new ArrayList<String>();
+        for (Iterator<I_CmsDocumentFactory> i = m_documentTypes.values().iterator(); i.hasNext();) {
+            I_CmsDocumentFactory factory = i.next();
             names.add(factory.getName());
         }
 
@@ -1650,15 +1653,15 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         String className = null;
         String name = null;
         I_CmsDocumentFactory documentFactory = null;
-        List resourceTypes = null;
-        List mimeTypes = null;
-        Class c = null;
+        List<String> resourceTypes = null;
+        List<String> mimeTypes = null;
+        Class<?> c = null;
 
-        m_documentTypes = new HashMap();
+        m_documentTypes = new HashMap<String, I_CmsDocumentFactory>();
 
         for (int i = 0, n = m_documentTypeConfigs.size(); i < n; i++) {
 
-            documenttype = (CmsSearchDocumentType)m_documentTypeConfigs.get(i);
+            documenttype = m_documentTypeConfigs.get(i);
             name = documenttype.getName();
 
             try {
@@ -1693,7 +1696,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     documentFactory.setCache(m_extractionResultCache);
                 }
 
-                for (Iterator key = documentFactory.getDocumentKeys(resourceTypes, mimeTypes).iterator(); key.hasNext();) {
+                for (Iterator<String> key = documentFactory.getDocumentKeys(resourceTypes, mimeTypes).iterator(); key.hasNext();) {
                     m_documentTypes.put(key.next(), documentFactory);
                 }
 
@@ -1715,7 +1718,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         CmsSearchIndex index = null;
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
-            index = (CmsSearchIndex)m_indexes.get(i);
+            index = m_indexes.get(i);
             // reset disabled flag
             index.setEnabled(true);
             // check if the index has been configured correctly
@@ -1762,7 +1765,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         int oldPrio = Thread.currentThread().getPriority();
         try {
             Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
-            List publishedResources;
+            List<CmsPublishedResource> publishedResources;
             try {
                 // read the list of all published resources
                 publishedResources = adminCms.readPublishedResources(publishHistoryId);
@@ -1773,10 +1776,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 return;
             }
 
-            List updateResources = new ArrayList();
-            Iterator itPubRes = publishedResources.iterator();
+            List<CmsPublishedResource> updateResources = new ArrayList<CmsPublishedResource>();
+            Iterator<CmsPublishedResource> itPubRes = publishedResources.iterator();
             while (itPubRes.hasNext()) {
-                CmsPublishedResource res = (CmsPublishedResource)itPubRes.next();
+                CmsPublishedResource res = itPubRes.next();
                 if (res.isFolder() || res.getState().isUnchanged()) {
                     // folders and unchanged resources don't need to be indexed after publish
                     continue;
@@ -1803,11 +1806,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             // this resource has siblings                    
                             try {
                                 // read siblings from the online project
-                                List siblings = adminCms.readSiblings(res.getRootPath(), CmsResourceFilter.ALL);
-                                Iterator itSib = siblings.iterator();
+                                List<CmsResource> siblings = adminCms.readSiblings(
+                                    res.getRootPath(),
+                                    CmsResourceFilter.ALL);
+                                Iterator<CmsResource> itSib = siblings.iterator();
                                 while (itSib.hasNext()) {
                                     // check all siblings
-                                    CmsResource sibling = (CmsResource)itSib.next();
+                                    CmsResource sibling = itSib.next();
                                     CmsPublishedResource sib = new CmsPublishedResource(sibling);
                                     if (!updateResources.contains(sib)) {
                                         // ensure sibling is added only once
@@ -1831,9 +1836,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 // sort the resource to update
                 Collections.sort(updateResources);
                 // only update the indexes if the list of remaining published resources is not empty
-                Iterator i = m_indexes.iterator();
+                Iterator<CmsSearchIndex> i = m_indexes.iterator();
                 while (i.hasNext()) {
-                    CmsSearchIndex index = (CmsSearchIndex)i.next();
+                    CmsSearchIndex index = i.next();
                     if (CmsSearchIndex.REBUILD_MODE_AUTO.equals(index.getRebuildMode())) {
                         // only update indexes which have the rebuild mode set to "auto"
                         try {
@@ -1866,7 +1871,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void updateIndex(CmsSearchIndex index, I_CmsReport report, List resourcesToIndex) throws CmsException {
+    protected void updateIndex(CmsSearchIndex index, I_CmsReport report, List<CmsPublishedResource> resourcesToIndex)
+    throws CmsException {
 
         // copy the stored admin context for the indexing
         CmsObject cms = OpenCms.initCmsObject(m_adminCms);
@@ -1913,10 +1919,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     I_CmsReport.FORMAT_HEADLINE);
 
                 // iterate all configured index sources of this index
-                Iterator sources = index.getSources().iterator();
+                Iterator<CmsSearchIndexSource> sources = index.getSources().iterator();
                 while (sources.hasNext()) {
                     // get the next index source
-                    CmsSearchIndexSource source = (CmsSearchIndexSource)sources.next();
+                    CmsSearchIndexSource source = sources.next();
                     // create the indexer
                     I_CmsIndexer indexer = source.getIndexer().newInstance(cms, report, index);
                     // new index creation, use all resources from the index source
@@ -1989,20 +1995,23 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected void updateIndexIncremental(CmsObject cms, CmsSearchIndex index, I_CmsReport report, List resourcesToIndex)
-    throws CmsException {
+    protected void updateIndexIncremental(
+        CmsObject cms,
+        CmsSearchIndex index,
+        I_CmsReport report,
+        List<CmsPublishedResource> resourcesToIndex) throws CmsException {
 
         // update the existing index
-        List updateCollections = new ArrayList();
+        List<CmsSearchIndexUpdateData> updateCollections = new ArrayList<CmsSearchIndexUpdateData>();
 
         boolean hasResourcesToDelete = false;
         boolean hasResourcesToUpdate = false;
 
         // iterate all configured index sources of this index
-        Iterator sources = index.getSources().iterator();
+        Iterator<CmsSearchIndexSource> sources = index.getSources().iterator();
         while (sources.hasNext()) {
             // get the next index source
-            CmsSearchIndexSource source = (CmsSearchIndexSource)sources.next();
+            CmsSearchIndexSource source = sources.next();
             // create the indexer
             I_CmsIndexer indexer = source.getIndexer().newInstance(cms, report, index);
             // collect the resources to update
@@ -2032,9 +2041,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
                 if (hasResourcesToDelete) {
                     // delete the resource from the index
-                    Iterator i = updateCollections.iterator();
+                    Iterator<CmsSearchIndexUpdateData> i = updateCollections.iterator();
                     while (i.hasNext()) {
-                        CmsSearchIndexUpdateData updateCollection = (CmsSearchIndexUpdateData)i.next();
+                        CmsSearchIndexUpdateData updateCollection = i.next();
                         if (updateCollection.hasResourcesToDelete()) {
                             updateCollection.getIndexer().deleteResources(
                                 writer,
@@ -2047,9 +2056,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     // create a new thread manager
                     CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(m_timeout);
 
-                    Iterator i = updateCollections.iterator();
+                    Iterator<CmsSearchIndexUpdateData> i = updateCollections.iterator();
                     while (i.hasNext()) {
-                        CmsSearchIndexUpdateData updateCollection = (CmsSearchIndexUpdateData)i.next();
+                        CmsSearchIndexUpdateData updateCollection = i.next();
                         if (updateCollection.hasResourceToUpdate()) {
                             updateCollection.getIndexer().updateResources(
                                 writer,
@@ -2096,7 +2105,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * @param report the report to write the index information to
      * @param resourcesToIndex the list of {@link CmsPublishedResource} objects to index
      */
-    protected void updateIndexOffline(I_CmsReport report, List resourcesToIndex) {
+    protected void updateIndexOffline(I_CmsReport report, List<CmsPublishedResource> resourcesToIndex) {
 
         CmsObject cms = m_adminCms;
         try {
@@ -2108,9 +2117,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // NOOP, should never happen
         }
 
-        Iterator j = m_offlineIndexes.iterator();
+        Iterator<CmsSearchIndex> j = m_offlineIndexes.iterator();
         while (j.hasNext()) {
-            CmsSearchIndex index = (CmsSearchIndex)j.next();
+            CmsSearchIndex index = j.next();
             if (index.getSources() != null) {
                 try {
                     // switch to the index project

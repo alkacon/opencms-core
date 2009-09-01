@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndexSource.java,v $
- * Date   : $Date: 2009/06/04 14:29:51 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/09/01 09:24:17 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,17 +50,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearchIndexSource implements Comparable {
+public class CmsSearchIndexSource implements Comparable<CmsSearchIndexSource> {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndexSource.class);
 
     /** A list of Cms resource types to be indexed. */
-    private List m_documentTypes;
+    private List<String> m_documentTypes;
 
     /** The indexer. */
     private I_CmsIndexer m_indexer;
@@ -72,19 +72,19 @@ public class CmsSearchIndexSource implements Comparable {
     private String m_name;
 
     /** A map of optional key/value parameters. */
-    private Map m_params;
+    private Map<String, String> m_params;
 
     /** A list of Cms resources to be indexed. */
-    private List m_resourcesNames;
+    private List<String> m_resourcesNames;
 
     /**
      * Creates a new CmsSearchIndexSource.<p>
      */
     public CmsSearchIndexSource() {
 
-        m_params = new HashMap();
-        m_resourcesNames = new ArrayList();
-        m_documentTypes = new ArrayList();
+        m_params = new HashMap<String, String>();
+        m_resourcesNames = new ArrayList<String>();
+        m_documentTypes = new ArrayList<String>();
     }
 
     /**
@@ -129,27 +129,31 @@ public class CmsSearchIndexSource implements Comparable {
      * 
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsSearchIndexSource obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof CmsSearchIndexSource) {
-            return getName().compareTo(((CmsSearchIndexSource)obj).getName());
-        }
-        return -1;
+        return m_name.compareTo(obj.m_name);
     }
 
     /**
-     * Two index sources are consided equal if their names as returned by {@link #getName()} is equal.<p>
+     * Two index sources are considered equal if their names as returned by {@link #getName()} is equal.<p>
      *
      * Note that the name of an index source has to be unique within OpenCms.<p>
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
-        return compareTo(obj) == 0;
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsSearchIndexSource) {
+            return m_name.equals(((CmsSearchIndexSource)obj).m_name);
+        }
+        return false;
     }
 
     /**
@@ -157,7 +161,7 @@ public class CmsSearchIndexSource implements Comparable {
      *
      * @return the list of names (Strings) of the document types to be indexed
      */
-    public List getDocumentTypes() {
+    public List<String> getDocumentTypes() {
 
         return m_documentTypes;
     }
@@ -200,7 +204,7 @@ public class CmsSearchIndexSource implements Comparable {
      */
     public String getParam(String key) {
 
-        return (String)m_params.get(key);
+        return m_params.get(key);
     }
 
     /**
@@ -208,7 +212,7 @@ public class CmsSearchIndexSource implements Comparable {
      *
      * @return the map of optional key/value parameters
      */
-    public Map getParams() {
+    public Map<String, String> getParams() {
 
         return m_params;
     }
@@ -218,7 +222,7 @@ public class CmsSearchIndexSource implements Comparable {
      *
      * @return the list of VFS resources to be indexed
      */
-    public List getResourcesNames() {
+    public List<String> getResourcesNames() {
 
         return m_resourcesNames;
     }
@@ -229,6 +233,7 @@ public class CmsSearchIndexSource implements Comparable {
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_name.hashCode();
@@ -248,9 +253,9 @@ public class CmsSearchIndexSource implements Comparable {
     public boolean isContaining(String rootPath) {
 
         if ((rootPath != null) && (m_resourcesNames != null)) {
-            Iterator i = m_resourcesNames.iterator();
+            Iterator<String> i = m_resourcesNames.iterator();
             while (i.hasNext()) {
-                String path = (String)i.next();
+                String path = i.next();
                 if (rootPath.startsWith(path)) {
                     return true;
                 }
@@ -296,7 +301,7 @@ public class CmsSearchIndexSource implements Comparable {
      *
      * @param documentTypes the list of document type names (Strings) to be indexed
      */
-    public void setDocumentTypes(List documentTypes) {
+    public void setDocumentTypes(List<String> documentTypes) {
 
         m_documentTypes = documentTypes;
     }
@@ -362,7 +367,7 @@ public class CmsSearchIndexSource implements Comparable {
      *
      * @param params the map of optional key/value parameters
      */
-    public void setParams(Map params) {
+    public void setParams(Map<String, String> params) {
 
         m_params = params;
     }
@@ -372,7 +377,7 @@ public class CmsSearchIndexSource implements Comparable {
      *
      * @param resources the list of Cms resources (Strings) to be indexed
      */
-    public void setResourcesNames(List resources) {
+    public void setResourcesNames(List<String> resources) {
 
         m_resourcesNames = resources;
     }
