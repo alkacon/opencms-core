@@ -223,7 +223,7 @@
                var dialogWidth = self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
                dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
                var dialogHeight = self.innerHeight ? self.innerHeight : self.document.body.clientHeight;
-               var iFrameHeight = dialogHeight - 126;
+               var iFrameHeight = dialogHeight - 115 // mmoossen: resource name in body: - 126;
                var editorLink = cms.data.EDITOR_URL + '?resource=' + path + '&amp;directedit=true&amp;elementlanguage=' + cms.data.locale + '&amp;backlink=' + cms.data.BACKLINK_URL + '&amp;redirect=true';
                var editorFrame = '<iframe style="border:none; width:100%; height:' + iFrameHeight + 'px;" name="cmsAdvancedDirectEditor" src="' + editorLink + '"></iframe>';
                var editorDialog = $('#cms-editor');
@@ -233,12 +233,12 @@
                   editorDialog.empty().attr('rel', id);
                }
                
-               
-               editorDialog.append('<div class="cms-editor-subtitle">Resource: ' + path + '</div>').append(editorFrame);
+               // mmoossen: resource name in body: editorDialog.append('<div class="cms-editor-subtitle">Resource: ' + path + '</div>')
+               editorDialog.append(editorFrame);
                editorDialog.dialog({
                   width: dialogWidth - 50,
                   height: dialogHeight - 60,
-                  title: "Editor",
+                  title: "Editor - " + path, // mmoossen: resource name in title
                   modal: true,
                   autoOpen: true,
                   closeOnEscape: false,
