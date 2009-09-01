@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementCreator.java,v $
- * Date   : $Date: 2009/09/01 13:15:26 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/09/01 13:53:54 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,14 +64,14 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.6 
  */
 public class CmsElementCreator {
 
     /** The format used for the macro replacement. */
-    public static final String FILE_NUMBER_FORMAT = "%0.5d";
+    public static final String FILE_NUMBER_FORMAT = "%0.4d";
 
     /** The macro name for new file name patterns. */
     public static final String MACRO_NUMBER = "number";

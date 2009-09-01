@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/09/01 13:15:26 $
- * Version: $Revision: 1.1.2.14 $
+ * Date   : $Date: 2009/09/01 13:53:25 $
+ * Version: $Revision: 1.1.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.14 $
+ * @version $Revision: 1.1.2.15 $
  * 
  * @since 7.6
  */
@@ -452,7 +452,7 @@ public class CmsADEServer extends CmsJspActionElement {
             }
 
             String type = dataParam;
-            CmsElementCreator elemCreator = new CmsElementCreator(cms, cms.readResource(containerPageUri));
+            CmsElementCreator elemCreator = new CmsElementCreator(cms, cntPage.getNewConfig());
 
             CmsResource newResource = elemCreator.createElement(cms, type);
             result.put(P_ID, CmsElementUtil.createId(newResource.getStructureId()));
