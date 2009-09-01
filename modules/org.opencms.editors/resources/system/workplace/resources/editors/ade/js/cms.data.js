@@ -266,9 +266,7 @@
    
       loadJSON({
          'obj': OBJ_NEW,
-         'data': type,
-         'uri': cms.data.CURRENT_URI
-      
+         'data': type
       }, function(ok, data) {
          afterCreate(ok, data.id, data.uri);
       });
