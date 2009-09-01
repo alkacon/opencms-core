@@ -22,6 +22,8 @@ String galleryPath = cms.link("/system/workplace/galleries/");
 FCKConfig.AutoDetectLanguage = false;
 FCKConfig.DefaultLanguage = "<%= wp.getLocale().getLanguage() %>";
 
+FCKConfig.CustomStyles = {};
+
 FCKConfig.ProcessHTMLEntities = true;
 FCKConfig.ProcessNumericEntities = false;
 FCKConfig.IncludeLatinEntities = false;

@@ -18,6 +18,9 @@ Properties displayOptions = options.getDisplayOptions(cms);
 // get editor configuration object from session, because request parameters do not work
 CmsFCKEditorConfiguration extConf = CmsFCKEditorConfiguration.getConfiguration(session);
 
+%>FCKConfig.CustomStyles = {};
+<%
+
 String cssPath = extConf.getUriStyleSheet();
 
 // This editor supports user defined styles. To show these styles, a plain text file containing the style definition
