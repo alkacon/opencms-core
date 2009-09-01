@@ -130,7 +130,7 @@
             var elem = $(this).css('position', 'relative');
             var elemId = elem.attr('rel');
             if (elemId && cms.data.elements[elemId]) {
-               if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
+               if (cms.data.elements[elemId].allowEdit) {
                   var handleDiv = $('<div class="cms-handle"></div>').appendTo(elem).hover(function() {
                      cms.move.hoverIn(elem, 2);
                      startHoverTimeout(handleDiv, 'edit');
@@ -160,7 +160,7 @@
       var handleDiv = $('<div class="cms-handle"></div>').appendTo(elem);
       
       var handles = {
-         'edit': cms.data.elements[elemId].allowEdit ? $('<a class="cms-edit cms-edit-enabled"></a>').click(openEditDialog) : $('<a class="cms-edit cms-edit-locked" title="locked by " onclick="return false;"></a>'),
+         'edit': cms.data.elements[elemId].allowEdit ? $('<a class="cms-edit cms-edit-enabled"></a>').click(openEditDialog) : $('<a class="cms-edit cms-edit-locked" title="locked by '+cms.data.elements[elemId].locked+'" onclick="return false;"></a>'),
          'move': $('<a class="cms-move"></a>').mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd),
          'delete': $('<a class="cms-delete"></a>').click(deleteItem)
       };
@@ -216,7 +216,7 @@
    var openEditDialog = cms.toolbar.openEditDialog = function() {
       var elemId = $(this).closest('.cms-element').attr('rel');
       if (elemId && cms.data.elements[elemId]) {
-         if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
+         if (cms.data.elements[elemId].allowEdit) {
             var element = cms.data.elements[elemId];
             var isNew = element.status == cms.data.STATUS_NEWCONFIG;
             var _openDialog = function(path, id, afterClose) {
