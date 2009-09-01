@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/09/01 08:44:21 $
- * Version: $Revision: 1.1.2.12 $
+ * Date   : $Date: 2009/09/01 09:19:08 $
+ * Version: $Revision: 1.1.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.editors.ade;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -43,8 +44,15 @@ import org.opencms.json.JSONObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.CmsContainerPageLoader;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
+import org.opencms.search.CmsSearch;
+import org.opencms.search.CmsSearchParameters;
+import org.opencms.search.CmsSearchResult;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -57,6 +65,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -65,6 +74,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.collections.list.NodeCachingLinkedList;
 import org.apache.commons.logging.Log;
 
 /**
@@ -74,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.12 $
+ * @version $Revision: 1.1.2.13 $
  * 
  * @since 7.6
  */
@@ -88,6 +98,18 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** User additional info key constant. */
     public static final String ADDINFO_ADE_FAVORITE_LIST = "ADE_FAVORITE_LIST";
+
+    /** User additional info key constant. */
+    public static final String ADDINFO_ADE_RECENTLIST_SIZE = "ADE_RECENTLIST_SIZE";
+
+    /** User additional info key constant. */
+    public static final String ADDINFO_ADE_SEARCHPAGE_SIZE = "ADE_SEARCHPAGE_SIZE";
+
+    /** default recent list size constant. */
+    public static final int DEFAULT_RECENT_LIST_SIZE = 10;
+
+    /** default search page size constant. */
+    public static final int DEFAULT_SEARCHPAGE_SIZE = 10;
 
     /** State Constant for client-side element type 'new element configuration'. */
     public static final String ELEMENT_NEWCONFIG = "NC";
@@ -236,6 +258,9 @@ public class CmsADEServer extends CmsJspActionElement {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsADEServer.class);
 
+    /** The memory monitor instance. */
+    private CmsMemoryMonitor m_cache = OpenCms.getMemoryMonitor();
+
     /**
      * Constructor.<p>
      * 
@@ -291,6 +316,32 @@ public class CmsADEServer extends CmsJspActionElement {
         }
         // write the result
         result.write(getResponse().getWriter());
+    }
+
+    /**
+     * Compares two search option objects.<p>
+     * 
+     * Better than to implement the {@link CmsSearchOptions#equals(Object)} method,
+     * since the page number is not considered in this comparison.<p>
+     * 
+     * @param o1 the first search option object
+     * @param o2 the first search option object
+     * 
+     * @return <code>true</code> if they are equal
+     */
+    protected boolean compareSearchOptions(CmsSearchOptions o1, CmsSearchOptions o2) {
+
+        if (!o1.getLocation().equals(o2.getLocation())) {
+            return false;
+        }
+        if (!o1.getText().equals(o2.getText())) {
+            return false;
+        }
+        if (!o1.getType().equals(o2.getType())) {
+            return false;
+        }
+        return true;
+
     }
 
     /**
@@ -358,12 +409,7 @@ public class CmsADEServer extends CmsJspActionElement {
             result.put(P_FAVORITES, getFavoriteList(null, cntPage.getTypes()));
         } else if (objParam.equals(OBJ_REC)) {
             // get recent list
-            result.put(P_RECENT, CmsRecentListManager.getInstance().getRecentList(
-                cms,
-                null,
-                cntPage.getTypes(),
-                request,
-                getResponse()));
+            result.put(P_RECENT, getRecentList(null, cntPage.getTypes()));
         } else if (objParam.equals(OBJ_SEARCH)) {
             // new search
             String containerPageUri = request.getParameter(PARAMETER_URL);
@@ -374,12 +420,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 return result;
             }
             CmsSearchOptions searchOptions = new CmsSearchOptions(request);
-            JSONObject searchResult = CmsSearchListManager.getInstance().getSearchResult(
-                cms,
-                searchOptions,
-                cntPage.getTypes(),
-                request,
-                getResponse());
+            JSONObject searchResult = getSearchResult(searchOptions, cntPage.getTypes());
             result.merge(searchResult, true, false);
         } else if (objParam.equals(OBJ_LS)) {
             // last search
@@ -391,12 +432,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 return result;
             }
             CmsSearchOptions searchOptions = new CmsSearchOptions(request);
-            JSONObject searchResult = CmsSearchListManager.getInstance().getLastSearchResult(
-                cms,
-                searchOptions,
-                cntPage.getTypes(),
-                request,
-                getResponse());
+            JSONObject searchResult = getLastSearchResult(searchOptions, cntPage.getTypes());
             result.merge(searchResult, true, false);
         } else if (objParam.equals(OBJ_NEW)) {
             // get a new element
@@ -456,7 +492,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 return result;
             }
             JSONArray list = new JSONArray(dataParam);
-            setFavoriteList(getCmsObject(), list);
+            setFavoriteList(list);
         } else if (objParam.equals(OBJ_REC)) {
             // save the recent list
             String dataParam = getRequest().getParameter(PARAMETER_DATA);
@@ -467,7 +503,7 @@ public class CmsADEServer extends CmsJspActionElement {
                 return result;
             }
             JSONArray list = new JSONArray(dataParam);
-            CmsRecentListManager.getInstance().setRecentList(getCmsObject(), list);
+            setRecentList(list);
         } else if (objParam.equals(OBJ_CNT)) {
             // save the container page
             String urlParam = getRequest().getParameter(PARAMETER_URL);
@@ -578,12 +614,7 @@ public class CmsADEServer extends CmsJspActionElement {
         JSONArray resFavorites = getFavoriteList(resElements, types);
         result.put(P_FAVORITES, resFavorites);
         // collect the recent list
-        JSONArray resRecent = CmsRecentListManager.getInstance().getRecentList(
-            cms,
-            resElements,
-            types,
-            getRequest(),
-            getResponse());
+        JSONArray resRecent = getRecentList(resElements, types);
         result.put(P_RECENT, resRecent);
 
         return result;
@@ -609,7 +640,7 @@ public class CmsADEServer extends CmsJspActionElement {
 
         CmsElementUtil elemUtil = new CmsElementUtil(cms, req, res);
 
-        JSONArray result = getFavoriteListFromStore(cms);
+        JSONArray result = getFavoriteListFromStore();
 
         // iterate the list and create the missing elements
         for (int i = 0; i < result.length(); i++) {
@@ -625,21 +656,38 @@ public class CmsADEServer extends CmsJspActionElement {
     /**
      * Returns the cached list, or creates it if not available.<p>
      * 
-     * @param cms the current cms context
-     * 
      * @return the cached recent list
      * 
      * @throws JSONException if something goes wrong
      */
-    protected JSONArray getFavoriteListFromStore(CmsObject cms) throws JSONException {
+    protected JSONArray getFavoriteListFromStore() throws JSONException {
 
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = getCmsObject().getRequestContext().currentUser();
         String favListStr = (String)user.getAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST);
         JSONArray favoriteList = new JSONArray();
         if (favListStr != null) {
             favoriteList = new JSONArray(favListStr);
         }
         return favoriteList;
+    }
+
+    /**
+     * Returns elements for the search result matching the given options.<p>
+     * 
+     * @param options the search options
+     * @param types the supported container types
+     * 
+     * @return JSON object with 2 properties, {@link CmsADEServer#P_ELEMENTS} and {@link CmsADEServer#P_HASMORE}
+     * 
+     * @throws JSONException if something goes wrong
+     */
+    protected JSONObject getLastSearchResult(CmsSearchOptions options, Set<String> types) throws JSONException {
+
+        CmsSearchOptions lastOptions = getSearchOptionsFromCache();
+        if (compareSearchOptions(lastOptions, options)) {
+            return new JSONObject();
+        }
+        return getSearchResult(lastOptions, types);
     }
 
     /**
@@ -673,6 +721,140 @@ public class CmsADEServer extends CmsJspActionElement {
             resElements.put(type, resElement);
         }
         return resElements;
+    }
+
+    /**
+     * Returns the current user's recent list.<p>
+     * 
+     * @param resElements the current page's element list
+     * @param types the supported container types
+     * 
+     * @return the current user's recent list
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws JSONException if something goes wrong in the json manipulation
+     */
+    protected JSONArray getRecentList(JSONObject resElements, Collection<String> types)
+    throws JSONException, CmsException {
+
+        CmsElementUtil elemUtil = new CmsElementUtil(getCmsObject(), getRequest(), getResponse());
+
+        JSONArray result = new JSONArray();
+        // get the cached list
+        List<CmsUUID> recentList = getRecentListFromCache();
+        // iterate the list and create the missing elements
+        for (CmsUUID structureId : recentList) {
+            String id = CmsElementUtil.createId(structureId);
+            result.put(id);
+            if ((resElements != null) && !resElements.has(id)) {
+                resElements.put(id, elemUtil.getElementData(structureId, types));
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Returns the cached list, or creates it if not available.<p>
+     * 
+     * @return the cached recent list
+     */
+    protected List<CmsUUID> getRecentListFromCache() {
+
+        CmsUser user = getCmsObject().getRequestContext().currentUser();
+        List<CmsUUID> recentList = m_cache.getADERecentList(user.getId().toString());
+        if (recentList == null) {
+            Integer maxElems = (Integer)user.getAdditionalInfo(ADDINFO_ADE_RECENTLIST_SIZE);
+            if (maxElems == null) {
+                maxElems = new Integer(DEFAULT_RECENT_LIST_SIZE);
+            }
+            recentList = new NodeCachingLinkedList(maxElems.intValue());
+            m_cache.cacheADERecentList(user.getId().toString(), recentList);
+        }
+        return recentList;
+    }
+
+    /**
+     * Returns the cached search options.<p>
+     * 
+     * @return the cached search options
+     */
+    protected CmsSearchOptions getSearchOptionsFromCache() {
+
+        CmsUser user = getCmsObject().getRequestContext().currentUser();
+        CmsSearchOptions searchOptions = m_cache.getADESearchOptions(user.getId().toString());
+        return searchOptions;
+    }
+
+    /**
+     * Returns elements for the search result matching the given options.<p>
+     * 
+     * @param options the search options
+     * @param types the supported container types
+     * 
+     * @return JSON object with 2 properties, {@link CmsADEServer#P_ELEMENTS} and {@link CmsADEServer#P_HASMORE}
+     * 
+     * @throws JSONException if something goes wrong
+     */
+    protected JSONObject getSearchResult(CmsSearchOptions options, Set<String> types) throws JSONException {
+
+        CmsObject cms = getCmsObject();
+
+        JSONObject result = new JSONObject();
+        JSONArray elements = new JSONArray();
+        result.put(CmsADEServer.P_ELEMENTS, elements);
+
+        // get the configured search index 
+        CmsUser user = cms.getRequestContext().currentUser();
+        String indexName = new CmsUserSettings(user).getWorkplaceSearchIndexName();
+
+        // get the page size
+        Integer pageSize = (Integer)user.getAdditionalInfo(ADDINFO_ADE_SEARCHPAGE_SIZE);
+        if (pageSize == null) {
+            pageSize = new Integer(DEFAULT_SEARCHPAGE_SIZE);
+        }
+
+        // set the search parameters
+        CmsSearchParameters params = new CmsSearchParameters(options.getText());
+        params.setIndex(indexName);
+        params.setMatchesPerPage(pageSize.intValue());
+        params.setSearchPage(options.getPage() + 1);
+        params.setResourceTypes(CmsStringUtil.splitAsList(options.getType(), ","));
+
+        // search
+        CmsSearch searchBean = new CmsSearch();
+        searchBean.init(cms);
+        searchBean.setParameters(params);
+        searchBean.setSearchRoot(options.getLocation());
+        List<CmsSearchResult> searchResults = searchBean.getSearchResult();
+
+        // helper
+        CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse());
+
+        // iterate result list and generate the elements
+        Iterator<CmsSearchResult> it = searchResults.iterator();
+        while (it.hasNext()) {
+            CmsSearchResult sr = it.next();
+            // get the element data
+            String uri = cms.getRequestContext().removeSiteRoot(sr.getPath());
+            try {
+                JSONObject resElement = elemUtil.getElementData(uri, types);
+                // store element data
+                elements.put(resElement);
+            } catch (Exception e) {
+                LOG.warn(e.getLocalizedMessage(), e);
+            }
+        }
+
+        // check if there are more search pages
+        int results = searchBean.getSearchPage() * searchBean.getMatchesPerPage();
+        boolean hasMore = (searchBean.getSearchResultCount() > results);
+        result.put(CmsADEServer.P_HASMORE, hasMore);
+
+        // cache the search options
+        m_cache.cacheADESearchOptions(user.getId().toString(), options);
+
+        return result;
     }
 
     /**
@@ -747,15 +929,32 @@ public class CmsADEServer extends CmsJspActionElement {
     /**
      * Sets the favorite list.<p>
      * 
-     * @param cms the cms context
      * @param list the element id list
      * 
      * @throws CmsException if something goes wrong 
      */
-    protected void setFavoriteList(CmsObject cms, JSONArray list) throws CmsException {
+    protected void setFavoriteList(JSONArray list) throws CmsException {
 
-        CmsUser user = cms.getRequestContext().currentUser();
+        CmsUser user = getCmsObject().getRequestContext().currentUser();
         user.setAdditionalInfo(ADDINFO_ADE_FAVORITE_LIST, list.toString());
-        cms.writeUser(user);
+        getCmsObject().writeUser(user);
+    }
+
+    /**
+     * Sets the recent list.<p>
+     * 
+     * @param list the element id list
+     */
+    protected void setRecentList(JSONArray list) {
+
+        List<CmsUUID> recentList = getRecentListFromCache();
+        recentList.clear();
+        for (int i = 0; i < list.length(); i++) {
+            try {
+                recentList.add(CmsElementUtil.parseId(list.optString(i)));
+            } catch (CmsIllegalArgumentException t) {
+                LOG.warn(Messages.get().container(Messages.ERR_INVALID_ID_1, list.optString(i)), t);
+            }
+        }
     }
 }

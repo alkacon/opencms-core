@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2009/08/27 14:46:19 $
- * Version: $Revision: 1.69.2.2 $
+ * Date   : $Date: 2009/09/01 09:20:14 $
+ * Version: $Revision: 1.69.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,6 +71,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
 import org.opencms.workplace.editors.ade.CmsContainerPageBean;
+import org.opencms.workplace.editors.ade.CmsSearchOptions;
 import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlEntityResolver;
 
@@ -102,7 +103,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.69.2.2 $ 
+ * @version $Revision: 1.69.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,6 +123,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Cache for access control lists. */
     private Map m_accessControlListCache;
+
+    /** Cache for ADE recent lists. */
+    private Map<String, List<CmsUUID>> m_adeRecentLists;
+
+    /** Cache for ADE search options. */
+    private Map<String, CmsSearchOptions> m_adeSearchOptions;
 
     /** If the property cache is enabled. */
     private boolean m_cacheProperty = true;
@@ -499,6 +506,28 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     }
 
     /**
+     * Caches the given ADE recent list under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param list the recent list to cache
+     */
+    public void cacheADERecentList(String key, List<CmsUUID> list) {
+
+        m_adeRecentLists.put(key, list);
+    }
+
+    /**
+     * Caches the given ADE search options under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param opts the search options to cache
+     */
+    public void cacheADESearchOptions(String key, CmsSearchOptions opts) {
+
+        m_adeSearchOptions.put(key, opts);
+    }
+
+    /**
      * Caches the given container page under the given key and for the given project.<p>
      * 
      * @param key the cache key
@@ -805,6 +834,10 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         flushPropertyLists();
         flushProjectResources();
         flushPublishedResources();
+        flushContainerPages(true);
+        flushContainerPages(false);
+        flushADERecentLists();
+        flushADESearchOptions();
     }
 
     /**
@@ -860,6 +893,22 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     public void flushACLs() {
 
         m_accessControlListCache.clear();
+    }
+
+    /**
+     * Flushes the ADE recent list cache.<p>
+     */
+    public void flushADERecentLists() {
+
+        m_adeRecentLists.clear();
+    }
+
+    /**
+     * Flushes the ADE search options cache.<p>
+     */
+    public void flushADESearchOptions() {
+
+        m_adeSearchOptions.clear();
     }
 
     /**
@@ -1075,6 +1124,30 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
         m_xmlTemporaryEntityCache.clear();
 
+    }
+
+    /**
+     * Returns the ADE recent list cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for, this may be the user's uuid
+     * 
+     * @return the cached recent list with the given cache key
+     */
+    public List<CmsUUID> getADERecentList(String key) {
+
+        return m_adeRecentLists.get(key);
+    }
+
+    /**
+     * Returns the ADE search options cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for, this may be the user's uuid
+     * 
+     * @return the cached search options with the given cache key
+     */
+    public CmsSearchOptions getADESearchOptions(String key) {
+
+        return m_adeSearchOptions.get(key);
     }
 
     /**

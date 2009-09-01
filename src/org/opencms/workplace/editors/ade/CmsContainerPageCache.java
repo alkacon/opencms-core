@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageCache.java,v $
- * Date   : $Date: 2009/09/01 08:44:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/09/01 09:19:08 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.content.CmsXmlContent;
@@ -59,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.6 
  */
@@ -73,6 +74,9 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
 
     /** The singleton instance. */
     private static CmsContainerPageCache m_instance;
+
+    /** The memory monitor instance. */
+    private CmsMemoryMonitor m_cache = OpenCms.getMemoryMonitor();
 
     /**
      * Default Constructor.<p>
@@ -140,16 +144,16 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
 
             case I_CmsEventListener.EVENT_CLEAR_ONLINE_CACHES:
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
-                OpenCms.getMemoryMonitor().flushContainerPages(true);
+                m_cache.flushContainerPages(true);
                 break;
 
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
-                OpenCms.getMemoryMonitor().flushContainerPages(true);
-                OpenCms.getMemoryMonitor().flushContainerPages(false);
+                m_cache.flushContainerPages(true);
+                m_cache.flushContainerPages(false);
                 break;
 
             case I_CmsEventListener.EVENT_CLEAR_OFFLINE_CACHES:
-                OpenCms.getMemoryMonitor().flushContainerPages(false);
+                m_cache.flushContainerPages(false);
                 break;
 
             default:
@@ -176,7 +180,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
             try {
                 // try to load it
                 CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(resource));
-                CmsContainerPageCache.getInstance().setCache(cms, resource, content);
+                setCache(cms, resource, content);
             } catch (CmsException e) {
                 // something really bad happened
                 LOG.error(Messages.get().getBundle().key(
@@ -255,7 +259,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
      */
     protected Map<Locale, CmsContainerPageBean> lookupOffline(String cacheKey) {
 
-        Map<Locale, CmsContainerPageBean> retValue = OpenCms.getMemoryMonitor().getCacheContainerPage(cacheKey, false);
+        Map<Locale, CmsContainerPageBean> retValue = m_cache.getCacheContainerPage(cacheKey, false);
         if (LOG.isDebugEnabled()) {
             if (retValue == null) {
                 LOG.debug(Messages.get().getBundle().key(
@@ -280,7 +284,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
      */
     protected Map<Locale, CmsContainerPageBean> lookupOnline(String cacheKey) {
 
-        Map<Locale, CmsContainerPageBean> retValue = OpenCms.getMemoryMonitor().getCacheContainerPage(cacheKey, true);
+        Map<Locale, CmsContainerPageBean> retValue = m_cache.getCacheContainerPage(cacheKey, true);
         if (LOG.isDebugEnabled()) {
             if (retValue == null) {
                 LOG.debug(Messages.get().getBundle().key(
@@ -417,7 +421,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
      */
     protected void setCacheOffline(String cacheKey, Map<Locale, CmsContainerPageBean> data) {
 
-        OpenCms.getMemoryMonitor().cacheContainerPages(cacheKey, data, false);
+        m_cache.cacheContainerPages(cacheKey, data, false);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_DEBUG_CACHE_SET_OFFLINE_2,
@@ -433,7 +437,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
      */
     protected void setCacheOnline(String cacheKey, Map<Locale, CmsContainerPageBean> data) {
 
-        OpenCms.getMemoryMonitor().cacheContainerPages(cacheKey, data, true);
+        m_cache.cacheContainerPages(cacheKey, data, true);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_DEBUG_CACHE_SET_ONLINE_2,
@@ -456,7 +460,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
         }
 
         // remove the resource cached by it's structure ID
-        OpenCms.getMemoryMonitor().uncacheContainerPage(resource.getStructureId().toString(), false);
+        m_cache.uncacheContainerPage(resource.getStructureId().toString(), false);
     }
 
     /**
