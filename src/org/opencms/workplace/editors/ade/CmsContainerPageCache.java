@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageCache.java,v $
- * Date   : $Date: 2009/08/27 14:46:18 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/09/01 08:44:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.6 
  */
@@ -113,7 +113,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
     public void cmsEvent(CmsEvent event) {
 
         CmsResource resource = null;
-        List resources = null;
+        List<CmsResource> resources = null;
 
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED:
@@ -127,14 +127,14 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
 
             case I_CmsEventListener.EVENT_RESOURCES_AND_PROPERTIES_MODIFIED:
                 // a list of resources and all of their properties have been modified
-                resources = (List)event.getData().get("resources");
+                resources = (List<CmsResource>)event.getData().get("resources");
                 uncacheResources(resources);
                 break;
 
             case I_CmsEventListener.EVENT_RESOURCE_DELETED:
             case I_CmsEventListener.EVENT_RESOURCES_MODIFIED:
                 // a list of resources has been modified
-                resources = (List)event.getData().get("resources");
+                resources = (List<CmsResource>)event.getData().get("resources");
                 uncacheResources(resources);
                 break;
 
@@ -337,16 +337,16 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
         }
 
         // iterate over every locale
-        Iterator itLocales = content.getLocales().iterator();
+        Iterator<Locale> itLocales = content.getLocales().iterator();
         while (itLocales.hasNext()) {
-            Locale locale = (Locale)itLocales.next();
+            Locale locale = itLocales.next();
 
             CmsContainerPageBean cntPage = new CmsContainerPageBean(locale, newConfigRes);
 
             // iterate over every container in the given locale
-            Iterator itContainers = content.getValues(CmsContainerPageLoader.N_CONTAINER, locale).iterator();
+            Iterator<I_CmsXmlContentValue> itContainers = content.getValues(CmsContainerPageLoader.N_CONTAINER, locale).iterator();
             while (itContainers.hasNext()) {
-                I_CmsXmlContentValue container = (I_CmsXmlContentValue)itContainers.next();
+                I_CmsXmlContentValue container = itContainers.next();
                 String containerPath = container.getPath();
                 // get the name and type
                 String name = content.getValue(
@@ -360,11 +360,11 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
                 CmsContainerBean cnt = new CmsContainerBean(name, type, -1);
 
                 // iterate over the container elements
-                Iterator itElements = content.getValues(
+                Iterator<I_CmsXmlContentValue> itElements = content.getValues(
                     CmsXmlUtils.concatXpath(containerPath, CmsContainerPageLoader.N_ELEMENT),
                     locale).iterator();
                 while (itElements.hasNext()) {
-                    I_CmsXmlContentValue element = (I_CmsXmlContentValue)itElements.next();
+                    I_CmsXmlContentValue element = itElements.next();
                     String elementPath = element.getPath();
                     // get uri and formatter
                     String elemUri = content.getValue(
@@ -467,7 +467,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
      * 
      * @see #uncacheResource(CmsResource)
      */
-    protected void uncacheResources(List resources) {
+    protected void uncacheResources(List<CmsResource> resources) {
 
         if (resources == null) {
             LOG.warn(Messages.get().container(Messages.LOG_WARN_UNCACHE_NULL_0));
@@ -476,7 +476,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
 
         for (int i = 0, n = resources.size(); i < n; i++) {
             // remove the resource
-            uncacheResource((CmsResource)resources.get(i));
+            uncacheResource(resources.get(i));
         }
     }
 }

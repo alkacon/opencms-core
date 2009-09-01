@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementCreator.java,v $
- * Date   : $Date: 2009/08/27 14:46:19 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/01 08:44:20 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import java.util.Set;
  * 
  * @author Georg Westenberger
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6 
  */
@@ -138,11 +138,11 @@ public class CmsElementCreator {
         pattern = cms.getRequestContext().removeSiteRoot(pattern);
         PrintfFormat format = new PrintfFormat(FILE_NUMBER_FORMAT);
         String folderName = CmsResource.getFolderPath(pattern);
-        List resources = cms.readResources(folderName, CmsResourceFilter.ALL, false);
+        List<CmsResource> resources = cms.readResources(folderName, CmsResourceFilter.ALL, false);
         // now create a list of all resources that just contains the file names
         Set<String> result = new HashSet<String>();
         for (int i = 0; i < resources.size(); i++) {
-            CmsResource resource = (CmsResource)resources.get(i);
+            CmsResource resource = resources.get(i);
             result.add(cms.getSitePath(resource));
         }
 
@@ -229,19 +229,18 @@ public class CmsElementCreator {
         } else if (content.hasLocale(defaultLocale)) {
             locale = defaultLocale;
         } else {
-            List locales = content.getLocales();
+            List<Locale> locales = content.getLocales();
             if (locales.size() == 0) {
-
                 throw new CmsException(Messages.get().container(
                     Messages.ERR_NO_TYPE_CONFIG_1,
                     content.getFile().getRootPath()));
             }
-            locale = (Locale)locales.get(0);
+            locale = locales.get(0);
         }
 
-        Iterator itTypes = content.getValues(N_ADE_TYPE, locale).iterator();
+        Iterator<I_CmsXmlContentValue> itTypes = content.getValues(N_ADE_TYPE, locale).iterator();
         while (itTypes.hasNext()) {
-            I_CmsXmlContentValue xmlType = (I_CmsXmlContentValue)itTypes.next();
+            I_CmsXmlContentValue xmlType = itTypes.next();
             String typePath = xmlType.getPath();
             String source = content.getValue(CmsXmlUtils.concatXpath(typePath, N_SOURCE), locale).getStringValue(cms);
             String destination = content.getValue(

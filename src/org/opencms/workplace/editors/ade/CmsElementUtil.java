@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/08/27 14:46:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/01 08:44:21 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.6
  */
@@ -203,9 +203,9 @@ public final class CmsElementUtil {
         JSONObject formatters = new JSONObject();
         resElement.put(CmsADEServer.P_FORMATTERS, formatters);
         if (resource.getTypeId() == CmsResourceTypeContainerPage.getStaticTypeId()) {
-            Iterator itTypes = types.iterator();
+            Iterator<String> itTypes = types.iterator();
             while (itTypes.hasNext()) {
-                String type = (String)itTypes.next();
+                String type = itTypes.next();
                 formatters.put(type, ""); // empty formatters
                 resContents.put(type, ""); // empty contents
             }
@@ -228,15 +228,15 @@ public final class CmsElementUtil {
         } else {
             // TODO: this may not be performing well, any way to access the content handler without unmarshal??
             CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(resource));
-            Iterator it = content.getContentDefinition().getContentHandler().getFormatters().entrySet().iterator();
+            Iterator<Map.Entry<String, String>> it = content.getContentDefinition().getContentHandler().getFormatters().entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                String type = (String)entry.getKey();
+                Map.Entry<String, String> entry = it.next();
+                String type = entry.getKey();
                 if (!types.contains(type) && !type.equals(CmsDefaultXmlContentHandler.DEFAULT_FORMATTER_TYPE)) {
                     // skip not supported types
                     continue;
                 }
-                String formatterUri = (String)entry.getValue();
+                String formatterUri = entry.getValue();
                 formatters.put(type, formatterUri);
                 // execute the formatter jsp for the given element
                 try {

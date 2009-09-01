@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageHandler.java,v $
- * Date   : $Date: 2009/08/26 12:59:04 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/09/01 08:44:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 7.6
  */
@@ -79,9 +79,9 @@ public class CmsContainerPageHandler extends CmsDefaultXmlContentHandler {
         String namePath = CmsXmlUtils.concatXpath(value.getPath(), CmsContainerPageLoader.N_NAME);
         String name = content.getValue(namePath, locale).getStringValue(cms);
         // iterate over all containers
-        Iterator itValues = content.getValues(CmsContainerPageLoader.N_CONTAINER, locale).iterator();
+        Iterator<I_CmsXmlContentValue> itValues = content.getValues(CmsContainerPageLoader.N_CONTAINER, locale).iterator();
         while (itValues.hasNext()) {
-            I_CmsXmlContentValue itValue = (I_CmsXmlContentValue)itValues.next();
+            I_CmsXmlContentValue itValue = itValues.next();
             if (itValue.getPath().equals(value.getPath())) {
                 // skip current container
                 continue;

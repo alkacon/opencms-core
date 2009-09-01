@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsRecentListManager.java,v $
- * Date   : $Date: 2009/08/27 14:46:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/01 08:44:20 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 7.6
  */
@@ -76,14 +76,14 @@ public final class CmsRecentListManager {
     private static CmsRecentListManager m_instance;
 
     /** Recent list cache. */
-    private Map<String, List<CmsUUID>> m_recentListCache;
+    private Map<CmsUUID, List<CmsUUID>> m_recentListCache;
 
     /**
      * Creates a new instance.<p>
      */
     private CmsRecentListManager() {
 
-        m_recentListCache = new HashMap<String, List<CmsUUID>>();
+        m_recentListCache = new HashMap<CmsUUID, List<CmsUUID>>();
     }
 
     /**
@@ -173,7 +173,7 @@ public final class CmsRecentListManager {
                 maxElems = new Integer(DEFAULT_RECENT_LIST_SIZE);
             }
             recentList = new NodeCachingLinkedList(maxElems.intValue());
-            m_recentListCache.put(user.getId().toString(), recentList);
+            m_recentListCache.put(user.getId(), recentList);
         }
         return recentList;
     }
