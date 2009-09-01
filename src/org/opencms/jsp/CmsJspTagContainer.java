@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/08/27 14:46:20 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2009/09/01 08:31:36 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 7.6 
  */
@@ -197,6 +197,7 @@ public class CmsJspTagContainer extends TagSupport {
      * @throws JspException in case something goes wrong
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
+    @Override
     public int doStartTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
@@ -250,6 +251,7 @@ public class CmsJspTagContainer extends TagSupport {
     /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
+    @Override
     public void release() {
 
         super.release();

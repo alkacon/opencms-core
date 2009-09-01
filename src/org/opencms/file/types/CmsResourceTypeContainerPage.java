@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Attic/CmsResourceTypeContainerPage.java,v $
- * Date   : $Date: 2009/08/13 10:47:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/01 08:31:36 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import org.opencms.main.OpenCms;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6 
  */
@@ -117,6 +117,7 @@ public class CmsResourceTypeContainerPage extends CmsResourceTypeXmlContent {
     /**
      * @see org.opencms.file.types.CmsResourceTypeXmlContent#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return CmsContainerPageLoader.RESOURCE_LOADER_ID;
@@ -125,6 +126,7 @@ public class CmsResourceTypeContainerPage extends CmsResourceTypeXmlContent {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
+    @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
