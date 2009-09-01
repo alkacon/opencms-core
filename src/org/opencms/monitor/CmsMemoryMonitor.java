@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2009/09/01 09:20:14 $
- * Version: $Revision: 1.69.2.3 $
+ * Date   : $Date: 2009/09/01 09:23:31 $
+ * Version: $Revision: 1.69.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,6 +70,7 @@ import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
+import org.opencms.workplace.editors.ade.CmsADEServer;
 import org.opencms.workplace.editors.ade.CmsContainerPageBean;
 import org.opencms.workplace.editors.ade.CmsSearchOptions;
 import org.opencms.xml.CmsXmlContentDefinition;
@@ -103,7 +104,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.69.2.3 $ 
+ * @version $Revision: 1.69.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1758,6 +1759,16 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         Map memObjectCache = new HashMap();
         m_memObjectCache = Collections.synchronizedMap(memObjectCache);
         register(CmsMemoryObjectCache.class.getName(), memObjectCache);
+
+        // ADE search options
+        Map<String, CmsSearchOptions> adeSearchOptions = new HashMap<String, CmsSearchOptions>();
+        m_adeSearchOptions = Collections.synchronizedMap(adeSearchOptions);
+        register(CmsADEServer.class.getName(), adeSearchOptions);
+
+        // ADE recent lists
+        Map<String, List<CmsUUID>> adeRecentList = new HashMap<String, List<CmsUUID>>();
+        m_adeRecentLists = Collections.synchronizedMap(adeRecentList);
+        register(CmsADEServer.class.getName(), adeRecentList);
 
         if (LOG.isDebugEnabled()) {
             // this will happen only once during system startup
