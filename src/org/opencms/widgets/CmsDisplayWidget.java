@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2009/08/20 11:31:28 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/09/01 14:25:38 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Set;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,9 +134,7 @@ public class CmsDisplayWidget extends A_CmsWidget {
             if (widgetDialog.useNewStyle()) {
                 result.append(getJsHelpMouseHandler(widgetDialog, locKey, null));
             } else {
-                result.append(getJsHelpMouseHandler(widgetDialog, locKey, CmsEncoder.escape(
-                    locValue,
-                    cms.getRequestContext().getEncoding())));
+                result.append(getJsHelpMouseHandler(widgetDialog, locKey, CmsStringUtil.escapeJavaScript(locValue)));
             }
             result.append("></td>");
             return result.toString();
