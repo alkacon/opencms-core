@@ -1,10 +1,6 @@
-<%@page session="false" import="org.opencms.frontend.templatetwo.*"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
-	CmsTemplateLayout cms = new CmsTemplateLayout(pageContext, request, response);
-	pageContext.setAttribute("cms", cms);
-%>
+
+
+
 @media all
 {
   /**
@@ -16,7 +12,7 @@
   * { 
   	margin: 0px; 
   	padding: 0px; 
-  	font-family: <c:out value="${cms.styleValue['font.family']}" default="'Lucida Grande','Trebuchet MS',Verdana,Helvetica,sans-serif" escapeXml="false"/>;
+  	font-family: 'Lucida Grande','Trebuchet MS',Verdana,Helvetica,sans-serif;
   }
 
   html * { font-size: 100.01% }
@@ -27,10 +23,10 @@
 
   body {
     padding: 10px 0;
-    font-family: <c:out value="${cms.styleValue['font.family']}" default="'Lucida Grande','Trebuchet MS',Verdana,Helvetica,sans-serif" escapeXml="false"/>;
+    font-family: 'Lucida Grande','Trebuchet MS',Verdana,Helvetica,sans-serif;
     font-size: 75.00%; 
     height: 1%;
-    color: <c:out value="${cms.styleValue['page.font.color']}" default="#444444" />;
+    color: #444444;
   }
 
   h1, h2, h3, h4, h5, h6 { font-weight:bold; margin: 0 0 0.20em 0; }
@@ -73,13 +69,13 @@
   }
 
   a {
-  	color: <c:out value="${cms.styleValue['link.color']}" default="#900" />; 
+  	color: #900; 
   	text-decoration: none;
   }
   a:focus,
   a:hover,
   a:active {
-  	color: <c:out value="${cms.styleValue['link.hover.color']}" default="#900" />;
+  	color: #900;
   	text-decoration:underline;
   }
   
@@ -97,23 +93,23 @@
    */
 
   body { 
-    background: <c:out value="${cms.styleValue['window.background']}" default="#4d87c7" /> url("<cms:link><c:out value="${cms.styleValue['window.background.image']}" default="../images/bg_blue.gif" /></cms:link>") repeat-x top left fixed; 
+    background: #4d87c7 url("../images/bg_blue.gif") repeat-x top left fixed; 
   }
     
   #window {
-  	width: <c:out value="${cms.styleValue['window.width']}" default="80em" />;
+  	width: 80em;
     margin: 0pt auto;
   	text-align: left;
   }
 
   #page {
-    background: <c:out value="${cms.styleValue['page.background']}" default="#FFFFFF" />;
-    padding: <c:out value="${cms.styleValue['page.padding']}" default="10px" />;
+    background: #FFFFFF;
+    padding: 10px;
   }
 
   #header {
-  	background: <c:out value="${cms.styleValue['header.background']}" default="#FFFFFF" /> <c:if test="${!empty cms.styleValue['header.background.image']}">url("<cms:link><c:out value="${cms.styleValue['header.background.image']}" /></cms:link>") top left</c:if>;
-  	color: <c:out value="${cms.styleValue['header.color']}" default="#444444" />;
+  	background: #FFFFFF ;
+  	color: #444444;
     position: relative;
     padding-top: 0px;
   }
@@ -125,18 +121,18 @@
   }
   
   #topnav a {
-  	color: <c:out value="${cms.styleValue['page.font.color']}" default="#444444" />;
+  	color: #444444;
   }
 
   #breadcrumb {
     padding: 5px 0px 5px 20px;
-    border-bottom: <c:out value="${cms.styleValue['breadcrumb.divider']}" default="1px solid" />;
+    border-bottom: 1px solid;
     position: relative;
     height: 1%;
   }
   
   #breadcrumb a {
-  	color: <c:out value="${cms.styleValue['page.font.color']}" default="#444444" />;
+  	color: #444444;
   }
 
   #main {
@@ -144,7 +140,7 @@
   }
 
   #col1 {
-    width: <c:out value="${cms.presetValue['column.left.width']}" default="20em" />;
+    width: 20em;
     float: left;
   }
 
@@ -155,8 +151,8 @@
   #col2 {
     width: auto;
     margin: 0 20em;
-    border-left: <c:out value="${cms.styleValue['column.divider.left']}" default="" />; 
-    border-right: <c:out value="${cms.styleValue['column.divider.right']}" default="" />; 
+    border-left: ; 
+    border-right: ; 
     /* border-left: 2px #ddd dotted;
     border-left: 18em #efefef solid; */
   }
@@ -166,7 +162,7 @@
   }
   
   #col3 {
-    width: <c:out value="${cms.presetValue['column.right.width']}" default="20em" />;
+    width: 20em;
     float: right;
   }
 
@@ -186,11 +182,11 @@
   }
   
   #footer {
-    background: <c:out value="${cms.styleValue['footer.background']}" default="#cccccc" /> <c:if test="${!empty cms.styleValue['footer.background.image']}">url("<cms:link><c:out value="${cms.styleValue['footer.background.image']}" /></cms:link>") top left</c:if>;
-    color: <c:out value="${cms.styleValue['footer.color']}" default="#444444" />;
+    background: #cccccc ;
+    color: #444444;
     padding: 10px;
     margin-top: 10px;
-    border-top: <c:out value="${cms.styleValue['footer.divider']}" default="1px solid" />;
+    border-top: 1px solid;
   }
   
   #header, #nav_main, #main, #footer, #breadcrumb { clear:both; }
@@ -286,30 +282,30 @@
    }
    
    .box_schema1 {
-   	 background: <c:out value="${cms.styleValue['schema1.box.background']}" default="#e1e1e1" />;   
+   	 background: #e1e1e1;   
    }
 
    .box_schema2 {
-   	 background: <c:out value="${cms.styleValue['schema2.box.background']}" default="#e1e1e1" />;   
+   	 background: #e1e1e1;   
    }
 
    .box_schema3 {
-   	 background: <c:out value="${cms.styleValue['schema3.box.background']}" default="#e1e1e1" />;   
+   	 background: #e1e1e1;   
    }
    
    .box_schema1 h4 {
-   	 background: <c:out value="${cms.styleValue['schema1.box.header.background']}" default="#25438D" /> url("../images/gradient.png") repeat-x scroll center top; 
-   	 color: <c:out value="${cms.styleValue['schema1.box.header.color']}" default="#fff" />;
+   	 background: #25438D url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: #fff;
    }
 
    .box_schema2 h4 {
-   	 background: <c:out value="${cms.styleValue['schema2.box.header.background']}" default="#AA0114" /> url("../images/gradient.png") repeat-x scroll center top; 
-   	 color: <c:out value="${cms.styleValue['schema2.box.header.color']}" default="#fff" />;
+   	 background: #AA0114 url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: #fff;
    }
 
    .box_schema3 h4 {
-   	 background: <c:out value="${cms.styleValue['schema3.box.header.background']}" default="#2C6700" /> url("../images/gradient.png") repeat-x scroll center top; 
-   	 color: <c:out value="${cms.styleValue['schema3.box.header.color']}" default="#fff" />;
+   	 background: #2C6700 url("../images/gradient.png") repeat-x scroll center top; 
+   	 color: #fff;
    }
    
    .boxbody {
@@ -359,78 +355,40 @@
    */
    
    #nav_left li a {
-     color: <c:out value="${cms.styleValue['page.font.color']}" default="#444444" />;
+     color: #444444;
    }
    
    #nav_left li a:hover, #nav_left li a:focus, #nav_left li a:active {
-     background: <c:out value="${cms.styleValue['nav.left.hover.background']}" default="#69C" />;
-     color: <c:out value="${cms.styleValue['nav.left.hover.color']}" default="#fff" />;
+     background: #69C;
+     color: #fff;
    }
    
    #nav_left a.current {
-     background-color: <c:out value="${cms.styleValue['nav.left.active.background']}" default="#aab" />;
-     color: <c:out value="${cms.styleValue['nav.left.active.color']}" default="#444444" />;
+     background-color: #aab;
+     color: #444444;
    }
 
-   <c:if test="${!empty cms.styleValue['nav.main.background']}">
-     #nav_main {
-       background: <c:out value="${cms.styleValue['nav.main.background']}" default="#C0C7CC" /> url(../images/gradient.png) repeat-x top left;
-     }
-   </c:if>
-
-   <c:if test="${!empty cms.styleValue['nav.main.color']}">
-     #nav_main a {
-       color: <c:out value="${cms.styleValue['nav.main.color']}" default="#000" />;
-     }
-   </c:if>
    
-   <c:if test="${!empty cms.styleValue['nav.main.hover.background']}">
-     #nav_main a:hover {
-       background: <c:out value="${cms.styleValue['nav.main.hover.background']}" default="#212E3F" /> url(../images/gradient.png) repeat-x top left;
-     }
-   </c:if>
 
-   <c:if test="${!empty cms.styleValue['nav.main.hover.color']}">
-     #nav_main a:hover {
-       color: <c:out value="${cms.styleValue['nav.main.hover.color']}" default="#fff" />;
-     }
-   </c:if>
    
-   <c:if test="${!empty cms.styleValue['nav.main.active.background']}">
-     #nav_main a.current {
-       color: #fff;
-       background: <c:out value="${cms.styleValue['nav.main.active.background']}" default="#212E3F" /> url(../images/gradient.png) repeat-x top left;
-     }
-   </c:if>
+   
+   
 
-   <c:if test="${!empty cms.styleValue['nav.main.active.color']}">
-     #nav_main a.current {
-       color: <c:out value="${cms.styleValue['nav.main.active.color']}" default="#212E3F" />;
-     }
-   </c:if>
+   
+   
+   
+
+   
 
    /**
    * ------------------------------------------------------------------
    * Editor adjustments
    * ------------------------------------------------------------------
    */
-   <c:choose>
-   	 <c:when test="${param.type == 'textbox' || param.type == 'listbox'}">
-	 	body { 
-	      background: <c:out value="${cms.styleValue['schema1.box.background']}" default="#e1e1e1" />;
-	      padding: 10px;
-	      text-align: left;
-	      font-size: 0.9em;
-	    }   	 	
-   	 </c:when>
-     <c:when test="${!empty param.type}">
-	 	body { 
-	      background: <c:out value="${cms.styleValue['page.background']}" default="#FFFFFF" />;
-	      padding: 10px;
-	      text-align: left;
-	    }
-	 </c:when>
-   </c:choose>
+   
+   	 
+     
+   
    
 }
 
@@ -455,7 +413,4 @@
   #col2, #col2_content { width: 100%; margin:0; padding: 0; border:0; }
 }
 
-<%-- Import additional css file --%>
-<c:if test="${!empty cms.styleValue['css.file']}">
-	@import url(<cms:link>${cms.styleValue['css.file']}</cms:link>);
-</c:if>
+

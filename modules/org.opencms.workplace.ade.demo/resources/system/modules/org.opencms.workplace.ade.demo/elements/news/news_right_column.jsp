@@ -10,8 +10,6 @@
 		<p><cms:contentshow element="SubTitle" /></p>
 	</cms:contentcheck>
 	<!-- Optional image of the paragraph -->
-	<cms:contentloop element="Paragraph">
-		<cms:contentloop element="Image">
 			<c:set var="imagePath"><cms:contentshow element="Image" /></c:set>
 			<c:set var="imageName" value="${imagePath}" />
 			<c:if test="${fn:indexOf(imagePath, '?') != - 1}">
@@ -23,17 +21,9 @@
 				<cms:img scaleType="1" width="200">
 					<cms:param name="src">${imagePath}</cms:param> 
 				</cms:img>
-				<div class="description">
-					<a href="<cms:link>${imageFolder}index.html#${imageTitle}</cms:link>">${imageTitle}</a><br />
-					<cms:contentcheck ifexists="Description">
-						<cms:contentshow element="Description" />
-					</cms:contentcheck>
-				</div>
 			</div>
-		</cms:contentloop>
 		<!-- Optional headline of the paragraph -->
 		<cms:contentcheck ifexists="Headline"><h5><cms:contentshow element="Headline" /></h5></cms:contentcheck>
-	</cms:contentloop>
 	<!-- Author of the news -->
 	<p>
 		<cms:contentcheck ifexists="AuthorMail">

@@ -1,17 +1,16 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/extendedlink.xsd"/>
 		
-	<xsd:element name="TTInfoArticles" type="OpenCmsTTInfoArticles"/>
+	<xsd:element name="ADEInfos" type="OpenCmsADEInfos"/>
 	
-	<xsd:complexType name="OpenCmsTTInfoArticles">
+	<xsd:complexType name="OpenCmsADEInfos">
 		<xsd:sequence>
-			<xsd:element name="TTInfoArticle" type="OpenCmsTTInfoArticle" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ADEInfo" type="OpenCmsADEInfo" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="OpenCmsTTInfoArticle">
+	<xsd:complexType name="OpenCmsADEInfo">
 		<xsd:sequence>
 			<xsd:element name="Date" type="OpenCmsDateTime" />
 			<xsd:element name="Title" type="OpenCmsString" />
@@ -23,7 +22,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.frontend.templatetwo.demo.workplace"/>
+			<resourcebundle name="org.opencms.workplace.ade.demo.workplace"/>
 			<preview uri="${previewtempfile}" />
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
@@ -37,8 +36,8 @@
 				<default element="Date" value="${currenttime}"/>
 				<default element="Author" value="${currentuser.firstname} ${currentuser.lastname}"/>
 			</defaults>
-			<formatters default="/system/modules/org.opencms.workplace.ade.demo/elements/info_default.jsp" >
-			  <formatter type="bottomColumn" uri="/system/modules/org.opencms.workplace.ade.demo/elements/info_bottom_column.jsp" />
+			<formatters default="/system/modules/org.opencms.workplace.ade.demo/elements/info/info_default.jsp" >
+			  <formatter type="bottomColumn" uri="/system/modules/org.opencms.workplace.ade.demo/elements/info/info_bottom_column.jsp" />
 			</formatters>
 		</xsd:appinfo>
 

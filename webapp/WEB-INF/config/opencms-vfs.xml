@@ -80,8 +80,7 @@
 					<param name="folder.class">org.opencms.workplace.galleries.CmsAjaxTableGallery</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeContainerPage" name="containerpage" id="13" />
-
-                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="ade_type_config" id="14">
+                <type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="containerpage_config" id="14">
                     <param name="schema">/system/workplace/editors/ade/schemas/type_config.xsd</param>
                 </type>
             </resourcetypes>

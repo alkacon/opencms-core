@@ -1,16 +1,19 @@
 ﻿(function(cms) {
 
    /** Element state 'new' constant. */
-   var /** String */ STATUS_NEW = cms.data.STATUS_NEW = 'n';
+   var /** String */ STATUS_NEW = cms.data.STATUS_NEW = 'N';
    
    /** Element state 'created' constant. */
-   var /** String */ STATUS_CREATED = cms.data.STATUS_CREATED = 'nc';
+   var /** String */ STATUS_CREATED = cms.data.STATUS_CREATED = 'X';
+   
+   /** Element state 'new config' constant. */
+   var /** String */ STATUS_NEWCONFIG = cms.data.STATUS_NEWCONFIG = 'NC';
    
    /** Element state 'unchanged' constant. */
-   var /** String */ STATUS_UNCHANGED = cms.data.STATUS_UNCHANGED = 'u';
+   var /** String */ STATUS_UNCHANGED = cms.data.STATUS_UNCHANGED = 'U';
    
    /** Element state 'changed' constant. */
-   var /** String */ STATUS_CHANGED = cms.data.STATUS_CHANGED = 'c';
+   var /** String */ STATUS_CHANGED = cms.data.STATUS_CHANGED = 'C';
    
    /** Timeout in ms for ajax requests. */
    var /** long */ AJAX_TIMEOUT = 5000;
@@ -34,7 +37,7 @@
    var /** String */ OBJ_NEW = 'new';
    
    /** Editors back link uri. */
-   var /** String */ BACKLINK_URL = cms.data.BACKLINK_URL = '/system/workplace/editors/ade/backlink.jsp';
+   var /** String */ BACKLINK_URL = cms.data.BACKLINK_URL = '/system/workplace/resources/editors/ade/backlink.html';
    
    /**  
     * The current container page uri.

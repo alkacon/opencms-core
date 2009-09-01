@@ -1,28 +1,24 @@
-
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo/schemas/config.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/paragraph.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/eventdates.xsd"/>
-	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templatetwo.demo/schemas/nested/availability.xsd"/>
 	
-	<xsd:element name="TTEventArticles" type="OpenCmsTTEventArticles"/>
+	<xsd:element name="ADEEvents" type="OpenCmsADEEvents"/>
 	
-	<xsd:complexType name="OpenCmsTTEventArticles">
+	<xsd:complexType name="OpenCmsADEEvents">
 		<xsd:sequence>
-			<xsd:element name="TTEventArticle" type="OpenCmsTTEventArticle" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ADEEvent" type="OpenCmsADEEvent" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
-	<xsd:complexType name="OpenCmsTTEventArticle">
+	<xsd:complexType name="OpenCmsADEEvent">
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="Teaser" type="OpenCmsHtml" minOccurs="0" />
-			<xsd:element name="Paragraph" type="OpenCmsTTParagraph" />
-			<xsd:element name="EventDates" type="OpenCmsTTEventDate" />
-			<xsd:element name="Availability" type="OpenCmsTTAvailability" minOccurs="0" />
-			<xsd:element name="Config" type="OpenCmsConfig" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="Headline" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="Text" type="OpenCmsHtml" />			
+			<xsd:element name="Image" type="OpenCmsVfsFile" />
+			<xsd:element name="Description" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="EventDate" type="OpenCmsDateTime" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
@@ -33,32 +29,16 @@
 			<preview uri="${previewtempfile}" />
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
-				<mapping element="EventDates/EventDate" mapto="property:collector.date" />
-				<mapping element="EventDates/EventEndDate" mapto="property:calendar.enddate" />
-				<mapping element="Availability/Release" mapto="attribute:datereleased" />
-				<mapping element="Availability/Expiration" mapto="attribute:dateexpired" />
-				<mapping element="Availability/Priority" mapto="property:collector.priority" />
+				<mapping element="EventDate" mapto="property:collector.date" />
 			</mappings>
 			<layouts>
 				<layout element="Teaser" widget="HtmlWidget" configuration="height:100px,link,image,downloadgallery,linkgallery,htmlgallery,tablegallery,table,formatselect"/>
+				<layout element="Text" widget="HtmlWidget" configuration="height:500px,link,formatselect,source"/>
 			</layouts>
-			<defaults>
-				<default element="Availability/Priority" value="1" />
-				<default element="Availability/Release" value="${currenttime}" />
-				<default element="Availability/Expiration" value="${currenttime}" />
-			</defaults>
-			<validationrules/>
-			<relations>
-				<relation element="Paragraph/Image/Image" invalidate="parent" />
-			</relations>
-			<tabs>
-				<tab element="Title" name="TabEvent" collapse="false" />
-				<tab element="Config" collapse="true" />
-			</tabs>
-			<formatters default="/system/modules/org.opencms.workplace.ade.demo/elements/event_default.jsp" >
-			  <formatter type="leftColumn" uri="/system/modules/org.opencms.workplace.ade.demo/elements/event_left_column.jsp" />
-			  <formatter type="rightColumn" uri="/system/modules/org.opencms.workplace.ade.demo/elements/event_right_column.jsp" />
-			  <formatter type="mainColumn" uri="/system/modules/org.opencms.workplace.ade.demo/elements/event_main_column.jsp" />
+			<formatters default="/system/modules/org.opencms.workplace.ade.demo/elements/events/event_default.jsp" >
+			  <formatter type="leftColumn" uri="/system/modules/org.opencms.workplace.ade.demo/elements/events/event_left_column.jsp" />
+			  <formatter type="rightColumn" uri="/system/modules/org.opencms.workplace.ade.demo/elements/events/event_right_column.jsp" />
+			  <formatter type="mainColumn" uri="/system/modules/org.opencms.workplace.ade.demo/elements/events/event_main_column.jsp" />
 			</formatters>
 		</xsd:appinfo>
 

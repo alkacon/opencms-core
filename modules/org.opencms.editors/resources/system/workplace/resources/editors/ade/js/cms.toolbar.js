@@ -218,7 +218,7 @@
       if (elemId && cms.data.elements[elemId]) {
          if (cms.data.elements[elemId].allowEdit && !cms.data.elements[elemId].locked) {
             var element = cms.data.elements[elemId];
-            var isNew = element.status == cms.data.STATUS_NEW;
+            var isNew = element.status == cms.data.STATUS_NEWCONFIG;
             var _openDialog = function(path, id, afterClose) {
                var dialogWidth = self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
                dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
@@ -271,7 +271,7 @@
                   zIndex: 10000
                });
             }
-            if (element.status == cms.data.STATUS_NEW) {
+            if (element.status == cms.data.STATUS_NEWCONFIG) {
                cms.data.createResource(element.type, function(ok, id, uri) {
                   if (!ok) {
                      // TODO
@@ -785,7 +785,7 @@
       $('#' + cms.html.newMenuId + " li.cms-item").remove();
       var $newlist = $('#' + cms.html.newMenuId + " ul");
       for (var key in cms.data.elements) {
-         if (cms.data.elements[key].status != cms.data.STATUS_NEW) { 
+         if (cms.data.elements[key].status != cms.data.STATUS_NEWCONFIG) { 
             continue;
          }
          

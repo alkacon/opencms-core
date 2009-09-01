@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.5.0</opencms_version>
-		<createdate>Mon, 24 Aug 2009 13:18:15 GMT</createdate>
+		<createdate>Mon, 31 Aug 2009 12:27:24 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Common Editing tools.</p>
 <p>This module is needed to be able to edit files in the OpenCms Workplace.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.6.1</version>
+		<version>7.6.4</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -86,6 +86,9 @@
 			<resource uri="/system/workplace/resources/editors/simple/"/>
 			<resource uri="/system/workplace/resources/editors/simplehtml/"/>
 			<resource uri="/system/workplace/resources/editors/xmlcontent/"/>
+			<resource uri="/system/workplace/resources/filetypes/ade_menu.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/containerpage.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/containerpage_config.png"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -112,39 +115,9 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>login-form</name>
-					<value><![CDATA[/system/login/index.html]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>ALL_OTHERS</uuidprincipal>
-					<flags>134</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-				<accessentry>
-					<uuidprincipal>ROLE.WORKPLACE_USER</uuidprincipal>
-					<flags>518</flags>
-					<permissionset>
-						<allowed>5</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/editors</destination>
@@ -155,12 +128,7 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>cache</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -203,22 +171,7 @@
 			<type>plain</type>
 			<uuidstructure>efc0cf62-8744-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>efc0cf63-8744-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 13 Aug 2009 09:04:58 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 12 Aug 2009 13:35:01 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<relations/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/editors/ade/type_config.xml</source>
-			<destination>system/workplace/editors/ade/type_config.xml</destination>
-			<type>ade_type_config</type>
-			<uuidstructure>efc0cf62-8744-1fde-8dd4-dd9f629b113b</uuidstructure>
-			<uuidresource>efc0cf63-87e4-11de-8314-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 13 Aug 2009 09:04:58 GMT</datelastmodified>
+			<datelastmodified>Tue, 25 Aug 2009 10:18:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:35:01 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -265,7 +218,7 @@
 			<type>plain</type>
 			<uuidstructure>d07366ab-81ae-11de-9e2b-dd9f629b113b</uuidstructure>
 			<uuidresource>d07366ac-81ae-11de-9e2b-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 06 Aug 2009 13:15:40 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 08:55:15 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 Aug 2009 10:57:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -280,7 +233,7 @@
 			<type>plain</type>
 			<uuidstructure>b9abe241-81a5-11de-9b82-dd9f629b113b</uuidstructure>
 			<uuidresource>b9abe242-81a5-11de-9b82-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 06 Aug 2009 13:15:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 08:55:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 Aug 2009 09:52:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -295,12 +248,62 @@
 			<type>plain</type>
 			<uuidstructure>b9b0c444-81a5-11de-9b82-dd9f629b113b</uuidstructure>
 			<uuidresource>b9b0c445-81a5-11de-9b82-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 06 Aug 2009 13:15:25 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 08:55:56 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 05 Aug 2009 09:52:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/type.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/type.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>f4f0f7cd-914f-11de-9f57-dd9f629b113b</uuidstructure>
+			<uuidresource>f4f0f7ce-914f-11de-9f57-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 08:54:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/type_config.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/type_config.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>f5315b30-914f-11de-9f57-dd9f629b113b</uuidstructure>
+			<uuidresource>f5315b31-914f-11de-9f57-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 08:54:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Aug 2009 08:19:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/editors/ade/schemas/type_destination.xsd</source>
+			<destination>system/workplace/editors/ade/schemas/type_destination.xsd</destination>
+			<type>plain</type>
+			<uuidstructure>3bacc1d1-9314-11de-ac14-dd9f629b113b</uuidstructure>
+			<uuidresource>3bacc1d2-9314-11de-ac14-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 08:54:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 27 Aug 2009 14:16:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[type_destination]]></value>
+				</property>
+			</properties>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -900,6 +903,21 @@
 					<value><![CDATA[Advanced Direct Edit files]]></value>
 				</property>
 			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/ade/backlink.html</source>
+			<destination>system/workplace/resources/editors/ade/backlink.html</destination>
+			<type>plain</type>
+			<uuidstructure>428743fc-9629-11de-9854-dd9f629b113b</uuidstructure>
+			<uuidresource>428743fd-9629-11de-9854-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 31 Aug 2009 12:24:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 31 Aug 2009 12:24:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<relations/>
 			<accesscontrol/>
 		</file>
@@ -3417,7 +3435,7 @@
 			<type>plain</type>
 			<uuidstructure>19c28604-8747-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>19c28605-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 24 Aug 2009 10:35:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 12:25:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3437,7 +3455,7 @@
 			<type>plain</type>
 			<uuidstructure>19c740f7-8747-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>19c740f8-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 13:50:31 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 07:35:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3457,7 +3475,7 @@
 			<type>plain</type>
 			<uuidstructure>19cbfbea-8747-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>19cbfbeb-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 13:50:31 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 07:35:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3477,7 +3495,7 @@
 			<type>plain</type>
 			<uuidstructure>19ce6ced-8747-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>19ce6cee-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 13:50:31 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 07:35:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3497,7 +3515,7 @@
 			<type>plain</type>
 			<uuidstructure>19d327e0-8747-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>19d327e1-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 13:50:31 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 07:35:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3517,7 +3535,7 @@
 			<type>plain</type>
 			<uuidstructure>19d7e2d3-8747-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>19d7e2d4-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Mon, 24 Aug 2009 12:46:15 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 07:35:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3537,7 +3555,7 @@
 			<type>plain</type>
 			<uuidstructure>19dcc4d6-8747-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>19dcc4d7-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 12 Aug 2009 13:50:31 GMT</datelastmodified>
+			<datelastmodified>Mon, 31 Aug 2009 07:35:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -5250,6 +5268,79 @@
 				<property type="shared">
 					<name>image.size</name>
 					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes</destination>
+			<type>folder</type>
+			<uuidstructure>83ca1dcc-11b7-11db-91cd-fdbae480bac9</uuidstructure>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/ade_menu.gif</source>
+			<destination>system/workplace/resources/filetypes/ade_menu.gif</destination>
+			<type>image</type>
+			<uuidstructure>4841ce7a-81a6-11de-9b82-dd93ef9b113b</uuidstructure>
+			<uuidresource>4841ce7b-81a6-11de-9b82-dd9f8f3a113b</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Aug 2009 09:56:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/containerpage.gif</source>
+			<destination>system/workplace/resources/filetypes/containerpage.gif</destination>
+			<type>image</type>
+			<uuidstructure>4841ce7a-81a6-11de-9b82-dd9f629b113b</uuidstructure>
+			<uuidresource>4841ce7b-81a6-11de-9b82-dd9f629b113b</uuidresource>
+			<datelastmodified>Mon, 27 Mar 2006 12:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 05 Aug 2009 09:56:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/containerpage_config.png</source>
+			<destination>system/workplace/resources/filetypes/containerpage_config.png</destination>
+			<type>image</type>
+			<uuidstructure>45118d77-9628-11de-9854-dd9f629b113b</uuidstructure>
+			<uuidresource>45118d78-9628-11de-9854-dd9f629b113b</uuidresource>
+			<datelastmodified>Fri, 22 Feb 2008 08:15:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 31 Aug 2009 12:17:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
 				</property>
 			</properties>
 			<relations/>

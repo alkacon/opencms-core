@@ -1,21 +1,7 @@
-<%@page buffer="none" session="false" import="org.opencms.frontend.templatetwo.*" %>
+<%@page buffer="none" session="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %><%
-
-	// The main template JSP of TemplateTwo. 
-	// This template is highly configurable in style and layout. The configuration
-	// is done in several configuration files of the types "ttstyle", "ttconfig",
-	// "ttoptions" and "ttpreset". Those configuration files are managed by the
-	// class CmsTemplateLayout.
-	//
-	// For details on the CmsTemplateLayout class, see the source code which can
-	// be found at the following VFS location:
-	// /system/modules/org.opencms.frontend.templatetwo/java_src/CmsTemplateLayout.java
-
-	CmsTemplateLayout cms = new CmsTemplateLayout(pageContext, request, response);
-	pageContext.setAttribute("cms", cms);
-%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -31,10 +17,9 @@
 	
 	<link href="<cms:link>/system/modules/org.opencms.workplace.ade.demo/resources/css/nav_left.css</cms:link>" rel="stylesheet" type="text/css">		
 		
-	<link href="<cms:link>/system/modules/org.opencms.workplace.ade.demo/resources/css/style.css?preset=/demo_en/_config_/layout/threecolumns&amp;style=/demo_en/_config_/layout/style</cms:link>" rel="stylesheet" type="text/css">
-	<!--[if lte IE 6]>
-		<link href="<cms:link>/system/modules/org.opencms.workplace.ade.demo/resources/css/patch_ie.css</cms:link>" rel="stylesheet" type="text/css">
-	<![endif]-->
+	<link href="<cms:link>/system/modules/org.opencms.workplace.ade.demo/resources/css/style.css</cms:link>" rel="stylesheet" type="text/css">
+
+	<link href="<cms:link>/system/modules/org.opencms.workplace.ade.demo/resources/css/patch_ie.css</cms:link>" rel="stylesheet" type="text/css">
 
 	<cms:enable-ade/>
 </head>
@@ -47,30 +32,25 @@
 		    <div id="header">
 		    	<div id="topnav">
 		    		<a href="#content" class="skip">Skip to Main Content</a>
-		    		<c:if test="${!cms.options.value['TopNav'].isEmptyOrWhitespaceOnly}">
-		    			<c:out value="${cms.options.value['TopNav']}" escapeXml="false" />
-		    		</c:if>
 		    	</div>
-		    	<c:if test="${!cms.options.value['Header'].isEmptyOrWhitespaceOnly}">
-		    		<c:out value="${cms.options.value['Header'].resolveMacros}" escapeXml="false" />
-		    	</c:if>
+<div style="padding: 10px 10px 5px; height: 55px;">
+<div style="margin: 0pt; padding: 0pt; float: left;"><a href="http://www.alkacon.com"><img id="iimg_369039394" src="<cms:link>/system/modules/org.opencms.workplace.ade.demo/resources/images/logo_alkacon_png24.png</cms:link>" title="Go to the Alkacon Software website" alt="Alkacon Software" /></a></div>
+<div style="margin: 1pt; padding: 0pt; float: right;"><a href="http://www.opencms.org"><img id="iimg_364996162" src="<cms:link>/system/modules/org.opencms.workplace.ade.demo/resources/images/logo_opencms_png24.png</cms:link>" title="Go to the OpenCms website" alt="Logo OpenCms" /></a></div>
+<div style="margin: 0px 210px 0pt 160px;">
+<p style="margin: 1pt; float: right;"><h3 style="margin: 0pt;">OpenCms 7.5 Demo Website</h3>
+<p style="margin: 1pt;"><i>ADE Demo</i></p>
+</div>
+</div>
 			</div>
 			<!-- end: header -->
 			
 			<!-- begin: main navigation -->
-			<c:choose>
-				<c:when test="${!empty cms.styleValue['nav.main']}">
-					<cms:include file="${cms.styleValue['nav.main']}"/>
-				</c:when>
-				<c:otherwise>
-					<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_style2.jsp:ee5498d9-dbe4-11dc-b087-3bdd2ea0b1ac)"/>
-				</c:otherwise>
-			</c:choose>
+			<cms:include file="%(link.weak:/system/modules/org.opencms.workplace.ade.demo/elements/nav_style2.jsp:4d795002-961c-11de-9854-dd9f629b113b)"/>
 			<!-- end: main navigation -->
 			
 			<!-- begin: breadcrumb -->
 			<div id="breadcrumb">
-				<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/breadcrumb.jsp:e72c6f1c-dbb3-11dc-af66-3bdd2ea0b1ac)" />
+				<cms:include file="%(link.weak:/system/modules/org.opencms.workplace.ade.demo/elements/breadcrumb.jsp:43ce7d4d-961c-11de-9854-dd9f629b113b)" />
 			</div>
 			<!-- end: breadcrumb -->
 			
@@ -80,17 +60,13 @@
 			<!-- begin: left column -->
 			<div id="col1">
 				<div id="col1_content" class="clearfix">
-					<c:if test="${cms.presetValue['column.left.visible'] == 'true'}">
 						<!-- include the left navigation menu -->
-						<c:if test="${cms.presetValue['nav.left.visible'] == 'true'}">
-							<cms:include file="%(link.weak:/system/modules/org.opencms.frontend.templatetwo/elements/menu/nav_left.jsp:ee1ea4f4-d97c-11dc-bc65-3bdd2ea0b1ac)" />
-						</c:if>
+							<cms:include file="%(link.weak:/system/modules/org.opencms.workplace.ade.demo/elements/nav_left.jsp:dbd121cd-961c-11de-9854-dd9f629b113b)" />
 						
 						<div id="left">
 						<!-- include the boxes on the left side -->
 						<cms:container name="left" type="leftColumn" maxElements="3" />
 						</div>
-					</c:if>
 				</div>
 			</div>
 			<!-- end: left column -->
@@ -103,12 +79,10 @@
 					</c:catch>
 					
 					<!-- include the boxes on the right side -->
-					<c:if test="${cms.presetValue['column.right.visible'] == 'true'}">
 						<div id="right">
 						<!-- include the boxes on the right side -->
 						<cms:container name="right" type="rightColumn" maxElements="3" />
 						</div>
-					</c:if>
                </div>
             </div>
             <!-- end: right column -->
@@ -136,9 +110,7 @@
 		
 		<!-- begin: #footer -->
 		<div id="footer">
-			<c:if test="${!cms.options.value['Footer'].isEmptyOrWhitespaceOnly}">
-		    	<c:out value="${cms.options.value['Footer'].resolveMacros}" escapeXml="false" />
-		    </c:if>
+			<div style="padding: 2px 0px 0px; height: 14px; text-align: center;">Build with <a href="http://www.opencms.org/" title="Go to the OpenCms website">OpenCms - The Open Source CMS</a>, provided by <a title="Go to the Alkacon Software website" href="http://www.alkacon.com">Alkacon Software - The OpenCms Experts</a></div>
 		</div>
 		<!-- end: #footer -->
 		

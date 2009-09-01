@@ -506,10 +506,6 @@
       <explorertype name="tablegallery" key="fileicon.tablegallery" icon="tablegallery.gif" reference="downloadgallery">
         <newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=tablegallery" order="50" autosetnavigation="false" autosettitle="false" info="desc.tablegallery" />
       </explorertype>
-      <explorertype name="containerpage" key="fileicon.containerpage" icon="containerpage.gif" reference="xmlcontent">
-        <newresource uri="newresource_xmlcontent.jsp?newresourcetype=containerpage" order="16" autosetnavigation="false" autosettitle="false" info="desc.containerpage"/>
-      </explorertype>
-      
       <explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
         <newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false" info="desc.xmlcontent" />
         <editoptions>
@@ -642,13 +638,21 @@
           </contextmenu>
         </editoptions>
       </explorertype>
-      <explorertype name="ade_type_config" key="fileicon.ade_type_config" icon="layoutpage.gif" reference="xmlcontent">
-          <newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=ade_type_config" order="20"/>
-              <accesscontrol>
-                  <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
-            </accesscontrol>
+      <explorertype name="ade" key="fileicon.ade" icon="ade_menu.gif" reference="xmlcontent">
+        <newresource uri="newresource.jsp?page=ade" order="13" autosetnavigation="false" autosettitle="false" info="desc.ade"/>
       </explorertype>
-
+      <explorertype name="containerpage" key="fileicon.containerpage" icon="containerpage.gif" reference="xmlcontent">
+        <newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=containerpage" order="10" autosetnavigation="false" autosettitle="false" info="desc.containerpage"/>
+        <accesscontrol>
+          <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+        </accesscontrol>
+      </explorertype>
+      <explorertype name="containerpage_config" key="fileicon.containerpage_config" icon="containerpage_config.png" reference="xmlcontent">
+        <newresource page="ade" uri="newresource_xmlcontent.jsp?newresourcetype=containerpage_config" order="20" autosetnavigation="false" autosettitle="false" info="desc.containerpage_config"/>
+        <accesscontrol>
+          <accessentry principal="ROLE.WORKPLACE_USER" permissions="+r+v+w+c"/>
+        </accesscontrol>
+      </explorertype>
       <defaultaccesscontrol>
         <accesscontrol>
           <accessentry principal="DEFAULT" permissions="+r+v"/>
