@@ -86,8 +86,8 @@
       var /**boolean*/ saveFavorites = false;
       var /**boolean*/ saveRecentList = false;
       $.each(ids, function() {
-	// HACK: $.each converts the list elements from String to Array<String> :(
-         var /**String*/ id = "" + this;
+         // HACK: javascript converts the list elements from native string to String objects :(
+         var /**string*/ id = "" + this;
          // remove from favorites
          var /**Number*/ pos = $.inArray(id, cms.toolbar.favorites);
          if (pos >= 0) {
