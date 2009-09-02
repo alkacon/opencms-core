@@ -11,8 +11,8 @@
    cms.toolbar.currentMenu = cms.html.favoriteMenuId;
    cms.toolbar.currentMenuItems = cms.html.favoriteListId;
    
-
-
+   
+   
    
    var searchLoadingSign = null;
    
@@ -74,7 +74,7 @@
                }
             });
          } else {
-      addToRecent($item.attr('rel'));
+            addToRecent($item.attr('rel'));
          }
       }
       $item.remove();
@@ -389,10 +389,10 @@
       }
       return false;
    };
-  
-  /**
-  * Helper class for displaying a 'Loading' sign when loading takes too long
-  */  
+   
+   /**
+    * Helper class for displaying a 'Loading' sign when loading takes too long
+    */
    var LoadingSign = function(selector, waitTime) {
    
       this.isLoading = false;
@@ -443,7 +443,7 @@
       bodyEl.append(cms.html.createMenu(cms.html.favoriteMenuId));
       bodyEl.append(cms.html.createMenu(cms.html.newMenuId));
       bodyEl.append(cms.html.searchMenu);
-      initSearch();      
+      initSearch();
       
       
       bodyEl.append(cms.html.favoriteDialog);
@@ -502,7 +502,7 @@
          title: 'Search',
          buttons: {
             'Search': function() {
-               
+            
                $(this).dialog('close');
                var query = $('.cms-search-query').val();
                var type = $('.cms-search-type').val();
@@ -525,7 +525,7 @@
          $('#cms-search-dialog').dialog('open');
          
       });
-
+      
       $(document).bind('cms-data-loaded', function() {
          loading = searchLoadingSign;
          var i = 0;
@@ -768,7 +768,9 @@
                $('<a class="cms-handle cms-move"></a>').appendTo(elem);
             });
             var leftOffset = -217;
-            if (buttonElem.name == 'Add') leftOffset -= 36;
+            if (buttonElem.name == 'Add') {
+               leftOffset -= 36;
+            }
             list.appendTo('#toolbar_content').css({
                /* position : 'fixed', */
                top: 35,
@@ -971,7 +973,7 @@
       $('#' + cms.html.newMenuId + " li.cms-item").remove();
       var $newlist = $('#' + cms.html.newMenuId + " ul");
       for (var key in cms.data.elements) {
-         if (cms.data.elements[key].status != cms.data.STATUS_NEWCONFIG) { 
+         if (cms.data.elements[key].status != cms.data.STATUS_NEWCONFIG) {
             continue;
          }
          
