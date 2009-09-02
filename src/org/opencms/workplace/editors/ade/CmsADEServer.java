@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/09/02 10:50:43 $
- * Version: $Revision: 1.1.2.17 $
+ * Date   : $Date: 2009/09/02 13:30:44 $
+ * Version: $Revision: 1.1.2.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.17 $
+ * @version $Revision: 1.1.2.18 $
  * 
  * @since 7.6
  */
@@ -454,10 +454,10 @@ public class CmsADEServer extends CmsJspActionElement {
                 return result;
             }
             CmsSearchOptions searchOptions = new CmsSearchOptions(request);
-            CmsSearchOptions oldOptions = getSearchOptionsFromCache();
             JSONObject searchResult = getLastSearchResult(searchOptions, cntPage.getTypes());
 
             // we need those on the client side to make scrolling work
+            CmsSearchOptions oldOptions = getSearchOptionsFromCache();
             result.put(PARAMETER_TYPE, oldOptions.getType());
             result.put(PARAMETER_TEXT, oldOptions.getText());
             result.put(PARAMETER_LOCATION, oldOptions.getLocation());
@@ -693,15 +693,15 @@ public class CmsADEServer extends CmsJspActionElement {
             String id = favList.optString(i);
             if ((resElements != null) && !resElements.has(id)) {
                 try {
-                resElements.put(id, elemUtil.getElementData(CmsElementUtil.parseId(id), types));
+                    resElements.put(id, elemUtil.getElementData(CmsElementUtil.parseId(id), types));
                     result.put(id);
                 } catch (Exception e) {
                     // ignore any problems
                     if (!LOG.isDebugEnabled()) {
                         LOG.warn(e.getLocalizedMessage());
-            }
+                    }
                     LOG.debug(e.getLocalizedMessage(), e);
-        }
+                }
             } else {
                 result.put(id);
             }
@@ -808,15 +808,15 @@ public class CmsADEServer extends CmsJspActionElement {
             String id = CmsElementUtil.createId(structureId);
             if ((resElements != null) && !resElements.has(id)) {
                 try {
-                resElements.put(id, elemUtil.getElementData(structureId, types));
+                    resElements.put(id, elemUtil.getElementData(structureId, types));
                     result.put(id);
                 } catch (Exception e) {
                     // ignore any problems
                     if (!LOG.isDebugEnabled()) {
                         LOG.warn(e.getLocalizedMessage());
-            }
+                    }
                     LOG.debug(e.getLocalizedMessage(), e);
-        }
+                }
             } else {
                 result.put(id);
             }
@@ -924,11 +924,7 @@ public class CmsADEServer extends CmsJspActionElement {
         result.put(CmsADEServer.P_HASMORE, hasMore);
 
         // cache the search options, but with page=0
-        m_cache.cacheADESearchOptions(user.getId().toString(), new CmsSearchOptions(
-            options.getLocation(),
-            options.getText(),
-            options.getType(),
-            0));
+        m_cache.cacheADESearchOptions(user.getId().toString(), options.resetPage());
 
         return result;
     }

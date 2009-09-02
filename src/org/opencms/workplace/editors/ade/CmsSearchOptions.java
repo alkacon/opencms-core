@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsSearchOptions.java,v $
- * Date   : $Date: 2009/09/01 08:46:53 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/09/02 13:30:44 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.6 
  */
@@ -129,6 +129,16 @@ public class CmsSearchOptions {
     public String getType() {
 
         return m_type;
+    }
+
+    /**
+     * Returns a clone of this object, but with <code>page = 0</code>.<p>
+     * 
+     * @return a clone of this object, but with <code>page = 0</code>
+     */
+    public CmsSearchOptions resetPage() {
+
+        return new CmsSearchOptions(getLocation(), getText(), getType(), 0);
     }
 
     /**
