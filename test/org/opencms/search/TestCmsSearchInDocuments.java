@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchInDocuments.java,v $
- * Date   : $Date: 2009/06/04 14:35:31 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/09/02 05:54:21 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.20.2.1 $
  */
 public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
@@ -106,11 +106,13 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();
@@ -132,7 +134,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         // count depend on the number of documents indexed
         int expected = 6;
@@ -148,9 +150,9 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         TestCmsSearch.printResults(searchResult, cms);
         assertEquals(expected, searchResult.size());
 
-        CmsSearchResult res1 = (CmsSearchResult)searchResult.get(searchResult.size() - 1);
-        CmsSearchResult res2 = (CmsSearchResult)searchResult.get(searchResult.size() - 2);
-        CmsSearchResult res3 = (CmsSearchResult)searchResult.get(0);
+        CmsSearchResult res1 = searchResult.get(searchResult.size() - 1);
+        CmsSearchResult res2 = searchResult.get(searchResult.size() - 2);
+        CmsSearchResult res3 = searchResult.get(0);
 
         String path1 = cms.getRequestContext().removeSiteRoot(res1.getPath());
         String path2 = cms.getRequestContext().removeSiteRoot(res2.getPath());
@@ -196,9 +198,9 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         TestCmsSearch.printResults(searchResult, cms);
         assertEquals(expected, searchResult.size());
 
-        assertEquals(res1.getPath(), ((CmsSearchResult)searchResult.get(searchResult.size() - 1)).getPath());
-        assertEquals(res2.getPath(), ((CmsSearchResult)searchResult.get(searchResult.size() - 2)).getPath());
-        assertEquals(res3.getPath(), ((CmsSearchResult)searchResult.get(0)).getPath());
+        assertEquals(res1.getPath(), (searchResult.get(searchResult.size() - 1)).getPath());
+        assertEquals(res2.getPath(), (searchResult.get(searchResult.size() - 2)).getPath());
+        assertEquals(res3.getPath(), (searchResult.get(0)).getPath());
 
         // now the search in the offline index - the boosted docs should now be on top
         searchBean.setIndex(INDEX_OFFLINE);
@@ -210,10 +212,10 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         assertEquals(expected, searchResult.size());
 
         // ensure boosted results are on top
-        assertEquals(res1.getPath(), ((CmsSearchResult)searchResult.get(0)).getPath());
-        assertEquals(res2.getPath(), ((CmsSearchResult)searchResult.get(1)).getPath());
+        assertEquals(res1.getPath(), (searchResult.get(0)).getPath());
+        assertEquals(res2.getPath(), (searchResult.get(1)).getPath());
         // low boosted document should be on last position
-        assertEquals(res3.getPath(), ((CmsSearchResult)searchResult.get(searchResult.size() - 1)).getPath());
+        assertEquals(res3.getPath(), (searchResult.get(searchResult.size() - 1)).getPath());
     }
 
     /**
@@ -228,7 +230,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         // count depend on the number of documents indexed
         int expected = 7;
@@ -255,11 +257,11 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
             CmsProperty.DELETE_VALUE,
             CmsProperty.DELETE_VALUE);
 
-        List resources = cms.getFilesInFolder(path);
+        List<CmsResource> resources = cms.getFilesInFolder(path);
 
-        Iterator i = resources.iterator();
+        Iterator<CmsResource> i = resources.iterator();
         while (i.hasNext()) {
-            CmsResource res = (CmsResource)i.next();
+            CmsResource res = i.next();
             String sitePath = cms.getSitePath(res);
             System.out.println(sitePath);
             cms.lockResource(sitePath);
@@ -284,15 +286,15 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         // now the search in the offline index - documents should now be found
         searchBean.setIndex(INDEX_OFFLINE);
         searchBean.setQuery(query);
-        List firstSearchResult = searchBean.getSearchResult();
+        List<CmsSearchResult> firstSearchResult = searchBean.getSearchResult();
 
         System.out.println("\n\n-----  Results searching 'meta' field in OFFLINE index");
         TestCmsSearch.printResults(searchResult, cms);
         assertEquals(expected, firstSearchResult.size());
 
-        CmsSearchResult res1 = (CmsSearchResult)firstSearchResult.get(firstSearchResult.size() - 1);
-        CmsSearchResult res2 = (CmsSearchResult)firstSearchResult.get(firstSearchResult.size() - 2);
-        CmsSearchResult res3 = (CmsSearchResult)firstSearchResult.get(0);
+        CmsSearchResult res1 = firstSearchResult.get(firstSearchResult.size() - 1);
+        CmsSearchResult res2 = firstSearchResult.get(firstSearchResult.size() - 2);
+        CmsSearchResult res3 = firstSearchResult.get(0);
 
         String path1 = cms.getRequestContext().removeSiteRoot(res1.getPath());
         String path2 = cms.getRequestContext().removeSiteRoot(res2.getPath());
@@ -348,10 +350,10 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         assertEquals(expected, searchResult.size());
 
         // ensure boosted results are on top
-        assertEquals(res1.getPath(), ((CmsSearchResult)searchResult.get(0)).getPath());
-        assertEquals(res2.getPath(), ((CmsSearchResult)searchResult.get(1)).getPath());
+        assertEquals(res1.getPath(), (searchResult.get(0)).getPath());
+        assertEquals(res2.getPath(), (searchResult.get(1)).getPath());
         // low boosted document should be on last position
-        assertEquals(res3.getPath(), ((CmsSearchResult)searchResult.get(searchResult.size() - 1)).getPath());
+        assertEquals(res3.getPath(), (searchResult.get(searchResult.size() - 1)).getPath());
     }
 
     /**
@@ -404,7 +406,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
             Collections.EMPTY_LIST);
 
         // HTML page is encoded using UTF-8
-        List properties = new ArrayList();
+        List<CmsProperty> properties = new ArrayList<CmsProperty>();
         properties.add(new CmsProperty(
             CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
             CmsEncoder.ENCODING_UTF_8,
@@ -457,7 +459,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         // count depend on the number of documents indexed
         int expected = 6;
@@ -507,7 +509,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         // count depend on the number of documents indexed
         int expected = 6;
@@ -527,9 +529,9 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         // it may have been removed as term in the search, but it should be in the excerpt result anyway
         boolean foundThe = false;
         boolean foundA = false;
-        Iterator i = searchResult.iterator();
+        Iterator<CmsSearchResult> i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult result = (CmsSearchResult)i.next();
+            CmsSearchResult result = i.next();
             String excerpt = result.getExcerpt().toLowerCase();
             if (excerpt.indexOf(" the ") > -1) {
                 foundThe = true;
@@ -554,7 +556,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         boolean foundOn = false;
         i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult result = (CmsSearchResult)i.next();
+            CmsSearchResult result = i.next();
             String excerpt = result.getExcerpt().toLowerCase();
             if (excerpt.indexOf(" the ") > -1) {
                 foundThe = true;
@@ -598,7 +600,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         // count depend on the number of documents indexed
         int expected = 7;
@@ -616,9 +618,9 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         assertEquals(expected, searchResult.size());
 
         // check if "sites", "default" and "alkacon" is contained in the excerpt
-        Iterator i = searchResult.iterator();
+        Iterator<CmsSearchResult> i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult result = (CmsSearchResult)i.next();
+            CmsSearchResult result = i.next();
             if (result.getExcerpt() == null) {
                 continue;
             }
@@ -639,7 +641,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         // check if "sites", "default" and "alkacon" is contained in the excerpt
         i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult result = (CmsSearchResult)i.next();
+            CmsSearchResult result = i.next();
             if (result.getExcerpt() == null) {
                 continue;
             }
@@ -662,7 +664,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         // count depend on the number of documents indexed
         int expected = 7;
@@ -679,9 +681,9 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         assertEquals(expected, searchResult.size());
 
         // check if "sites", "default" and "alkacon" is contained in the excerpt
-        Iterator i = searchResult.iterator();
+        Iterator<CmsSearchResult> i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult result = (CmsSearchResult)i.next();
+            CmsSearchResult result = i.next();
             if (result.getExcerpt() == null) {
                 continue;
             }

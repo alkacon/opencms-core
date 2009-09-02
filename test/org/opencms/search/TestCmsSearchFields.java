@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchFields.java,v $
- * Date   : $Date: 2009/06/04 14:35:31 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/02 05:54:21 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.search;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
+import org.opencms.search.fields.CmsSearchField;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsStringUtil;
@@ -50,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in special fields of extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  */
 public class TestCmsSearchFields extends OpenCmsTestCase {
 
@@ -84,14 +85,20 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         suite.addTest(new TestCmsSearchFields("testSearchInFields"));
         suite.addTest(new TestCmsSearchFields("testExcerptCreationFromFields"));
+        suite.addTest(new TestCmsSearchFields("testSearchWithFieldQuery"));
+        suite.addTest(new TestCmsSearchFields("testSearchWithCombinedFieldQuery"));
+        suite.addTest(new TestCmsSearchFields("testExcerptCreationWithFieldQuery"));
+        suite.addTest(new TestCmsSearchFields("testSearchWithResouceTypeLimitaion"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();
@@ -117,7 +124,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         // The following "non-standard" mapping is set in the "opencms-search.xml" for this test case:
         //
@@ -153,6 +160,106 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
     }
 
     /**
+     * Tests searching with a field query, 
+     * that is a query over multiple fields with different search terms per field.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSearchWithFieldQuery() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing search with a specific field query");
+
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/");
+
+        // search for "Cologne" in the "special" field
+        searchBean.addFieldQueryMust("special", "Cologne");
+
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' index field:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(7, searchResult.size());
+
+        // now also require that "article" is part of the Title
+        searchBean.addFieldQueryMust(CmsSearchField.FIELD_TITLE_UNSTORED, "article");
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(4, searchResult.size());
+
+        // now also require that "SearchEgg1" is part of the Title
+        searchBean.addFieldQueryMust(CmsSearchField.FIELD_TITLE_UNSTORED, "SearchEgg1");
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field again:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(1, searchResult.size());
+
+        // now do a new search with some different parameters
+        // perform a search on the newly generated index
+        searchBean = new CmsSearch();
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/");
+
+        // search for "Cologne" in the "special" field
+        searchBean.addFieldQueryMust("special", "Cologne");
+        searchBean.addFieldQueryMustNot(CmsSearchField.FIELD_TITLE_UNSTORED, "article");
+
+        // now also require that "article" is part of the Title
+        searchBean.addFieldQueryMustNot(CmsSearchField.FIELD_TITLE_UNSTORED, "article");
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field with NOT option:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(3, searchResult.size());
+    }
+
+    /**
+     * Tests searching with a combined field query that includes SHOULD and MUST.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSearchWithCombinedFieldQuery() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing search with a combined field query");
+
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/");
+
+        // search for "Cologne" in the "special" field
+        searchBean.addFieldQueryMust("special", "Cologne");
+
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' index field:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(7, searchResult.size());
+
+        // now also require that "SearchEgg1" is part of the Title
+        searchBean.addFieldQueryShould(CmsSearchField.FIELD_TITLE_UNSTORED, "SearchEgg1");
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' and 'Title' index field again:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(1, searchResult.size());
+    }
+
+    /**
      * Tests excerpt generation only from searched fields.<p>
      * 
      * @throws Exception if the test fails
@@ -164,7 +271,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
 
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();
-        List searchResult;
+        List<CmsSearchResult> searchResult;
 
         searchBean.init(cms);
         searchBean.setIndex(INDEX_ONLINE);
@@ -180,10 +287,10 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         assertNotNull(searchResult);
         System.out.println("\n\nResults found searching in 'special' index field, some excerpts should be available:");
         TestCmsSearch.printResults(searchResult, cms, true);
-        Iterator i = searchResult.iterator();
+        Iterator<CmsSearchResult> i = searchResult.iterator();
         boolean excerptFound = false;
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             // not all results have excerpts, some are images 
             excerptFound |= CmsStringUtil.isNotEmpty(res.getExcerpt());
         }
@@ -198,7 +305,7 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         TestCmsSearch.printResults(searchResult, cms, true);
         i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             assertTrue(CmsStringUtil.isEmpty(res.getExcerpt()));
         }
 
@@ -212,10 +319,143 @@ public class TestCmsSearchFields extends OpenCmsTestCase {
         excerptFound = false;
         i = searchResult.iterator();
         while (i.hasNext()) {
-            CmsSearchResult res = (CmsSearchResult)i.next();
+            CmsSearchResult res = i.next();
             // not all results have excerpts, some are images 
             excerptFound |= CmsStringUtil.isNotEmpty(res.getExcerpt());
         }
         assertTrue(excerptFound);
+    }
+
+    /**
+     * Tests excerpt generation with a field query.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testExcerptCreationWithFieldQuery() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing excerpt generation with a field query");
+
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/");
+        searchBean.setQuery("Cologne");
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/");
+
+        // search for "Cologne" in the "special" field
+        searchBean.addFieldQueryMust("special", "Cologne");
+
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' index field:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(7, searchResult.size());
+
+        Iterator<CmsSearchResult> i = searchResult.iterator();
+        boolean excerptFound = false;
+        while (i.hasNext()) {
+            CmsSearchResult res = i.next();
+            if (CmsStringUtil.isNotEmpty(res.getExcerpt())) {
+                excerptFound = true;
+                System.out.println(res.getPath() + ":");
+                System.out.println(res.getExcerpt());
+            }
+        }
+        assertTrue(excerptFound);
+
+        // now change the setting for "excerpt only from searched", use excerpt only from searched field 
+        // please note the "special" field has no excerpt
+        searchBean.setExcerptOnlySearchedFields(true);
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' index field:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(7, searchResult.size());
+
+        i = searchResult.iterator();
+        excerptFound = false;
+        while (i.hasNext()) {
+            CmsSearchResult res = i.next();
+            if (CmsStringUtil.isNotEmpty(res.getExcerpt())) {
+                excerptFound = true;
+                System.out.println(res.getPath() + ":");
+                System.out.println(res.getExcerpt());
+            }
+        }
+        // in this search there must be no excerpt found 
+        // because we only searched in "special" which is not in the excerpt at all
+        assertFalse(excerptFound);
+
+        // now also require that "article" is part of the content
+        // this is required because "special" is not in the excerpt
+        searchBean.addFieldQueryMust(CmsSearchField.FIELD_CONTENT, "article");
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' and 'Content' index field:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(4, searchResult.size());
+
+        i = searchResult.iterator();
+        excerptFound = false;
+        while (i.hasNext()) {
+            CmsSearchResult res = i.next();
+            if (CmsStringUtil.isNotEmpty(res.getExcerpt())) {
+                excerptFound = true;
+                System.out.println(res.getPath() + ":");
+                System.out.println(res.getExcerpt());
+            }
+        }
+        assertTrue(excerptFound);
+    }
+
+    /**
+     * Tests limiting the search result to certain resource types.<p> 
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSearchWithResouceTypeLimitaion() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Test searching with a limitation on resource types");
+
+        // perform a search on the newly generated index
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_ONLINE);
+        searchBean.setSearchRoot("/");
+
+        // search for "Cologne" in the "special" field
+        searchBean.addFieldQueryMust("special", "Cologne");
+
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query searching in 'special' index field:");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(7, searchResult.size());
+
+        // now limit the search to types "image", "plain" and "xmlpage"
+        searchBean.setResourceTypes(new String[] {"image", "plain", "xmlpage"});
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query and a limit of the search to types \"image\", \"plain\" and \"xmlpage\":");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(3, searchResult.size());
+
+        // now limit the search to type "article"
+        searchBean.setResourceType("article");
+        searchResult = searchBean.getSearchResult();
+        assertNotNull(searchResult);
+        System.out.println("\n\nResults found with field query and a limit of the search to type \"article\":");
+        TestCmsSearch.printResults(searchResult, cms);
+        assertEquals(4, searchResult.size());
     }
 }
