@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/09/01 13:53:25 $
- * Version: $Revision: 1.1.2.15 $
+ * Date   : $Date: 2009/09/02 09:16:46 $
+ * Version: $Revision: 1.1.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.15 $
+ * @version $Revision: 1.1.2.16 $
  * 
  * @since 7.6
  */
@@ -122,6 +122,9 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** Request parameter obj value constant. */
     public static final String OBJ_CNT = "cnt";
+
+    /** Request parameter obj value constant. */
+    public static final String OBJ_DEL = "del";
 
     /** Request parameter obj value constant. */
     public static final Object OBJ_ELEM = "elem";
@@ -345,6 +348,25 @@ public class CmsADEServer extends CmsJspActionElement {
     }
 
     /**
+     * Deletes the given elements from server.<p>
+     * 
+     * @param elems the array of client-side element ids
+     * 
+     * @throws CmsException if something goes wrong 
+     */
+    protected void deleteElements(JSONArray elems) throws CmsException {
+
+        CmsObject cms = getCmsObject();
+        for (int i = 0; i < elems.length(); i++) {
+            CmsResource res = cms.readResource(CmsElementUtil.parseId(elems.optString(i)));
+            if (cms.getLock(res).isUnlocked()) {
+                cms.lockResource(cms.getSitePath(res));
+            }
+            cms.deleteResource(cms.getSitePath(res), CmsResource.DELETE_PRESERVE_SIBLINGS);
+        }
+    }
+
+    /**
      * Handles all ADE get requests.<p>
      * 
      * @return the result
@@ -522,6 +544,24 @@ public class CmsADEServer extends CmsJspActionElement {
             }
             JSONObject cntPage = new JSONObject(dataParam);
             setContainerPage(urlParam, cntPage);
+        } else if (objParam.equals(OBJ_DEL)) {
+            // save the container page
+            String urlParam = getRequest().getParameter(PARAMETER_URL);
+            if (urlParam == null) {
+                result.put(RES_ERROR, Messages.get().getBundle().key(
+                    Messages.ERR_JSON_MISSING_PARAMETER_1,
+                    PARAMETER_URL));
+                return result;
+            }
+            String dataParam = getRequest().getParameter(PARAMETER_DATA);
+            if (dataParam == null) {
+                result.put(RES_ERROR, Messages.get().getBundle().key(
+                    Messages.ERR_JSON_MISSING_PARAMETER_1,
+                    PARAMETER_DATA));
+                return result;
+            }
+            JSONArray elems = new JSONArray(dataParam);
+            deleteElements(elems);
         } else {
             result.put(RES_ERROR, Messages.get().getBundle().key(
                 Messages.ERR_JSON_WRONG_PARAMETER_VALUE_2,
@@ -629,25 +669,34 @@ public class CmsADEServer extends CmsJspActionElement {
      * 
      * @return the current user's favorites list
      * 
-     * @throws CmsException if something goes wrong
      * @throws JSONException if something goes wrong in the json manipulation
      */
-    protected JSONArray getFavoriteList(JSONObject resElements, Collection<String> types)
-    throws JSONException, CmsException {
+    protected JSONArray getFavoriteList(JSONObject resElements, Collection<String> types) throws JSONException {
 
+        JSONArray result = new JSONArray();
         CmsElementUtil elemUtil = new CmsElementUtil(
             getCmsObject(),
             getRequest(),
             getResponse(),
             getRequest().getParameter(PARAMETER_URL));
 
-        JSONArray result = getFavoriteListFromStore();
-
         // iterate the list and create the missing elements
-        for (int i = 0; i < result.length(); i++) {
-            String id = result.optString(i);
+        JSONArray favList = getFavoriteListFromStore();
+        for (int i = 0; i < favList.length(); i++) {
+            String id = favList.optString(i);
             if ((resElements != null) && !resElements.has(id)) {
-                resElements.put(id, elemUtil.getElementData(CmsElementUtil.parseId(id), types));
+                try {
+                    resElements.put(id, elemUtil.getElementData(CmsElementUtil.parseId(id), types));
+                    result.put(id);
+                } catch (Exception e) {
+                    // ignore any problems
+                    if (!LOG.isDebugEnabled()) {
+                        LOG.warn(e.getLocalizedMessage());
+                    }
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            } else {
+                result.put(id);
             }
         }
 
@@ -735,28 +784,34 @@ public class CmsADEServer extends CmsJspActionElement {
      * @param types the supported container types
      * 
      * @return the current user's recent list
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws JSONException if something goes wrong in the json manipulation
      */
-    protected JSONArray getRecentList(JSONObject resElements, Collection<String> types)
-    throws JSONException, CmsException {
+    protected JSONArray getRecentList(JSONObject resElements, Collection<String> types) {
 
+        JSONArray result = new JSONArray();
         CmsElementUtil elemUtil = new CmsElementUtil(
             getCmsObject(),
             getRequest(),
             getResponse(),
             getRequest().getParameter(PARAMETER_URL));
 
-        JSONArray result = new JSONArray();
         // get the cached list
         List<CmsUUID> recentList = getRecentListFromCache();
         // iterate the list and create the missing elements
         for (CmsUUID structureId : recentList) {
             String id = CmsElementUtil.createId(structureId);
-            result.put(id);
             if ((resElements != null) && !resElements.has(id)) {
-                resElements.put(id, elemUtil.getElementData(structureId, types));
+                try {
+                    resElements.put(id, elemUtil.getElementData(structureId, types));
+                    result.put(id);
+                } catch (Exception e) {
+                    // ignore any problems
+                    if (!LOG.isDebugEnabled()) {
+                        LOG.warn(e.getLocalizedMessage());
+                    }
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
+            } else {
+                result.put(id);
             }
         }
 

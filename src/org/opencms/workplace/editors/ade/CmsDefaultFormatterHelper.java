@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/09/01 13:15:26 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/02 09:16:46 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,6 +37,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,11 +48,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6 
  */
 public class CmsDefaultFormatterHelper extends CmsJspActionElement {
+
+    /** The configuration for new elements. */
+    private CmsTypeConfigurationItem m_newConfig;
 
     /** The element's resource. */
     private CmsResource m_resource;
@@ -69,6 +73,32 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     }
 
     /**
+     * Returns the configuration for new elements.<p>
+     * 
+     * @return the configuration for new elements
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsTypeConfigurationItem getNewConfig() throws CmsException {
+
+        if (m_newConfig == null) {
+            String url = getRequest().getParameter(CmsADEServer.PARAMETER_URL);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(url)) {
+                return null;
+            }
+            CmsObject cms = getCmsObject();
+            CmsResource cntPageRes = cms.readResource(url);
+            CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
+                cms,
+                cntPageRes,
+                cms.getRequestContext().getLocale());
+            CmsElementCreator ec = new CmsElementCreator(cms, cntPage.getNewConfig());
+            m_newConfig = ec.getConfiguration().get(getType());
+        }
+        return m_newConfig;
+    }
+
+    /**
      * Returns the configured folder for new elements.<p> 
      * 
      * @return the configured folder for new elements
@@ -80,15 +110,7 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
         if (!isNew()) {
             return "";
         }
-        CmsObject cms = getCmsObject();
-        CmsResource cntPageRes = cms.readResource(getRequest().getParameter(CmsADEServer.PARAMETER_URL));
-        CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
-            cms,
-            cntPageRes,
-            cms.getRequestContext().getLocale());
-        CmsElementCreator ec = new CmsElementCreator(cms, cntPage.getNewConfig());
-        CmsTypeConfigurationItem tc = ec.getConfiguration().get(getType());
-        return tc.getFolder();
+        return getNewConfig().getFolder();
     }
 
     /**
@@ -153,6 +175,6 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      */
     public boolean isNew() throws CmsException {
 
-        return getPath().startsWith("/system/modules/org.opencms.workplace.ade.demo/config/");
+        return getPath().equals(getNewConfig().getSourceFile());
     }
 }

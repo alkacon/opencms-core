@@ -57,10 +57,68 @@
       var $item = $(this).closest('.cms-element');
       var $container = $item.parent();
       cms.move.hoverOut();
-      addToRecent($item.attr('rel'));
+      var elemId = $item.attr('rel');
+      if (elemId && cms.data.elements[elemId]) {
+         if (cms.data.elements[elemId].status == cms.data.STATUS_CREATED) {
+            cms.data.deleteResources([elemId], function(ok) {
+               deleteFromFavListAndRecList([elemId]);
+               if (!ok) {
+                  // TODO
+                  alert("error");
+               }
+            });
+         } else {
+            addToRecent($item.attr('rel'));
+         }
+      }
       $item.remove();
       cms.move.updateContainer($container.attr('id'));
       setPageChanged(true);
+   };
+   
+   /**
+    * Deletes the given elements from the favorites and recent list.<p>
+    *
+    * @param {Array} ids a list of ids of elements to be deleted
+    */
+   var deleteFromFavListAndRecList = function(/**Array<String>*/ids) {
+   
+      var /**boolean*/ saveFavorites = false;
+      var /**boolean*/ saveRecentList = false;
+      $.each(ids, function() {
+	// HACK: $.each converts the list elements from String to Array<String> :(
+         var /**String*/ id = "" + this;
+         // remove from favorites
+         var /**Number*/ pos = $.inArray(id, cms.toolbar.favorites);
+         if (pos >= 0) {
+            saveFavorites = true;
+            cms.toolbar.favorites.splice(pos, 1);
+         }
+         // remove from recent list
+         pos = $.inArray(id, cms.toolbar.recent);
+         if (pos >= 0) {
+            saveRecentList = true;
+            cms.toolbar.recent.splice(pos, 1);
+         }
+      });
+      if (saveFavorites) {
+         // save favorites
+         cms.data.persistFavorites(function(ok) {
+            resetFavList();
+            if (!ok) {
+                        // TODO
+            }
+         });
+      }
+      if (saveRecentList) {
+         // save recent list
+         cms.data.persistRecent(function(ok) {
+            resetRecentList();
+            if (!ok) {
+                        // TODO
+            }
+         });
+      }
    };
    
    var toggleDelete = cms.toolbar.toggleDelete = function(el) {
@@ -77,7 +135,7 @@
          $(cms.data.deleteitems).each(function() {
             var elem = $(this).css('position', 'relative');
             $('<a class="cms-handle cms-delete"></a>').appendTo(elem).hover(function() {
-               cms.move.hoverIn(elem, 2)
+               cms.move.hoverIn(elem, 2);
             }, cms.move.hoverOut).click(deleteItem);
          });
          button.addClass('ui-state-active');
@@ -160,7 +218,7 @@
       var handleDiv = $('<div class="cms-handle"></div>').appendTo(elem);
       
       var handles = {
-         'edit': cms.data.elements[elemId].allowEdit ? $('<a class="cms-edit cms-edit-enabled"></a>').click(openEditDialog) : $('<a class="cms-edit cms-edit-locked" title="locked by '+cms.data.elements[elemId].locked+'" onclick="return false;"></a>'),
+         'edit': cms.data.elements[elemId].allowEdit ? $('<a class="cms-edit cms-edit-enabled"></a>').click(openEditDialog) : $('<a class="cms-edit cms-edit-locked" title="locked by ' + cms.data.elements[elemId].locked + '" onclick="return false;"></a>'),
          'move': $('<a class="cms-move"></a>').mousedown(cms.move.movePreparation).mouseup(cms.move.moveEnd),
          'delete': $('<a class="cms-delete"></a>').click(deleteItem)
       };
@@ -218,7 +276,6 @@
       if (elemId && cms.data.elements[elemId]) {
          if (cms.data.elements[elemId].allowEdit) {
             var element = cms.data.elements[elemId];
-            var isNew = element.status == cms.data.STATUS_NEWCONFIG;
             var _openDialog = function(path, id, afterClose) {
                var dialogWidth = self.innerWidth ? self.innerWidth : self.document.body.clientWidth;
                dialogWidth = dialogWidth > 1360 ? 1360 : dialogWidth;
@@ -285,10 +342,8 @@
                   cms.util.replaceNewElement(elemId, id);
                   _openDialog(uri, id);
                });
-               
             } else {
                _openDialog(element.file, elemId);
-               
             }
          }
       }
@@ -571,10 +626,12 @@
                // TODO
                return;
             }
-            if (newMenuItems == cms.html.favoriteListId) 
+            if (newMenuItems == cms.html.favoriteListId) {
                resetFavList();
-            if (newMenuItems == cms.html.recentListId) 
+            }
+            if (newMenuItems == cms.html.recentListId) {
                resetRecentList();
+            }
             if (!button.hasClass("ui-state-active")) {
                return;
             }
@@ -747,7 +804,7 @@
       $("#" + cms.html.favoriteMenuId + " li.cms-item").remove();
       var $favlist = $("#" + cms.html.favoriteMenuId + " ul");
       for (var i = 0; i < cms.toolbar.favorites.length; i++) {
-         $favlist.append(cms.html.createItemFavListHtml(cms.data.elements[cms.toolbar.favorites[i]]))
+         $favlist.append(cms.html.createItemFavListHtml(cms.toolbar.favorites[i]))
       }
       // $("#"+cms.html.favoriteMenuId+" a.ui-icon").click(function() {clickTriangle(this)});
    }
@@ -785,11 +842,11 @@
       $('#' + cms.html.newMenuId + " li.cms-item").remove();
       var $newlist = $('#' + cms.html.newMenuId + " ul");
       for (var key in cms.data.elements) {
-         if (cms.data.elements[key].status != cms.data.STATUS_NEWCONFIG) { 
+         if (cms.data.elements[key].status != cms.data.STATUS_NEWCONFIG) {
             continue;
          }
          
-         $newlist.append(cms.html.createItemFavListHtml(cms.data.elements[key]));
+         $newlist.append(cms.html.createItemFavListHtml(key));
       }
    }
    
@@ -866,7 +923,22 @@
          var saveChanges = window.confirm("Do you want to save your changes made on " + window.location.href + "?\n (Cancel will discard changes)");
          if (saveChanges) {
             cms.toolbar.savePage();
-            //alert("Changes saved.")
+         } else {
+            var newElems = [];
+            $.each(cms.data.elements, function(key, value) {
+               if (value.status == cms.data.STATUS_CREATED) {
+                  newElems.push(value.id);
+               }
+            });
+            if (newElems.length() > 0) {
+               cms.data.deleteResources(newElems, function(ok) {
+                  deleteFromFavListAndRecList(newElems);
+                  if (!ok) {
+                     // TODO
+                     alert("error");
+                  }
+               });
+            }
          }
       }
    }
@@ -876,7 +948,7 @@
       $("#" + cms.html.recentMenuId + " li.cms-item").remove();
       var $recentlist = $("#" + cms.html.recentListId);
       for (var i = 0; i < cms.toolbar.recent.length; i++) {
-         $recentlist.append(cms.html.createItemFavListHtml(cms.data.elements[cms.toolbar.recent[i]]));
+         $recentlist.append(cms.html.createItemFavListHtml(cms.toolbar.recent[i]));
       }
    };
    

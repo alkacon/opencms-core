@@ -122,10 +122,22 @@
    /**
     * Creates the HTML for an item in the New/Fav/Recent menu from an element.<p>
     *
-    * @param {Object} item the element for which the HTML should be generated
+    * @param {String} id the id of the element for which the HTML should be generated
     */
-   var createItemFavListHtml = cms.html.createItemFavListHtml = function(item) {
-      return $(item.contents['_DEFAULT_']);
+   var createItemFavListHtml = cms.html.createItemFavListHtml = function(id) {
+      var/**Object*/ elem = cms.data.elements[id];
+      if (!elem) {
+         // in case the element is not found reload it
+         cms.data.reloadElement(id, function(ok) {
+            return $(cms.data.elements[id].contents['_DEFAULT_']);
+            if (!ok) {
+               // TODO
+               alert("Error!");
+            }
+         });
+      } else {
+         return $(elem.contents['_DEFAULT_']);
+      }
    }
    
    var toolbar = cms.html.toolbar = '<div id="' + toolbarId + '">\

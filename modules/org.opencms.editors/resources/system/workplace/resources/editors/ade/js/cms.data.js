@@ -36,6 +36,9 @@
    /** Parameter 'obj' value 'new' constant. */
    var /** String */ OBJ_NEW = 'new';
    
+   /** Parameter 'obj' value 'del' constant. */
+   var /** String */ OBJ_DEL = 'del';
+   
    /** Editors back link uri. */
    var /** String */ BACKLINK_URL = cms.data.BACKLINK_URL = '/system/workplace/resources/editors/ade/backlink.html';
    
@@ -275,17 +278,38 @@
    /**
     * .<p>
     *
+    * @param {Array} ids
+    * @param {Function} afterDelete
+    */
+   var deleteResources = cms.data.deleteResources = /** void */ function(/** Array */ids, /** void Function(boolean) */ afterDelete) {
+   
+      postJSON(OBJ_DEL, ids, function(ok) {
+         afterDelete(ok);
+      });
+   }
+   
+   /**
+    * .<p>
+    *
     * @param {String} id
     * @param {Function} afterReload
     */
    var reloadElement = cms.data.reloadElement = /** void */ function(/** String */id, /** void Function(boolean, Object) */ afterReload) {
    
+      var/**boolean*/ restoreState = false;
+      if (cms.data.elements[id] && (cms.data.elements[id].status == STATUS_CREATED)) {
+         restoreState = true;
+      }
       loadJSON({
          'obj': OBJ_ELEM,
          'elem': id
       }, function(ok, data) {
          if (ok) {
             cms.data.elements[id] = data.elements[id];
+            if (restoreState) {
+               // keep the state of client-side created
+               cms.data.elements[id].status = STATUS_CREATED;
+            }
             fillContainers();
          }
          afterReload(ok, data);
