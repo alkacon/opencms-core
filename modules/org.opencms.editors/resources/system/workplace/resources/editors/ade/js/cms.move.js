@@ -5,7 +5,7 @@
    cms.move.zIndexMap = {};
    
    var isMenuContainer = cms.move.isMenuContainer = function(id) {
-      return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId;
+      return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId || id == cms.html.searchListId ;
    }
    
    var movePreparation = cms.move.movePreparation = function(event) {
@@ -103,7 +103,6 @@
       
       $('#' + sortable.cmsStartContainerId).closest('.cms-menu').css('display', 'none');
       sortable.cmsOver = false;
-      
    }
    
    
@@ -145,7 +144,7 @@
    
    
    var startAdd = cms.move.startAdd = function(event, ui) {
-   
+      
       ui.self.cmsStartContainerId = ui.self.currentItem.parent().attr('id');
       // if (ui.self.cmsStartContainerId!=cms.html.favoriteListId){
       // $('#'+cms.html.favoriteMenuId).css('display', 'block');

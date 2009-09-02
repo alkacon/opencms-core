@@ -101,6 +101,7 @@ $('document').ready(function() {
       if (ok) {
          cms.data.fillContainers();
          cms.toolbar.resetNewList();
+         $(document).trigger("cms-data-loaded");
       } else {
             // TODO
       }

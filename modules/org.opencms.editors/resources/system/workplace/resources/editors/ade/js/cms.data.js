@@ -99,6 +99,26 @@
    /** Selector for deletable items. */
    var /** String */ deleteitems = cms.data.deleteitems = '.cms-element';
    
+   
+   
+   
+   
+   var currentSearchPage = cms.data.currentSearchPage = -1;
+   var currentSearchQuery = cms.data.currentSearchQuery = null;
+   var currentSearchPath = cms.data.currentSearchPath = null;
+   var currentSearchType = cms.data.currentSearchType = null;
+   var moreSearchResults = cms.data.moreSearchResults = false;
+   var searchResultIds = cms.data.searchResultIds = [];
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    /**
     * .<p>
     *
@@ -115,6 +135,22 @@
             }
          }
       }
+   }
+   
+   /**
+   * Same as prepareLoadedElements, but works with an array.
+   **/
+   var prepareLoadedElementsArray = cms.data.prepareLoadedElementsArray = function(elements) {
+       for (var i=0; i<elements.length; i++) {
+           var element = elements[i];
+           var id = element.id;
+           for (var containerType in element.contents) {
+               var oldContent = element.contents[containerType];
+               if (oldContent) {
+                   element.contents[containerType] = $(oldContent).attr('rel', element.id).addClass('cms-element').appendTo($('<div></div>')).parent().html();
+               }
+           }
+       }
    }
    
    /**
@@ -322,7 +358,6 @@
     * @param {String} ids
     * @param {Function} afterLoad
     */
-   // TODO: not used yet
    var loadElements = cms.data.loadElements = /** void */ function(/** Array<String> */ids, /** void Function(boolean, Object) */ afterLoad) {
    
       loadJSON({
@@ -350,9 +385,43 @@
       }, function(ok, data) {
          if (ok) {
             cms.toolbar.favorites = data.favorites;
+            
+            var idsToLoad = getElementsToLoad(cms.toolbar.favorites);
+            if (idsToLoad.length != 0) {
+               loadElements(idsToLoad, function(ok2, data2) {
+                  if (ok2) {
+                     afterFavoritesLoad(ok2, data)
+                  }
+               });
+            } else {
+               afterFavoritesLoad(ok, data);
+            }
          }
-         afterFavoritesLoad(ok, data);
       });
+      
+   }
+   
+   var loadRecent = cms.data.loadRecent = /** void */ function(/** void Function(boolean, Object) */afterRecentLoad) {
+   
+      loadJSON({
+         obj: OBJ_REC
+      }, function(ok, data) {
+         if (ok) {
+            cms.toolbar.recent = data.recent;
+            
+            var idsToLoad = getElementsToLoad(cms.toolbar.recent);
+            if (idsToLoad.length != 0) {
+               loadElements(idsToLoad, function(ok2, data2) {
+                  if (ok2) {
+                     afterRecentLoad(ok2, data)
+                  }
+               });
+            } else {
+               afterRecentLoad(ok, data);
+            }
+         }
+      });
+      
    }
    
    /**
@@ -472,6 +541,150 @@
       }
    }
    
+   
+   
+   /**
+    * Handler for search results, but not for the first page of results of a new search
+    * @param {Object} ok status of the AJAX request
+    * @param {Object} data the JSON data from the AJAX response.
+    */
+   var handleSearchResults = cms.data.handleSearchResults = function(ok, data) {
+
+       cms.toolbar.searchLoadingSign.stop();
+       if (!ok) {
+           return;
+       }
+       cms.data.currentSearchPage += 1;
+       var searchResults = data.elements;
+       cms.data.prepareLoadedElementsArray(searchResults);
+       for (var i =0; i<searchResults.length; i++) {
+           var result = searchResults[i];
+           cms.data.elements[result.id] = result;
+           addSearchResult(result);
+       }
+       cms.data.moreSearchResults = data.hasmore;
+   }
+   
+   /**
+    * Handler for the first page of search results of a new search.<p>
+    * 
+    * @param {Object} ok
+    * @param {Object} data
+    */
+   var handleNewSearchResults = cms.data.handleNewSearchResults = function(ok, data) {
+       if (!ok) {
+           return;
+       } 
+       
+       handleSearchResults(ok, data);
+   }
+   
+    /**
+     * Adds an element to the list of search results in the DOM.<p>
+     * @param {Object} element the element which should be added to the search results.
+     */
+    var addSearchResult = cms.data.addSearchResult = function(/*Object*/ result) {
+        cms.data.searchResultIds.push(result.id);
+        var $content = $(result.contents['_DEFAULT_']);
+        var $inner = $('#cms-search-list');
+        $('.cms-head', $content).append('<a class="cms-handle cms-move"></a>');
+        $inner.append($content);
+    }
+    
+    /**
+     * Removes all search results from the DOM.<p> 
+     */
+    var clearSearchResults = cms.data.clearSearchResults = function() {
+        cms.data.searchResultIds.length = 0;
+        var $inner = $('#cms-search-list');
+        $inner.empty();
+   }
+
+   /**
+    * Handler for the results of the checkLastSearch function.
+    * @param {Object} ok the status of the AJAX call
+    * @param {Object} data the JSON data from the AJAX call
+    */
+   var handleLastSearch = cms.data.handleLastSearch = function(ok, data) {
+       if (!ok) {
+           return;
+       }
+       if (data.elements) {
+           prepareLoadedElementsArray(data.elements);
+           cms.data.currentSearchPage=0;
+           cms.data.currentSearchQuery = data.text;
+           cms.data.currentSearchPath = data.location;
+           cms.data.currentSearchType = data.type
+            
+           clearSearchResults();
+           var searchResults = data.elements;
+           for (var i=0; i<searchResults.length; i++) {
+               var result = searchResults[i];
+               cms.data.elements[result.id] = result;
+               addSearchResult(result);
+           }
+           cms.data.moreSearchResults = data.hasmore;
+       }
+   }
+   
+
+   /**
+    * Starts a new search.<p>
+    * 
+    * @param {Object} query the search query string
+    * @param {Object} type the string which is a comma-separated list of types to which the search is restricted
+    * @param {Object} path the VFS path in which to search
+    */
+   var startNewSearch = cms.data.startNewSearch = function(query, type, path) {
+       cms.data.currentSearchPage=0;
+       cms.data.currentSearchPath = path;
+       cms.data.currentSearchType = type;
+       cms.data.currentSearchQuery = query;
+       clearSearchResults();
+       loadJSON({
+           obj: 'search',
+           text: query,
+           type: type,
+           location: path,
+           page: 0
+       }, cms.data.handleNewSearchResults);
+       
+   }
+   
+   /**
+    * Continues the last search, e.g. when scrolling past the last loaded search result.
+    * 
+    */
+   var continueSearch = cms.data.continueSearch = function() {
+       loadJSON({
+           obj: 'search',
+           text: cms.data.currentSearchQuery,
+           type: cms.data.currentSearchType,
+           location: cms.data.currentSearchPath,
+           page: cms.data.currentSearchPage
+       }, cms.data.handleSearchResults)
+       
+   }
+   
+   /**
+    * Sends the current search parameters to the server to check if they're the same
+    * as the last search performed.<p>
+    *
+    * @param {Object} callback the callback that will be called after normal processing of the AJAX response.
+    */
+   var checkLastSearch = cms.data.checkLastSearch = function(callback) {
+       loadJSON({
+           obj: 'ls',
+           text: cms.data.currentSearchQuery,
+           type: cms.data.currentSearchType,
+           location: cms.data.currentSearchPath,
+           page: "0"
+       }, function(ok, data) {
+           cms.data.handleLastSearch(ok, data);
+           callback(ok, data);
+       });
+   }
+   
    /**
     * Initializes the counter for new elements by generating the first unused element id
     * @param {Object} elements the map in which to look for existing element ids
@@ -485,6 +698,11 @@
       cms.data.newCounter = newCounter;
    }
    
+   var getElementsToLoad = /*Array*/ function(/*Array*/ids) {
+      return $.grep(ids, function(id) {
+         return !(cms.data.elements[id]) && id.match(/^ade_/);
+      });
+   }
    
    
    ///////// these function are for debugging /////////////
@@ -527,5 +745,8 @@
       });
       return JSON.stringify(ser);
    };
+   
+   
+   
    
 })(cms);

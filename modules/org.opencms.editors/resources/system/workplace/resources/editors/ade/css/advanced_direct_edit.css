@@ -630,6 +630,34 @@ li.jTreePlacement, li.jTreePlaceholder {
     right: 3px;
 }
 
+.cms-scrolling {
+	height: 200px;
+	overflow: auto;
+	width: 332px;
+	position: relative;
+	/*border: 1px solid;*/
+	background-color: #6e9ce0;
+	margin-left: 8px;
+}
+
+.cms-search-button {
+	margin-left: 30px;
+	margin-right: 30px;
+	margin-top: 10px;
+	margin-bottom: 5px;
+	width: 80%;
+}
+
+#cms-search-list {
+    min-height: 201px;
+    margin-left: 3px;
+}
+	
+#cms-search div.ui-corner-bottom {
+	width: 350px;
+}
+
+
 /*
 #fav-dialog {
     display: none;

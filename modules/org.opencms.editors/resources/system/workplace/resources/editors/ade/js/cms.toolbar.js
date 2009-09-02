@@ -4,12 +4,18 @@
    cms.toolbar.recent = [];
    cms.toolbar.recentSize = 10;
    var oldBodyMarginTop = 0;
-   var menuIds = [cms.html.favoriteMenuId, cms.html.recentMenuId, cms.html.newMenuId];
+   var menuIds = [cms.html.favoriteMenuId, cms.html.recentMenuId, cms.html.newMenuId, cms.html.searchMenuId];
    var sortmenus = cms.util.makeCombinedSelector(menuIds, "#% ul");
    var menuHandles = cms.util.makeCombinedSelector(menuIds, "#% a.cms-move")
    var menus = cms.util.makeCombinedSelector(menuIds, "#%");
    cms.toolbar.currentMenu = cms.html.favoriteMenuId;
    cms.toolbar.currentMenuItems = cms.html.favoriteListId;
+   
+
+
+   
+   var searchLoadingSign = null;
+   
    
    
    var showPublishList = cms.toolbar.showPublishList = function() {
@@ -68,7 +74,7 @@
                }
             });
          } else {
-            addToRecent($item.attr('rel'));
+      addToRecent($item.attr('rel'));
          }
       }
       $item.remove();
@@ -342,8 +348,10 @@
                   cms.util.replaceNewElement(elemId, id);
                   _openDialog(uri, id);
                });
+               
             } else {
                _openDialog(element.file, elemId);
+               
             }
          }
       }
@@ -381,6 +389,48 @@
       }
       return false;
    };
+  
+  /**
+  * Helper class for displaying a 'Loading' sign when loading takes too long
+  */  
+   var LoadingSign = function(selector, waitTime) {
+   
+      this.isLoading = false;
+      
+      var self = this;
+      
+      this.start = function() {
+         self.isLoading = true;
+         window.setTimeout(function() {
+            if (self.isLoading) {
+               $(selector).show();
+            }
+         }, waitTime);
+      }
+      
+      this.stop = function() {
+         self.isLoading = false;
+         $(selector).hide();
+      }
+      
+      return self;
+   }
+   
+   var saveSearchInput = cms.data.saveSearchInput = function() {
+      cms.data.searchQuery = $('.cms-search-query').val();
+      cms.data.searchType = $('.cms-search-type').val();
+      cms.data.searchPath = $('.cms-search-path').val();
+   }
+   
+   var restoreSearchInput = cms.data.restoreSearchInput = function() {
+      if (cms.data.searchQuery) 
+         $('.cms-search-query').val(cms.data.searchQuery);
+      if (cms.data.searchType) 
+         $('.cms-search-type').val(cms.data.searchType);
+      if (cms.data.searchPath) 
+         $('.cms-search-path').val(cms.data.searchPath);
+   }
+   
    
    
    var addToolbar = cms.toolbar.addToolbar = function() {
@@ -392,6 +442,10 @@
       bodyEl.append(cms.html.toolbar);
       bodyEl.append(cms.html.createMenu(cms.html.favoriteMenuId));
       bodyEl.append(cms.html.createMenu(cms.html.newMenuId));
+      bodyEl.append(cms.html.searchMenu);
+      initSearch();      
+      
+      
       bodyEl.append(cms.html.favoriteDialog);
       bodyEl.append('<div id="cms_appendbox"></div>');
       bodyEl.append(cms.html.createMenu(cms.html.recentMenuId));
@@ -415,6 +469,11 @@
       $('button[name="New"]').click(function() {
          toggleList(this, cms.html.newMenuId);
       });
+      
+      $('button[name="Add"]').click(function() {
+         toggleList(this, cms.html.searchMenuId);
+      });
+      
       $('#toolbar button, #show-button').mouseover(function() {
          if (!$(this).hasClass('cms-deactivated')) {
             $(this).addClass('ui-state-hover');
@@ -429,6 +488,59 @@
       initFavDialog();
    };
    
+   
+   var initSearch = cms.toolbar.initSearch = function() {
+      var bodyEl = $(document.body);
+      searchLoadingSign = cms.toolbar.searchLoadingSign = new LoadingSign(".cms-loading", 500);
+      
+      bodyEl.append(cms.html.searchDialog);
+      
+      $('#cms-search-dialog').dialog({
+         autoOpen: false,
+         modal: true,
+         zIndex: 99999,
+         title: 'Search',
+         buttons: {
+            'Search': function() {
+               
+               $(this).dialog('close');
+               var query = $('.cms-search-query').val();
+               var type = $('.cms-search-type').val();
+               var path = $('.cms-search-path').val();
+               cms.data.startNewSearch(query, type, path)
+               saveSearchInput();
+            },
+            'Cancel': function() {
+               $(this).dialog('close');
+            }
+         }
+      });
+      
+      $(".cms-search-tree").click(function() {
+         window.open(cms.data.TREE_URL, '_blank', 'menubar=no');
+      })
+      
+      $(".cms-search-button").click(function() {
+         restoreSearchInput();
+         $('#cms-search-dialog').dialog('open');
+         
+      });
+
+      $(document).bind('cms-data-loaded', function() {
+         loading = searchLoadingSign;
+         var i = 0;
+         var $inner = $("#cms-search-list");
+         var $scrolling = $(".cms-scrolling");
+         
+         $scrolling.scroll(function() {
+            var delta = $inner.height() - $scrolling.height() - $scrolling.scrollTop();
+            if (delta < 64 && !loading.isLoading && cms.data.moreSearchResults) {
+               cms.data.continueSearch();
+               loading.start();
+            }
+         });
+      });
+   }
    
    
    var destroyMove = function() {
@@ -595,10 +707,23 @@
       var newMenuItems = $('#' + newMenu).find("ul").attr('id');
       if (button.hasClass('ui-state-active')) {
       
+      
+         //this line makes all elements vanish in IE
          $(cms.util.getContainerSelector() + ', ' + sortmenus).sortable('destroy');
+         // TODO: find a better way to rerender stuff in IE
+         if ($.browser.msie) {
+            setTimeout(function() {
+               $(cms.util.getContainerSelector()).hide().show();
+            }, 0);
+         }
+         
+         
+         
          $(menuHandles).remove();
          $(menus).hide();
+         
          button.removeClass('ui-state-active');
+         
       } else {
          cms.toolbar.currentMenu = newMenu;
          cms.toolbar.currentMenuItems = newMenuItems
@@ -609,6 +734,8 @@
          } else if (newMenuItems == cms.html.recentListId) {
             //resetRecentList();
             loadFunction = cms.data.loadRecent;
+         } else if (newMenuItems == cms.html.searchListId) {
+            loadFunction = cms.data.checkLastSearch;
          } else {
             // set a dummy load function that will immediately 
             // execute its callback
@@ -640,10 +767,12 @@
                var elem = $(this);
                $('<a class="cms-handle cms-move"></a>').appendTo(elem);
             });
+            var leftOffset = -217;
+            if (buttonElem.name == 'Add') leftOffset -= 36;
             list.appendTo('#toolbar_content').css({
                /* position : 'fixed', */
                top: 35,
-               left: $(buttonElem).position().left - 217
+               left: $(buttonElem).position().left + leftOffset
             }).slideDown(100, function() {
                $('div.ui-widget-shadow', list).css({
                   top: 0,
@@ -842,7 +971,7 @@
       $('#' + cms.html.newMenuId + " li.cms-item").remove();
       var $newlist = $('#' + cms.html.newMenuId + " ul");
       for (var key in cms.data.elements) {
-         if (cms.data.elements[key].status != cms.data.STATUS_NEWCONFIG) {
+         if (cms.data.elements[key].status != cms.data.STATUS_NEWCONFIG) { 
             continue;
          }
          
