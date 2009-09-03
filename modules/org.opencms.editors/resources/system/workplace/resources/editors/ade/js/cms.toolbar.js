@@ -566,7 +566,7 @@
             },
             'Cancel': function() {
                $(this).dialog('close');
-               $('form span.error', $('#cms-search-dialog')).remove();
+               $('form span.ade-error', $('#cms-search-dialog')).remove();
             }
          }
       });

@@ -1,18 +1,18 @@
-/*	CSS for customized radio buttons and check boxes */
+/*	CSS for adeized radio buttons and check boxes */
 
 
-legend {
+.ade-forms legend {
 	font-weight: bold;
 	padding: .2em 5px;
 }
 
 	
 /*	wrapper divs */
-.custom-checkbox, .custom-radio { position: relative; }
+.ade-checkbox, .ade-radio { position: relative; }
 	
 /* input, label positioning */
-.custom-checkbox input, 
-.custom-radio input {
+.ade-checkbox input, 
+.ade-radio input {
 	position: absolute;
 	left: 2px;
 	top: 3px;
@@ -20,8 +20,8 @@ legend {
 	z-index: 0;
 }
 
-.custom-checkbox label, 
-.custom-radio label {
+.ade-checkbox label, 
+.ade-radio label {
 	display: block;
 	position: relative;
 	z-index: 1;
@@ -34,32 +34,32 @@ legend {
 
 	
 /* states */
-.custom-checkbox label { background: url(images/checkbox.gif) no-repeat; }
+.ade-checkbox label { background: url(images/checkbox.gif) no-repeat; }
 
-.custom-radio label { background: url(images/radiobutton.gif) no-repeat; }
+.ade-radio label { background: url(images/radiobutton.gif) no-repeat; }
 
-.custom-checkbox label, .custom-radio label {
+.ade-checkbox label, .ade-radio label {
 	background-position: -10px -14px;
 }
 
-.custom-checkbox label.hover,
-.custom-checkbox label.focus,
-.custom-radio label.hover,
-.custom-radio label.focus {
+.ade-checkbox label.ade-hover,
+.ade-checkbox label.ade-focus,
+.ade-radio label.ade-hover,
+.ade-radio label.ade-focus {
 	background-position: -10px -114px;
 }
 
-.custom-checkbox label.checked, 
-.custom-radio label.checked {
+.ade-checkbox label.ade-checked, 
+.ade-radio label.ade-checked {
 	background-position: -10px -214px;
 }
 
-.custom-checkbox label.checkedHover, 
-.custom-checkbox label.checkedFocus {
+.ade-checkbox label.ade-checked-hover, 
+.ade-checkbox label.ade-checked-focus {
 	background-position: -10px -314px;
 }
 
-.custom-checkbox label.focus, 
-.custom-radio label.focus {
+.ade-checkbox label.focus, 
+.ade-radio label.focus {
 	outline: 1px dotted #ccc;
 }

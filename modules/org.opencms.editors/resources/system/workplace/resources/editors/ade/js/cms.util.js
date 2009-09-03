@@ -234,24 +234,24 @@
    
    var validateForm = cms.util.validateForm = function($form) {
    
-      $('span.error', $form).remove();
+      $('span.ade-error', $form).remove();
       var hasError = false;
       
-      jQuery.each($('ol.forms li.required', $form), function() {
+      jQuery.each($('ol.ade-forms li.ade-required', $form), function() {
          var $item = $(this);
-         if ($item.hasClass('grouping')) {
+         if ($item.hasClass('ade-grouping')) {
             var numSelected = $item.find('input:checked').length;
             if (numSelected == 0) {
                var labelText = $('legend', $item).text();
                labelText = labelText.replace(' *', '');
-               $item.append('<span class="error">' + labelText + ' can not be empty.</span>');
+               $item.append('<span class="ade-error">' + labelText + ' can not be empty.</span>');
                hasError = true;
             }
          } else {
             if (jQuery.trim($('input, textarea', $item).val()) == '') {
                var labelText = $('label', $item).text();
                labelText = labelText.replace(' *', '');
-               $item.append('<span class="error">' + labelText + ' can not be empty.</span>');
+               $item.append('<span class="ade-error">' + labelText + ' can not be empty.</span>');
                hasError = true;
             }
          }

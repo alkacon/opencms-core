@@ -704,12 +704,57 @@ li.jTreePlacement, li.jTreePlaceholder {
     border-bottom: 0px;
 }  */
 
-ol.forms { float: left; list-style: none; width: 100%; }
-ol.forms li { clear: both; float: left; margin: 0 0 10px; width: 100%; }
-ol.forms label { cursor: pointer; display: block; font-weight: bold; margin: 0 10px 0 0; width: 90px; float: left; }
-ol.forms li.grouping label { width: auto; float: none;  }
-ol.forms span.required { color: #f00; font-size: 1.154em; }
-ol.forms .error { color: #f00; display: block; margin-left:30px; }
-ol.forms input, ol.forms textarea { font: inherit; padding: 2px; }
-ol.forms textarea { height: 250px; }
-ol.forms fieldset { margin-right: 30px; padding: 4px; }
+/**
+ * Form styles.
+ */
+ol.ade-forms { 
+    float: left; 
+    list-style: none; 
+    width: 100%; 
+}
+
+ol.ade-forms li { 
+    clear: both; 
+    float: left; 
+    margin: 0 0 10px; 
+    width: 100%; 
+}
+
+ol.ade-forms label { 
+    cursor: pointer; 
+    display: block; 
+    font-weight: bold; 
+    margin: 0 10px 0 0; 
+    width: 90px; 
+    float: left; 
+}
+
+ol.ade-forms li.ade-grouping label { 
+    width: auto; 
+    float: none;
+}
+
+ol.ade-forms span.ade-required { 
+    color: #f00; 
+    font-size: 1.154em; 
+}
+
+ol.ade-forms .ade-error { 
+    color: #f00; 
+    display: block; 
+    margin-left:30px; 
+}
+
+ol.ade-forms input, ol.ade-forms textarea { 
+    font: inherit; 
+    padding: 2px; 
+}
+
+ol.ade-forms textarea { 
+    height: 250px; 
+}
+
+ol.ade-forms fieldset { 
+    margin-right: 30px; 
+    padding: 4px; 
+}

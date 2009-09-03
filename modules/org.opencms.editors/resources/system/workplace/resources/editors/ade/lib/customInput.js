@@ -20,7 +20,7 @@ jQuery.fn.customInput = function(){
 			var inputType = (input.is('[type=checkbox]')) ? 'checkbox' : 'radio';
 			
 			// wrap the input + label in a div 
-			$('<div class="custom-'+ inputType +'"></div>').insertBefore(input).append(input, label);
+			$('<div class="ade-'+ inputType +'"></div>').insertBefore(input).append(input, label);
 			
 			// find all inputs in this set using the shared name attribute
 			var allInputs = $('input[name='+input.attr('name')+']');
@@ -28,12 +28,12 @@ jQuery.fn.customInput = function(){
 			// necessary for browsers that don't support the :hover pseudo class on labels
 			label.hover(
 				function(){ 
-					$(this).addClass('hover'); 
+					$(this).addClass('ade-hover'); 
 					if(inputType == 'checkbox' && input.is(':checked')){ 
-						$(this).addClass('checkedHover'); 
+						$(this).addClass('ade-checked-hover'); 
 					} 
 				},
-				function(){ $(this).removeClass('hover checkedHover'); }
+				function(){ $(this).removeClass('ade-hover ade-checked-hover'); }
 			);
 			
 			//bind custom event, trigger it, bind click,focus,blur events					
@@ -41,12 +41,12 @@ jQuery.fn.customInput = function(){
 				if (input.is(':checked')) {
 					if (input.is(':radio')) {				
 						allInputs.each(function(){
-							$('label[for='+$(this).attr('id')+']').removeClass('checked');
+							$('label[for='+$(this).attr('id')+']').removeClass('ade-checked');
 						});		
 					};
-					label.addClass('checked');
+					label.addClass('ade-checked');
 				}
-				else { label.removeClass('checked checkedHover checkedFocus'); }
+				else { label.removeClass('ade-checked ade-checked-hover ade-checked-focus'); }
 										
 			})
 			.trigger('updateState')
@@ -54,15 +54,12 @@ jQuery.fn.customInput = function(){
 				$(this).trigger('updateState'); 
 			})
 			.focus(function(){ 
-				label.addClass('focus'); 
+				label.addClass('ade-focus'); 
 				if(inputType == 'checkbox' && input.is(':checked')){ 
-					$(this).addClass('checkedFocus'); 
+					$(this).addClass('ade-checked-focus'); 
 				} 
 			})
-			.blur(function(){ label.removeClass('focus checkedFocus'); });
+			.blur(function(){ label.removeClass('ade-focus ade-checked-focus'); });
 		}
 	});
 };
-
-	
-	

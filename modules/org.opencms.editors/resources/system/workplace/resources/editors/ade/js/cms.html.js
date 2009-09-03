@@ -178,16 +178,14 @@
      </div></div>';
    
    var searchDialog = cms.html.searchDialog = function(/**Array*/types) {
-      var/**String*/ code = '<div id="' + searchDialogId + '"><form><ol class="forms">';
+      var/**String*/ code = '<div id="' + searchDialogId + '"><form><ol class="ade-forms">';
       code += '<li><label for="cms-search-path">Path </label><input type="text" name="cms-search-path" class="cms-search-path" id="cms-search-path"></input></li>';
-      code += '<li class="required"><label for="cms-search-query">Query <span class="required">*</span></label><input type="text" name="cms-search-query" class="cms-search-query" id="cms-search-query"></input></li>';
-      code += '<li class="required grouping"><fieldset><legend>Resource Types <span class="required">*</span></legend>';
+      code += '<li class="ade-required"><label for="cms-search-query">Query <span class="ade-required">*</span></label><input type="text" name="cms-search-query" class="cms-search-query" id="cms-search-query"></input></li>';
+      code += '<li class="ade-required ade-grouping"><fieldset><legend>Resource Types <span class="ade-required">*</span></legend>';
       $.each(types, function() {
          code += '<input type="checkbox" name="cms-search-type" class="cms-search-type" id="' + searchTypePrefix + this.type + '" value="' + this.type + '" checked="checked"/><label for="cms-type-' + this.type + '">' + this.name + '</label>';
       });
       code += '</fieldset></li></ol></form></div>';
       return code;
    }
-   
-   
 })(cms);
