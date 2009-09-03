@@ -465,9 +465,11 @@
    
       // create new object with additional info,
       // like formatter & element uris, just to improve performance
-      var cnts = {
-         'locale': locale
+      var data = {
+         'locale': locale,
+         'containers': {}
       };
+      var cnts = data.containers;
       $.each(cms.data.containers, function(key, dataCnt) {
          cnts[key] = {
             'name': dataCnt.name,
@@ -485,8 +487,9 @@
          });
       });
       // send the data
-      postJSON(OBJ_CNT, cnts, afterSave);
+      postJSON(OBJ_CNT, data, afterSave);
    }
+   
    
    /**
     * .<p>
