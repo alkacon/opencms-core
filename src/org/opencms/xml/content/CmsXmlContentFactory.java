@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentFactory.java,v $
- * Date   : $Date: 2009/08/13 10:47:28 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2009/09/03 14:23:01 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -266,7 +266,7 @@ public final class CmsXmlContentFactory {
                 cms.getSitePath(resource)));
         }
 
-        // try to get the requested content form the current request attributes 
+        // try to get the requested content from the current request attribute
         // this is also necessary for historic versions that have been loaded 
         CmsXmlContent content = (CmsXmlContent)req.getAttribute(rootPath);
 
