@@ -518,8 +518,12 @@
       var bodyEl = $(document.body);
       searchLoadingSign = cms.toolbar.searchLoadingSign = new LoadingSign(".cms-loading", 500, showLoading, hideLoading);
       
-      bodyEl.append(cms.html.searchDialog);
+      // scroll bar may not be at the top after reloading the page,  
+      // which could cause multiple search result pages to be reloaded 
+      $('.cms-scrolling').scrollTop(0);
       
+      bodyEl.append(cms.html.searchDialog);
+
       $('#cms-search-dialog').dialog({
          autoOpen: false,
          modal: true,
