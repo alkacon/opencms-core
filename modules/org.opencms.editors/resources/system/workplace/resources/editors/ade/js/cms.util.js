@@ -232,4 +232,30 @@
       return $jquery.appendTo("<div></div>").parent().html();
    }
    
+   var validateForm = cms.util.validateForm = function($form) {
+   
+      $('span.error', $form).remove();
+      var hasError = false;
+      
+      jQuery.each($('ol.forms li.required', $form), function() {
+         var $item = $(this);
+         if ($item.hasClass('grouping')) {
+            var numSelected = $item.find('input:checked').length;
+            if (numSelected == 0) {
+               var labelText = $('legend', $item).text();
+               labelText = labelText.replace(' *', '');
+               $item.append('<span class="error">' + labelText + ' can not be empty.</span>');
+               hasError = true;
+            }
+         } else {
+            if (jQuery.trim($('input, textarea', $item).val()) == '') {
+               var labelText = $('label', $item).text();
+               labelText = labelText.replace(' *', '');
+               $item.append('<span class="error">' + labelText + ' can not be empty.</span>');
+               hasError = true;
+            }
+         }
+      });
+      return (!hasError);
+   };
 })(cms);

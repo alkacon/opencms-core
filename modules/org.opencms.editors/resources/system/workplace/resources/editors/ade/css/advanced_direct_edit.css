@@ -703,3 +703,13 @@ li.jTreePlacement, li.jTreePlaceholder {
     border: 1px solid #aaaaaa;
     border-bottom: 0px;
 }  */
+
+ol.forms { float: left; list-style: none; width: 100%; }
+ol.forms li { clear: both; float: left; margin: 0 0 10px; width: 100%; }
+ol.forms label { cursor: pointer; display: block; font-weight: bold; margin: 0 10px 0 0; width: 90px; float: left; }
+ol.forms li.grouping label { width: auto; float: none;  }
+ol.forms span.required { color: #f00; font-size: 1.154em; }
+ol.forms .error { color: #f00; display: block; margin-left:30px; }
+ol.forms input, ol.forms textarea { font: inherit; padding: 2px; }
+ol.forms textarea { height: 250px; }
+ol.forms fieldset { margin-right: 30px; padding: 4px; }

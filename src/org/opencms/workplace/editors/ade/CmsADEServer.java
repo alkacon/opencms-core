@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/09/02 13:30:44 $
- * Version: $Revision: 1.1.2.18 $
+ * Date   : $Date: 2009/09/03 11:17:23 $
+ * Version: $Revision: 1.1.2.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -52,7 +52,6 @@ import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
 import org.opencms.search.CmsSearchResult;
 import org.opencms.util.CmsRequestUtil;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplaceMessages;
 import org.opencms.workplace.explorer.CmsResourceUtil;
@@ -84,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.18 $
+ * @version $Revision: 1.1.2.19 $
  * 
  * @since 7.6
  */
@@ -105,6 +104,7 @@ public class CmsADEServer extends CmsJspActionElement {
     /** User additional info key constant. */
     public static final String ADDINFO_ADE_SEARCHPAGE_SIZE = "ADE_SEARCHPAGE_SIZE";
 
+    // TODO: make the default list sizes configurable in opencms-workplace.xml
     /** default recent list size constant. */
     public static final int DEFAULT_RECENT_LIST_SIZE = 10;
 
@@ -458,7 +458,7 @@ public class CmsADEServer extends CmsJspActionElement {
 
             // we need those on the client side to make scrolling work
             CmsSearchOptions oldOptions = getSearchOptionsFromCache();
-            result.put(PARAMETER_TYPE, oldOptions.getType());
+            result.put(PARAMETER_TYPE, oldOptions.getTypes());
             result.put(PARAMETER_TEXT, oldOptions.getText());
             result.put(PARAMETER_LOCATION, oldOptions.getLocation());
 
@@ -875,53 +875,59 @@ public class CmsADEServer extends CmsJspActionElement {
         JSONArray elements = new JSONArray();
         result.put(CmsADEServer.P_ELEMENTS, elements);
 
-        // get the configured search index 
         CmsUser user = cms.getRequestContext().currentUser();
-        String indexName = new CmsUserSettings(user).getWorkplaceSearchIndexName();
 
-        // get the page size
-        Integer pageSize = (Integer)user.getAdditionalInfo(ADDINFO_ADE_SEARCHPAGE_SIZE);
-        if (pageSize == null) {
-            pageSize = new Integer(DEFAULT_SEARCHPAGE_SIZE);
-        }
+        // if there is no type or no text to search, no search is needed 
+        if (options.isValid()) {
+            // get the configured search index 
+            String indexName = new CmsUserSettings(user).getWorkplaceSearchIndexName();
 
-        // set the search parameters
-        CmsSearchParameters params = new CmsSearchParameters(options.getText());
-        params.setIndex(indexName);
-        params.setMatchesPerPage(pageSize.intValue());
-        params.setSearchPage(options.getPage() + 1);
-        params.setResourceTypes(CmsStringUtil.splitAsList(options.getType(), ","));
-
-        // search
-        CmsSearch searchBean = new CmsSearch();
-        searchBean.init(cms);
-        searchBean.setParameters(params);
-        searchBean.setSearchRoot(options.getLocation());
-        List<CmsSearchResult> searchResults = searchBean.getSearchResult();
-
-        // helper
-        CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse(), getRequest().getParameter(
-            PARAMETER_URL));
-
-        // iterate result list and generate the elements
-        Iterator<CmsSearchResult> it = searchResults.iterator();
-        while (it.hasNext()) {
-            CmsSearchResult sr = it.next();
-            // get the element data
-            String uri = cms.getRequestContext().removeSiteRoot(sr.getPath());
-            try {
-                JSONObject resElement = elemUtil.getElementData(uri, types);
-                // store element data
-                elements.put(resElement);
-            } catch (Exception e) {
-                LOG.warn(e.getLocalizedMessage(), e);
+            // get the page size
+            Integer pageSize = (Integer)user.getAdditionalInfo(ADDINFO_ADE_SEARCHPAGE_SIZE);
+            if (pageSize == null) {
+                pageSize = new Integer(DEFAULT_SEARCHPAGE_SIZE);
             }
-        }
 
-        // check if there are more search pages
-        int results = searchBean.getSearchPage() * searchBean.getMatchesPerPage();
-        boolean hasMore = (searchBean.getSearchResultCount() > results);
-        result.put(CmsADEServer.P_HASMORE, hasMore);
+            // set the search parameters
+            CmsSearchParameters params = new CmsSearchParameters(options.getText());
+            params.setIndex(indexName);
+            params.setMatchesPerPage(pageSize.intValue());
+            params.setSearchPage(options.getPage() + 1);
+            params.setResourceTypes(options.getTypesAsList());
+
+            // search
+            CmsSearch searchBean = new CmsSearch();
+            searchBean.init(cms);
+            searchBean.setParameters(params);
+            searchBean.setSearchRoot(options.getLocation());
+            List<CmsSearchResult> searchResults = searchBean.getSearchResult();
+
+            // helper
+            CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse(), getRequest().getParameter(
+                PARAMETER_URL));
+
+            // iterate result list and generate the elements
+            Iterator<CmsSearchResult> it = searchResults.iterator();
+            while (it.hasNext()) {
+                CmsSearchResult sr = it.next();
+                // get the element data
+                String uri = cms.getRequestContext().removeSiteRoot(sr.getPath());
+                try {
+                    JSONObject resElement = elemUtil.getElementData(uri, types);
+                    // store element data
+                    elements.put(resElement);
+                } catch (Exception e) {
+                    LOG.warn(e.getLocalizedMessage(), e);
+                }
+            }
+            // check if there are more search pages
+            int results = searchBean.getSearchPage() * searchBean.getMatchesPerPage();
+            boolean hasMore = (searchBean.getSearchResultCount() > results);
+            result.put(CmsADEServer.P_HASMORE, hasMore);
+        } else {
+            // no search
+            result.put(CmsADEServer.P_HASMORE, false);
+        }
 
         // cache the search options, but with page=0
         m_cache.cacheADESearchOptions(user.getId().toString(), options.resetPage());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsSearchOptions.java,v $
- * Date   : $Date: 2009/09/02 13:30:44 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/09/03 11:17:23 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,8 +31,12 @@
 
 package org.opencms.workplace.editors.ade;
 
-import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.json.JSONArray;
+import org.opencms.json.JSONException;
 import org.opencms.util.CmsStringUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,7 +45,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 7.6 
  */
@@ -132,6 +136,47 @@ public class CmsSearchOptions {
     }
 
     /**
+     * Returns the types as an {@link JSONArray}.<p>
+     * 
+     * @return the types as an {@link JSONArray}
+     */
+    public JSONArray getTypes() {
+
+        try {
+            return new JSONArray(getType());
+        } catch (JSONException e) {
+            return new JSONArray();
+        }
+    }
+
+    /**
+     * Returns the types as a {@link List}.<p>
+     * 
+     * @return the types as a {@link List}
+     */
+    public List<String> getTypesAsList() {
+
+        List<String> types = new ArrayList<String>();
+        JSONArray jsonTypes = getTypes();
+        for (int i = 0; i < jsonTypes.length(); i++) {
+            types.add(jsonTypes.optString(i));
+        }
+        return types;
+    }
+
+    /**
+     * Checks if the search options are valid.<p>
+     * 
+     * Valid means, at least one type and text
+     * 
+     * @return <code>true</code> if the search options are valid
+     */
+    public boolean isValid() {
+
+        return (getTypes().length() > 0) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getText());
+    }
+
+    /**
      * Returns a clone of this object, but with <code>page = 0</code>.<p>
      * 
      * @return a clone of this object, but with <code>page = 0</code>
@@ -153,20 +198,16 @@ public class CmsSearchOptions {
 
         m_text = text;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_text)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_JSON_MISSING_PARAMETER_1,
-                CmsADEServer.PARAMETER_TEXT));
+            m_text = "";
         }
         m_location = location;
-        if (m_location == null) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_location)) {
             m_location = "/";
         }
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(type)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_JSON_MISSING_PARAMETER_1,
-                CmsADEServer.PARAMETER_TYPE));
-        }
         m_type = type;
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_type)) {
+            m_type = "[]";
+        }
         m_page = page;
         if (m_page < 0) {
             m_page = 0;

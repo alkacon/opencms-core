@@ -13,6 +13,8 @@
    
    var searchMenuId = cms.html.searchMenuId = 'cms-search';
    var searchListId = cms.html.searchListId = 'cms-search-list';
+   var searchDialogId = cms.html.searchDialogId = 'cms-search-dialog';
+   var searchTypePrefix = cms.html.searchTypePrefix = 'cms-type-';
    
    var recentList = cms.html.recentList = '<div id="' + recentMenuId + '" class="cms-menu">\
     <div class="connect ui-corner-top"></div>\
@@ -175,15 +177,17 @@
         </div>\
      </div></div>';
    
-   var searchDialog = cms.html.searchDialog = '\
-      <div id="cms-search-dialog">\
-          <table>\
-          <tr><td>Query: <td><input type="text" class="cms-search-query"></input></tr>\
-          <tr><td>Types:  <td><input type="text" class="cms-search-type"></input></tr>\
-          <tr><td>Path:  <td><input type="text" class="cms-search-path"></input><span class="cms-search-tree">X</span></tr>\
-          </table>\
-      </div>';
-   
+   var searchDialog = cms.html.searchDialog = function(/**Array*/types) {
+      var/**String*/ code = '<div id="' + searchDialogId + '"><form><ol class="forms">';
+      code += '<li><label for="cms-search-path">Path </label><input type="text" name="cms-search-path" class="cms-search-path" id="cms-search-path"></input></li>';
+      code += '<li class="required"><label for="cms-search-query">Query <span class="required">*</span></label><input type="text" name="cms-search-query" class="cms-search-query" id="cms-search-query"></input></li>';
+      code += '<li class="required grouping"><fieldset><legend>Resource Types <span class="required">*</span></legend>';
+      $.each(types, function() {
+         code += '<input type="checkbox" name="cms-search-type" class="cms-search-type" id="' + searchTypePrefix + this.type + '" value="' + this.type + '" checked="checked"/><label for="cms-type-' + this.type + '">' + this.name + '</label>';
+      });
+      code += '</fieldset></li></ol></form></div>';
+      return code;
+   }
    
    
 })(cms);

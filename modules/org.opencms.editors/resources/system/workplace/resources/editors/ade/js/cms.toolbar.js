@@ -11,7 +11,12 @@
    cms.toolbar.currentMenu = cms.html.favoriteMenuId;
    cms.toolbar.currentMenuItems = cms.html.favoriteListId;
    
+   
+   
+   
    var searchLoadingSign = null;
+   
+   
    
    var showPublishList = cms.toolbar.showPublishList = function() {
       var button = $(this);
@@ -205,7 +210,6 @@
                   }, function() {
                      stopHover();
                   });
-                  
                   $('<a class="cms-edit"></a>').appendTo(handleDiv).click(function() {
                      openEditDialog(elemId);
                   });
@@ -421,21 +425,39 @@
       return self;
    }
    
-   var saveSearchInput = cms.data.saveSearchInput = function() {
-      cms.data.searchQuery = $('.cms-search-query').val();
-      cms.data.searchType = $('.cms-search-type').val();
-      cms.data.searchPath = $('.cms-search-path').val();
-   }
+   var saveSearchInput = cms.data.saveSearchInput = function(/**Object*/searchParams) {
+   
+      var/**JQuery*/ $context = $('#' + cms.html.searchDialogId);
+      searchParams.query = $('input.cms-search-query', $context).val();
+      searchParams.types = [];
+      $('input.cms-search-type', $context).each(function() {
+         var /**JQuery*/ $checkbox = $(this);
+         searchParams.types.push({
+            'name': $checkbox.attr('value'),
+            'checked': $checkbox.is(":checked")
+         });
+      });
+      searchParams.path = $('input.cms-search-path', $context).val();
+   };
    
    var restoreSearchInput = cms.data.restoreSearchInput = function() {
-      $('.cms-search-query').val(cms.data.currentSearchQuery);
-      $('.cms-search-type').val(cms.data.currentSearchType);
-      $('.cms-search-path').val(cms.data.currentSearchPath);
-   }
    
-   
+      var/**JQuery*/ $context = $('#' + cms.html.searchDialogId);
+      if (cms.data.searchParams.query) {
+         $('input.cms-search-query', $context).val(cms.data.searchParams.query);
+      }
+      if (cms.data.searchParams.types) {
+         $.each(cms.data.searchParams.types, function() {
+            $('#' + cms.html.searchTypePrefix + this.name).attr('checked', this.checked);
+         });
+      }
+      if (cms.data.searchParams.path) {
+         $('input.cms-search-path', $context).val(cms.data.searchParams.path);
+      }
+   };
    
    var addToolbar = cms.toolbar.addToolbar = function() {
+   
       $(window).unload(onUnload);
       initSaveDialog();
       var bodyEl = $(document.body).css('position', 'relative');
@@ -445,9 +467,13 @@
       bodyEl.append(cms.html.createMenu(cms.html.favoriteMenuId));
       bodyEl.append(cms.html.createMenu(cms.html.newMenuId));
       bodyEl.append(cms.html.searchMenu);
-      initSearch();
-      
-      
+      searchLoadingSign = cms.toolbar.searchLoadingSign = new LoadingSign(".cms-loading", 500, showLoading, hideLoading);
+      $('#' + cms.html.searchMenuId).find('button.cms-search-button').click(function() {
+         if ($('#cms-search-dialog').length < 1) {
+            initSearch();
+            this.click();
+         }
+      });
       bodyEl.append(cms.html.favoriteDialog);
       bodyEl.append('<div id="cms_appendbox"></div>');
       bodyEl.append(cms.html.createMenu(cms.html.recentMenuId));
@@ -516,14 +542,12 @@
     */
    var initSearch = cms.toolbar.initSearch = function() {
       var bodyEl = $(document.body);
-      searchLoadingSign = cms.toolbar.searchLoadingSign = new LoadingSign(".cms-loading", 500, showLoading, hideLoading);
-      
       // scroll bar may not be at the top after reloading the page,  
       // which could cause multiple search result pages to be reloaded 
       $('.cms-scrolling').scrollTop(0);
       
-      bodyEl.append(cms.html.searchDialog);
-
+      bodyEl.append(cms.html.searchDialog(cms.data.newTypes));
+      
       $('#cms-search-dialog').dialog({
          autoOpen: false,
          modal: true,
@@ -531,19 +555,22 @@
          title: 'Search',
          buttons: {
             'Search': function() {
-            
+               if (!cms.util.validateForm($('form', $('#cms-search-dialog')))) {
+                  return;
+               }
                $(this).dialog('close');
-               var query = $('.cms-search-query').val();
-               var type = $('.cms-search-type').val();
-               var path = $('.cms-search-path').val();
-               cms.data.startNewSearch(query, type, path)
-               saveSearchInput();
+               var /**Object*/ sp = {};
+               saveSearchInput(sp);
+               cms.data.startNewSearch(sp.query, sp.types, sp.path);
+               saveSearchInput(cms.data.searchParams);
             },
             'Cancel': function() {
                $(this).dialog('close');
+               $('form span.error', $('#cms-search-dialog')).remove();
             }
          }
       });
+      $('input', $('#cms-search-dialog')).customInput();
       
       $(".cms-search-tree").click(function() {
          window.open(cms.data.TREE_URL, '_blank', 'menubar=no');
@@ -556,23 +583,25 @@
       });
       
       $(document).bind('cms-data-loaded', function() {
+      
          loading = searchLoadingSign;
          var i = 0;
          var $inner = $("#cms-search-list");
          var $scrolling = $(".cms-scrolling");
          
          $scrolling.scroll(function() {
+         
             var delta = $inner.height() - $scrolling.height() - $scrolling.scrollTop();
-            if (delta < 64 && !loading.isLoading && cms.data.moreSearchResults) {
+            if (delta < 64 && !loading.isLoading && cms.data.searchParams.hasMore) {
                cms.data.continueSearch();
                loading.start();
             }
          });
       });
-   }
-   
+   };
    
    var destroyMove = function() {
+   
       var containerSelector = cms.util.getContainerSelector();
       $(containerSelector + ', #' + cms.html.favoriteListId).sortable('destroy');
       var list = $('#' + cms.html.favoriteMenuId);
@@ -582,9 +611,10 @@
       $('#' + cms.html.favoriteListId).get(0).style.height = '';
       resetFavList();
       //      $('a.cms-move').remove();
-   }
+   };
    
    var initMove = function() {
+   
       var containerSelector = cms.util.getContainerSelector();
       var list = $('#' + cms.html.favoriteMenuId);
       var favbutton = $('button[name="Favorites"]');
@@ -739,7 +769,7 @@
       
          //this line makes all elements vanish in IE
          $(cms.util.getContainerSelector() + ', ' + sortmenus).sortable('destroy');
-         // TODO: find a better way to rerender stuff in IE
+         // TODO: find a better way to render stuff in IE
          if ($.browser.msie) {
             setTimeout(function() {
                $(cms.util.getContainerSelector()).hide().show();
