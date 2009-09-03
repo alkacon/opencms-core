@@ -11,12 +11,7 @@
    cms.toolbar.currentMenu = cms.html.favoriteMenuId;
    cms.toolbar.currentMenuItems = cms.html.favoriteListId;
    
-   
-   
-   
    var searchLoadingSign = null;
-   
-   
    
    var showPublishList = cms.toolbar.showPublishList = function() {
       var button = $(this);
@@ -163,9 +158,13 @@
    
    var showAddButtons = cms.toolbar.showAddButtons = function() {
       timer.id = null;
+      var right = '-48px';
+      if ($.browser.msie) {
+         right = '0px';
+      }
       timer.handleDiv.addClass('ui-widget-header').css({
          'width': '72px',
-         'right': '-48px'
+         'right': right
       }).children().css('display', 'block').addClass('ui-corner-all ui-state-default');
    }
    
@@ -175,6 +174,11 @@
          timer.id = null;
       }
       cms.move.hoverOut();
+      
+      // sometimes out is triggered without over being triggered before, especially in IE
+      if (!timer.handleDiv) {
+         return;
+      }
       timer.handleDiv.removeClass('ui-widget-header').css({
          'width': '24px',
          'right': '0px'
@@ -201,6 +205,7 @@
                   }, function() {
                      stopHover();
                   });
+                  
                   $('<a class="cms-edit"></a>').appendTo(handleDiv).click(function() {
                      openEditDialog(elemId);
                   });
@@ -393,7 +398,7 @@
    /**
     * Helper class for displaying a 'Loading' sign when loading takes too long
     */
-   var LoadingSign = function(selector, waitTime) {
+   var LoadingSign = function(selector, waitTime, showLoading, hideLoading) {
    
       this.isLoading = false;
       
@@ -403,14 +408,14 @@
          self.isLoading = true;
          window.setTimeout(function() {
             if (self.isLoading) {
-               $(selector).show();
+               showLoading();
             }
          }, waitTime);
       }
       
       this.stop = function() {
          self.isLoading = false;
-         $(selector).hide();
+         hideLoading();
       }
       
       return self;
@@ -423,12 +428,9 @@
    }
    
    var restoreSearchInput = cms.data.restoreSearchInput = function() {
-      if (cms.data.searchQuery) 
-         $('.cms-search-query').val(cms.data.searchQuery);
-      if (cms.data.searchType) 
-         $('.cms-search-type').val(cms.data.searchType);
-      if (cms.data.searchPath) 
-         $('.cms-search-path').val(cms.data.searchPath);
+      $('.cms-search-query').val(cms.data.currentSearchQuery);
+      $('.cms-search-type').val(cms.data.currentSearchType);
+      $('.cms-search-path').val(cms.data.currentSearchPath);
    }
    
    
@@ -488,10 +490,33 @@
       initFavDialog();
    };
    
+   /**
+    * Show the 'LOADING' text for the search menu.
+    */
+   var showLoading = function() {
+      $('.cms-loading').text('LOADING');
+   }
    
+   /**
+    * Returns the number of search results currently in the search menu.
+    */
+   var getNumberOfSearchResults = function() {
+      return $('#cms-search-list').children().size();
+   }
+   
+   /**
+    * Hide the LOADING text for the search menu and display the number of search results loaded instead.
+    */
+   var hideLoading = function() {
+      $('.cms-loading').text(getNumberOfSearchResults() + " results loaded");
+   }
+   
+   /**
+    * Initialize everything needed for the search.
+    */
    var initSearch = cms.toolbar.initSearch = function() {
       var bodyEl = $(document.body);
-      searchLoadingSign = cms.toolbar.searchLoadingSign = new LoadingSign(".cms-loading", 500);
+      searchLoadingSign = cms.toolbar.searchLoadingSign = new LoadingSign(".cms-loading", 500, showLoading, hideLoading);
       
       bodyEl.append(cms.html.searchDialog);
       

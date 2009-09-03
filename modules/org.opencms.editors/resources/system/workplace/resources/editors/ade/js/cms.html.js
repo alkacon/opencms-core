@@ -13,7 +13,7 @@
    
    var searchMenuId = cms.html.searchMenuId = 'cms-search';
    var searchListId = cms.html.searchListId = 'cms-search-list';
-     
+   
    var recentList = cms.html.recentList = '<div id="' + recentMenuId + '" class="cms-menu">\
     <div class="connect ui-corner-top"></div>\
     <div class="ui-widget-shadow ui-corner-all"></div>\
@@ -104,7 +104,7 @@
       return html.join('');
    }
    
-  var searchMenu = cms.html.searchMenu = '\
+   var searchMenu = cms.html.searchMenu = '\
       <div id="cms-search" class="cms-menu" style="width: 350px; display:none">\
           <div class="connect ui-corner-top"></div>\
           <div class="ui-widget-shadow ui-corner-all" style="width: 345px"></div>\
@@ -114,7 +114,7 @@
                   <ul id="cms-search-list"  class="cms-scrolling-inner">\
                   </ul>\
               </div>\
-              <div class="cms-loading">LOADING</div>\
+              <div class="cms-loading"><span style="opacity:0">.</span></div>\
           </div>\
       </div>';
    
@@ -174,8 +174,8 @@
             <button name="Publish" title="Publish" class="cms-right ui-state-default ui-corner-all"><span class="ui-icon cms-icon-publish"/>&nbsp;</button>\
         </div>\
      </div></div>';
-     
- var searchDialog = cms.html.searchDialog  = '\
+   
+   var searchDialog = cms.html.searchDialog = '\
       <div id="cms-search-dialog">\
           <table>\
           <tr><td>Query: <td><input type="text" class="cms-search-query"></input></tr>\
@@ -183,7 +183,7 @@
           <tr><td>Path:  <td><input type="text" class="cms-search-path"></input><span class="cms-search-tree">X</span></tr>\
           </table>\
       </div>';
-      
+   
    
    
 })(cms);

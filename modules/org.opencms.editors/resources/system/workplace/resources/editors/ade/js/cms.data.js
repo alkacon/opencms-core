@@ -138,19 +138,19 @@
    }
    
    /**
-   * Same as prepareLoadedElements, but works with an array.
-   **/
+    * Same as prepareLoadedElements, but works with an array.
+    **/
    var prepareLoadedElementsArray = cms.data.prepareLoadedElementsArray = function(elements) {
-       for (var i=0; i<elements.length; i++) {
-           var element = elements[i];
-           var id = element.id;
-           for (var containerType in element.contents) {
-               var oldContent = element.contents[containerType];
-               if (oldContent) {
-                   element.contents[containerType] = $(oldContent).attr('rel', element.id).addClass('cms-element').appendTo($('<div></div>')).parent().html();
-               }
-           }
-       }
+      for (var i = 0; i < elements.length; i++) {
+         var element = elements[i];
+         var id = element.id;
+         for (var containerType in element.contents) {
+            var oldContent = element.contents[containerType];
+            if (oldContent) {
+               element.contents[containerType] = $(oldContent).attr('rel', element.id).addClass('cms-element').appendTo($('<div></div>')).parent().html();
+            }
+         }
+      }
    }
    
    /**
@@ -549,121 +549,123 @@
     * @param {Object} data the JSON data from the AJAX response.
     */
    var handleSearchResults = cms.data.handleSearchResults = function(ok, data) {
-
-       cms.toolbar.searchLoadingSign.stop();
-       if (!ok) {
-           return;
-       }
-       cms.data.currentSearchPage += 1;
-       var searchResults = data.elements;
-       cms.data.prepareLoadedElementsArray(searchResults);
-       for (var i =0; i<searchResults.length; i++) {
-           var result = searchResults[i];
-           cms.data.elements[result.id] = result;
-           addSearchResult(result);
-       }
-       cms.data.moreSearchResults = data.hasmore;
+      if (!ok) {
+         cms.toolbar.searchLoadingSign.stop();
+         return;
+      }
+      cms.data.currentSearchPage += 1;
+      var searchResults = data.elements;
+      cms.data.prepareLoadedElementsArray(searchResults);
+      for (var i = 0; i < searchResults.length; i++) {
+         var result = searchResults[i];
+         cms.data.elements[result.id] = result;
+         addSearchResult(result);
+      }
+      cms.data.moreSearchResults = data.hasmore;
+      cms.toolbar.searchLoadingSign.stop();
    }
    
    /**
     * Handler for the first page of search results of a new search.<p>
-    * 
+    *
     * @param {Object} ok
     * @param {Object} data
     */
    var handleNewSearchResults = cms.data.handleNewSearchResults = function(ok, data) {
-       if (!ok) {
-           return;
-       } 
-       
-       handleSearchResults(ok, data);
+      if (!ok) {
+         return;
+      }
+      
+      handleSearchResults(ok, data);
    }
    
-    /**
-     * Adds an element to the list of search results in the DOM.<p>
-     * @param {Object} element the element which should be added to the search results.
-     */
-    var addSearchResult = cms.data.addSearchResult = function(/*Object*/ result) {
-        cms.data.searchResultIds.push(result.id);
-        var $content = $(result.contents['_DEFAULT_']);
-        var $inner = $('#cms-search-list');
-        $('.cms-head', $content).append('<a class="cms-handle cms-move"></a>');
-        $inner.append($content);
-    }
-    
-    /**
-     * Removes all search results from the DOM.<p> 
-     */
-    var clearSearchResults = cms.data.clearSearchResults = function() {
-        cms.data.searchResultIds.length = 0;
-        var $inner = $('#cms-search-list');
-        $inner.empty();
+   /**
+    * Adds an element to the list of search results in the DOM.<p>
+    * @param {Object} element the element which should be added to the search results.
+    */
+   var addSearchResult = cms.data.addSearchResult = function(/*Object*/result) {
+      cms.data.searchResultIds.push(result.id);
+      var $content = $(result.contents['_DEFAULT_']);
+      var $inner = $('#cms-search-list');
+      $('.cms-head', $content).append('<a class="cms-handle cms-move"></a>');
+      $inner.append($content);
    }
-
+   
+   /**
+    * Removes all search results from the DOM.<p>
+    */
+   var clearSearchResults = cms.data.clearSearchResults = function() {
+      cms.data.searchResultIds.length = 0;
+      var $inner = $('#cms-search-list');
+      $inner.empty();
+   }
+   
    /**
     * Handler for the results of the checkLastSearch function.
     * @param {Object} ok the status of the AJAX call
     * @param {Object} data the JSON data from the AJAX call
     */
    var handleLastSearch = cms.data.handleLastSearch = function(ok, data) {
-       if (!ok) {
-           return;
-       }
-       if (data.elements) {
-           prepareLoadedElementsArray(data.elements);
-           cms.data.currentSearchPage=0;
-           cms.data.currentSearchQuery = data.text;
-           cms.data.currentSearchPath = data.location;
-           cms.data.currentSearchType = data.type
-            
-           clearSearchResults();
-           var searchResults = data.elements;
-           for (var i=0; i<searchResults.length; i++) {
-               var result = searchResults[i];
-               cms.data.elements[result.id] = result;
-               addSearchResult(result);
-           }
-           cms.data.moreSearchResults = data.hasmore;
-       }
+      if (!ok) {
+         cms.toolbar.searchLoadingSign.stop();
+         return;
+      }
+      if (data.elements) {
+         prepareLoadedElementsArray(data.elements);
+         cms.data.currentSearchPage = 1;
+         cms.data.currentSearchQuery = data.text;
+         cms.data.currentSearchPath = data.location;
+         cms.data.currentSearchType = data.type
+         
+         clearSearchResults();
+         var searchResults = data.elements;
+         for (var i = 0; i < searchResults.length; i++) {
+            var result = searchResults[i];
+            cms.data.elements[result.id] = result;
+            addSearchResult(result);
+         }
+         cms.data.moreSearchResults = data.hasmore;
+         cms.toolbar.searchLoadingSign.stop();
+      }
    }
    
-
+   
    /**
     * Starts a new search.<p>
-    * 
+    *
     * @param {Object} query the search query string
     * @param {Object} type the string which is a comma-separated list of types to which the search is restricted
     * @param {Object} path the VFS path in which to search
     */
    var startNewSearch = cms.data.startNewSearch = function(query, type, path) {
-       cms.data.currentSearchPage=0;
-       cms.data.currentSearchPath = path;
-       cms.data.currentSearchType = type;
-       cms.data.currentSearchQuery = query;
-       clearSearchResults();
-       loadJSON({
-           obj: 'search',
-           text: query,
-           type: type,
-           location: path,
-           page: 0
-       }, cms.data.handleNewSearchResults);
-       
+      cms.data.currentSearchPage = 0;
+      cms.data.currentSearchPath = path;
+      cms.data.currentSearchType = type;
+      cms.data.currentSearchQuery = query;
+      clearSearchResults();
+      loadJSON({
+         obj: 'search',
+         text: query,
+         type: type,
+         location: path,
+         page: 0
+      }, cms.data.handleNewSearchResults);
+      
    }
    
    /**
     * Continues the last search, e.g. when scrolling past the last loaded search result.
-    * 
+    *
     */
    var continueSearch = cms.data.continueSearch = function() {
-       loadJSON({
-           obj: 'search',
-           text: cms.data.currentSearchQuery,
-           type: cms.data.currentSearchType,
-           location: cms.data.currentSearchPath,
-           page: cms.data.currentSearchPage
-       }, cms.data.handleSearchResults)
-       
+      loadJSON({
+         obj: 'search',
+         text: cms.data.currentSearchQuery,
+         type: cms.data.currentSearchType,
+         location: cms.data.currentSearchPath,
+         page: cms.data.currentSearchPage
+      }, cms.data.handleSearchResults)
+      
    }
    
    /**
@@ -673,16 +675,16 @@
     * @param {Object} callback the callback that will be called after normal processing of the AJAX response.
     */
    var checkLastSearch = cms.data.checkLastSearch = function(callback) {
-       loadJSON({
-           obj: 'ls',
-           text: cms.data.currentSearchQuery,
-           type: cms.data.currentSearchType,
-           location: cms.data.currentSearchPath,
-           page: "0"
-       }, function(ok, data) {
-           cms.data.handleLastSearch(ok, data);
-           callback(ok, data);
-       });
+      loadJSON({
+         obj: 'ls',
+         text: cms.data.currentSearchQuery,
+         type: cms.data.currentSearchType,
+         location: cms.data.currentSearchPath,
+         page: "0"
+      }, function(ok, data) {
+         cms.data.handleLastSearch(ok, data);
+         callback(ok, data);
+      });
    }
    
    /**
