@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>7.5.0</opencms_version>
-		<createdate>Thu, 03 Sep 2009 10:12:20 GMT</createdate>
+		<createdate>Thu, 03 Sep 2009 13:22:50 GMT</createdate>
 		<infoproject>Offline</infoproject>
 		<export_version>7</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms Common Editing tools.</p>
 <p>This module is needed to be able to edit files in the OpenCms Workplace.</p>
 <p><i>(c) 2007 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>7.6.5</version>
+		<version>7.6.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -940,7 +940,7 @@
 			<type>plain</type>
 			<uuidstructure>19bdcb11-8747-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>19bdcb12-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 03 Sep 2009 08:01:12 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 Sep 2009 11:08:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2763,6 +2763,54 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_lock_a.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_lock_a.png</destination>
+			<type>image</type>
+			<uuidstructure>a516ed35-988c-11de-bbcb-dd9f629b113b</uuidstructure>
+			<uuidresource>a516ed36-988c-11de-bbcb-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 03 Sep 2009 13:21:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Sep 2009 13:21:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ocms_de_lock_a]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_lock_i.png</source>
+			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_lock_i.png</destination>
+			<type>image</type>
+			<uuidstructure>a52c49f9-988c-11de-bbcb-dd9f629b113b</uuidstructure>
+			<uuidresource>a52c49fa-988c-11de-bbcb-dd9f629b113b</uuidresource>
+			<datelastmodified>Thu, 03 Sep 2009 13:21:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Sep 2009 13:21:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[ocms_de_lock_i]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<relations/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_lock_sw.png</source>
 			<destination>system/workplace/resources/editors/ade/css/images/16x16/ocms_de_lock_sw.png</destination>
 			<type>image</type>
@@ -3523,7 +3571,7 @@
 			<type>plain</type>
 			<uuidstructure>19c740f7-8747-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>19c740f8-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 03 Sep 2009 08:57:38 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 Sep 2009 10:35:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3603,7 +3651,7 @@
 			<type>plain</type>
 			<uuidstructure>19d7e2d3-8747-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>19d7e2d4-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Thu, 03 Sep 2009 10:01:25 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 Sep 2009 11:04:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -3623,7 +3671,7 @@
 			<type>plain</type>
 			<uuidstructure>19dcc4d6-8747-11de-83d4-dd9f629b113b</uuidstructure>
 			<uuidresource>19dcc4d7-8747-11de-83d4-dd9f629b113b</uuidresource>
-			<datelastmodified>Wed, 02 Sep 2009 12:54:47 GMT</datelastmodified>
+			<datelastmodified>Thu, 03 Sep 2009 11:15:04 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 12 Aug 2009 13:50:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
