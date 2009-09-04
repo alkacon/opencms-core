@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2009/09/04 15:01:15 $
+ * Version: $Revision: 1.42.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,6 +42,7 @@ import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsHtmlExtractor;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPage;
 
@@ -59,7 +60,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.42.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,6 +137,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
     /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#generateXml(org.opencms.file.CmsObject, org.opencms.xml.I_CmsXmlDocument, org.dom4j.Element, java.util.Locale)
      */
+    @Override
     public Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
 
         Element element = root.addElement(getName());
@@ -171,9 +173,9 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
         CmsLinkTable linkTable = new CmsLinkTable();
         Element links = m_element.element(CmsXmlPage.NODE_LINKS);
         if (links != null) {
-            Iterator itLinks = links.elementIterator(CmsXmlPage.NODE_LINK);
+            Iterator<Element> itLinks = CmsXmlGenericWrapper.elementIterator(links, CmsXmlPage.NODE_LINK);
             while (itLinks.hasNext()) {
-                Element lelem = (Element)itLinks.next();
+                Element lelem = itLinks.next();
                 linkTable.addLink(new CmsLink(lelem));
             }
         }
@@ -183,6 +185,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
     /**
      * @see org.opencms.xml.types.I_CmsXmlContentValue#getPlainText(org.opencms.file.CmsObject)
      */
+    @Override
     public String getPlainText(CmsObject cms) {
 
         try {
@@ -275,8 +278,8 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue {
                 // may be null in case of default value generation (i.e. setStringValue(String) was called)
 
                 CmsLinkTable linkTable = linkProcessor.getLinkTable();
-                for (Iterator i = linkTable.iterator(); i.hasNext();) {
-                    CmsLink link = (CmsLink)i.next();
+                for (Iterator<CmsLink> i = linkTable.iterator(); i.hasNext();) {
+                    CmsLink link = i.next();
                     CmsLinkUpdateUtil.updateXmlForHtmlValue(
                         link,
                         link.getName(),

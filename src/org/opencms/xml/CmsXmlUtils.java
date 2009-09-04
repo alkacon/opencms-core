@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/09/04 15:01:17 $
+ * Version: $Revision: 1.28.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.28.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,12 +146,12 @@ public final class CmsXmlUtils {
             // this is a complex path over more then 1 node
             StringBuffer result = new StringBuffer(path.length() + 32);
 
-            // split the path into subelements
-            List elements = CmsStringUtil.splitAsList(path, '/');
+            // split the path into sub elements
+            List<String> elements = CmsStringUtil.splitAsList(path, '/');
             int end = elements.size() - 1;
             for (int i = 0; i <= end; i++) {
                 // append [i] to path element if required 
-                result.append(createXpathElementCheck((String)elements.get(i), (i == end) ? index : 1));
+                result.append(createXpathElementCheck(elements.get(i), (i == end) ? index : 1));
                 if (i < end) {
                     // append path delimiter if not final path element
                     result.append('/');
@@ -264,14 +264,14 @@ public final class CmsXmlUtils {
      * Returns the last Xpath index from the given path.<p>
      * 
      * Examples:<br> 
-     * <code>title</code> returns them empty String<p>
+     * <code>title</code> returns the empty String<p>
      * <code>title[1]</code> returns <code>[1]</code><p>
      * <code>title/subtitle</code> returns them empty String<p>
      * <code>title[1]/subtitle[1]</code> returns <code>[1]</code><p>
      * 
-     * @param path the path to remove the Xpath index from
+     * @param path the path to extract the Xpath index from
      * 
-     * @return the path with the last Xpath index removed
+     * @return  the last Xpath index from the given path
      */
     public static String getXpathIndex(String path) {
 
@@ -282,6 +282,36 @@ public final class CmsXmlUtils {
         }
 
         return path.substring(pos2);
+    }
+
+    /**
+     * Returns the last Xpath index from the given path as integer.<p>
+     * 
+     * Examples:<br> 
+     * <code>title</code> returns 1<p>
+     * <code>title[1]</code> returns 1<p>
+     * <code>title/subtitle</code> returns 1<p>
+     * <code>title[1]/subtitle[2]</code> returns 2<p>
+     * 
+     * @param path the path to extract the Xpath index from
+     * 
+     * @return the last Xpath index from the given path as integer
+     */
+    public static int getXpathIndexInt(String path) {
+
+        int pos1 = path.lastIndexOf('/');
+        int pos2 = path.lastIndexOf('[');
+        if ((pos2 < 0) || (pos1 > pos2)) {
+            return 1;
+        }
+
+        String idxStr = path.substring(pos2 + 1, path.lastIndexOf(']'));
+        try {
+            return Integer.parseInt(idxStr);
+        } catch (NumberFormatException e) {
+            // NOOP
+        }
+        return 1;
     }
 
     /**
@@ -489,11 +519,11 @@ public final class CmsXmlUtils {
             StringBuffer result = new StringBuffer(path.length() + 32);
 
             // split the path into sub-elements
-            List elements = CmsStringUtil.splitAsList(path, '/');
+            List<String> elements = CmsStringUtil.splitAsList(path, '/');
             int end = elements.size() - 1;
             for (int i = 0; i <= end; i++) {
                 // remove [i] from path element if required 
-                result.append(removeXpathIndex((String)elements.get(i)));
+                result.append(removeXpathIndex(elements.get(i)));
                 if (i < end) {
                     // append path delimiter if not final path element
                     result.append('/');

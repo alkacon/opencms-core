@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentErrorHandler.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/09/04 15:01:16 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,7 +55,7 @@ public class CmsXmlContentErrorHandler {
     private static final Log LOG = CmsLog.getLog(CmsXmlContentErrorHandler.class);
 
     /** The list of validation errors. */
-    private Map m_errors;
+    private Map<Locale, Map<String, String>> m_errors;
 
     /** Indicates that the validated content has errors. */
     private boolean m_hasErrors;
@@ -64,7 +64,7 @@ public class CmsXmlContentErrorHandler {
     private boolean m_hasWarnings;
 
     /** The list of validation warnings. */
-    private Map m_warnings;
+    private Map<Locale, Map<String, String>> m_warnings;
 
     /**
      * Create a new instance of the validation handler.<p>
@@ -72,8 +72,8 @@ public class CmsXmlContentErrorHandler {
     public CmsXmlContentErrorHandler() {
 
         // initialize the internal error / warning list
-        m_warnings = new HashMap();
-        m_errors = new HashMap();
+        m_warnings = new HashMap<Locale, Map<String, String>>();
+        m_errors = new HashMap<Locale, Map<String, String>>();
     }
 
     /**
@@ -87,7 +87,7 @@ public class CmsXmlContentErrorHandler {
 
         m_hasErrors = true;
         Locale locale = value.getLocale();
-        Map localeErrors = getLocalIssueMap(m_errors, locale);
+        Map<String, String> localeErrors = getLocalIssueMap(m_errors, locale);
         localeErrors.put(value.getPath(), message);
 
         if (LOG.isDebugEnabled()) {
@@ -106,7 +106,7 @@ public class CmsXmlContentErrorHandler {
 
         m_hasWarnings = true;
         Locale locale = value.getLocale();
-        Map localeWarnings = getLocalIssueMap(m_warnings, locale);
+        Map<String, String> localeWarnings = getLocalIssueMap(m_warnings, locale);
         localeWarnings.put(value.getPath(), message);
 
         if (LOG.isDebugEnabled()) {
@@ -127,7 +127,7 @@ public class CmsXmlContentErrorHandler {
      *
      * @return the map of validation errors
      */
-    public Map getErrors() {
+    public Map<Locale, Map<String, String>> getErrors() {
 
         return m_errors;
     }
@@ -139,9 +139,9 @@ public class CmsXmlContentErrorHandler {
      * 
      * @return the Map of errors for the selected locale
      */
-    public Map getErrors(Locale locale) {
+    public Map<String, String> getErrors(Locale locale) {
 
-        return (Map)m_errors.get(locale);
+        return m_errors.get(locale);
     }
 
     /**
@@ -154,7 +154,7 @@ public class CmsXmlContentErrorHandler {
      *
      * @return the map of validation warnings
      */
-    public Map getWarnings() {
+    public Map<Locale, Map<String, String>> getWarnings() {
 
         return m_warnings;
     }
@@ -166,9 +166,9 @@ public class CmsXmlContentErrorHandler {
      * 
      * @return the Map of warnings for the selected locale
      */
-    public Map getWarnings(Locale locale) {
+    public Map<String, String> getWarnings(Locale locale) {
 
-        return (Map)m_warnings.get(locale);
+        return m_warnings.get(locale);
     }
 
     /**
@@ -226,11 +226,11 @@ public class CmsXmlContentErrorHandler {
      * 
      * @return the localized issue map from the given base map
      */
-    private Map getLocalIssueMap(Map base, Locale locale) {
+    private Map<String, String> getLocalIssueMap(Map<Locale, Map<String, String>> base, Locale locale) {
 
-        Map result = (Map)base.get(locale);
+        Map<String, String> result = base.get(locale);
         if (result == null) {
-            result = new HashMap();
+            result = new HashMap<String, String>();
             base.put(locale, result);
         }
         return result;

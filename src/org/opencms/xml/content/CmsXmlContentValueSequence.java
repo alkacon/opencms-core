@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContentValueSequence.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/09/04 15:01:16 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,37 +53,81 @@ public class CmsXmlContentValueSequence {
     /** The XML content this sequence element is based on. */
     private CmsXmlContent m_content;
 
+    /** Indicates if this is a choice sequence or not. */
+    private boolean m_isChoiceSequence;
+
     /** The locale this sequence is based on. */
     private Locale m_locale;
+
+    /** The maximum occurrences of the elements in this sequence. */
+    private int m_maxOccurs;
+
+    /** The minimum occurrences of the elements in this sequence. */
+    private int m_minOccurs;
 
     /** The Xpath this content value sequence was generated for. */
     private String m_path;
 
-    /** The XML schema type this sequence is based on. */
-    private I_CmsXmlSchemaType m_schemaType;
-
     /** The list of XML content values for the selected schema type and locale in the XML content. */
-    private List m_values;
+    private List<I_CmsXmlContentValue> m_values;
 
     /**
      * Generates a new content sequence element from the given type, content and content definition.<p>
      * 
      * @param path the path in the document to generate the value sequence for
-     * @param schemaType the schema type to generate the sequence element for
      * @param locale the locale to get the content values from
      * @param content the XML content to generate the sequence element out of
      */
-    public CmsXmlContentValueSequence(String path, I_CmsXmlSchemaType schemaType, Locale locale, CmsXmlContent content) {
+    public CmsXmlContentValueSequence(String path, Locale locale, CmsXmlContent content) {
 
-        m_schemaType = schemaType;
         m_locale = locale;
         m_content = content;
-        m_values = m_content.getValues(path, m_locale);
         m_path = CmsXmlUtils.removeXpathIndex(path);
+        I_CmsXmlSchemaType type = m_content.getContentDefinition().getSchemaType(m_path);
+        m_isChoiceSequence = type.isChoiceOption();
+        if (m_isChoiceSequence) {
+            m_values = m_content.getSubValues(CmsXmlUtils.removeLastXpathElement(m_path), m_locale);
+        } else {
+            m_values = m_content.getValues(path, m_locale);
+        }
+        if (type.getContentDefinition().getChoiceMaxOccurs() > 1) {
+            m_minOccurs = 0;
+            m_maxOccurs = type.getContentDefinition().getChoiceMaxOccurs();
+        } else {
+            if (m_isChoiceSequence && !m_values.isEmpty()) {
+                type = m_values.get(0);
+            }
+            m_minOccurs = type.getMinOccurs();
+            m_maxOccurs = type.getMaxOccurs();
+        }
     }
 
     /**
-     * Adds a value element of the sequence type at the seleted index to the XML content document.<p> 
+     * Adds a value element of the given type
+     * at the selected index to the XML content document.<p> 
+     * 
+     * @param cms the current users OpenCms context
+     * @param type the type to add
+     * @param index the index where to add the new value element
+     * 
+     * @return the added XML content value element
+     * 
+     * @see CmsXmlContent#addValue(CmsObject, String, Locale, int)
+     * @see #addValue(CmsObject, String, int)
+     * @see #addValue(CmsObject, int)
+     */
+    public I_CmsXmlContentValue addValue(CmsObject cms, I_CmsXmlSchemaType type, int index) {
+
+        String xpath = CmsXmlUtils.concatXpath(CmsXmlUtils.removeLastXpathElement(getPath()), type.getName());
+        return addValue(cms, xpath, index);
+    }
+
+    /**
+     * Adds a value element of the type the original xpath indicates 
+     * at the selected index to the XML content document.<p> 
+     * 
+     * The "original xpath" is the path used in the constructor when creating 
+     * this value sequence.<p>
      * 
      * @param cms the current users OpenCms context
      * @param index the index where to add the new value element
@@ -91,10 +135,31 @@ public class CmsXmlContentValueSequence {
      * @return the added XML content value element
      * 
      * @see CmsXmlContent#addValue(CmsObject, String, Locale, int)
+     * @see #addValue(CmsObject, String, int)
+     * @see #addValue(CmsObject, I_CmsXmlSchemaType, int)
      */
     public I_CmsXmlContentValue addValue(CmsObject cms, int index) {
 
-        I_CmsXmlContentValue newValue = m_content.addValue(cms, getPath(), getLocale(), index);
+        return addValue(cms, getPath(), index);
+    }
+
+    /**
+     * Adds a value element of the type indicated by the given xpath
+     * at the selected index to the XML content document.<p> 
+     * 
+     * @param cms the current users OpenCms context
+     * @param xpath the path that indicates the element type in the content definition
+     * @param index the index where to add the new value element
+     * 
+     * @return the added XML content value element
+     * 
+     * @see CmsXmlContent#addValue(CmsObject, String, Locale, int)
+     * @see #addValue(CmsObject, I_CmsXmlSchemaType, int)
+     * @see #addValue(CmsObject, int)
+     */
+    public I_CmsXmlContentValue addValue(CmsObject cms, String xpath, int index) {
+
+        I_CmsXmlContentValue newValue = m_content.addValue(cms, xpath, getLocale(), index);
 
         // re-initialize the value list
         m_values = m_content.getValues(getPath(), getLocale());
@@ -110,23 +175,6 @@ public class CmsXmlContentValueSequence {
     public int getElementCount() {
 
         return m_values.size();
-    }
-
-    /**
-     * Returns the XML element node name of this sequence element in the current schema.<p>
-     *
-     * The XML element node name can be configured in the schema.
-     * For example, the node name could be <code>"Title"</code>,
-     * <code>"Teaser"</code> or <code>"Text"</code>. The XML schema controls 
-     * what node names are allowed.<p> 
-     *
-     * @return the XML node name of this sequence element in the current schema
-     * 
-     * @see I_CmsXmlSchemaType#getName()
-     */
-    public String getElementName() {
-
-        return m_schemaType.getName();
     }
 
     /**
@@ -148,7 +196,7 @@ public class CmsXmlContentValueSequence {
      */
     public int getMaxOccurs() {
 
-        return m_schemaType.getMaxOccurs();
+        return m_maxOccurs;
     }
 
     /**
@@ -160,7 +208,7 @@ public class CmsXmlContentValueSequence {
      */
     public int getMinOccurs() {
 
-        return m_schemaType.getMinOccurs();
+        return m_minOccurs;
     }
 
     /**
@@ -184,7 +232,7 @@ public class CmsXmlContentValueSequence {
      */
     public I_CmsXmlContentValue getValue(int index) {
 
-        return (I_CmsXmlContentValue)m_values.get(index);
+        return m_values.get(index);
     }
 
     /**
@@ -192,56 +240,21 @@ public class CmsXmlContentValueSequence {
      * 
      * @return the list of XML content values for the selected schema type and locale in the XML content
      * 
-     * @see CmsXmlContentValueSequence#getValue(int)
+     * @see #getValue(int)
      */
-    public List getValues() {
+    public List<I_CmsXmlContentValue> getValues() {
 
         return m_values;
     }
 
     /**
-     * Return the XML schema type of this sequence element.<p>
+     * Returns <code>true</code> if this sequence represents a choice sequence.<p>
      * 
-     * @return the XML schema type of this sequence element
+     * @return <code>true</code> if this sequence represents a choice sequence
      */
-    public I_CmsXmlSchemaType getXmlSchemaType() {
+    public boolean isChoiceSequence() {
 
-        return m_schemaType;
-    }
-
-    /**
-     * Returns <code>true</code> if more elements of this type can be added to the XML content.<p>
-     * 
-     * @return <code>true</code> if more elements of this type can be added to the XML content
-     */
-    public boolean isExtendable() {
-
-        return getElementCount() < getMaxOccurs();
-    }
-
-    /**
-     * Returns <code>true</code> if elements of this type can be removed from the XML content.<p>
-     * 
-     * @return <code>true</code> if elements of this type can be removed from the XML content
-     */
-    public boolean isReducable() {
-
-        return getElementCount() > getMinOccurs();
-    }
-
-    /**
-     * Returns <code>true</code> if this is a simple type, or <code>false</code>
-     * if this type is a nested schema.<p>
-     * 
-     * If a value is a nested schema, it must be an instance of {@link org.opencms.xml.types.CmsXmlNestedContentDefinition}.<p> 
-     * 
-     * @return true if this is  a simple type, or false if this type is a nested schema
-     * 
-     * @see org.opencms.xml.types.CmsXmlNestedContentDefinition
-     */
-    public boolean isSimpleType() {
-
-        return m_schemaType.isSimpleType();
+        return m_isChoiceSequence;
     }
 
     /**

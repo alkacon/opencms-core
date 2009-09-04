@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<ChoiceTestRoot 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:noNamespaceSchemaLocation="http://www.opencms.org/testChoice1.xsd">
+  
+	<ChoiceTestElement language="en">
+		<String><![CDATA[ChoiceTestElement 1]]></String>
+		<DateTime>-58254180000</DateTime>
+		<Html>
+			<links />
+			<content><![CDATA[<p>This is some Html</p>]]></content>
+		</Html>
+		<ChoiceTestA>
+			<StringChoice><![CDATA[Choicetest 1]]></StringChoice>
+			<DateTimeChoice>-58254180000</DateTimeChoice>
+			<StringChoice><![CDATA[Choicetest 2]]></StringChoice>
+		</ChoiceTestA>
+		<ChoiceTestA>
+			<DateTimeChoice>-58254180000</DateTimeChoice>
+		</ChoiceTestA>		
+		<ChoiceTestB>
+			<NameChoice><![CDATA[Choicename 1]]></NameChoice>
+			<NameChoice><![CDATA[Choicename 2]]></NameChoice>
+			<HtmlChoice>
+				<links />
+				<content><![CDATA[<p>This is HTML in the xsd:choice element</p>]]></content>
+			</HtmlChoice>
+		</ChoiceTestB>		
+		<ChoiceTestC>
+			<NameChoiceC><![CDATA[Choicename C 1]]></NameChoiceC>
+			<NameChoiceC><![CDATA[Choicename C 2]]></NameChoiceC>
+			<NameChoiceC><![CDATA[Choicename C 3]]></NameChoiceC>
+			<NameChoiceC><![CDATA[Choicename C 4]]></NameChoiceC>
+			<NameChoiceC><![CDATA[Choicename C 5]]></NameChoiceC>
+		</ChoiceTestC>			
+	</ChoiceTestElement>
+</ChoiceTestRoot>

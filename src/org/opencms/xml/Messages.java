@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/Messages.java,v $
- * Date   : $Date: 2009/07/03 10:36:37 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/09/04 15:01:18 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,17 +40,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_ADD_WIDGET_CONFIG_2 = "INIT_ADD_WIDGET_CONFIG_2";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_ADD_WIDGET_ALIAS_CONFIG_3 = "INIT_ADD_WIDGET_ALIAS_CONFIG_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CD_BAD_INCLUDE_1 = "ERR_CD_BAD_INCLUDE_1";
@@ -60,6 +54,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CD_ELEMENT_NAME_3 = "ERR_CD_ELEMENT_NAME_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CD_ELEMENT_NAME_4 = "ERR_CD_ELEMENT_NAME_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CD_FIRST_INCLUDE_2 = "ERR_CD_FIRST_INCLUDE_2";
@@ -81,6 +78,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EL_ATTRIBUTE_TOOMANY_3 = "ERR_EL_ATTRIBUTE_TOOMANY_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_EL_BAD_ATTRIBUTE_3 = "ERR_EL_BAD_ATTRIBUTE_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EL_BAD_ATTRIBUTE_VALUE_4 = "ERR_EL_BAD_ATTRIBUTE_VALUE_4";
@@ -156,6 +156,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_WIDGET_ALIAS_2 = "INIT_ADD_WIDGET_ALIAS_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_ADD_WIDGET_ALIAS_CONFIG_3 = "INIT_ADD_WIDGET_ALIAS_CONFIG_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_ADD_WIDGET_CONFIG_2 = "INIT_ADD_WIDGET_CONFIG_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_NUM_ST_INITIALIZED_1 = "INIT_NUM_ST_INITIALIZED_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2009/06/04 14:35:24 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2009/09/04 15:01:19 $
+ * Version: $Revision: 1.51.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -75,7 +75,7 @@ import junit.framework.TestSuite;
  * Tests the OpenCms XML contents with real VFS operations.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.51.2.1 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -89,7 +89,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     private static final String SCHEMA_SYSTEM_ID_7 = "http://www.opencms.org/test7.xsd";
     private static final String SCHEMA_SYSTEM_ID_8 = "http://www.opencms.org/test8.xsd";
     private static final String SCHEMA_SYSTEM_ID_9 = "http://www.opencms.org/test9.xsd";
-    
+
     /**
      * Default JUnit constructor.<p>
      * 
@@ -141,11 +141,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();
@@ -393,7 +395,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContentValueSequence titleSequence;
 
         titleSequence = xmlcontent.getValueSequence("Title", Locale.ENGLISH);
-        assertEquals("Title", titleSequence.getElementName());
+        assertEquals("Title", titleSequence.getValue(0).getName());
         assertEquals(1, titleSequence.getElementCount());
         assertEquals(1, titleSequence.getMinOccurs());
         assertEquals(5, titleSequence.getMaxOccurs());
@@ -413,7 +415,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // ensure the document structure is as expected
         titleSequence = xmlcontent.getValueSequence("Title", Locale.ENGLISH);
-        assertEquals("Title", titleSequence.getElementName());
+        assertEquals("Title", titleSequence.getValue(0).getName());
         assertEquals(2, titleSequence.getElementCount());
         assertEquals(1, titleSequence.getMinOccurs());
         assertEquals(5, titleSequence.getMaxOccurs());
@@ -437,7 +439,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
         // ensure the document structure is as expected
         titleSequence = xmlcontent.getValueSequence("Title", Locale.ENGLISH);
-        assertEquals("Title", titleSequence.getElementName());
+        assertEquals("Title", titleSequence.getValue(0).getName());
         assertEquals(4, titleSequence.getElementCount());
         assertEquals(1, titleSequence.getMinOccurs());
         assertEquals(5, titleSequence.getMaxOccurs());
@@ -450,7 +452,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsXmlContentValueSequence optionSequence;
 
         optionSequence = xmlcontent.getValueSequence("Option", Locale.ENGLISH);
-        assertEquals("Option", optionSequence.getElementName());
         assertEquals(0, optionSequence.getElementCount());
         assertEquals(0, optionSequence.getMinOccurs());
         assertEquals(2, optionSequence.getMaxOccurs());
@@ -471,7 +472,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         optionSequence = xmlcontent.getValueSequence("Option", Locale.ENGLISH);
-        assertEquals("Option", optionSequence.getElementName());
+        assertEquals("Option", optionSequence.getValue(0).getName());
         assertEquals(2, optionSequence.getElementCount());
         assertEquals(0, optionSequence.getMinOccurs());
         assertEquals(2, optionSequence.getMaxOccurs());

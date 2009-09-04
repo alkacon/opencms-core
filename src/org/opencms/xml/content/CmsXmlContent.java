@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2009/09/04 15:01:16 $
+ * Version: $Revision: 1.46.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,9 @@ import org.opencms.staticexport.CmsLinkTable;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.CmsXmlException;
+import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.types.CmsXmlNestedContentDefinition;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -55,6 +57,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -79,7 +82,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.46.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,6 +93,17 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
     /** The property to set to enable xerces schema validation. */
     public static final String XERCES_SCHEMA_PROPERTY = "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation";
+
+    /**
+     * Comparator to sort values according to the XML element position.<p>
+     */
+    private static final Comparator<I_CmsXmlContentValue> COMPARE_INDEX = new Comparator<I_CmsXmlContentValue>() {
+
+        public int compare(I_CmsXmlContentValue v1, I_CmsXmlContentValue v2) {
+
+            return v1.getIndex() - v2.getIndex();
+        }
+    };
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContent.class);
@@ -236,7 +250,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         CmsXmlContentDefinition contentDefinition;
         if (CmsXmlUtils.isDeepXpath(path)) {
             // this is a nested content definition, so the parent element must be in the bookmarks
-            String parentPath = CmsXmlUtils.removeLastXpathElement(path);
+            String parentPath = CmsXmlUtils.createXpath(CmsXmlUtils.removeLastXpathElement(path), 1);
             Object o = getBookmark(parentPath, locale);
             if (o == null) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
@@ -255,10 +269,16 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         }
 
         // read the XML siblings from the parent node
-        List siblings = parentElement.elements(elementName);
+        List<Element> siblings = CmsXmlGenericWrapper.elements(parentElement, elementName);
 
         int insertIndex;
-        if (siblings.size() > 0) {
+
+        if (contentDefinition.getChoiceMaxOccurs() > 0) {
+            // for a choice sequence we do not check the index position, we rather do a full XML validation afterwards
+
+            insertIndex = index;
+        } else if (siblings.size() > 0) {
+            // we want to add an element to a sequence, and there are elements already of the same type
 
             if (siblings.size() >= type.getMaxOccurs()) {
                 // must not allow adding an element if max occurs would be violated
@@ -279,10 +299,11 @@ public class CmsXmlContent extends A_CmsXmlDocument {
             // check for offset required to append beyond last position
             int offset = (index == siblings.size()) ? 1 : 0;
             // get the element from the parent at the selected position
-            Element sibling = (Element)siblings.get(index - offset);
+            Element sibling = siblings.get(index - offset);
             // check position of the node in the parent node content
             insertIndex = sibling.getParent().content().indexOf(sibling) + offset;
         } else {
+            // we want to add an element to a sequence, but there are no elements of the same type yet
 
             if (index > 0) {
                 // since the element does not occur, index must be 0
@@ -300,20 +321,20 @@ public class CmsXmlContent extends A_CmsXmlDocument {
             } else {
 
                 // create a list of all element names that should occur before the selected type
-                List previousTypeNames = new ArrayList();
+                List<String> previousTypeNames = new ArrayList<String>();
                 for (int i = 0; i < typeIndex; i++) {
-                    I_CmsXmlSchemaType t = (I_CmsXmlSchemaType)contentDefinition.getTypeSequence().get(i);
+                    I_CmsXmlSchemaType t = contentDefinition.getTypeSequence().get(i);
                     previousTypeNames.add(t.getName());
                 }
 
                 // iterate all elements of the parent node
-                Iterator i = parentElement.content().iterator();
+                Iterator<Node> i = CmsXmlGenericWrapper.content(parentElement).iterator();
                 int pos = 0;
                 while (i.hasNext()) {
-                    Node node = (Node)i.next();
+                    Node node = i.next();
                     if (node instanceof Element) {
                         if (!previousTypeNames.contains(node.getName())) {
-                            // the element name is NOT in the list of names that occure before the selected type, 
+                            // the element name is NOT in the list of names that occurs before the selected type, 
                             // so it must be an element that occurs AFTER the type
                             break;
                         }
@@ -324,15 +345,32 @@ public class CmsXmlContent extends A_CmsXmlDocument {
             }
         }
 
-        // append the new element at the calculated position
-        I_CmsXmlContentValue newValue = addValue(cms, parentElement, type, locale, insertIndex);
+        I_CmsXmlContentValue newValue;
+        if (contentDefinition.getChoiceMaxOccurs() > 0) {
+            // for a choice we do a full XML validation
+            try {
+                // append the new element at the calculated position
+                newValue = addValue(cms, parentElement, type, locale, insertIndex);
+                // validate the XML structure to see if the index position was valid
+                CmsXmlUtils.validateXmlStructure(m_document, m_encoding, new CmsXmlEntityResolver(cms));
+            } catch (Exception e) {
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_CHOICE_3,
+                    new Integer(insertIndex),
+                    elementName,
+                    parentElement.getUniquePath()));
+            }
+        } else {
+            // just append the new element at the calculated position
+            newValue = addValue(cms, parentElement, type, locale, insertIndex);
+        }
 
         // re-initialize this XML content 
         initDocument(m_document, m_encoding, m_contentDefinition);
 
         // return the value instance that was stored in the bookmarks 
         // just returning "newValue" isn't enough since this instance is NOT stored in the bookmarks
-        return (I_CmsXmlContentValue)getBookmark(getBookmarkName(newValue.getPath(), locale));
+        return getBookmark(getBookmarkName(newValue.getPath(), locale));
     }
 
     /**
@@ -343,7 +381,7 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      * @param elements the set of elements to copy
      * @throws CmsXmlException if something goes wrong
      */
-    public void copyLocale(Locale source, Locale destination, Set elements) throws CmsXmlException {
+    public void copyLocale(Locale source, Locale destination, Set<String> elements) throws CmsXmlException {
 
         if (!hasLocale(source)) {
             throw new CmsXmlException(Messages.get().container(
@@ -358,10 +396,10 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
         Element sourceElement = null;
         Element rootNode = m_document.getRootElement();
-        Iterator i = rootNode.elementIterator();
+        Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(rootNode);
         String localeStr = source.toString();
         while (i.hasNext()) {
-            Element element = (Element)i.next();
+            Element element = i.next();
             String language = element.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE, null);
             if ((language != null) && (localeStr.equals(language))) {
                 // detach node with the locale
@@ -388,6 +426,46 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     }
 
     /**
+     * Returns the list of choice options for the given xpath in the selected locale.<p>
+     * 
+     * In case the xpath does not select a nested choice content definition, 
+     * or in case the xpath does not exist at all, <code>null</code> is returned.<p>
+     * 
+     * @param xpath the xpath to check the choice options for
+     * @param locale the locale to check
+     * 
+     * @return the list of choice options for the given xpath
+     */
+    public List<I_CmsXmlSchemaType> getChoiceOptions(String xpath, Locale locale) {
+
+        I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(xpath);
+        if (type == null) {
+            // the xpath is not valid in the document
+            return null;
+        }
+        if (!type.isChoiceType() && !type.isChoiceOption()) {
+            // type is neither defining a choice nor part of a choice
+            return null;
+        }
+
+        if (type.isChoiceType()) {
+            // the type defines a choice sequence
+            CmsXmlContentDefinition cd = ((CmsXmlNestedContentDefinition)type).getNestedContentDefinition();
+            return cd.getTypeSequence();
+        }
+
+        // type must be a choice option
+        I_CmsXmlContentValue value = getValue(xpath, locale);
+        if ((value == null) || (value.getContentDefinition().getChoiceMaxOccurs() > 1)) {
+            // value does not exist in the document or is a multiple choice value
+            return type.getContentDefinition().getTypeSequence();
+        }
+
+        // value must be a single choice that already exists in the document, so we must return null
+        return null;
+    }
+
+    /**
      * @see org.opencms.xml.I_CmsXmlDocument#getContentDefinition()
      */
     public CmsXmlContentDefinition getContentDefinition() {
@@ -409,28 +487,101 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     }
 
     /**
-     * Returns the value sequence for the selected element name in this XML content.<p>
+     * Returns the list of sub-value for the given xpath in the selected locale.<p>
      * 
-     * If the given element name is not valid according to the schema of this XML content,
+     * @param path the xpath to look up the sub-value for
+     * @param locale the locale to use
+     * 
+     * @return the list of sub-value for the given xpath in the selected locale
+     */
+    public List<I_CmsXmlContentValue> getSubValues(String path, Locale locale) {
+
+        List<I_CmsXmlContentValue> result = new ArrayList<I_CmsXmlContentValue>();
+        String bookmark = getBookmarkName(CmsXmlUtils.createXpath(path, 1), locale);
+        int depth = CmsResource.getPathLevel(bookmark) + 1;
+        Iterator<String> i = getBookmarks().iterator();
+        while (i.hasNext()) {
+            String bm = i.next();
+            if (bm.startsWith(bookmark) && (CmsResource.getPathLevel(bm) == depth)) {
+                result.add(getBookmark(bm));
+            }
+        }
+        if (result.size() > 0) {
+            Collections.sort(result, COMPARE_INDEX);
+        }
+        return result;
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#getValue(java.lang.String, java.util.Locale, int)
+     */
+    @Override
+    public I_CmsXmlContentValue getValue(String path, Locale locale, int index) {
+
+        I_CmsXmlContentValue result = super.getValue(CmsXmlUtils.removeXpathIndex(path), locale, index);
+        // check if the last node is a choice node
+        if (((result == null) || result.isChoiceOption()) && CmsXmlUtils.isDeepXpath(path)) {
+            String parentPath = CmsXmlUtils.removeLastXpathElement(path);
+            I_CmsXmlContentValue v2 = super.getValue(parentPath, locale);
+            if ((v2 != null) && v2.isChoiceType()) {
+                // the parent is a choice node - check the sub-nodes using to the absolute index
+                List<I_CmsXmlContentValue> values = getSubValues(parentPath, locale);
+                if (index < values.size()) {
+                    I_CmsXmlContentValue v3 = values.get(index);
+                    if (v3.getName().equals(CmsXmlUtils.getLastXpathElement(path))) {
+                        // name of value at the position must match the provided name
+                        result = v3;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the value sequence for the selected element xpath in this XML content.<p>
+     * 
+     * If the given element xpath is not valid according to the schema of this XML content,
      * <code>null</code> is returned.<p>
      * 
-     * @param name the element name (XML node name) to the the value sequence for
+     * @param xpath the element xpath to get the value sequence for
      * @param locale the locale to get the value sequence for
      * 
      * @return the value sequence for the selected element name in this XML content
      */
-    public CmsXmlContentValueSequence getValueSequence(String name, Locale locale) {
+    public CmsXmlContentValueSequence getValueSequence(String xpath, Locale locale) {
 
-        I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(name);
+        I_CmsXmlSchemaType type = m_contentDefinition.getSchemaType(xpath);
         if (type == null) {
             return null;
         }
-        return new CmsXmlContentValueSequence(name, type, locale, this);
+        return new CmsXmlContentValueSequence(xpath, locale, this);
+    }
+
+    /**
+     * Returns <code>true</code> if choice options exist for the given xpath in the selected locale.<p>
+     * 
+     * In case the xpath does not select a nested choice content definition, 
+     * or in case the xpath does not exist at all, <code>false</code> is returned.<p>
+     * 
+     * @param xpath the xpath to check the choice options for
+     * @param locale the locale to check
+     * 
+     * @return <code>true</code> if choice options exist for the given xpath in the selected locale
+     */
+    public boolean hasChoiceOptions(String xpath, Locale locale) {
+
+        List<I_CmsXmlSchemaType> options = getChoiceOptions(xpath, locale);
+        if ((options == null) || (options.size() <= 1)) {
+            return false;
+        }
+        return true;
     }
 
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#isAutoCorrectionEnabled()
      */
+    @Override
     public boolean isAutoCorrectionEnabled() {
 
         return m_autoCorrectionEnabled;
@@ -449,14 +600,16 @@ public class CmsXmlContent extends A_CmsXmlDocument {
         // first get the value from the selected locale and index
         I_CmsXmlContentValue value = getValue(name, locale, index);
 
-        // check for the min / max occurs constrains
-        List values = getValues(name, locale);
-        if (values.size() <= value.getMinOccurs()) {
-            // must not allow removing an element if min occurs would be violated
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_ELEM_MINOCCURS_2,
-                name,
-                new Integer(value.getMinOccurs())));
+        if (!value.isChoiceOption()) {
+            // check for the min / max occurs constrains
+            List<I_CmsXmlContentValue> values = getValues(name, locale);
+            if (values.size() <= value.getMinOccurs()) {
+                // must not allow removing an element if min occurs would be violated
+                throw new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_XMLCONTENT_ELEM_MINOCCURS_2,
+                    name,
+                    new Integer(value.getMinOccurs())));
+            }
         }
 
         // detach the value node from the XML document
@@ -504,20 +657,20 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      * Visits all values of this XML content with the given value visitor.<p>
      * 
      * Please note that the order in which the values are visited may NOT be the
-     * order they apper in the XML document. It is ensured that the the parent 
+     * order they appear in the XML document. It is ensured that the the parent 
      * of a nested value is visited before the element it contains.<p>
      * 
      * @param visitor the value visitor implementation to visit the values with
      */
     public void visitAllValuesWith(I_CmsXmlContentValueVisitor visitor) {
 
-        List bookmarks = new ArrayList(getBookmarks());
+        List<String> bookmarks = new ArrayList<String>(getBookmarks());
         Collections.sort(bookmarks);
 
         for (int i = 0; i < bookmarks.size(); i++) {
 
-            String key = (String)bookmarks.get(i);
-            I_CmsXmlContentValue value = (I_CmsXmlContentValue)getBookmark(key);
+            String key = bookmarks.get(i);
+            I_CmsXmlContentValue value = getBookmark(key);
             visitor.visit(value);
         }
     }
@@ -525,7 +678,8 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#getBookmark(java.lang.String)
      */
-    protected Object getBookmark(String bookmark) {
+    @Override
+    protected I_CmsXmlContentValue getBookmark(String bookmark) {
 
         // allows package classes to directly access the bookmark information of the XML content 
         return super.getBookmark(bookmark);
@@ -534,7 +688,8 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#getBookmarks()
      */
-    protected Set getBookmarks() {
+    @Override
+    protected Set<String> getBookmarks() {
 
         // allows package classes to directly access the bookmark information of the XML content 
         return super.getBookmarks();
@@ -552,9 +707,9 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     protected Element getLocaleNode(Locale locale) throws CmsRuntimeException {
 
         String localeStr = locale.toString();
-        Iterator i = m_document.getRootElement().elements().iterator();
+        Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement());
         while (i.hasNext()) {
-            Element element = (Element)i.next();
+            Element element = i.next();
             if (localeStr.equals(element.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE))) {
                 // language element found, return it
                 return element;
@@ -588,19 +743,20 @@ public class CmsXmlContent extends A_CmsXmlDocument {
     /**
      * @see org.opencms.xml.A_CmsXmlDocument#initDocument(org.dom4j.Document, java.lang.String, org.opencms.xml.CmsXmlContentDefinition)
      */
+    @Override
     protected void initDocument(Document document, String encoding, CmsXmlContentDefinition definition) {
 
         m_document = document;
         m_contentDefinition = definition;
         m_encoding = CmsEncoder.lookupEncoding(encoding, encoding);
-        m_elementLocales = new HashMap();
-        m_elementNames = new HashMap();
-        m_locales = new HashSet();
+        m_elementLocales = new HashMap<String, Set<Locale>>();
+        m_elementNames = new HashMap<Locale, Set<String>>();
+        m_locales = new HashSet<Locale>();
         clearBookmarks();
 
         // initialize the bookmarks
-        for (Iterator i = m_document.getRootElement().elementIterator(); i.hasNext();) {
-            Element node = (Element)i.next();
+        for (Iterator<Element> i = CmsXmlGenericWrapper.elementIterator(m_document.getRootElement()); i.hasNext();) {
+            Element node = i.next();
             try {
                 Locale locale = CmsLocaleManager.getLocale(node.attribute(
                     CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE).getValue());
@@ -644,10 +800,10 @@ public class CmsXmlContent extends A_CmsXmlDocument {
 
         // first generate the XML element for the new value
         Element element = type.generateXml(cms, this, parent, locale);
-        // detatch the XML element from the appended position in order to insert it at the required position
+        // detach the XML element from the appended position in order to insert it at the required position
         element.detach();
         // add the XML element at the required position in the parent XML node 
-        parent.content().add(insertIndex, element);
+        CmsXmlGenericWrapper.content(parent).add(insertIndex, element);
         // create the type and return it
         I_CmsXmlContentValue value = type.createValue(this, element, locale);
         // generate the default value again - required for nested mappings because only now the full path is available  
@@ -705,69 +861,53 @@ public class CmsXmlContent extends A_CmsXmlDocument {
      */
     private void processSchemaNode(Element root, String rootPath, Locale locale, CmsXmlContentDefinition definition) {
 
-        int count = 1;
-        String previousName = null;
-
-        // first remove all non-element node (i.e. white space text nodes)
-        List content = root.content();
-        for (int i = content.size() - 1; i >= 0; i--) {
-            Node node = (Node)content.get(i);
+        // iterate all XML nodes 
+        for (Iterator<Node> i = CmsXmlGenericWrapper.content(root).iterator(); i.hasNext();) {
+            Node node = i.next();
             if (!(node instanceof Element)) {
                 // this node is not an element, so it must be a white space text node, remove it
-                content.remove(i);
-            }
-        }
-
-        // iterate all elements again
-        for (Iterator i = root.content().iterator(); i.hasNext();) {
-
-            // node must be an element since all non-elements were removed
-            Element element = (Element)i.next();
-
-            // check if this is a new node, if so reset the node counter
-            String name = element.getName();
-            if ((previousName == null) || !previousName.equals(name)) {
-                previousName = name;
-                count = 1;
-            }
-
-            // build the Xpath expression for the current node
-            String path;
-            if (rootPath != null) {
-                StringBuffer b = new StringBuffer(rootPath.length() + name.length() + 6);
-                b.append(rootPath);
-                b.append('/');
-                b.append(CmsXmlUtils.createXpathElement(name, count));
-                path = b.toString();
+                node.detach();
             } else {
-                path = CmsXmlUtils.createXpathElement(name, count);
-            }
+                // node must be an element 
+                Element element = (Element)node;
+                String name = element.getName();
+                int xpathIndex = CmsXmlUtils.getXpathIndexInt(element.getUniquePath(root));
 
-            // create a XML content value element
-            I_CmsXmlSchemaType schemaType = definition.getSchemaType(name);
-
-            if (schemaType != null) {
-                // directly add simple type to schema
-                I_CmsXmlContentValue value = schemaType.createValue(this, element, locale);
-                addBookmark(path, locale, true, value);
-
-                if (!schemaType.isSimpleType()) {
-                    // recurse for nested schema
-                    CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)schemaType;
-                    processSchemaNode(element, path, locale, nestedSchema.getNestedContentDefinition());
+                // build the Xpath expression for the current node
+                String path;
+                if (rootPath != null) {
+                    StringBuffer b = new StringBuffer(rootPath.length() + name.length() + 6);
+                    b.append(rootPath);
+                    b.append('/');
+                    b.append(CmsXmlUtils.createXpathElement(name, xpathIndex));
+                    path = b.toString();
+                } else {
+                    path = CmsXmlUtils.createXpathElement(name, xpathIndex);
                 }
-            } else {
-                // unknown XML node name according to schema
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().getBundle().key(
-                        Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
-                        name,
-                        definition.getSchemaLocation()));
+
+                // create a XML content value element
+                I_CmsXmlSchemaType schemaType = definition.getSchemaType(name);
+
+                if (schemaType != null) {
+                    // directly add simple type to schema
+                    I_CmsXmlContentValue value = schemaType.createValue(this, element, locale);
+                    addBookmark(path, locale, true, value);
+
+                    if (!schemaType.isSimpleType()) {
+                        // recurse for nested schema
+                        CmsXmlNestedContentDefinition nestedSchema = (CmsXmlNestedContentDefinition)schemaType;
+                        processSchemaNode(element, path, locale, nestedSchema.getNestedContentDefinition());
+                    }
+                } else {
+                    // unknown XML node name according to schema
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().getBundle().key(
+                            Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
+                            name,
+                            definition.getSchemaLocation()));
+                    }
                 }
             }
-
-            // increase the node counter
-            count++;
         }
     }
 }

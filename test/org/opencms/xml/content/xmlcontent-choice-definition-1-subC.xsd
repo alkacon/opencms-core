@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:element name="ChoiceTestsCRoot" type="OpenCmsChoiceTestsCRoot"/>
+	
+	<xsd:complexType name="OpenCmsChoiceTestsCRoot">
+		<xsd:sequence>
+			<xsd:element name="ChoiceTestsC" type="OpenCmsChoiceTestsC" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsChoiceTestsC">
+		<xsd:choice minOccurs="0">
+			<xsd:element name="NameChoiceC" type="OpenCmsString" maxOccurs="5" />
+			<xsd:element name="HtmlChoiceC" type="OpenCmsHtml" maxOccurs="5" />
+		</xsd:choice>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>		
+	</xsd:complexType>
+ 
+</xsd:schema>

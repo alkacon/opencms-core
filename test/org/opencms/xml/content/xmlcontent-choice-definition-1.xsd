@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:include schemaLocation="http://www.opencms.org/choice-definition1-subA.xsd"/>	
+	<xsd:include schemaLocation="http://www.opencms.org/choice-definition1-subB.xsd"/>	
+	<xsd:include schemaLocation="http://www.opencms.org/choice-definition1-subC.xsd"/>			
+		
+	<xsd:element name="ChoiceTestRoot" type="OpenCmsChoiceTestRoot"/>
+	
+	<xsd:complexType name="OpenCmsChoiceTestRoot">
+		<xsd:sequence>
+			<xsd:element name="ChoiceTestElement" type="OpenCmsChoiceTestElement" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsChoiceTestElement">
+		<xsd:sequence>
+			<xsd:element name="String" type="OpenCmsString" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="DateTime" type="OpenCmsDateTime" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="Html" type="OpenCmsHtml" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="ChoiceTestA" type="OpenCmsChoiceTestsA" minOccurs="0" maxOccurs="5" />			
+			<xsd:element name="ChoiceTestB" type="OpenCmsChoiceTestsB" />			
+			<xsd:element name="ChoiceTestC" type="OpenCmsChoiceTestsC" minOccurs="0" maxOccurs="2" />			
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+		 
+</xsd:schema>

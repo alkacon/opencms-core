@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Messages.java,v $
- * Date   : $Date: 2009/08/13 10:47:28 $
- * Version: $Revision: 1.14.2.1 $
+ * Date   : $Date: 2009/09/04 15:01:16 $
+ * Version: $Revision: 1.14.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.14.2.1 $ 
+ * @version $Revision: 1.14.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,6 +57,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_3 = "ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_CHOICE_3 = "ERR_XMLCONTENT_ADD_ELEM_INVALID_IDX_CHOICE_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_XMLCONTENT_CHECK_INVALID_ELEM_1 = "ERR_XMLCONTENT_CHECK_INVALID_ELEM_1";

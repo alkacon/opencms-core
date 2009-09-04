@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2009/07/03 10:36:37 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2009/09/04 15:01:17 $
+ * Version: $Revision: 1.37.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.37.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,35 +74,36 @@ public class CmsXmlContentTypeManager {
     private static final Log LOG = CmsLog.getLog(CmsXmlContentTypeManager.class);
 
     /** Stores the initialized XML content handlers. */
-    private Map m_contentHandlers;
+    private Map<String, I_CmsXmlContentHandler> m_contentHandlers;
 
     /** Stores the registered content widgets. */
-    private Map m_defaultWidgets;
+    private Map<String, I_CmsWidget> m_defaultWidgets;
 
     /** Stores the registered content types. */
-    private Map m_registeredTypes;
+    private Map<String, I_CmsXmlSchemaType> m_registeredTypes;
 
     /** Stores the registered content widgets by class name. */
-    private Map m_registeredWidgets;
+    private Map<String, I_CmsWidget> m_registeredWidgets;
 
     /** The alias names for the widgets. */
-    private Map m_widgetAliases;
+    private Map<String, String> m_widgetAliases;
 
     /** The default configurations for the widgets. */
-    private Map m_widgetDefaultConfigurations;
+    private Map<String, String> m_widgetDefaultConfigurations;
 
     /**
      * Creates a new content type manager.<p> 
      */
+    @SuppressWarnings("unchecked")
     public CmsXmlContentTypeManager() {
 
         // use the fast hash map implementation since there will be far more read then write accesses
 
-        m_registeredTypes = new HashMap();
-        m_defaultWidgets = new HashMap();
-        m_registeredWidgets = new HashMap();
-        m_widgetAliases = new HashMap();
-        m_widgetDefaultConfigurations = new HashMap();
+        m_registeredTypes = new HashMap<String, I_CmsXmlSchemaType>();
+        m_defaultWidgets = new HashMap<String, I_CmsWidget>();
+        m_registeredWidgets = new HashMap<String, I_CmsWidget>();
+        m_widgetAliases = new HashMap<String, String>();
+        m_widgetDefaultConfigurations = new HashMap<String, String>();
 
         FastHashMap fastMap = new FastHashMap();
         fastMap.setFast(true);
@@ -149,7 +150,7 @@ public class CmsXmlContentTypeManager {
      * 
      * @throws CmsXmlException in case the class is not an instance of {@link I_CmsXmlSchemaType}
      */
-    public I_CmsXmlSchemaType addContentType(Class clazz) throws CmsXmlException {
+    public I_CmsXmlSchemaType addContentType(Class<?> clazz) throws CmsXmlException {
 
         I_CmsXmlSchemaType type;
         try {
@@ -173,7 +174,7 @@ public class CmsXmlContentTypeManager {
      */
     public void addSchemaType(String className, String defaultWidget) {
 
-        Class classClazz;
+        Class<?> classClazz;
         // initialize class for schema type
         try {
             classClazz = Class.forName(className);
@@ -225,7 +226,7 @@ public class CmsXmlContentTypeManager {
      */
     public void addWidget(String className, String aliasName, String defaultConfiguration) {
 
-        Class widgetClazz;
+        Class<?> widgetClazz;
         I_CmsWidget widget;
         try {
             widgetClazz = Class.forName(className);
@@ -296,7 +297,7 @@ public class CmsXmlContentTypeManager {
         String key = buffer.toString();
 
         // look up the content handler from the cache
-        I_CmsXmlContentHandler contentHandler = (I_CmsXmlContentHandler)m_contentHandlers.get(key);
+        I_CmsXmlContentHandler contentHandler = m_contentHandlers.get(key);
         if (contentHandler != null) {
             return contentHandler;
         }
@@ -329,7 +330,8 @@ public class CmsXmlContentTypeManager {
      * @return an initialized instance of a XML content type definition
      * @throws CmsXmlException in case the element does not describe a valid XML content type definition
      */
-    public I_CmsXmlSchemaType getContentType(Element typeElement, Set nestedDefinitions) throws CmsXmlException {
+    public I_CmsXmlSchemaType getContentType(Element typeElement, Set<CmsXmlContentDefinition> nestedDefinitions)
+    throws CmsXmlException {
 
         if (!CmsXmlContentDefinition.XSD_NODE_ELEMENT.equals(typeElement.getQName())) {
             throw new CmsXmlException(Messages.get().container(Messages.ERR_INVALID_CD_SCHEMA_STRUCTURE_0));
@@ -349,14 +351,14 @@ public class CmsXmlContentTypeManager {
         }
 
         boolean simpleType = true;
-        I_CmsXmlSchemaType schemaType = (I_CmsXmlSchemaType)m_registeredTypes.get(typeName);
+        I_CmsXmlSchemaType schemaType = m_registeredTypes.get(typeName);
         if (schemaType == null) {
 
             // the name is not a simple type, try to resolve from the nested schemas
-            Iterator i = nestedDefinitions.iterator();
+            Iterator<CmsXmlContentDefinition> i = nestedDefinitions.iterator();
             while (i.hasNext()) {
 
-                CmsXmlContentDefinition cd = (CmsXmlContentDefinition)i.next();
+                CmsXmlContentDefinition cd = i.next();
                 if (typeName.equals(cd.getTypeName())) {
 
                     simpleType = false;
@@ -388,7 +390,7 @@ public class CmsXmlContentTypeManager {
      */
     public I_CmsXmlSchemaType getContentType(String typeName) {
 
-        return (I_CmsXmlSchemaType)m_registeredTypes.get(typeName);
+        return m_registeredTypes.get(typeName);
     }
 
     /** 
@@ -396,9 +398,9 @@ public class CmsXmlContentTypeManager {
      * 
      * @return an alphabetically sorted list of all configured XML content schema types
      */
-    public List getRegisteredSchemaTypes() {
+    public List<I_CmsXmlSchemaType> getRegisteredSchemaTypes() {
 
-        List result = new ArrayList(m_registeredTypes.values());
+        List<I_CmsXmlSchemaType> result = new ArrayList<I_CmsXmlSchemaType>(m_registeredTypes.values());
         Collections.sort(result);
         return result;
     }
@@ -413,15 +415,13 @@ public class CmsXmlContentTypeManager {
      */
     public String getRegisteredWidgetAlias(String className) {
 
-        // this implementation could be improved for performance, 
-        // but since it's very seldom used it's currently just a straight map iteration 
-        Iterator i = m_widgetAliases.keySet().iterator();
+        Iterator<Map.Entry<String, String>> i = m_widgetAliases.entrySet().iterator();
         while (i.hasNext()) {
-            String aliasName = (String)i.next();
-            String clazzName = (String)m_widgetAliases.get(aliasName);
-            if (clazzName.equals(className)) {
+            // key is alias name, value is class name
+            Map.Entry<String, String> e = i.next();
+            if (e.getValue().equals(className)) {
                 // the alias mapping was found
-                return aliasName;
+                return e.getKey();
             }
         }
         return null;
@@ -432,9 +432,9 @@ public class CmsXmlContentTypeManager {
      * 
      * @return an alphabetically sorted list of the class names of all configured XML widgets
      */
-    public List getRegisteredWidgetNames() {
+    public List<String> getRegisteredWidgetNames() {
 
-        List result = new ArrayList(m_registeredWidgets.keySet());
+        List<String> result = new ArrayList<String>(m_registeredWidgets.keySet());
         Collections.sort(result);
         return result;
     }
@@ -448,12 +448,12 @@ public class CmsXmlContentTypeManager {
     public I_CmsWidget getWidget(String name) {
 
         // first look up by class name
-        I_CmsWidget result = (I_CmsWidget)m_registeredWidgets.get(name);
+        I_CmsWidget result = m_registeredWidgets.get(name);
         if (result == null) {
             // not found by class name, look up an alias
-            String className = (String)m_widgetAliases.get(name);
+            String className = m_widgetAliases.get(name);
             if (className != null) {
-                result = (I_CmsWidget)m_registeredWidgets.get(className);
+                result = m_registeredWidgets.get(className);
             }
         }
         if (result != null) {
@@ -470,7 +470,7 @@ public class CmsXmlContentTypeManager {
      */
     public I_CmsWidget getWidgetDefault(String typeName) {
 
-        I_CmsWidget result = (I_CmsWidget)m_defaultWidgets.get(typeName);
+        I_CmsWidget result = m_defaultWidgets.get(typeName);
         if (result != null) {
             result = result.newInstance();
         }
@@ -486,7 +486,7 @@ public class CmsXmlContentTypeManager {
      */
     public String getWidgetDefaultConfiguration(I_CmsWidget widget) {
 
-        return (String)m_widgetDefaultConfigurations.get(widget.getClass().getName());
+        return m_widgetDefaultConfigurations.get(widget.getClass().getName());
     }
 
     /**
@@ -499,12 +499,12 @@ public class CmsXmlContentTypeManager {
     public String getWidgetDefaultConfiguration(String name) {
 
         if (m_registeredWidgets.containsKey(name)) {
-            return (String)m_widgetDefaultConfigurations.get(name);
+            return m_widgetDefaultConfigurations.get(name);
         }
         // not found by class name, look up an alias
-        String className = (String)m_widgetAliases.get(name);
+        String className = m_widgetAliases.get(name);
         if (className != null) {
-            return (String)m_widgetDefaultConfigurations.get(className);
+            return m_widgetDefaultConfigurations.get(className);
         }
         return null;
     }
@@ -544,9 +544,9 @@ public class CmsXmlContentTypeManager {
         StringBuffer schema = new StringBuffer(512);
         schema.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         schema.append("<xsd:schema xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" elementFormDefault=\"qualified\">");
-        Iterator i = m_registeredTypes.values().iterator();
+        Iterator<I_CmsXmlSchemaType> i = m_registeredTypes.values().iterator();
         while (i.hasNext()) {
-            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
+            I_CmsXmlSchemaType type = i.next();
             schema.append(type.getSchemaDefinition());
         }
         schema.append("</xsd:schema>");

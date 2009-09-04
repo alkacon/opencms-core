@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlSchemaType.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/09/04 15:01:15 $
+ * Version: $Revision: 1.27.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,13 +59,13 @@ import org.dom4j.QName;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.27.2.1 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.xml.types.I_CmsXmlContentValue
  */
-public interface I_CmsXmlSchemaType extends Comparable {
+public interface I_CmsXmlSchemaType extends Comparable<I_CmsXmlSchemaType> {
 
     /** The schema instance namespace. */
     Namespace XSI_NAMESPACE = Namespace.get("xsi", "http://www.w3.org/2001/XMLSchema-instance");
@@ -112,6 +112,15 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * @return the generated XML element
      */
     Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale);
+
+    /**
+     * Returns the maximum occurrences of choice options for this type in the current schema.<p>
+     * 
+     * This will be greater than 0 only if {@link #isChoiceType()} is <code>true</code>.<p>
+     * 
+     * @return the maximum occurrences of choice options for this type in the current schema
+     */
+    int getChoiceMaxOccurs();
 
     /**
      * Returns the content definition this schema type belongs to.<p> 
@@ -181,6 +190,26 @@ public interface I_CmsXmlSchemaType extends Comparable {
      * @return the schema type name
      */
     String getTypeName();
+
+    /**
+     * Returns <code>true</code> if this type is an option inside of a choice sequence.<p>
+     * 
+     * This method is intended to check if this type is a node inside a choice sequence.
+     * In order to check if this type defines a choice sequence, use {@link #isChoiceType()}.<p>
+     * 
+     * @return <code>true</code> if this node defines a choice sequence
+     */
+    boolean isChoiceOption();
+
+    /**
+     * Returns <code>true</code> if this type defines a choice sequence.<p>
+     * 
+     * This method is intended to check if this type is a node defining a choice sequence.
+     * In order to check if this type is an option inside of a choice sequence, use {@link #isChoiceOption()}.<p>
+     * 
+     * @return <code>true</code> if this node defines a choice sequence
+     */
+    boolean isChoiceType();
 
     /**
      * Returns <code>true</code> if this is a simple type, or <code>false</code>

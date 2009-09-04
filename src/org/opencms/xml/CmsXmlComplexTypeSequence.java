@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlComplexTypeSequence.java,v $
- * Date   : $Date: 2009/06/04 14:29:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/04 15:01:17 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,8 @@
 
 package org.opencms.xml;
 
+import org.opencms.xml.types.I_CmsXmlSchemaType;
+
 import java.util.List;
 
 /**
@@ -38,20 +40,26 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  */
 class CmsXmlComplexTypeSequence {
 
+    /** Max occurs value for xsd:choice definitions. */
+    private int m_choiceMaxOccurs;
+
     /** Indicates if this type sequence has a language attribute. */
-    protected boolean m_hasLanguageAttribute;
+    private boolean m_hasLanguageAttribute;
 
     /** The name of the complex type sequence. */
-    protected String m_name;
+    private String m_name;
 
     /** The type sequence elements. */
-    protected List m_sequence;
+    private List<I_CmsXmlSchemaType> m_sequence;
+
+    /** Indicates the type of the sequence. */
+    private CmsXmlContentDefinition.SequenceType m_sequenceType;
 
     /**
      * Creates a new complex type sequence data structure.<p>
@@ -59,11 +67,71 @@ class CmsXmlComplexTypeSequence {
      * @param name the name of the sequence
      * @param sequence the type sequence element list
      * @param hasLanguageAttribute indicates if a "language" attribute is present
+     * @param sequenceType indicates the type of the sequence
+     * @param choiceMaxOccurs indicated the maxOccurs value for a xsd:choice sequence
      */
-    protected CmsXmlComplexTypeSequence(String name, List sequence, boolean hasLanguageAttribute) {
+    protected CmsXmlComplexTypeSequence(
+        String name,
+        List<I_CmsXmlSchemaType> sequence,
+        boolean hasLanguageAttribute,
+        CmsXmlContentDefinition.SequenceType sequenceType,
+        int choiceMaxOccurs) {
 
         m_name = name;
         m_sequence = sequence;
         m_hasLanguageAttribute = hasLanguageAttribute;
+        m_sequenceType = sequenceType;
+        m_choiceMaxOccurs = choiceMaxOccurs;
     }
+
+    /**
+     * Returns the maxOccurs value for <code>xsd:choice</code> definitions.<p>
+     *
+     * @return the maxOccurs value for <code>xsd:choice</code> definitions
+     */
+    public int getChoiceMaxOccurs() {
+
+        return m_choiceMaxOccurs;
+    }
+
+    /**
+     * Returns the name of the sequence.<p>
+     *
+     * @return the name of the sequence
+     */
+    public String getName() {
+
+        return m_name;
+    }
+
+    /**
+     * Returns the type sequence element list.<p>
+     *
+     * @return the type sequence element list
+     */
+    public List<I_CmsXmlSchemaType> getSequence() {
+
+        return m_sequence;
+    }
+
+    /**
+     * Returns the type of this sequence.<p>
+     * 
+     * @return the type of this sequence
+     */
+    public CmsXmlContentDefinition.SequenceType getSequenceType() {
+
+        return m_sequenceType;
+    }
+
+    /**
+     * Returns <code>true</code> if a "language" attribute is present in this sequence.<p>
+     *
+     * @return <code>true</code> if a "language" attribute is present in this sequence
+     */
+    public boolean hasLanguageAttribute() {
+
+        return m_hasLanguageAttribute;
+    }
+
 }

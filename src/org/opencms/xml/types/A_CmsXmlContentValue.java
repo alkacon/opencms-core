@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2009/06/04 14:29:44 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2009/09/04 15:01:15 $
+ * Version: $Revision: 1.42.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlGenericWrapper;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 
@@ -54,7 +55,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.42.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,6 +88,12 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /** The content definition this schema type belongs to. */
     private CmsXmlContentDefinition m_contentDefinition;
 
+    /** The index position of this content value. */
+    private int m_index;
+
+    /** The maximum index of this type that currently exist in the source document. */
+    private int m_maxIndex;
+
     /** Optional localized key prefix identifier. */
     private String m_prefix;
 
@@ -98,6 +105,8 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
 
         m_minOccurs = 0;
         m_maxOccurs = Integer.MAX_VALUE;
+        m_index = -1;
+        m_maxIndex = -1;
     }
 
     /**
@@ -117,6 +126,8 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         m_minOccurs = type.getMinOccurs();
         m_maxOccurs = type.getMaxOccurs();
         m_contentDefinition = type.getContentDefinition();
+        m_index = -1;
+        m_maxIndex = -1;
     }
 
     /**
@@ -132,7 +143,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         m_minOccurs = 1;
         if (CmsStringUtil.isNotEmpty(minOccurs)) {
             try {
-                m_minOccurs = Integer.valueOf(minOccurs).intValue();
+                m_minOccurs = Integer.parseInt(minOccurs);
             } catch (NumberFormatException e) {
                 // ignore
             }
@@ -143,12 +154,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
                 m_maxOccurs = Integer.MAX_VALUE;
             } else {
                 try {
-                    m_maxOccurs = Integer.valueOf(maxOccurs).intValue();
+                    m_maxOccurs = Integer.parseInt(maxOccurs);
                 } catch (NumberFormatException e) {
                     // ignore
                 }
             }
         }
+        m_index = -1;
+        m_maxIndex = -1;
     }
 
     /**
@@ -178,20 +191,18 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(I_CmsXmlSchemaType obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof I_CmsXmlSchemaType) {
-            return getTypeName().compareTo(((I_CmsXmlSchemaType)obj).getTypeName());
-        }
-        return 0;
+        return getTypeName().compareTo((obj).getTypeName());
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -227,6 +238,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
             }
         }
         return element;
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#getChoiceMaxOccurs()
+     */
+    public int getChoiceMaxOccurs() {
+
+        return 0;
     }
 
     /**
@@ -289,7 +308,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
      */
     public int getIndex() {
 
-        return m_element.getParent().elements(m_element.getQName()).indexOf(m_element);
+        if (m_index < 0) {
+            if (isChoiceOption()) {
+                m_index = m_element.getParent().elements().indexOf(m_element);
+            } else {
+                m_index = m_element.getParent().elements(m_element.getQName()).indexOf(m_element);
+            }
+        }
+        return m_index;
     }
 
     /**
@@ -321,7 +347,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
      */
     public int getMaxIndex() {
 
-        return m_element.getParent().elements(m_element.getQName()).size();
+        if (m_maxIndex < 0) {
+            if (isChoiceOption()) {
+                m_maxIndex = m_element.getParent().elements().size();
+            } else {
+                m_maxIndex = m_element.getParent().elements(m_element.getQName()).size();
+            }
+        }
+        return m_maxIndex;
     }
 
     /**
@@ -387,9 +420,27 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getTypeName().hashCode();
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#isChoiceOption()
+     */
+    public boolean isChoiceOption() {
+
+        return m_contentDefinition.getChoiceMaxOccurs() > 0;
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlSchemaType#isChoiceType()
+     */
+    public boolean isChoiceType() {
+
+        // this is overridden in the nested content definition
+        return false;
     }
 
     /**
@@ -416,10 +467,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
      */
     public void moveDown() {
 
-        int index = getIndex();
-        if (index > 0) {
+        if (getIndex() > 0) {
             // only move down if this element is not already at the first index position
-            moveValue(false);
+            moveValue(-1);
             getDocument().initDocument();
         }
     }
@@ -429,11 +479,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
      */
     public void moveUp() {
 
-        int index = getIndex();
-        int maxIndex = getMaxIndex();
-        if (index < (maxIndex - 1)) {
+        if (getIndex() < (getMaxIndex() - 1)) {
             // only move up if this element is not already at the last index position
-            moveValue(true);
+            moveValue(1);
             getDocument().initDocument();
         }
     }
@@ -467,6 +515,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer(128);
@@ -501,17 +550,18 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
      * 
      * Please note: No check is performed if the move violates the XML document schema!<p>
      * 
-     * @param moveUp if true, move up, otherwise move down
+     * @param step move the element up or down according to the given step value
      */
-    protected void moveValue(boolean moveUp) {
+    protected void moveValue(int step) {
 
         Element e = getElement();
         Element parent = e.getParent();
-        List siblings = parent.elements();
+        List<Element> siblings = CmsXmlGenericWrapper.elements(parent);
         int idx = siblings.indexOf(e);
-        int newIdx = moveUp ? idx + 1 : idx - 1;
+        int newIdx = idx + step;
         siblings.remove(idx);
         siblings.add(newIdx, e);
+        m_index += step;
     }
 
     /**
