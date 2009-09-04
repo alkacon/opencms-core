@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2009/08/12 12:28:36 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2009/09/04 15:22:43 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -212,12 +212,39 @@ function opensmallwin(url, name, w, h) {
 }
 
 // add an optional element to the currently edited content
-function addElement(elemName, insertAfter) {
+function addElement(elemName, insertAfter, addOptions) {
 	setLastPosition();
-	var _form = document.EDITOR;
-	_form.elementname.value = elemName;
-	_form.elementindex.value = insertAfter;
-	buttonAction(5);
+	addOptions = decodeURIComponent(addOptions);
+	if (addOptions != "" && addOptions != "[]") {
+    var optionalElements = eval(addOptions);
+    var choiceType = optionalElements[0].choicetype;
+    var addHtml = "";
+    for (var i=1; i<optionalElements.length; i++) {
+      var currOption = optionalElements[i];
+      addHtml += "<div style=\"cursor: pointer; border: 1px solid white; margin: 6px 0; padding: 3px;\" onclick=\"addChoiceElement('";
+      addHtml += elemName + "', " + insertAfter + ", '" + currOption.name + "', '" + choiceType + "');";
+      addHtml += "\">";
+      addHtml += currOption.label  + "</div>";
+    }
+    $("#xmladdelementdialog").html(addHtml);
+    $("#xmladdelementdialog").dialog('open');
+  } else {
+  	var _form = document.EDITOR;
+  	_form.elementname.value = elemName;
+  	_form.elementindex.value = insertAfter;
+  	buttonAction(5);
+	}
+}
+
+function addChoiceElement(elemName, insertAfter, choiceElement, choiceType) {
+  var _form = document.EDITOR;
+  _form.elementname.value = elemName;
+  _form.elementindex.value = insertAfter;
+  _form.choiceelement.value = choiceElement;
+  _form.choicetype.value = choiceType;
+  //if (confirm("Element: " + elemName + "\nInsert after: " + insertAfter + "\nChoice Element: " + choiceElement + "\nChoice Type: " + choiceType)) {
+    buttonAction(5);
+  //}
 }
 
 // move an element in currently edited content
@@ -329,7 +356,7 @@ function closeTreeWin() {
 }
 
 // shows the element operation buttons
-function showElementButtons(elementName, elementIndex, showRemove, showUp, showDown, showAdd) {
+function showElementButtons(elementName, elementIndex, showRemove, showUp, showDown, showAdd, addOptions) {
 	var elemId = elementName + "." + elementIndex;
 	if (oldEditorButtons != null && oldEditorButtons != elemId) {
 		// close eventually open element buttons
@@ -364,7 +391,7 @@ function showElementButtons(elementName, elementIndex, showRemove, showUp, showD
 
 	// add element button
 	if (showAdd) {
-		buttons += button("javascript:addElement('" + elementName + "', " + elementIndex + ")", null, "new", LANG_BT_ADD, buttonStyle);
+		buttons += button("javascript:addElement('" + elementName + "', " + elementIndex + ", '" + encodeURIComponent(addOptions) + "')", null, "new", LANG_BT_ADD, buttonStyle);
 	} else {
 		buttons += button(null, null, "new_in", LANG_BT_ADD, buttonStyle);
 	}
