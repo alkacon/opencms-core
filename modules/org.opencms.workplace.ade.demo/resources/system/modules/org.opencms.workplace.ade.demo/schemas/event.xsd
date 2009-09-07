@@ -25,7 +25,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.frontend.templatetwo.demo.workplace"/>
+			<resourcebundle name="org.opencms.workplace.ade.demo.workplace"/>
 			<preview uri="${previewtempfile}" />
 			<mappings>
 				<mapping element="Title" mapto="property:Title" />
