@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidgetOption.java,v $
- * Date   : $Date: 2009/09/01 13:24:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/09/07 13:33:44 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -82,7 +82,7 @@ import java.util.Map;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.1
  */
@@ -97,7 +97,7 @@ public class CmsHtmlWidgetOption {
     /** The default editor widget button bar configuration. */
     public static final String BUTTONBAR_DEFAULT = "[;undo;redo;-;find;replace;-;selectall;removeformat;-;cut;copy;paste;-;bold;italic;underline;strikethrough;-;subscript;superscript;];"
         + "[;alignleft;aligncenter;alignright;justify;-;orderedlist;unorderedlist;-;outdent;indent;];"
-        + "[;source;-;formatselect;editorlink;link;anchor;unlink;];"
+        + "[;source;-;formatselect;style;editorlink;link;anchor;unlink;];"
         + "[;imagegallery;downloadgallery;linkgallery;htmlgallery;tablegallery;-;table;-;specialchar;-;print;spellcheck;-;fitwindow;]";
 
     /** The default button bar configuration as List. */
@@ -160,6 +160,9 @@ public class CmsHtmlWidgetOption {
     /** Option for the "spell check" dialog. */
     public static final String OPTION_SPELLCHECK = "spellcheck";
 
+    /** Option for the style select box. */
+    public static final String OPTION_STYLE = "style";
+
     /** Option for the styles XML VFS path to use in the widget area. */
     public static final String OPTION_STYLES = "stylesxml:";
 
@@ -180,6 +183,7 @@ public class CmsHtmlWidgetOption {
         OPTION_REPLACE,
         OPTION_SOURCE,
         OPTION_SPELLCHECK,
+        OPTION_STYLE,
         OPTION_TABLE,
         OPTION_UNLINK,
         CmsAjaxImageGallery.GALLERYTYPE_NAME,
@@ -523,6 +527,12 @@ public class CmsHtmlWidgetOption {
                                 || getAdditionalButtons().contains(OPTION_EDITORLINK) || getAdditionalButtons().contains(
                                 OPTION_ANCHOR))) {
                                 // skip unlink button because no link buttons are defined as additional buttons
+                                continue;
+                            }
+                        } else if (OPTION_STYLE.equals(barItem)) {
+                            // special handling of style select box to be shown only if a path to the styles XML had been defined
+                            if (!showStylesXml()) {
+                                // skip if no path has been defined
                                 continue;
                             }
                         } else if (!getAdditionalButtons().contains(barItem)) {

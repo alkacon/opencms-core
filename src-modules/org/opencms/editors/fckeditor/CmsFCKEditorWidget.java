@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2009/09/01 13:24:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/09/07 13:33:44 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.1.7
  */
@@ -68,7 +68,7 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
         + "|subscript:'Subscript'|superscript:'Superscript'|alignleft:'JustifyLeft'|aligncenter:'JustifyCenter'|alignright:'JustifyRight'|justify:'JustifyFull'"
         + "|orderedlist:'OrderedList'|unorderedlist:'UnorderedList'|outdent:'Outdent'|indent:'Indent'|source:'Source'|formatselect:'FontFormat'|link:'oc-link'|editorlink:'Link'"
         + "|anchor:'Anchor'|unlink:'Unlink'|imagegallery:'OcmsImageGallery'|downloadgallery:'OcmsDownloadGallery'|linkgallery:'OcmsLinkGallery'|htmlgallery:'OcmsHtmlGallery'|tablegallery:'OcmsTableGallery'"
-        + "|table:'Table'|specialchar:'SpecialChar'|print:'Print'|spellcheck:'SpellCheck'|fitwindow:'FitWindow'";
+        + "|table:'Table'|specialchar:'SpecialChar'|print:'Print'|spellcheck:'SpellCheck'|fitwindow:'FitWindow'|style:'Style'";
 
     /** The map containing the translation of the generic widget button names to FCKeditor specific button names. */
     public static final Map<String, String> BUTTON_TRANSLATION_MAP = CmsStringUtil.splitAsMap(
