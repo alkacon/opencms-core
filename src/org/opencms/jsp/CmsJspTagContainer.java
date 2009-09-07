@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagContainer.java,v $
- * Date   : $Date: 2009/09/01 13:15:27 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2009/09/07 08:24:21 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,6 +43,9 @@ import org.opencms.workplace.editors.ade.CmsContainerBean;
 import org.opencms.workplace.editors.ade.CmsContainerElementBean;
 import org.opencms.workplace.editors.ade.CmsContainerPageBean;
 import org.opencms.workplace.editors.ade.CmsContainerPageCache;
+import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -61,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 7.6 
  */
@@ -174,7 +177,14 @@ public class CmsJspTagContainer extends TagSupport {
                 // iterate the subelements
                 for (CmsContainerElementBean subelement : subcontainer.getElements()) {
                     String subelementUri = cms.getSitePath(subelement.getElement());
-                    String subelementFormatter = cms.getSitePath(subelement.getFormatter());
+                    //String subelementFormatter = cms.getSitePath(subelement.getFormatter());
+                    // TODO: this may not be performing well, any way to access the content handler without reading the file content??
+                    CmsXmlContent content = CmsXmlContentFactory.unmarshal(cms, cms.readFile(subelementUri));
+                    CmsXmlContentDefinition contentDef = content.getContentDefinition();
+                    String subelementFormatter = contentDef.getContentHandler().getFormatters().get(containerType);
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(subelementFormatter)) {
+                        subelementFormatter = cms.getSitePath(subelement.getFormatter());
+                    }
 
                     // HACK: we use the __element param for the element uri
                     // execute the formatter jsp for the given element uri
