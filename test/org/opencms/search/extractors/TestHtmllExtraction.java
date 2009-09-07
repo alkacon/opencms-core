@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/extractors/TestHtmllExtraction.java,v $
- * Date   : $Date: 2009/06/04 14:35:32 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/09/07 12:41:47 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,14 +63,14 @@ public class TestHtmllExtraction extends TestCase {
 
         // extract the content
         I_CmsExtractionResult extractionResult = CmsExtractorHtml.getExtractor().extractText(in);
-        
-        Map items = extractionResult.getContentItems();
+
+        Map<String, String> items = extractionResult.getContentItems();
         assertEquals(2, items.size());
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_CONTENT));
         assertTrue(items.containsKey(I_CmsExtractionResult.ITEM_RAW));
         String result = extractionResult.getContent();
         assertEquals(result, items.get(I_CmsExtractionResult.ITEM_CONTENT));
-        
+
         System.out.println("---------------------------------------------------------------");
         System.out.println("Extracted from HTML:");
         System.out.println(result);

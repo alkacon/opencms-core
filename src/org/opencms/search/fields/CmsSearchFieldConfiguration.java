@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:55 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/09/07 12:41:54 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,11 +63,11 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 7.0.0 
  */
-public class CmsSearchFieldConfiguration implements Comparable {
+public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldConfiguration> {
 
     /**
      * The default for the standard search configuration.<p>
@@ -102,16 +102,16 @@ public class CmsSearchFieldConfiguration implements Comparable {
     private String m_description;
 
     /** Contains all names of the fields that are used in the excerpt. */
-    private List m_excerptFieldNames;
+    private List<String> m_excerptFieldNames;
 
     /** Map to lookup the configured {@link CmsSearchField} instances by name. */
-    private Map m_fieldLookup;
+    private Map<String, CmsSearchField> m_fieldLookup;
 
     /** The list of configured {@link CmsSearchField} names. */
-    private List m_fieldNames;
+    private List<String> m_fieldNames;
 
     /** The list of configured {@link CmsSearchField} instances. */
-    private List m_fields;
+    private List<CmsSearchField> m_fields;
 
     /** The name of the configuration. */
     private String m_name;
@@ -121,7 +121,7 @@ public class CmsSearchFieldConfiguration implements Comparable {
      */
     public CmsSearchFieldConfiguration() {
 
-        m_fields = new ArrayList();
+        m_fields = new ArrayList<CmsSearchField>();
     }
 
     /**
@@ -244,15 +244,12 @@ public class CmsSearchFieldConfiguration implements Comparable {
         }
     }
 
-    /** 
-     * @see java.lang.Comparable#compareTo(Object)
+    /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsSearchFieldConfiguration obj) {
 
-        if (obj instanceof CmsSearchFieldConfiguration) {
-            return m_name.compareTo(((CmsSearchFieldConfiguration)obj).m_name);
-        }
-        return 0;
+        return m_name.compareTo((obj).m_name);
     }
 
     /**
@@ -293,19 +290,19 @@ public class CmsSearchFieldConfiguration implements Comparable {
         }
 
         // read all properties of the resource
-        List propertiesSearched = cms.readPropertyObjects(resource, true);
-        List properties = cms.readPropertyObjects(resource, false);
+        List<CmsProperty> propertiesSearched = cms.readPropertyObjects(resource, true);
+        List<CmsProperty> properties = cms.readPropertyObjects(resource, false);
 
-        Iterator fieldConfigs = getFields().iterator();
+        Iterator<CmsSearchField> fieldConfigs = getFields().iterator();
         while (fieldConfigs.hasNext()) {
             // check all field configurations 
-            CmsSearchField fieldConfig = (CmsSearchField)fieldConfigs.next();
+            CmsSearchField fieldConfig = fieldConfigs.next();
             // generate the content for the field mappings
             StringBuffer text = new StringBuffer();
-            Iterator mappings = fieldConfig.getMappings().iterator();
+            Iterator<CmsSearchFieldMapping> mappings = fieldConfig.getMappings().iterator();
             while (mappings.hasNext()) {
                 // walk through all mappings and check if content for this is available
-                CmsSearchFieldMapping mapping = (CmsSearchFieldMapping)mappings.next();
+                CmsSearchFieldMapping mapping = mappings.next();
                 String mapResult = mapping.getStringValue(cms, resource, content, properties, propertiesSearched);
                 if (mapResult != null) {
                     // content is available for the mapping
@@ -416,6 +413,7 @@ public class CmsSearchFieldConfiguration implements Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -443,10 +441,10 @@ public class CmsSearchFieldConfiguration implements Comparable {
         ? (PerFieldAnalyzerWrapper)analyzer
         : null;
 
-        Iterator i = m_fields.iterator();
+        Iterator<CmsSearchField> i = m_fields.iterator();
         while (i.hasNext()) {
             // check all fields for individual analyzer configuration
-            CmsSearchField field = (CmsSearchField)i.next();
+            CmsSearchField field = i.next();
             Analyzer fieldAnalyzer = field.getAnalyzer();
             if (fieldAnalyzer != null) {
                 // this field has an individual analyzer configured
@@ -481,14 +479,14 @@ public class CmsSearchFieldConfiguration implements Comparable {
      * 
      * @return a list of all field names (Strings) that are used in generating the search excerpt
      */
-    public List getExcerptFieldNames() {
+    public List<String> getExcerptFieldNames() {
 
         if (m_excerptFieldNames == null) {
             // lazy initialize the field names
-            m_excerptFieldNames = new ArrayList();
-            Iterator i = m_fields.iterator();
+            m_excerptFieldNames = new ArrayList<String>();
+            Iterator<CmsSearchField> i = m_fields.iterator();
             while (i.hasNext()) {
-                CmsSearchField field = (CmsSearchField)i.next();
+                CmsSearchField field = i.next();
                 if (field.isInExcerptAndStored()) {
                     m_excerptFieldNames.add(field.getName());
                 }
@@ -496,7 +494,7 @@ public class CmsSearchFieldConfiguration implements Comparable {
         }
 
         // create a copy of the list to prevent changes in other classes
-        return new ArrayList(m_excerptFieldNames);
+        return new ArrayList<String>(m_excerptFieldNames);
     }
 
     /**
@@ -510,14 +508,14 @@ public class CmsSearchFieldConfiguration implements Comparable {
 
         if (m_fieldLookup == null) {
             // lazy initialize the field names
-            m_fieldLookup = new HashMap();
-            Iterator i = m_fields.iterator();
+            m_fieldLookup = new HashMap<String, CmsSearchField>();
+            Iterator<CmsSearchField> i = m_fields.iterator();
             while (i.hasNext()) {
-                CmsSearchField field = (CmsSearchField)i.next();
+                CmsSearchField field = i.next();
                 m_fieldLookup.put(field.getName(), field);
             }
         }
-        return (CmsSearchField)m_fieldLookup.get(name);
+        return m_fieldLookup.get(name);
     }
 
     /**
@@ -525,19 +523,19 @@ public class CmsSearchFieldConfiguration implements Comparable {
      * 
      * @return the list of configured field names (Strings)
      */
-    public List getFieldNames() {
+    public List<String> getFieldNames() {
 
         if (m_fieldNames == null) {
             // lazy initialize the field names
-            m_fieldNames = new ArrayList();
-            Iterator i = m_fields.iterator();
+            m_fieldNames = new ArrayList<String>();
+            Iterator<CmsSearchField> i = m_fields.iterator();
             while (i.hasNext()) {
-                m_fieldNames.add(((CmsSearchField)i.next()).getName());
+                m_fieldNames.add((i.next()).getName());
             }
         }
 
         // create a copy of the list to prevent changes in other classes
-        return new ArrayList(m_fieldNames);
+        return new ArrayList<String>(m_fieldNames);
     }
 
     /**
@@ -545,7 +543,7 @@ public class CmsSearchFieldConfiguration implements Comparable {
      * 
      * @return the list of configured {@link CmsSearchField} instances
      */
-    public List getFields() {
+    public List<CmsSearchField> getFields() {
 
         return m_fields;
     }
@@ -563,6 +561,7 @@ public class CmsSearchFieldConfiguration implements Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_name.hashCode();

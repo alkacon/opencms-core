@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/09/07 12:41:39 $
+ * Version: $Revision: 1.29.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import org.opencms.db.CmsResourceState;
  * @author Carsten Weinholz 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.29.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -516,6 +516,7 @@ public final class CmsResourceFilter {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsResourceFilter filter = new CmsResourceFilter();
@@ -873,6 +874,7 @@ public final class CmsResourceFilter {
      * 
      * @return the name of the filter
      */
+    @Override
     public String toString() {
 
         if (this.equals(CmsResourceFilter.ALL)) {

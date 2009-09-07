@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/09/07 12:41:39 $
+ * Version: $Revision: 1.31.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.31.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -195,6 +195,7 @@ public class CmsFolder extends CmsResource {
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         CmsResource clone = new CmsFolder(
@@ -221,21 +222,23 @@ public class CmsFolder extends CmsResource {
     }
 
     /**
-     * A folder does always have length <code>-1</code>.<p>
+     * A folder does always have the content date <code>-1</code>.<p>
      * 
-     * @see org.opencms.file.CmsResource#getLength()
+     * @see org.opencms.file.CmsResource#getDateContent()
      */
-    public int getLength() {
+    @Override
+    public long getDateContent() {
 
         return -1;
     }
 
     /**
-     * A folder does always have the content date <code>-1</code>.<p>
+     * A folder does always have length <code>-1</code>.<p>
      * 
-     * @see org.opencms.file.CmsResource#getDateContent()
+     * @see org.opencms.file.CmsResource#getLength()
      */
-    public long getDateContent() {
+    @Override
+    public int getLength() {
 
         return -1;
     }
@@ -245,6 +248,7 @@ public class CmsFolder extends CmsResource {
      * 
      * @see org.opencms.file.CmsResource#isFile()
      */
+    @Override
     public boolean isFile() {
 
         return false;
@@ -255,8 +259,18 @@ public class CmsFolder extends CmsResource {
      * 
      * @see org.opencms.file.CmsResource#isFolder()
      */
+    @Override
     public boolean isFolder() {
 
         return true;
+    }
+
+    /**
+     * @see org.opencms.file.CmsResource#isTemporaryFile()
+     */
+    @Override
+    public boolean isTemporaryFile() {
+
+        return false;
     }
 }

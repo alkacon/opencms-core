@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2009/06/04 14:29:08 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2009/09/07 12:41:40 $
+ * Version: $Revision: 1.50.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsResourceState;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.A_CmsModeIntEnumeration;
@@ -64,11 +65,11 @@ import java.util.Comparator;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.50.2.1 $
  * 
  * @since 6.0.0 
  */
-public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
+public class CmsResource extends Object implements Cloneable, Serializable, Comparable<CmsResource> {
 
     /**
      *  Enumeration class for resource copy modes.<p>
@@ -250,6 +251,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         /**
          * @see java.lang.Object#toString()
          */
+        @Override
         public String toString() {
 
             return String.valueOf(getMode());
@@ -262,19 +264,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * If the release date of a resource is not set, the
      * creation date is used instead.<p>
      */
-    public static final Comparator COMPARE_DATE_RELEASED = new Comparator() {
+    public static final Comparator<CmsResource> COMPARE_DATE_RELEASED = new Comparator<CmsResource>() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        public int compare(CmsResource r1, CmsResource r2) {
 
-            if ((o1 == o2) || !(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
+            if (r1 == r2) {
                 return 0;
             }
-
-            CmsResource r1 = (CmsResource)o1;
-            CmsResource r2 = (CmsResource)o2;
 
             long date1 = r1.getDateReleased();
             if (date1 == CmsResource.DATE_RELEASED_DEFAULT) {
@@ -295,20 +294,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * A comparator for the root path of two resources.<p>
      */
-    public static final Comparator COMPARE_ROOT_PATH = new Comparator() {
+    public static final Comparator<CmsResource> COMPARE_ROOT_PATH = new Comparator<CmsResource>() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        public int compare(CmsResource r1, CmsResource r2) {
 
-            if ((o1 == o2) || !(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
+            if (r1 == r2) {
                 return 0;
             }
-
-            CmsResource r1 = (CmsResource)o1;
-            CmsResource r2 = (CmsResource)o2;
-
             return r1.getRootPath().compareTo(r2.getRootPath());
         }
     };
@@ -316,20 +311,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * A comparator for the root path of two resources ignoring case differences.<p>
      */
-    public static final Comparator COMPARE_ROOT_PATH_IGNORE_CASE = new Comparator() {
+    public static final Comparator<CmsResource> COMPARE_ROOT_PATH_IGNORE_CASE = new Comparator<CmsResource>() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        public int compare(CmsResource r1, CmsResource r2) {
 
-            if ((o1 == o2) || !(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
+            if (r1 == r2) {
                 return 0;
             }
-
-            CmsResource r1 = (CmsResource)o1;
-            CmsResource r2 = (CmsResource)o2;
-
             return r1.getRootPath().compareToIgnoreCase(r2.getRootPath());
         }
     };
@@ -337,19 +328,16 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * A comparator for the root path of two resources ignoring case differences, putting folders before files.<p>
      */
-    public static final Comparator COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST = new Comparator() {
+    public static final Comparator<CmsResource> COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST = new Comparator<CmsResource>() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object o1, Object o2) {
+        public int compare(CmsResource r1, CmsResource r2) {
 
-            if ((o1 == o2) || !(o1 instanceof CmsResource) || !(o2 instanceof CmsResource)) {
+            if (r1 == r2) {
                 return 0;
             }
-
-            CmsResource r1 = (CmsResource)o1;
-            CmsResource r2 = (CmsResource)o2;
 
             if (r1.isFolder() && !r2.isFolder()) {
                 return -1;
@@ -414,6 +402,14 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
 
     /** Indicates if a resource is unchanged in the offline version when compared to the online version. */
     public static final CmsResourceState STATE_UNCHANGED = CmsResourceState.STATE_UNCHANGED;
+
+    /** 
+     * Prefix for temporary files in the VFS. 
+     * 
+     * @see #isTemporaryFile()
+     * @see #isTemporaryFileName(String)  
+     */
+    public static final String TEMP_FILE_PREFIX = CmsDriverManager.TEMP_FILE_PREFIX;
 
     /** Flag for leaving a date unchanged during a touch operation. */
     public static final long TOUCH_DATE_UNCHANGED = -1;
@@ -737,10 +733,29 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
+     * Returns <code>true</code> if the given resource path points to a temporary file name.<p>
+     * 
+     * A resource name is considered a temporary file name if the name of the file 
+     * (without parent folders) starts with the prefix char <code>'~'</code> (tilde).
+     * Existing parent folder elements are removed from the path before the file name is checked.<p>
+     * 
+     * @param path the resource path to check
+     * 
+     * @return <code>true</code> if the given resource name is a temporary file name
+     * 
+     * @see #isTemporaryFile()
+     */
+    public static boolean isTemporaryFileName(String path) {
+
+        return (path != null) && getName(path).startsWith(TEMP_FILE_PREFIX);
+    }
+
+    /**
      * Returns a clone of this Objects instance.<p>
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         CmsResource clone = new CmsResource(
@@ -782,15 +797,12 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * @see #COMPARE_ROOT_PATH_IGNORE_CASE
      * @see #COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsResource obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof CmsResource) {
-            return m_rootPath.compareTo(((CmsResource)obj).m_rootPath);
-        }
-        return 0;
+        return m_rootPath.compareTo((obj).m_rootPath);
     }
 
     /**
@@ -798,6 +810,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -1037,6 +1050,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_structureId != null) {
@@ -1158,6 +1172,22 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
+     * Returns <code>true</code> if this resource is a temporary file.<p>
+     * 
+     * A resource is considered a temporary file it is a file where the
+     * {@link CmsResource#FLAG_TEMPFILE} flag has been set, or if the file name (without parent folders)
+     * starts with the prefix char <code>'~'</code> (tilde).<p>
+     * 
+     * @return <code>true</code> if the given resource name is a temporary file
+     * 
+     * @see #isTemporaryFileName(String)
+     */
+    public boolean isTemporaryFile() {
+
+        return isFile() && (((getFlags() & CmsResource.FLAG_TEMPFILE) > 0) || isTemporaryFileName(getName()));
+    }
+
+    /**
      * Returns <code>true</code> if this resource was touched.<p>
      * 
      * @return <code>true</code> if this resource was touched
@@ -1247,6 +1277,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

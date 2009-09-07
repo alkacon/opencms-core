@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/09/01 09:24:17 $
- * Version: $Revision: 1.76.2.1 $
+ * Date   : $Date: 2009/09/07 12:41:52 $
+ * Version: $Revision: 1.76.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.76.2.1 $ 
+ * @version $Revision: 1.76.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -1115,9 +1115,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Removes this fieldconfiguration from the OpenCms configuration (if it is not used any more).<p>
+     * Removes this field configuration from the OpenCms configuration (if it is not used any more).<p>
      * 
-     * @param fieldConfiguration the fieldconfiguration to remove from the configuration 
+     * @param fieldConfiguration the field configuration to remove from the configuration 
      * 
      * @return true if remove was successful, false if preconditions for removal are ok but the given 
      *         field configuration was unknown to the manager.

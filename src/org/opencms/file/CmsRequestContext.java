@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2009/09/07 12:41:40 $
+ * Version: $Revision: 1.40.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.workplace.CmsWorkplace;
@@ -48,7 +47,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.40.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -64,7 +63,7 @@ public final class CmsRequestContext {
     public static final String ATTRIBUTE_MODEL = CmsRequestContext.class.getName() + ".ATTRIBUTE_MODEL";
 
     /** A map for storing (optional) request context attributes. */
-    private Map m_attributeMap;
+    private Map<String, Object> m_attributeMap;
 
     /** The current project. */
     private CmsProject m_currentProject;
@@ -89,9 +88,6 @@ public final class CmsRequestContext {
 
     /** The current request time. */
     private long m_requestTime;
-
-    /** Used to save / restore a site root .*/
-    private String m_savedSiteRoot;
 
     /** The name of the root, e.g. /site_a/vfs. */
     private String m_siteRoot;
@@ -443,57 +439,6 @@ public final class CmsRequestContext {
     }
 
     /**
-     * Restores the saved site root.<p>
-     *
-     * @throws RuntimeException in case there is no site root saved
-     * 
-     * @deprecated store the current site root locally before switching
-     *             to another site, and set it back again at the end, like:
-     * <pre>
-     *             String storedSite = context.getSiteRoot();
-     *             try {
-     *                  context.setSiteRoot("");
-     *                  // do something with the context
-     *             } finally {
-     *                  context.setSiteRoot(storedSite);
-     *             }
-     * </pre>
-     */
-    public void restoreSiteRoot() throws RuntimeException {
-
-        if (m_savedSiteRoot == null) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_EMPTY_SITEROOT_0));
-        }
-        m_siteRoot = m_savedSiteRoot;
-        m_savedSiteRoot = null;
-    }
-
-    /**
-     * Saves the current site root.<p>
-     *
-     * @throws RuntimeException in case there is already a site root saved
-     * 
-     * @deprecated store the current site root locally before switching
-     *             to another site, and set it back again at the end, like:
-     * <pre>
-     *             String storedSite = context.getSiteRoot();
-     *             try {
-     *                  context.setSiteRoot("");
-     *                  // do something with the context
-     *             } finally {
-     *                  context.setSiteRoot(storedSite);
-     *             }
-     * </pre>
-     */
-    public void saveSiteRoot() throws RuntimeException {
-
-        if (m_savedSiteRoot != null) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_NONEMPTY_SITEROOT_1, m_savedSiteRoot));
-        }
-        m_savedSiteRoot = m_siteRoot;
-    }
-
-    /**
      * Sets an attribute in the request context.<p>
      * 
      * @param key the attribute name
@@ -503,7 +448,7 @@ public final class CmsRequestContext {
 
         if (m_attributeMap == null) {
             // hash table is still the most efficient form of a synchronized Map
-            m_attributeMap = new Hashtable();
+            m_attributeMap = new Hashtable<String, Object>();
         }
         m_attributeMap.put(key, value);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexResponse.java,v $
- * Date   : $Date: 2009/06/04 14:35:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/07 12:41:51 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -59,7 +59,7 @@ import junit.framework.TestSuite;
  * 
  * @author Jason Trump
  *  
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  * 
  * @since 6.0.1
  */
@@ -256,11 +256,13 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();
@@ -360,6 +362,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
      * 
      * @see junit.framework.TestCase#setUp()
      */
+    @Override
     protected void setUp() throws Exception {
 
         super.setUp();
@@ -387,6 +390,7 @@ public class TestCmsFlexResponse extends OpenCmsTestCase {
     /**
      * @see junit.framework.TestCase#tearDown()
      */
+    @Override
     protected void tearDown() throws Exception {
 
         super.tearDown();

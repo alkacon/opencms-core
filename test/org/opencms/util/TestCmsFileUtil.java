@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsFileUtil.java,v $
- * Date   : $Date: 2009/06/04 14:35:29 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/07 12:41:48 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import junit.framework.TestCase;
 /** 
  * @author Jason Trump 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.5.2.1 $
  * 
  * @since 6.2.2
  */
@@ -79,6 +79,7 @@ public class TestCmsFileUtil extends TestCase {
         /**
          * @see java.io.InputStream#available()
          */
+        @Override
         public int available() {
 
             if (m_closed) {
@@ -92,6 +93,7 @@ public class TestCmsFileUtil extends TestCase {
         /**
          * @see java.io.InputStream#close()
          */
+        @Override
         public void close() throws IOException {
 
             //mark that close was called for testing purposes.
@@ -112,6 +114,7 @@ public class TestCmsFileUtil extends TestCase {
         /**
          * @see java.io.InputStream#read()
          */
+        @Override
         public int read() throws IOException {
 
             if (m_closed) {
@@ -124,6 +127,7 @@ public class TestCmsFileUtil extends TestCase {
         /**
          * @see java.io.InputStream#read(byte[], int, int)
          */
+        @Override
         public int read(byte[] b, int off, int len) throws IOException {
 
             if (m_closed) {

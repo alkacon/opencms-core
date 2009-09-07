@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsThreadedTestCase.java,v $
- * Date   : $Date: 2009/06/04 14:35:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/07 12:41:50 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import java.lang.reflect.Method;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  * 
  * @since 6.5.0
  */
@@ -118,6 +118,7 @@ public class OpenCmsThreadedTestCase extends Thread {
     /**
      * @see java.lang.Runnable#run()
      */
+    @Override
     public void run() {
 
         long starttime = System.currentTimeMillis();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorMsExcel.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/09/07 12:41:36 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReader;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,6 +78,7 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractorMsOfficeBase {
     /**
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
      */
+    @Override
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
         // first extract the table content
@@ -121,14 +122,14 @@ public final class CmsExtractorMsExcel extends A_CmsTextExtractorMsOfficeBase {
                     result.append(":\n\n");
                 }
 
-                Iterator rowIt = sheet.rowIterator();
+                Iterator<HSSFRow> rowIt = sheet.rowIterator();
                 while (rowIt.hasNext()) {
-                    HSSFRow row = (HSSFRow)rowIt.next();
+                    HSSFRow row = rowIt.next();
                     if (row != null) {
                         boolean hasContent = false;
-                        Iterator it = row.cellIterator();
+                        Iterator<HSSFCell> it = row.cellIterator();
                         while (it.hasNext()) {
-                            HSSFCell cell = (HSSFCell)it.next();
+                            HSSFCell cell = it.next();
                             String text = null;
                             try {
                                 switch (cell.getCellType()) {

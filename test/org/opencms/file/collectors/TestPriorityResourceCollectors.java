@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/collectors/TestPriorityResourceCollectors.java,v $
- * Date   : $Date: 2009/06/04 14:35:32 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/07 12:41:47 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -162,6 +162,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 CmsObject cms = setupOpenCms(null, null, false);
@@ -173,6 +174,7 @@ public class TestPriorityResourceCollectors extends OpenCmsTestCase {
                 }
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestLoginAndPasswordHandler.java,v $
- * Date   : $Date: 2009/06/04 14:35:25 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/09/07 12:41:45 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * Tests login and password related functions.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.11.2.1 $
  * 
  * @since 6.0
  */
@@ -82,11 +82,13 @@ public class TestLoginAndPasswordHandler extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

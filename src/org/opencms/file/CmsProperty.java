@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2009/09/07 12:41:39 $
+ * Version: $Revision: 1.40.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -85,11 +85,11 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.40.2.1 $
  * 
  * @since 6.0.0 
  */
-public class CmsProperty implements Serializable, Cloneable, Comparable {
+public class CmsProperty implements Serializable, Cloneable, Comparable<CmsProperty> {
 
     /**
      * Signals that the resource property values of a resource
@@ -167,19 +167,19 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     private String m_resourceValue;
 
     /** The (optional) value list of this property attached to the resource record. */
-    private List m_resourceValueList;
+    private List<String> m_resourceValueList;
 
     /** The (optional) value map of this property attached to the resource record. */
-    private Map m_resourceValueMap;
+    private Map<String, String> m_resourceValueMap;
 
     /** The value of this property attached to the structure record. */
     private String m_structureValue;
 
     /** The (optional) value list of this property attached to the structure record. */
-    private List m_structureValueList;
+    private List<String> m_structureValueList;
 
     /** The (optional) value map of this property attached to the structure record. */
-    private Map m_structureValueMap;
+    private Map<String, String> m_structureValueMap;
 
     /**
      * Creates a new CmsProperty object.<p>
@@ -247,22 +247,22 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * @return the index of the first occurrence of the name in they specified list, 
      *      or {@link CmsProperty#getNullProperty()} if the name is not found
      */
-    public static final CmsProperty get(String name, List list) {
+    public static final CmsProperty get(String name, List<CmsProperty> list) {
 
         CmsProperty property = null;
 
         // choose the fastest method to traverse the list
         if (list instanceof RandomAccess) {
             for (int i = 0, n = list.size(); i < n; i++) {
-                property = (CmsProperty)list.get(i);
+                property = list.get(i);
                 if (property.m_name.equals(name)) {
                     return property;
                 }
             }
         } else {
-            Iterator i = list.iterator();
+            Iterator<CmsProperty> i = list.iterator();
             while (i.hasNext()) {
-                property = (CmsProperty)i.next();
+                property = i.next();
                 if (property.m_name.equals(name)) {
                     return property;
                 }
@@ -295,20 +295,20 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @see #setAutoCreatePropertyDefinition(boolean)
      */
-    public static final List setAutoCreatePropertyDefinitions(List list, boolean value) {
+    public static final List<CmsProperty> setAutoCreatePropertyDefinitions(List<CmsProperty> list, boolean value) {
 
         CmsProperty property;
 
         // choose the fastest method to traverse the list
         if (list instanceof RandomAccess) {
             for (int i = 0, n = list.size(); i < n; i++) {
-                property = (CmsProperty)list.get(i);
+                property = list.get(i);
                 property.m_autoCreatePropertyDefinition = value;
             }
         } else {
-            Iterator i = list.iterator();
+            Iterator<CmsProperty> i = list.iterator();
             while (i.hasNext()) {
-                property = (CmsProperty)i.next();
+                property = i.next();
                 property.m_autoCreatePropertyDefinition = value;
             }
         }
@@ -328,22 +328,22 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @see #setFrozen(boolean)
      */
-    public static final List setFrozen(List list) {
+    public static final List<CmsProperty> setFrozen(List<CmsProperty> list) {
 
         CmsProperty property;
 
         // choose the fastest method to traverse the list
         if (list instanceof RandomAccess) {
             for (int i = 0, n = list.size(); i < n; i++) {
-                property = (CmsProperty)list.get(i);
+                property = list.get(i);
                 if (!property.isFrozen()) {
                     property.setFrozen(true);
                 }
             }
         } else {
-            Iterator i = list.iterator();
+            Iterator<CmsProperty> i = list.iterator();
             while (i.hasNext()) {
-                property = (CmsProperty)i.next();
+                property = i.next();
                 if (!property.isFrozen()) {
                     property.setFrozen(true);
                 }
@@ -362,20 +362,17 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return a list of {@link CmsProperty} objects
      */
-    public static List toList(Map map) {
+    public static List<CmsProperty> toList(Map<String, String> map) {
 
         if ((map == null) || (map.size() == 0)) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
-        List result = new ArrayList(map.size());
-        Iterator i = map.entrySet().iterator();
+        List<CmsProperty> result = new ArrayList<CmsProperty>(map.size());
+        Iterator<Map.Entry<String, String>> i = map.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry e = (Map.Entry)i.next();
-            String name = String.valueOf(e.getKey());
-            String value = String.valueOf(e.getValue());
-
-            CmsProperty property = new CmsProperty(name, value, null);
+            Map.Entry<String, String> e = i.next();
+            CmsProperty property = new CmsProperty(e.getKey(), e.getValue(), null);
             result.add(property);
         }
 
@@ -391,29 +388,29 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * @return a Map which uses the property names as
      *      Map keys (String), and the property values as Map values (String)
      */
-    public static Map toMap(List list) {
+    public static Map<String, String> toMap(List<CmsProperty> list) {
 
         if ((list == null) || (list.size() == 0)) {
-            return Collections.EMPTY_MAP;
+            return Collections.emptyMap();
         }
 
         String name = null;
         String value = null;
         CmsProperty property = null;
-        Map result = new HashMap(list.size());
+        Map<String, String> result = new HashMap<String, String>(list.size());
 
         // choose the fastest method to traverse the list
         if (list instanceof RandomAccess) {
             for (int i = 0, n = list.size(); i < n; i++) {
-                property = (CmsProperty)list.get(i);
+                property = list.get(i);
                 name = property.m_name;
                 value = property.getValue();
                 result.put(name, value);
             }
         } else {
-            Iterator i = list.iterator();
+            Iterator<CmsProperty> i = list.iterator();
             while (i.hasNext()) {
-                property = (CmsProperty)i.next();
+                property = i.next();
                 name = property.m_name;
                 value = property.getValue();
                 result.put(name, value);
@@ -441,6 +438,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @see #cloneAsProperty()
      */
+    @Override
     public Object clone() {
 
         return cloneAsProperty();
@@ -481,41 +479,12 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      *      a value less than zero if the name of this property is lexicographically less than the name of the argument, 
      *      or a value greater than zero if the name of this property is lexicographically greater than the name of the argument 
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsProperty obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof CmsProperty) {
-            return m_name.compareTo(((CmsProperty)obj).m_name);
-        }
-        return 0;
-    }
-
-    /**
-     * Checks if the resource value of this property should be deleted when this
-     * property object is written to the database.<p>
-     * 
-     * @return true, if the resource value of this property should be deleted
-     * 
-     * @deprecated use <code>{@link #isDeleteResourceValue()}</code> instead
-     */
-    public boolean deleteResourceValue() {
-
-        return isDeleteResourceValue();
-    }
-
-    /**
-     * Checks if the structure value of this property should be deleted when this
-     * property object is written to the database.<p>
-     * 
-     * @return true, if the structure value of this property should be deleted
-     * 
-     * @deprecated use <code>{@link #isDeleteStructureValue()}</code> instead
-     */
-    public boolean deleteStructureValue() {
-
-        return isDeleteStructureValue();
+        return m_name.compareTo(obj.m_name);
     }
 
     /**
@@ -531,6 +500,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @see #isIdentical(CmsProperty)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -540,18 +510,6 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
             return ((CmsProperty)obj).m_name.equals(m_name);
         }
         return false;
-    }
-
-    /**
-     * Returns the name of this property.<p>
-     * 
-     * @return name of this property
-     * 
-     * @deprecated use {@link #getName()} instead
-     */
-    public String getKey() {
-
-        return getName();
     }
 
     /**
@@ -583,7 +541,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the value of this property attached to the resource record, split as a (unmodifiable) list of Strings
      */
-    public List getResourceValueList() {
+    public List<String> getResourceValueList() {
 
         if ((m_resourceValueList == null) && (m_resourceValue != null)) {
             // use lazy initializing of the list
@@ -604,7 +562,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the value of this property attached to the resource record, as an (unmodifiable) map of Strings
      */
-    public Map getResourceValueMap() {
+    public Map<String, String> getResourceValueMap() {
 
         if ((m_resourceValueMap == null) && (m_resourceValue != null)) {
             // use lazy initializing of the map
@@ -633,7 +591,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the value of this property attached to the structure record, split as a (unmodifiable) list of Strings
      */
-    public List getStructureValueList() {
+    public List<String> getStructureValueList() {
 
         if ((m_structureValueList == null) && (m_structureValue != null)) {
             // use lazy initializing of the list
@@ -654,7 +612,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the value of this property attached to the structure record, as an (unmodifiable) map of Strings
      */
-    public Map getStructureValueMap() {
+    public Map<String, String> getStructureValueMap() {
 
         if ((m_structureValueMap == null) && (m_structureValue != null)) {
             // use lazy initializing of the map
@@ -697,7 +655,8 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
 
         // somebody might have set both values to null manually
         // on a property object different from the null property...
-        return (m_structureValue != null) ? m_structureValue : ((m_resourceValue != null) ? m_resourceValue
+        return (m_structureValue != null) ? m_structureValue : ((m_resourceValue != null)
+        ? m_resourceValue
         : defaultValue);
     }
 
@@ -713,7 +672,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the compound value of this property, split as a (unmodifiable) list of Strings
      */
-    public List getValueList() {
+    public List<String> getValueList() {
 
         return (m_structureValue != null) ? getStructureValueList() : getResourceValueList();
     }
@@ -729,7 +688,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the compound value of this property, split as a (unmodifiable) list of Strings
      */
-    public List getValueList(List defaultValue) {
+    public List<String> getValueList(List<String> defaultValue) {
 
         if (this == CmsProperty.NULL_PROPERTY) {
             // return the default value if this property is the null property
@@ -738,8 +697,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
 
         // somebody might have set both values to null manually
         // on a property object different from the null property...
-        return (m_structureValue != null) ? getStructureValueList()
-        : ((m_resourceValue != null) ? getResourceValueList() : defaultValue);
+        return (m_structureValue != null) ? getStructureValueList() : ((m_resourceValue != null)
+        ? getResourceValueList()
+        : defaultValue);
     }
 
     /**
@@ -756,7 +716,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the compound value of this property as a (unmodifiable) map of Strings
      */
-    public Map getValueMap() {
+    public Map<String, String> getValueMap() {
 
         return (m_structureValue != null) ? getStructureValueMap() : getResourceValueMap();
     }
@@ -772,7 +732,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the compound value of this property as a (unmodifiable) map of Strings
      */
-    public Map getValueMap(Map defaultValue) {
+    public Map<String, String> getValueMap(Map<String, String> defaultValue) {
 
         if (this == CmsProperty.NULL_PROPERTY) {
             // return the default value if this property is the null property
@@ -781,7 +741,8 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
 
         // somebody might have set both values to null manually
         // on a property object different from the null property...
-        return (m_structureValue != null) ? getStructureValueMap() : ((m_resourceValue != null) ? getResourceValueMap()
+        return (m_structureValue != null) ? getStructureValueMap() : ((m_resourceValue != null)
+        ? getResourceValueMap()
         : defaultValue);
     }
 
@@ -795,6 +756,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_name.hashCode();
@@ -912,19 +874,6 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     /**
      * Sets the name of this property.<p>
      * 
-     * @param name the name of this property
-     * 
-     * @deprecated use {@link #setName(String)} instead
-     */
-    public void setKey(String name) {
-
-        checkFrozen();
-        setName(name);
-    }
-
-    /**
-     * Sets the name of this property.<p>
-     * 
      * @param name the name to set
      */
     public void setName(String name) {
@@ -953,11 +902,11 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @param valueList the list of value (Strings) to attach to the resource record
      */
-    public void setResourceValueList(List valueList) {
+    public void setResourceValueList(List<String> valueList) {
 
         checkFrozen();
         if (valueList != null) {
-            m_resourceValueList = new ArrayList(valueList);
+            m_resourceValueList = new ArrayList<String>(valueList);
             m_resourceValueList = Collections.unmodifiableList(m_resourceValueList);
             m_resourceValue = createValueFromList(m_resourceValueList);
         } else {
@@ -974,11 +923,11 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @param valueMap the map of key/value (Strings) to attach to the resource record
      */
-    public void setResourceValueMap(Map valueMap) {
+    public void setResourceValueMap(Map<String, String> valueMap) {
 
         checkFrozen();
         if (valueMap != null) {
-            m_resourceValueMap = new HashMap(valueMap);
+            m_resourceValueMap = new HashMap<String, String>(valueMap);
             m_resourceValueMap = Collections.unmodifiableMap(m_resourceValueMap);
             m_resourceValue = createValueFromMap(m_resourceValueMap);
         } else {
@@ -1007,11 +956,11 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @param valueList the list of value (Strings) to attach to the structure record
      */
-    public void setStructureValueList(List valueList) {
+    public void setStructureValueList(List<String> valueList) {
 
         checkFrozen();
         if (valueList != null) {
-            m_structureValueList = new ArrayList(valueList);
+            m_structureValueList = new ArrayList<String>(valueList);
             m_structureValueList = Collections.unmodifiableList(m_structureValueList);
             m_structureValue = createValueFromList(m_structureValueList);
         } else {
@@ -1028,11 +977,11 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @param valueMap the map of key/value (Strings) to attach to the structure record
      */
-    public void setStructureValueMap(Map valueMap) {
+    public void setStructureValueMap(Map<String, String> valueMap) {
 
         checkFrozen();
         if (valueMap != null) {
-            m_structureValueMap = new HashMap(valueMap);
+            m_structureValueMap = new HashMap<String, String>(valueMap);
             m_structureValueMap = Collections.unmodifiableMap(m_structureValueMap);
             m_structureValue = createValueFromMap(m_structureValueMap);
         } else {
@@ -1070,6 +1019,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer strBuf = new StringBuffer();
@@ -1104,17 +1054,17 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the list value representation for the given String
      */
-    private List createListFromValue(String value) {
+    private List<String> createListFromValue(String value) {
 
         if (value == null) {
             return null;
         }
-        List result = CmsStringUtil.splitAsList(value, VALUE_LIST_DELIMITER);
+        List<String> result = CmsStringUtil.splitAsList(value, VALUE_LIST_DELIMITER);
         if (value.indexOf(VALUE_LIST_DELIMITER_REPLACEMENT) != -1) {
-            List tempList = new ArrayList(result.size());
-            Iterator i = result.iterator();
+            List<String> tempList = new ArrayList<String>(result.size());
+            Iterator<String> i = result.iterator();
             while (i.hasNext()) {
-                String item = (String)i.next();
+                String item = i.next();
                 tempList.add(rebuildDelimiter(item, VALUE_LIST_DELIMITER, VALUE_LIST_DELIMITER_REPLACEMENT));
             }
             result = tempList;
@@ -1132,20 +1082,20 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the map value representation for the given String
      */
-    private Map createMapFromValue(String value) {
+    private Map<String, String> createMapFromValue(String value) {
 
         if (value == null) {
             return null;
         }
-        List entries = createListFromValue(value);
-        Iterator i = entries.iterator();
-        Map result = new HashMap(entries.size());
+        List<String> entries = createListFromValue(value);
+        Iterator<String> i = entries.iterator();
+        Map<String, String> result = new HashMap<String, String>(entries.size());
         boolean rebuildDelimiters = false;
         if (value.indexOf(VALUE_MAP_DELIMITER_REPLACEMENT) != -1) {
             rebuildDelimiters = true;
         }
         while (i.hasNext()) {
-            String entry = (String)i.next();
+            String entry = i.next();
             int index = entry.indexOf(VALUE_MAP_DELIMITER);
             if (index != -1) {
                 String key = entry.substring(0, index);
@@ -1172,13 +1122,13 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the single String value representation for the given value list
      */
-    private String createValueFromList(List valueList) {
+    private String createValueFromList(List<String> valueList) {
 
         if (valueList == null) {
             return null;
         }
         StringBuffer result = new StringBuffer(valueList.size() * 32);
-        Iterator i = valueList.iterator();
+        Iterator<String> i = valueList.iterator();
         while (i.hasNext()) {
             result.append(replaceDelimiter(i.next().toString(), VALUE_LIST_DELIMITER, VALUE_LIST_DELIMITER_REPLACEMENT));
             if (i.hasNext()) {
@@ -1195,17 +1145,17 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * 
      * @return the single String value representation for the given value map
      */
-    private String createValueFromMap(Map valueMap) {
+    private String createValueFromMap(Map<String, String> valueMap) {
 
         if (valueMap == null) {
             return null;
         }
         StringBuffer result = new StringBuffer(valueMap.size() * 32);
-        Iterator i = valueMap.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> i = valueMap.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            String key = entry.getKey().toString();
-            String value = entry.getValue().toString();
+            Map.Entry<String, String> entry = i.next();
+            String key = entry.getKey();
+            String value = entry.getValue();
             key = replaceDelimiter(key, VALUE_LIST_DELIMITER, VALUE_LIST_DELIMITER_REPLACEMENT);
             key = replaceDelimiter(key, VALUE_MAP_DELIMITER, VALUE_MAP_DELIMITER_REPLACEMENT);
             value = replaceDelimiter(value, VALUE_LIST_DELIMITER, VALUE_LIST_DELIMITER_REPLACEMENT);

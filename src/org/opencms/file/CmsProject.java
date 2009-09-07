@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2009/06/04 14:29:10 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/09/07 12:41:40 $
+ * Version: $Revision: 1.24.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,11 +46,11 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.24.2.1 $
  * 
  * @since 6.0.0 
  */
-public class CmsProject implements Cloneable, Comparable {
+public class CmsProject implements Cloneable, Comparable<CmsProject> {
 
     /**
      *  Enumeration class for project types.<p>
@@ -204,7 +204,7 @@ public class CmsProject implements Cloneable, Comparable {
      * @param resource the resource to check
      * @return true, if the resource is "inside" the project resources
      */
-    public static boolean isInsideProject(List projectResources, CmsResource resource) {
+    public static boolean isInsideProject(List<String> projectResources, CmsResource resource) {
 
         String resourcename = resource.getRootPath();
         return isInsideProject(projectResources, resourcename);
@@ -218,10 +218,10 @@ public class CmsProject implements Cloneable, Comparable {
      * @param resourcename the resource to check
      * @return true, if the resource is "inside" the project resources
      */
-    public static boolean isInsideProject(List projectResources, String resourcename) {
+    public static boolean isInsideProject(List<String> projectResources, String resourcename) {
 
         for (int i = (projectResources.size() - 1); i >= 0; i--) {
-            String projectResource = (String)projectResources.get(i);
+            String projectResource = projectResources.get(i);
             if (CmsResource.isFolder(projectResource)) {
                 if (resourcename.startsWith(projectResource)) {
                     // folder - check only the prefix
@@ -251,6 +251,7 @@ public class CmsProject implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         return new CmsProject(
@@ -271,26 +272,20 @@ public class CmsProject implements Cloneable, Comparable {
      * @param o the other given object instance to compare with
      * @return integer value for sorting the objects
      */
-    public int compareTo(Object o) {
+    public int compareTo(CmsProject o) {
 
         if (o == this) {
             return 0;
         }
 
-        if (o instanceof CmsProject) {
-            try {
-                // compare the names
-                return m_name.compareTo(((CmsProject)o).getName());
-            } catch (Exception e) {
-                // ignore, return 0
-            }
-        }
-        return 0;
+        // compare the names
+        return m_name.compareTo(o.getName());
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -340,18 +335,6 @@ public class CmsProject implements Cloneable, Comparable {
     public CmsUUID getGroupId() {
 
         return m_groupUsersId;
-    }
-
-    /**
-     * Returns the id of this project.<p>
-     *
-     * @return the id of this project
-     * 
-     * @deprecated Use {@link #getUuid()} instead
-     */
-    public int getId() {
-
-        return getUuid().hashCode();
     }
 
     /**
@@ -427,6 +410,7 @@ public class CmsProject implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_name != null) {
@@ -558,6 +542,7 @@ public class CmsProject implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

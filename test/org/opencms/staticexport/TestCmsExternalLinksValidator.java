@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsExternalLinksValidator.java,v $
- * Date   : $Date: 2008/11/28 15:25:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/09/07 12:41:38 $
+ * Version: $Revision: 1.4.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import junit.framework.TestSuite;
 
 /** 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.4.2.1 $
  * 
  * @since 7.0.4
  */
@@ -74,11 +74,13 @@ public class TestCmsExternalLinksValidator extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2009/09/07 12:41:48 $
+ * Version: $Revision: 1.30.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,12 +32,12 @@
 package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.directedit.CmsDirectEditJspIncludeProvider;
 import org.opencms.workplace.editors.directedit.CmsDirectEditMode;
 import org.opencms.workplace.editors.directedit.CmsDirectEditParams;
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * placing, or the manual tags will be ignored and the HTML will be inserted at the automatic position. 
  * A provider which support manual placing is the {@link org.opencms.workplace.editors.directedit.CmsDirectEditTextButtonProvider}.<p>
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.30.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,7 +131,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
             return;
         }
 
-        if (CmsWorkplace.isTemporaryFileName(cms.getRequestContext().getUri())) {
+        if (CmsResource.isTemporaryFileName(cms.getRequestContext().getUri())) {
             // don't display direct edit buttons if a temporary file is displayed
             return;
         }
@@ -321,7 +321,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
     public int doStartTag() throws JspException {
 
         if (!CmsFlexController.isCmsOnlineRequest(pageContext.getRequest())
-            && !CmsWorkplace.isTemporaryFileName(CmsFlexController.getCmsObject(pageContext.getRequest()).getRequestContext().getUri())) {
+            && !CmsResource.isTemporaryFileName(CmsFlexController.getCmsObject(pageContext.getRequest()).getRequestContext().getUri())) {
             // all this does NOT apply to the "online" project, or for temporary files
             I_CmsDirectEditProvider eb = getDirectEditProvider(pageContext);
             // if no provider is available this is the first "editable" tag on the page

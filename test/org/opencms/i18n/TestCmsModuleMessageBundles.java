@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsModuleMessageBundles.java,v $
- * Date   : $Date: 2009/06/04 14:35:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/09/07 12:41:53 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.Locale;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.20.2.1 $
  * 
  * @since 6.0.0
  */
@@ -50,6 +50,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     /**
      * @see org.opencms.i18n.TestCmsMessageBundles#getNotLocalizedBundles(Locale)
      */
+    @Override
     protected List getNotLocalizedBundles(Locale locale) {
 
         List bundles = new ArrayList();
@@ -62,6 +63,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
     /**
      * @see org.opencms.i18n.TestCmsMessageBundles#getTestMessageBundles()
      */
+    @Override
     protected I_CmsMessageBundle[] getTestMessageBundles() {
 
         return new I_CmsMessageBundle[] {
@@ -76,6 +78,7 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
             org.opencms.workplace.tools.cache.Messages.get(),
             org.opencms.workplace.tools.content.Messages.get(),
             org.opencms.workplace.tools.content.check.Messages.get(),
+            // org.opencms.workplace.tools.content.propertyviewer.Messages.get(),
             org.opencms.workplace.tools.database.Messages.get(),
             org.opencms.workplace.tools.galleryoverview.Messages.get(),
             org.opencms.workplace.tools.history.Messages.get(),

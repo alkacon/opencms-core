@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsResourceBundle.java,v $
- * Date   : $Date: 2009/06/04 14:29:31 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/07 12:41:53 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.2.1 $ 
  * 
  * @since 6.2.0 
  * 
@@ -73,6 +73,7 @@ public class CmsResourceBundle extends PropertyResourceBundle {
     /**
      * @see java.util.ResourceBundle#getLocale()
      */
+    @Override
     public Locale getLocale() {
 
         return m_locale;
@@ -91,6 +92,7 @@ public class CmsResourceBundle extends PropertyResourceBundle {
     /**
      * @see java.util.ResourceBundle#setParent(java.util.ResourceBundle)
      */
+    @Override
     protected void setParent(ResourceBundle p) {
 
         super.setParent(p);

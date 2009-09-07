@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryProject.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/07 12:41:52 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  *
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  * 
  * @since 6.9.1
  */
@@ -55,7 +55,7 @@ public class CmsHistoryProject extends CmsProject {
     private long m_datePublished;
 
     /** The resources belonging to the project. */
-    private List m_projectResources;
+    private List<String> m_projectResources;
 
     /** The publish tag of the published project. */
     private int m_publishTag;
@@ -91,7 +91,7 @@ public class CmsHistoryProject extends CmsProject {
         CmsProjectType type,
         long datePublished,
         CmsUUID userPublished,
-        List projectResources) {
+        List<String> projectResources) {
 
         super(projectId, name, description, ownerId, groupId, managerGroupId, 0, dateCreated, type);
 
@@ -104,6 +104,7 @@ public class CmsHistoryProject extends CmsProject {
     /**
      * @see org.opencms.file.CmsProject#clone()
      */
+    @Override
     public Object clone() {
 
         return new CmsHistoryProject(
@@ -124,6 +125,7 @@ public class CmsHistoryProject extends CmsProject {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -154,18 +156,6 @@ public class CmsHistoryProject extends CmsProject {
     /**
      * Returns the projects user group name.<p>
      * 
-     * @return the projects user group name
-     * 
-     * @deprecated use {@link #getGroupUsersName(CmsObject)} instead
-     */
-    public String getGroupName() {
-
-        return getGroupId().toString();
-    }
-
-    /**
-     * Returns the projects user group name.<p>
-     * 
      * @param cms the current cms context 
      *
      * @return the projects user group name
@@ -177,30 +167,6 @@ public class CmsHistoryProject extends CmsProject {
         } catch (CmsException e) {
             return getGroupId().toString();
         }
-    }
-
-    /**
-     * Returns the project manager group name.<p>
-     * 
-     * @return the projects manager group name
-     * 
-     * @deprecated use {@link #getGroupManagersName(CmsObject)} instead
-     */
-    public String getManagerGroupName() {
-
-        return getManagerGroupId().toString();
-    }
-
-    /**
-     * Gets the ownername.
-     *
-     * @return the ownername
-     * 
-     * @deprecated use {@link #getOwnerName(CmsObject)} instead
-     */
-    public String getOwnerName() {
-
-        return getOwnerId().toString();
     }
 
     /**
@@ -224,7 +190,7 @@ public class CmsHistoryProject extends CmsProject {
      * 
      * @return the project resources 
      */
-    public List getProjectResources() {
+    public List<String> getProjectResources() {
 
         return m_projectResources;
     }
@@ -237,18 +203,6 @@ public class CmsHistoryProject extends CmsProject {
     public CmsUUID getPublishedBy() {
 
         return m_userPublished;
-    }
-
-    /**
-     * Gets the publishers name.
-     *
-     * @return the publishers name
-     * 
-     * @deprecated use {@link #getPublishedByName(CmsObject)} instead
-     */
-    public String getPublishedByName() {
-
-        return getPublishedBy().toString();
     }
 
     /**
@@ -288,20 +242,9 @@ public class CmsHistoryProject extends CmsProject {
     }
 
     /**
-     * Gets the versionId.
-     *
-     * @return the versionId
-     * 
-     * @deprecated Use {@link #getPublishTag()} instead
-     */
-    public int getVersionId() {
-
-        return getPublishTag();
-    }
-
-    /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return (new Long(m_datePublished)).hashCode();

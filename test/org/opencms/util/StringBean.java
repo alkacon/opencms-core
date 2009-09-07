@@ -169,6 +169,7 @@ public class StringBean extends NodeVisitor implements Serializable {
      * Resets the state of the PRE and SCRIPT flags.
      * @param tag The end tag to process.
      */
+    @Override
     public void visitEndTag(Tag tag) {
         
         Node parent = tag.getParent();
@@ -220,6 +221,7 @@ public class StringBean extends NodeVisitor implements Serializable {
      * Appends the text to the output.
      * @param string The text node.
      */
+    @Override
     public void visitStringNode(Text string) {
 
         if (!m_isScript && !m_isStyle) {
@@ -243,6 +245,7 @@ public class StringBean extends NodeVisitor implements Serializable {
      * possibly sets the state of the PRE and SCRIPT flags.
      * @param tag The tag to examine.
      */
+    @Override
     public void visitTag(Tag tag) {
             
         String name = tag.getTagName();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlPage.java,v $
- * Date   : $Date: 2009/06/04 14:29:00 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/09/07 12:41:56 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Lucene document factory class to extract index data from a cms resource 
@@ -56,7 +57,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,7 +86,7 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
             String absolutePath = cms.getSitePath(file);
             CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
 
-            List pageLocales = page.getLocales();
+            List<Locale> pageLocales = page.getLocales();
             if (pageLocales.size() == 0) {
                 pageLocales = OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath);
             }
@@ -94,11 +95,11 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
                 OpenCms.getLocaleManager().getDefaultLocales(cms, absolutePath),
                 pageLocales);
 
-            List elements = page.getNames(locale);
+            List<String> elements = page.getNames(locale);
             StringBuffer content = new StringBuffer();
-            HashMap items = new HashMap();
-            for (Iterator i = elements.iterator(); i.hasNext();) {
-                String elementName = (String)i.next();
+            Map<String, String> items = new HashMap<String, String>();
+            for (Iterator<String> i = elements.iterator(); i.hasNext();) {
+                String elementName = i.next();
                 String value = page.getStringValue(cms, elementName, locale);
                 String extracted = CmsHtmlExtractor.extractText(value, page.getEncoding());
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(extracted)) {

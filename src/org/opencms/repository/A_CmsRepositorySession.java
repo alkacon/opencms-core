@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/repository/A_CmsRepositorySession.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/09/07 12:41:46 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,7 @@
 
 package org.opencms.repository;
 
-import org.opencms.workplace.CmsWorkplace;
+import org.opencms.file.CmsResource;
 
 /**
  * Abstract implementation of the interface {@link I_CmsRepositorySession} to provide
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.2.1 $
  * 
  * @since 6.5.6
  */
@@ -74,13 +74,14 @@ public abstract class A_CmsRepositorySession implements I_CmsRepositorySession {
      * @param path the path of a resource to check
      * @return true if the name matches one of the given filter patterns
      */
+
     protected boolean isFiltered(String path) {
 
         // filter all temporary files
-        if (CmsWorkplace.isTemporaryFileName(path)) {
+        if (CmsResource.isTemporaryFileName(path)) {
             return true;
         }
-        
+
         if (m_filter == null) {
             return false;
         }

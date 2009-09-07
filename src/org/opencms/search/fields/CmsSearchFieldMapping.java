@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldMapping.java,v $
- * Date   : $Date: 2009/06/04 14:29:56 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/09/07 12:41:55 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 7.0.0 
  */
@@ -91,6 +91,7 @@ public class CmsSearchFieldMapping {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -141,8 +142,8 @@ public class CmsSearchFieldMapping {
         CmsObject cms,
         CmsResource res,
         I_CmsExtractionResult extractionResult,
-        List properties,
-        List propertiesSearched) {
+        List<CmsProperty> properties,
+        List<CmsProperty> propertiesSearched) {
 
         String content = null;
         switch (getType().getMode()) {
@@ -164,7 +165,7 @@ public class CmsSearchFieldMapping {
                 break;
             case 3: // item
                 if ((extractionResult != null) && CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParam())) {
-                    content = (String)extractionResult.getContentItems().get(getParam());
+                    content = extractionResult.getContentItems().get(getParam());
                 }
                 break;
             default:
@@ -192,6 +193,7 @@ public class CmsSearchFieldMapping {
      * 
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_hashCode == 0) {

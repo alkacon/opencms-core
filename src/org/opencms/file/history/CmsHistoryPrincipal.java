@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryPrincipal.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/07 12:41:52 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Michael Moossen
  *
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.5.2.1 $
  * 
  * @since 6.9.1
  */
@@ -98,6 +98,7 @@ public class CmsHistoryPrincipal extends CmsPrincipal implements Cloneable {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         return new CmsHistoryPrincipal(
@@ -153,6 +154,7 @@ public class CmsHistoryPrincipal extends CmsPrincipal implements Cloneable {
     /**
      * @see org.opencms.security.CmsPrincipal#isGroup()
      */
+    @Override
     public boolean isGroup() {
 
         return m_type.equals(I_CmsPrincipal.PRINCIPAL_GROUP);
@@ -161,6 +163,7 @@ public class CmsHistoryPrincipal extends CmsPrincipal implements Cloneable {
     /**
      * @see org.opencms.security.CmsPrincipal#isUser()
      */
+    @Override
     public boolean isUser() {
 
         return m_type.equals(I_CmsPrincipal.PRINCIPAL_USER);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/I_CmsHistoryResource.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/07 12:41:51 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.file.history;
 
 import org.opencms.db.CmsResourceState;
+import org.opencms.file.CmsResource;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -51,31 +52,11 @@ import java.io.Serializable;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.5.2.1 $
  * 
  * @since 6.9.1
  */
-public interface I_CmsHistoryResource extends Cloneable, Serializable, Comparable {
-
-    /**
-     * Returns the history id of this historical resource.<p>
-     *
-     * @return the history id of this historical resource
-     * 
-     * @deprecated this field has been removed
-     */
-    CmsUUID getBackupId();
-
-    /**
-     * Returns the user name of the creator of this historical resource.<p>
-     *
-     * @return the user name of the creator of this historical resource
-     * 
-     * @deprecated use {#getUserCreated()} instead
-     *             now the {@link org.opencms.file.CmsObject#readUser(CmsUUID)} 
-     *             also returns historical users
-     */
-    String getCreatedByName();
+public interface I_CmsHistoryResource extends Cloneable, Serializable, Comparable<CmsResource> {
 
     /**
      * Returns the date of the last modification of the content of this resource.<p>
@@ -120,16 +101,6 @@ public interface I_CmsHistoryResource extends Cloneable, Serializable, Comparabl
     int getFlags();
 
     /**
-     * Returns the name of the user who last changed this historical resource.<p>
-     *
-     * @return the name of the user who last changed this historical resource
-     * 
-     * @deprecated use {#getUserLastModified()} instead
-     *             with {@link org.opencms.security.CmsPrincipal#readPrincipalIncludingHistory(org.opencms.file.CmsObject, CmsUUID)} 
-     */
-    String getLastModifiedByName();
-
-    /**
      * Returns the length of the resource.<p>
      *
      * If the resource is a file, then this is the byte size of the file content.
@@ -166,15 +137,6 @@ public interface I_CmsHistoryResource extends Cloneable, Serializable, Comparabl
      * @return the publish tag of this historical resource
      */
     int getPublishTag();
-
-    /**
-     * Returns the publish tag of this historical resource.<p>
-     *
-     * @return the publish tag of this historical resource
-     * 
-     * @deprecated use {@link #getPublishTag()} instead
-     */
-    int getPublishTagId();
 
     /**
      * Returns the id of the resource database entry of this resource.<p>

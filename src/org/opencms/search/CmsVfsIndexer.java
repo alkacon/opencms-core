@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2009/09/01 09:24:18 $
- * Version: $Revision: 1.41.2.1 $
+ * Date   : $Date: 2009/09/07 12:41:52 $
+ * Version: $Revision: 1.41.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.fields.CmsSearchField;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ import org.apache.lucene.index.Term;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.41.2.1 $ 
+ * @version $Revision: 1.41.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -318,7 +319,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     protected void updateResource(IndexWriter writer, CmsIndexingThreadManager threadManager, CmsResource resource)
     throws CmsIndexException {
 
-        if (resource.isInternal() || resource.isFolder()) {
+        if (resource.isInternal() || resource.isFolder() || CmsWorkplace.isTemporaryFile(resource)) {
             // don't index internal resources or folders
             return;
         }

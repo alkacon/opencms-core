@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2009/08/13 09:59:03 $
- * Version: $Revision: 1.43.2.1 $
+ * Date   : $Date: 2009/09/07 12:41:40 $
+ * Version: $Revision: 1.43.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.43.2.1 $
+ * @version $Revision: 1.43.2.2 $
  * 
  * @since 6.0.0
  * 
@@ -80,7 +80,7 @@ import java.util.Map;
 public class CmsUser extends CmsPrincipal implements Cloneable {
 
     /** Storage for additional user information. */
-    private Map m_additionalInfo;
+    private Map<String, Object> m_additionalInfo;
 
     /** The creation date. */
     private long m_dateCreated;
@@ -120,7 +120,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
             0,
             I_CmsPrincipal.FLAG_ENABLED,
             System.currentTimeMillis(),
-            Collections.singletonMap(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, ""));
+            Collections.singletonMap(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, (Object)""));
     }
 
     /**
@@ -147,7 +147,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
         long lastlogin,
         int flags,
         long dateCreated,
-        Map additionalInfo) {
+        Map<String, Object> additionalInfo) {
 
         m_id = id;
         m_name = name;
@@ -159,9 +159,9 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
         m_flags = flags;
         m_dateCreated = dateCreated;
         if (additionalInfo != null) {
-            m_additionalInfo = new HashMap(additionalInfo);
+            m_additionalInfo = new HashMap<String, Object>(additionalInfo);
         } else {
-            m_additionalInfo = new HashMap();
+            m_additionalInfo = new HashMap<String, Object>();
         }
         if (m_additionalInfo.get(CmsUserSettings.ADDITIONAL_INFO_ADDRESS) == null) {
             m_additionalInfo.put(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, "");
@@ -214,20 +214,6 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if the provided user type indicates a system user.<p>
-     * 
-     * @param type the user type to check
-     * 
-     * @return true if the provided user type indicates a system user
-     * 
-     * @deprecated the user type concept has been abandoned
-     */
-    public static boolean isSystemUser(int type) {
-
-        return (type & 1) > 0;
-    }
-
-    /**
      * Checks if the provided user name is a valid user name and can be used as an argument value 
      * for {@link #setName(String)}.<p> 
      * 
@@ -243,6 +229,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         return new CmsUser(
@@ -280,7 +267,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
      * 
      * @return this users complete "additional information" storage map
      */
-    public Map getAdditionalInfo() {
+    public Map<String, Object> getAdditionalInfo() {
 
         return m_additionalInfo;
     }
@@ -349,6 +336,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see org.opencms.security.CmsPrincipal#getDescription()
      */
+    @Override
     public String getDescription() {
 
         return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION);
@@ -369,20 +357,9 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if this user is disabled.<p>
-     *
-     * @return <code>true</code> if this user is disabled
-     * 
-     * @deprecated use {@link CmsPrincipal#isEnabled()} instead
-     */
-    public boolean getDisabled() {
-
-        return !isEnabled();
-    }
-
-    /**
      * @see org.opencms.security.CmsPrincipal#getDisplayName(org.opencms.file.CmsObject, java.util.Locale)
      */
+    @Override
     public String getDisplayName(CmsObject cms, Locale locale) throws CmsException {
 
         if (OpenCms.getOrgUnitManager().getOrganizationalUnits(cms, "", true).size() > 0) {
@@ -485,6 +462,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see org.opencms.security.I_CmsPrincipal#isGroup()
      */
+    @Override
     public boolean isGroup() {
 
         return false;
@@ -523,6 +501,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see org.opencms.security.I_CmsPrincipal#isUser()
      */
+    @Override
     public boolean isUser() {
 
         return true;
@@ -545,7 +524,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
      * 
      * @see #getAdditionalInfo()
      */
-    public void setAdditionalInfo(Map additionalInfo) {
+    public void setAdditionalInfo(Map<String, Object> additionalInfo) {
 
         m_additionalInfo = additionalInfo;
     }
@@ -601,19 +580,10 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see org.opencms.security.CmsPrincipal#setDescription(java.lang.String)
      */
+    @Override
     public void setDescription(String description) {
 
         setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, description);
-    }
-
-    /**
-     * Disables this user.<p>
-     * 
-     * @deprecated use {@link CmsPrincipal#setEnabled(boolean)} instead
-     */
-    public void setDisabled() {
-
-        setEnabled(false);
     }
 
     /**
@@ -628,16 +598,6 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
             email = email.trim();
         }
         m_email = email;
-    }
-
-    /**
-     * Enables this user.<p>
-     * 
-     * @deprecated use {@link CmsPrincipal#setEnabled(boolean)} instead
-     */
-    public void setEnabled() {
-
-        setEnabled(true);
     }
 
     /**
@@ -723,6 +683,7 @@ public class CmsUser extends CmsPrincipal implements Cloneable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

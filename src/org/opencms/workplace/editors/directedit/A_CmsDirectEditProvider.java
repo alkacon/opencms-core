@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/directedit/A_CmsDirectEditProvider.java,v $
- * Date   : $Date: 2009/06/04 14:29:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/07 12:41:53 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.Messages;
 
 import java.io.IOException;
@@ -61,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.2.3 
  */
@@ -137,7 +136,7 @@ public abstract class A_CmsDirectEditProvider implements I_CmsDirectEditProvider
                 // don't show direct edit button in online project
                 return CmsDirectEditResourceInfo.INACTIVE;
             }
-            if (CmsWorkplace.isTemporaryFileName(resourceName)) {
+            if (CmsResource.isTemporaryFileName(resourceName)) {
                 // don't show direct edit button on a temporary file
                 return CmsDirectEditResourceInfo.INACTIVE;
             }

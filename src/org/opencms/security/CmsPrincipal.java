@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/07 12:41:55 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,11 +50,11 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.2.0 
  */
-public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable {
+public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPrincipal> {
 
     /** The description of this principal. */
     protected String m_description;
@@ -85,11 +85,11 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable {
      * 
      * @return the filtered principal list
      */
-    public static List filterCore(List principals) {
+    public static List<CmsPrincipal> filterCore(List<CmsPrincipal> principals) {
 
-        Iterator it = principals.iterator();
+        Iterator<CmsPrincipal> it = principals.iterator();
         while (it.hasNext()) {
-            CmsPrincipal p = (CmsPrincipal)it.next();
+            CmsPrincipal p = it.next();
             if (p.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) {
                 it.remove();
             }
@@ -108,11 +108,11 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable {
      * 
      * @return the filtered principal list
      */
-    public static List filterCoreFlag(List principals, int flag) {
+    public static List<CmsPrincipal> filterCoreFlag(List<CmsPrincipal> principals, int flag) {
 
-        Iterator it = principals.iterator();
+        Iterator<CmsPrincipal> it = principals.iterator();
         while (it.hasNext()) {
-            CmsPrincipal p = (CmsPrincipal)it.next();
+            CmsPrincipal p = it.next();
             if ((p.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) && ((p.getFlags() & flag) != flag)) {
                 it.remove();
             }
@@ -130,11 +130,11 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable {
      * 
      * @return the filtered principal list
      */
-    public static List filterFlag(List principals, int flag) {
+    public static List<CmsPrincipal> filterFlag(List<CmsPrincipal> principals, int flag) {
 
-        Iterator it = principals.iterator();
+        Iterator<CmsPrincipal> it = principals.iterator();
         while (it.hasNext()) {
-            CmsPrincipal p = (CmsPrincipal)it.next();
+            CmsPrincipal p = it.next();
             if ((p.getFlags() & flag) != flag) {
                 it.remove();
             }
@@ -305,18 +305,18 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(I_CmsPrincipal obj) {
 
         if ((this == obj) || this.equals(obj)) {
             return 0;
         }
-        I_CmsPrincipal that = (I_CmsPrincipal)obj;
-        return this.getName().compareTo(that.getName());
+        return getName().compareTo(obj.getName());
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -420,6 +420,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_id != null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Attic/CmsJspTagEnableAde.java,v $
- * Date   : $Date: 2009/08/21 12:09:22 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/09/07 12:41:49 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.file.history.CmsHistoryResourceHandler;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
@@ -59,7 +60,7 @@ import org.apache.commons.logging.Log;
 /**
  * Implementation of the <code>&lt;enable-ade/&gt;</code> tag.<p>
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.6 
  */
@@ -97,7 +98,7 @@ public class CmsJspTagEnableAde extends BodyTagSupport {
             return;
         }
 
-        if (CmsWorkplace.isTemporaryFileName(cms.getRequestContext().getUri())) {
+        if (CmsResource.isTemporaryFileName(cms.getRequestContext().getUri())) {
             // don't display direct edit buttons if a temporary file is displayed
             return;
         }

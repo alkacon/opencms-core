@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorPdf.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/09/07 12:41:36 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.pdfbox.util.PDFTextStripper;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,6 +78,7 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
     /**
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(java.io.InputStream, java.lang.String)
      */
+    @Override
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
         PDDocument pdfDocument = null;
@@ -98,7 +99,7 @@ public final class CmsExtractorPdf extends A_CmsTextExtractor {
             // create PDF stripper
             PDFTextStripper stripper = new PDFTextStripper();
             PDDocumentInformation info = pdfDocument.getDocumentInformation();
-            Map contentItems = new HashMap();
+            Map<String, String> contentItems = new HashMap<String, String>();
 
             // add the main document text
             String result = removeControlChars(stripper.getText(pdfDocument));

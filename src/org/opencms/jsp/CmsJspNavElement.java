@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2009/06/04 14:29:02 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2009/09/07 12:41:49 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,7 +34,6 @@ package org.opencms.jsp;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Map;
 
@@ -48,7 +47,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -398,7 +397,7 @@ public class CmsJspNavElement implements Comparable {
      * A resource is considered to be in the navigation, if <ol>
      * <li>it has the property PROPERTY_NAVTEXT set
      * <li><em>or</em> it has the property PROPERTY_NAVPOS set 
-     * <li><em>and</em> it is not a temporary file as defined by {@link CmsWorkplace#isTemporaryFileName(String)}.</ol> 
+     * <li><em>and</em> it is not a temporary file as defined by {@link CmsResource#isTemporaryFileName(String)}.</ol> 
      * 
      * @return <code>true</code> if this navigation element is in the navigation, <code>false</code> otherwise
      */
@@ -408,7 +407,7 @@ public class CmsJspNavElement implements Comparable {
             // use "lazy initializing"
             Object o1 = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVTEXT);
             Object o2 = m_properties.get(CmsPropertyDefinition.PROPERTY_NAVPOS);
-            m_hasNav = Boolean.valueOf(((o1 != null) || (o2 != null)) && !CmsWorkplace.isTemporaryFileName(m_resource));
+            m_hasNav = Boolean.valueOf(((o1 != null) || (o2 != null)) && !CmsResource.isTemporaryFileName(m_resource));
         }
         return m_hasNav.booleanValue();
     }

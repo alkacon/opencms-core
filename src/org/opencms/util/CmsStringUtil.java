@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2009/09/07 12:41:57 $
+ * Version: $Revision: 1.51.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.51.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -336,9 +336,9 @@ public final class CmsStringUtil {
      * 
      * @return a map with the new text and the new value for the given attribute 
      */
-    public static Map extendAttribute(String text, String attribute, String defValue) {
+    public static Map<String, String> extendAttribute(String text, String attribute, String defValue) {
 
-        Map retValue = new HashMap();
+        Map<String, String> retValue = new HashMap<String, String>();
         retValue.put("text", text);
         retValue.put("value", "'" + defValue + "'");
         if ((text != null) && (text.toLowerCase().indexOf(attribute.toLowerCase()) >= 0)) {
@@ -750,12 +750,12 @@ public final class CmsStringUtil {
      * 
      * @return the string representation for the given map
      */
-    public static String mapAsString(Map map, String sepItem, String sepKeyval) {
+    public static String mapAsString(Map<String, String> map, String sepItem, String sepKeyval) {
 
         StringBuffer string = new StringBuffer(128);
-        Iterator it = map.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
+            Map.Entry<String, String> entry = it.next();
             string.append(entry.getKey());
             string.append(sepKeyval);
             string.append(entry.getValue());
@@ -803,8 +803,8 @@ public final class CmsStringUtil {
      */
     public static String[] splitAsArray(String source, char delimiter) {
 
-        List result = splitAsList(source, delimiter);
-        return (String[])result.toArray(new String[result.size()]);
+        List<String> result = splitAsList(source, delimiter);
+        return result.toArray(new String[result.size()]);
     }
 
     /**
@@ -818,8 +818,8 @@ public final class CmsStringUtil {
      */
     public static String[] splitAsArray(String source, String delimiter) {
 
-        List result = splitAsList(source, delimiter);
-        return (String[])result.toArray(new String[result.size()]);
+        List<String> result = splitAsList(source, delimiter);
+        return result.toArray(new String[result.size()]);
     }
 
     /**
@@ -831,7 +831,7 @@ public final class CmsStringUtil {
      *
      * @return the List of splitted Substrings
      */
-    public static List splitAsList(String source, char delimiter) {
+    public static List<String> splitAsList(String source, char delimiter) {
 
         return splitAsList(source, delimiter, false);
     }
@@ -846,9 +846,9 @@ public final class CmsStringUtil {
      *
      * @return the List of splitted Substrings
      */
-    public static List splitAsList(String source, char delimiter, boolean trim) {
+    public static List<String> splitAsList(String source, char delimiter, boolean trim) {
 
-        List result = new ArrayList();
+        List<String> result = new ArrayList<String>();
         int i = 0;
         int l = source.length();
         int n = source.indexOf(delimiter);
@@ -879,7 +879,7 @@ public final class CmsStringUtil {
      *
      * @return the Array of splitted Substrings
      */
-    public static List splitAsList(String source, String delimiter) {
+    public static List<String> splitAsList(String source, String delimiter) {
 
         return splitAsList(source, delimiter, false);
     }
@@ -894,7 +894,7 @@ public final class CmsStringUtil {
      * 
      * @return the Array of splitted Substrings
      */
-    public static List splitAsList(String source, String delimiter, boolean trim) {
+    public static List<String> splitAsList(String source, String delimiter, boolean trim) {
 
         int dl = delimiter.length();
         if (dl == 1) {
@@ -902,7 +902,7 @@ public final class CmsStringUtil {
             return splitAsList(source, delimiter.charAt(0), trim);
         }
 
-        List result = new ArrayList();
+        List<String> result = new ArrayList<String>();
         int i = 0;
         int l = source.length();
         int n = source.indexOf(delimiter);
@@ -934,13 +934,13 @@ public final class CmsStringUtil {
      * 
      * @return a map of splitted key-value pairs
      */
-    public static Map splitAsMap(String source, String paramDelim, String keyValDelim) {
+    public static Map<String, String> splitAsMap(String source, String paramDelim, String keyValDelim) {
 
         int keyValLen = keyValDelim.length();
-        Map params = new HashMap();
-        Iterator itParams = CmsStringUtil.splitAsList(source, paramDelim, true).iterator();
+        Map<String, String> params = new HashMap<String, String>();
+        Iterator<String> itParams = CmsStringUtil.splitAsList(source, paramDelim, true).iterator();
         while (itParams.hasNext()) {
-            String param = (String)itParams.next();
+            String param = itParams.next();
             int pos = param.indexOf(keyValDelim);
             String key = param;
             String value = "";
@@ -966,13 +966,13 @@ public final class CmsStringUtil {
      * 
      * @see #substitute(String, String, String)
      */
-    public static String substitute(String source, Map substitions) {
+    public static String substitute(String source, Map<String, String> substitions) {
 
         String result = source;
-        Iterator it = substitions.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> it = substitions.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry entry = (Map.Entry)it.next();
-            result = substitute(result, (String)entry.getKey(), entry.getValue().toString());
+            Map.Entry<String, String> entry = it.next();
+            result = substitute(result, entry.getKey(), entry.getValue().toString());
         }
         return result;
     }
@@ -1226,63 +1226,5 @@ public final class CmsStringUtil {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(value);
         return matcher.matches();
-    }
-
-    /**
-     * Checks if the provided name is a valid resource name, that is contains only
-     * valid characters.<p>
-     *
-     * @param name the resource name to check
-     * @return true if the resource name is valid, false otherwise 
-     * 
-     * @deprecated use {@link org.opencms.file.CmsResource#checkResourceName(String)} instead
-     */
-    public static boolean validateResourceName(String name) {
-
-        if (name == null) {
-            return false;
-        }
-        int l = name.length();
-        if (l == 0) {
-            return false;
-        }
-        if (name.length() != name.trim().length()) {
-            // leading or trailing white space are not allowed
-            return false;
-        }
-        for (int i = 0; i < l; i++) {
-            char ch = name.charAt(i);
-            switch (ch) {
-                case '/':
-                    return false;
-                case '\\':
-                    return false;
-                case ':':
-                    return false;
-                case '*':
-                    return false;
-                case '?':
-                    return false;
-                case '"':
-                    return false;
-                case '>':
-                    return false;
-                case '<':
-                    return false;
-                case '|':
-                    return false;
-                default:
-                    // ISO control chars are not allowed
-                    if (Character.isISOControl(ch)) {
-                        return false;
-                    }
-                    // chars not defined in unicode are not allowed
-                    if (!Character.isDefined(ch)) {
-                        return false;
-                    }
-            }
-        }
-
-        return true;
     }
 }

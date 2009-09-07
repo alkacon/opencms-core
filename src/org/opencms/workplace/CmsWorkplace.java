@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2009/06/04 14:29:21 $
- * Version: $Revision: 1.177 $
+ * Date   : $Date: 2009/09/07 12:41:54 $
+ * Version: $Revision: 1.177.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.workplace;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
-import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -89,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.177 $ 
+ * @version $Revision: 1.177.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,15 +136,6 @@ public abstract class CmsWorkplace {
 
     /** Path to exported system image folder. */
     public static final String RFS_PATH_RESOURCES = "/resources/";
-
-    /** 
-     * Prefix for temporary files in the VFS. 
-     * 
-     * @see #isTemporaryFile(CmsResource)
-     * @see #isTemporaryFileName(String)  
-     * @see #getTemporaryFileName(String)
-     */
-    public static final String TEMP_FILE_PREFIX = CmsDriverManager.TEMP_FILE_PREFIX;
 
     /** Directory name of content default_bodies folder. */
     public static final String VFS_DIR_DEFAULTBODIES = "default_bodies/";
@@ -429,7 +419,7 @@ public abstract class CmsWorkplace {
      * 
      * @return the temporary file name for the given resource name
      * 
-     * @see #isTemporaryFileName(String)
+     * @see CmsResource#isTemporaryFileName(String)
      * @see #isTemporaryFile(CmsResource)
      */
     public static String getTemporaryFileName(String resourceName) {
@@ -439,7 +429,7 @@ public abstract class CmsWorkplace {
         }
         StringBuffer result = new StringBuffer(resourceName.length() + 2);
         result.append(CmsResource.getFolderPath(resourceName));
-        result.append(TEMP_FILE_PREFIX);
+        result.append(CmsResource.TEMP_FILE_PREFIX);
         result.append(CmsResource.getName(resourceName));
         return result.toString();
     }
@@ -581,30 +571,12 @@ public abstract class CmsWorkplace {
      * @return <code>true</code> if the given resource name is a temporary file
      * 
      * @see #getTemporaryFileName(String)
-     * @see #isTemporaryFileName(String)
+     * @see CmsResource#isTemporaryFileName(String)
      */
     public static boolean isTemporaryFile(CmsResource resource) {
 
         return (resource != null)
-            && ((resource.isFile() && (((resource.getFlags() & CmsResource.FLAG_TEMPFILE) > 0) || (isTemporaryFileName(resource.getName())))));
-    }
-
-    /**
-     * Returns <code>true</code> if the given resource name is a temporary file name.<p>
-     * 
-     * A resource name is considered a temporary file name if the name of the file 
-     * (without parent folders) starts with the prefix char <code>'~'</code> (tilde).<p>
-     * 
-     * @param resourceName the resource name to check
-     * 
-     * @return <code>true</code> if the given resource name is a temporary file name
-     * 
-     * @see #getTemporaryFileName(String)
-     * @see #isTemporaryFile(CmsResource)
-     */
-    public static boolean isTemporaryFileName(String resourceName) {
-
-        return (resourceName != null) && (CmsResource.getName(resourceName).startsWith(TEMP_FILE_PREFIX));
+            && ((resource.isFile() && (((resource.getFlags() & CmsResource.FLAG_TEMPFILE) > 0) || (CmsResource.isTemporaryFileName(resource.getName())))));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2009/06/04 14:29:01 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2009/09/07 12:41:56 $
+ * Version: $Revision: 1.23.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.lucene.document.Fieldable;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.23.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -234,25 +234,25 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     /**
      * @see org.opencms.search.documents.I_CmsDocumentFactory#getDocumentKeys(java.util.List, java.util.List)
      */
-    public List getDocumentKeys(List resourceTypes, List mimeTypes) throws CmsException {
+    public List<String> getDocumentKeys(List<String> resourceTypes, List<String> mimeTypes) throws CmsException {
 
-        ArrayList keys = new ArrayList();
+        List<String> keys = new ArrayList<String>();
 
         if (resourceTypes.contains("*")) {
-            ArrayList allTypes = new ArrayList();
-            for (Iterator i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
-                I_CmsResourceType resourceType = (I_CmsResourceType)i.next();
+            List<String> allTypes = new ArrayList<String>();
+            for (Iterator<I_CmsResourceType> i = OpenCms.getResourceManager().getResourceTypes().iterator(); i.hasNext();) {
+                I_CmsResourceType resourceType = i.next();
                 allTypes.add(resourceType.getTypeName());
             }
             resourceTypes = allTypes;
         }
 
         try {
-            for (Iterator i = resourceTypes.iterator(); i.hasNext();) {
+            for (Iterator<String> i = resourceTypes.iterator(); i.hasNext();) {
 
-                String typeName = OpenCms.getResourceManager().getResourceType((String)i.next()).getTypeName();
-                for (Iterator j = mimeTypes.iterator(); j.hasNext();) {
-                    keys.add(getDocumentKey(typeName, (String)j.next()));
+                String typeName = OpenCms.getResourceManager().getResourceType(i.next()).getTypeName();
+                for (Iterator<String> j = mimeTypes.iterator(); j.hasNext();) {
+                    keys.add(getDocumentKey(typeName, j.next()));
                 }
                 if (mimeTypes.isEmpty()) {
                     keys.add(getDocumentKey(typeName, null));

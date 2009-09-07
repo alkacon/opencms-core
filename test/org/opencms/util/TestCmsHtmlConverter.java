@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlConverter.java,v $
- * Date   : $Date: 2009/06/30 15:08:33 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/09/07 12:41:48 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import junit.framework.TestSuite;
 
 /** 
  * @author Michael Emmerich 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.16.2.1 $
  */
 public class TestCmsHtmlConverter extends OpenCmsTestCase {
 
@@ -85,11 +85,13 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

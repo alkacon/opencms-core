@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2009/06/04 14:29:10 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/09/07 12:41:41 $
+ * Version: $Revision: 1.32.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.file;
 
 import org.opencms.db.CmsResourceState;
-import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -46,7 +45,7 @@ import org.opencms.util.CmsUUID;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.32.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -158,33 +157,11 @@ public class CmsFile extends CmsResource {
     }
 
     /**
-     * Utility method to upgrade a CmsResource to a CmsFile.<p>
-     * 
-     * Sometimes a CmsResource might already be a (casted) CmsFile that
-     * also has the contents read. This method tries to optimize 
-     * read access to the VFS by "upgrading" the CmsResource to a CmsFile 
-     * first. If this fails, the CmsFile is read from the VFS.<p> 
-     * 
-     * @param resource the resource to upgrade
-     * @param cms permission context for accessing the VFS
-     * 
-     * @return the upgraded (or read) file
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use {@link CmsObject#readFile(CmsResource)} instead
-     */
-    public static CmsFile upgrade(CmsResource resource, CmsObject cms) throws CmsException {
-
-        // the logic here has been moved to the readFile(CmsResource) method in the CmsObject
-        return cms.readFile(resource);
-    }
-
-    /**
      * Returns a clone of this Objects instance.<p>
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         byte[] newContent = new byte[this.getContents().length];
@@ -230,6 +207,7 @@ public class CmsFile extends CmsResource {
     /**
      * @see org.opencms.file.CmsResource#getLength()
      */
+    @Override
     public int getLength() {
 
         return m_length;
@@ -238,6 +216,7 @@ public class CmsFile extends CmsResource {
     /**
      * @see org.opencms.file.CmsResource#isFile()
      */
+    @Override
     public boolean isFile() {
 
         return true;
@@ -246,9 +225,19 @@ public class CmsFile extends CmsResource {
     /**
      * @see org.opencms.file.CmsResource#isFolder()
      */
+    @Override
     public boolean isFolder() {
 
         return false;
+    }
+
+    /**
+     * @see org.opencms.file.CmsResource#isTemporaryFile()
+     */
+    @Override
+    public boolean isTemporaryFile() {
+
+        return ((getFlags() & CmsResource.FLAG_TEMPFILE) > 0) || isTemporaryFileName(getName());
     }
 
     /**

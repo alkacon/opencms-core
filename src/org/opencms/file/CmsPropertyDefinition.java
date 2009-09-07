@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2009/06/04 14:29:08 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2009/09/07 12:41:40 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,11 +41,11 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.22.2.1 $
  * 
  * @since 6.0.0 
  */
-public class CmsPropertyDefinition implements Cloneable, Comparable {
+public class CmsPropertyDefinition implements Cloneable, Comparable<CmsPropertyDefinition> {
 
     /**
      *  Enumeration class for property types.<p>
@@ -284,6 +284,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         return new CmsPropertyDefinition(m_id, m_name, m_type);
@@ -292,20 +293,18 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsPropertyDefinition obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof CmsPropertyDefinition) {
-            return m_name.compareTo(((CmsPropertyDefinition)obj).m_name);
-        }
-        return 0;
+        return m_name.compareTo(obj.m_name);
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -350,6 +349,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_name != null) {
@@ -371,6 +371,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

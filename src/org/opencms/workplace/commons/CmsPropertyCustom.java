@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2009/07/08 09:27:11 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2009/09/07 12:41:57 $
+ * Version: $Revision: 1.29.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsDialogHandler;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -73,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.29.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -572,7 +571,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         } else {
             setAction(ACTION_EDIT);
             String resName = CmsResource.getName(getParamResource());
-            if (CmsWorkplace.isTemporaryFileName(resName)) {
+            if (CmsResource.isTemporaryFileName(resName)) {
                 resName = resName.substring(1);
             }
             setParamTitle(key(Messages.GUI_PROPERTIES_1, new Object[] {resName}));

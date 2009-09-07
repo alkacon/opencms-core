@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/CmsHistoryFile.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/07 12:41:51 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  * 
  * @since 6.9.1
  */
@@ -187,6 +187,7 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         return new CmsHistoryFile(
@@ -214,36 +215,6 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
     }
 
     /**
-     * @see org.opencms.file.history.I_CmsHistoryResource#getBackupId()
-     * 
-     * @deprecated this field has been removed
-     */
-    public CmsUUID getBackupId() {
-
-        return new CmsUUID();
-    }
-
-    /**
-     * @see org.opencms.file.history.I_CmsHistoryResource#getCreatedByName()
-     * 
-     * @deprecated use {@link #getUserCreatedName(CmsObject)} instead
-     */
-    public String getCreatedByName() {
-
-        return getUserCreated().toString();
-    }
-
-    /**
-     * @see org.opencms.file.history.I_CmsHistoryResource#getLastModifiedByName()
-     * 
-     * @deprecated use {@link #getUserLastModifiedName(CmsObject)} instead
-     */
-    public String getLastModifiedByName() {
-
-        return getUserLastModified().toString();
-    }
-
-    /**
      * @see org.opencms.file.history.I_CmsHistoryResource#getParentId()
      */
     public CmsUUID getParentId() {
@@ -257,16 +228,6 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
     public int getPublishTag() {
 
         return m_publishTag;
-    }
-
-    /**
-     * @see org.opencms.file.history.I_CmsHistoryResource#getPublishTagId()
-     * 
-     * @deprecated use {@link #getPublishTag()} instead
-     */
-    public int getPublishTagId() {
-
-        return getPublishTag();
     }
 
     /**
@@ -320,6 +281,7 @@ public class CmsHistoryFile extends CmsFile implements I_CmsHistoryResource {
     /**
      * @see org.opencms.file.CmsResource#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

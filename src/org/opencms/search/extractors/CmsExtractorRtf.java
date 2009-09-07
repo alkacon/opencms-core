@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractorRtf.java,v $
- * Date   : $Date: 2009/06/04 14:29:33 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/09/07 12:41:37 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import javax.swing.text.rtf.RTFEditorKit;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,6 +75,7 @@ public final class CmsExtractorRtf extends A_CmsTextExtractor {
     /**
      * @see org.opencms.search.extractors.I_CmsTextExtractor#extractText(byte[], java.lang.String)
      */
+    @Override
     public I_CmsExtractionResult extractText(byte[] content, String encoding) throws Exception {
 
         // RTF always uses ASCII, so we don't need to care about the encoding

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsSchedulerInSystem.java,v $
- * Date   : $Date: 2009/06/04 14:35:34 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/09/07 12:41:55 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import junit.framework.TestSuite;
  * Unit test for the OpenCms scheduler in a running system.<p> 
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.13.2.1 $
  */
 public class TestCmsSchedulerInSystem extends OpenCmsTestCase {
   
@@ -73,10 +73,12 @@ public class TestCmsSchedulerInSystem extends OpenCmsTestCase {
         
         TestSetup wrapper = new TestSetup(suite) {
             
+            @Override
             protected void setUp() {
                 setupOpenCms("simpletest", "/sites/default/");
             }
             
+            @Override
             protected void tearDown() {
                 removeOpenCms();
             }

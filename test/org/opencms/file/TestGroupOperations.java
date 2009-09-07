@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestGroupOperations.java,v $
- * Date   : $Date: 2009/06/04 14:35:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/09/07 12:41:44 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.13.2.1 $
  */
 public class TestGroupOperations extends OpenCmsTestCase {
 
@@ -81,11 +81,13 @@ public class TestGroupOperations extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms(null, null, false);
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleIssues.java,v $
- * Date   : $Date: 2009/06/04 14:35:28 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/09/07 12:41:46 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.17.2.1 $
  */
 public class TestModuleIssues extends OpenCmsTestCase {
 
@@ -93,6 +93,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
             /**
              * @see junit.extensions.TestSetup#setUp()
              */
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
@@ -101,6 +102,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
             /**
              * @see junit.extensions.TestSetup#tearDown()
              */
+            @Override
             protected void tearDown() {
 
                 // done in "testShutdownMethod"

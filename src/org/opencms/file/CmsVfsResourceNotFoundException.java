@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsResourceNotFoundException.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/09/07 12:41:41 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.opencms.main.CmsException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.15.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -73,6 +73,7 @@ public class CmsVfsResourceNotFoundException extends CmsVfsException {
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
+    @Override
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
 
         return new CmsVfsResourceNotFoundException(container, cause);

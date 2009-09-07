@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2009/06/04 14:29:10 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2009/09/07 12:41:39 $
+ * Version: $Revision: 1.26.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.26.2.1 $
  * 
  * @since 6.0.0 
  * 
@@ -100,6 +100,7 @@ public class CmsGroup extends CmsPrincipal {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         return new CmsGroup(m_id, m_parentId, m_name, m_description, m_flags);
@@ -120,18 +121,6 @@ public class CmsGroup extends CmsPrincipal {
     }
 
     /**
-     * Returns true if this group is disabled.<p>
-     * 
-     * @return true if this group is disabled
-     * 
-     * @deprecated use {@link CmsPrincipal#isEnabled()} instead
-     */
-    public boolean getDisabled() {
-
-        return !isEnabled();
-    }
-
-    /**
      * Returns the parent group id of this group.<p>
      * 
      * @return the parent group id of this group
@@ -144,6 +133,7 @@ public class CmsGroup extends CmsPrincipal {
     /**
      * @see org.opencms.security.I_CmsPrincipal#isGroup()
      */
+    @Override
     public boolean isGroup() {
 
         return true;
@@ -182,6 +172,7 @@ public class CmsGroup extends CmsPrincipal {
     /**
      * @see org.opencms.security.I_CmsPrincipal#isUser()
      */
+    @Override
     public boolean isUser() {
 
         return false;
@@ -195,26 +186,6 @@ public class CmsGroup extends CmsPrincipal {
     public boolean isVirtual() {
 
         return (getFlags() & I_CmsPrincipal.FLAG_GROUP_VIRTUAL) == I_CmsPrincipal.FLAG_GROUP_VIRTUAL;
-    }
-
-    /**
-     * Disables this group.<p>
-     * 
-     * @deprecated use {@link CmsPrincipal#setEnabled(boolean)} instead
-     */
-    public void setDisabled() {
-
-        setEnabled(false);
-    }
-
-    /**
-     * Enables this group.<p>
-     * 
-     * @deprecated use {@link CmsPrincipal#setEnabled(boolean)} instead
-     */
-    public void setEnabled() {
-
-        setEnabled(true);
     }
 
     /**
@@ -254,6 +225,7 @@ public class CmsGroup extends CmsPrincipal {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();

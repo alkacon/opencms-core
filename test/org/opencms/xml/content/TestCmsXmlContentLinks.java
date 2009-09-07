@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentLinks.java,v $
- * Date   : $Date: 2009/06/04 14:35:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/07 12:41:39 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import junit.framework.TestSuite;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.5.2.1 $
  */
 public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
@@ -172,6 +172,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
 
         TestSetup wrapper = new TestSetup(suite) {
 
+            @Override
             protected void setUp() {
 
                 setupOpenCms("simpletest", "/sites/default/");
@@ -182,6 +183,7 @@ public class TestCmsXmlContentLinks extends OpenCmsTestCase {
                 }
             }
 
+            @Override
             protected void tearDown() {
 
                 removeOpenCms();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleActionImpl.java,v $
- * Date   : $Date: 2009/06/04 14:35:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/09/07 12:41:46 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,6 +73,7 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
     /**
      * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
      */
+    @Override
     public void cmsEvent(CmsEvent event) {
 
         super.cmsEvent(event);
@@ -82,6 +83,7 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
     /**
      * @see org.opencms.module.I_CmsModuleAction#initialize(org.opencms.file.CmsObject, CmsConfigurationManager, CmsModule)
      */
+    @Override
     public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
 
         super.initialize(adminCms, configurationManager, module);
@@ -95,6 +97,7 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
     /**
      * @see org.opencms.module.I_CmsModuleAction#moduleUninstall(CmsModule)
      */
+    @Override
     public void moduleUninstall(CmsModule module) {
 
         super.moduleUninstall(module);
@@ -107,6 +110,7 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
     /**
      * @see org.opencms.module.I_CmsModuleAction#moduleUpdate(org.opencms.module.CmsModule)
      */
+    @Override
     public void moduleUpdate(CmsModule module) {
 
         super.moduleUpdate(module);
@@ -116,6 +120,7 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
     /**
      * @see org.opencms.module.I_CmsModuleAction#publishProject(org.opencms.file.CmsObject, org.opencms.db.CmsPublishList, int, org.opencms.report.I_CmsReport)
      */
+    @Override
     public void publishProject(CmsObject cms, CmsPublishList publishList, int publishTag, I_CmsReport report) {
 
         super.publishProject(cms, publishList, publishTag, report);
@@ -125,6 +130,7 @@ public class TestModuleActionImpl extends A_CmsModuleAction {
     /**
      * @see org.opencms.module.I_CmsModuleAction#shutDown(CmsModule)
      */
+    @Override
     public void shutDown(CmsModule module) {
 
         super.shutDown(module);
