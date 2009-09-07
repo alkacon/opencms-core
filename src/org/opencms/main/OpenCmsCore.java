@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/06/04 14:29:37 $
- * Version: $Revision: 1.245 $
+ * Date   : $Date: 2009/09/07 08:13:59 $
+ * Version: $Revision: 1.246 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -139,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.245 $ 
+ * @version $Revision: 1.246 $ 
  * 
  * @since 6.0.0 
  */
@@ -1073,7 +1073,7 @@ public final class OpenCmsCore {
         }
 
         if (flexCache != null) {
-            // check all reasource loaders if they require the Flex cache
+            // check all resource loaders if they require the Flex cache
             Iterator i = m_resourceManager.getLoaders().iterator();
             while (i.hasNext()) {
                 Object o = i.next();
