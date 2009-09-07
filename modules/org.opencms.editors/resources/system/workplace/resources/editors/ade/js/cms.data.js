@@ -126,14 +126,20 @@
     * @param {Object} elements
     */
    var prepareLoadedElements = cms.data.prepareLoadedElements = /** void */ function(/** Object */elements) {
-   
       for (var id in elements) {
-         var element = elements[id];
-         for (var containerType in element.contents) {
-            var oldContent = element.contents[containerType];
-            if (oldContent) {
-               element.contents[containerType] = $(oldContent).attr('rel', element.id).addClass('cms-element').appendTo($('<div></div>')).parent().html();
-            }
+         prepareElement(elements[id]);
+      }
+   }
+   
+   /**
+    * Prepares an element by inserting its id as rel attribute and giving it the cms-element class (for each container type)
+    * @param {Object} element
+    */
+   var prepareElement = function(element) {
+      for (var containerType in element.contents) {
+         var oldContent = element.contents[containerType];
+         if (oldContent) {
+            element.contents[containerType] = $(oldContent).attr('rel', element.id).addClass('cms-element').appendTo($('<div></div>')).parent().html();
          }
       }
    }
@@ -143,14 +149,7 @@
     **/
    var prepareLoadedElementsArray = cms.data.prepareLoadedElementsArray = function(elements) {
       for (var i = 0; i < elements.length; i++) {
-         var element = elements[i];
-         var id = element.id;
-         for (var containerType in element.contents) {
-            var oldContent = element.contents[containerType];
-            if (oldContent) {
-               element.contents[containerType] = $(oldContent).attr('rel', element.id).addClass('cms-element').appendTo($('<div></div>')).parent().html();
-            }
-         }
+         prepareElement(elements[i]);
       }
    }
    
@@ -405,11 +404,15 @@
             if (idsToLoad.length != 0) {
                loadElements(idsToLoad, function(ok2, data2) {
                   if (ok2) {
-                     afterFavoritesLoad(ok2, data)
+                     loadNecessarySubcontainerElements(cms.data.elements, function(ok3, data3) {
+                        afterFavoritesLoad(ok2, data)
+                     });
                   }
                });
             } else {
-               afterFavoritesLoad(ok, data);
+               loadNecessarySubcontainerElements(cms.data.elements, function(ok4, data4) {
+                  afterFavoritesLoad(ok, data);
+               });
             }
          }
       });
@@ -428,32 +431,19 @@
             if (idsToLoad.length != 0) {
                loadElements(idsToLoad, function(ok2, data2) {
                   if (ok2) {
-                     afterRecentLoad(ok2, data)
+                     loadNecessarySubcontainerElements(cms.data.elements, function(ok3, data3) {
+                        afterRecentLoad(ok2, data)
+                     });
                   }
                });
             } else {
-               afterRecentLoad(ok, data);
+               loadNecessarySubcontainerElements(cms.data.elements, function(ok3, data3) {
+                  afterRecentLoad(ok, data);
+               });
             }
          }
       });
       
-   }
-   
-   /**
-    * .<p>
-    *
-    * @param {Function} afterRecentLoad
-    */
-   var loadRecent = cms.data.loadRecent = /** void */ function(/** void Function(boolean, Object) */afterRecentLoad) {
-   
-      loadJSON({
-         obj: OBJ_REC
-      }, function(ok, data) {
-         if (ok) {
-            cms.toolbar.recent = data.recent;
-         }
-         afterRecentLoad(ok, data);
-      });
    }
    
    /**
@@ -572,16 +562,18 @@
          cms.toolbar.searchLoadingSign.stop();
          return;
       }
-      cms.data.searchParams.page += 1;
-      var searchResults = data.elements;
-      cms.data.prepareLoadedElementsArray(searchResults);
-      for (var i = 0; i < searchResults.length; i++) {
-         var result = searchResults[i];
-         cms.data.elements[result.id] = result;
-         addSearchResult(result);
-      }
-      cms.data.searchParams.hasMore = data.hasmore;
-      cms.toolbar.searchLoadingSign.stop();
+      loadNecessarySubcontainerElements(data.elements, function(ok2, data2) {
+         cms.data.searchParams.page += 1;
+         var searchResults = data.elements;
+         cms.data.prepareLoadedElementsArray(searchResults);
+         for (var i = 0; i < searchResults.length; i++) {
+            var result = searchResults[i];
+            cms.data.elements[result.id] = result;
+            addSearchResult(result);
+         }
+         cms.data.searchParams.hasMore = data.hasmore;
+         cms.toolbar.searchLoadingSign.stop();
+      });
    }
    
    /**
@@ -636,22 +628,24 @@
       }
       if (data.elements) {
          prepareLoadedElementsArray(data.elements);
-         cms.data.searchParams.page = 1;
-         cms.data.searchParams.query = data.text;
-         cms.data.searchParams.path = data.location;
-         $.each(cms.data.searchParams.types, function() {
-            this.checked = ($.inArray(this.name, data.type) >= 0);
+         loadNecessarySubcontainerElements(data.elements, function(ok2, data2) {
+            cms.data.searchParams.page = 1;
+            cms.data.searchParams.query = data.text;
+            cms.data.searchParams.path = data.location;
+            $.each(cms.data.searchParams.types, function() {
+               this.checked = ($.inArray(this.name, data.type) >= 0);
+            });
+            
+            clearSearchResults();
+            var searchResults = data.elements;
+            for (var i = 0; i < searchResults.length; i++) {
+               var result = searchResults[i];
+               cms.data.elements[result.id] = result;
+               addSearchResult(result);
+            }
+            cms.data.searchParams.hasMore = data.hasmore;
+            cms.toolbar.searchLoadingSign.stop();
          });
-         
-         clearSearchResults();
-         var searchResults = data.elements;
-         for (var i = 0; i < searchResults.length; i++) {
-            var result = searchResults[i];
-            cms.data.elements[result.id] = result;
-            addSearchResult(result);
-         }
-         cms.data.searchParams.hasMore = data.hasmore;
-         cms.toolbar.searchLoadingSign.stop();
       }
    }
    
@@ -794,6 +788,35 @@
       });
       return JSON.stringify(ser);
    };
+   
+   /**
+    * Loads all subcontainer elements referenced from an existing element collection
+    * which haven't already been loaded.
+    * @param {Object} elements the elements which may be subcontainers
+    * @param {Object} callback the callback which is called after the subcontainer elements are loaded.
+    */
+   var loadNecessarySubcontainerElements = function(elements, callback) {
+      var necessaryElements = {}
+      var callbackWrapper = function(ok, data) {
+         callback(ok, elements);
+      }
+      $.each(elements, function(key, element) {
+         if (element.subItems) {
+            $.each(element.subItems, function(index, subitem) {
+               if (!(elements[subitem] || cms.data.elements[subitem])) {
+                  necessaryElements[subitem] = true;
+               }
+            });
+         }
+      });
+      var ids = cms.util.getKeys(necessaryElements);
+      if (ids.length > 0) {
+         loadElements(ids, callbackWrapper);
+      } else {
+         callback(true, elements);
+      }
+   }
+   
    
    
    

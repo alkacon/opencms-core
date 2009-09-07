@@ -5,7 +5,7 @@
    cms.move.zIndexMap = {};
    
    var isMenuContainer = cms.move.isMenuContainer = function(id) {
-      return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId || id == cms.html.searchListId ;
+      return id == cms.html.favoriteListId || id == cms.html.recentListId || id == cms.html.newListId || id == cms.html.searchListId;
    }
    
    var movePreparation = cms.move.movePreparation = function(event) {
@@ -41,11 +41,39 @@
       cms.move.zIndexMap[containerId] = $('#' + containerId).css('z-index');
    }
    
+   /**
+    * Checks whether an element is compatible with a container with the given id.<p>
+    *
+    * A subcontainer is compatible with a container if all its elements are.
+    *
+    */
+   var isCompatibleWithContainer = cms.move.isCompatibleWithContainer = /*boolean*/ function(/*Object*/element, /*String*/ containerId) {
+      var containerType = cms.data.containers[containerId].type;
+      if (element.subItems) {
+         var subItems = element.subItems;
+         for (var i = 0; i < subItems.length; i++) {
+            var element = cms.data.elements[subItems[i]];
+            if (!element) {
+               alert("ERROR: subcontainer elements not loaded");
+               return false;
+            }
+            if (!element.contents[containerType]) {
+               return false;
+            }
+         }
+         return true;
+      } else {
+         return !!(element.contents[containerType])
+      }
+   }
+   
+   
    var initContainerForDrag = cms.move.initContainerForDrag = function(sortable, container) {
       var containerType = container.type;
-      // skip incompatible containers
-      if (!cms.data.elements[sortable.cmsResource_id].contents[containerType]) 
+      //skip incompatible containers
+      if (!isCompatibleWithContainer(cms.data.elements[sortable.cmsResource_id], container.name)) {
          return;
+      }
       saveZIndex(container.name);
       
       if (container.name != sortable.cmsStartContainerId) {
@@ -144,7 +172,7 @@
    
    
    var startAdd = cms.move.startAdd = function(event, ui) {
-      
+   
       ui.self.cmsStartContainerId = ui.self.currentItem.parent().attr('id');
       // if (ui.self.cmsStartContainerId!=cms.html.favoriteListId){
       // $('#'+cms.html.favoriteMenuId).css('display', 'block');
@@ -237,8 +265,9 @@
    
    
    var updateContainer = cms.move.updateContainer = function(id) {
-      if (isMenuContainer(id)) 
+      if (isMenuContainer(id)) {
          return;
+      }
       var newContents = [];
       $('#' + id + ' > *:visible').each(function() {
          newContents.push($(this).attr("rel"));
@@ -278,7 +307,7 @@
                cms.util.addUnique(cms.toolbar.favorites, ui.self.cmsResource_id);
                cms.data.persistFavorites(function(ok) {
                   if (!ok) {
-                      // TODO
+                                    // TODO
                   }
                });
                
@@ -346,8 +375,9 @@
       //      }
       updateContainer(startContainer);
       updateContainer(endContainer);
-      if (endContainer != cms.html.favoriteListId) 
+      if (endContainer != cms.html.favoriteListId) {
          cms.toolbar.setPageChanged(true);
+      }
    }
    
    

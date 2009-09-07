@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/09/03 11:17:23 $
- * Version: $Revision: 1.1.2.19 $
+ * Date   : $Date: 2009/09/07 06:48:29 $
+ * Version: $Revision: 1.1.2.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.19 $
+ * @version $Revision: 1.1.2.20 $
  * 
  * @since 7.6
  */
@@ -636,6 +636,7 @@ public class CmsADEServer extends CmsJspActionElement {
             }
             // iterate the elements
             for (CmsContainerElementBean element : container.getElements()) {
+
                 if (renderElems < 1) {
                     // just collect as many elements as allowed in the template
                     break;
@@ -651,6 +652,22 @@ public class CmsADEServer extends CmsJspActionElement {
                 }
                 // get the element data
                 JSONObject resElement = elemUtil.getElementData(element.getElement(), types);
+
+                // get subcontainer elements
+                if (resElement.has(P_SUBITEMS)) {
+                    JSONArray subItems = resElement.getJSONArray(P_SUBITEMS);
+                    for (int i = 0; i < subItems.length(); i++) {
+                        String subItemId = subItems.getString(i);
+                        CmsUUID subItemUuid = CmsElementUtil.parseId(subItemId);
+                        if (!ids.contains(subItemUuid)) {
+                            CmsResource subItemResource = cms.readResource(subItemUuid);
+                            JSONObject subItemData = elemUtil.getElementData(subItemResource, types);
+                            ids.add(subItemUuid);
+                            resElements.put(subItemId, subItemData);
+                        }
+                    }
+                }
+
                 // store element data
                 ids.add(element.getElement().getStructureId());
                 resElements.put(id, resElement);
@@ -920,6 +937,7 @@ public class CmsADEServer extends CmsJspActionElement {
                     LOG.warn(e.getLocalizedMessage(), e);
                 }
             }
+
             // check if there are more search pages
             int results = searchBean.getSearchPage() * searchBean.getMatchesPerPage();
             boolean hasMore = (searchBean.getSearchResultCount() > results);

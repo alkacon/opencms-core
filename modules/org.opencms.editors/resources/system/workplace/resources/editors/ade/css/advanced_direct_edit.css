@@ -1,588 +1,595 @@
 /** General **/
-.cms-left{
-    float: left;
+.cms-left {
+	float: left;
 }
 
-.cms-right{
-    float: right;
+.cms-right {
+	float: right;
 }
 
 /** Toolbar **/
 #toolbar {
-    height: 34px;
-    position: fixed;
-    width: 100%;
-    background-color: transparent;
-    top: 0;
-    left: 0;
-    z-index: 10000;
+	height: 34px;
+	position: fixed;
+	width: 100%;
+	background-color: transparent;
+	top: 0;
+	left: 0;
+	z-index: 10000;
 }
 
 #toolbar div.cms-toolbar-background {
-    height: 34px;
-    width: 100%;
-    position: absolute;
-    border-top: none;
+	height: 34px;
+	width: 100%;
+	position: absolute;
+	border-top: none;
 }
 
 #toolbar div.cms-toolbar-content {
-    width: 930px;
-    margin: 0 auto;
-    position: relative;
+	width: 930px;
+	margin: 0 auto;
+	position: relative;
 }
 
 #toolbar div.ui-widget-shadow {
-    height: 34px;
-    width: 100%;
-    padding: 5px 0px;
-    margin-left: 0px;
-    position: absolute;
+	height: 34px;
+	width: 100%;
+	padding: 5px 0px;
+	margin-left: 0px;
+	position: absolute;
 }
 
 button {
-    margin: 2px 2px 0px 2px;
-    width: 32px;
+	margin: 2px 2px 0px 2px;
+	width: 32px;
 }
 
-#toolbar div.cms-toolbar-content button.cms-button-wide span.cms-button-text {
-    width: 55px;
-    text-align: center;
-    margin-top: 5px;
+#toolbar div.cms-toolbar-content button.cms-button-wide span.cms-button-text
+	{
+	width: 55px;
+	text-align: center;
+	margin-top: 5px;
 }
 
 #toolbar div.cms-toolbar-content button span {
-    width: 24px;
-    height: 24px;
-    margin: 2px auto;
+	width: 24px;
+	height: 24px;
+	margin: 2px auto;
 }
 
 #toolbar div.cms-toolbar-content button.cms-button-wide span {
-    float: left;
-    margin: 2px 0 0 2px;
+	float: left;
+	margin: 2px 0 0 2px;
 }
 
 #toolbar div.cms-toolbar-content button {
-    height: 30px;
+	height: 30px;
 }
 
 button.cms-button-wide {
-    width: 95px;
+	width: 95px;
 }
 
 #show-button {
-    position: fixed;
-    top: -4px;
-    right: 5px;
-    width: 25px;
-    z-index: 10100;
+	position: fixed;
+	top: -4px;
+	right: 5px;
+	width: 25px;
+	z-index: 10100;
 }
 
 #toolbar button.cms-left {
-    float: left;
-    z-index: 10100;
-    position: relative;
+	float: left;
+	z-index: 10100;
+	position: relative;
 }
 
 /*   #toolbar button.right {
       float: right;
   }
- */ 
-
-
-/** Toolbar buttons **/
+ */ /** Toolbar buttons **/
 div.cms-button {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    width: 20px;
-    height: 20px;
-    overflow: hidden;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 20px;
+	height: 20px;
+	overflow: hidden;
 }
 
 .ui-state-default .cms-icon-logo {
-    background-image: url(images/opencms_logo_16.png)
+	background-image: url(images/opencms_logo_16.png)
 }
 
 .ui-state-default .cms-icon-recent {
-    background-image: url(images/24x24/ade_recent_sw.png)
+	background-image: url(images/24x24/ade_recent_sw.png)
 }
 
 .ui-state-default .cms-icon-edit {
-    background-image: url(images/24x24/ade_edit_sw.png)
+	background-image: url(images/24x24/ade_edit_sw.png)
 }
 
 .ui-state-default .cms-icon-move {
-    background-image: url(images/24x24/ade_move_sw.png)
+	background-image: url(images/24x24/ade_move_sw.png)
 }
 
 button.cms-deactivated span.cms-icon-reset {
-    background-image: url(images/24x24/ade_exit_sw.png)
+	background-image: url(images/24x24/ade_exit_sw.png)
 }
 
 .ui-state-default .cms-icon-delete {
-    background-image: url(images/24x24/ade_delete_sw.png)
+	background-image: url(images/24x24/ade_delete_sw.png)
 }
 
 .ui-state-default .cms-icon-add {
-    background-image: url(images/24x24/ade_add_sw.png)
+	background-image: url(images/24x24/ade_add_sw.png)
 }
 
 .ui-state-default .cms-icon-favorites {
-    background-image: url(images/24x24/ade_favorites_sw.png)
+	background-image: url(images/24x24/ade_favorites_sw.png)
 }
 
 .ui-state-default .cms-icon-new {
-    background-image: url(images/24x24/ade_new_sw.png)
+	background-image: url(images/24x24/ade_new_sw.png)
 }
 
 .ui-state-default .cms-icon-publish {
-    background-image: url(images/24x24/ade_publish_sw.png)
+	background-image: url(images/24x24/ade_publish_sw.png)
 }
 
 .ui-state-default .cms-icon-sitemap {
-    background-image: url(images/24x24/ade_sitemap_sw.png)
+	background-image: url(images/24x24/ade_sitemap_sw.png)
 }
 
 button.cms-deactivated span.cms-icon-save {
-    background-image: url(images/24x24/ade_save_sw.png)
+	background-image: url(images/24x24/ade_save_sw.png)
 }
 
 .ui-state-hover span.cms-icon-recent {
-    background-image: url(images/24x24/ade_recent.png)
+	background-image: url(images/24x24/ade_recent.png)
 }
 
 .ui-state-hover span.cms-icon-edit {
-    background-image: url(images/24x24/ade_edit.png)
+	background-image: url(images/24x24/ade_edit.png)
 }
 
 .ui-state-hover span.cms-icon-move {
-    background-image: url(images/24x24/ade_move.png)
+	background-image: url(images/24x24/ade_move.png)
 }
 
 .ui-state-default .cms-icon-reset {
-    background-image: url(images/24x24/ade_exit.png)
+	background-image: url(images/24x24/ade_exit.png)
 }
 
 .ui-state-hover span.cms-icon-delete {
-    background-image: url(images/24x24/ade_delete.png)
+	background-image: url(images/24x24/ade_delete.png)
 }
 
 .ui-state-hover span.cms-icon-add {
-    background-image: url(images/24x24/ade_add.png)
+	background-image: url(images/24x24/ade_add.png)
 }
 
 .ui-state-hover span.cms-icon-favorites {
-    background-image: url(images/24x24/ade_favorites.png)
+	background-image: url(images/24x24/ade_favorites.png)
 }
 
 .ui-state-hover span.cms-icon-new {
-    background-image: url(images/24x24/ade_new.png)
+	background-image: url(images/24x24/ade_new.png)
 }
 
 .ui-state-hover span.cms-icon-publish {
-    background-image: url(images/24x24/ade_publish.png)
+	background-image: url(images/24x24/ade_publish.png)
 }
 
 .ui-state-hover span.cms-icon-sitemap {
-    background-image: url(images/24x24/ade_sitemap.png)
+	background-image: url(images/24x24/ade_sitemap.png)
 }
 
-.ui-state-default .cms-icon-save{
-    background-image: url(images/24x24/ade_save.png)
+.ui-state-default .cms-icon-save {
+	background-image: url(images/24x24/ade_save.png)
 }
 
 .ui-state-active span.cms-icon-edit {
-    background-image: url(images/24x24/ade_edit.png)
+	background-image: url(images/24x24/ade_edit.png)
 }
 
 .ui-state-active span.cms-icon-move {
-    background-image: url(images/24x24/ade_move.png)
+	background-image: url(images/24x24/ade_move.png)
 }
 
 .ui-state-active span.cms-icon-delete {
-    background-image: url(images/24x24/ade_delete.png)
+	background-image: url(images/24x24/ade_delete.png)
 }
 
 .ui-state-active span.cms-icon-recent {
-    background-image: url(images/24x24/ade_recent.png)
+	background-image: url(images/24x24/ade_recent.png)
 }
 
 .ui-state-active span.cms-icon-add {
-    background-image: url(images/24x24/ade_add.png)
+	background-image: url(images/24x24/ade_add.png)
 }
 
 .ui-state-active span.cms-icon-favorites {
-    background-image: url(images/24x24/ade_favorites.png)
+	background-image: url(images/24x24/ade_favorites.png)
 }
 
 .ui-state-active span.cms-icon-new {
-    background-image: url(images/24x24/ade_new.png)
+	background-image: url(images/24x24/ade_new.png)
 }
 
 .ui-state-active span.cms-icon-publish {
-    background-image: url(images/24x24/ade_publish.png)
+	background-image: url(images/24x24/ade_publish.png)
 }
 
-
-div.cms-subcontainer-start, div.cms-subcontainer-end{
-    display: none;
+div.cms-subcontainer-start,div.cms-subcontainer-end {
+	display: none;
 }
-
 
 /** Highlighting effect **/
 div.cms-highlight-container {
-    background-color: #AACCFF !important;
+	background-color: #AACCFF !important;
 }
 
-.cms-hovering, .hovering {
-    position: absolute !important;
-    overflow: hidden !important;
-    margin: 0 !important;
+.cms-hovering,.hovering {
+	position: absolute !important;
+	overflow: hidden !important;
+	margin: 0 !important;
 }
 
-.cms-hovering-top, .hovering-top {
-    background: transparent url(images/ocms_de_t.gif) repeat scroll 0 50% !important;
+.cms-hovering-top,.hovering-top {
+	background: transparent url(images/ocms_de_t.gif) repeat scroll 0 50%
+		!important;
 }
 
-.cms-hovering-right, .hovering-right {
-    background: transparent url(images/ocms_de_r.gif) repeat scroll 0 50% !important;
+.cms-hovering-right,.hovering-right {
+	background: transparent url(images/ocms_de_r.gif) repeat scroll 0 50%
+		!important;
 }
 
-.cms-hovering-left, .hovering-left {
-    background: transparent url(images/ocms_de_l.gif) repeat scroll 0 50% !important;
+.cms-hovering-left,.hovering-left {
+	background: transparent url(images/ocms_de_l.gif) repeat scroll 0 50%
+		!important;
 }
 
-.cms-hovering-bottom, .hovering-bottom {
-    background: transparent url(images/ocms_de_b.gif) repeat scroll 0 50% !important;
+.cms-hovering-bottom,.hovering-bottom {
+	background: transparent url(images/ocms_de_b.gif) repeat scroll 0 50%
+		!important;
 }
 
-.hovered, #still-in-use {
-    margin: 2px !important;
+.hovered,#still-in-use {
+	margin: 2px !important;
 }
 
 /** sortable placeholder **/
-.cms-placeholder{
-    border: 2px dotted black;
-    visibility: visible !important;
-    height: 10px;
-    position: relative;
+.cms-placeholder {
+	border: 2px dotted black;
+	visibility: visible !important;
+	height: 10px;
+	position: relative;
 }
 
-.cms-placeholder *{
-    visibility: hidden;
+.cms-placeholder * {
+	visibility: hidden;
 }
 
-.cms-menu .cms-placeholder{
-    margin: 0 0 2px 10px !important;
-    width: 290px !important;
-    height: 35px !important;
+.cms-menu .cms-placeholder {
+	margin: 0 0 2px 10px !important;
+	width: 290px !important;
+	height: 35px !important;
 }
 
-.ui-sortable{
-    min-height: 35px;
+.ui-sortable {
+	min-height: 35px;
 }
 
-.ui-sortable-helper{
-    
-    
+.ui-sortable-helper {
+	
 }
 
-.cms-helper-border{
-    border: 1px solid #aaaaaa;
+.cms-helper-border {
+	border: 1px solid #aaaaaa;
 }
 
-.cms-helper-background{
-    background-color: #ffffff;
+.cms-helper-background {
+	background-color: #ffffff;
 }
 
 /** Icons and handles **/
 div.cms-move {
-    background: transparent url(images/16x16/ocms_de_move_i.png) repeat scroll 0 50%;
+	background: transparent url(images/16x16/ocms_de_move_i.png) repeat
+		scroll 0 50%;
 }
 
 .cms-handle {
-    position: absolute;
-    top: 0px;
-    right: 0px;
-    width: 20px;
-    height: 20px;
-    overflow: hidden;
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 20px;
+	height: 20px;
+	overflow: hidden;
 }
 
-div.cms-handle{
-    margin: 0 !important;
-    padding: 0 !important;
-    height: auto;
-    width: auto;
-    z-index: 100;
+div.cms-handle {
+	margin: 0 !important;
+	padding: 0 !important;
+	height: auto;
+	width: auto;
+	z-index: 100;
 }
 
-div.cms-handle a{
-    height: 22px;
-    width: 22px;
-    display: block;
-    float: left;
+div.cms-handle a {
+	height: 22px;
+	width: 22px;
+	display: block;
+	float: left;
 }
 
-div.ui-widget-header a.ui-corner-all{
-    background-color: #eeeeee;
+div.ui-widget-header a.ui-corner-all {
+	background-color: #eeeeee;
 }
 
-div.ui-widget-header a.ui-corner-all:hover{
-    background-color: #ffffff;
+div.ui-widget-header a.ui-corner-all:hover {
+	background-color: #ffffff;
 }
 
 .cms-led-icon {
-    position: absolute;
-    top: 1px;
-    right: 1px;
-    width: 16px;
-    height: 16px;
-    overflow: hidden;
-    background: transparent url(images/16x16/img_new_.png) repeat scroll 0 50%;
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	background: transparent url(images/16x16/img_new_.png) repeat scroll 0
+		50%;
 }
 
 .cms-lock-icon {
-    position: absolute;
-    top: 17px;
-    right: 1px;
-    width: 16px;
-    height: 16px;
-    overflow: hidden;
-    background: transparent url(images/16x16/img_locked_.png) repeat scroll 0 50%;
+	position: absolute;
+	top: 17px;
+	right: 1px;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	background: transparent url(images/16x16/img_locked_.png) repeat scroll
+		0 50%;
 }
 
 .cms-file-icon {
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 32px;
-    height: 32px;
-    overflow: hidden;
-    background: transparent url(images/32x32/document_text.png) repeat scroll 0 50%;
+	position: absolute;
+	top: 1px;
+	left: 1px;
+	width: 32px;
+	height: 32px;
+	overflow: hidden;
+	background: transparent url(images/32x32/document_text.png) repeat
+		scroll 0 50%;
 }
 
 .cms-check-icon {
-    width: 16px;
-    height: 16px;
-    overflow: hidden;
-    background: transparent url(images/16x16/checkbox_checked_16x16.png) repeat scroll 0 50%;
-    display: block;
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	background: transparent url(images/16x16/checkbox_checked_16x16.png)
+		repeat scroll 0 50%;
+	display: block;
 }
 
 span.cms-check-icon-inactive {
-    background-image: url(images/16x16/checkbox_empty_16x16.png);
+	background-image: url(images/16x16/checkbox_empty_16x16.png);
 }
 
-.cms-edit-enabled{
-    background: transparent url(images/16x16/ocms_de_editor_i.png) no-repeat scroll 50% 50%;
+.cms-edit-enabled {
+	background: transparent url(images/16x16/ocms_de_editor_i.png) no-repeat
+		scroll 50% 50%;
 }
 
-div.ui-widget-header a.cms-edit-enabled{
-    background-image: url(images/16x16/ocms_de_editor_sw.png);
+div.ui-widget-header a.cms-edit-enabled {
+	background-image: url(images/16x16/ocms_de_editor_sw.png);
 }
 
-.cms-edit-enabled:hover, div.ui-widget-header a.cms-edit-enabled:hover{
-    background-image: url(images/16x16/ocms_de_editor_a.png);
+.cms-edit-enabled:hover,div.ui-widget-header a.cms-edit-enabled:hover {
+	background-image: url(images/16x16/ocms_de_editor_a.png);
 }
 
-.cms-edit-locked{
-    background: transparent url(images/16x16/ocms_de_lock_i.png) no-repeat scroll 50% 50%;
+.cms-edit-locked {
+	background: transparent url(images/16x16/ocms_de_lock_i.png) no-repeat
+		scroll 50% 50%;
 }
 
-div.ui-widget-header a.cms-edit-locked{
-    background-image: url(images/16x16/ocms_de_lock_sw.png);
+div.ui-widget-header a.cms-edit-locked {
+	background-image: url(images/16x16/ocms_de_lock_sw.png);
 }
 
-.cms-edit-locked:hover, div.ui-widget-header a.cms-edit-locked:hover{
-    background-image: url(images/16x16/ocms_de_lock_a.png);
+.cms-edit-locked:hover,div.ui-widget-header a.cms-edit-locked:hover {
+	background-image: url(images/16x16/ocms_de_lock_a.png);
 }
 
 .cms-move {
-    background: transparent url(images/16x16/ocms_de_move_i.png) no-repeat scroll 50% 50%;
+	background: transparent url(images/16x16/ocms_de_move_i.png) no-repeat
+		scroll 50% 50%;
 }
 
-div.ui-widget-header a.cms-move{
-    background-image: url(images/16x16/ocms_de_move_sw.png);
+div.ui-widget-header a.cms-move {
+	background-image: url(images/16x16/ocms_de_move_sw.png);
 }
 
-.cms-move:hover, div.ui-widget-header a.cms-move:hover {
-    background-image: url(images/16x16/ocms_de_move_a.png);
+.cms-move:hover,div.ui-widget-header a.cms-move:hover {
+	background-image: url(images/16x16/ocms_de_move_a.png);
 }
 
 .cms-delete {
-    background: transparent url(images/16x16/ocms_de_delete_i.png) no-repeat scroll 50% 50%;
+	background: transparent url(images/16x16/ocms_de_delete_i.png) no-repeat
+		scroll 50% 50%;
 }
 
 div.ui-widget-header a.cms-delete {
-    background-image: url(images/16x16/ocms_de_delete_sw.png);
+	background-image: url(images/16x16/ocms_de_delete_sw.png);
 }
 
-.cms-delete:hover, div.ui-widget-header a.cms-delete:hover {
-    background-image: url(images/16x16/ocms_de_delete_a.png);
+.cms-delete:hover,div.ui-widget-header a.cms-delete:hover {
+	background-image: url(images/16x16/ocms_de_delete_a.png);
 }
 
 .ui-dialog div.cms-dialog {
-    padding: 0px;
+	padding: 0px;
 }
 
 div.cms-dialog {
-    display: none;
+	display: none;
 }
-
 
 /** List items **/
 .cms-item-list li {
-    display: block;
-    font-weight: normal;
+	display: block;
+	font-weight: normal;
 }
 
-.cms-item-list .cms-check-icon, .cms-item-list .cms-delete-icon, .cms-publish-options .cms-check-icon {
-    margin: 10px 5px 0 0;
-    cursor: pointer;
-    position: inherit;
+.cms-item-list .cms-check-icon,.cms-item-list .cms-delete-icon,.cms-publish-options .cms-check-icon
+	{
+	margin: 10px 5px 0 0;
+	cursor: pointer;
+	position: inherit;
 }
 
 .cms-item div.ui-state-hover {
-    border: none;
-    padding-bottom: 1px;
+	border: none;
+	padding-bottom: 1px;
 }
 
-.cms-item-list label, .cms-publish-options label {
-    float: left;
-    padding: 7px 0 3px 5px;
+.cms-item-list label,.cms-publish-options label {
+	float: left;
+	padding: 7px 0 3px 5px;
 }
 
-ul.cms-item-list, ul.cms-publish-options {
-    margin: 10px 0 0 0;
-    list-style: none outside;
-    padding-bottom: 2px;
+ul.cms-item-list,ul.cms-publish-options {
+	margin: 10px 0 0 0;
+	list-style: none outside;
+	padding-bottom: 2px;
 }
 
-.cms-item-list ul.options, .cms-dialog ul.cms-publish-options {
-    border-top: solid 1px #999999
+.cms-item-list ul.options,.cms-dialog ul.cms-publish-options {
+	border-top: solid 1px #999999
 }
 
-.cms-menu .ui-widget-content, .cms-item .ui-widget-content {
-    position: relative;
-    width: 290px;
-    line-height: 16px;
-    margin-bottom: 2px;
+.cms-menu .ui-widget-content,.cms-item .ui-widget-content {
+	position: relative;
+	width: 290px;
+	line-height: 16px;
+	margin-bottom: 2px;
 }
 
 .cms-item .ui-widget-content .cms-navtext {
-    font-weight: bold;
-    margin-left: 30px;
-    height: 16px;
-    overflow: hidden;
+	font-weight: bold;
+	margin-left: 30px;
+	height: 16px;
+	overflow: hidden;
 }
 
 .cms-item .ui-widget-content .cms-title {
-    margin-left: 34px;
+	margin-left: 34px;
 }
 
 .cms-item .cms-additional {
-    display: none;
-    padding: 5px 0 0 4px;
+	display: none;
+	padding: 5px 0 0 4px;
 }
 
-.cms-item-list .ui-widget-content .cms-additional span{
-    width: 60px;
-    overflow: hidden;
-    margin-right: 3px;
+.cms-item-list .ui-widget-content .cms-additional span {
+	width: 60px;
+	overflow: hidden;
+	margin-right: 3px;
 }
 
 .cms-item-list .ui-widget-content .cms-additional div {
-    width: 280px;
-    overflow: hidden;
-    height: 18px;
-    word-wrap: break-word;
+	width: 280px;
+	overflow: hidden;
+	height: 18px;
+	word-wrap: break-word;
 }
 
 .cms-item-list .ui-widget-content a.ui-icon {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .cms-item .cms-item-content {
-    display: none;
+	display: none;
 }
 
 .cms-item-list .ui-widget-shadow {
-    position: absolute;
+	position: absolute;
 }
 
-li.cms-item, ul.options li, ul.cms-publish-options li {
-    list-style: none;
-    margin:0 0 0 10px;
+li.cms-item,ul.options li,ul.cms-publish-options li {
+	list-style: none;
+	margin: 0 0 0 10px;
 }
 
 div.cms-menu {
-    display: none;
-    padding: 0px;
-    position: absolute;
+	display: none;
+	padding: 0px;
+	position: absolute;
 }
 
-div.cms-menu div.ui-widget-content, div.cms-menu div.cms-menu-connect {
-    background: #AACCFF;
+div.cms-menu div.ui-widget-content,div.cms-menu div.cms-menu-connect {
+	background: #AACCFF;
 }
 
 div.cms-menu div.ui-widget-content div.ui-widget-content {
-    background: #ffffff;
+	background: #ffffff;
 }
 
 div.cms-menu div.ui-corner-bottom {
-    width: 315px;
+	width: 315px;
 }
 
 div.cms-menu div.cms-menu-connect {
-    position: absolute;
-    right: 0px;
-    top: -35px;
-    width: 99px;
-    height: 36px;
-    z-index: 1;
-    border: 1px solid #aaaaaa;
-    border-bottom: 0px;
+	position: absolute;
+	right: 0px;
+	top: -35px;
+	width: 99px;
+	height: 36px;
+	z-index: 1;
+	border: 1px solid #aaaaaa;
+	border-bottom: 0px;
 }
 
 div.cms-menu button.cms-edit-favorites {
-    margin-left: 10px;
-    margin-bottom: 10px;
-    width: 290px;
+	margin-left: 10px;
+	margin-bottom: 10px;
+	width: 290px;
 }
 
 div.ui-widget-overlay {
-    position: fixed;
+	position: fixed;
 }
 
-
-
 #tree-list {
-    padding: 0;
-    display: none;
-    z-index: 13000;
-    position: absolute;
-    top: 50px;
-    left: 200px;
+	padding: 0;
+	display: none;
+	z-index: 13000;
+	position: absolute;
+	top: 50px;
+	left: 200px;
 }
 
 #tree-list li.cms-item {
-    list-style: none;
-    margin: -1px 0 0 8px;
-    padding: 1px 0 0 0px;
-    background: transparent url(images/leaf__.gif) no-repeat scroll 0 -1px;
+	list-style: none;
+	margin: -1px 0 0 8px;
+	padding: 1px 0 0 0px;
+	background: transparent url(images/leaf__.gif) no-repeat scroll 0 -1px;
 }
 
 #tree-list li.last {
-    background: transparent url(images/leaf-last.gif) no-repeat scroll -2px -1px;
+	background: transparent url(images/leaf-last.gif) no-repeat scroll -2px
+		-1px;
 }
 
 #tree-list li.cms-collapsed .cms-collapse-icon {
-    background-image: url(images/expandable.gif)
+	background-image: url(images/expandable.gif)
 }
 
 #tree-list li.cms-collapsed li.cms-item {
-    display: none;
+	display: none;
 }
 
 /*
@@ -594,40 +601,41 @@ li.jTreePlacement, li.jTreePlaceholder {
 }
 */
 #tree-list .cms-collapse-icon {
-    background: transparent url(images/collapsable.gif) no-repeat scroll 0 0;
-    height: 9px;
-    width: 9px;
-    position: absolute;
-    top: 2px;
-    left: -16px;
+	background: transparent url(images/collapsable.gif) no-repeat scroll 0 0
+		;
+	height: 9px;
+	width: 9px;
+	position: absolute;
+	top: 2px;
+	left: -16px;
 }
 
-#appendBox, #cms_appendbox {
-    position: absolute;
-    top: 0px;
-    left: 0px;
+#appendBox,#cms_appendbox {
+	position: absolute;
+	top: 0px;
+	left: 0px;
 }
-
 
 #jHelperTipAttrContainer {
-    background: InfoBackground;
-    border: 1px solid ButtonShadow;
-    color: Infotext;
-    padding: 2px;
-    display: none;
-    z-index: 20000;
-    max-width: 500px;
+	background: InfoBackground;
+	border: 1px solid ButtonShadow;
+	color: Infotext;
+	padding: 2px;
+	display: none;
+	z-index: 20000;
+	max-width: 500px;
 }
 
 .cms-delete-icon {
-    width: 20px;
-    height: 20px;
-    overflow: hidden;
-    background: transparent url(images/16x16/ocms_de_delete_a.png) repeat scroll 0 50%;
-    display: block;
-    position: relative;
-    top: 6px;
-    right: 3px;
+	width: 20px;
+	height: 20px;
+	overflow: hidden;
+	background: transparent url(images/16x16/ocms_de_delete_a.png) repeat
+		scroll 0 50%;
+	display: block;
+	position: relative;
+	top: 6px;
+	right: 3px;
 }
 
 .cms-scrolling {
@@ -649,13 +657,12 @@ li.jTreePlacement, li.jTreePlaceholder {
 }
 
 #cms-search-list {
-    margin-left: 3px;
+	margin-left: 3px;
 }
-	
+
 #cms-search div.ui-corner-bottom {
 	width: 350px;
 }
-
 
 /*
 #fav-dialog {
@@ -667,12 +674,12 @@ li.jTreePlacement, li.jTreePlaceholder {
     white-space: nowrap;
     overflow: hidden;
 }
-
-#fav-dialog .cms-item-list .ui-widget-content, #fav-dialog .cms-item .ui-widget-content {
-    overflow: hidden;
-    white-space: nowrap;
-}
 */
+#fav-dialog .cms-item-list .ui-widget-content,#fav-dialog .cms-item .ui-widget-content
+	{
+	overflow: hidden;
+	white-space: nowrap;
+}
 
 /*
 #recentlist {
@@ -702,59 +709,85 @@ li.jTreePlacement, li.jTreePlaceholder {
     z-index: 1;
     border: 1px solid #aaaaaa;
     border-bottom: 0px;
-}  */
-
-/**
+}  */ /**
  * Form styles.
  */
-ol.ade-forms { 
-    float: left; 
-    list-style: none; 
-    width: 100%; 
+ol.ade-forms {
+	float: left;
+	list-style: none;
+	width: 100%;
 }
 
-ol.ade-forms li { 
-    clear: both; 
-    float: left; 
-    margin: 0 0 10px; 
-    width: 100%; 
+ol.ade-forms li {
+	clear: both;
+	float: left;
+	margin: 0 0 10px;
+	width: 100%;
 }
 
-ol.ade-forms label { 
-    cursor: pointer; 
-    display: block; 
-    font-weight: bold; 
-    margin: 0 10px 0 0; 
-    width: 90px; 
-    float: left; 
+ol.ade-forms label {
+	cursor: pointer;
+	display: block;
+	font-weight: bold;
+	margin: 0 10px 0 0;
+	width: 90px;
+	float: left;
 }
 
-ol.ade-forms li.ade-grouping label { 
-    width: auto; 
-    float: none;
+ol.ade-forms li.ade-grouping label {
+	width: auto;
+	float: none;
 }
 
-ol.ade-forms span.ade-required { 
-    color: #f00; 
-    font-size: 1.154em; 
+ol.ade-forms span.ade-required {
+	color: #f00;
+	font-size: 1.154em;
 }
 
-ol.ade-forms .ade-error { 
-    color: #f00; 
-    display: block; 
-    margin-left:30px; 
+ol.ade-forms .ade-error {
+	color: #f00;
+	display: block;
+	margin-left: 30px;
 }
 
-ol.ade-forms input, ol.ade-forms textarea { 
-    font: inherit; 
-    padding: 2px; 
+ol.ade-forms input,ol.ade-forms textarea {
+	font: inherit;
+	padding: 2px;
 }
 
-ol.ade-forms textarea { 
-    height: 250px; 
+ol.ade-forms textarea {
+	height: 250px;
 }
 
-ol.ade-forms fieldset { 
-    margin-right: 30px; 
-    padding: 4px; 
+ol.ade-forms fieldset {
+	margin-right: 30px;
+	padding: 4px;
+}
+
+.cms-subcontainer-item>ul {
+	margin-left: 0px !important;
+}
+
+.cms-subcontainer-item .cms-item .cms-move {
+	display: none;
+}
+
+.cms-subcontainer-item {
+	border: 1px dashed;
+	background-color: #6e9ce0;
+	margin-left: 0px !important;
+	margin-top: 10px !important;
+	margin-bottom: 10px !important;
+	position: relative;
+}
+
+/*#fav-dialog .cms-item {
+	position: relative;
+}*/
+.cms-subcontainer-item>.cms-handle {
+	z-index: 10;
+}
+
+#fav-dialog .cms-subcontainer-item { /*border: none !important;*/
+	
 }

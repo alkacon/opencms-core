@@ -25,6 +25,9 @@
    '" class="cms-item-list"></ul>\
     </div></div>';
    
+   var subcontainerItemStartHtml = '<li class="cms-subcontainer-item cms-item"><a class="cms-handle cms-move"></a><ul>';
+   var subcontainerItemEndHtml = '</ul></li>';
+   
    
    var favoriteList = cms.html.favoriteList = '<div id="' + favoriteMenuId + '" class="cms-menu">\
 	<div class="connect ui-corner-top"></div>\
@@ -130,10 +133,9 @@
     * @return the HTML for the element
     */
    var createItemFavDialogHtml = cms.html.createItemFavDialogHtml = /*Html*/ function(/*Element*/item) {
-      var $content = $(item.contents['_DEFAULT_']);
+      var $content = createItemFavListHtml(item.id);
       $content.prepend(deleteIcon);
-      // hack needed to make the delete icon visible
-      $('.ui-widget-content', $content).addClass("cms-left");
+      $('.cms-move', $content).remove();
       return cms.util.jqueryToHtml($content);
    }
    
@@ -148,14 +150,34 @@
       if (!elem) {
          // in case the element is not found reload it
          cms.data.reloadElement(id, function(ok) {
-            return $(cms.data.elements[id].contents['_DEFAULT_']);
+            return formatFavListItem(cms.data.elements[id]);
             if (!ok) {
                // TODO
                alert("Error!");
             }
          });
       } else {
-         return $(elem.contents['_DEFAULT_']);
+         return formatFavListItem(elem);
+      }
+   }
+   
+   /**
+    * Formats a favorite list item.<p>
+    *
+    * @param element the CmsElement to format as a favorite list item
+    * @return the jQuery object representing the formatted element
+    */
+   var formatFavListItem = cms.html.formatFavListItem = /*jQuery*/ function(/*Object*/element) {
+      if (element.subItems) {
+         var result = subcontainerItemStartHtml;
+         for (var i = 0; i < element.subItems.length; i++) {
+            var subElement = cms.data.elements[element.subItems[i]];
+            result += subElement.contents['_DEFAULT_'];
+         }
+         result += subcontainerItemEndHtml;
+         return $(result).attr('rel', element.id).addClass('cms-element');
+      } else {
+         return $(element.contents['_DEFAULT_']).attr('rel', element.id).addClass('cms-element');
       }
    }
    

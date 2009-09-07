@@ -1,4 +1,4 @@
-(function(cms) {
+﻿(function(cms) {
    var $ = jQuery;
    cms.toolbar.favorites = [];
    cms.toolbar.recent = [];
@@ -11,12 +11,7 @@
    cms.toolbar.currentMenu = cms.html.favoriteMenuId;
    cms.toolbar.currentMenuItems = cms.html.favoriteListId;
    
-   
-   
-   
    var searchLoadingSign = null;
-   
-   
    
    var showPublishList = cms.toolbar.showPublishList = function() {
       var button = $(this);
@@ -210,6 +205,7 @@
                   }, function() {
                      stopHover();
                   });
+                  
                   $('<a class="cms-edit"></a>').appendTo(handleDiv).click(function() {
                      openEditDialog(elemId);
                   });
@@ -270,6 +266,12 @@
          destroyMove();
          $('.cms-element div.cms-handle').remove();
          button.removeClass('ui-state-active');
+         // TODO: find a better way to rerender stuff in IE
+         if ($.browser.msie) {
+            setTimeout(function() {
+               $(cms.util.getContainerSelector()).hide().show();
+            }, 0);
+         }
       } else {
          $('button.ui-state-active').trigger('click');
          // enabling edit mode
@@ -468,6 +470,7 @@
       bodyEl.append(cms.html.createMenu(cms.html.newMenuId));
       bodyEl.append(cms.html.searchMenu);
       searchLoadingSign = cms.toolbar.searchLoadingSign = new LoadingSign(".cms-loading", 500, showLoading, hideLoading);
+      $(document).bind('cms-data-loaded', initSearchScrollHandler);
       $('#' + cms.html.searchMenuId).find('button.cms-search-button').click(function() {
          if ($('#cms-search-dialog').length < 1) {
             initSearch();
@@ -477,7 +480,6 @@
       bodyEl.append(cms.html.favoriteDialog);
       bodyEl.append('<div id="cms_appendbox"></div>');
       bodyEl.append(cms.html.createMenu(cms.html.recentMenuId));
-      resetFavList();
       bodyEl.append('<button id="show-button" title="toggle toolbar" class="ui-state-default ui-corner-all"><span class="ui-icon cms-icon-logo"/></button>');
       $('#show-button').click(toggleToolbar);
       $('#toolbar button[name="Edit"], #toolbar button[name="Move"], #toolbar button[name="Delete"]').click(toggleMode);
@@ -500,6 +502,12 @@
       
       $('button[name="Add"]').click(function() {
          toggleList(this, cms.html.searchMenuId);
+      });
+      
+      $('button[name="Reset"]').click(function() {
+         if (!$(this).hasClass('cms-deactivated')) {
+            window.location.reload();
+         }
       });
       
       $('#toolbar button, #show-button').mouseover(function() {
@@ -581,24 +589,25 @@
          $('#cms-search-dialog').dialog('open');
          
       });
-      
-      $(document).bind('cms-data-loaded', function() {
-      
-         loading = searchLoadingSign;
-         var i = 0;
-         var $inner = $("#cms-search-list");
-         var $scrolling = $(".cms-scrolling");
-         
-         $scrolling.scroll(function() {
-         
-            var delta = $inner.height() - $scrolling.height() - $scrolling.scrollTop();
-            if (delta < 64 && !loading.isLoading && cms.data.searchParams.hasMore) {
-               cms.data.continueSearch();
-               loading.start();
-            }
-         });
-      });
    };
+   
+   
+   /**
+    * Initializes the scroll handler for the search menu.
+    */
+   var initSearchScrollHandler = cms.toolbar.initSearchScrollHandler = function() {
+      loading = searchLoadingSign;
+      var i = 0;
+      var $inner = $("#cms-search-list");
+      var $scrolling = $(".cms-scrolling");
+      $scrolling.scroll(function() {
+         var delta = $inner.height() - $scrolling.height() - $scrolling.scrollTop();
+         if (delta < 64 && !loading.isLoading && cms.data.searchParams.hasMore) {
+            cms.data.continueSearch();
+            loading.start();
+         }
+      });
+   }
    
    var destroyMove = function() {
    
@@ -614,7 +623,6 @@
    };
    
    var initMove = function() {
-   
       var containerSelector = cms.util.getContainerSelector();
       var list = $('#' + cms.html.favoriteMenuId);
       var favbutton = $('button[name="Favorites"]');
@@ -891,7 +899,7 @@
    
    var saveFavorites = cms.toolbar.saveFavorites = function() {
       cms.toolbar.favorites.length = 0;
-      $("#fav-dialog li.cms-item").each(function() {
+      $("#fav-dialog > ul > li.cms-item").each(function() {
          var resource_id = this.getAttribute("rel");
          cms.toolbar.favorites.push(resource_id);
       });
@@ -925,7 +933,7 @@
          modal: true,
          autoOpen: false,
          draggable: true,
-         resizable: false,
+         resizable: true,
          position: ['center', 20],
          close: function() {
             $('#fav-edit').removeClass('ui-state-active');
@@ -937,15 +945,17 @@
    };
    
    var initFavDialogItems = cms.toolbar.initFavDialogItems = function() {
-      $("#fav-dialog ul").empty();
-      //$("#fav-dialog").append("<ul></ul>")
+      $("#fav-dialog > ul").empty();
       var html = []
       for (var i = 0; i < cms.toolbar.favorites.length; i++) {
          html.push(cms.html.createItemFavDialogHtml(cms.data.elements[cms.toolbar.favorites[i]]));
       }
-      $("#fav-dialog ul").append(html.join(''));
+      $("#fav-dialog > ul").append(html.join(''));
       $("#fav-dialog .cms-delete-icon").click(clickFavDeleteIcon);
-      $("#fav-dialog ul").sortable();
+      $("#fav-dialog > ul").sortable({
+         axis: 'y',
+         forcePlaceholderSize: true
+      });
       //		$('#fav-dialog div.cms-additional div').jHelperTip( {
       //			trigger :'hover',
       //			source :'attribute',
@@ -970,9 +980,10 @@
    
    var toggleAdditionalInfo = cms.toolbar.toggleAdditionalInfo = function() {
       var elem = $(this);
+      var $additionalInfo = elem.closest('.ui-widget-content').children('.cms-additional');
       if (elem.hasClass('ui-icon-triangle-1-e')) {
          elem.removeClass('ui-icon-triangle-1-e').addClass('ui-icon-triangle-1-s');
-         elem.parents('.ui-widget-content').children('.cms-additional').show(5, function() {
+         $additionalInfo.show(5, function() {
             var list = $(this).parents('div.cms-menu');
             $('div.ui-widget-shadow', list).css({
                height: list.outerHeight() + 2
@@ -980,7 +991,8 @@
          });
       } else {
          elem.removeClass('ui-icon-triangle-1-s').addClass('ui-icon-triangle-1-e');
-         elem.parents('.ui-widget-content').children('.cms-additional').hide(5, function() {
+         
+         $additionalInfo.hide(5, function() {
             var list = $(this).parents('div.cms-menu');
             $('div.ui-widget-shadow', list).css({
                height: list.outerHeight() + 2
@@ -990,13 +1002,13 @@
       return false;
    };
    
+   
    var resetFavList = cms.toolbar.resetFavList = function() {
-      $("#" + cms.html.favoriteMenuId + " li.cms-item").remove();
-      var $favlist = $("#" + cms.html.favoriteMenuId + " ul");
+      $("#" + cms.html.favoriteMenuId + " .cms-item-list > li.cms-item").remove();
+      var $favlist = $("#" + cms.html.favoriteMenuId + " .cms-item-list");
       for (var i = 0; i < cms.toolbar.favorites.length; i++) {
          $favlist.append(cms.html.createItemFavListHtml(cms.toolbar.favorites[i]))
       }
-      // $("#"+cms.html.favoriteMenuId+" a.ui-icon").click(function() {clickTriangle(this)});
    }
    
    
@@ -1120,7 +1132,7 @@
                   newElems.push(value.id);
                }
             });
-            if (newElems.length() > 0) {
+            if (newElems.length > 0) {
                cms.data.deleteResources(newElems, function(ok) {
                   deleteFromFavListAndRecList(newElems);
                   if (!ok) {
