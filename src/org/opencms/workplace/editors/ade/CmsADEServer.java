@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/09/07 06:48:29 $
- * Version: $Revision: 1.1.2.20 $
+ * Date   : $Date: 2009/09/07 13:22:41 $
+ * Version: $Revision: 1.1.2.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.20 $
+ * @version $Revision: 1.1.2.21 $
  * 
  * @since 7.6
  */
@@ -155,6 +155,9 @@ public class CmsADEServer extends CmsJspActionElement {
 
     /** JSON property constant contents. */
     public static final String P_CONTENTS = "contents";
+
+    /** JSON property constant element. */
+    public static final String P_COUNT = "count";
 
     /** JSON property constant file. */
     public static final String P_DATE = "date";
@@ -942,9 +945,11 @@ public class CmsADEServer extends CmsJspActionElement {
             int results = searchBean.getSearchPage() * searchBean.getMatchesPerPage();
             boolean hasMore = (searchBean.getSearchResultCount() > results);
             result.put(CmsADEServer.P_HASMORE, hasMore);
+            result.put(CmsADEServer.P_COUNT, searchBean.getSearchResultCount());
         } else {
             // no search
             result.put(CmsADEServer.P_HASMORE, false);
+            result.put(CmsADEServer.P_COUNT, 0);
         }
 
         // cache the search options, but with page=0
