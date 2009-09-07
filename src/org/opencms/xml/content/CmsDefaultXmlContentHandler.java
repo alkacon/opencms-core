@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/09/04 15:01:16 $
- * Version: $Revision: 1.64.2.3 $
+ * Date   : $Date: 2009/09/07 07:10:14 $
+ * Version: $Revision: 1.64.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.64.2.3 $ 
+ * @version $Revision: 1.64.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -492,7 +492,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      */
     public List<CmsXmlContentTab> getTabs() {
 
-        return m_tabs;
+        return Collections.unmodifiableList(m_tabs);
     }
 
     /**
@@ -557,6 +557,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     initSearchSettings(element, contentDefinition);
                 } else if (nodeName.equals(APPINFO_TABS)) {
                     initTabs(element, contentDefinition);
+                } else if (nodeName.equals(APPINFO_FORMATTERS)) {
+                    initFormatters(element, contentDefinition);
                 }
             }
         }
@@ -1345,6 +1347,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         m_previewLocation = null;
         m_modelFolder = null;
         m_tabs = new ArrayList<CmsXmlContentTab>();
+        m_formatters = new HashMap<String, String>();
     }
 
     /**
@@ -1385,10 +1388,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         String defFormatter = root.attributeValue(APPINFO_ATTR_DEFAULT);
         m_formatters.put(DEFAULT_FORMATTER_TYPE, defFormatter);
 
-        Iterator itFormatter = root.elementIterator(APPINFO_FORMATTER);
+        Iterator<Element> itFormatter = root.elementIterator(APPINFO_FORMATTER);
         while (itFormatter.hasNext()) {
             // iterate all "formatter" elements in the "formatters" node
-            Element element = (Element)itFormatter.next();
+            Element element = itFormatter.next();
             // this is a tab node
             String type = element.attributeValue(APPINFO_ATTR_TYPE);
             String uri = element.attributeValue(APPINFO_ATTR_URI);
@@ -1601,8 +1604,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /**
      * Initializes the tabs for this content handler.<p>
-     * 
-     * .<p>
      * 
      * @param root the "tabs" element from the appinfo node of the XML content definition
      * @param contentDefinition the content definition the tabs belong to
