@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchField.java,v $
- * Date   : $Date: 2009/09/07 12:41:55 $
- * Version: $Revision: 1.11.2.1 $
+ * Date   : $Date: 2009/09/08 12:54:46 $
+ * Version: $Revision: 1.11.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import org.apache.lucene.document.Field.Index;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11.2.1 $ 
+ * @version $Revision: 1.11.2.2 $ 
  * 
  * @since 7.0.0 
  */
@@ -69,8 +69,14 @@ public class CmsSearchField {
     /** Name of the field that contains the document creation date (hardcoded). */
     public static final String FIELD_DATE_CREATED = "created";
 
+    /** Name of the field that contains the document creation date for fast lookup (hardcoded). */
+    public static final String FIELD_DATE_CREATED_LOOKUP = "created_lookup";
+
     /** Name of the field that contains the document last modification date (hardcoded). */
     public static final String FIELD_DATE_LASTMODIFIED = "lastmodified";
+
+    /** Name of the field that contains the document last modification date for fast lookup (hardcoded). */
+    public static final String FIELD_DATE_LASTMODIFIED_LOOKUP = "lastmodified_lookup";
 
     /** Name of the field that usually contains the value of the "Description" property of the document (optional). */
     public static final String FIELD_DESCRIPTION = "description";
@@ -84,6 +90,9 @@ public class CmsSearchField {
      */
     public static final String FIELD_META = "meta";
 
+    /** Name of the field that contains all VFS parent folders of a document (hardcoded). */
+    public static final String FIELD_PARENT_FOLDERS = "parent-folders";
+
     /** Name of the field that contains the document root path in the VFS (hardcoded). */
     public static final String FIELD_PATH = "path";
 
@@ -92,9 +101,6 @@ public class CmsSearchField {
      * which can be used to boost the document in the result list (hardcoded). 
      */
     public static final String FIELD_PRIORITY = "priority";
-
-    /** Name of the field that contains all VFS parent folders of a document (hardcoded). */
-    public static final String FIELD_PARENT_FOLDERS = "parent-folders";
 
     /** 
      * Name of the field that usually contains the value of the "Title" property of the document 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/fields/CmsSearchFieldConfiguration.java,v $
- * Date   : $Date: 2009/09/07 12:41:54 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2009/09/08 12:54:46 $
+ * Version: $Revision: 1.10.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -63,7 +64,7 @@ import org.apache.lucene.document.Fieldable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.10.2.2 $ 
  * 
  * @since 7.0.0 
  */
@@ -122,6 +123,35 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
     public CmsSearchFieldConfiguration() {
 
         m_fields = new ArrayList<CmsSearchField>();
+    }
+
+    /**
+     * Generate a list of date terms for the optimized date range search.<p>
+     * 
+     * @param date the date for get the date terms for
+     * 
+     * @return a list of date terms for the optimized date range search
+     * 
+     * @see CmsSearchIndex#getDateRangeSpan(long, long)
+     */
+    public static String getDateTerms(long date) {
+
+        Calendar cal = Calendar.getInstance(OpenCms.getLocaleManager().getTimeZone());
+        cal.setTimeInMillis(date);
+        String day = CmsSearchIndex.DATES[cal.get(Calendar.DAY_OF_MONTH)];
+        String month = CmsSearchIndex.DATES[cal.get(Calendar.MONTH) + 1];
+        String year = String.valueOf(cal.get(Calendar.YEAR));
+
+        StringBuffer result = new StringBuffer();
+        result.append(year);
+        result.append(month);
+        result.append(day);
+        result.append(' ');
+        result.append(year);
+        result.append(month);
+        result.append(' ');
+        result.append(year);
+        return result.toString();
     }
 
     /**
@@ -365,6 +395,13 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
             DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
         field.setBoost(0);
         document.add(field);
+        // add date of creation optimized for fast lookup
+        field = new Field(
+            CmsSearchField.FIELD_DATE_CREATED_LOOKUP,
+            getDateTerms(resource.getDateCreated()),
+            Field.Store.NO,
+            Field.Index.TOKENIZED);
+        document.add(field);
         // add date of last modification
         field = new Field(
             CmsSearchField.FIELD_DATE_LASTMODIFIED,
@@ -372,6 +409,13 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
             Field.Store.YES,
             Field.Index.UN_TOKENIZED);
         field.setBoost(0);
+        document.add(field);
+        // add date of last modification optimized for fast lookup
+        field = new Field(
+            CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP,
+            getDateTerms(resource.getDateLastModified()),
+            Field.Store.NO,
+            Field.Index.TOKENIZED);
         document.add(field);
         // add date of content
         field = new Field(CmsSearchField.FIELD_DATE_CONTENT, DateTools.dateToString(
@@ -603,8 +647,10 @@ public class CmsSearchFieldConfiguration implements Comparable<CmsSearchFieldCon
         ? (PerFieldAnalyzerWrapper)analyzer
         : new PerFieldAnalyzerWrapper(analyzer);
 
-        // parent folder field must use whitespace analyzer
+        // parent folder and last modified lookup fields must use whitespace analyzer
         result.addAnalyzer(CmsSearchField.FIELD_PARENT_FOLDERS, new WhitespaceAnalyzer());
+        result.addAnalyzer(CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP, new WhitespaceAnalyzer());
+        result.addAnalyzer(CmsSearchField.FIELD_DATE_CREATED_LOOKUP, new WhitespaceAnalyzer());
 
         return result;
     }

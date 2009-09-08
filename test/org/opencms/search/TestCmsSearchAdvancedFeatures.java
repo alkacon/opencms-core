@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2009/09/02 05:54:17 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2009/09/08 12:54:46 $
+ * Version: $Revision: 1.15.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.15.2.1 $
+ * @version $Revision: 1.15.2.3 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -94,6 +94,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         suite.addTest(new TestCmsSearchAdvancedFeatures("testMultipleSearchRoots"));
         suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchRestriction"));
         suite.addTest(new TestCmsSearchAdvancedFeatures("testLimitTimeRanges"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testLimitTimeRangesOptimized"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -122,6 +123,10 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         echo("Testing searching with limiting to time ranges");
+
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "true");
+        assertTrue("Index '" + INDEX_OFFLINE + "' not checking time range as expected", index.isCheckingTimeRange());
 
         CmsSearch searchBean = new CmsSearch();
         List<CmsSearchResult> searchResult;
@@ -191,6 +196,102 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         searchBean.init(cms);
         searchResult = searchBean.getSearchResult();
         assertEquals(orgCount, searchResult.size());
+
+        searchBean.getParameters().setMaxDateLastModified(Long.MAX_VALUE);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(orgCount + 1, searchResult.size());
+    }
+
+    /**
+     * Tests searching with optimized limiting the time ranges.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testLimitTimeRangesOptimized() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing searching with optimized limiting to time ranges");
+
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "false");
+        assertFalse("Index '" + INDEX_OFFLINE + "' checking time range but should not", index.isCheckingTimeRange());
+
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+        String query = "OpenCms";
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_OFFLINE);
+        searchBean.setMatchesPerPage(1000);
+        searchBean.setQuery(query);
+
+        searchResult = searchBean.getSearchResult();
+        // do a search and store the result count
+        int orgCount = searchResult.size();
+
+        // check min date created
+        Date stamp = new Date();
+        searchBean.getParameters().setMinDateCreated(stamp.getTime() - 1000);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        // we must find one match because of the previous time range test
+        assertEquals(1, searchResult.size());
+
+        String resName = "search_new_2.txt";
+        cms.createResource(resName, CmsResourceTypePlain.getStaticTypeId(), "OpenCms".getBytes(), null);
+        I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
+        OpenCms.getSearchManager().rebuildIndex(INDEX_OFFLINE, report);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        // now we must find 2 results
+        assertEquals(2, searchResult.size());
+
+        // check max date created (must move back one day because of granularity level in optimized date range search)
+        searchBean.getParameters().setMaxDateCreated(stamp.getTime() - 1000 * 60 * 60 * 24);
+        searchBean.getParameters().setMinDateCreated(Long.MIN_VALUE);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        // we will find one result less then before because of the previous date range rest
+        assertEquals(orgCount - 1, searchResult.size());
+
+        searchBean.getParameters().setMaxDateCreated(stamp.getTime());
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(orgCount + 1, searchResult.size());
+
+        // check min date last modified
+        stamp = new Date();
+        // move to tomorrow because of granularity level in optimized date search
+        searchBean.getParameters().setMinDateLastModified(stamp.getTime() + 1000 * 60 * 60 * 24);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(0, searchResult.size());
+
+        CmsFile file = cms.readFile(resName);
+        file.setContents("OpenCms ist toll".getBytes());
+        cms.writeFile(file);
+        report = new CmsShellReport(cms.getRequestContext().getLocale());
+        OpenCms.getSearchManager().rebuildIndex(INDEX_OFFLINE, report);
+        searchBean.getParameters().setMinDateLastModified(stamp.getTime());
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(2, searchResult.size());
+
+        // check max date last modified
+        searchBean.getParameters().setMaxDateLastModified(stamp.getTime() - 1000 * 60 * 60 * 24);
+        searchBean.getParameters().setMinDateLastModified(Long.MIN_VALUE);
+
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(orgCount - 1, searchResult.size());
 
         searchBean.getParameters().setMaxDateLastModified(Long.MAX_VALUE);
 

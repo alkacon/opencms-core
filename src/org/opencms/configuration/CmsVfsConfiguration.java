@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2009/07/03 10:36:37 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2009/09/08 12:54:45 $
+ * Version: $Revision: 1.50.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.50.2.1 $
  * 
  * @since 6.0.0
  */
@@ -95,12 +95,6 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     /** The collectors node name. */
     public static final String N_COLLECTORS = "collectors";
 
-    /** The html-converter node name.*/
-    public static final String N_HTML_CONVERTER = "html-converter";
-
-    /** The html-converters node name.*/
-    public static final String N_HTML_CONVERTERS = "html-converters";
-
     /** The copy-resource node name.*/
     public static final String N_COPY_RESOURCE = "copy-resource";
 
@@ -118,6 +112,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
 
     /** Folder translations node name. */
     public static final String N_FOLDERTRANSLATIONS = "foldertranslations";
+
+    /** The html-converter node name.*/
+    public static final String N_HTML_CONVERTER = "html-converter";
+
+    /** The html-converters node name.*/
+    public static final String N_HTML_CONVERTERS = "html-converters";
 
     /** The node name of an individual resource loader. */
     public static final String N_LOADER = "loader";
@@ -189,7 +189,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
     CmsXmlContentTypeManager m_xmlContentTypeManager;
 
     /** The list of configured default files. */
-    private List m_defaultFiles;
+    private List<String> m_defaultFiles;
 
     /** Controls if file translation is enabled. */
     private boolean m_fileTranslationEnabled;
@@ -751,7 +751,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
      * 
      * @return the (unmodifiable) list of configured directory default files
      */
-    public List getDefaultFiles() {
+    public List<String> getDefaultFiles() {
 
         return Collections.unmodifiableList(m_defaultFiles);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/09/01 09:24:17 $
- * Version: $Revision: 1.75.2.1 $
+ * Date   : $Date: 2009/09/08 12:54:44 $
+ * Version: $Revision: 1.75.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,6 +49,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -90,7 +91,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.75.2.1 $ 
+ * @version $Revision: 1.75.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,6 +128,41 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
     }
 
+    /** Look table to quickly zero-pad days / months in date Strings. */
+    public static final String[] DATES = new String[] {
+        "00",
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31"};
+
     /** Constant for additional parameter to enable excerpt creation (default: true). */
     public static final String EXCERPT = CmsSearchIndex.class.getName() + ".createExcerpt";
 
@@ -147,6 +183,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Constant for additional parameter for the Lucene index setting. */
     public static final String LUCENE_USE_COMPOUND_FILE = "lucene.UseCompoundFile";
+
+    /** Constant for years max range span in document search. */
+    public static final int MAX_YEAR_RANGE = 6;
 
     /** Constant for additional parameter to enable permission checks (default: true). */
     public static final String PERMISSIONS = CmsSearchIndex.class.getName() + ".checkPermissions";
@@ -285,7 +324,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         m_documenttypes = new HashMap<String, List<String>>();
         m_createExcerpt = true;
         m_extractContent = true;
-        m_checkTimeRange = true;
+        m_checkTimeRange = false;
         m_checkPermissions = true;
         m_enabled = true;
         m_priority = -1;
@@ -304,6 +343,148 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         this();
         setName(name);
+    }
+
+    /**
+     * Generates a list of date terms for the optimized date range search with "daily" granularity level.<p> 
+     * 
+     * How this works:<ul>
+     * <li>For each document, terms are added for the year, the month and the day the document
+     * was modified or created) in. So for example if a document is modified at February 02, 2009, 
+     * then the following terms are stored for this document:
+     * "20090202", "200902" and "2009".</li>
+     * <li>In case a date range search is done, then all possible matches for the
+     * provided rage are created as search terms and matched with the document terms.</li>
+     * <li>Consider the following use case: You want to find out if a resource has been changed
+     * in the time between November 29, 2007 and March 01, 2009.
+     * One term to match is simply "2008" because if a document 
+     * was modified in 2008, then it is clearly in the date range.
+     * Other terms are "200712", "200901" and "200902", because all documents 
+     * modified in these months are also a certain matches.
+     * Finally we need to add terms for "20071129", "20071130" and "20090301" to match the days in the 
+     * starting and final month.</li>
+     * </ul>
+     * 
+     * @param startDate start date of the range to search in
+     * @param endDate end date of the range to search in
+     * 
+     * @return a list of date terms for the optimized date range search
+     */
+    public static List<String> getDateRangeSpan(long startDate, long endDate) {
+
+        if (startDate > endDate) {
+            // switch so that the end is always before the start
+            long temp = endDate;
+            endDate = startDate;
+            startDate = temp;
+        }
+
+        List<String> result = new ArrayList<String>(100);
+
+        // initialize calendars from the time value
+        Calendar calStart = Calendar.getInstance(OpenCms.getLocaleManager().getTimeZone());
+        Calendar calEnd = Calendar.getInstance(calStart.getTimeZone());
+        calStart.setTimeInMillis(startDate);
+        calEnd.setTimeInMillis(endDate);
+
+        // get the required info to build the date range from the calendars
+        int startDay = calStart.get(Calendar.DAY_OF_MONTH);
+        int endDay = calEnd.get(Calendar.DAY_OF_MONTH);
+        int maxDayInStartMonth = calStart.getActualMaximum(Calendar.DAY_OF_MONTH);
+        int startMonth = calStart.get(Calendar.MONTH) + 1;
+        int endMonth = calEnd.get(Calendar.MONTH) + 1;
+        int startYear = calStart.get(Calendar.YEAR);
+        int endYear = calEnd.get(Calendar.YEAR);
+
+        // first add all full years in the date range
+        result.addAll(getYearSpan(startYear + 1, endYear - 1));
+
+        if (startYear != endYear) {
+            // different year, different month
+            result.addAll(getMonthSpan(startMonth + 1, 12, startYear));
+            result.addAll(getMonthSpan(1, endMonth - 1, endYear));
+            result.addAll(getDaySpan(startDay, maxDayInStartMonth, startMonth, startYear));
+            result.addAll(getDaySpan(1, endDay, endMonth, endYear));
+        } else {
+            if (startMonth != endMonth) {
+                // same year, different month
+                result.addAll(getMonthSpan(startMonth + 1, endMonth - 1, startYear));
+                result.addAll(getDaySpan(startDay, maxDayInStartMonth, startMonth, startYear));
+                result.addAll(getDaySpan(1, endDay, endMonth, endYear));
+            } else {
+                // same year, same month
+                result.addAll(getDaySpan(startDay, endDay, endMonth, endYear));
+            }
+        }
+
+        // sort the result, makes the range better readable in the debugger
+        Collections.sort(result);
+        return result;
+    }
+
+    /**
+     * Calculate a span of days in the given year and month for the optimized date range search.<p>
+     *  
+     * The result will contain dates formatted like "yyyyMMDD", for example "20080131".<p> 
+     *  
+     * @param startDay the start day
+     * @param endDay the end day
+     * @param month the month
+     * @param year the year
+     * 
+     * @return a span of days in the given year and month for the optimized date range search
+     */
+    private static List<String> getDaySpan(int startDay, int endDay, int month, int year) {
+
+        List<String> result = new ArrayList<String>();
+        String yearMonthStr = String.valueOf(year) + DATES[month];
+        for (int i = startDay; i <= endDay; i++) {
+            String dateStr = yearMonthStr + DATES[i];
+            result.add(dateStr);
+        }
+        return result;
+    }
+
+    /**
+     * Calculate a span of months in the given year for the optimized date range search.<p>
+     *  
+     * The result will contain dates formatted like "yyyyMM", for example "200801".<p> 
+     *  
+     * @param startMonth the start month
+     * @param endMonth the end month
+     * @param year the year
+     * 
+     * @return a span of months in the given year for the optimized date range search
+     */
+    private static List<String> getMonthSpan(int startMonth, int endMonth, int year) {
+
+        List<String> result = new ArrayList<String>();
+        String yearStr = String.valueOf(year);
+        for (int i = startMonth; i <= endMonth; i++) {
+            String dateStr = yearStr + DATES[i];
+            result.add(dateStr);
+        }
+        return result;
+    }
+
+    /**
+     * Calculate a span of years for the optimized date range search.<p>
+     *  
+     * The result will contain dates formatted like "yyyy", for example "2008".<p> 
+     *  
+     * @param startYear the start year
+     * @param endYear the end year
+     * 
+     * @return a span of years for the optimized date range search
+     */
+    private static List<String> getYearSpan(int startYear, int endYear) {
+
+        List<String> result = new ArrayList<String>();
+        for (int i = startYear; i <= endYear; i++) {
+            String dateStr = String.valueOf(i);
+            result.add(dateStr);
+        }
+        return result;
     }
 
     /**
@@ -440,39 +621,39 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map<String, Object> getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
-        Map<String, Object> result = new TreeMap<String, Object>();
+        Map<String, String> result = new TreeMap<String, String>();
         if (getPriority() > 0) {
-            result.put(PRIORITY, new Integer(m_priority));
+            result.put(PRIORITY, String.valueOf(m_priority));
         }
         if (!isCreatingExcerpt()) {
-            result.put(EXCERPT, Boolean.valueOf(m_createExcerpt));
+            result.put(EXCERPT, String.valueOf(m_createExcerpt));
         }
         if (!isExtractingContent()) {
-            result.put(EXTRACT_CONTENT, Boolean.valueOf(m_extractContent));
+            result.put(EXTRACT_CONTENT, String.valueOf(m_extractContent));
         }
         if (!isCheckingPermissions()) {
-            result.put(PERMISSIONS, Boolean.valueOf(m_checkPermissions));
+            result.put(PERMISSIONS, String.valueOf(m_checkPermissions));
         }
         if (!isCheckingTimeRange()) {
-            result.put(TIME_RANGE, Boolean.valueOf(m_checkTimeRange));
+            result.put(TIME_RANGE, String.valueOf(m_checkTimeRange));
         }
         // set the index writer parameter if required 
         if (m_luceneMaxMergeDocs != null) {
-            result.put(LUCENE_MAX_MERGE_DOCS, m_luceneMaxMergeDocs);
+            result.put(LUCENE_MAX_MERGE_DOCS, String.valueOf(m_luceneMaxMergeDocs));
         }
         if (m_luceneMergeFactor != null) {
-            result.put(LUCENE_MERGE_FACTOR, m_luceneMergeFactor);
+            result.put(LUCENE_MERGE_FACTOR, String.valueOf(m_luceneMergeFactor));
         }
         if (m_luceneRAMBufferSizeMB != null) {
-            result.put(LUCENE_RAM_BUFFER_SIZE_MB, m_luceneRAMBufferSizeMB);
+            result.put(LUCENE_RAM_BUFFER_SIZE_MB, String.valueOf(m_luceneRAMBufferSizeMB));
         }
         if (m_luceneUseCompoundFile != null) {
-            result.put(LUCENE_USE_COMPOUND_FILE, m_luceneUseCompoundFile);
+            result.put(LUCENE_USE_COMPOUND_FILE, String.valueOf(m_luceneUseCompoundFile));
         }
         if (m_luceneAutoCommit != null) {
-            result.put(LUCENE_AUTO_COMMIT, m_luceneAutoCommit);
+            result.put(LUCENE_AUTO_COMMIT, String.valueOf(m_luceneAutoCommit));
         }
         return result;
     }
@@ -823,12 +1004,24 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns <code>true</code> if the document time range is checked for search results by this index.<p>
+     * Returns <code>true</code> if the document time range is checked with a granularity level of seconds
+     * for search results by this index.<p>
      * 
-     * If time range checks are not required, they can be turned off in the index search configuration parameters
-     * in <code>opencms-search.xml</code>. Not checking the time range will improve performance.<p> 
+     * Since OpenCms 8.0, time range checks are always done if {@link CmsSearchParameters#setMinDateLastModified(long)}
+     * or any of the corresponding methods are used. 
+     * This is done very efficiently using optimized Lucene filers.
+     * However, the granularity of these checks are done only on a daily
+     * basis, which means that you can only find "changes made yesterday" but not "changes made last hour". 
+     * For normal limitation of search results, a daily granularity should be enough.<p> 
      * 
-     * @return <code>true</code> if the document time range is checked for search results by this index
+     * If time range checks with a granularity level of seconds are required, 
+     * they can be turned on in the index search configuration parameters
+     * in <code>opencms-search.xml</code>. 
+     * Not checking the time range  with a granularity level of seconds will improve performance.<p>
+     * 
+     * By default the granularity level of seconds is turned off since OpenCms 8.0<p> 
+     * 
+     * @return <code>true</code> if the document time range is checked  with a granularity level of seconds for search results by this index
      */
     public boolean isCheckingTimeRange() {
 
@@ -952,6 +1145,25 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 filter.add(new FilterClause(getMultiTermQueryFilter(
                     CmsSearchField.FIELD_TYPE,
                     params.getResourceTypes()), BooleanClause.Occur.MUST));
+            }
+
+            // create special optimized sub-filter for the date last modified search
+            Filter dateFilter = createDateRangeFilter(
+                CmsSearchField.FIELD_DATE_LASTMODIFIED_LOOKUP,
+                params.getMinDateLastModified(),
+                params.getMaxDateLastModified());
+            if (dateFilter != null) {
+                // extend main filter with the created date filter
+                filter.add(new FilterClause(dateFilter, BooleanClause.Occur.MUST));
+            }
+            // create special optimized sub-filter for the date created search
+            dateFilter = createDateRangeFilter(
+                CmsSearchField.FIELD_DATE_CREATED_LOOKUP,
+                params.getMinDateCreated(),
+                params.getMaxDateCreated());
+            if (dateFilter != null) {
+                // extend main filter with the created date filter
+                filter.add(new FilterClause(dateFilter, BooleanClause.Occur.MUST));
             }
 
             // the search query to use, will be constructed in the next lines 
@@ -1267,6 +1479,49 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Creates an optimized date range filter for the date of last modification or creation.<p>
+     * 
+     * If the start date is equal to {@link Long#MIN_VALUE} and the end date is equal to {@link Long#MAX_VALUE}  
+     * than <code>null</code> is returned.<p>
+     * 
+     * @param fieldName the name of the field to search
+     * @param startDate start date of the range to search in
+     * @param endDate end date of the range to search in
+     * 
+     * @return an optimized date range filter for the date of last modification or creation
+     */
+    protected Filter createDateRangeFilter(String fieldName, long startDate, long endDate) {
+
+        TermsFilter filter = null;
+        if ((startDate != Long.MIN_VALUE) || (endDate != Long.MAX_VALUE)) {
+            // a date range has been set for this LGT document search
+            if (startDate == Long.MIN_VALUE) {
+                // default start will always be "yyyy1231" in order to reduce term size                    
+                Calendar cal = Calendar.getInstance(OpenCms.getLocaleManager().getTimeZone());
+                cal.setTimeInMillis(endDate);
+                cal.set(cal.get(Calendar.YEAR) - MAX_YEAR_RANGE, 11, 31, 0, 0, 0);
+                startDate = cal.getTimeInMillis();
+            } else if (endDate == Long.MAX_VALUE) {
+                // default end will always be "yyyy0101" in order to reduce term size                    
+                Calendar cal = Calendar.getInstance(OpenCms.getLocaleManager().getTimeZone());
+                cal.setTimeInMillis(startDate);
+                cal.set(cal.get(Calendar.YEAR) + MAX_YEAR_RANGE, 0, 1, 0, 0, 0);
+                endDate = cal.getTimeInMillis();
+            }
+            // create the filter for the date
+            filter = new TermsFilter();
+            // get the list of all possible date range options
+            List<String> dateRage = getDateRangeSpan(startDate, endDate);
+            Iterator<String> i = dateRage.iterator();
+            while (i.hasNext()) {
+                // generate one term query per date range option
+                filter.addTerm(new Term(fieldName, i.next()));
+            }
+        }
+        return filter;
+    }
+
+    /**
      * Extends the given path query with another term for the given search root element.<p>
      * 
      * @param pathFilter the path filter to extend
@@ -1455,21 +1710,19 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         try {
             // check the creation date of the document against the given time range
             Date dateCreated = DateTools.stringToDate(doc.getFieldable(CmsSearchField.FIELD_DATE_CREATED).stringValue());
-            if ((params.getMinDateCreated() > Long.MIN_VALUE) && (dateCreated.getTime() < params.getMinDateCreated())) {
+            if (dateCreated.getTime() < params.getMinDateCreated()) {
                 return false;
             }
-            if ((params.getMaxDateCreated() < Long.MAX_VALUE) && (dateCreated.getTime() > params.getMaxDateCreated())) {
+            if (dateCreated.getTime() > params.getMaxDateCreated()) {
                 return false;
             }
 
             // check the last modification date of the document against the given time range
             Date dateLastModified = DateTools.stringToDate(doc.getFieldable(CmsSearchField.FIELD_DATE_LASTMODIFIED).stringValue());
-            if ((params.getMinDateLastModified() > Long.MIN_VALUE)
-                && (dateLastModified.getTime() < params.getMinDateLastModified())) {
+            if (dateLastModified.getTime() < params.getMinDateLastModified()) {
                 return false;
             }
-            if ((params.getMaxDateLastModified() < Long.MAX_VALUE)
-                && (dateLastModified.getTime() > params.getMaxDateLastModified())) {
+            if (dateLastModified.getTime() > params.getMaxDateLastModified()) {
                 return false;
             }
 

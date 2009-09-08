@@ -13,6 +13,7 @@
 				<locale>en</locale>
 				<locale>de</locale>		
 			</localesdefault>
+			<timezone>GMT+01:00</timezone>			
 		</internationalization>
 		<mail>
 			<mailfrom>nobody@nowhere.com</mailfrom>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsConfigurationParameterHandler.java,v $
- * Date   : $Date: 2009/07/08 09:27:11 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/09/08 12:54:46 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.13.2.1 $
  * 
  * @since 6.0.0
  */
@@ -77,7 +77,7 @@ public interface I_CmsConfigurationParameterHandler {
      * 
      * @return the configuration of this resource loader, or <code>null</code>
      */
-    Map getConfiguration();
+    Map<String, String> getConfiguration();
 
     /**
      * Initializes a configuration after all parameters have been added.<p>

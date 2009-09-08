@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2009/09/07 12:41:52 $
- * Version: $Revision: 1.76.2.2 $
+ * Date   : $Date: 2009/09/08 12:54:44 $
+ * Version: $Revision: 1.76.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -86,7 +86,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.76.2.2 $ 
+ * @version $Revision: 1.76.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -276,11 +276,11 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     protected class CmsSearchOfflineIndexThread extends Thread {
 
-        /** Indicates if this thread is still alive. */
-        boolean m_isAlive;
-
         /** The event handler that triggers this thread. */
         CmsSearchOfflineHandler m_handler;
+
+        /** Indicates if this thread is still alive. */
+        boolean m_isAlive;
 
         /**
          * Constructor.<p>
@@ -983,21 +983,21 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * 
      * @return the String to write in the scheduler log
      * 
-     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
+     * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
-    public String launch(CmsObject cms, Map parameters) throws Exception {
+    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         CmsSearchManager manager = OpenCms.getSearchManager();
 
         I_CmsReport report = null;
-        boolean writeLog = Boolean.valueOf((String)parameters.get(JOB_PARAM_WRITELOG)).booleanValue();
+        boolean writeLog = Boolean.valueOf(parameters.get(JOB_PARAM_WRITELOG)).booleanValue();
 
         if (writeLog) {
             report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsSearchManager.class);
         }
 
         List<String> updateList = null;
-        String indexList = (String)parameters.get(JOB_PARAM_INDEXLIST);
+        String indexList = parameters.get(JOB_PARAM_INDEXLIST);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(indexList)) {
             // index list has been provided as job parameter
             updateList = new ArrayList<String>();

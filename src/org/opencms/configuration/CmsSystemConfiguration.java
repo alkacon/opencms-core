@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2009/08/13 10:47:30 $
- * Version: $Revision: 1.51.2.1 $
+ * Date   : $Date: 2009/09/08 12:54:45 $
+ * Version: $Revision: 1.51.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51.2.1 $
+ * @version $Revision: 1.51.2.2 $
  * 
  * @since 6.0.0
  */
@@ -138,7 +138,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for a job class. */
     public static final String N_CLASS = "class";
 
-    /** The duration after which responsibles will be notified about out-dated content. */
+    /** The duration after which responsible resource owners will be notified about out-dated content. */
     public static final String N_CONTENT_NOTIFICATION = "content-notification";
 
     /** The node name for the job context. */
@@ -414,6 +414,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /** The node name for the login message start time. */
     public static final String N_TIMESTART = "timeStart";
 
+    /** The node name for the time zone configuration. */
+    public static final String N_TIMEZONE = "timezone";
+
     /** The node name for the user-admin node. */
     public static final String N_USER_ADMIN = "user-admin";
 
@@ -463,7 +466,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     private CmsMemoryMonitorConfiguration m_cmsMemoryMonitorConfiguration;
 
     /** The list of jobs for the scheduler. */
-    private List m_configuredJobs;
+    private List<CmsScheduledJobInfo> m_configuredJobs;
 
     /** The default content encoding. */
     private String m_defaultContentEncoding;
@@ -512,16 +515,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     private CmsPublishManager m_publishManager;
 
     /** A list of instantiated request handler classes. */
-    private List m_requestHandlers;
+    private List<I_CmsRequestHandler> m_requestHandlers;
 
     /** A list of instantiated resource init handler classes. */
-    private List m_resourceInitHandlers;
+    private List<I_CmsResourceInit> m_resourceInitHandlers;
 
     /** The runtime info factory. */
     private I_CmsDbContextFactory m_runtimeInfoFactory;
 
     /** The runtime properties. */
-    private Map m_runtimeProperties;
+    private Map<String, String> m_runtimeProperties;
 
     /** The configured schedule manager. */
     private CmsScheduleManager m_scheduleManager;
@@ -547,10 +550,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         m_historyEnabled = true;
         m_historyVersions = 10;
         m_historyVersionsAfterDeletion = -1; // use m_historyVersions instead
-        m_resourceInitHandlers = new ArrayList();
-        m_requestHandlers = new ArrayList();
-        m_configuredJobs = new ArrayList();
-        m_runtimeProperties = new HashMap();
+        m_resourceInitHandlers = new ArrayList<I_CmsResourceInit>();
+        m_requestHandlers = new ArrayList<I_CmsRequestHandler>();
+        m_configuredJobs = new ArrayList<CmsScheduledJobInfo>();
+        m_runtimeProperties = new HashMap<String, String>();
         m_eventManager = new CmsEventManager();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SYSTEM_CONFIG_INIT_0));
@@ -560,6 +563,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         m_runtimeProperties.put(paramName, paramValue);
@@ -618,7 +622,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             return;
         }
         if (initClass instanceof I_CmsRequestHandler) {
-            m_requestHandlers.add(initClass);
+            m_requestHandlers.add((I_CmsRequestHandler)initClass);
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_REQUEST_HANDLER_SUCCESS_1, clazz));
             }
@@ -644,7 +648,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             return;
         }
         if (initClass instanceof I_CmsResourceInit) {
-            m_resourceInitHandlers.add(initClass);
+            m_resourceInitHandlers.add((I_CmsResourceInit)initClass);
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_RESOURCE_INIT_SUCCESS_1, clazz));
             }
@@ -691,6 +695,8 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             "*/" + N_SYSTEM + "/" + N_I18N + "/" + N_LOCALESDEFAULT + "/" + N_LOCALE,
             "addDefaultLocale",
             0);
+        // add time zone rule
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_I18N + "/" + N_TIMEZONE, "setTimeZone", 0);
 
         // add version history rules
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_VERSIONHISTORY, "setHistorySettings", 3);
@@ -1077,27 +1083,26 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         i18nElement.addElement(N_LOCALEHANDLER).addAttribute(
             A_CLASS,
             m_localeManager.getLocaleHandler().getClass().getName());
-        Iterator i;
+        Iterator<Locale> loc;
         Element localesElement;
         localesElement = i18nElement.addElement(N_LOCALESCONFIGURED);
-        i = m_localeManager.getAvailableLocales().iterator();
-        while (i.hasNext()) {
-            Locale locale = (Locale)i.next();
-            localesElement.addElement(N_LOCALE).addText(locale.toString());
+        loc = m_localeManager.getAvailableLocales().iterator();
+        while (loc.hasNext()) {
+            localesElement.addElement(N_LOCALE).addText(loc.next().toString());
         }
         localesElement = i18nElement.addElement(N_LOCALESDEFAULT);
-        i = m_localeManager.getDefaultLocales().iterator();
-        while (i.hasNext()) {
-            Locale locale = (Locale)i.next();
-            localesElement.addElement(N_LOCALE).setText(locale.toString());
+        loc = m_localeManager.getDefaultLocales().iterator();
+        while (loc.hasNext()) {
+            localesElement.addElement(N_LOCALE).setText(loc.next().toString());
         }
+        i18nElement.addElement(N_TIMEZONE).setText(m_localeManager.getTimeZone().getID());
 
         // mail nodes
         Element mailElement = systemElement.addElement(N_MAIL);
         mailElement.addElement(N_MAILFROM).setText(m_mailSettings.getMailFromDefault());
-        i = m_mailSettings.getMailHosts().iterator();
-        while (i.hasNext()) {
-            CmsMailHost host = (CmsMailHost)i.next();
+        Iterator<CmsMailHost> hosts = m_mailSettings.getMailHosts().iterator();
+        while (hosts.hasNext()) {
+            CmsMailHost host = hosts.next();
             Element hostElement = mailElement.addElement(N_MAILHOST).addAttribute(A_NAME, host.getHostname()).addAttribute(
                 A_ORDER,
                 host.getOrder().toString()).addAttribute(A_PROTOCOL, host.getProtocol());
@@ -1108,9 +1113,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         // scheduler node
         Element schedulerElement = systemElement.addElement(N_SCHEDULER);
-        i = m_configuredJobs.iterator();
-        while (i.hasNext()) {
-            CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)i.next();
+        Iterator<CmsScheduledJobInfo> jobs = m_configuredJobs.iterator();
+        while (jobs.hasNext()) {
+            CmsScheduledJobInfo jobInfo = jobs.next();
             Element jobElement = schedulerElement.addElement(N_JOB);
             jobElement.addElement(N_NAME).addText(jobInfo.getJobName());
             jobElement.addElement(N_CLASS).addText(jobInfo.getClassName());
@@ -1125,17 +1130,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             contextElement.addElement(N_LOCALE).setText(jobInfo.getContextInfo().getLocaleName());
             contextElement.addElement(N_ENCODING).setText(jobInfo.getContextInfo().getEncoding());
             contextElement.addElement(N_REMOTEADDR).setText(jobInfo.getContextInfo().getRemoteAddr());
-            Map jobParameters = jobInfo.getConfiguration();
+            Map<String, String> jobParameters = jobInfo.getConfiguration();
             if ((jobParameters != null) && (jobParameters.size() > 0)) {
                 Element parameterElement = jobElement.addElement(N_PARAMETERS);
-                Iterator it = jobParameters.entrySet().iterator();
+                Iterator<Map.Entry<String, String>> it = jobParameters.entrySet().iterator();
                 while (it.hasNext()) {
-                    Map.Entry entry = (Map.Entry)it.next();
-                    String name = (String)entry.getKey();
-                    String value = (String)entry.getValue();
+                    Map.Entry<String, String> entry = it.next();
                     Element paramNode = parameterElement.addElement(N_PARAM);
-                    paramNode.addAttribute(A_NAME, name);
-                    paramNode.addText(value);
+                    paramNode.addAttribute(A_NAME, entry.getKey());
+                    paramNode.addText(entry.getValue());
                 }
             }
         }
@@ -1153,18 +1156,18 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
 
         // resourceinit
         Element resourceinitElement = systemElement.addElement(N_RESOURCEINIT);
-        i = m_resourceInitHandlers.iterator();
-        while (i.hasNext()) {
-            I_CmsResourceInit clazz = (I_CmsResourceInit)i.next();
+        Iterator<I_CmsResourceInit> resHandlers = m_resourceInitHandlers.iterator();
+        while (resHandlers.hasNext()) {
+            I_CmsResourceInit clazz = resHandlers.next();
             Element handlerElement = resourceinitElement.addElement(N_RESOURCEINITHANDLER);
             handlerElement.addAttribute(A_CLASS, clazz.getClass().getName());
         }
 
         // request handlers
         Element requesthandlersElement = systemElement.addElement(N_REQUESTHANDLERS);
-        i = m_requestHandlers.iterator();
-        while (i.hasNext()) {
-            I_CmsRequestHandler clazz = (I_CmsRequestHandler)i.next();
+        Iterator<I_CmsRequestHandler> reqHandlers = m_requestHandlers.iterator();
+        while (reqHandlers.hasNext()) {
+            I_CmsRequestHandler clazz = reqHandlers.next();
             Element handlerElement = requesthandlersElement.addElement(N_REQUESTHANDLER);
             handlerElement.addAttribute(A_CLASS, clazz.getClass().getName());
         }
@@ -1175,16 +1178,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
             m_passwordHandler.getClass().getName());
         passwordhandlerElement.addElement(N_PASSWORDENCODING).addText(m_passwordHandler.getInputEncoding());
         passwordhandlerElement.addElement(N_DIGESTTYPE).addText(m_passwordHandler.getDigestType());
-        Map handlerParameters = m_passwordHandler.getConfiguration();
+        Map<String, String> handlerParameters = m_passwordHandler.getConfiguration();
         if (handlerParameters != null) {
-            Iterator it = handlerParameters.entrySet().iterator();
+            Iterator<Map.Entry<String, String>> it = handlerParameters.entrySet().iterator();
             while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                String name = (String)entry.getKey();
-                String value = (String)entry.getValue();
+                Map.Entry<String, String> entry = it.next();
                 Element paramNode = passwordhandlerElement.addElement(N_PARAM);
-                paramNode.addAttribute(A_NAME, name);
-                paramNode.addText(value);
+                paramNode.addAttribute(A_NAME, entry.getKey());
+                paramNode.addText(entry.getValue());
             }
         }
 
@@ -1219,9 +1220,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         Element sitesElement = systemElement.addElement(N_SITES);
         sitesElement.addElement(N_WORKPLACE_SERVER).addText(m_siteManager.getWorkplaceServer());
         sitesElement.addElement(N_DEFAULT_URI).addText(m_siteManager.getDefaultUri());
-        Iterator siteIterator = new HashSet(m_siteManager.getSites().values()).iterator();
+        Iterator<CmsSite> siteIterator = new HashSet<CmsSite>(m_siteManager.getSites().values()).iterator();
         while (siteIterator.hasNext()) {
-            CmsSite site = (CmsSite)siteIterator.next();
+            CmsSite site = siteIterator.next();
             // create <site server="" uri=""/> subnode(s)
             Element siteElement = sitesElement.addElement(N_SITE);
 
@@ -1235,9 +1236,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 secureElem.addAttribute(A_ERROR, "" + site.isExclusiveError());
             }
             // create <alias server=""/> subnode(s)            
-            Iterator aliasIterator = site.getAliases().iterator();
+            Iterator<CmsSiteMatcher> aliasIterator = site.getAliases().iterator();
             while (aliasIterator.hasNext()) {
-                CmsSiteMatcher matcher = (CmsSiteMatcher)aliasIterator.next();
+                CmsSiteMatcher matcher = aliasIterator.next();
                 Element aliasElement = siteElement.addElement(N_ALIAS);
                 aliasElement.addAttribute(A_SERVER, matcher.getUrl());
                 if (matcher.getTimeOffset() != 0) {
@@ -1249,14 +1250,14 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         // create <runtimeproperties> node
         Element runtimepropertiesElement = systemElement.addElement(N_RUNTIMEPROPERTIES);
         if (m_runtimeProperties != null) {
-            List sortedRuntimeProperties = new ArrayList(m_runtimeProperties.keySet());
+            List<String> sortedRuntimeProperties = new ArrayList<String>(m_runtimeProperties.keySet());
             Collections.sort(sortedRuntimeProperties);
-            Iterator it = sortedRuntimeProperties.iterator();
+            Iterator<String> it = sortedRuntimeProperties.iterator();
             while (it.hasNext()) {
-                String key = (String)it.next();
+                String key = it.next();
                 // create <param name="">value</param> subnodes
                 runtimepropertiesElement.addElement(N_PARAM).addAttribute(A_NAME, key).addText(
-                    (String)m_runtimeProperties.get(key));
+                    m_runtimeProperties.get(key));
             }
         }
 
@@ -1315,12 +1316,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
                 memorymonitorElement.addElement(N_EMAIL_SENDER).addText(
                     m_cmsMemoryMonitorConfiguration.getEmailSender());
             }
-            List emailReceiver = m_cmsMemoryMonitorConfiguration.getEmailReceiver();
+            List<String> emailReceiver = m_cmsMemoryMonitorConfiguration.getEmailReceiver();
             if (!emailReceiver.isEmpty()) {
                 Element emailreceiverElement = memorymonitorElement.addElement(N_EMAIL_RECEIVER);
-                Iterator iter = emailReceiver.iterator();
+                Iterator<String> iter = emailReceiver.iterator();
                 while (iter.hasNext()) {
-                    emailreceiverElement.addElement(N_RECEIVER).addText((String)iter.next());
+                    emailreceiverElement.addElement(N_RECEIVER).addText(iter.next());
                 }
             }
         }
@@ -1691,7 +1692,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      * 
      * @return the list of instantiated request handler classes
      */
-    public List getRequestHandlers() {
+    public List<I_CmsRequestHandler> getRequestHandlers() {
 
         return m_requestHandlers;
     }
@@ -1701,7 +1702,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      * 
      * @return the list of instantiated resource init handler classes
      */
-    public List getResourceInitHandlers() {
+    public List<I_CmsResourceInit> getResourceInitHandlers() {
 
         return m_resourceInitHandlers;
     }
@@ -1721,7 +1722,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
      *
      * @return the runtime Properties
      */
-    public Map getRuntimeProperties() {
+    public Map<String, String> getRuntimeProperties() {
 
         return m_runtimeProperties;
     }

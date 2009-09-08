@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDigesterResourceTypeCreationFactory.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/08 12:54:44 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.xml.sax.Attributes;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  * 
  * @since 6.0.2
  */
@@ -70,6 +70,7 @@ public class CmsDigesterResourceTypeCreationFactory extends AbstractObjectCreati
     /**
      * @see org.apache.commons.digester.ObjectCreationFactory#createObject(org.xml.sax.Attributes)
      */
+    @Override
     public Object createObject(Attributes attributes) throws Exception {
 
         // get the class name attribute

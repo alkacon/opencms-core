@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2009/09/01 09:24:16 $
- * Version: $Revision: 1.48.2.1 $
+ * Date   : $Date: 2009/09/08 12:54:44 $
+ * Version: $Revision: 1.48.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.48.2.1 $ 
+ * @version $Revision: 1.48.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -326,7 +326,7 @@ public class CmsSearch {
             return links;
         }
         int startIndex, endIndex;
-        String link = m_cms.getRequestContext().getUri() + getSearchParameters() + "&searchPage=";
+        String link = m_cms.getRequestContext().getUri() + m_parameters.toQueryString() + "&searchPage=";
         if (getDisplayPages() < 1) {
             // number of displayed pages not limited, build a map with all available page links 
             startIndex = 1;
@@ -417,20 +417,6 @@ public class CmsSearch {
     public int getSearchPage() {
 
         return m_parameters.getSearchPage();
-    }
-
-    /**
-     * Creates a String with the necessary search parameters for page links.<p>
-     * 
-     * @return String with search parameters
-     * 
-     * @deprecated use {@link CmsSearchParameters#toQueryString()} instead
-     * 
-     * @see #getParameters()
-     */
-    public String getSearchParameters() {
-
-        return m_parameters.toQueryString();
     }
 
     /**

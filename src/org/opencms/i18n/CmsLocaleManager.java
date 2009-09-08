@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2009/09/07 12:41:54 $
- * Version: $Revision: 1.57.2.1 $
+ * Date   : $Date: 2009/09/08 12:54:46 $
+ * Version: $Revision: 1.57.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.57.2.1 $ 
+ * @version $Revision: 1.57.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,12 +95,16 @@ public class CmsLocaleManager implements I_CmsEventListener {
     /** The configured locale handler. */
     private I_CmsLocaleHandler m_localeHandler;
 
+    /** The OpenCms default time zone. */
+    private TimeZone m_timeZone;
+
     /**
      * Initializes a new CmsLocaleManager, called from the configuration.<p>
      */
     public CmsLocaleManager() {
 
         setDefaultLocale();
+        setTimeZone("GMT");
         m_availableLocales = new ArrayList<Locale>();
         m_defaultLocales = new ArrayList<Locale>();
         m_localeHandler = new CmsDefaultLocaleHandler();
@@ -118,6 +123,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
     public CmsLocaleManager(Locale defaultLocale) {
 
         setDefaultLocale();
+        setTimeZone("GMT");
         m_initialized = false;
 
         m_availableLocales = new ArrayList<Locale>();
@@ -819,6 +825,16 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
+     * Returns the OpenCms default the time zone.<p>
+     *
+     * @return the OpenCms default the time zone
+     */
+    public TimeZone getTimeZone() {
+
+        return m_timeZone;
+    }
+
+    /**
      * Initializes this locale manager with the OpenCms system configuration.<p>
      * 
      * @param cms an OpenCms context object that must have been initialized with "Admin" permissions
@@ -865,6 +881,19 @@ public class CmsLocaleManager implements I_CmsEventListener {
                 Messages.INIT_I18N_CONFIG_LOC_HANDLER_1,
                 m_localeHandler.getClass().getName()));
         }
+    }
+
+    /**
+     * Sets OpenCms default the time zone.<p>
+     *
+     * If the name can not be resolved as time zone ID, then "GMT" is used.<p> 
+     *
+     * @param timeZoneName the name of the time zone to set, for example "GMT"
+     */
+    public void setTimeZone(String timeZoneName) {
+
+        // according to JavaDoc, "GMT" is the default time zone if the name can not be resolved
+        m_timeZone = TimeZone.getTimeZone(timeZoneName);
     }
 
     /**

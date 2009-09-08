@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2009/07/23 13:56:21 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2009/09/08 12:54:45 $
+ * Version: $Revision: 1.35.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.35.2.1 $
  * 
  * @since 6.0.0
  */
@@ -115,7 +115,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     private File m_baseFolder;
 
     /** The initialized configuration classes. */
-    private List m_configurations;
+    private List<I_CmsXmlConfiguration> m_configurations;
 
     /** The digester for reading the XML configuration. */
     private Digester m_digester;
@@ -152,7 +152,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_CONFIG_BKP_FOLDER_1, m_backupFolder.getAbsolutePath()));
         }
         cacheDtdSystemId(this);
-        m_configurations = new ArrayList();
+        m_configurations = new ArrayList<I_CmsXmlConfiguration>();
     }
 
     /**
@@ -199,7 +199,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         Element configurationElement = parent.addElement(N_CONFIGURATION);
         for (int i = 0; i < m_configurations.size(); i++) {
             // append the individual configuration 
-            I_CmsXmlConfiguration configuration = (I_CmsXmlConfiguration)m_configurations.get(i);
+            I_CmsXmlConfiguration configuration = m_configurations.get(i);
             configurationElement.addElement(N_CONFIG).addAttribute(
                 I_CmsXmlConfiguration.A_CLASS,
                 configuration.getClass().getName());
@@ -250,7 +250,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * @see #setConfiguration(ExtendedProperties)
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         return m_propertyConfiguration;
     }
@@ -261,10 +261,10 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * @param clazz the configuration class that should be returned
      * @return the initialized configuration class instance, or <code>null</code> if this is not found
      */
-    public I_CmsXmlConfiguration getConfiguration(Class clazz) {
+    public I_CmsXmlConfiguration getConfiguration(Class<?> clazz) {
 
         for (int i = 0; i < m_configurations.size(); i++) {
-            I_CmsXmlConfiguration configuration = (I_CmsXmlConfiguration)m_configurations.get(i);
+            I_CmsXmlConfiguration configuration = m_configurations.get(i);
             if (clazz.equals(configuration.getClass())) {
                 return configuration;
             }
@@ -277,7 +277,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * 
      * @return the list of all initialized configurations
      */
-    public List getConfigurations() {
+    public List<I_CmsXmlConfiguration> getConfigurations() {
 
         return m_configurations;
     }
@@ -342,10 +342,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         loadXmlConfiguration(baseUrl, this);
 
         // now iterate all sub-configurations
-        Iterator i = m_configurations.iterator();
+        Iterator<I_CmsXmlConfiguration> i = m_configurations.iterator();
         while (i.hasNext()) {
-            I_CmsXmlConfiguration config = (I_CmsXmlConfiguration)i.next();
-            loadXmlConfiguration(baseUrl, config);
+            loadXmlConfiguration(baseUrl, i.next());
         }
 
         // remove the old backups
@@ -371,7 +370,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * @throws IOException in case of I/O errors while writing
      * @throws CmsConfigurationException if the given class is not a valid configuration class
      */
-    public void writeConfiguration(Class clazz) throws IOException, CmsConfigurationException {
+    public void writeConfiguration(Class<?> clazz) throws IOException, CmsConfigurationException {
 
         I_CmsXmlConfiguration configuration = getConfiguration(clazz);
         if (configuration == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/09/08 12:54:45 $
+ * Version: $Revision: 1.21.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.21.2.1 $
  * 
  * @since 6.0.0
  */
@@ -68,7 +68,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         // simple default configuration does not support parameters
         if (LOG.isDebugEnabled()) {

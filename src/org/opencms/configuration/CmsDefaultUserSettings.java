@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2009/07/23 13:56:21 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/09/08 12:54:45 $
+ * Version: $Revision: 1.25.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.25.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -546,7 +546,8 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
         m_allowBrokenRelations = Boolean.valueOf(allowBrokenRelations).booleanValue();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(
-                m_allowBrokenRelations ? Messages.INIT_RELATION_DELETION_ENABLED_0
+                m_allowBrokenRelations
+                ? Messages.INIT_RELATION_DELETION_ENABLED_0
                 : Messages.INIT_RELATION_DELETION_DISABLED_0));
         }
     }
