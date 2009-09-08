@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/09/08 14:46:52 $
- * Version: $Revision: 1.1127 $
+ * Date   : $Date: 2009/09/08 15:52:13 $
+ * Version: $Revision: 1.1128 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -44,6 +44,7 @@ OpenCms 7.5.1 - month day, 2009
 * Fixed issue #1743: Cached users for groups are not invalidated when writing user
 * Fixed issue #1739: Deleted or moved project resources cannot be removed from project
 * Fixed issue with consumed exception messages for email sending
+* Fixed issue with noAutoCloseTags attribute of cms:parse tag only supporting div 
 
 OpenCms 7.5.0 - June 15, 2009
 ! Added support for new Microsoft document types to upload applet

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/parse/Attic/DivTag.java,v $
- * Date   : $Date: 2009/08/20 11:31:34 $
- * Version: $Revision: 1.8 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsNoAutoCloseTag.java,v $
+ * Date   : $Date: 2009/09/08 15:52:13 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -29,40 +29,43 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.jsp.parse;
+package org.opencms.util;
 
 import org.htmlparser.nodes.TagNode;
-import org.htmlparser.tags.Div;
+import org.htmlparser.tags.CompositeTag;
 
 /**
- * A <code>{@link Div} </code> for flat parsing (vs. nested) which is misued for avoiding the creation of 
- * the corresponding end tag in case the html to parse is not balanced.<p>
+ * A <code>{@link TagNode}</code> with an arbitrary name which is misused for avoiding the creation of 
+ * the corresponding end tag in case the HTML to parse is not balanced.<p> 
+ * 
+ * The trick is: The free name (constructor) is used by the tag factory which allows to use these 
+ * tags as replacement for the regular ones. And these tags do not extend 
+ * <code>{@link CompositeTag}</code>: They are not supposed to have a closing tag and following tags are 
+ * not treated as their children but siblings. <p>
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.1 $
  * 
- * @since 6.2.2
+ * @since  7.5.1
  *
  */
-public class DivTag extends TagNode {
-
-    /** 
-     * Mimick the same behavior (except nesting of tags) as the tag this one replaces. Caution this field has to be 
-     * static or NPE will happen (getIds is called earlier). 
-     */
-    private static Div m_mimicked = new Div();
+public class CmsNoAutoCloseTag extends TagNode {
 
     /** Generated serial version UID. */
-    private static final long serialVersionUID = -6409422683628200225L;
+    private static final long serialVersionUID = 7794834973417480443L;
 
-    /**
-     * @see org.htmlparser.nodes.TagNode#getEnders()
+    /** The names of this tag. */
+    private String[] m_ids;
+    /** 
+     * Creates an instance with the given names. 
+     * 
+     * @param ids the names of this tag. 
      */
-    @Override
-    public String[] getEnders() {
+    CmsNoAutoCloseTag(String[] ids) {
 
-        return m_mimicked.getEnders();
+        super();
+        m_ids = ids;
     }
 
     /**
@@ -71,7 +74,7 @@ public class DivTag extends TagNode {
     @Override
     public String[] getIds() {
 
-        return m_mimicked.getIds();
+        return m_ids;
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/I_CmsHtmlNodeVisitor.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/08 15:52:13 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,7 +48,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.1.3
  * 
@@ -107,7 +107,7 @@ public interface I_CmsHtmlNodeVisitor {
      * @param noAutoCloseTags a list of upper case tag names for which parsing / visiting 
      *      should not correct missing closing tags to set.
      */
-    void setNoAutoCloseTags(List noAutoCloseTags);
+    void setNoAutoCloseTags(List<String> noAutoCloseTags);
 
     /**
      * Visitor method (callback) invoked when a closing Tag is encountered.
