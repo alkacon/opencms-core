@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlParser.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/09/08 16:11:43 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,7 +31,6 @@
 
 package org.opencms.util;
 
-import org.opencms.jsp.parse.DivTag;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +44,6 @@ import org.htmlparser.Tag;
 import org.htmlparser.Text;
 import org.htmlparser.lexer.Lexer;
 import org.htmlparser.lexer.Page;
-import org.htmlparser.tags.Div;
 import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
@@ -60,14 +58,14 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.2.1 $
  * 
  * @since 6.2.0
  */
 public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
 
     /** List of upper case tag name strings of tags that should not be auto-corrected if closing divs are missing. */
-    protected List m_noAutoCloseTags;
+    protected List<String> m_noAutoCloseTags;
 
     /** The array of supported tag names. */
     // important: don't change the order of these tags in the source, subclasses may expect the tags
@@ -96,7 +94,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
         "TFOOT"};
 
     /** The list of supported tag names. */
-    protected static final List TAG_LIST = Arrays.asList(TAG_ARRAY);
+    protected static final List<String> TAG_LIST = Arrays.asList(TAG_ARRAY);
 
     /** Indicates if "echo" mode is on, that is all content is written to the result by default. */
     protected boolean m_echo;
@@ -126,7 +124,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
 
         m_result = new StringBuffer(1024);
         m_echo = echo;
-        m_noAutoCloseTags = new ArrayList(32);
+        m_noAutoCloseTags = new ArrayList<String>(32);
     }
 
     /**
@@ -140,17 +138,14 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
         PrototypicalNodeFactory factory = new PrototypicalNodeFactory();
 
         String tagName;
-        Iterator it = m_noAutoCloseTags.iterator();
-        Div div = new Div();
-        List divNames = Arrays.asList(div.getIds());
+        Iterator<String> it = m_noAutoCloseTags.iterator();
+        CmsNoAutoCloseTag noAutoCloseTag;
         while (it.hasNext()) {
-            tagName = ((String)it.next());
-            // div
-            if (divNames.contains(tagName)) {
-                factory.unregisterTag(new Div());
-                factory.registerTag(new DivTag());
-            }
-            // TODO: add more tags for flat parsing / non correction of missing closing tags here
+            tagName = it.next();
+            noAutoCloseTag = new CmsNoAutoCloseTag(new String[] {tagName});
+            // TODO: This might break in case registering / unregistering  will change from name based to tag-type based approach:
+            factory.unregisterTag(noAutoCloseTag);
+            factory.registerTag(noAutoCloseTag);
         }
         return factory;
     }
@@ -231,6 +226,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     /**
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitEndTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitEndTag(Tag tag) {
 
         if (m_echo) {
@@ -241,6 +237,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     /**
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitRemarkNode(org.htmlparser.Remark)
      */
+    @Override
     public void visitRemarkNode(Remark remark) {
 
         if (m_echo) {
@@ -251,6 +248,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     /**
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitStringNode(org.htmlparser.Text)
      */
+    @Override
     public void visitStringNode(Text text) {
 
         if (m_echo) {
@@ -261,6 +259,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     /**
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitTag(org.htmlparser.Tag)
      */
+    @Override
     public void visitTag(Tag tag) {
 
         if (m_echo) {
@@ -311,7 +310,7 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
      * 
      * @return a List of upper case tag names for which parsing / visiting will not correct missing closing tags
      */
-    public List getNoAutoCloseTags() {
+    public List<String> getNoAutoCloseTags() {
 
         return m_noAutoCloseTags;
     }
@@ -322,14 +321,14 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
      * @param noAutoCloseTagList a list of upper case tag names for which parsing / visiting 
      *      should not correct missing closing tags to set.
      */
-    public void setNoAutoCloseTags(List noAutoCloseTagList) {
+    public void setNoAutoCloseTags(List<String> noAutoCloseTagList) {
 
         // ensuring upper case
         m_noAutoCloseTags.clear();
         if (noAutoCloseTagList != null) {
-            Iterator it = noAutoCloseTagList.iterator();
+            Iterator<String> it = noAutoCloseTagList.iterator();
             while (it.hasNext()) {
-                m_noAutoCloseTags.add(((String)it.next()).toUpperCase());
+                m_noAutoCloseTags.add((it.next()).toUpperCase());
             }
         }
     }
