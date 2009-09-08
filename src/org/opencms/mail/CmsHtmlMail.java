@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsHtmlMail.java,v $
- * Date   : $Date: 2009/06/04 14:29:48 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/09/08 14:46:53 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import org.apache.commons.mail.HtmlEmail;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,6 +73,7 @@ public class CmsHtmlMail extends HtmlEmail {
         // set the host to the default mail host
         CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
         setHostName(host.getHostname());
+        this.setSmtpPort(host.getPort());
 
         // check if username and password are provided
         String userName = host.getUsername();

@@ -79,6 +79,7 @@
 <!ATTLIST mailhost 
 	name CDATA #REQUIRED
 	order CDATA #IMPLIED
+	port CDATA #IMPLIED 
 	protocol CDATA #IMPLIED
 	user CDATA  #IMPLIED
 	password CDATA #IMPLIED>

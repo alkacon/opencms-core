@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/09/08 14:46:52 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 6.0.0
  */
@@ -90,6 +90,9 @@ public interface I_CmsXmlConfiguration extends I_CmsConfigurationParameterHandle
 
     /** The "protocol" attribute. */
     String A_PROTOCOL = "protocol";
+
+    /** The "protocol" attribute. */
+    String A_PORT = "port";
 
     /** The suffix attribute. */
     String A_SUFFIX = "suffix";

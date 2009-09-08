@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/09/08 14:45:47 $
- * Version: $Revision: 1.1126 $
+ * Date   : $Date: 2009/09/08 14:46:52 $
+ * Version: $Revision: 1.1127 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ OpenCms 7.5.1 - month day, 2009
 ! Added "fields query" option to full text search by which you can search for different terms in several fields
 ! Added support for servlet container Sun GlassFish Enterprise Server v2.1
 ! Added support for servlet container GlassFish/v3 (preview release, builds later than 25-Aug-2009)
-! Added feature #1636: SMPT ports are now configureable 
+! Added feature #1636: SMPT ports are now configurable 
 * Fixed issue #1759: XSS Security
 * Fixed issue with OU users being unable to work after OU resource has been renamed 
 * Fixed issue with pointer targets being stored in XML contents (instead of the uri to pointers) when selecting them from link gallery
