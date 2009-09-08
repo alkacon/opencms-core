@@ -17,9 +17,9 @@
 		</internationalization>
 		<mail>
 			<mailfrom>nobody@nowhere.com</mailfrom>
-			<mailhost name="localhost" protocol="smtp"/>
-			<mailhost name="alternative.smtp.server"/>
-			<mailhost name="another.alternative.smtp.server"/>
+			<mailhost name="localhost" port="25" protocol="smtp"/>
+			<mailhost name="alternative.smtp.server" port="25"/>
+			<mailhost name="another.alternative.smtp.server" port="25"/>
 		</mail>
 		<scheduler />
 	   	<versionhistory enabled="true" count="10" deleted="4" />

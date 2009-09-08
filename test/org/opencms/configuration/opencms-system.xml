@@ -17,9 +17,9 @@
 		</internationalization>
 		<mail>
 			<mailfrom>nobody@nowhere.com</mailfrom>
-			<mailhost name="my.smtp.server" order="10" protocol="smtp" user="username" password="secure"/>
-			<mailhost name="alternative.smtp.server" order="20" protocol="smtp"/>
-			<mailhost name="another.alternative.smtp.server" order="30" protocol="smtp"/>
+			<mailhost name="my.smtp.server" port="25" order="10" protocol="smtp" user="username" password="secure"/>
+			<mailhost name="alternative.smtp.server" port="25" order="20" protocol="smtp"/>
+			<mailhost name="another.alternative.smtp.server" port="25" order="30" protocol="smtp"/>
 		</mail>
 		<scheduler>
 			<job>

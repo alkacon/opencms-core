@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailHost.java,v $
- * Date   : $Date: 2009/09/08 12:52:22 $
- * Version: $Revision: 1.11.2.1 $
+ * Date   : $Date: 2009/09/08 16:41:04 $
+ * Version: $Revision: 1.11.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,7 +36,7 @@ package org.opencms.mail;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11.2.1 $ 
+ * @version $Revision: 1.11.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,6 +50,9 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
 
     /** The password to use for authentication. */
     private String m_password;
+
+   /** The port to use. */
+    private int m_port;
 
     /** The protocol to use. */
     private String m_protocol;
@@ -65,10 +68,13 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
      * @param protocol the protocol to use (default "smtp")
      * @param username the user name to use for authentication 
      * @param password the password to use for authentication
+     * @param port the port, if < 0 then 25 is used
      */
-    public CmsMailHost(String hostname, Integer order, String protocol, String username, String password) {
+    public CmsMailHost(String hostname, Integer port, Integer order, String protocol, String username, String password) {
 
         m_hostname = hostname;
+        int portInt = port.intValue();
+        m_port = (portInt < 0) ? 25 : portInt;
         m_protocol = (protocol != null) ? protocol : CmsMailSettings.MAIL_DEFAULT_PROTOCOL;
         m_username = username;
         m_password = password;
@@ -135,6 +141,16 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
     }
 
     /**
+     * Returns the port.<p>
+     *
+     * @return the port
+     */
+    public int getPort() {
+
+        return m_port;
+    }
+    
+    /**
      * Returns the protocol used for mail sending, default is "smtp".<p>
      * 
      * @return the protocol used for mail sending
@@ -187,6 +203,8 @@ public class CmsMailHost implements Comparable<CmsMailHost> {
         buf.append(this.getClass().getName());
         buf.append(" hostname=");
         buf.append(getHostname());
+        buf.append(" port=");
+        buf.append(getPort());
         buf.append(" order=");
         buf.append(m_order);
         buf.append(" protocol=");

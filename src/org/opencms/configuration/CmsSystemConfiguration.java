@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2009/09/08 12:54:45 $
- * Version: $Revision: 1.51.2.2 $
+ * Date   : $Date: 2009/09/08 16:41:03 $
+ * Version: $Revision: 1.51.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.51.2.2 $
+ * @version $Revision: 1.51.2.3 $
  * 
  * @since 6.0.0
  */
@@ -710,12 +710,13 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_MAIL, "setMailSettings");
 
         // add mail host configuration rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, "addMailHost", 5);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, "addMailHost", 6);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 0, A_NAME);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 1, A_ORDER);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 2, A_PROTOCOL);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 3, A_USER);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 4, A_PASSWORD);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 1, A_PORT);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 2, A_ORDER);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 3, A_PROTOCOL);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 4, A_USER);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_MAIL + "/" + N_MAILHOST, 5, A_PASSWORD);
 
         // add scheduler creation rule
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_SCHEDULER, "addScheduleManager");
@@ -1104,8 +1105,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration {
         while (hosts.hasNext()) {
             CmsMailHost host = hosts.next();
             Element hostElement = mailElement.addElement(N_MAILHOST).addAttribute(A_NAME, host.getHostname()).addAttribute(
-                A_ORDER,
-                host.getOrder().toString()).addAttribute(A_PROTOCOL, host.getProtocol());
+                A_PORT,
+                Integer.toString(host.getPort())).addAttribute(A_ORDER, host.getOrder().toString()).addAttribute(
+                A_PROTOCOL,
+                host.getProtocol());
             if (host.isAuthenticating()) {
                 hostElement.addAttribute(A_USER, host.getUsername()).addAttribute(A_PASSWORD, host.getPassword());
             }

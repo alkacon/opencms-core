@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailSettings.java,v $
- * Date   : $Date: 2009/09/08 12:52:21 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2009/09/08 16:41:04 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.13.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,9 +79,8 @@ public class CmsMailSettings {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_EMPTY_CONSTRUCTOR_CALLED_1));
         }
     }
-
     /**
-     * Adds a new mail host to the internal list of mail hosts.<p>
+     * Adds a new mail host to the internal list of mail hosts with default port 25.<p>
      * 
      * @param hostname the name of the mail host
      * @param order the order in which the host is tried
@@ -91,6 +90,27 @@ public class CmsMailSettings {
      */
     public void addMailHost(String hostname, String order, String protocol, String username, String password) {
 
+        addMailHost(hostname, "25", order, protocol, username, password);
+    }
+    
+  /**
+     * Adds a new mail host to the internal list of mail hosts.<p>
+     * 
+     * @param hostname the name of the mail host
+     * @param port the port of the mail host
+     * @param order the order in which the host is tried
+     * @param protocol the protocol to use (default "smtp")
+     * @param username the user name to use for authentication 
+     * @param password the password to use for authentication
+     */
+    public void addMailHost(String hostname, String port, String order, String protocol, String username, String password) {
+
+        Integer thePort;
+        try {
+            thePort = Integer.valueOf(port);
+        } catch (Throwable t) {
+            thePort = Integer.valueOf(25);
+        }
         m_orderDefault += 10;
         Integer theOrder;
         try {
@@ -99,9 +119,10 @@ public class CmsMailSettings {
                 m_orderDefault = theOrder.intValue();
             }
         } catch (Throwable t) {
-            theOrder = new Integer(m_orderDefault);
+            // valueOf: use jdk int cache if possible and not new operator: 
+            theOrder = Integer.valueOf(m_orderDefault);
         }
-        CmsMailHost host = new CmsMailHost(hostname, theOrder, protocol, username, password);
+        CmsMailHost host = new CmsMailHost(hostname, thePort, theOrder, protocol, username, password);
         m_mailHosts.add(host);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.LOG_ADD_HOST_1, host));
