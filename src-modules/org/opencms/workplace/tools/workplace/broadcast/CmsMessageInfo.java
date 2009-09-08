@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsMessageInfo.java,v $
- * Date   : $Date: 2009/06/04 14:33:38 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/09/08 16:42:24 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,19 +42,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import javax.mail.Address;
-import javax.mail.SendFailedException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-
-import org.apache.commons.mail.EmailException;
 
 /**
  * Bean class for message information.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.16.2.1 $
  * 
  * @since 6.0.0
  */
@@ -153,35 +149,7 @@ public class CmsMessageInfo {
         theMail.setSubject("[" + OpenCms.getSystemInfo().getServerName() + "] " + getSubject());
         theMail.setMsg(getMsg());
         // send the mail
-        try {
-            theMail.send();
-        } catch (EmailException e) {
-            // check if original Exception is of type SendFailedException which
-            // should have been thrown by javax.mail.Transport.send()
-            if (e.getCause() instanceof SendFailedException) {
-                SendFailedException sfe = (SendFailedException)e.getCause();
-                // don't try to resend to successful Addresses: construct a new
-                // string with all unsent
-                StringBuffer newTo = new StringBuffer();
-                Address[] unsent = sfe.getValidUnsentAddresses();
-                if (unsent != null) {
-                    for (int i = unsent.length - 1; i >= 0; i--) {
-                        newTo.append(unsent[i].toString()).append(';');
-                    }
-                }
-                if (unsent != null) {
-                    unsent = sfe.getInvalidAddresses();
-                    for (int i = unsent.length - 1; i >= 0; i--) {
-                        newTo.append(unsent[i].toString()).append(';');
-                    }
-                }
-
-                setTo(newTo.toString());
-                // use the message of the internal cause: this is a localized
-                // CmsRuntimeException
-                throw (Exception)sfe.getCause();
-            }
-        }
+        theMail.send();
     }
 
     /**
