@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2009/06/04 14:29:57 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2009/09/08 12:52:22 $
+ * Version: $Revision: 1.33.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,17 +51,17 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.33.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public final class CmsSite implements Cloneable, Comparable {
+public final class CmsSite implements Cloneable, Comparable<CmsSite> {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSite.class);
 
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
-    private List m_aliases;
+    private List<CmsSiteMatcher> m_aliases;
 
     /** If exclusive, and set to true will generate a 404 error, if set to false will redirect to secure url. */
     private boolean m_exclusiveError;
@@ -134,7 +134,7 @@ public final class CmsSite implements Cloneable, Comparable {
         } catch (Throwable e) {
             // m_position will have Float.MAX_VALUE, so this site will appear last
         }
-        m_aliases = new ArrayList();
+        m_aliases = new ArrayList<CmsSiteMatcher>();
     }
 
     /**
@@ -142,6 +142,7 @@ public final class CmsSite implements Cloneable, Comparable {
      * 
      * @return a clone of this instance
      */
+    @Override
     public Object clone() {
 
         return new CmsSite(
@@ -155,29 +156,27 @@ public final class CmsSite implements Cloneable, Comparable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object that) {
+    public int compareTo(CmsSite that) {
 
         if (that == this) {
             return 0;
         }
-        if (that instanceof CmsSite) {
-            float thatPos = ((CmsSite)that).getPosition();
-            // please note: can't just subtract and cast to int here because of float precision loss
-            if (m_position == thatPos) {
-                if (m_position == Float.MAX_VALUE) {
-                    // if they both do not have any position, sort by title
-                    return m_title.compareTo(((CmsSite)that).getTitle());
-                }
-                return 0;
+        float thatPos = that.getPosition();
+        // please note: can't just subtract and cast to int here because of float precision loss
+        if (m_position == thatPos) {
+            if (m_position == Float.MAX_VALUE) {
+                // if they both do not have any position, sort by title
+                return m_title.compareTo((that).getTitle());
             }
-            return (m_position < thatPos) ? -1 : 1;
+            return 0;
         }
-        return 0;
+        return (m_position < thatPos) ? -1 : 1;
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -194,7 +193,7 @@ public final class CmsSite implements Cloneable, Comparable {
      * 
      * @return a ArrayList with the aliases
      */
-    public List getAliases() {
+    public List<CmsSiteMatcher> getAliases() {
 
         return m_aliases;
     }
@@ -208,7 +207,7 @@ public final class CmsSite implements Cloneable, Comparable {
 
         return m_position;
     }
-    
+
     /**
      * Returns the secure server url of this site root.<p>
      * 
@@ -319,14 +318,14 @@ public final class CmsSite implements Cloneable, Comparable {
      *      the root path does not
      */
     public String getSitePath(String rootPath) {
-        
+
         String result = null;
         if (CmsStringUtil.isNotEmpty(rootPath)) {
             if (rootPath.startsWith(m_siteRoot)) {
                 result = rootPath.substring(m_siteRoot.length());
             }
-        }        
-        return result;        
+        }
+        return result;
     }
 
     /**
@@ -372,6 +371,7 @@ public final class CmsSite implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_siteRootUUID.hashCode();
@@ -432,6 +432,7 @@ public final class CmsSite implements Cloneable, Comparable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer(128);
@@ -459,7 +460,7 @@ public final class CmsSite implements Cloneable, Comparable {
      *      
      * @param aliases the aliases for the site
      */
-    protected void setAliases(List aliases) {
+    protected void setAliases(List<CmsSiteMatcher> aliases) {
 
         m_aliases = aliases;
     }

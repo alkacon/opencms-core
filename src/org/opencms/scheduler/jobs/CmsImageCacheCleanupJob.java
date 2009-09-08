@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsImageCacheCleanupJob.java,v $
- * Date   : $Date: 2009/06/04 14:29:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/08 12:52:22 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.2.1 $ 
  * 
  * @since 6.2.0 
  */
@@ -132,14 +132,14 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
-    public String launch(CmsObject cms, Map parameters) throws Exception {
+    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         if (!CmsImageLoader.isEnabled() || (CmsImageLoader.getImageRepositoryPath() == null)) {
             // scaling functions are not available
             return Messages.get().getBundle().key(Messages.LOG_IMAGE_SCALING_DISABLED_0);
         }
 
-        String maxAgeStr = (String)parameters.get(PARAM_MAXAGE);
+        String maxAgeStr = parameters.get(PARAM_MAXAGE);
         float maxAge;
         try {
             maxAge = Float.parseFloat(maxAgeStr);

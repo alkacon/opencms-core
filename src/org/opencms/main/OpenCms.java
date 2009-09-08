@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2009/06/04 14:29:37 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2009/09/08 12:52:23 $
+ * Version: $Revision: 1.68.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.db.CmsDefaultUsers;
+import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsSqlManager;
 import org.opencms.file.CmsObject;
@@ -96,7 +97,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.68 $ 
+ * @version $Revision: 1.68.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,7 +165,7 @@ public final class OpenCms {
      * @param type event type
      * @param data event data
      */
-    public static void fireCmsEvent(int type, Map data) {
+    public static void fireCmsEvent(int type, Map<String, ?> data) {
 
         OpenCmsCore.getInstance().getEventManager().fireEvent(type, data);
     }
@@ -186,7 +187,7 @@ public final class OpenCms {
      * 
      * @return the configured list of default directory file names
      */
-    public static List getDefaultFiles() {
+    public static List<String> getDefaultFiles() {
 
         return OpenCmsCore.getInstance().getDefaultFiles();
     }
@@ -217,7 +218,7 @@ public final class OpenCms {
      * 
      * @return an unmodifiable set of the configured export points
      */
-    public static Set getExportPoints() {
+    public static Set<CmsExportPoint> getExportPoints() {
 
         return OpenCmsCore.getInstance().getExportPoints();
     }
@@ -480,7 +481,7 @@ public final class OpenCms {
      * 
      * @return the list of system defined roles
      */
-    public static List getSystemRoles() {
+    public static List<CmsRole> getSystemRoles() {
 
         return CmsRole.getSystemRoles();
     }
@@ -666,7 +667,7 @@ public final class OpenCms {
      * 
      * @param clazz the configuration class to write the XML for
      */
-    public static void writeConfiguration(Class clazz) {
+    public static void writeConfiguration(Class<?> clazz) {
 
         OpenCmsCore.getInstance().writeConfiguration(clazz);
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManagerImpl.java,v $
- * Date   : $Date: 2009/06/04 14:29:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/09/08 12:52:23 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.2.1 $ 
  * 
  * @since 7.0.2
  */
@@ -101,7 +101,7 @@ public final class CmsSiteManagerImpl {
     private List m_matchers;
 
     /** Maps site matchers to sites. */
-    private Map m_siteMatcherSites;
+    private Map<CmsSiteMatcher, CmsSite> m_siteMatcherSites;
 
     /** The set of all configured site root paths (as String). */
     private Set m_siteRoots;
@@ -232,7 +232,7 @@ public final class CmsSiteManagerImpl {
         // add site list
         i = m_siteMatcherSites.keySet().iterator();
         while (i.hasNext()) {
-            CmsSite site = (CmsSite)m_siteMatcherSites.get(i.next());
+            CmsSite site = m_siteMatcherSites.get(i.next());
             String folder = site.getSiteRoot() + "/";
             if (!siteroots.contains(folder)) {
                 siteroots.add(folder);
@@ -497,7 +497,7 @@ public final class CmsSiteManagerImpl {
      * @return the map of configured sites, using {@link CmsSiteMatcher} 
      *      objects as keys and {@link CmsSite} objects as values
      */
-    public Map getSites() {
+    public Map<CmsSiteMatcher, CmsSite> getSites() {
 
         return m_siteMatcherSites;
     }
@@ -700,7 +700,7 @@ public final class CmsSiteManagerImpl {
      */
     public CmsSite matchSite(CmsSiteMatcher matcher) {
 
-        CmsSite site = (CmsSite)m_siteMatcherSites.get(matcher);
+        CmsSite site = m_siteMatcherSites.get(matcher);
         if (site == null) {
             // return the default site (might be null as well)
             site = m_defaultSite;

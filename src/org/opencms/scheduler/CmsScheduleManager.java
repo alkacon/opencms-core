@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2009/09/08 12:52:24 $
+ * Version: $Revision: 1.37.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -77,7 +77,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.37.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -95,10 +95,10 @@ public class CmsScheduleManager implements Job {
     private CmsObject m_adminCms;
 
     /** The list of job entries from the configuration. */
-    private List m_configuredJobs;
+    private List<CmsScheduledJobInfo> m_configuredJobs;
 
     /** The list of scheduled jobs. */
-    private List m_jobs;
+    private List<CmsScheduledJobInfo> m_jobs;
 
     /** The initialized scheduler. */
     private Scheduler m_scheduler;
@@ -118,7 +118,7 @@ public class CmsScheduleManager implements Job {
      * 
      * @param configuredJobs the jobs from the configuration
      */
-    public CmsScheduleManager(List configuredJobs) {
+    public CmsScheduleManager(List<CmsScheduledJobInfo> configuredJobs) {
 
         m_configuredJobs = configuredJobs;
         int size = 0;
@@ -206,9 +206,9 @@ public class CmsScheduleManager implements Job {
      */
     public CmsScheduledJobInfo getJob(String id) {
 
-        Iterator it = m_jobs.iterator();
+        Iterator<CmsScheduledJobInfo> it = m_jobs.iterator();
         while (it.hasNext()) {
-            CmsScheduledJobInfo job = (CmsScheduledJobInfo)it.next();
+            CmsScheduledJobInfo job = it.next();
             if (job.getId().equals(id)) {
                 return job;
             }
@@ -224,7 +224,7 @@ public class CmsScheduleManager implements Job {
      *
      * @return the currently scheduled job descriptions in an unmodifiable list
      */
-    public List getJobs() {
+    public List<CmsScheduledJobInfo> getJobs() {
 
         return Collections.unmodifiableList(m_jobs);
     }
@@ -244,7 +244,7 @@ public class CmsScheduleManager implements Job {
         }
 
         // the list of job entries
-        m_jobs = new ArrayList();
+        m_jobs = new ArrayList<CmsScheduledJobInfo>();
 
         // save the admin cms
         m_adminCms = adminCms;
@@ -260,7 +260,7 @@ public class CmsScheduleManager implements Job {
         // this will be required in quartz versions from 1.6, but constants are not supported in earlier versions
         properties.put("org.quartz.scheduler.jmx.export", CmsStringUtil.FALSE);
         properties.put("org.quartz.scheduler.jmx.proxy", CmsStringUtil.FALSE);
-        
+
         try {
             // initialize the Quartz scheduler
             SchedulerFactory schedulerFactory = new StdSchedulerFactory(properties);
@@ -280,7 +280,7 @@ public class CmsScheduleManager implements Job {
             // add all jobs from the system configuration
             for (int i = 0; i < m_configuredJobs.size(); i++) {
                 try {
-                    CmsScheduledJobInfo job = (CmsScheduledJobInfo)m_configuredJobs.get(i);
+                    CmsScheduledJobInfo job = m_configuredJobs.get(i);
                     scheduleJob(adminCms, job);
                 } catch (CmsSchedulerException e) {
                     // ignore this job, but keep scheduling the other jobs
@@ -337,7 +337,7 @@ public class CmsScheduleManager implements Job {
             throw new CmsSchedulerException(message);
         }
 
-        Class jobClass;
+        Class<?> jobClass;
         try {
             jobClass = Class.forName(jobInfo.getClassName());
             if (!I_CmsScheduledJob.class.isAssignableFrom(jobClass)) {
@@ -532,7 +532,7 @@ public class CmsScheduleManager implements Job {
         if (m_jobs.size() > 0) {
             // try to remove the job from the OpenCms list of jobs
             for (int i = (m_jobs.size() - 1); i >= 0; i--) {
-                CmsScheduledJobInfo job = (CmsScheduledJobInfo)m_jobs.get(i);
+                CmsScheduledJobInfo job = m_jobs.get(i);
                 if (jobId.equals(job.getId())) {
                     m_jobs.remove(i);
                     if (jobInfo != null) {

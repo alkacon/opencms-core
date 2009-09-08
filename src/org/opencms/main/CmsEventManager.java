@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEventManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/08 12:52:23 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,6 @@
 package org.opencms.main;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 7.0.0
  * 
@@ -67,18 +66,18 @@ public class CmsEventManager {
     private static final Log LOG = CmsLog.getLog(CmsEventManager.class);
 
     /** Stores the active event listeners. */
-    private Map m_eventListeners;
+    private Map<Integer, List<I_CmsEventListener>> m_eventListeners;
 
     /**
      * Create a new instance of an OpenCms event manager.<p>
      */
     public CmsEventManager() {
 
-        m_eventListeners = new HashMap();
+        m_eventListeners = new HashMap<Integer, List<I_CmsEventListener>>();
     }
 
     /**
-     * Add a cms event listener that listens to all events.<p>
+     * Add an OpenCms event listener that listens to all events.<p>
      *
      * @param listener the listener to add
      */
@@ -88,7 +87,7 @@ public class CmsEventManager {
     }
 
     /**
-     * Add a cms event listener.<p>
+     * Add an OpenCms event listener.<p>
      *
      * @param listener the listener to add
      * @param eventTypes the events to listen for
@@ -103,9 +102,9 @@ public class CmsEventManager {
             for (int i = 0; i < eventTypes.length; i++) {
                 // register the listener for all configured event types
                 Integer eventType = new Integer(eventTypes[i]);
-                List listeners = (List)m_eventListeners.get(eventType);
+                List<I_CmsEventListener> listeners = m_eventListeners.get(eventType);
                 if (listeners == null) {
-                    listeners = new ArrayList();
+                    listeners = new ArrayList<I_CmsEventListener>();
                     m_eventListeners.put(eventType, listeners);
                 }
                 if (!listeners.contains(listener)) {
@@ -123,8 +122,8 @@ public class CmsEventManager {
      */
     public void fireEvent(CmsEvent event) {
 
-        fireEventHandler((List)m_eventListeners.get(event.getTypeInteger()), event);
-        fireEventHandler((List)m_eventListeners.get(I_CmsEventListener.LISTENERS_FOR_ALL_EVENTS), event);
+        fireEventHandler(m_eventListeners.get(event.getTypeInteger()), event);
+        fireEventHandler(m_eventListeners.get(I_CmsEventListener.LISTENERS_FOR_ALL_EVENTS), event);
     }
 
     /**
@@ -134,7 +133,7 @@ public class CmsEventManager {
      */
     public void fireEvent(int type) {
 
-        fireEvent(type, Collections.EMPTY_MAP);
+        fireEvent(type, new HashMap<String, Object>());
     }
 
     /**
@@ -143,7 +142,7 @@ public class CmsEventManager {
      * @param type event type
      * @param data event data
      */
-    public void fireEvent(int type, Map data) {
+    public void fireEvent(int type, Map<String, ?> data) {
 
         fireEvent(new CmsEvent(type, data));
     }
@@ -156,9 +155,9 @@ public class CmsEventManager {
     public void removeCmsEventListener(I_CmsEventListener listener) {
 
         synchronized (m_eventListeners) {
-            Iterator it = m_eventListeners.keySet().iterator();
+            Iterator<Integer> it = m_eventListeners.keySet().iterator();
             while (it.hasNext()) {
-                List listeners = (List)m_eventListeners.get(it.next());
+                List<I_CmsEventListener> listeners = m_eventListeners.get(it.next());
                 listeners.remove(listener);
             }
         }
@@ -169,7 +168,7 @@ public class CmsEventManager {
      * 
      * @return the map of all configured event listeners
      */
-    protected Map getEventListeners() {
+    protected Map<Integer, List<I_CmsEventListener>> getEventListeners() {
 
         return m_eventListeners;
     }
@@ -181,7 +180,7 @@ public class CmsEventManager {
      */
     protected void initialize(CmsEventManager base) {
 
-        m_eventListeners = new HashMap(base.getEventListeners());
+        m_eventListeners = new HashMap<Integer, List<I_CmsEventListener>>(base.getEventListeners());
     }
 
     /**
@@ -190,13 +189,13 @@ public class CmsEventManager {
      * @param listeners the listeners to fire
      * @param event the event to fire
      */
-    protected void fireEventHandler(List listeners, CmsEvent event) {
+    protected void fireEventHandler(List<I_CmsEventListener> listeners, CmsEvent event) {
 
         if (!LOG.isDebugEnabled()) {
             // no logging required            
             if ((listeners != null) && (listeners.size() > 0)) {
                 // handle all event listeners that listen to this event type
-                I_CmsEventListener[] list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
+                I_CmsEventListener[] list = listeners.toArray(EVENT_LIST);
                 // loop through all registered event listeners
                 for (int i = 0; i < list.length; i++) {
                     // fire the event
@@ -209,12 +208,12 @@ public class CmsEventManager {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_EVENT_1, event.toString()));
             if ((listeners != null) && (listeners.size() > 0)) {
                 // handle all event listeners that listen to this event type
-                I_CmsEventListener[] list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
+                I_CmsEventListener[] list = listeners.toArray(EVENT_LIST);
                 // log the event data
                 if (event.getData() != null) {
-                    Iterator i = event.getData().keySet().iterator();
+                    Iterator<String> i = event.getData().keySet().iterator();
                     while (i.hasNext()) {
-                        String key = (String)i.next();
+                        String key = i.next();
                         Object value = event.getData().get(key);
                         LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_EVENT_VALUE_3,

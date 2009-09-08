@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2009/06/05 13:31:38 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2009/09/08 12:52:22 $
+ * Version: $Revision: 1.91.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.91 $ 
+ * @version $Revision: 1.91.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -184,7 +184,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     private Map m_explorerTypeSettingsMap;
 
     /** The workplace export points. */
-    private Set m_exportPoints;
+    private Set<CmsExportPoint> m_exportPoints;
 
     /** Maximum size of an upload file. */
     private int m_fileMaxUploadSize;
@@ -202,7 +202,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     private List m_locales;
 
     /** The configured list of localized workplace folders. */
-    private List m_localizedFolders;
+    private List<String> m_localizedFolders;
 
     /** The configured list of menu rule sets. */
     private List m_menuRules;
@@ -247,7 +247,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
         }
         m_locales = new ArrayList();
         m_labelSiteFolders = new ArrayList();
-        m_localizedFolders = new ArrayList();
+        m_localizedFolders = new ArrayList<String>();
         m_autoLockResources = true;
         m_xmlContentAutoCorrect = true;
         m_showUserGroupIcon = true;
@@ -763,7 +763,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      *
      * @return the set of configured export points for the workplace
      */
-    public Set getExportPoints() {
+    public Set<CmsExportPoint> getExportPoints() {
 
         return m_exportPoints;
     }
@@ -902,7 +902,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * 
      * @return the configured list of localized workplace folders
      */
-    public List getLocalizedFolders() {
+    public List<String> getLocalizedFolders() {
 
         return m_localizedFolders;
     }

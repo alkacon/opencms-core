@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsDeleteExpiredResourcesJob.java,v $
- * Date   : $Date: 2009/06/04 14:29:41 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/09/08 12:52:22 $
+ * Version: $Revision: 1.2.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -87,7 +87,7 @@ import java.util.Map;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.2.1 $ 
  * 
  * @since 7.5.0
  */
@@ -114,7 +114,7 @@ public class CmsDeleteExpiredResourcesJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
      */
-    public String launch(CmsObject cms, Map parameters) throws Exception {
+    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         // this job requires a higher runlevel than is allowed for all jobs: 
         if (OpenCms.getRunLevel() == OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
@@ -122,7 +122,7 @@ public class CmsDeleteExpiredResourcesJob implements I_CmsScheduledJob {
 
             // read the parameter for the versions to keep
             int expirationdays = 30;
-            String expirationdaysparam = (String)parameters.get(PARAM_EXPIRATIONSDAYS);
+            String expirationdaysparam = parameters.get(PARAM_EXPIRATIONSDAYS);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(expirationdaysparam)) {
                 try {
                     expirationdays = Integer.parseInt(expirationdaysparam);
@@ -132,7 +132,7 @@ public class CmsDeleteExpiredResourcesJob implements I_CmsScheduledJob {
             }
 
             // read the parameter if to clear versions of deleted resources
-            String resTypes = (String)parameters.get(PARAM_RESOURCETYPES);
+            String resTypes = parameters.get(PARAM_RESOURCETYPES);
             String[] resTypesArr = null;
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resTypes)) {
                 resTypesArr = CmsStringUtil.splitAsArray(resTypes, ',');
@@ -140,7 +140,7 @@ public class CmsDeleteExpiredResourcesJob implements I_CmsScheduledJob {
 
             // read the optional parameter for the time range to keep versions
             String[] topFoldersArr = new String[] {"/"};
-            String topfolders = (String)parameters.get(PARAM_FOLDER);
+            String topfolders = parameters.get(PARAM_FOLDER);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(topfolders)) {
                 topFoldersArr = CmsStringUtil.splitAsArray(topfolders, ',');
             }
@@ -155,7 +155,7 @@ public class CmsDeleteExpiredResourcesJob implements I_CmsScheduledJob {
             report.println(Messages.get().container(Messages.RPT_DELETE_EXPIRED_START_0), I_CmsReport.FORMAT_HEADLINE);
 
             // collect all resources: 
-            List resources = Collections.EMPTY_LIST;
+            List<CmsResource> resources = Collections.emptyList();
             CmsResourceFilter filter = CmsResourceFilter.ALL.addExcludeState(CmsResourceState.STATE_DELETED);
             filter = filter.addRequireExpireBefore(currenttime);
 
@@ -208,7 +208,7 @@ public class CmsDeleteExpiredResourcesJob implements I_CmsScheduledJob {
     private int deleteExpiredResources(
         final CmsObject cms,
         final I_CmsReport report,
-        final List resources,
+        final List<CmsResource> resources,
         final int expirationdays,
         final long currenttime) {
 
@@ -219,10 +219,10 @@ public class CmsDeleteExpiredResourcesJob implements I_CmsScheduledJob {
         String propertyValue;
         long expirationdate;
         int expirationDaysPropertyOverride;
-        Iterator it = resources.iterator();
+        Iterator<CmsResource> it = resources.iterator();
         String resourcePath;
         while (it.hasNext()) {
-            resource = (CmsResource)it.next();
+            resource = it.next();
             resourcePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
             report.print(
                 Messages.get().container(Messages.RPT_DELETE_EXPIRED_PROCESSING_1, new String[] {resourcePath}),

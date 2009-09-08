@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailSettings.java,v $
- * Date   : $Date: 2009/06/04 14:29:48 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/09/08 12:52:21 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,7 +63,7 @@ public class CmsMailSettings {
     private String m_mailFromDefault;
 
     /** The list of internal mail hosts. */
-    private List m_mailHosts;
+    private List<CmsMailHost> m_mailHosts;
 
     /** The default order if no order is given for a host. */
     private int m_orderDefault;
@@ -74,7 +74,7 @@ public class CmsMailSettings {
     public CmsMailSettings() {
 
         m_mailFromDefault = MAIL_DEFAULT_SENDER;
-        m_mailHosts = new ArrayList();
+        m_mailHosts = new ArrayList<CmsMailHost>();
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_EMPTY_CONSTRUCTOR_CALLED_1));
         }
@@ -116,7 +116,7 @@ public class CmsMailSettings {
      */
     public CmsMailHost getDefaultMailHost() {
 
-        return (CmsMailHost)m_mailHosts.get(0);
+        return m_mailHosts.get(0);
     }
 
     /**
@@ -134,7 +134,7 @@ public class CmsMailSettings {
      *  
      * @return an unmodifiable sorted list of all configured mail hosts
      */
-    public List getMailHosts() {
+    public List<CmsMailHost> getMailHosts() {
 
         return Collections.unmodifiableList(m_mailHosts);
     }

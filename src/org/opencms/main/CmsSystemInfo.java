@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2009/06/05 15:10:01 $
- * Version: $Revision: 1.66 $
+ * Date   : $Date: 2009/09/08 12:52:23 $
+ * Version: $Revision: 1.66.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.66 $ 
+ * @version $Revision: 1.66.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,7 +76,7 @@ public class CmsSystemInfo {
     private static final String DEFAULT_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
     /** Static version number to use if version.properties can not be read. */
-    private static final String DEFAULT_VERSION_NUMBER = "7.5.x";
+    private static final String DEFAULT_VERSION_NUMBER = "7.9.x";
 
     /** The absolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
@@ -108,7 +108,7 @@ public class CmsSystemInfo {
     /** The project in which time stamps for the content notification are read. */
     private String m_notificationProject;
 
-    /** The duration after which responsibles will be notified about out-dated content (in days). */
+    /** The duration after which responsible resource owners will be notified about out-dated content (in days). */
     private int m_notificationTime;
 
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code>. */
@@ -211,9 +211,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the abolute path to the "opencms.properties" configuration file (in the "real" file system).<p>
+     * Returns the absolute path to the "opencms.properties" configuration file (in the "real" file system).<p>
      * 
-     * @return the abolute path to the "opencms.properties" configuration file
+     * @return the absolute path to the "opencms.properties" configuration file
      */
     public String getConfigurationFileRfsPath() {
 
@@ -337,9 +337,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the duration after which responsibles will be notified about out-dated content (in days).<p>
+     * Returns the duration after which responsible resource owners will be notified about out-dated content (in days).<p>
      * 
-     * @return the duration after which responsibles will be notified about out-dated content
+     * @return the duration after which responsible resource owners will be notified about out-dated content
      */
     public int getNotificationTime() {
 
@@ -429,9 +429,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the time this OpenCms instance was started in miliseconds.<p>
+     * Returns the time this OpenCms instance was started in milliseconds.<p>
      *
-     * @return the time this OpenCms instance was started in miliseconds
+     * @return the time this OpenCms instance was started in milliseconds
      */
     public long getStartupTime() {
 
@@ -441,7 +441,7 @@ public class CmsSystemInfo {
     /**
      * Returns the identifier "OpenCms/" plus the OpenCms version number.<p>
      * 
-     * This information is used for example to identify OpenCms in http response headers.<p>
+     * This information is used for example to identify OpenCms in HTTP response headers.<p>
      *
      * @return the identifier "OpenCms/" plus the OpenCms version number
      */
@@ -451,19 +451,7 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the version name (that is the version number) of this OpenCms system, for example <code>7.0.0</code>.<p>
-     *
-     * @return the version name (that is the version number) of this OpenCms system
-     * 
-     * @deprecated use {@link #getVersionNumber()} instead
-     */
-    public String getVersionName() {
-
-        return getVersionNumber();
-    }
-
-    /**
-     * Returns the version number of this OpenCms system, for example <code>7.0.0</code>.<p>
+     * Returns the version number of this OpenCms system, for example <code>8.0.0</code>.<p>
      *
      * @return the version number of this OpenCms system
      * 
@@ -532,9 +520,9 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Sets the duration after which responsibles will be notified about out-dated content (in days).<p>
+     * Sets the duration after which responsible resource owners will be notified about out-dated content (in days).<p>
      * 
-     * @param notificationTime the duration after which responsibles will be notified about out-dated content
+     * @param notificationTime the duration after which responsible resource owners will be notified about out-dated content
      */
     public void setNotificationTime(int notificationTime) {
 
@@ -575,10 +563,10 @@ public class CmsSystemInfo {
         String defaultWebApplication,
         String servletContainerName) {
 
-        // init servlet container dependent parameters
+        // initialize servlet container dependent parameters
         m_servletContainerSettings = new CmsServletContainerSettings(servletContainerName);
 
-        // init base path
+        // initialize base path
         webInfRfsPath = webInfRfsPath.replace('\\', '/');
         if (!webInfRfsPath.endsWith("/")) {
             webInfRfsPath = webInfRfsPath + "/";
@@ -693,11 +681,11 @@ public class CmsSystemInfo {
 
     /**
      * Initializes the version for this OpenCms, will be called by 
-     * CmsHttpServlet or CmsShell upon system startup.<p>
+     * {@link OpenCmsServlet} or {@link CmsShell} upon system startup.<p>
      */
     private void initVersion() {
 
-        // init version information with static defaults
+        // initialize version information with static defaults
         m_versionNumber = DEFAULT_VERSION_NUMBER;
         // set OpenCms version identifier with default values
         m_version = "OpenCms/" + m_versionNumber;

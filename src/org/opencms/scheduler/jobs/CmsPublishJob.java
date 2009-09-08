@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishJob.java,v $
- * Date   : $Date: 2009/06/04 14:29:42 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/09/08 12:52:22 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,12 +83,12 @@ public class CmsPublishJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
      */
-    public synchronized String launch(CmsObject cms, Map parameters) throws Exception {
+    public synchronized String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         Date jobStart = new Date();
         String finishMessage;
-        String unlock = (String)parameters.get(PARAM_UNLOCK);
-        String linkcheck = (String)parameters.get(PARAM_LINKCHECK);
+        String unlock = parameters.get(PARAM_UNLOCK);
+        String linkcheck = parameters.get(PARAM_LINKCHECK);
         CmsProject project = cms.getRequestContext().currentProject();
 
         CmsLogReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsPublishJob.class);
@@ -134,7 +134,7 @@ public class CmsPublishJob implements I_CmsScheduledJob {
             // send publish notification
             if (report.hasWarning() || report.hasError()) {
                 try {
-                    String userName = (String)parameters.get(PARAM_USER);
+                    String userName = parameters.get(PARAM_USER);
                     CmsUser user = cms.readUser(userName);
 
                     CmsPublishNotification notification = new CmsPublishNotification(cms, user, report);

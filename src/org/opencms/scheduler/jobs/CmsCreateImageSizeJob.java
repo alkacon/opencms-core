@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsCreateImageSizeJob.java,v $
- * Date   : $Date: 2009/06/04 14:29:41 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/08 12:52:22 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -66,7 +66,7 @@ import java.util.Map;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.2 
  */
@@ -86,7 +86,7 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(CmsObject, Map)
      */
-    public String launch(CmsObject cms, Map parameters) throws Exception {
+    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         if (!CmsImageLoader.isEnabled()) {
             // scaling functions are not available
@@ -94,12 +94,12 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
         }
 
         // read the downscale parameter
-        boolean downscale = Boolean.valueOf((String)parameters.get(PARAM_DOWNSCALE)).booleanValue();
+        boolean downscale = Boolean.valueOf(parameters.get(PARAM_DOWNSCALE)).booleanValue();
 
         I_CmsReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsCreateImageSizeJob.class);
         report.println(Messages.get().container(Messages.RPT_IMAGE_SIZE_START_0), I_CmsReport.FORMAT_HEADLINE);
 
-        List resources = Collections.EMPTY_LIST;
+        List<CmsResource> resources = Collections.emptyList();
         try {
             // get all image resources
             resources = cms.readResources(
@@ -115,7 +115,7 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
 
             try {
 
-                CmsResource res = (CmsResource)resources.get(i);
+                CmsResource res = resources.get(i);
                 report.print(Messages.get().container(
                     Messages.RPT_IMAGE_SIZE_PROCESS_3,
                     String.valueOf(i + 1),

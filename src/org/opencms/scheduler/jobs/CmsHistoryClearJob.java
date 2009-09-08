@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsHistoryClearJob.java,v $
- * Date   : $Date: 2009/06/04 14:29:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/08 12:52:22 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.Map;
  * 
  * @author Peter Bonrad
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 7.0.0
  */
@@ -81,16 +81,16 @@ public class CmsHistoryClearJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
      */
-    public String launch(CmsObject cms, Map parameters) throws Exception {
+    public String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         // read the parameter for the versions to keep
-        int keepVersions = Integer.parseInt((String)parameters.get(PARAM_KEEPVERSIONS));
+        int keepVersions = Integer.parseInt(parameters.get(PARAM_KEEPVERSIONS));
 
         // read the parameter if to clear versions of deleted resources
-        boolean clearDeleted = Boolean.valueOf((String)parameters.get(PARAM_CLEARDELETED)).booleanValue();
+        boolean clearDeleted = Boolean.valueOf(parameters.get(PARAM_CLEARDELETED)).booleanValue();
 
         // read the optional parameter for the time range to keep versions
-        String keepTimeRangeStr = (String)parameters.get(PARAM_KEEPTIMERANGE);
+        String keepTimeRangeStr = parameters.get(PARAM_KEEPTIMERANGE);
         int keepTimeRange = -1;
         if (!CmsStringUtil.isEmptyOrWhitespaceOnly(keepTimeRangeStr)) {
             keepTimeRange = Integer.parseInt(keepTimeRangeStr);

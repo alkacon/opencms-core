@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduledJobInfo.java,v $
- * Date   : $Date: 2009/06/04 14:29:54 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/09/08 12:52:24 $
+ * Version: $Revision: 1.28.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -345,7 +345,7 @@ import org.quartz.Trigger;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.28.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -379,7 +379,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     private String m_jobName;
 
     /** The parameters used for this job entry. */
-    private SortedMap m_parameters;
+    private SortedMap<String, String> m_parameters;
 
     /** Indicates if the job instance should be re-used if the job is run. */
     private boolean m_reuseInstance;
@@ -395,7 +395,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         m_reuseInstance = false;
         m_frozen = false;
         // parameters are stored in a tree map 
-        m_parameters = new TreeMap();
+        m_parameters = new TreeMap<String, String>();
         // a job is active by default
         m_active = true;
     }
@@ -420,7 +420,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         String cronExpression,
         boolean reuseInstance,
         boolean active,
-        SortedMap parameters) {
+        SortedMap<String, String> parameters) {
 
         m_frozen = false;
         setId(id);
@@ -477,6 +477,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      * 
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsScheduledJobInfo result = new CmsScheduledJobInfo();
@@ -492,7 +493,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
         result.m_context = (CmsContextInfo)m_context.clone();
         result.m_cronExpression = m_cronExpression;
         result.m_jobName = m_jobName;
-        result.m_parameters = new TreeMap(m_parameters);
+        result.m_parameters = new TreeMap<String, String>(m_parameters);
         result.m_trigger = null;
 
         return result;
@@ -511,7 +512,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         // this configuration does not support parameters
         if (LOG.isDebugEnabled()) {
@@ -681,7 +682,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      *
      * @return the parameters
      */
-    public SortedMap getParameters() {
+    public SortedMap<String, String> getParameters() {
 
         return m_parameters;
     }
@@ -753,7 +754,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
                 LOG.warn(message.key());
             }
         } else {
-            Class jobClass;
+            Class<?> jobClass;
             try {
                 jobClass = Class.forName(className);
                 if (!I_CmsScheduledJob.class.isAssignableFrom(jobClass)) {
@@ -847,14 +848,14 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
      *
      * @param parameters the parameters to set
      */
-    public void setParameters(SortedMap parameters) {
+    public void setParameters(SortedMap<String, String> parameters) {
 
         checkFrozen();
         if (parameters == null) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_JOB_PARAMS_0));
         }
         // make sure the parameters are a sorted map
-        m_parameters = new TreeMap(parameters);
+        m_parameters = new TreeMap<String, String>(parameters);
     }
 
     /**
@@ -910,7 +911,7 @@ public class CmsScheduledJobInfo implements I_CmsConfigurationParameterHandler {
             m_frozen = true;
         } else if (!frozen && m_frozen) {
             // "unfreeze" the job configuration
-            m_parameters = new TreeMap(m_parameters);
+            m_parameters = new TreeMap<String, String>(m_parameters);
             m_frozen = false;
         }
     }

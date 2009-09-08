@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2009/06/04 14:29:37 $
- * Version: $Revision: 1.245 $
+ * Date   : $Date: 2009/09/08 12:52:23 $
+ * Version: $Revision: 1.245.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDefaultUsers;
+import org.opencms.db.CmsExportPoint;
 import org.opencms.db.CmsLoginManager;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.db.CmsSqlManager;
@@ -63,6 +64,7 @@ import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.jsp.util.CmsErrorBean;
 import org.opencms.loader.CmsResourceManager;
 import org.opencms.loader.I_CmsFlexCacheEnabledLoader;
+import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.lock.CmsLockManager;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.monitor.CmsMemoryMonitor;
@@ -139,7 +141,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.245 $ 
+ * @version $Revision: 1.245.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,7 +166,7 @@ public final class OpenCmsCore {
     private CmsConfigurationManager m_configurationManager;
 
     /** List of configured directory default file names. */
-    private List m_defaultFiles;
+    private List<String> m_defaultFiles;
 
     /** The default user and group names. */
     private CmsDefaultUsers m_defaultUsers;
@@ -173,7 +175,7 @@ public final class OpenCmsCore {
     private CmsEventManager m_eventManager;
 
     /** The set of configured export points. */
-    private Set m_exportPoints;
+    private Set<CmsExportPoint> m_exportPoints;
 
     /** The site manager contains information about the Cms import/export. */
     private CmsImportExportManager m_importExportManager;
@@ -209,10 +211,10 @@ public final class OpenCmsCore {
     private CmsRepositoryManager m_repositoryManager;
 
     /** The configured request handlers that handle "special" requests, for example in the static export on demand. */
-    private Map m_requestHandlers;
+    private Map<String, I_CmsRequestHandler> m_requestHandlers;
 
     /** Stores the resource init handlers that allow modification of the requested resource. */
-    private List m_resourceInitHandlers;
+    private List<I_CmsResourceInit> m_resourceInitHandlers;
 
     /** The resource manager. */
     private CmsResourceManager m_resourceManager;
@@ -224,7 +226,7 @@ public final class OpenCmsCore {
     private int m_runLevel;
 
     /** The runtime properties allow storage of system wide accessible runtime information. */
-    private Map m_runtimeProperties;
+    private Map<Object, Object> m_runtimeProperties;
 
     /** The configured scheduler manager. */
     private CmsScheduleManager m_scheduleManager;
@@ -380,7 +382,7 @@ public final class OpenCmsCore {
      *  
      * @return the configured list of default directory file names
      */
-    protected List getDefaultFiles() {
+    protected List<String> getDefaultFiles() {
 
         return m_defaultFiles;
     }
@@ -411,7 +413,7 @@ public final class OpenCmsCore {
      * 
      * @return an unmodifiable set of the configured export points
      */
-    protected Set getExportPoints() {
+    protected Set<CmsExportPoint> getExportPoints() {
 
         return m_exportPoints;
     }
@@ -575,7 +577,7 @@ public final class OpenCmsCore {
      */
     protected I_CmsRequestHandler getRequestHandler(String name) {
 
-        return (I_CmsRequestHandler)m_requestHandlers.get(name);
+        return m_requestHandlers.get(name);
     }
 
     /**
@@ -1027,9 +1029,9 @@ public final class OpenCmsCore {
         // set resource init classes
         m_resourceInitHandlers = systemConfiguration.getResourceInitHandlers();
         // register request handler classes
-        Iterator it = systemConfiguration.getRequestHandlers().iterator();
+        Iterator<I_CmsRequestHandler> it = systemConfiguration.getRequestHandlers().iterator();
         while (it.hasNext()) {
-            I_CmsRequestHandler handler = (I_CmsRequestHandler)it.next();
+            I_CmsRequestHandler handler = it.next();
             addRequestHandler(handler);
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().getBundle().key(
@@ -1074,7 +1076,7 @@ public final class OpenCmsCore {
 
         if (flexCache != null) {
             // check all reasource loaders if they require the Flex cache
-            Iterator i = m_resourceManager.getLoaders().iterator();
+            Iterator<I_CmsResourceLoader> i = m_resourceManager.getLoaders().iterator();
             while (i.hasNext()) {
                 Object o = i.next();
                 if (o instanceof I_CmsFlexCacheEnabledLoader) {
@@ -1329,14 +1331,14 @@ public final class OpenCmsCore {
     protected void initMembers() {
 
         synchronized (LOCK) {
-            m_resourceInitHandlers = new ArrayList();
-            m_requestHandlers = new HashMap();
+            m_resourceInitHandlers = new ArrayList<I_CmsResourceInit>();
+            m_requestHandlers = new HashMap<String, I_CmsRequestHandler>();
             m_systemInfo = new CmsSystemInfo();
-            m_exportPoints = Collections.EMPTY_SET;
+            m_exportPoints = Collections.emptySet();
             m_defaultUsers = new CmsDefaultUsers();
             m_localeManager = new CmsLocaleManager(Locale.ENGLISH);
             m_sessionManager = new CmsSessionManager();
-            m_runtimeProperties = new Hashtable();
+            m_runtimeProperties = new Hashtable<Object, Object>();
             // the default event manager must be available because the configuration already registers events 
             m_eventManager = new CmsEventManager();
             // default link manager is required for test cases
@@ -1411,9 +1413,9 @@ public final class OpenCmsCore {
                     try {
                         secureUrl = site.getSecureUrl();
                     } catch (Exception e) {
-                        LOG.error(
-                            Messages.get().getBundle().key(Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1, resourceName),
-                            e);
+                        LOG.error(Messages.get().getBundle().key(
+                            Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
+                            resourceName), e);
                         throw new CmsException(Messages.get().container(
                             Messages.ERR_SECURE_SITE_NOT_CONFIGURED_1,
                             resourceName), e);
@@ -1443,10 +1445,10 @@ public final class OpenCmsCore {
         }
 
         // test if this file has to be checked or modified
-        Iterator i = m_resourceInitHandlers.iterator();
+        Iterator<I_CmsResourceInit> i = m_resourceInitHandlers.iterator();
         while (i.hasNext()) {
             try {
-                resource = ((I_CmsResourceInit)i.next()).initResource(resource, cms, req, res);
+                resource = i.next().initResource(resource, cms, req, res);
                 // the loop has to be interrupted when the exception is thrown!
             } catch (CmsResourceInitException e) {
                 break;
@@ -1791,7 +1793,7 @@ public final class OpenCmsCore {
      * 
      * @param clazz the configuration class to write the XML for
      */
-    protected void writeConfiguration(Class clazz) {
+    protected void writeConfiguration(Class<?> clazz) {
 
         // exception handling is provided here to ensure identical log messages
         try {
@@ -1812,10 +1814,10 @@ public final class OpenCmsCore {
      * 
      * @param exportPoints the export points to add
      */
-    private void addExportPoints(Set exportPoints) {
+    private void addExportPoints(Set<CmsExportPoint> exportPoints) {
 
         // create a new immutable set of export points
-        HashSet newSet = new HashSet(m_exportPoints.size() + exportPoints.size());
+        HashSet<CmsExportPoint> newSet = new HashSet<CmsExportPoint>(m_exportPoints.size() + exportPoints.size());
         newSet.addAll(exportPoints);
         newSet.addAll(m_exportPoints);
         m_exportPoints = Collections.unmodifiableSet(newSet);

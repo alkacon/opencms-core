@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsEvent.java,v $
- * Date   : $Date: 2009/06/04 14:29:39 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/09/08 12:52:23 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -49,7 +49,7 @@ import java.util.Map;
 public class CmsEvent {
 
     /** The event data associated with this event. */
-    private Map m_data;
+    private Map<String, ?> m_data;
 
     /** The event type this instance represents. */
     private Integer m_type;
@@ -69,7 +69,7 @@ public class CmsEvent {
      *
      * @see I_CmsEventListener
      */
-    public CmsEvent(int type, Map data) {
+    public CmsEvent(int type, Map<String, ?> data) {
 
         m_type = new Integer(type);
         m_data = data;
@@ -78,6 +78,7 @@ public class CmsEvent {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -94,7 +95,7 @@ public class CmsEvent {
      * 
      * @return the event data of this event
      */
-    public Map getData() {
+    public Map<String, ?> getData() {
 
         return m_data;
     }
@@ -129,6 +130,7 @@ public class CmsEvent {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_type.hashCode();
@@ -137,8 +139,9 @@ public class CmsEvent {
     /**
      * Return a String representation of this CmsEvent.<p>
      *
-     * @return a String representation of this event
+     * @return a String representation of this event     
      */
+    @Override
     public String toString() {
 
         return "CmsEvent['" + m_type + "']";

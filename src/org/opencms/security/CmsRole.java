@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2009/07/20 10:39:06 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2009/09/08 12:52:24 $
+ * Version: $Revision: 1.21.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,7 +113,7 @@ public final class CmsRole {
     public static final CmsRole WORKPLACE_USER;
 
     /** The list of system roles. */
-    private static final List SYSTEM_ROLES;
+    private static final List<CmsRole> SYSTEM_ROLES;
 
     /** The child roles of this role. */
     private final List m_children = new ArrayList();
@@ -232,7 +232,7 @@ public final class CmsRole {
 
         // now initialize all system roles
         for (int i = 0; i < SYSTEM_ROLES.size(); i++) {
-            ((CmsRole)SYSTEM_ROLES.get(i)).initialize();
+            (SYSTEM_ROLES.get(i)).initialize();
         }
     }
 
@@ -241,7 +241,7 @@ public final class CmsRole {
      * 
      * @return the list of system defined roles
      */
-    public static List getSystemRoles() {
+    public static List<CmsRole> getSystemRoles() {
 
         return SYSTEM_ROLES;
     }
@@ -266,7 +266,7 @@ public final class CmsRole {
         if (group.isVirtual()) {
             int index = (group.getFlags() & (I_CmsPrincipal.FLAG_CORE_LIMIT - 1));
             index = index / (I_CmsPrincipal.FLAG_GROUP_VIRTUAL * 2);
-            CmsRole role = (CmsRole)getSystemRoles().get(index);
+            CmsRole role = getSystemRoles().get(index);
             return role.forOrgUnit(group.getOuFqn());
         }
         return null;

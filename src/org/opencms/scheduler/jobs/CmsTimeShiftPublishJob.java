@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/Attic/CmsTimeShiftPublishJob.java,v $
- * Date   : $Date: 2009/07/23 10:48:57 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2009/09/08 12:52:22 $
+ * Version: $Revision: 1.2.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Mario Jaeger
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.2.1 $ 
  * 
  * @since 7.5.0
  */
@@ -86,12 +86,12 @@ public class CmsTimeShiftPublishJob implements I_CmsScheduledJob {
     /**
      * @see org.opencms.scheduler.I_CmsScheduledJob#launch(org.opencms.file.CmsObject, java.util.Map)
      */
-    public synchronized String launch(CmsObject cms, Map parameters) throws Exception {
+    public synchronized String launch(CmsObject cms, Map<String, String> parameters) throws Exception {
 
         Date jobStart = new Date();
         String finishMessage;
-        String linkcheck = (String)parameters.get(PARAM_LINKCHECK);
-        String jobName = (String)parameters.get(PARAM_JOBNAME);
+        String linkcheck = parameters.get(PARAM_LINKCHECK);
+        String jobName = parameters.get(PARAM_JOBNAME);
         CmsProject project = cms.getRequestContext().currentProject();
         CmsLogReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsTimeShiftPublishJob.class);
 
@@ -106,9 +106,9 @@ public class CmsTimeShiftPublishJob implements I_CmsScheduledJob {
             }
 
             // change lock for the resources if necessary
-            Iterator iter = cms.readProjectResources(project).iterator();
+            Iterator<String> iter = cms.readProjectResources(project).iterator();
             while (iter.hasNext()) {
-                String resource = (String)iter.next();
+                String resource = iter.next();
                 // get current lock from file
                 CmsLock lock = cms.getLock(resource);
                 // prove is current lock from current but not in current project
@@ -148,9 +148,9 @@ public class CmsTimeShiftPublishJob implements I_CmsScheduledJob {
             // the job id
             String jobId = "";
             // iterate over all jobs to find the current one
-            Iterator iter = OpenCms.getScheduleManager().getJobs().iterator();
+            Iterator<CmsScheduledJobInfo> iter = OpenCms.getScheduleManager().getJobs().iterator();
             while (iter.hasNext()) {
-                CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)iter.next();
+                CmsScheduledJobInfo jobInfo = iter.next();
                 // the current job is found with the job name
                 if (jobInfo.getJobName().equals(jobName)) {
                     // get the current job id
@@ -163,7 +163,7 @@ public class CmsTimeShiftPublishJob implements I_CmsScheduledJob {
             // send publish notification
             if (report.hasWarning() || report.hasError()) {
                 try {
-                    String userName = (String)parameters.get(PARAM_USER);
+                    String userName = parameters.get(PARAM_USER);
                     CmsUser user = cms.readUser(userName);
 
                     CmsPublishNotification notification = new CmsPublishNotification(cms, user, report);

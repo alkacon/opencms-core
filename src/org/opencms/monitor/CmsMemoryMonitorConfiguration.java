@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitorConfiguration.java,v $
- * Date   : $Date: 2009/06/04 14:29:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/09/08 12:52:24 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.List;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,7 +53,7 @@ public class CmsMemoryMonitorConfiguration {
     private int m_emailInterval;
 
     /** Receivers for status emails. */
-    private List m_emailReceiver;
+    private List<String> m_emailReceiver;
 
     /** Sender for status emails. */
     private String m_emailSender;
@@ -72,7 +72,7 @@ public class CmsMemoryMonitorConfiguration {
      */
     public CmsMemoryMonitorConfiguration() {
 
-        m_emailReceiver = new ArrayList();
+        m_emailReceiver = new ArrayList<String>();
     }
 
     /**
@@ -110,7 +110,7 @@ public class CmsMemoryMonitorConfiguration {
      *
      * @return a List of receiver
      */
-    public List getEmailReceiver() {
+    public List<String> getEmailReceiver() {
 
         Collections.sort(m_emailReceiver);
         return m_emailReceiver;
