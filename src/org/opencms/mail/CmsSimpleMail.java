@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsSimpleMail.java,v $
- * Date   : $Date: 2009/08/20 11:31:58 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/09/08 14:45:47 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,8 +37,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import javax.mail.AuthenticationFailedException;
-import javax.mail.MessagingException;
-import javax.mail.SendFailedException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.mail.EmailException;
@@ -53,7 +51,7 @@ import org.apache.commons.mail.SimpleEmail;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0
  */
@@ -93,55 +91,36 @@ public class CmsSimpleMail extends SimpleEmail {
     }
 
     /**
-     * Overrides to add a layer for localization of exception / logging.<p>
-     * 
-     * Please note that in case of a <code>{@link SendFailedException}</code>
-     * the cause of this message will contain a
-     * <code>{@link CmsRuntimeException}</code> as cause. The information of
-     * the <code>SendFailedException</code> should be used outside to remove
-     * recipients (e.g. from the beans that store them) in order to avoid
-     * duplicate sending of emails. The internal cause then just should be
-     * rethrown to allow localized output about the cause.<p>
-     * 
+     * Overrides to add a better message for authentication exception.<p>
      * 
      * @see org.apache.commons.mail.Email#send()
-     * 
-     * @throws EmailException if something goes wrong
      */
     @Override
-    public String send() throws EmailException {
+    public String send() {
 
         String messageID = null;
         try {
-            super.send();
-            messageID = this.getMimeMessage().getMessageID();
+            messageID = super.send();
         } catch (EmailException e) {
             // check if original Exception is of type SendFailedException which
             // should have been thrown by javax.mail.Transport.send()
-            if (e.getCause() instanceof SendFailedException) {
-                SendFailedException sfe = (SendFailedException)e.getCause();
-                // The specialized exception types (authentication, wrong host) are
-                // wrapped in this type:
-                MessagingException me = (MessagingException)sfe.getNextException();
+            if (e.getCause() instanceof AuthenticationFailedException) {
                 CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
-                if (me instanceof AuthenticationFailedException) {
-                    // wrong user credentials in opencms-system.xml
-                    CmsRuntimeException rte = new CmsRuntimeException(Messages.get().container(
-                        Messages.ERR_SEND_EMAIL_AUTHENTICATE_2,
-                        host.getUsername(),
-                        host.getHostname()));
-                    sfe.initCause(rte);
-                    throw new EmailException(sfe);
-                }
-                // wrong hostname in opencms-system.xml
+                // wrong user credentials in opencms-system.xml: mail api does not provide a message for authentication exception
+
                 CmsRuntimeException rte = new CmsRuntimeException(Messages.get().container(
-                    Messages.ERR_SEND_EMAIL_HOSTNAME_1,
-                    host.getHostname()), me);
-                sfe.initCause(rte);
-                throw new EmailException(sfe);
+                    Messages.ERR_SEND_EMAIL_AUTHENTICATE_2,
+                    host.getUsername(),
+                    host.getHostname()));
+                rte.initCause(e);
+                throw rte;
+
+            } else {
+                CmsRuntimeException rte = new CmsRuntimeException(Messages.get().container(
+                    Messages.ERR_SEND_EMAIL_CONFIG_0));
+                rte.initCause(e);
+                throw rte;
             }
-        } catch (MessagingException e) {
-            LOG.error(Messages.get().getBundle().key(Messages.LOG_MESSAGE_ID_ERR_0), e);
         }
         return messageID;
     }
