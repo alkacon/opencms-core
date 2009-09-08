@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsSimpleMail.java,v $
- * Date   : $Date: 2009/09/08 14:45:47 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/09/08 16:48:48 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import org.apache.commons.mail.SimpleEmail;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0
  */
@@ -74,7 +74,8 @@ public class CmsSimpleMail extends SimpleEmail {
         // set the host to the default mail host
         CmsMailHost host = OpenCms.getSystemInfo().getMailSettings().getDefaultMailHost();
         setHostName(host.getHostname());
-
+        this.setSmtpPort(host.getPort());
+        
         // check if username and password are provided
         String userName = host.getUsername();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userName)) {
