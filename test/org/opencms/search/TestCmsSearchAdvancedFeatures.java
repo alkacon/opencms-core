@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2009/09/08 12:54:46 $
- * Version: $Revision: 1.15.2.3 $
+ * Date   : $Date: 2009/09/08 14:18:27 $
+ * Version: $Revision: 1.15.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -57,7 +58,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.15.2.3 $
+ * @version $Revision: 1.15.2.4 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -95,6 +96,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         suite.addTest(new TestCmsSearchAdvancedFeatures("testSearchRestriction"));
         suite.addTest(new TestCmsSearchAdvancedFeatures("testLimitTimeRanges"));
         suite.addTest(new TestCmsSearchAdvancedFeatures("testLimitTimeRangesOptimized"));
+        suite.addTest(new TestCmsSearchAdvancedFeatures("testOnlyFilterSearch"));
 
         TestSetup wrapper = new TestSetup(suite) {
 
@@ -298,6 +300,64 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         searchBean.init(cms);
         searchResult = searchBean.getSearchResult();
         assertEquals(orgCount + 1, searchResult.size());
+    }
+
+    /**
+     * Tests searching without a query only using a filter.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testOnlyFilterSearch() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing searching without a query only using a filter");
+
+        CmsSearchIndex index = OpenCms.getSearchManager().getIndex(INDEX_OFFLINE);
+        index.addConfigurationParameter(CmsSearchIndex.TIME_RANGE, "false");
+        assertFalse("Index '" + INDEX_OFFLINE + "' checking time range but should not", index.isCheckingTimeRange());
+
+        CmsSearch searchBean = new CmsSearch();
+        List<CmsSearchResult> searchResult;
+
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_OFFLINE);
+        searchBean.setMatchesPerPage(1000);
+        searchBean.getParameters().setIgnoreQuery(true);
+
+        // query all files created since yesterday, this should be 2 because of previous tests
+        Date stamp = new Date();
+        searchBean.getParameters().setMinDateCreated(stamp.getTime() - 1000 * 60 * 60 * 24);
+
+        searchResult = searchBean.getSearchResult();
+        assertEquals(2, searchResult.size());
+
+        // now do a search for all documents of type "plain"
+        searchBean.getParameters().setMinDateCreated(Long.MIN_VALUE);
+        searchBean.setResourceType(CmsResourceTypePlain.getStaticTypeName());
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(7, searchResult.size());
+
+        // now do a search for all documents of type "plain" created since yesterday    
+        searchBean.setResourceType(CmsResourceTypePlain.getStaticTypeName());
+        searchBean.getParameters().setMinDateCreated(stamp.getTime() - 1000 * 60 * 60 * 24);
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(2, searchResult.size());
+
+        // now do a search for all documents of type "binary" created since yesterday      
+        searchBean.setResourceType(CmsResourceTypeBinary.getStaticTypeName());
+        searchBean.getParameters().setMinDateCreated(stamp.getTime() - 1000 * 60 * 60 * 24);
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(0, searchResult.size());
+
+        // now do a search for all documents
+        searchBean.getParameters().setMinDateCreated(Long.MIN_VALUE);
+        searchBean.setResourceTypes(null);
+        searchBean.init(cms);
+        searchResult = searchBean.getSearchResult();
+        assertEquals(48, searchResult.size());
     }
 
     /**

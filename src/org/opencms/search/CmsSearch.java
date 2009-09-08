@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2009/09/08 12:54:44 $
- * Version: $Revision: 1.48.2.2 $
+ * Date   : $Date: 2009/09/08 14:18:27 $
+ * Version: $Revision: 1.48.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -71,7 +71,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.48.2.2 $ 
+ * @version $Revision: 1.48.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -429,9 +429,9 @@ public class CmsSearch {
         if ((m_cms != null)
             && (m_result == null)
             && (m_parameters.getIndex() != null)
-            && ((CmsStringUtil.isNotEmpty(m_parameters.getQuery()) || (m_parameters.getFieldQueries() != null)))) {
+            && (m_parameters.isIgnoreQuery() || CmsStringUtil.isNotEmpty(m_parameters.getQuery()) || (m_parameters.getFieldQueries() != null))) {
 
-            if (getQueryLength() > 0) {
+            if (!m_parameters.isIgnoreQuery() && (getQueryLength() > 0)) {
 
                 if (m_parameters.getFieldQueries() != null) {
                     // check all field queries if the length of the query is ok
@@ -770,6 +770,8 @@ public class CmsSearch {
 
         if (resourceTypes != null) {
             m_parameters.setResourceTypes(Arrays.asList(resourceTypes));
+        } else {
+            m_parameters.setResourceTypes(null);
         }
         resetLastResult();
     }

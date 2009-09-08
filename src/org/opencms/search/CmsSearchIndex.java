@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/09/08 12:54:44 $
- * Version: $Revision: 1.75.2.2 $
+ * Date   : $Date: 2009/09/08 14:18:26 $
+ * Version: $Revision: 1.75.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,6 +80,7 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilterClause;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermsFilter;
@@ -91,7 +92,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.75.2.2 $ 
+ * @version $Revision: 1.75.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1167,60 +1168,69 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             }
 
             // the search query to use, will be constructed in the next lines 
-            BooleanQuery query = new BooleanQuery();
+            Query query = null;
             // store separate fields query for excerpt highlighting  
-            Query fieldsQuery;
-            if (params.getFieldQueries() != null) {
-                // each field has an individual query
-                BooleanQuery mustOccur = null;
-                BooleanQuery shouldOccur = null;
-                Iterator<CmsSearchParameters.CmsSearchFieldQuery> i = params.getFieldQueries().iterator();
-                while (i.hasNext()) {
-                    CmsSearchParameters.CmsSearchFieldQuery fq = i.next();
-                    // add one sub-query for each defined field
-                    QueryParser p = new QueryParser(fq.getFieldName(), getAnalyzer());
-                    if (BooleanClause.Occur.SHOULD.equals(fq.getOccur())) {
-                        if (shouldOccur == null) {
-                            shouldOccur = new BooleanQuery();
-                        }
-                        shouldOccur.add(p.parse(fq.getSearchQuery()), fq.getOccur());
-                    } else {
-                        if (mustOccur == null) {
-                            mustOccur = new BooleanQuery();
-                        }
-                        mustOccur.add(p.parse(fq.getSearchQuery()), fq.getOccur());
-                    }
-                }
-                BooleanQuery booleanFieldsQuery = new BooleanQuery();
-                if (mustOccur != null) {
-                    booleanFieldsQuery.add(mustOccur, BooleanClause.Occur.MUST);
-                }
-                if (shouldOccur != null) {
-                    booleanFieldsQuery.add(shouldOccur, BooleanClause.Occur.MUST);
-                }
-                fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
-            } else if ((params.getFields() != null) && (params.getFields().size() > 0)) {
-                // no individual field queries have been defined, so use one query for all fields 
-                BooleanQuery booleanFieldsQuery = new BooleanQuery();
-                // this is a "regular" query over one or more fields
-                // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
-                for (int i = 0; i < params.getFields().size(); i++) {
-                    QueryParser p = new QueryParser(params.getFields().get(i), getAnalyzer());
-                    booleanFieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
-                }
-                fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
-            } else {
-                // if no fields are provided, just use the "content" field by default
-                QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, getAnalyzer());
-                fieldsQuery = getSearcher().rewrite(p.parse(params.getQuery()));
-            }
+            Query fieldsQuery = null;
 
-            // finally add the field queries to the main query
-            query.add(fieldsQuery, BooleanClause.Occur.MUST);
+            if (!params.isIgnoreQuery()) {
+                // since OpenCms 8 the query can be empty in which case only filtes are used for the result
+                if (params.getFieldQueries() != null) {
+                    // each field has an individual query
+                    BooleanQuery mustOccur = null;
+                    BooleanQuery shouldOccur = null;
+                    Iterator<CmsSearchParameters.CmsSearchFieldQuery> i = params.getFieldQueries().iterator();
+                    while (i.hasNext()) {
+                        CmsSearchParameters.CmsSearchFieldQuery fq = i.next();
+                        // add one sub-query for each defined field
+                        QueryParser p = new QueryParser(fq.getFieldName(), getAnalyzer());
+                        if (BooleanClause.Occur.SHOULD.equals(fq.getOccur())) {
+                            if (shouldOccur == null) {
+                                shouldOccur = new BooleanQuery();
+                            }
+                            shouldOccur.add(p.parse(fq.getSearchQuery()), fq.getOccur());
+                        } else {
+                            if (mustOccur == null) {
+                                mustOccur = new BooleanQuery();
+                            }
+                            mustOccur.add(p.parse(fq.getSearchQuery()), fq.getOccur());
+                        }
+                    }
+                    BooleanQuery booleanFieldsQuery = new BooleanQuery();
+                    if (mustOccur != null) {
+                        booleanFieldsQuery.add(mustOccur, BooleanClause.Occur.MUST);
+                    }
+                    if (shouldOccur != null) {
+                        booleanFieldsQuery.add(shouldOccur, BooleanClause.Occur.MUST);
+                    }
+                    fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
+                } else if ((params.getFields() != null) && (params.getFields().size() > 0)) {
+                    // no individual field queries have been defined, so use one query for all fields 
+                    BooleanQuery booleanFieldsQuery = new BooleanQuery();
+                    // this is a "regular" query over one or more fields
+                    // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
+                    for (int i = 0; i < params.getFields().size(); i++) {
+                        QueryParser p = new QueryParser(params.getFields().get(i), getAnalyzer());
+                        booleanFieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
+                    }
+                    fieldsQuery = getSearcher().rewrite(booleanFieldsQuery);
+                } else {
+                    // if no fields are provided, just use the "content" field by default
+                    QueryParser p = new QueryParser(CmsSearchField.FIELD_CONTENT, getAnalyzer());
+                    fieldsQuery = getSearcher().rewrite(p.parse(params.getQuery()));
+                }
+
+                // finally add the field queries to the main query
+                query = fieldsQuery;
+            }
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_BASE_QUERY_1, query));
                 LOG.debug(Messages.get().getBundle().key(Messages.LOG_FIELDS_QUERY_1, fieldsQuery));
+            }
+
+            if (query == null) {
+                // if no text query is set, then we match all documents 
+                query = new MatchAllDocsQuery();
             }
 
             // collect the categories
@@ -1270,7 +1280,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                             if (cnt >= start) {
                                 // do not use the resource to obtain the raw content, read it from the lucene document!
                                 String excerpt = null;
-                                if (isCreatingExcerpt()) {
+                                if (isCreatingExcerpt() && (fieldsQuery != null)) {
                                     I_CmsTermHighlighter highlighter = OpenCms.getSearchManager().getHighlighter();
                                     excerpt = highlighter.getExcerpt(doc, this, params, fieldsQuery, getAnalyzer());
                                 }

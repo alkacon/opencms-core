@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2009/09/01 09:24:18 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2009/09/08 14:18:27 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -58,7 +58,7 @@ import org.apache.lucene.search.BooleanClause.Occur;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.13.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,6 +204,9 @@ public class CmsSearchParameters {
     /** The index to search. */
     private CmsSearchIndex m_index;
 
+    /** Indicates if the query part should be ignored so that only filters are used for searching. */
+    private boolean m_isIgnoreQuery;
+
     /** The creation date the resources have to have as maximum. */
     private long m_maxDateCreated;
 
@@ -307,6 +310,7 @@ public class CmsSearchParameters {
         m_queryLength = -1;
         m_matchesPerPage = 10;
         m_displayPages = 10;
+        m_isIgnoreQuery = false;
 
         m_minDateCreated = Long.MIN_VALUE;
         m_maxDateCreated = Long.MAX_VALUE;
@@ -618,6 +622,18 @@ public class CmsSearchParameters {
     }
 
     /**
+     * Returns <code>true</code> if the query part should be ignored so that only filters are used for searching.<p>
+     *
+     * @return <code>true</code> if the query part should be ignored so that only filters are used for searching
+     * 
+     * @since 8.0.0
+     */
+    public boolean isIgnoreQuery() {
+
+        return m_isIgnoreQuery;
+    }
+
+    /**
      * Creates a merged parameter set from this parameters, restricted by the given other parameters.<p>
      * 
      * This is mainly intended for "search in search result" functions.<p>
@@ -777,6 +793,18 @@ public class CmsSearchParameters {
     public void setFields(List<String> fields) {
 
         m_fields = fields;
+    }
+
+    /**
+     * Sets the flag to indicate if the query part should be ignored so that only filters are used for searching.<p>
+     *
+     * @param isIgnoreQuery the flag to indicate if the query part should be ignored
+     * 
+     * @since 8.0.0
+     */
+    public void setIgnoreQuery(boolean isIgnoreQuery) {
+
+        m_isIgnoreQuery = isIgnoreQuery;
     }
 
     /**
