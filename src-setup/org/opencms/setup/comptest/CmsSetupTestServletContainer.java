@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-setup/org/opencms/setup/comptest/CmsSetupTestServletContainer.java,v $
- * Date   : $Date: 2009/08/27 12:45:26 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/09 10:16:08 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.setup.CmsSetupBean;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.1.8 
  */
@@ -68,7 +68,9 @@ public class CmsSetupTestServletContainer implements I_CmsSetupTest {
             {"Sun GlassFish Enterprise Server v2.1", null},
             {
                 "GlassFish/v3",
-                "GlassFish/v3 is not a stable release and subject to major changes. Please prefer a stable release."}};
+                "GlassFish/v3 is not a stable release and subject to major changes. Please prefer a stable release."},
+            {"JBoss Web/2.1.3.GA", null}    
+        };
 
         String[][] unsupportedContainers = {
             {"Tomcat Web Server/3", "Tomcat 3.x is no longer supported. Please use at least Tomcat 4.1 instead."},
