@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Attic/I_CmsResource.java,v $
- * Date   : $Date: 2009/09/09 14:26:35 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/09 14:33:13 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,17 +31,15 @@
 
 package org.opencms.file;
 
-import org.opencms.file.history.CmsHistoryFolder;
-
 import java.util.Comparator;
 
 /**
  * Common ancestor interface for {@link CmsFile} and {@link CmsFolder} 
- * as well as for {@Link CmsHistoryFile} and {@link CmsHistoryFolder}.<p>
+ * as well as for {@Link CmsHistoryFile} and {@link org.opencms.file.history.CmsHistoryFolder}.<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 8.0.0 
  */
@@ -53,7 +51,7 @@ public interface I_CmsResource {
      * If the release date of a resource is not set, the
      * creation date is used instead.<p>
      */
-    public static final Comparator<I_CmsResource> COMPARE_DATE_RELEASED = new Comparator<I_CmsResource>() {
+    Comparator<I_CmsResource> COMPARE_DATE_RELEASED = new Comparator<I_CmsResource>() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -83,7 +81,7 @@ public interface I_CmsResource {
     /**
      * A comparator for the root path of two resources.<p>
      */
-    public static final Comparator<I_CmsResource> COMPARE_ROOT_PATH = new Comparator<I_CmsResource>() {
+    Comparator<I_CmsResource> COMPARE_ROOT_PATH = new Comparator<I_CmsResource>() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -100,7 +98,7 @@ public interface I_CmsResource {
     /**
      * A comparator for the root path of two resources ignoring case differences.<p>
      */
-    public static final Comparator<I_CmsResource> COMPARE_ROOT_PATH_IGNORE_CASE = new Comparator<I_CmsResource>() {
+    Comparator<I_CmsResource> COMPARE_ROOT_PATH_IGNORE_CASE = new Comparator<I_CmsResource>() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
@@ -117,7 +115,7 @@ public interface I_CmsResource {
     /**
      * A comparator for the root path of two resources ignoring case differences, putting folders before files.<p>
      */
-    public static final Comparator<I_CmsResource> COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST = new Comparator<I_CmsResource>() {
+    Comparator<I_CmsResource> COMPARE_ROOT_PATH_IGNORE_CASE_FOLDERS_FIRST = new Comparator<I_CmsResource>() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
