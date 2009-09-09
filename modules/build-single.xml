@@ -289,7 +289,7 @@
 							optimize="on" 
 							deprecation="on" 
 							includes="${module.package}/*.java" 
-							source="1.4" 
+							source="1.5" 
 							target="${java.target.version}">
 						
 							<classpath>
@@ -330,7 +330,7 @@
 											optimize="on" 
 											deprecation="on" 
 											includes="${package.dir}/*.java" 
-											source="1.4" 
+											source="1.5" 
 											target="${java.target.version}">
 											
 											<classpath>
@@ -360,7 +360,7 @@
 									debug="on" 
 									optimize="on" 
 									deprecation="on" 
-									source="1.4" 
+									source="1.5" 
 									target="${java.target.version}">
 									
 									<exclude name="**/test/**/*.java" />
