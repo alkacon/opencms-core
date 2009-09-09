@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeJsp.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2009/09/09 15:54:52 $
+ * Version: $Revision: 1.34.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResource.CmsResourceDeleteMode;
 import org.opencms.file.CmsResource.CmsResourceUndoMode;
@@ -45,6 +46,7 @@ import org.opencms.loader.CmsJspLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashSet;
@@ -62,7 +64,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.34.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,10 +118,11 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#chtype(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int)
      */
+    @Override
     public void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int type)
     throws CmsException {
 
-        Set references = getReferencingStrongLinks(cms, resource);
+        Set<String> references = getReferencingStrongLinks(cms, resource);
         super.chtype(cms, securityManager, resource, type);
         removeReferencingFromCache(references);
     }
@@ -127,13 +130,14 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#deleteResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceDeleteMode)
      */
+    @Override
     public void deleteResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
         CmsResourceDeleteMode siblingMode) throws CmsException {
 
-        Set references = getReferencingStrongLinks(cms, resource);
+        Set<String> references = getReferencingStrongLinks(cms, resource);
         super.deleteResource(cms, securityManager, resource, siblingMode);
         removeReferencingFromCache(references);
     }
@@ -141,6 +145,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return CmsJspLoader.RESOURCE_LOADER_ID;
@@ -149,6 +154,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
+    @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
@@ -180,6 +186,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initialize(org.opencms.file.CmsObject)
      */
+    @Override
     public void initialize(CmsObject cms) {
 
         super.initialize(cms);
@@ -193,10 +200,11 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
      */
+    @Override
     public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
     throws CmsException, CmsIllegalArgumentException {
 
-        Set references = getReferencingStrongLinks(cms, resource);
+        Set<String> references = getReferencingStrongLinks(cms, resource);
         super.moveResource(cms, securityManager, resource, destination);
         removeReferencingFromCache(references);
     }
@@ -204,7 +212,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
-    public List parseLinks(CmsObject cms, CmsFile file) {
+    public List<CmsLink> parseLinks(CmsObject cms, CmsFile file) {
 
         CmsJspLinkMacroResolver macroResolver = new CmsJspLinkMacroResolver(cms, file.getRootPath(), false);
         String encoding = CmsLocaleManager.getResourceEncoding(cms, file);
@@ -216,15 +224,16 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#replaceResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int, byte[], java.util.List)
      */
+    @Override
     public void replaceResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
         int type,
         byte[] content,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
-        Set references = getReferencingStrongLinks(cms, resource);
+        Set<String> references = getReferencingStrongLinks(cms, resource);
         super.replaceResource(cms, securityManager, resource, type, content, properties);
         removeReferencingFromCache(references);
     }
@@ -232,10 +241,11 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#restoreResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int)
      */
+    @Override
     public void restoreResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int version)
     throws CmsException {
 
-        Set references = getReferencingStrongLinks(cms, resource);
+        Set<String> references = getReferencingStrongLinks(cms, resource);
         super.restoreResource(cms, securityManager, resource, version);
         removeReferencingFromCache(references);
     }
@@ -243,6 +253,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, long, boolean)
      */
+    @Override
     public void setDateExpired(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -250,7 +261,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         long dateExpired,
         boolean recursive) throws CmsException {
 
-        Set references = getReferencingStrongLinks(cms, resource);
+        Set<String> references = getReferencingStrongLinks(cms, resource);
         super.setDateExpired(cms, securityManager, resource, dateExpired, recursive);
         removeReferencingFromCache(references);
     }
@@ -258,6 +269,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#setDateLastModified(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, long, boolean)
      */
+    @Override
     public void setDateLastModified(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -265,7 +277,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         long dateLastModified,
         boolean recursive) throws CmsException {
 
-        Set references = getReferencingStrongLinks(cms, resource);
+        Set<String> references = getReferencingStrongLinks(cms, resource);
         super.setDateLastModified(cms, securityManager, resource, dateLastModified, recursive);
         removeReferencingFromCache(references);
     }
@@ -273,6 +285,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#setDateReleased(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, long, boolean)
      */
+    @Override
     public void setDateReleased(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -280,7 +293,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
         long dateReleased,
         boolean recursive) throws CmsException {
 
-        Set references = getReferencingStrongLinks(cms, resource);
+        Set<String> references = getReferencingStrongLinks(cms, resource);
         super.setDateReleased(cms, securityManager, resource, dateReleased, recursive);
         removeReferencingFromCache(references);
     }
@@ -288,13 +301,14 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#undoChanges(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceUndoMode)
      */
+    @Override
     public void undoChanges(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
         CmsResourceUndoMode mode) throws CmsException {
 
-        Set references = getReferencingStrongLinks(cms, resource);
+        Set<String> references = getReferencingStrongLinks(cms, resource);
         super.undoChanges(cms, securityManager, resource, mode);
         removeReferencingFromCache(references);
     }
@@ -302,6 +316,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsFile)
      */
+    @Override
     public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
 
         // actualize the link paths and/or ids
@@ -316,7 +331,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
             resource.setContents(content.getBytes());
         }
         // write the content with the 'right' links
-        Set references = getReferencingStrongLinks(cms, resource);
+        Set<String> references = getReferencingStrongLinks(cms, resource);
         CmsFile file = super.writeFile(cms, securityManager, resource);
         removeReferencingFromCache(references);
         return file;
@@ -332,9 +347,9 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected Set getReferencingStrongLinks(CmsObject cms, CmsResource resource) throws CmsException {
+    protected Set<String> getReferencingStrongLinks(CmsObject cms, CmsResource resource) throws CmsException {
 
-        Set references = new HashSet();
+        Set<String> references = new HashSet<String>();
         if (m_jspLoader == null) {
             return references;
         }
@@ -347,7 +362,7 @@ public class CmsResourceTypeJsp extends A_CmsResourceTypeLinkParseable {
      * 
      * @param references the references to remove
      */
-    protected void removeReferencingFromCache(Set references) {
+    protected void removeReferencingFromCache(Set<String> references) {
 
         if (m_jspLoader != null) {
             m_jspLoader.removeFromCache(references, false);

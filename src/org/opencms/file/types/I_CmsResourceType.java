@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2009/09/09 15:54:52 $
+ * Version: $Revision: 1.35.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -31,6 +31,7 @@
 
 package org.opencms.file.types;
 
+import org.opencms.configuration.CmsConfigurationCopyResource;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.db.CmsSecurityManager;
@@ -69,7 +70,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.35.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -248,7 +249,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List properties) throws CmsException, CmsIllegalArgumentException;
+        List<CmsProperty> properties) throws CmsException, CmsIllegalArgumentException;
 
     /**
      * Creates a new sibling of the source resource.<p>
@@ -271,7 +272,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        List properties) throws CmsException;
+        List<CmsProperty> properties) throws CmsException;
 
     /**
      * Deletes a resource given its name.<p>
@@ -333,21 +334,21 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      *
      * @return the configured copy resources for this resource type in an unmodifiable List
      */
-    List getConfiguredCopyResources();
+    List<CmsConfigurationCopyResource> getConfiguredCopyResources();
 
     /**
      * Returns the configured default properties for this resource type in an unmodifiable List.<p>
      *
      * @return the configured default properties for this resource type in an unmodifiable List
      */
-    List getConfiguredDefaultProperties();
+    List<CmsProperty> getConfiguredDefaultProperties();
 
     /**
      * Returns the file extensions mappings for this resource type in an unmodifiable List.<p>
      *
      * @return a list of file extensions mappings for this resource type in an unmodifiable List
      */
-    List getConfiguredMappings();
+    List<String> getConfiguredMappings();
 
     /**
      * Returns the loader type id of this resource type.<p>
@@ -400,7 +401,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         String resourcename,
         CmsResource resource,
         byte[] content,
-        List properties) throws CmsException;
+        List<CmsProperty> properties) throws CmsException;
 
     /**
      * Special version of the configuration initialization used with resource types
@@ -564,7 +565,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource resource,
         int type,
         byte[] content,
-        List properties) throws CmsException;
+        List<CmsProperty> properties) throws CmsException;
 
     /**
      * Restores a resource in the current project with a version from the historical archive.<p>
@@ -580,25 +581,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @see CmsSecurityManager#restoreResource(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
     void restoreResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int version)
-    throws CmsException;
-
-    /**
-     * Restores a file in the current project with a version from the historical archive.<p>
-     * 
-     * @param cms the current cms context
-     * @param securityManager the initialized OpenCms security manager
-     * @param resource the resource to restore from the archive
-     * @param publishTag the publish tag of the resource to restore
-     *
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#restoreResourceVersion(org.opencms.util.CmsUUID, int)
-     * @see CmsSecurityManager#restoreResource(org.opencms.file.CmsRequestContext, CmsResource, int)
-     * 
-     * @deprecated Use {@link #restoreResource(CmsObject,CmsSecurityManager,CmsResource,int)} instead
-     *             but notice that <code>publishTag != version</code>
-     */
-    void restoreResourceBackup(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, int publishTag)
     throws CmsException;
 
     /**
@@ -782,6 +764,9 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @see CmsObject#writePropertyObjects(String, List)
      * @see CmsSecurityManager#writePropertyObjects(org.opencms.file.CmsRequestContext, CmsResource, List)
      */
-    void writePropertyObjects(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, List properties)
-    throws CmsException;
+    void writePropertyObjects(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        List<CmsProperty> properties) throws CmsException;
 }

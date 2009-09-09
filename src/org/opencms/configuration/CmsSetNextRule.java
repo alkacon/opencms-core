@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSetNextRule.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/09/09 15:54:51 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -84,7 +84,7 @@ import org.xml.sax.Attributes;
  * @author Craig McClanahan 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.13.2.1 $
  * 
  * @since 6.0.0
  */
@@ -113,7 +113,7 @@ public class CmsSetNextRule extends Rule {
     /**
      * The parameter types of the parameters to be collected.
      */
-    protected Class[] m_paramTypes;
+    protected Class<?>[] m_paramTypes;
 
     /**
      * Should <code>MethodUtils.invokeExactMethod</code> be used for reflection.
@@ -143,7 +143,7 @@ public class CmsSetNextRule extends Rule {
      * @param methodName Method name of the parent method to call
      * @param clazz The class of the top-stack element (child) that will be present at digestion-time
      */
-    public CmsSetNextRule(String methodName, Class clazz) {
+    public CmsSetNextRule(String methodName, Class<?> clazz) {
 
         this(methodName, new Class[] {clazz});
     }
@@ -167,7 +167,7 @@ public class CmsSetNextRule extends Rule {
      * @param methodName Method name of the parent method to call
      * @param clazzes an array with all parameter types for the method to invoke at digestion time 
      */
-    public CmsSetNextRule(String methodName, Class[] clazzes) {
+    public CmsSetNextRule(String methodName, Class<?>[] clazzes) {
 
         m_targetOffset = 0;
         m_methodName = methodName;
@@ -186,7 +186,8 @@ public class CmsSetNextRule extends Rule {
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @throws Exception if something goes wrong
      */
-    public void begin(java.lang.String namespace, java.lang.String name, Attributes attributes) throws Exception {
+    @Override
+    public void begin(String namespace, String name, Attributes attributes) throws Exception {
 
         // not now: 6.0.0
         // digester.setLogger(CmsLog.getLog(digester.getClass()));
@@ -210,7 +211,8 @@ public class CmsSetNextRule extends Rule {
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @throws Exception if something goes wrong 
      */
-    public void body(java.lang.String namespace, java.lang.String name, String bodyText) throws Exception {
+    @Override
+    public void body(String namespace, String name, String bodyText) throws Exception {
 
         if (m_paramCount == 0) {
             m_bodyText = bodyText.trim();
@@ -225,7 +227,8 @@ public class CmsSetNextRule extends Rule {
      * @param name the local name if the parser is namespace aware, or just the element name otherwise
      * @throws Exception if something goes wrong
      */
-    public void end(java.lang.String namespace, java.lang.String name) throws Exception {
+    @Override
+    public void end(String namespace, String name) throws Exception {
 
         // Determine the target object for the method call: the parent object
         Object parent = digester.peek(1);
@@ -285,7 +288,7 @@ public class CmsSetNextRule extends Rule {
         // the specified paramType is not String. 
         Object[] paramValues = new Object[m_paramTypes.length];
 
-        Class propertyClass = child.getClass();
+        Class<?> propertyClass = child.getClass();
         for (int i = 0; i < m_paramTypes.length; i++) {
             if (m_paramTypes[i] == propertyClass) {
                 // implant the original child to set if Class matches: 
@@ -397,6 +400,7 @@ public class CmsSetNextRule extends Rule {
      * 
      * @param aDigester the associated digester to set
      */
+    @Override
     public void setDigester(Digester aDigester) {
 
         aDigester.setLogger(CmsLog.getLog(aDigester.getClass()));
@@ -421,6 +425,7 @@ public class CmsSetNextRule extends Rule {
      * 
      * @return a printable version of this Rule
      */
+    @Override
     public String toString() {
 
         StringBuffer sb = new StringBuffer("CallMethodRule[");

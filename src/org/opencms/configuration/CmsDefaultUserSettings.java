@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2009/09/08 12:54:45 $
- * Version: $Revision: 1.25.2.1 $
+ * Date   : $Date: 2009/09/09 15:54:51 $
+ * Version: $Revision: 1.25.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.25.2.1 $
+ * @version $Revision: 1.25.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -142,7 +142,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     private static final String[] BUTTON_STYLES = {"image", "textimage", "text"};
 
     /** Array list for fast lookup of "button styles". */
-    public static final List BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
+    public static final List<String> BUTTON_STYLES_LIST = Collections.unmodifiableList(Arrays.asList(BUTTON_STYLES));
 
     /** Parameter for buttonstyle text & image. */
     private static final int BUTTONSTYLE_TEXTIMAGE = 1;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2009/09/09 15:54:52 $
+ * Version: $Revision: 1.28.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -44,7 +44,7 @@ import java.util.TreeMap;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.28.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,6 +101,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         super.addConfigurationParameter(paramName, paramValue);
@@ -114,13 +115,14 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
-    public Map getConfiguration() {
+    @Override
+    public Map<String, String> getConfiguration() {
 
-        Map result = new TreeMap();
+        Map<String, String> result = new TreeMap<String, String>();
         if (CmsStringUtil.isNotEmpty(getIndexPageTypes())) {
             result.put(CONFIGURATION_INDEX_PAGE_TYPE, getIndexPageTypes());
         }
-        Map additional = super.getConfiguration();
+        Map<String, String> additional = super.getConfiguration();
         if ((additional != null) && (additional.size() > 0)) {
             result.putAll(additional);
         }
@@ -140,6 +142,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
+    @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {

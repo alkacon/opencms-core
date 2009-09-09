@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspLinkMacroResolver.java,v $
- * Date   : $Date: 2009/06/04 14:29:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/09 15:54:54 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.5.4 
  */
@@ -77,7 +77,7 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
     public static final String[] VALUE_NAME_ARRAY = {MACRO_LINK, MACRO_LINK_WEAK, MACRO_LINK_STRONG};
 
     /** The link commands wrapped in a List. */
-    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAME_ARRAY));
+    public static final List<String> VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAME_ARRAY));
 
     /** The cms context. */
     private CmsObject m_cms;
@@ -92,7 +92,7 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
     private String m_jspRootPath;
 
     /** The list of links. */
-    private List m_links = new ArrayList();
+    private List<CmsLink> m_links = new ArrayList<CmsLink>();
 
     /**
      * Default constructor.<p>
@@ -113,7 +113,7 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
      *
      * @return the links
      */
-    public List getLinks() {
+    public List<CmsLink> getLinks() {
 
         return m_links;
     }
@@ -127,7 +127,7 @@ public class CmsJspLinkMacroResolver implements I_CmsMacroResolver {
         String id = null;
 
         // validate macro command
-        Iterator it = VALUE_NAMES.iterator();
+        Iterator<String> it = VALUE_NAMES.iterator();
         while (it.hasNext()) {
             String cmd = it.next().toString();
             if (macro.startsWith(cmd)) {

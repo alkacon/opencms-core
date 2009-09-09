@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUsersAllOrgUnitsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:41 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/09 15:54:54 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.5.6 
  */
@@ -165,9 +165,9 @@ public class CmsUsersAllOrgUnitsList extends A_CmsUsersList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getUsers()
      */
-    protected List getUsers() throws CmsException {
+    protected List<CmsUser> getUsers() throws CmsException {
 
-        return CmsPrincipal.filterCore(OpenCms.getRoleManager().getManageableUsers(getCms(), "", true));
+        return CmsPrincipal.filterCoreUsers(OpenCms.getRoleManager().getManageableUsers(getCms(), "", true));
     }
 
     /**

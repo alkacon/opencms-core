@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2009/09/09 15:54:52 $
+ * Version: $Revision: 1.55.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,6 +47,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsLink;
 import org.opencms.relations.I_CmsLinkParseable;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
@@ -67,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.55.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,16 +102,16 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     protected String m_className;
 
     /** The list of resources to copy. */
-    protected List m_copyResources;
+    protected List<CmsConfigurationCopyResource> m_copyResources;
 
     /** The list of configured default properties. */
-    protected List m_defaultProperties;
+    protected List<CmsProperty> m_defaultProperties;
 
     /** Indicates that the configuration of the resource type has been frozen. */
     protected boolean m_frozen;
 
     /**  Contains the file extensions mapped to this resource type. */
-    protected List m_mappings;
+    protected List<String> m_mappings;
 
     /** The configured id of this resource type. */
     protected int m_typeId;
@@ -127,9 +128,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     public A_CmsResourceType() {
 
         m_typeId = -1;
-        m_mappings = new ArrayList();
-        m_defaultProperties = new ArrayList();
-        m_copyResources = new ArrayList();
+        m_mappings = new ArrayList<String>();
+        m_defaultProperties = new ArrayList<CmsProperty>();
+        m_copyResources = new ArrayList<CmsConfigurationCopyResource>();
     }
 
     /**
@@ -217,7 +218,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MAPPING_TYPE_2, mapping, this));
         }
         if (m_mappings == null) {
-            m_mappings = new ArrayList();
+            m_mappings = new ArrayList<String>();
         }
         m_mappings.add(mapping);
     }
@@ -287,13 +288,13 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
         // initialize a macro resolver with the current user OpenCms context
         CmsMacroResolver resolver = getMacroResolver(cms, resourcename);
 
         // add the predefined property values from the XML configuration to the resource
-        List newProperties = processDefaultProperties(properties, resolver);
+        List<CmsProperty> newProperties = processDefaultProperties(properties, resolver);
 
         CmsResource result = securityManager.createResource(
             cms.getRequestContext(),
@@ -324,7 +325,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsSecurityManager securityManager,
         CmsResource source,
         String destination,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
         CmsResource sibling = securityManager.createSibling(
             cms.getRequestContext(),
@@ -364,6 +365,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see #isIdentical(I_CmsResourceType)
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -402,16 +404,16 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_GET_CONFIGURATION_1, this));
         }
 
-        Map result = null;
+        Map<String, String> result = null;
         if (m_internal != null) {
-            result = new TreeMap();
-            result.put(CONFIGURATION_INTERNAL, m_internal);
+            result = new TreeMap<String, String>();
+            result.put(CONFIGURATION_INTERNAL, String.valueOf(m_internal));
         }
         return result;
     }
@@ -421,7 +423,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * 
      * @return the (unmodifiable) list of copy resources
      */
-    public List getConfiguredCopyResources() {
+    public List<CmsConfigurationCopyResource> getConfiguredCopyResources() {
 
         return m_copyResources;
     }
@@ -431,7 +433,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      *
      * @return the default properties for this resource type in an unmodifiable List
      */
-    public List getConfiguredDefaultProperties() {
+    public List<CmsProperty> getConfiguredDefaultProperties() {
 
         return m_defaultProperties;
     }
@@ -439,7 +441,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getConfiguredMappings()
      */
-    public List getConfiguredMappings() {
+    public List<String> getConfiguredMappings() {
 
         return m_mappings;
     }
@@ -471,6 +473,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * @see #getTypeId()
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return getTypeId();
@@ -485,7 +488,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         String resourcename,
         CmsResource resource,
         byte[] content,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
         // this triggers the internal "is touched" state
         // and prevents the security manager from inserting the current time
@@ -510,25 +513,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIGURATION_1, this));
         }
-    }
-
-    /**
-     * Special version of the configuration initialization used with resource types
-     * to set resource type and id, unsing the name of this class instance.<p>
-     *
-     * @param name the resource type name
-     * @param id the resource type id
-     * 
-     * @throws CmsConfigurationException if the configuration is invalid
-     * 
-     * @deprecated use <code>{@link #initConfiguration(String, String, String)}</code> instead
-     * 
-     * @see I_CmsResourceType#initConfiguration(String, String, String)
-     */
-    public void initConfiguration(String name, String id) throws CmsConfigurationException {
-
-        // use this class instance name for the class name
-        initConfiguration(name, id, this.getClass().getName());
     }
 
     /**
@@ -681,7 +665,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsResource resource,
         int type,
         byte[] content,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
         securityManager.replaceResource(cms.getRequestContext(), resource, type, content, properties);
         // type may have changed from non link parseable to link parseable
@@ -697,20 +681,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         securityManager.restoreResource(cms.getRequestContext(), resource, version);
         // type may have changed from non link parseable to link parseable
         createRelations(cms, securityManager, resource.getRootPath());
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#restoreResourceBackup(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
-     * 
-     * @deprecated Use {@link #restoreResource(CmsObject,CmsSecurityManager,CmsResource,int)} instead
-     */
-    public void restoreResourceBackup(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        int version) throws CmsException {
-
-        restoreResource(cms, securityManager, resource, version);
     }
 
     /**
@@ -763,6 +733,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer output = new StringBuffer();
@@ -817,7 +788,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             CmsFile file = securityManager.writeFile(cms.getRequestContext(), resource);
             I_CmsResourceType type = getResourceType(file);
             // update the relations after writing!!
-            List links = null;
+            List<CmsLink> links = null;
             if (type instanceof I_CmsLinkParseable) {
                 // if the new type is link parseable
                 links = ((I_CmsLinkParseable)type).parseLinks(cms, file);
@@ -850,7 +821,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
         securityManager.writePropertyObjects(cms.getRequestContext(), resource, properties);
     }
@@ -874,7 +845,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             resourceName,
             CmsResourceFilter.ALL);
         I_CmsResourceType resourceType = getResourceType(resource);
-        List links = null;
+        List<CmsLink> links = null;
         if (resourceType instanceof I_CmsLinkParseable) {
             I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
             links = linkParseable.parseLinks(cms, cms.readFile(resource));
@@ -932,9 +903,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     protected void processCopyResources(CmsObject cms, String resourcename, CmsMacroResolver resolver) {
 
-        Iterator i = m_copyResources.iterator();
+        Iterator<CmsConfigurationCopyResource> i = m_copyResources.iterator();
         while (i.hasNext()) {
-            CmsConfigurationCopyResource copyResource = (CmsConfigurationCopyResource)i.next();
+            CmsConfigurationCopyResource copyResource = i.next();
 
             String target = copyResource.getTarget();
             if (copyResource.isTargetWasNull() || CmsMacroResolver.isMacro(target, MACRO_RESOURCE_FOLDER_PATH)) {
@@ -980,7 +951,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * 
      * @return a list of property objects that are attached to the resource on creation
      */
-    protected List processDefaultProperties(List properties, CmsMacroResolver resolver) {
+    protected List<CmsProperty> processDefaultProperties(List<CmsProperty> properties, CmsMacroResolver resolver) {
 
         if ((m_defaultProperties == null) || (m_defaultProperties.size() == 0)) {
             // no default properties are defined
@@ -989,12 +960,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         // the properties must be copied since the macros could contain macros that are
         // resolved differently for every user / context
-        ArrayList result = new ArrayList();
-        Iterator i = m_defaultProperties.iterator();
+        ArrayList<CmsProperty> result = new ArrayList<CmsProperty>();
+        Iterator<CmsProperty> i = m_defaultProperties.iterator();
 
         while (i.hasNext()) {
             // create a clone of the next property
-            CmsProperty property = (CmsProperty)((CmsProperty)i.next()).clone();
+            CmsProperty property = (CmsProperty)(i.next()).clone();
 
             // resolve possible macros in the property values
             if (property.getResourceValue() != null) {
@@ -1044,7 +1015,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             CmsResourceFilter.ALL);
         if (!undoneResource2.equals(undoneResource1)) {
             I_CmsResourceType resourceType = getResourceType(resource);
-            List links = null;
+            List<CmsLink> links = null;
             if (resourceType instanceof I_CmsLinkParseable) {
                 I_CmsLinkParseable linkParseable = (I_CmsLinkParseable)resourceType;
                 if ((undoneResource1 == null) || !undoneResource2.getRootPath().equals(undoneResource1.getRootPath())) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/09/09 15:54:52 $
+ * Version: $Revision: 1.31.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.31.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,6 +140,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getCachePropertyDefault()
      */
+    @Override
     public String getCachePropertyDefault() {
 
         return "element;locale;";
@@ -148,6 +149,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return CmsXmlPageLoader.RESOURCE_LOADER_ID;
@@ -156,6 +158,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
+    @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
@@ -187,29 +190,29 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
-    public List parseLinks(CmsObject cms, CmsFile file) {
+    public List<CmsLink> parseLinks(CmsObject cms, CmsFile file) {
 
-        Set links = new HashSet();
+        Set<CmsLink> links = new HashSet<CmsLink>();
         try {
             CmsXmlPage xmlPage = CmsXmlPageFactory.unmarshal(cms, file);
-            List locales = xmlPage.getLocales();
+            List<Locale> locales = xmlPage.getLocales();
 
             // iterate over all languages
-            Iterator i = locales.iterator();
+            Iterator<Locale> i = locales.iterator();
             while (i.hasNext()) {
-                Locale locale = (Locale)i.next();
-                List elementNames = xmlPage.getNames(locale);
+                Locale locale = i.next();
+                List<String> elementNames = xmlPage.getNames(locale);
 
                 // iterate over all body elements per language
-                Iterator j = elementNames.iterator();
+                Iterator<String> j = elementNames.iterator();
                 while (j.hasNext()) {
-                    String elementName = (String)j.next();
+                    String elementName = j.next();
                     CmsLinkTable linkTable = xmlPage.getLinkTable(elementName, locale);
 
                     // iterate over all links inside a body element
-                    Iterator k = linkTable.iterator();
+                    Iterator<CmsLink> k = linkTable.iterator();
                     while (k.hasNext()) {
-                        CmsLink link = (CmsLink)k.next();
+                        CmsLink link = k.next();
                         if (link.isInternal()) {
                             link.checkConsistency(cms);
                             links.add(link);
@@ -222,14 +225,15 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceTypeLinkParseable {
                 LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_HTML_CONTENT_1, cms.getSitePath(file)), e);
             }
 
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
-        return new ArrayList(links);
+        return new ArrayList<CmsLink>(links);
     }
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsSecurityManager, CmsFile)
      */
+    @Override
     public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
 
         // check if the user has write access and if resource is locked

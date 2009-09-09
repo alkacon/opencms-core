@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsOrgUnitManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2009/09/09 15:54:54 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,9 @@
 package org.opencms.security;
 
 import org.opencms.db.CmsSecurityManager;
+import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
@@ -45,7 +47,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.2.1 $
  * 
  * @since 6.5.6
  */
@@ -146,7 +148,8 @@ public class CmsOrgUnitManager {
      *
      * @throws CmsException if operation was not successful
      */
-    public List getAllAccessibleProjects(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
+    public List<CmsProject> getAllAccessibleProjects(CmsObject cms, String ouFqn, boolean includeSubOus)
+    throws CmsException {
 
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
         return (m_securityManager.getAllAccessibleProjects(cms.getRequestContext(), orgUnit, includeSubOus));
@@ -166,7 +169,8 @@ public class CmsOrgUnitManager {
      *
      * @throws CmsException if operation was not successful
      */
-    public List getAllManageableProjects(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
+    public List<CmsProject> getAllManageableProjects(CmsObject cms, String ouFqn, boolean includeSubOus)
+    throws CmsException {
 
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
         return (m_securityManager.getAllManageableProjects(cms.getRequestContext(), orgUnit, includeSubOus));
@@ -183,7 +187,7 @@ public class CmsOrgUnitManager {
      *
      * @throws CmsException if operation was not successful
      */
-    public List getGroups(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
+    public List<CmsGroup> getGroups(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
 
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
         return (m_securityManager.getGroups(cms.getRequestContext(), orgUnit, includeSubOus, false));
@@ -201,7 +205,8 @@ public class CmsOrgUnitManager {
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getOrganizationalUnits(CmsObject cms, String ouFqn, boolean includeChildren) throws CmsException {
+    public List<CmsOrganizationalUnit> getOrganizationalUnits(CmsObject cms, String ouFqn, boolean includeChildren)
+    throws CmsException {
 
         CmsOrganizationalUnit parent = readOrganizationalUnit(cms, ouFqn);
         return m_securityManager.getOrganizationalUnits(cms.getRequestContext(), parent, includeChildren);
@@ -217,7 +222,7 @@ public class CmsOrgUnitManager {
      *
      * @throws CmsException if operation was not successful
      */
-    public List getResourcesForOrganizationalUnit(CmsObject cms, String ouFqn) throws CmsException {
+    public List<CmsResource> getResourcesForOrganizationalUnit(CmsObject cms, String ouFqn) throws CmsException {
 
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
         return m_securityManager.getResourcesForOrganizationalUnit(cms.getRequestContext(), orgUnit);
@@ -234,7 +239,7 @@ public class CmsOrgUnitManager {
      *
      * @throws CmsException if operation was not successful
      */
-    public List getUsers(CmsObject cms, String ouFqn, boolean recursive) throws CmsException {
+    public List<CmsUser> getUsers(CmsObject cms, String ouFqn, boolean recursive) throws CmsException {
 
         CmsOrganizationalUnit orgUnit = readOrganizationalUnit(cms, ouFqn);
         return m_securityManager.getUsers(cms.getRequestContext(), orgUnit, recursive);

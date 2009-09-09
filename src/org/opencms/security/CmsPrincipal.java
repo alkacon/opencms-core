@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2009/09/07 12:41:55 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2009/09/09 15:54:54 $
+ * Version: $Revision: 1.7.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -50,7 +50,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.7.2.1 $ 
+ * @version $Revision: 1.7.2.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -77,24 +77,45 @@ public abstract class CmsPrincipal implements I_CmsPrincipal, Comparable<I_CmsPr
     }
 
     /**
-     * Filters out all principals with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
+     * Filters out all groups with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
      * 
      * The given parameter list is directly modified, so the returned list is the same object as the input list.<p>
      * 
-     * @param principals a list of <code>{@link CmsPrincipal}</code> objects
+     * @param groups a list of <code>{@link CmsGroup}</code> objects
      * 
      * @return the filtered principal list
      */
-    public static List<CmsPrincipal> filterCore(List<CmsPrincipal> principals) {
+    public static List<CmsGroup> filterCoreGroups(List<CmsGroup> groups) {
 
-        Iterator<CmsPrincipal> it = principals.iterator();
+        Iterator<CmsGroup> it = groups.iterator();
         while (it.hasNext()) {
-            CmsPrincipal p = it.next();
+            CmsGroup p = it.next();
             if (p.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) {
                 it.remove();
             }
         }
-        return principals;
+        return groups;
+    }
+
+    /**
+     * Filters out all users with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
+     * 
+     * The given parameter list is directly modified, so the returned list is the same object as the input list.<p>
+     * 
+     * @param users a list of <code>{@link CmsUser}</code> objects
+     * 
+     * @return the filtered principal list
+     */
+    public static List<CmsUser> filterCoreUsers(List<CmsUser> users) {
+
+        Iterator<CmsUser> it = users.iterator();
+        while (it.hasNext()) {
+            I_CmsPrincipal p = it.next();
+            if (p.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) {
+                it.remove();
+            }
+        }
+        return users;
     }
 
     /**

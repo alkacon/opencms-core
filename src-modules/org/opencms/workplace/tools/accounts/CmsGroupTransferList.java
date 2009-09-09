@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupTransferList.java,v $
- * Date   : $Date: 2009/06/04 14:33:40 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/09 15:54:54 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -70,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -292,9 +292,9 @@ public class CmsGroupTransferList extends A_CmsListDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List getGroups() throws CmsException {
+    protected List<CmsGroup> getGroups() throws CmsException {
 
-        return CmsPrincipal.filterCore(OpenCms.getOrgUnitManager().getGroups(getCms(), "", true));
+        return CmsPrincipal.filterCoreGroups(OpenCms.getOrgUnitManager().getGroups(getCms(), "", true));
     }
 
     /**

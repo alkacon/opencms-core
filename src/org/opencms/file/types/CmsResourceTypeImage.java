@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeImage.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2009/09/09 15:54:52 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,7 +78,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         private CmsImageScaler m_imageDownScaler;
 
         /** The image properties. */
-        private List m_properties;
+        private List<CmsProperty> m_properties;
 
         /** The image root path. */
         private String m_rootPath;
@@ -91,7 +91,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
          * @param properties the image properties
          * @param downScaler the (optional) image scaler that contains the image downscale settings
          */
-        public CmsImageAdjuster(byte[] content, String rootPath, List properties, CmsImageScaler downScaler) {
+        public CmsImageAdjuster(byte[] content, String rootPath, List<CmsProperty> properties, CmsImageScaler downScaler) {
 
             m_content = content;
             m_rootPath = rootPath;
@@ -128,7 +128,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
 
             CmsProperty p = new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, null, scaler.toString());
             // create the new property list if required (don't modify the original List)
-            List result = new ArrayList();
+            List<CmsProperty> result = new ArrayList<CmsProperty>();
             if ((m_properties != null) && (m_properties.size() > 0)) {
                 result.addAll(m_properties);
                 result.remove(p);
@@ -154,7 +154,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
          *
          * @return the image properties
          */
-        public List getProperties() {
+        public List<CmsProperty> getProperties() {
 
             return m_properties;
         }
@@ -279,12 +279,13 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
      */
+    @Override
     public CmsResource createResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
         if (CmsImageLoader.isEnabled()) {
             String rootPath = cms.getRequestContext().addSiteRoot(resourcename);
@@ -304,6 +305,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return m_staticLoaderId;
@@ -312,13 +314,14 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, org.opencms.file.CmsResource, byte[], java.util.List)
      */
+    @Override
     public CmsResource importResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         String resourcename,
         CmsResource resource,
         byte[] content,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
         if (CmsImageLoader.isEnabled()) {
             // siblings have null content in import
@@ -344,6 +347,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
+    @Override
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
@@ -394,13 +398,14 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, int, byte[], java.util.List)
      */
+    @Override
     public void replaceResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
         int type,
         byte[] content,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
         if (CmsImageLoader.isEnabled()) {
             // check if the user has write access and if resource is locked
@@ -431,6 +436,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsFile)
      */
+    @Override
     public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource)
     throws CmsException, CmsVfsException, CmsSecurityException {
 

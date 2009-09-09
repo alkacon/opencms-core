@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsAllOrgUnitsList.java,v $
- * Date   : $Date: 2009/06/04 14:33:42 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/09 15:54:54 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Raphael Schnuck  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.2.1 $ 
  * 
  * @since 6.5.6 
  */
@@ -162,9 +162,10 @@ public class CmsGroupsAllOrgUnitsList extends A_CmsGroupsList {
     /**
      * @see org.opencms.workplace.tools.accounts.A_CmsGroupsList#getGroups()
      */
-    protected List getGroups() throws CmsException {
+    @Override
+    protected List<CmsGroup> getGroups() throws CmsException {
 
-        return CmsPrincipal.filterCore(OpenCms.getRoleManager().getManageableGroups(getCms(), "", true));
+        return CmsPrincipal.filterCoreGroups(OpenCms.getRoleManager().getManageableGroups(getCms(), "", true));
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2009/06/04 14:29:39 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/09/09 15:54:53 $
+ * Version: $Revision: 1.25.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.25.2.1 $
  * 
  * @since 6.0.0
  */
@@ -262,8 +262,10 @@ public class CmsLruCache extends java.lang.Object {
 
     /**
      * Returns a string representing the current state of the cache.<p>
+     * 
      * @return a string representing the current state of the cache
      */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer();
@@ -332,8 +334,10 @@ public class CmsLruCache extends java.lang.Object {
 
     /**
      * Clears this cache for finalization.<p>
+     * 
      * @throws Throwable if something goes wring
      */
+    @Override
     protected void finalize() throws Throwable {
 
         try {

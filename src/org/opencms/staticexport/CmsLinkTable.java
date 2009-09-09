@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkTable.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/09/09 15:54:53 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,13 +36,14 @@ import org.opencms.relations.CmsRelationType;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Maintains a table of links for an element of a CmsXmlPage.<p>
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,14 +53,14 @@ public class CmsLinkTable {
     private static final String LINK_PREFIX = "link";
 
     /** The map to store the link table in. */
-    private HashMap m_linkTable;
+    private Map<String, CmsLink> m_linkTable;
 
     /**
      * Creates a new CmsLinkTable.<p>
      */
     public CmsLinkTable() {
 
-        m_linkTable = new HashMap();
+        m_linkTable = new HashMap<String, CmsLink>();
     }
 
     /**
@@ -98,7 +99,7 @@ public class CmsLinkTable {
      */
     public CmsLink getLink(String name) {
 
-        return (CmsLink)m_linkTable.get(name);
+        return m_linkTable.get(name);
     }
 
     /**
@@ -118,7 +119,7 @@ public class CmsLinkTable {
      * 
      * @return a string iterator for internal link names
      */
-    public Iterator iterator() {
+    public Iterator<CmsLink> iterator() {
 
         return m_linkTable.values().iterator();
     }

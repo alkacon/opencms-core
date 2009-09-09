@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2009/06/04 14:29:28 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/09/09 15:54:53 $
+ * Version: $Revision: 1.32.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.file.types;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -70,7 +71,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.32.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,6 +117,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         super.addConfigurationParameter(paramName, paramValue);
@@ -127,12 +129,13 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
      */
+    @Override
     public CmsResource createResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
         boolean hasModelUri = false;
         CmsXmlContent newContent = null;
@@ -141,9 +144,8 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
             CmsXmlContentDefinition contentDefinition = CmsXmlContentDefinition.unmarshal(cms, m_schema);
 
             // read the default locale for the new resource
-            Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(
-                cms,
-                CmsResource.getParentFolder(resourcename)).get(0);
+            Locale locale = OpenCms.getLocaleManager().getDefaultLocales(cms, CmsResource.getParentFolder(resourcename)).get(
+                0);
 
             String modelUri = (String)cms.getRequestContext().getAttribute(CmsRequestContext.ATTRIBUTE_MODEL);
 
@@ -183,6 +185,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getCachePropertyDefault()
      */
+    @Override
     public String getCachePropertyDefault() {
 
         return "element;locale;";
@@ -191,13 +194,14 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
-    public Map getConfiguration() {
+    @Override
+    public Map<String, String> getConfiguration() {
 
-        Map result = new TreeMap();
+        Map<String, String> result = new TreeMap<String, String>();
         if (m_schema != null) {
             result.put(CONFIGURATION_SCHEMA, m_schema);
         }
-        Map additional = super.getConfiguration();
+        Map<String, String> additional = super.getConfiguration();
         if (additional != null) {
             result.putAll(additional);
         }
@@ -207,6 +211,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         return CmsXmlContentLoader.RESOURCE_LOADER_ID;
@@ -215,10 +220,10 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
     /**
      * @see org.opencms.relations.I_CmsLinkParseable#parseLinks(org.opencms.file.CmsObject, org.opencms.file.CmsFile)
      */
-    public List parseLinks(CmsObject cms, CmsFile file) {
+    public List<CmsLink> parseLinks(CmsObject cms, CmsFile file) {
 
         if (file.getLength() == 0) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         CmsXmlContent xmlContent;
         long requestTime = cms.getRequestContext().getRequestTime();
@@ -232,32 +237,32 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                     org.opencms.db.Messages.ERR_READ_RESOURCE_1,
                     cms.getSitePath(file)), e);
             }
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         } finally {
             cms.getRequestContext().setRequestTime(requestTime);
         }
 
-        Set links = new HashSet();
-        List locales = xmlContent.getLocales();
+        Set<CmsLink> links = new HashSet<CmsLink>();
+        List<Locale> locales = xmlContent.getLocales();
 
         // iterate over all languages
-        Iterator i = locales.iterator();
+        Iterator<Locale> i = locales.iterator();
         while (i.hasNext()) {
-            Locale locale = (Locale)i.next();
-            List values = xmlContent.getValues(locale);
+            Locale locale = i.next();
+            List<I_CmsXmlContentValue> values = xmlContent.getValues(locale);
 
             // iterate over all body elements per language
-            Iterator j = values.iterator();
+            Iterator<I_CmsXmlContentValue> j = values.iterator();
             while (j.hasNext()) {
-                I_CmsXmlContentValue value = (I_CmsXmlContentValue)j.next();
+                I_CmsXmlContentValue value = j.next();
                 if (value instanceof CmsXmlHtmlValue) {
                     CmsXmlHtmlValue htmlValue = (CmsXmlHtmlValue)value;
                     CmsLinkTable linkTable = htmlValue.getLinkTable();
 
                     // iterate over all links inside a body element
-                    Iterator k = linkTable.iterator();
+                    Iterator<CmsLink> k = linkTable.iterator();
                     while (k.hasNext()) {
-                        CmsLink link = (CmsLink)k.next();
+                        CmsLink link = k.next();
 
                         // external links are omitted
                         if (link.isInternal()) {
@@ -280,12 +285,13 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceTypeLinkParseable {
                 }
             }
         }
-        return new ArrayList(links);
+        return new ArrayList<CmsLink>(links);
     }
 
     /**
      * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, CmsSecurityManager, CmsFile)
      */
+    @Override
     public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource) throws CmsException {
 
         // check if the user has write access and if resource is locked

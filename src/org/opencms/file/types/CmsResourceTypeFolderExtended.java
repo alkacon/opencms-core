@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolderExtended.java,v $
- * Date   : $Date: 2009/06/04 14:29:29 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/09/09 15:54:53 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,7 +45,7 @@ import java.util.TreeMap;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,6 +66,7 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
      */
+    @Override
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         super.addConfigurationParameter(paramName, paramValue);
@@ -82,16 +83,17 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#getConfiguration()
      */
-    public Map getConfiguration() {
+    @Override
+    public Map<String, String> getConfiguration() {
 
-        Map result = new TreeMap();
+        Map<String, String> result = new TreeMap<String, String>();
         if (CmsStringUtil.isNotEmpty(getFolderClassName())) {
             result.put(CONFIGURATION_FOLDER_CLASS, getFolderClassName());
         }
         if (CmsStringUtil.isNotEmpty(getFolderClassParams())) {
             result.put(CONFIGURATION_FOLDER_CLASS_PARAMS, getFolderClassParams());
         }
-        Map additional = super.getConfiguration();
+        Map<String, String> additional = super.getConfiguration();
         if ((additional != null) && (additional.size() > 0)) {
             result.putAll(additional);
         }

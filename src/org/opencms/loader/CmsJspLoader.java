@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2009/06/04 14:29:07 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2009/09/09 15:54:54 $
+ * Version: $Revision: 1.116.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -118,7 +118,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.116 $ 
+ * @version $Revision: 1.116.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -344,13 +344,13 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * 
      * @throws CmsException if something goes wrong
      */
-    public void getReferencingStrongLinks(CmsObject cms, CmsResource resource, Set referencingPaths)
+    public void getReferencingStrongLinks(CmsObject cms, CmsResource resource, Set<String> referencingPaths)
     throws CmsException {
 
         CmsRelationFilter filter = CmsRelationFilter.SOURCES.filterType(CmsRelationType.JSP_STRONG);
-        Iterator it = cms.getRelationsForResource(resource, filter).iterator();
+        Iterator<CmsRelation> it = cms.getRelationsForResource(resource, filter).iterator();
         while (it.hasNext()) {
-            CmsRelation relation = (CmsRelation)it.next();
+            CmsRelation relation = it.next();
             try {
                 CmsResource source = relation.getSource(cms, CmsResourceFilter.DEFAULT);
                 // check if file was already included
@@ -525,7 +525,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @param rootPaths the set of root paths to remove
      * @param online if online or offline
      */
-    public void removeFromCache(Set rootPaths, boolean online) {
+    public void removeFromCache(Set<String> rootPaths, boolean online) {
 
         Map cache;
         if (online) {
@@ -533,9 +533,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         } else {
             cache = m_offlineJsps;
         }
-        Iterator itRemove = rootPaths.iterator();
+        Iterator<String> itRemove = rootPaths.iterator();
         while (itRemove.hasNext()) {
-            String rootPath = (String)itRemove.next();
+            String rootPath = itRemove.next();
             cache.remove(rootPath);
         }
     }

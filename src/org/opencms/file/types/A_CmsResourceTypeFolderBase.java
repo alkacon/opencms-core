@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2009/07/09 13:23:08 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/09/09 15:54:52 $
+ * Version: $Revision: 1.24.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsDataNotImplementedException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -55,7 +56,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,6 +73,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#chtype(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int)
      */
+    @Override
     public void chtype(CmsObject cms, CmsSecurityManager securityManager, CmsResource filename, int newType)
     throws CmsException, CmsDataNotImplementedException {
 
@@ -87,6 +89,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#copyResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, java.lang.String, CmsResource.CmsResourceCopyMode)
      */
+    @Override
     public void copyResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -98,7 +101,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         destination = validateFoldername(destination);
 
         // collect all resources in the folder (but exclude deleted ones)
-        List resources = securityManager.readChildResources(
+        List<CmsResource> resources = securityManager.readChildResources(
             cms.getRequestContext(),
             source,
             CmsResourceFilter.IGNORE_EXPIRATION,
@@ -110,7 +113,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         // now walk through all sub-resources in the folder
         for (int i = 0; i < resources.size(); i++) {
-            CmsResource childResource = (CmsResource)resources.get(i);
+            CmsResource childResource = resources.get(i);
             String childDestination = destination.concat(childResource.getName());
             // handle child resources
             getResourceType(childResource).copyResource(
@@ -125,12 +128,13 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, CmsSecurityManager, java.lang.String, byte[], List)
      */
+    @Override
     public CmsResource createResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         String resourcename,
         byte[] content,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
         resourcename = validateFoldername(resourcename);
         return super.createResource(cms, securityManager, resourcename, content, properties);
@@ -139,6 +143,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#deleteResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, org.opencms.file.CmsResource.CmsResourceDeleteMode)
      */
+    @Override
     public void deleteResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -148,20 +153,20 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         super.deleteResource(cms, securityManager, resource, siblingMode);
 
         // update the project resources: 
-        List projects = OpenCms.getOrgUnitManager().getAllManageableProjects(cms, "", true);
+        List<CmsProject> projects = OpenCms.getOrgUnitManager().getAllManageableProjects(cms, "", true);
         CmsProject project;
-        List projectResources;
-        Iterator itProjectResources;
+        List<String> projectResources;
+        Iterator<String> itProjectResources;
 
         String projectResourceRootPath;
         String deletedResourceRootPath = resource.getRootPath();
-        Iterator itProjects = projects.iterator();
+        Iterator<CmsProject> itProjects = projects.iterator();
         while (itProjects.hasNext()) {
-            project = (CmsProject)itProjects.next();
+            project = itProjects.next();
             projectResources = cms.readProjectResources(project);
             itProjectResources = projectResources.iterator();
             while (itProjectResources.hasNext()) {
-                projectResourceRootPath = (String)itProjectResources.next();
+                projectResourceRootPath = itProjectResources.next();
                 if (projectResourceRootPath.startsWith(deletedResourceRootPath)) {
 
                     // we have to change the project resource: 
@@ -177,6 +182,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
+    @Override
     public int getLoaderId() {
 
         // folders have no loader
@@ -186,6 +192,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#isFolder()
      */
+    @Override
     public boolean isFolder() {
 
         return true;
@@ -194,6 +201,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#moveResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, java.lang.String)
      */
+    @Override
     public void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
     throws CmsException, CmsIllegalArgumentException {
 
@@ -221,13 +229,13 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         // this has to be read before the move for changing projectresources: 
         // update the project resources: 
-        List projects = OpenCms.getOrgUnitManager().getAllManageableProjects(cms, "", true);
+        List<CmsProject> projects = OpenCms.getOrgUnitManager().getAllManageableProjects(cms, "", true);
         CmsProject project;
-        List projectResources;
-        Iterator itProjectResources;
+        List<String> projectResources;
+        Iterator<String> itProjectResources;
         String projectResourceRootPathTarget;
         String moveResourceRootPath = resource.getRootPath();
-        Iterator itProjects = projects.iterator();
+        Iterator<CmsProject> itProjects = projects.iterator();
         // we have to change the project resource: 
         CmsObject projectCms = OpenCms.initCmsObject(cms);
         CmsRequestContext context = projectCms.getRequestContext();
@@ -242,14 +250,14 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         * --> Store all project resource movements, finally do all project resource removals, do the resource move 
         *     and then the project resource additions. 
         */
-        List projectResourceMoveList = new ArrayList();
+        List<CmsProjectResourceMoveData> projectResourceMoveList = new ArrayList<CmsProjectResourceMoveData>();
         while (itProjects.hasNext()) {
-            project = (CmsProject)itProjects.next();
+            project = itProjects.next();
             context.setCurrentProject(project);
             projectResources = cms.readProjectResources(project);
             itProjectResources = projectResources.iterator();
             while (itProjectResources.hasNext()) {
-                projectResourceRootPathTarget = (String)itProjectResources.next();
+                projectResourceRootPathTarget = itProjectResources.next();
                 if (projectResourceRootPathTarget.startsWith(moveResourceRootPath)) {
                     CmsResource deleteProjectResource = null;
                     CmsResource addProjectResource = null;
@@ -304,9 +312,9 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         // Action:
         // 1. remove project resources: 
         CmsProjectResourceMoveData projectResourceMoveData;
-        Iterator projectMoveResourceIt = projectResourceMoveList.iterator();
+        Iterator<CmsProjectResourceMoveData> projectMoveResourceIt = projectResourceMoveList.iterator();
         while (projectMoveResourceIt.hasNext()) {
-            projectResourceMoveData = (CmsProjectResourceMoveData)projectMoveResourceIt.next();
+            projectResourceMoveData = projectMoveResourceIt.next();
             context.setCurrentProject(projectResourceMoveData.getProject());
             securityManager.removeResourceFromProject(context, projectResourceMoveData.getSourceResource());
         }
@@ -317,7 +325,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // 3. add the moved resource
             projectMoveResourceIt = projectResourceMoveList.iterator();
             while (projectMoveResourceIt.hasNext()) {
-                projectResourceMoveData = (CmsProjectResourceMoveData)projectMoveResourceIt.next();
+                projectResourceMoveData = projectMoveResourceIt.next();
                 context.setCurrentProject(projectResourceMoveData.getProject());
                 securityManager.copyResourceToProject(context, projectResourceMoveData.getTargetResource());
             }
@@ -325,7 +333,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             // moving failed, rollback of removed project resources: 
             projectMoveResourceIt = projectResourceMoveList.iterator();
             while (projectMoveResourceIt.hasNext()) {
-                projectResourceMoveData = (CmsProjectResourceMoveData)projectMoveResourceIt.next();
+                projectResourceMoveData = projectMoveResourceIt.next();
                 context.setCurrentProject(projectResourceMoveData.getProject());
                 securityManager.copyResourceToProject(context, projectResourceMoveData.getSourceResource());
             }
@@ -336,13 +344,14 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#replaceResource(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, int, byte[], List)
      */
+    @Override
     public void replaceResource(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
         int type,
         byte[] content,
-        List properties) throws CmsException, CmsDataNotImplementedException {
+        List<CmsProperty> properties) throws CmsException, CmsDataNotImplementedException {
 
         if (type != getTypeId()) {
             // it is not possible to replace a folder with a different type
@@ -357,6 +366,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
+    @Override
     public void setDateExpired(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -369,7 +379,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         if (recursive) {
             // collect all resources in the folder (but exclude deleted ones)
-            List resources = securityManager.readChildResources(
+            List<CmsResource> resources = securityManager.readChildResources(
                 cms.getRequestContext(),
                 resource,
                 CmsResourceFilter.IGNORE_EXPIRATION,
@@ -378,7 +388,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
-                CmsResource childResource = (CmsResource)resources.get(i);
+                CmsResource childResource = resources.get(i);
                 // handle child resources
                 getResourceType(childResource).setDateExpired(
                     cms,
@@ -393,6 +403,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateLastModified(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
+    @Override
     public void setDateLastModified(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -405,7 +416,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         if (recursive) {
             // collect all resources in the folder (but exclude deleted ones)
-            List resources = securityManager.readChildResources(
+            List<CmsResource> resources = securityManager.readChildResources(
                 cms.getRequestContext(),
                 resource,
                 CmsResourceFilter.IGNORE_EXPIRATION,
@@ -414,7 +425,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
-                CmsResource childResource = (CmsResource)resources.get(i);
+                CmsResource childResource = resources.get(i);
                 // handle child resources
                 getResourceType(childResource).setDateLastModified(
                     cms,
@@ -429,6 +440,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateReleased(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
+    @Override
     public void setDateReleased(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -441,7 +453,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         if (recursive) {
             // collect all resources in the folder (but exclude deleted ones)
-            List resources = securityManager.readChildResources(
+            List<CmsResource> resources = securityManager.readChildResources(
                 cms.getRequestContext(),
                 resource,
                 CmsResourceFilter.IGNORE_EXPIRATION,
@@ -450,7 +462,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
-                CmsResource childResource = (CmsResource)resources.get(i);
+                CmsResource childResource = resources.get(i);
                 // handle child resources
                 getResourceType(childResource).setDateReleased(
                     cms,
@@ -465,6 +477,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.A_CmsResourceType#undelete(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsResource, boolean)
      */
+    @Override
     public void undelete(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, boolean recursive)
     throws CmsException {
 
@@ -473,7 +486,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
         if (recursive) {
             // collect all resources in the folder (but exclude deleted ones)
-            List resources = securityManager.readChildResources(
+            List<CmsResource> resources = securityManager.readChildResources(
                 cms.getRequestContext(),
                 resource,
                 CmsResourceFilter.ALL,
@@ -482,7 +495,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
-                CmsResource childResource = (CmsResource)resources.get(i);
+                CmsResource childResource = resources.get(i);
                 // handle child resources
                 getResourceType(childResource).undelete(cms, securityManager, childResource, recursive);
             }
@@ -492,6 +505,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
     /**
      * @see org.opencms.file.types.I_CmsResourceType#undoChanges(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, CmsResource.CmsResourceUndoMode)
      */
+    @Override
     public void undoChanges(
         CmsObject cms,
         CmsSecurityManager securityManager,
@@ -508,7 +522,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             }
         }
 
-        List resources = null;
+        List<CmsResource> resources = null;
         if (recursive) { // recursive?
             // collect all resources in the folder (including deleted ones)
             resources = securityManager.readChildResources(
@@ -532,7 +546,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         if (recursive && (resources != null)) { // recursive?
             // now walk through all sub-resources in the folder, and undo first
             for (int i = 0; i < resources.size(); i++) {
-                CmsResource childResource = (CmsResource)resources.get(i);
+                CmsResource childResource = resources.get(i);
                 I_CmsResourceType type = getResourceType(childResource);
                 if (isMoved) {
                     securityManager.lockResource(cms.getRequestContext(), childResource, CmsLockType.EXCLUSIVE);
@@ -559,7 +573,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
 
             // now iterate again all sub-resources in the folder, and actualize the relations
             for (int i = 0; i < resources.size(); i++) {
-                CmsResource childResource = (CmsResource)resources.get(i);
+                CmsResource childResource = resources.get(i);
                 updateRelationForUndo(cms, securityManager, childResource);
             }
         }

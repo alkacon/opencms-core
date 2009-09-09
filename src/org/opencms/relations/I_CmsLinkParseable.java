@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/I_CmsLinkParseable.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/09 15:54:54 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.2.1 $ 
  * 
  * @since 6.3.0 
  */
@@ -69,5 +69,5 @@ public interface I_CmsLinkParseable {
      * 
      * @return a list of {@link CmsLink} objects with the URIs of all linked resources
      */
-    List parseLinks(CmsObject cms, CmsFile file);
+    List<CmsLink> parseLinks(CmsObject cms, CmsFile file);
 }

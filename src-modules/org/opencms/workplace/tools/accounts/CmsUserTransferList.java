@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserTransferList.java,v $
- * Date   : $Date: 2009/06/04 14:33:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/09/09 15:54:54 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -73,7 +73,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -326,9 +326,9 @@ public class CmsUserTransferList extends A_CmsListDialog {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List getUsers() throws CmsException {
+    protected List<CmsUser> getUsers() throws CmsException {
 
-        return CmsPrincipal.filterCore(OpenCms.getOrgUnitManager().getUsers(getCms(), "", true));
+        return CmsPrincipal.filterCoreUsers(OpenCms.getOrgUnitManager().getUsers(getCms(), "", true));
     }
 
     /**

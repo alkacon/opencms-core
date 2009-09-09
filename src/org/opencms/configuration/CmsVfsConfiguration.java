@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2009/09/08 12:54:45 $
- * Version: $Revision: 1.50.2.1 $
+ * Date   : $Date: 2009/09/09 15:54:50 $
+ * Version: $Revision: 1.50.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.50.2.1 $
+ * @version $Revision: 1.50.2.2 $
  * 
  * @since 6.0.0
  */
@@ -339,10 +339,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration {
      * @param resourceTypes the list of resource types
      * @param module flag, signaling to add them module resource types or not
      */
-    public static void generateResourceTypeXml(Element startNode, List resourceTypes, boolean module) {
+    public static void generateResourceTypeXml(Element startNode, List<I_CmsResourceType> resourceTypes, boolean module) {
 
         for (int i = 0; i < resourceTypes.size(); i++) {
-            I_CmsResourceType resType = (I_CmsResourceType)resourceTypes.get(i);
+            I_CmsResourceType resType = resourceTypes.get(i);
             // only add this resource type to the xml output, if it is no additional type defined
             // in a module
             if (resType.isAdditionalModuleResourceType() == module) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsMemoryObjectCache.java,v $
- * Date   : $Date: 2009/08/06 09:08:33 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2009/09/09 15:54:53 $
+ * Version: $Revision: 1.7.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7.2.1 $
+ * @version $Revision: 1.7.2.2 $
  * 
  * @since 6.2.3
  */
@@ -106,7 +106,7 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
      *  
      * @return an object from the cache, or <code>null</code> if no object matches the given key
      */
-    public Object getCachedObject(Class owner, String key) {
+    public Object getCachedObject(Class<?> owner, String key) {
 
         key = owner.getName().concat(key);
         return OpenCms.getMemoryMonitor().getCachedMemObject(key);
@@ -119,7 +119,7 @@ public final class CmsMemoryObjectCache implements I_CmsEventListener {
      * @param key the key to store the object at
      * @param value the object to store
      */
-    public void putCachedObject(Class owner, String key, Object value) {
+    public void putCachedObject(Class<?> owner, String key, Object value) {
 
         key = owner.getName().concat(key);
         OpenCms.getMemoryMonitor().cacheMemObject(key, value);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRoleManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:03 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2009/09/09 15:54:54 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.2.1 $
  * 
  * @since 6.5.6
  */
@@ -130,7 +130,7 @@ public class CmsRoleManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getManageableGroups(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
+    public List<CmsGroup> getManageableGroups(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
 
         List groups = new ArrayList();
         Iterator it = getOrgUnitsForRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn), includeSubOus).iterator();
@@ -169,8 +169,8 @@ public class CmsRoleManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getManageableUsers(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
-        
+    public List<CmsUser> getManageableUsers(CmsObject cms, String ouFqn, boolean includeSubOus) throws CmsException {
+
         return getManageableUsers(cms, ouFqn, includeSubOus, false);
     }
 
@@ -187,7 +187,8 @@ public class CmsRoleManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getManageableUsers(CmsObject cms, String ouFqn, boolean includeSubOus, boolean includeWebusers) throws CmsException {
+    public List<CmsUser> getManageableUsers(CmsObject cms, String ouFqn, boolean includeSubOus, boolean includeWebusers)
+    throws CmsException {
 
         List users = new ArrayList();
         Iterator it = getOrgUnitsForRole(cms, CmsRole.ACCOUNT_MANAGER.forOrgUnit(ouFqn), includeSubOus).iterator();
