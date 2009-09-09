@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageCache.java,v $
- * Date   : $Date: 2009/09/01 09:19:08 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/09/09 09:36:52 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,14 +60,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 7.6 
  */
 public final class CmsContainerPageCache implements I_CmsEventListener {
 
     /** property name constant. */
-    protected static final String PROPERTY_CONTAINER_NEW_CONFIG = "container-new-config";
+    protected static final String PROPERTY_CONTAINER_CONFIG = "container-config";
 
     /** The log to use (static for performance reasons).<p> */
     private static final Log LOG = CmsLog.getLog(CmsContainerPageCache.class);
@@ -203,7 +203,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
                 Messages.LOG_CONTAINER_PAGE_LOCALE_NOT_FOUND_2,
                 cms.getSitePath(resource),
                 locale.toString()).key());
-            locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(cms, resource).get(0);
+            locale = OpenCms.getLocaleManager().getDefaultLocales(cms, resource).get(0);
             if (!containerPageBean.containsKey(locale.toString())) {
                 // locale not found!!
                 LOG.error(Messages.get().container(
@@ -314,30 +314,31 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
 
         Map<Locale, CmsContainerPageBean> result = new HashMap<Locale, CmsContainerPageBean>();
 
-        // get the new element configuration file, will be the same for every locale
-        String cfgPath = cms.readPropertyObject(content.getFile(), PROPERTY_CONTAINER_NEW_CONFIG, true).getValue("");
+        // get the resource type configuration file, will be the same for every locale
+        String cfgPath = cms.readPropertyObject(content.getFile(), PROPERTY_CONTAINER_CONFIG, true).getValue("");
+        CmsResource resTypeConfigRes = null;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(cfgPath)) {
-            throw new CmsIllegalStateException(Messages.get().container(
+            LOG.warn(Messages.get().getBundle().key(
                 Messages.ERR_CONFIG_NOT_SET_2,
                 cms.getSitePath(content.getFile()),
-                PROPERTY_CONTAINER_NEW_CONFIG));
-        }
-        CmsResource newConfigRes;
-        try {
-            newConfigRes = cms.readResource(cfgPath);
-        } catch (Exception e) {
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_CONFIG_NOT_FOUND_3,
-                cms.getSitePath(content.getFile()),
-                PROPERTY_CONTAINER_NEW_CONFIG,
-                cfgPath));
-        }
-        if (newConfigRes.getTypeId() != 14) {
-            throw new CmsIllegalStateException(Messages.get().container(
-                Messages.ERR_CONFIG_WRONG_TYPE_3,
-                cms.getSitePath(content.getFile()),
-                PROPERTY_CONTAINER_NEW_CONFIG,
-                cfgPath));
+                PROPERTY_CONTAINER_CONFIG));
+        } else {
+            try {
+                resTypeConfigRes = cms.readResource(cfgPath);
+            } catch (Exception e) {
+                throw new CmsIllegalStateException(Messages.get().container(
+                    Messages.ERR_CONFIG_NOT_FOUND_3,
+                    cms.getSitePath(content.getFile()),
+                    PROPERTY_CONTAINER_CONFIG,
+                    cfgPath));
+            }
+            if (resTypeConfigRes.getTypeId() != 14) {
+                throw new CmsIllegalStateException(Messages.get().container(
+                    Messages.ERR_CONFIG_WRONG_TYPE_3,
+                    cms.getSitePath(content.getFile()),
+                    PROPERTY_CONTAINER_CONFIG,
+                    cfgPath));
+            }
         }
 
         // iterate over every locale
@@ -345,7 +346,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
         while (itLocales.hasNext()) {
             Locale locale = itLocales.next();
 
-            CmsContainerPageBean cntPage = new CmsContainerPageBean(locale, newConfigRes);
+            CmsContainerPageBean cntPage = new CmsContainerPageBean(locale, resTypeConfigRes);
 
             // iterate over every container in the given locale
             Iterator<I_CmsXmlContentValue> itContainers = content.getValues(CmsContainerPageLoader.N_CONTAINER, locale).iterator();

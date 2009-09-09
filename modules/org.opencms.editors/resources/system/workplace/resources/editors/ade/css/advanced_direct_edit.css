@@ -361,8 +361,8 @@ div.ui-widget-header a.ui-corner-all:hover {
 	width: 32px;
 	height: 32px;
 	overflow: hidden;
-	background: transparent url(images/32x32/document_text.png) repeat
-		scroll 0 50%;
+	background: transparent url(images/32x32/document_text.png) no-repeat
+		scroll center center;
 }
 
 .cms-check-icon {

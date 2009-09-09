@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/09/02 09:16:46 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2009/09/09 09:36:52 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -48,17 +48,17 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 7.6 
  */
 public class CmsDefaultFormatterHelper extends CmsJspActionElement {
 
-    /** The configuration for new elements. */
-    private CmsTypeConfigurationItem m_newConfig;
-
     /** The element's resource. */
     private CmsResource m_resource;
+
+    /** The resource type configuration. */
+    private CmsTypeConfigurationItem m_resTypeConfig;
 
     /**
      * Constructor, with parameters.
@@ -73,29 +73,15 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     }
 
     /**
-     * Returns the configuration for new elements.<p>
+     * Returns the resource type icon path for the resource.<p>
      * 
-     * @return the configuration for new elements
+     * @return the resource type icon path for the resource
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsException if something goes wrong 
      */
-    public CmsTypeConfigurationItem getNewConfig() throws CmsException {
+    public String getIconPath() throws CmsException {
 
-        if (m_newConfig == null) {
-            String url = getRequest().getParameter(CmsADEServer.PARAMETER_URL);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(url)) {
-                return null;
-            }
-            CmsObject cms = getCmsObject();
-            CmsResource cntPageRes = cms.readResource(url);
-            CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
-                cms,
-                cntPageRes,
-                cms.getRequestContext().getLocale());
-            CmsElementCreator ec = new CmsElementCreator(cms, cntPage.getNewConfig());
-            m_newConfig = ec.getConfiguration().get(getType());
-        }
-        return m_newConfig;
+        return "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getType()).getIcon();
     }
 
     /**
@@ -110,7 +96,7 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
         if (!isNew()) {
             return "";
         }
-        return getNewConfig().getFolder();
+        return getResTypeConfig().getFolder();
     }
 
     /**
@@ -141,9 +127,42 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     }
 
     /**
-     * Returns the element's type name.<p>
+     * Returns the resource type configuration.<p>
      * 
-     * @return the element's type name
+     * @return the resource type configuration
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsTypeConfigurationItem getResTypeConfig() throws CmsException {
+
+        if (m_resTypeConfig == null) {
+            String url = getRequest().getParameter(CmsADEServer.PARAMETER_URL);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(url)) {
+                // missing container page url
+                m_resTypeConfig = new CmsTypeConfigurationItem("", "", "");
+            } else {
+                CmsObject cms = getCmsObject();
+                CmsResource cntPageRes = cms.readResource(url);
+                CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
+                    cms,
+                    cntPageRes,
+                    cms.getRequestContext().getLocale());
+                if (cntPage.getResTypeConfig() == null) {
+                    // missing configuration file
+                    m_resTypeConfig = new CmsTypeConfigurationItem("", "", "");
+                } else {
+                    CmsElementCreator ec = new CmsElementCreator(cms, cntPage.getResTypeConfig());
+                    m_resTypeConfig = ec.getConfiguration().get(getType());
+                }
+            }
+        }
+        return m_resTypeConfig;
+    }
+
+    /**
+     * Returns the element's resource type name.<p>
+     * 
+     * @return the element's resource type name
      * 
      * @throws CmsException if something goes wrong
      */
@@ -153,9 +172,9 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     }
 
     /**
-     * Returns the element's type localized name.<p>
+     * Returns the element's resource type localized name.<p>
      * 
-     * @return the element's type localized name
+     * @return the element's resource type localized name
      * 
      * @throws CmsException if something goes wrong
      */
@@ -175,6 +194,6 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      */
     public boolean isNew() throws CmsException {
 
-        return getPath().equals(getNewConfig().getSourceFile());
+        return getPath().equals(getResTypeConfig().getSourceFile());
     }
 }

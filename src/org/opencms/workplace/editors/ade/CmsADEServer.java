@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/09/07 13:22:41 $
- * Version: $Revision: 1.1.2.21 $
+ * Date   : $Date: 2009/09/09 09:36:52 $
+ * Version: $Revision: 1.1.2.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.21 $
+ * @version $Revision: 1.1.2.22 $
  * 
  * @since 7.6
  */
@@ -420,13 +420,29 @@ public class CmsADEServer extends CmsJspActionElement {
                 JSONArray elems = new JSONArray(elemParam);
                 for (int i = 0; i < elems.length(); i++) {
                     String elem = elems.getString(i);
-                    resElements.put(elem, elemUtil.getElementData(CmsElementUtil.parseId(elem), cntPage.getTypes()));
+                    try {
+                        resElements.put(elem, elemUtil.getElementData(CmsElementUtil.parseId(elem), cntPage.getTypes()));
+                    } catch (Exception e) {
+                        // ignore any problems
+                        if (!LOG.isDebugEnabled()) {
+                            LOG.warn(e.getLocalizedMessage());
+                        }
+                        LOG.debug(e.getLocalizedMessage(), e);
+                    }
                 }
             } else {
                 // single element
-                resElements.put(elemParam, elemUtil.getElementData(
-                    CmsElementUtil.parseId(elemParam),
-                    cntPage.getTypes()));
+                try {
+                    resElements.put(elemParam, elemUtil.getElementData(
+                        CmsElementUtil.parseId(elemParam),
+                        cntPage.getTypes()));
+                } catch (Exception e) {
+                    // ignore any problems
+                    if (!LOG.isDebugEnabled()) {
+                        LOG.warn(e.getLocalizedMessage());
+                    }
+                    LOG.debug(e.getLocalizedMessage(), e);
+                }
             }
             result.put(P_ELEMENTS, resElements);
         } else if (objParam.equals(OBJ_FAV)) {
@@ -484,7 +500,7 @@ public class CmsADEServer extends CmsJspActionElement {
             }
 
             String type = dataParam;
-            CmsElementCreator elemCreator = new CmsElementCreator(cms, cntPage.getNewConfig());
+            CmsElementCreator elemCreator = new CmsElementCreator(cms, cntPage.getResTypeConfig());
 
             CmsResource newResource = elemCreator.createElement(cms, type);
             result.put(P_ID, CmsElementUtil.createId(newResource.getStructureId()));
@@ -614,8 +630,10 @@ public class CmsADEServer extends CmsJspActionElement {
             && resUtil.isEditable());
         result.put(CmsADEServer.P_LOCKED, resUtil.getLockedByName());
 
-        // collect new elements
-        resElements.merge(getNewElements(cntPage.getNewConfig(), types), true, false);
+        // collect resource type elements
+        if (cntPage.getResTypeConfig() != null) {
+            resElements.merge(getResourceTypes(cntPage.getResTypeConfig(), types), true, false);
+        }
 
         // collect page elements
         CmsElementUtil elemUtil = new CmsElementUtil(cms, getRequest(), getResponse(), getRequest().getParameter(
@@ -770,7 +788,7 @@ public class CmsADEServer extends CmsJspActionElement {
     /**
      * Returns the data for new elements from the given configuration file.<p>
      * 
-     * @param newConfig the configuration file to use 
+     * @param resTypeConfig the configuration file to use 
      * @param types the supported container page types
      * 
      * @return the data for the given container page
@@ -778,7 +796,8 @@ public class CmsADEServer extends CmsJspActionElement {
      * @throws CmsException if something goes wrong with the cms context
      * @throws JSONException if something goes wrong with the JSON manipulation
      */
-    protected JSONObject getNewElements(CmsResource newConfig, Set<String> types) throws CmsException, JSONException {
+    protected JSONObject getResourceTypes(CmsResource resTypeConfig, Set<String> types)
+    throws CmsException, JSONException {
 
         JSONObject resElements = new JSONObject();
         CmsElementUtil elemUtil = new CmsElementUtil(
@@ -786,7 +805,7 @@ public class CmsADEServer extends CmsJspActionElement {
             getRequest(),
             getResponse(),
             getRequest().getParameter(PARAMETER_URL));
-        CmsElementCreator creator = new CmsElementCreator(getCmsObject(), newConfig);
+        CmsElementCreator creator = new CmsElementCreator(getCmsObject(), resTypeConfig);
         Map<String, CmsTypeConfigurationItem> typeConfig = creator.getConfiguration();
         for (Map.Entry<String, CmsTypeConfigurationItem> entry : typeConfig.entrySet()) {
             String type = entry.getKey();

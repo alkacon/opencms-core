@@ -403,6 +403,20 @@
             var idsToLoad = getElementsToLoad(cms.toolbar.favorites);
             if (idsToLoad.length != 0) {
                loadElements(idsToLoad, function(ok2, data2) {
+                  // check the actually loaded elements
+                  $.each(cms.data.elements, function(key, val) {
+                     var pos = $.inArray(key, idsToLoad);
+                     if (pos >= 0) {
+                         idsToLoad.splice(pos, 1);
+                     } 
+                  }); 
+                  // remove the missing elements from the favlist
+                  $.each(idsToLoad, function(key, val) {
+                     var pos = $.inArray(key, cms.toolbar.favorites);
+                     if (pos >= 0) {
+                         cms.toolbar.favorites.splice(pos, 1);
+                     } 
+                  }); 
                   if (ok2) {
                      loadNecessarySubcontainerElements(cms.data.elements, function(ok3, data3) {
                         afterFavoritesLoad(ok2, data)
@@ -801,7 +815,7 @@
          callback(ok, elements);
       }
       $.each(elements, function(key, element) {
-         if (element.subItems) {
+         if (element && element.subItems) {
             $.each(element.subItems, function(index, subitem) {
                if (!(elements[subitem] || cms.data.elements[subitem])) {
                   necessaryElements[subitem] = true;
