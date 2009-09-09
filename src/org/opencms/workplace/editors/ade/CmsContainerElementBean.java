@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerElementBean.java,v $
- * Date   : $Date: 2009/08/27 14:46:18 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2009/09/09 16:03:09 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,13 +38,16 @@ import org.opencms.file.CmsResource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 7.6 
  */
 public class CmsContainerElementBean {
 
+    /** The element. */
     private CmsResource m_element;
+
+    /** The formatter. */
     private CmsResource m_formatter;
 
     /** 

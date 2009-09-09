@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsContainerPageCache.java,v $
- * Date   : $Date: 2009/09/09 09:36:52 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2009/09/09 16:03:10 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 7.6 
  */
@@ -114,6 +114,7 @@ public final class CmsContainerPageCache implements I_CmsEventListener {
      * 
      * @param event the event to handle
      */
+    @SuppressWarnings("unchecked")
     public void cmsEvent(CmsEvent event) {
 
         CmsResource resource = null;

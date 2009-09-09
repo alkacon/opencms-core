@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsElementUtil.java,v $
- * Date   : $Date: 2009/09/01 13:15:26 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/09/09 16:03:10 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeContainerPage;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.json.JSONArray;
 import org.opencms.json.JSONException;
 import org.opencms.json.JSONObject;
@@ -46,13 +47,12 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.explorer.CmsResourceUtil;
+import org.opencms.xml.CmsXmlContentDefinition;
+import org.opencms.xml.CmsXmlEntityResolver;
 import org.opencms.xml.content.CmsDefaultXmlContentHandler;
-import org.opencms.xml.content.CmsXmlContent;
-import org.opencms.xml.content.CmsXmlContentFactory;
 
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 7.6
  */
@@ -88,8 +88,11 @@ public final class CmsElementUtil {
     /** The http response. */
     private HttpServletResponse m_res;
 
-    /** Content generation parameters. */
-    private Map<String, String[]> m_params;
+    /** The actual container page uri. */
+    private String m_uri;
+
+    /** The entity resolver. */
+    private CmsXmlEntityResolver m_entityResolver;
 
     /**
      * Creates a new instance.<p>
@@ -104,7 +107,8 @@ public final class CmsElementUtil {
         m_cms = cms;
         m_req = req;
         m_res = res;
-        m_params = Collections.singletonMap(CmsADEServer.PARAMETER_URL, new String[] {uri});
+        m_uri = uri;
+        m_entityResolver = new CmsXmlEntityResolver(m_cms);
     }
 
     /**
@@ -160,17 +164,24 @@ public final class CmsElementUtil {
 
         CmsResource loaderRes = loaderFacade.getLoaderStartResource();
 
-        // HACK: only way to pass parameters to the dump method!!
-        CmsFlexController.getController(m_req).getCurrentRequest().addParameterMap(m_params);
-        // TODO: is this going to be cached? most likely not! any alternative?
-        // HACK: use the __element param for the element uri! 
-        return new String(loaderFacade.getLoader().dump(
-            m_cms,
-            loaderRes,
-            m_cms.getSitePath(resource),
-            m_cms.getRequestContext().getLocale(),
-            m_req,
-            m_res));
+        // get the current Flex controller
+        CmsObject cms = CmsFlexController.getController(m_req).getCmsObject();
+        String oldUri = cms.getRequestContext().getUri();
+        try {
+            cms.getRequestContext().setUri(m_uri);
+
+            // TODO: is this going to be cached? most likely not! any alternative?
+            // HACK: use the __element param for the element uri! 
+            return new String(loaderFacade.getLoader().dump(
+                m_cms,
+                loaderRes,
+                m_cms.getSitePath(resource),
+                m_cms.getRequestContext().getLocale(),
+                m_req,
+                m_res));
+        } finally {
+            cms.getRequestContext().setUri(oldUri);
+        }
     }
 
     /**
@@ -236,9 +247,25 @@ public final class CmsElementUtil {
                 subitems.put(createId(id));
             }
         } else {
-            // TODO: this may not be performing well, any way to access the content handler without unmarshal??
-            CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(resource));
-            Iterator<Map.Entry<String, String>> it = content.getContentDefinition().getContentHandler().getFormatters().entrySet().iterator();
+            // TODO: this may not be performing well, any way to access the content handler without reading the file content??
+            // CmsXmlContent content = CmsXmlContentFactory.unmarshal(m_cms, m_cms.readFile(resource));
+            // CmsXmlContentDefinition contentDef = content.getContentDefinition();
+            String encoding = m_cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(
+                OpenCms.getSystemInfo().getDefaultEncoding());
+            String cnt = CmsEncoder.createString(m_cms.readFile(resource).getContents(), encoding);
+            int start = cnt.indexOf("xsi:noNamespaceSchemaLocation=") + "xsi:noNamespaceSchemaLocation=".length();
+            String delimiter = cnt.substring(start, start + 1);
+            start++;
+            int end = cnt.indexOf(delimiter, start);
+            String systemId = cnt.substring(start, end);
+            CmsXmlContentDefinition contentDef = m_entityResolver.getCachedContentDefinition(systemId);
+
+            Iterator<Map.Entry<String, String>> it = contentDef.getContentHandler().getFormatters().entrySet().iterator();
+            if (!it.hasNext()) {
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_WARN_NO_FORMATTERS_DEFINED_1,
+                    contentDef.getSchemaLocation()));
+            }
             while (it.hasNext()) {
                 Map.Entry<String, String> entry = it.next();
                 String type = entry.getKey();

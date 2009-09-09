@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsADEServer.java,v $
- * Date   : $Date: 2009/09/09 09:36:52 $
- * Version: $Revision: 1.1.2.22 $
+ * Date   : $Date: 2009/09/09 16:03:10 $
+ * Version: $Revision: 1.1.2.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.22 $
+ * @version $Revision: 1.1.2.23 $
  * 
  * @since 7.6
  */
@@ -869,6 +869,7 @@ public class CmsADEServer extends CmsJspActionElement {
      * 
      * @return the cached recent list
      */
+    @SuppressWarnings("unchecked")
     protected List<CmsUUID> getRecentListFromCache() {
 
         CmsUser user = getCmsObject().getRequestContext().currentUser();

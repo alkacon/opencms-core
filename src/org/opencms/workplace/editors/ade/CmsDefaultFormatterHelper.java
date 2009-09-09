@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/ade/Attic/CmsDefaultFormatterHelper.java,v $
- * Date   : $Date: 2009/09/09 09:36:52 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2009/09/09 16:03:10 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,7 +37,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 7.6 
  */
@@ -81,7 +81,8 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
      */
     public String getIconPath() throws CmsException {
 
-        return "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getType()).getIcon();
+        return CmsWorkplace.getResourceUri("filetypes/"
+            + OpenCms.getWorkplaceManager().getExplorerTypeSetting(getType()).getIcon());
     }
 
     /**
@@ -136,24 +137,18 @@ public class CmsDefaultFormatterHelper extends CmsJspActionElement {
     public CmsTypeConfigurationItem getResTypeConfig() throws CmsException {
 
         if (m_resTypeConfig == null) {
-            String url = getRequest().getParameter(CmsADEServer.PARAMETER_URL);
-            if (CmsStringUtil.isEmptyOrWhitespaceOnly(url)) {
-                // missing container page url
+            CmsObject cms = getCmsObject();
+            CmsResource cntPageRes = cms.readResource(getCmsObject().getRequestContext().getUri());
+            CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
+                cms,
+                cntPageRes,
+                cms.getRequestContext().getLocale());
+            if (cntPage.getResTypeConfig() == null) {
+                // missing configuration file
                 m_resTypeConfig = new CmsTypeConfigurationItem("", "", "");
             } else {
-                CmsObject cms = getCmsObject();
-                CmsResource cntPageRes = cms.readResource(url);
-                CmsContainerPageBean cntPage = CmsContainerPageCache.getInstance().getCache(
-                    cms,
-                    cntPageRes,
-                    cms.getRequestContext().getLocale());
-                if (cntPage.getResTypeConfig() == null) {
-                    // missing configuration file
-                    m_resTypeConfig = new CmsTypeConfigurationItem("", "", "");
-                } else {
-                    CmsElementCreator ec = new CmsElementCreator(cms, cntPage.getResTypeConfig());
-                    m_resTypeConfig = ec.getConfiguration().get(getType());
-                }
+                CmsElementCreator ec = new CmsElementCreator(cms, cntPage.getResTypeConfig());
+                m_resTypeConfig = ec.getConfiguration().get(getType());
             }
         }
         return m_resTypeConfig;
