@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/history/I_CmsHistoryResource.java,v $
- * Date   : $Date: 2009/09/07 12:41:51 $
- * Version: $Revision: 1.5.2.1 $
+ * Date   : $Date: 2009/09/09 14:26:32 $
+ * Version: $Revision: 1.5.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,7 +32,7 @@
 package org.opencms.file.history;
 
 import org.opencms.db.CmsResourceState;
-import org.opencms.file.CmsResource;
+import org.opencms.file.I_CmsResource;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -52,46 +52,11 @@ import java.io.Serializable;
  *
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5.2.1 $
+ * @version $Revision: 1.5.2.2 $
  * 
  * @since 6.9.1
  */
-public interface I_CmsHistoryResource extends Cloneable, Serializable, Comparable<CmsResource> {
-
-    /**
-     * Returns the date of the last modification of the content of this resource.<p>
-     *
-     * @return the date of the last modification of the content of this resource
-     */
-    long getDateContent();
-
-    /**
-     * Returns the date of the creation of this resource.<p>
-     *
-     * @return the date of the creation of this resource
-     */
-    long getDateCreated();
-
-    /**
-     * Returns the expiration date this resource.<p>
-     *
-     * @return the expiration date of this resource
-     */
-    long getDateExpired();
-
-    /**
-     * Returns the date of the last modification of this resource.<p>
-     *
-     * @return the date of the last modification of this resource
-     */
-    long getDateLastModified();
-
-    /**
-     * Returns the release date this resource.<p>
-     *
-     * @return the release date of this resource
-     */
-    long getDateReleased();
+public interface I_CmsHistoryResource extends I_CmsResource, Cloneable, Serializable, Comparable<I_CmsResource> {
 
     /**
      * Returns the flags of this resource.<p>
@@ -151,16 +116,6 @@ public interface I_CmsHistoryResource extends Cloneable, Serializable, Comparabl
      * @return the version number of the resource part for this historical resource
      */
     int getResourceVersion();
-
-    /**
-     * Returns the name of a resource with it's full path from the root folder 
-     * including the current site root, 
-     * for example <code>/sites/default/myfolder/index.html</code>.<p>
-     *
-     * @return the name of a resource with it's full path from the root folder 
-     *      including the current site root
-     */
-    String getRootPath();
 
     /**
      * Returns the number of siblings of the resource, also counting this resource.<p>

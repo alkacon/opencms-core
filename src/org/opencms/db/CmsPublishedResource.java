@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2009/06/04 14:29:18 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2009/09/09 14:26:35 $
+ * Version: $Revision: 1.37.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -47,13 +47,13 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.37.2.1 $
  * 
  * @since 6.0.0
  * 
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(CmsDbContext, CmsUUID)
  */
-public class CmsPublishedResource implements Serializable, Comparable {
+public class CmsPublishedResource implements Serializable, Comparable<CmsPublishedResource> {
 
     /**
      * Add new resource states under consideration of the move operation.<p>
@@ -209,15 +209,13 @@ public class CmsPublishedResource implements Serializable, Comparable {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(CmsPublishedResource obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof CmsPublishedResource) {
-            if (m_rootPath != null) {
-                return m_rootPath.compareTo(((CmsPublishedResource)obj).m_rootPath);
-            }
+        if (m_rootPath != null) {
+            return m_rootPath.compareTo(obj.m_rootPath);
         }
         return 0;
     }
@@ -225,6 +223,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -238,18 +237,6 @@ public class CmsPublishedResource implements Serializable, Comparable {
             }
         }
         return false;
-    }
-
-    /**
-     * Returns the publish tag of the published resource.<p>
-     * 
-     * @return the publish tag of the published resource
-     * 
-     * @deprecated Use {@link #getPublishTag()} instead
-     */
-    public int getBackupTagId() {
-
-        return getPublishTag();
     }
 
     /**
@@ -347,6 +334,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_structureId.isNullUUID() ? m_resourceId.hashCode() : m_structureId.hashCode();
@@ -383,21 +371,6 @@ public class CmsPublishedResource implements Serializable, Comparable {
     }
 
     /**
-     * Checks if this published resource represents a VFS resource.<p>
-     * 
-     * If the published resource has no structure id, it is considered to be 
-     * no VFS resource.<p>
-     * 
-     * @return true if this published resource is a VFS resource
-     * 
-     * @deprecated no longer needed
-     */
-    public boolean isVfsResource() {
-
-        return !getStructureId().equals(CmsUUID.getNullUUID());
-    }
-
-    /**
      * Sets the resource state of the published resource.<p>
      * 
      * This is sometimes required for offline search index generation.<p>
@@ -412,6 +385,7 @@ public class CmsPublishedResource implements Serializable, Comparable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer(128);

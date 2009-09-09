@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsHistoryDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:16 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/09 14:26:33 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,10 +33,11 @@ package org.opencms.db;
 
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.file.CmsDataAccessException;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
-import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.CmsHistoryPrincipal;
+import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
@@ -55,7 +56,7 @@ import java.util.List;
  * @author Thomas Weckert
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.7.2.1 $
  * 
  * @since 6.9.1
  */
@@ -122,7 +123,7 @@ public interface I_CmsHistoryDriver {
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    List getAllDeletedEntries(CmsDbContext dbc) throws CmsDataAccessException;
+    List<I_CmsHistoryResource> getAllDeletedEntries(CmsDbContext dbc) throws CmsDataAccessException;
 
     /**
      * Returns all historical resources (of not deleted resources).<p> 
@@ -133,8 +134,8 @@ public interface I_CmsHistoryDriver {
      *
      * @throws CmsDataAccessException if something goes wrong
      */
-    List getAllNotDeletedEntries(CmsDbContext dbc) throws CmsDataAccessException;
-    
+    List<I_CmsHistoryResource> getAllNotDeletedEntries(CmsDbContext dbc) throws CmsDataAccessException;
+
     /**
      * Returns the SqlManager of this driver.<p>
      * 
@@ -166,7 +167,8 @@ public interface I_CmsHistoryDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readAllAvailableVersions(CmsDbContext dbc, CmsUUID structureId) throws CmsDataAccessException;
+    List<I_CmsHistoryResource> readAllAvailableVersions(CmsDbContext dbc, CmsUUID structureId)
+    throws CmsDataAccessException;
 
     /**
      * Reads the content of the historical version of the resource
@@ -193,23 +195,8 @@ public interface I_CmsHistoryDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readDeletedResources(CmsDbContext dbc, CmsUUID structureId, CmsUUID userId) throws CmsDataAccessException;
-
-    /**
-     * Reads a historical file version including the file content.<p>
-     *
-     * @param dbc the current database context
-     * @param structureId the structure id of the file to read
-     * @param publishTag the desired publish tag of the file
-     * 
-     * @return the historical file version
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     * 
-     * @deprecated use {@link #readResource(CmsDbContext, CmsUUID, int)} instead
-     *             but notice that the <code>publishTag != version</code>
-     */
-    I_CmsHistoryResource readFile(CmsDbContext dbc, CmsUUID structureId, int publishTag) throws CmsDataAccessException;
+    List<I_CmsHistoryResource> readDeletedResources(CmsDbContext dbc, CmsUUID structureId, CmsUUID userId)
+    throws CmsDataAccessException;
 
     /**
      * Returns the last historical version of a resource.<p>
@@ -290,7 +277,7 @@ public interface I_CmsHistoryDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectResources(CmsDbContext dbc, int publishTag) throws CmsDataAccessException;
+    List<String> readProjectResources(CmsDbContext dbc, int publishTag) throws CmsDataAccessException;
 
     /**
      * Returns all projects from the history.<p>
@@ -302,7 +289,7 @@ public interface I_CmsHistoryDriver {
      * 
      * @throws CmsDataAccessException if an error occurs
      */
-    List readProjects(CmsDbContext dbc) throws CmsDataAccessException;
+    List<CmsHistoryProject> readProjects(CmsDbContext dbc) throws CmsDataAccessException;
 
     /**
      * Returns a list of all properties of a historical file or folder.<p>
@@ -314,7 +301,8 @@ public interface I_CmsHistoryDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readProperties(CmsDbContext dbc, I_CmsHistoryResource historicalResource) throws CmsDataAccessException;
+    List<CmsProperty> readProperties(CmsDbContext dbc, I_CmsHistoryResource historicalResource)
+    throws CmsDataAccessException;
 
     /**
      * Reads a property definition with the given name.<p>
@@ -386,7 +374,7 @@ public interface I_CmsHistoryDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeProperties(CmsDbContext dbc, CmsResource resource, List properties, int publishTag)
+    void writeProperties(CmsDbContext dbc, CmsResource resource, List<CmsProperty> properties, int publishTag)
     throws CmsDataAccessException;
 
     /**
@@ -399,6 +387,6 @@ public interface I_CmsHistoryDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeResource(CmsDbContext dbc, CmsResource resource, List properties, int publishTag)
+    void writeResource(CmsDbContext dbc, CmsResource resource, List<CmsProperty> properties, int publishTag)
     throws CmsDataAccessException;
 }

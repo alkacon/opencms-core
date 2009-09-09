@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:17 $
- * Version: $Revision: 1.123 $
+ * Date   : $Date: 2009/09/09 14:26:34 $
+ * Version: $Revision: 1.123.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,6 +65,8 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsMultiException;
 import org.opencms.main.OpenCms;
 import org.opencms.publish.CmsPublishEngine;
+import org.opencms.relations.CmsLink;
+import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
 import org.opencms.report.I_CmsReport;
@@ -298,7 +300,7 @@ public final class CmsSecurityManager {
      * @throws CmsVfsException for now only when the search for the old value fails 
      * @throws CmsException if operation was not successful
      */
-    public synchronized List changeResourcesInFolderWithProperty(
+    public synchronized List<CmsResource> changeResourcesInFolderWithProperty(
         CmsRequestContext context,
         CmsResource resource,
         String propertyDefinition,
@@ -307,7 +309,7 @@ public final class CmsSecurityManager {
         boolean recursive) throws CmsException, CmsVfsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsResource> result = null;
         try {
             result = m_driverManager.changeResourcesInFolderWithProperty(
                 dbc,
@@ -438,10 +440,10 @@ public final class CmsSecurityManager {
             CmsMultiException resourceIssues = new CmsMultiException();
             CmsMultiException permissionIssues = new CmsMultiException();
             // iterate all resources in the direct publish list
-            Iterator it = publishList.getDirectPublishResources().iterator();
-            List parentFolders = new ArrayList();
+            Iterator<CmsResource> it = publishList.getDirectPublishResources().iterator();
+            List<String> parentFolders = new ArrayList<String>();
             while (it.hasNext()) {
-                CmsResource res = (CmsResource)it.next();
+                CmsResource res = it.next();
                 // the parent folder must not be new or deleted
                 String parentFolder = CmsResource.getParentFolder(res.getRootPath());
                 if ((parentFolder != null) && !parentFolders.contains(parentFolder)) {
@@ -485,32 +487,6 @@ public final class CmsSecurityManager {
             }
         }
         // no issues have been found , permissions are granted
-    }
-
-    /**
-     * Checks if the current user has the permissions to publish the given publish list 
-     * (which contains the information about the resources / project to publish).<p>
-     * 
-     * @param context the current request context
-     * @param publishList the publish list to check (contains the information about the resources / project to publish)
-     * 
-     * @throws CmsException if the user does not have the required permissions because of project lock state
-     * @throws CmsMultiException if issues occur like a direct publish is attempted on a resource 
-     *         whose parent folder is new or deleted in the offline project, 
-     *         or if the current user has no management access to the current project
-     *         
-     * @deprecated notice that checking is no longer possible at this way
-     */
-    public void checkPublishPermissions(CmsRequestContext context, CmsPublishList publishList)
-    throws CmsException, CmsMultiException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        try {
-            // check the access permissions
-            checkPublishPermissions(dbc, publishList);
-        } finally {
-            dbc.clear();
-        }
     }
 
     /**
@@ -996,7 +972,7 @@ public final class CmsSecurityManager {
         String resourcename,
         int type,
         byte[] content,
-        List properties) throws CmsException {
+        List<CmsProperty> properties) throws CmsException {
 
         if (existsResource(context, resourcename, CmsResourceFilter.IGNORE_EXPIRATION)) {
             // check if the resource already exists by name
@@ -1031,8 +1007,11 @@ public final class CmsSecurityManager {
      * 
      * @see org.opencms.file.types.I_CmsResourceType#createSibling(CmsObject, CmsSecurityManager, CmsResource, String, List)
      */
-    public CmsResource createSibling(CmsRequestContext context, CmsResource source, String destination, List properties)
-    throws CmsException {
+    public CmsResource createSibling(
+        CmsRequestContext context,
+        CmsResource source,
+        String destination,
+        List<CmsProperty> properties) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
@@ -1096,7 +1075,7 @@ public final class CmsSecurityManager {
         String name,
         String password,
         String description,
-        Map additionalInfos) throws CmsException, CmsRoleViolationException {
+        Map<String, Object> additionalInfos) throws CmsException, CmsRoleViolationException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
 
@@ -1233,13 +1212,12 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, root, CmsPermissionSet.ACCESS_WRITE, false, CmsResourceFilter.ALL);
             m_driverManager.deleteHistoricalVersions(dbc, versionsToKeep, versionsDeleted, timeDeleted, report);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_DELETE_HISTORY_4,
-                new Object[] {
-                    "/",
-                    new Integer(versionsToKeep),
-                    new Integer(versionsDeleted),
-                    new Date(timeDeleted)}), e);
+            dbc.report(
+                null,
+                Messages.get().container(
+                    Messages.ERR_DELETE_HISTORY_4,
+                    new Object[] {"/", new Integer(versionsToKeep), new Integer(versionsDeleted), new Date(timeDeleted)}),
+                e);
         } finally {
             dbc.clear();
         }
@@ -1631,11 +1609,13 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getAccessControlEntries(CmsRequestContext context, CmsResource resource, boolean getInherited)
-    throws CmsException {
+    public List<CmsAccessControlEntry> getAccessControlEntries(
+        CmsRequestContext context,
+        CmsResource resource,
+        boolean getInherited) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsAccessControlEntry> result = null;
         try {
             result = m_driverManager.getAccessControlEntries(dbc, resource, getInherited);
         } catch (Exception e) {
@@ -1689,11 +1669,13 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getAllAccessibleProjects(CmsRequestContext context, CmsOrganizationalUnit orgUnit, boolean includeSubOus)
-    throws CmsException {
+    public List<CmsProject> getAllAccessibleProjects(
+        CmsRequestContext context,
+        CmsOrganizationalUnit orgUnit,
+        boolean includeSubOus) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsProject> result = null;
         try {
             result = m_driverManager.getAllAccessibleProjects(dbc, orgUnit, includeSubOus);
         } catch (Exception e) {
@@ -1716,10 +1698,10 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getAllHistoricalProjects(CmsRequestContext context) throws CmsException {
+    public List<CmsHistoryProject> getAllHistoricalProjects(CmsRequestContext context) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsHistoryProject> result = null;
         try {
             result = m_driverManager.getAllHistoricalProjects(dbc);
         } catch (Exception e) {
@@ -1744,11 +1726,13 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getAllManageableProjects(CmsRequestContext context, CmsOrganizationalUnit orgUnit, boolean includeSubOus)
-    throws CmsException {
+    public List<CmsProject> getAllManageableProjects(
+        CmsRequestContext context,
+        CmsOrganizationalUnit orgUnit,
+        boolean includeSubOus) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsProject> result = null;
         try {
             result = m_driverManager.getAllManageableProjects(dbc, orgUnit, includeSubOus);
         } catch (Exception e) {
@@ -1774,11 +1758,11 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getChildren(CmsRequestContext context, String groupname, boolean includeSubChildren)
+    public List<CmsGroup> getChildren(CmsRequestContext context, String groupname, boolean includeSubChildren)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsGroup> result = null;
         try {
             result = m_driverManager.getChildren(dbc, m_driverManager.readGroup(
                 dbc,
@@ -1807,13 +1791,13 @@ public final class CmsSecurityManager {
      * @see org.opencms.security.CmsOrgUnitManager#getGroups(CmsObject, String, boolean)
      * @see org.opencms.security.CmsOrgUnitManager#getUsers(CmsObject, String, boolean)
      */
-    public List getGroups(
+    public List<CmsGroup> getGroups(
         CmsRequestContext context,
         CmsOrganizationalUnit orgUnit,
         boolean includeSubOus,
         boolean readRoles) throws CmsException {
 
-        List result = null;
+        List<CmsGroup> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.getGroups(dbc, orgUnit, includeSubOus, readRoles);
@@ -1840,7 +1824,7 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getGroupsOfUser(
+    public List<CmsGroup> getGroupsOfUser(
         CmsRequestContext context,
         String username,
         String ouFqn,
@@ -1850,7 +1834,7 @@ public final class CmsSecurityManager {
         String remoteAddress) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsGroup> result = null;
         try {
             result = m_driverManager.getGroupsOfUser(
                 dbc,
@@ -1903,11 +1887,11 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getLockedResources(CmsRequestContext context, CmsResource resource, CmsLockFilter filter)
+    public List<String> getLockedResources(CmsRequestContext context, CmsResource resource, CmsLockFilter filter)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<String> result = null;
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
@@ -1943,9 +1927,9 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getManageableResources(CmsRequestContext context, CmsRole role) throws CmsException {
+    public List<CmsResource> getManageableResources(CmsRequestContext context, CmsRole role) throws CmsException {
 
-        List resources;
+        List<CmsResource> resources;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             resources = getManageableResources(dbc, role);
@@ -1969,11 +1953,13 @@ public final class CmsSecurityManager {
      * 
      * @see org.opencms.security.CmsOrgUnitManager#getOrganizationalUnits(CmsObject, String, boolean)
      */
-    public List getOrganizationalUnits(CmsRequestContext context, CmsOrganizationalUnit parent, boolean includeChildren)
-    throws CmsException {
+    public List<CmsOrganizationalUnit> getOrganizationalUnits(
+        CmsRequestContext context,
+        CmsOrganizationalUnit parent,
+        boolean includeChildren) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsOrganizationalUnit> result = null;
         try {
             result = m_driverManager.getOrganizationalUnits(dbc, parent, includeChildren);
         } catch (Exception e) {
@@ -1995,11 +1981,13 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getOrgUnitsForRole(CmsRequestContext requestContext, CmsRole role, boolean includeSubOus)
-    throws CmsException {
+    public List<CmsOrganizationalUnit> getOrgUnitsForRole(
+        CmsRequestContext requestContext,
+        CmsRole role,
+        boolean includeSubOus) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(requestContext);
-        List result = null;
+        List<CmsOrganizationalUnit> result = null;
         try {
             result = m_driverManager.getOrgUnitsForRole(dbc, role, includeSubOus);
         } catch (Exception e) {
@@ -2143,10 +2131,12 @@ public final class CmsSecurityManager {
      * 
      * @see CmsObject#getRelationsForResource(String, CmsRelationFilter)
      */
-    public List getRelationsForResource(CmsRequestContext context, CmsResource resource, CmsRelationFilter filter)
-    throws CmsException {
+    public List<CmsRelation> getRelationsForResource(
+        CmsRequestContext context,
+        CmsResource resource,
+        CmsRelationFilter filter) throws CmsException {
 
-        List result = null;
+        List<CmsRelation> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // check the access permissions
@@ -2176,10 +2166,10 @@ public final class CmsSecurityManager {
      * @see org.opencms.security.CmsOrgUnitManager#getGroups(CmsObject, String, boolean)
      * @see org.opencms.security.CmsOrgUnitManager#getUsers(CmsObject, String, boolean)
      */
-    public List getResourcesForOrganizationalUnit(CmsRequestContext context, CmsOrganizationalUnit orgUnit)
+    public List<CmsResource> getResourcesForOrganizationalUnit(CmsRequestContext context, CmsOrganizationalUnit orgUnit)
     throws CmsException {
 
-        List result = null;
+        List<CmsResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.getResourcesForOrganizationalUnit(dbc, orgUnit);
@@ -2211,13 +2201,13 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public Set getResourcesForPrincipal(
+    public Set<CmsResource> getResourcesForPrincipal(
         CmsRequestContext context,
         CmsUUID principalId,
         CmsPermissionSet permissions,
         boolean includeAttr) throws CmsException {
 
-        Set dependencies;
+        Set<CmsResource> dependencies;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             dependencies = m_driverManager.getResourcesForPrincipal(
@@ -2228,7 +2218,7 @@ public final class CmsSecurityManager {
                 includeAttr);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_RESOURCES_FOR_PRINCIPAL_LOG_1, principalId), e);
-            dependencies = new HashSet();
+            dependencies = new HashSet<CmsResource>();
         } finally {
             dbc.clear();
         }
@@ -2246,10 +2236,11 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException is something goes wrong
      */
-    public List getRolesForResource(CmsRequestContext context, CmsUser user, CmsResource resource) throws CmsException {
+    public List<CmsRole> getRolesForResource(CmsRequestContext context, CmsUser user, CmsResource resource)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsRole> result = null;
         try {
             result = m_driverManager.getRolesForResource(dbc, user, resource);
         } catch (Exception e) {
@@ -2288,10 +2279,10 @@ public final class CmsSecurityManager {
      * @see org.opencms.security.CmsOrgUnitManager#getGroups(CmsObject, String, boolean)
      * @see org.opencms.security.CmsOrgUnitManager#getUsers(CmsObject, String, boolean)
      */
-    public List getUsers(CmsRequestContext context, CmsOrganizationalUnit orgUnit, boolean recursive)
+    public List<CmsUser> getUsers(CmsRequestContext context, CmsOrganizationalUnit orgUnit, boolean recursive)
     throws CmsException {
 
-        List result = null;
+        List<CmsUser> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.getUsers(dbc, orgUnit, recursive);
@@ -2317,7 +2308,7 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getUsersOfGroup(
+    public List<CmsUser> getUsersOfGroup(
         CmsRequestContext context,
         String groupname,
         boolean includeOtherOuUsers,
@@ -2325,7 +2316,7 @@ public final class CmsSecurityManager {
         boolean readRoles) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsUser> result = null;
         try {
             result = m_driverManager.getUsersOfGroup(
                 dbc,
@@ -2405,7 +2396,7 @@ public final class CmsSecurityManager {
         }
 
         // read all roles of the current user
-        List roles;
+        List<CmsGroup> roles;
         try {
             roles = m_driverManager.getGroupsOfUser(
                 dbc,
@@ -2477,9 +2468,9 @@ public final class CmsSecurityManager {
         }
 
         // read all roles of the current user
-        List roles;
+        List<CmsGroup> roles;
         try {
-            roles = new ArrayList(m_driverManager.getGroupsOfUser(
+            roles = new ArrayList<CmsGroup>(m_driverManager.getGroupsOfUser(
                 dbc,
                 user.getName(),
                 "",
@@ -2501,9 +2492,9 @@ public final class CmsSecurityManager {
         }
 
         // then check if one applies to the given resource
-        Iterator it = roles.iterator();
+        Iterator<CmsGroup> it = roles.iterator();
         while ((result == null) && it.hasNext()) {
-            CmsGroup group = (CmsGroup)it.next();
+            CmsGroup group = it.next();
             CmsRole givenRole = CmsRole.valueOf(group);
             if (hasRole(role.forOrgUnit(null), Collections.singletonList(group))) {
                 // we have the same role, now check the resource if needed
@@ -2512,9 +2503,11 @@ public final class CmsSecurityManager {
                         CmsOrganizationalUnit orgUnit = m_driverManager.readOrganizationalUnit(
                             dbc,
                             givenRole.getOuFqn());
-                        Iterator itResources = m_driverManager.getResourcesForOrganizationalUnit(dbc, orgUnit).iterator();
+                        Iterator<CmsResource> itResources = m_driverManager.getResourcesForOrganizationalUnit(
+                            dbc,
+                            orgUnit).iterator();
                         while (itResources.hasNext()) {
-                            CmsResource givenResource = (CmsResource)itResources.next();
+                            CmsResource givenResource = itResources.next();
                             if (resource.getRootPath().startsWith(givenResource.getRootPath())) {
                                 result = Boolean.TRUE;
                                 break;
@@ -2578,8 +2571,10 @@ public final class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if the required permissions are not satisfied
      */
-    public void importAccessControlEntries(CmsRequestContext context, CmsResource resource, List acEntries)
-    throws CmsException, CmsSecurityException {
+    public void importAccessControlEntries(
+        CmsRequestContext context,
+        CmsResource resource,
+        List<CmsAccessControlEntry> acEntries) throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -2625,7 +2620,7 @@ public final class CmsSecurityManager {
         String resourcePath,
         CmsResource resource,
         byte[] content,
-        List properties,
+        List<CmsProperty> properties,
         boolean importCase) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -2673,7 +2668,7 @@ public final class CmsSecurityManager {
         String email,
         int flags,
         long dateCreated,
-        Map additionalInfos) throws CmsException, CmsRoleViolationException {
+        Map<String, Object> additionalInfos) throws CmsException, CmsRoleViolationException {
 
         CmsUser newUser = null;
 
@@ -2952,7 +2947,7 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // get all resources from the first list
-            Set publishResources = new HashSet(pubList1.getAllResources());
+            Set<CmsResource> publishResources = new HashSet<CmsResource>(pubList1.getAllResources());
             // get all resources from the second list
             publishResources.addAll(pubList2.getAllResources());
 
@@ -3120,9 +3115,10 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readAllAvailableVersions(CmsRequestContext context, CmsResource resource) throws CmsException {
+    public List<I_CmsHistoryResource> readAllAvailableVersions(CmsRequestContext context, CmsResource resource)
+    throws CmsException {
 
-        List result = null;
+        List<I_CmsHistoryResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.readAllAvailableVersions(dbc, resource);
@@ -3145,10 +3141,10 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readAllPropertyDefinitions(CmsRequestContext context) throws CmsException {
+    public List<CmsPropertyDefinition> readAllPropertyDefinitions(CmsRequestContext context) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsPropertyDefinition> result = null;
         try {
             result = m_driverManager.readAllPropertyDefinitions(dbc);
         } catch (Exception e) {
@@ -3216,14 +3212,14 @@ public final class CmsSecurityManager {
      * @throws CmsSecurityException if the user has insufficient permission for the given resource (read is required)
      * 
      */
-    public List readChildResources(
+    public List<CmsResource> readChildResources(
         CmsRequestContext context,
         CmsResource resource,
         CmsResourceFilter filter,
         boolean getFolders,
         boolean getFiles) throws CmsException, CmsSecurityException {
 
-        List result = null;
+        List<CmsResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // check the access permissions
@@ -3300,11 +3296,13 @@ public final class CmsSecurityManager {
      * @see CmsObject#readResources(String, CmsResourceFilter, boolean)
      * @see CmsObject#readDeletedResources(String, boolean)
      */
-    public List readDeletedResources(CmsRequestContext context, CmsResource resource, boolean readTree)
-    throws CmsException {
+    public List<I_CmsHistoryResource> readDeletedResources(
+        CmsRequestContext context,
+        CmsResource resource,
+        boolean readTree) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<I_CmsHistoryResource> result = null;
         try {
             boolean isVfsManager = hasRoleForResource(dbc, dbc.currentUser(), CmsRole.VFS_MANAGER, resource);
             result = m_driverManager.readDeletedResources(dbc, resource, readTree, isVfsManager);
@@ -3546,10 +3544,10 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readHistoryPropertyObjects(CmsRequestContext context, I_CmsHistoryResource resource)
+    public List<CmsProperty> readHistoryPropertyObjects(CmsRequestContext context, I_CmsHistoryResource resource)
     throws CmsException {
 
-        List result = null;
+        List<CmsProperty> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.readHistoryPropertyObjects(dbc, resource);
@@ -3660,10 +3658,11 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readPath(CmsRequestContext context, String path, CmsResourceFilter filter) throws CmsException {
+    public List<CmsResource> readPath(CmsRequestContext context, String path, CmsResourceFilter filter)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsResource> result = null;
         try {
             result = m_driverManager.readPath(dbc, path, filter);
         } catch (Exception e) {
@@ -3739,10 +3738,10 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readProjectResources(CmsRequestContext context, CmsProject project) throws CmsException {
+    public List<String> readProjectResources(CmsRequestContext context, CmsProject project) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<String> result = null;
         try {
             result = m_driverManager.readProjectResources(dbc, project);
         } catch (Exception e) {
@@ -3777,11 +3776,11 @@ public final class CmsSecurityManager {
      * 
      * @see CmsObject#readProjectView(CmsUUID, CmsResourceState)
      */
-    public List readProjectView(CmsRequestContext context, CmsUUID projectId, CmsResourceState state)
+    public List<CmsResource> readProjectView(CmsRequestContext context, CmsUUID projectId, CmsResourceState state)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsResource> result = null;
         try {
             result = m_driverManager.readProjectView(dbc, projectId, state);
         } catch (Exception e) {
@@ -3874,10 +3873,10 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readPropertyObjects(CmsRequestContext context, CmsResource resource, boolean search)
+    public List<CmsProperty> readPropertyObjects(CmsRequestContext context, CmsResource resource, boolean search)
     throws CmsException {
 
-        List result = null;
+        List<CmsProperty> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.readPropertyObjects(dbc, resource, search);
@@ -3901,10 +3900,11 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readPublishedResources(CmsRequestContext context, CmsUUID publishHistoryId) throws CmsException {
+    public List<CmsPublishedResource> readPublishedResources(CmsRequestContext context, CmsUUID publishHistoryId)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsPublishedResource> result = null;
         try {
             result = m_driverManager.readPublishedResources(dbc, publishHistoryId);
         } catch (Exception e) {
@@ -4044,45 +4044,6 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Reads an historical resource in the current project with the given publish tag from the historical archive.<p>
-     * 
-     * @param context the current request context
-     * @param resource the resource to read from the archive
-     * @param publishTag the publish tag of the resource
-     * 
-     * @return the resource in the current project with the given publish tag from the historical archive, or
-     *         {@link CmsVfsResourceNotFoundException} if not found 
-     *
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#readResource(CmsUUID, int)
-     * @see CmsObject#readResourceByPublishTag(CmsUUID, int)
-     * 
-     * @deprecated use {@link #readResource(CmsRequestContext, CmsResource, int)} instead
-     *             but notice that the <code>publishTag != version</code>
-     */
-    public I_CmsHistoryResource readResourceForPublishTag(
-        CmsRequestContext context,
-        CmsResource resource,
-        int publishTag) throws CmsException {
-
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        I_CmsHistoryResource result = null;
-        try {
-            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, false, CmsResourceFilter.ALL);
-            result = m_driverManager.readResourceForPublishTag(dbc, resource, publishTag);
-        } catch (CmsException e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_HISTORY_FILE_2,
-                context.getSitePath(resource),
-                new Integer(publishTag)), e);
-        } finally {
-            dbc.clear();
-        }
-        return result;
-    }
-
-    /**
      * Reads all resources below the given path matching the filter criteria,
      * including the full tree below the path only in case the <code>readTree</code> 
      * parameter is <code>true</code>.<p>
@@ -4098,10 +4059,13 @@ public final class CmsSecurityManager {
      * @throws CmsException if something goes wrong
      * 
      */
-    public List readResources(CmsRequestContext context, CmsResource parent, CmsResourceFilter filter, boolean readTree)
-    throws CmsException, CmsSecurityException {
+    public List<CmsResource> readResources(
+        CmsRequestContext context,
+        CmsResource parent,
+        CmsResourceFilter filter,
+        boolean readTree) throws CmsException, CmsSecurityException {
 
-        List result = null;
+        List<CmsResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // check the access permissions
@@ -4137,7 +4101,7 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readResourcesWithProperty(
+    public List<CmsResource> readResourcesWithProperty(
         CmsRequestContext context,
         CmsResource folder,
         String propertyDefinition,
@@ -4145,7 +4109,7 @@ public final class CmsSecurityManager {
         CmsResourceFilter filter) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<CmsResource> result = null;
         try {
             result = m_driverManager.readResourcesWithProperty(dbc, folder, propertyDefinition, value, filter);
         } catch (Exception e) {
@@ -4170,9 +4134,10 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public Set readResponsiblePrincipals(CmsRequestContext context, CmsResource resource) throws CmsException {
+    public Set<I_CmsPrincipal> readResponsiblePrincipals(CmsRequestContext context, CmsResource resource)
+    throws CmsException {
 
-        Set result = null;
+        Set<I_CmsPrincipal> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.readResponsiblePrincipals(dbc, resource);
@@ -4194,9 +4159,9 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public Set readResponsibleUsers(CmsRequestContext context, CmsResource resource) throws CmsException {
+    public Set<CmsUser> readResponsibleUsers(CmsRequestContext context, CmsResource resource) throws CmsException {
 
-        Set result = null;
+        Set<CmsUser> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.readResponsibleUsers(dbc, resource);
@@ -4222,10 +4187,10 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readSiblings(CmsRequestContext context, CmsResource resource, CmsResourceFilter filter)
+    public List<CmsResource> readSiblings(CmsRequestContext context, CmsResource resource, CmsResourceFilter filter)
     throws CmsException {
 
-        List result = null;
+        List<CmsResource> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.readSiblings(dbc, resource, filter);
@@ -4276,11 +4241,11 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readStaticExportResources(CmsRequestContext context, int parameterResources, long timestamp)
+    public List<String> readStaticExportResources(CmsRequestContext context, int parameterResources, long timestamp)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
-        List result = null;
+        List<String> result = null;
         try {
             result = m_driverManager.readStaticExportResources(dbc, parameterResources, timestamp);
         } catch (Exception e) {
@@ -4506,7 +4471,7 @@ public final class CmsSecurityManager {
         CmsResource resource,
         int type,
         byte[] content,
-        List properties) throws CmsException, CmsSecurityException {
+        List<CmsProperty> properties) throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -4952,7 +4917,7 @@ public final class CmsSecurityManager {
      * 
      * @see CmsDriverManager#updateRelationsForResource(CmsDbContext, CmsResource, List)
      */
-    public void updateRelationsForResource(CmsRequestContext context, CmsResource resource, List relations)
+    public void updateRelationsForResource(CmsRequestContext context, CmsResource resource, List<CmsLink> relations)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -5026,10 +4991,12 @@ public final class CmsSecurityManager {
      * 
      * @throws Exception if something goes wrong
      */
-    public Map validateRelations(CmsRequestContext context, CmsPublishList publishList, I_CmsReport report)
-    throws Exception {
+    public Map<String, CmsRelation> validateRelations(
+        CmsRequestContext context,
+        CmsPublishList publishList,
+        I_CmsReport report) throws Exception {
 
-        Map result = null;
+        Map<String, CmsRelation> result = null;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             result = m_driverManager.validateRelations(dbc, publishList, report);
@@ -5289,7 +5256,7 @@ public final class CmsSecurityManager {
      * @see CmsObject#writePropertyObjects(String, List)
      * @see org.opencms.file.types.I_CmsResourceType#writePropertyObjects(CmsObject, CmsSecurityManager, CmsResource, List)
      */
-    public void writePropertyObjects(CmsRequestContext context, CmsResource resource, List properties)
+    public void writePropertyObjects(CmsRequestContext context, CmsResource resource, List<CmsProperty> properties)
     throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -5528,7 +5495,7 @@ public final class CmsSecurityManager {
 
         if (resource.isFolder()) {
             // collect all resources in the folder (but exclude deleted ones)
-            List resources = m_driverManager.readChildResources(
+            List<CmsResource> resources = m_driverManager.readChildResources(
                 dbc,
                 resource,
                 CmsResourceFilter.IGNORE_EXPIRATION,
@@ -5536,10 +5503,10 @@ public final class CmsSecurityManager {
                 true,
                 false);
 
-            Set deletedResources = new HashSet();
+            Set<CmsUUID> deletedResources = new HashSet<CmsUUID>();
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
-                CmsResource childResource = (CmsResource)resources.get(i);
+                CmsResource childResource = resources.get(i);
                 if ((siblingMode == CmsResource.DELETE_REMOVE_SIBLINGS)
                     && deletedResources.contains(childResource.getResourceId())) {
                     // sibling mode is "delete all siblings" and another sibling of the current child resource has already
@@ -5615,16 +5582,16 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    protected List getManageableResources(CmsDbContext dbc, CmsRole role) throws CmsException {
+    protected List<CmsResource> getManageableResources(CmsDbContext dbc, CmsRole role) throws CmsException {
 
         CmsOrganizationalUnit ou = m_driverManager.readOrganizationalUnit(dbc, role.getOuFqn());
         if (hasRole(dbc, dbc.currentUser(), role)) {
             return m_driverManager.getResourcesForOrganizationalUnit(dbc, ou);
         }
-        List resources = new ArrayList();
-        Iterator it = m_driverManager.getOrganizationalUnits(dbc, ou, false).iterator();
+        List<CmsResource> resources = new ArrayList<CmsResource>();
+        Iterator<CmsOrganizationalUnit> it = m_driverManager.getOrganizationalUnits(dbc, ou, false).iterator();
         while (it.hasNext()) {
-            CmsOrganizationalUnit orgUnit = (CmsOrganizationalUnit)it.next();
+            CmsOrganizationalUnit orgUnit = it.next();
             resources.addAll(getManageableResources(dbc, role.forOrgUnit(orgUnit.getName())));
         }
         return resources;
@@ -5695,16 +5662,16 @@ public final class CmsSecurityManager {
      * @return <code>true</code> if at last one of the given group names is equal to a group name
      *      of this role
      */
-    protected boolean hasRole(CmsRole role, List roles) {
+    protected boolean hasRole(CmsRole role, List<CmsGroup> roles) {
 
         // iterates the roles the user are in
-        Iterator itGroups = roles.iterator();
+        Iterator<CmsGroup> itGroups = roles.iterator();
         while (itGroups.hasNext()) {
-            String groupName = ((CmsGroup)itGroups.next()).getName();
+            String groupName = (itGroups.next()).getName();
             // iterate the role hierarchy
-            Iterator itDistinctGroupNames = role.getDistinctGroupNames().iterator();
+            Iterator<String> itDistinctGroupNames = role.getDistinctGroupNames().iterator();
             while (itDistinctGroupNames.hasNext()) {
-                String distictGroupName = (String)itDistinctGroupNames.next();
+                String distictGroupName = itDistinctGroupNames.next();
                 if (distictGroupName.startsWith(CmsOrganizationalUnit.SEPARATOR)) {
                     // this is a ou independent role 
                     // we need an exact match, and we ignore the ou parameter
@@ -5745,7 +5712,7 @@ public final class CmsSecurityManager {
      */
     protected void moveResource(CmsDbContext dbc, CmsResource source, String destination) throws CmsException {
 
-        List resources = null;
+        List<CmsResource> resources = null;
 
         if (source.isFolder()) {
             if (!CmsResource.isFolder(destination)) {
@@ -5774,7 +5741,7 @@ public final class CmsSecurityManager {
         if (resources != null) {
             // now walk through all sub-resources in the folder
             for (int i = 0; i < resources.size(); i++) {
-                CmsResource childResource = (CmsResource)resources.get(i);
+                CmsResource childResource = resources.get(i);
                 String childDestination = destination.concat(childResource.getName());
                 // recurse with child resource
                 moveResource(dbc, childResource, childDestination);

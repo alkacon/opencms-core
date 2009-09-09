@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:18 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2009/09/09 14:26:33 $
+ * Version: $Revision: 1.81.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsProject.CmsProjectType;
+import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.publish.CmsPublishJobInfoBean;
 import org.opencms.report.I_CmsReport;
@@ -54,7 +55,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.81 $
+ * @version $Revision: 1.81.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -295,7 +296,7 @@ public interface I_CmsProjectDriver {
         int n,
         CmsProject onlineProject,
         CmsResource offlineResource,
-        Set publishedContentIds,
+        Set<CmsUUID> publishedContentIds,
         CmsUUID publishHistoryId,
         int publishTag) throws CmsDataAccessException;
 
@@ -327,7 +328,7 @@ public interface I_CmsProjectDriver {
         CmsProject offlineProject,
         CmsProject onlineProject,
         CmsResource offlineFileHeader,
-        Set publishedResourceIds,
+        Set<CmsUUID> publishedResourceIds,
         boolean needToUpdateContent,
         int publishTag) throws CmsDataAccessException;
 
@@ -384,7 +385,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readLocks(CmsDbContext dbc) throws CmsDataAccessException;
+    List<CmsLock> readLocks(CmsDbContext dbc) throws CmsDataAccessException;
 
     /**
      * Reads a project given the projects id.<p>
@@ -432,7 +433,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
+    List<String> readProjectResources(CmsDbContext dbc, CmsProject project) throws CmsDataAccessException;
 
     /**
      * Returns all projects in the given organizational unit.<p>
@@ -444,7 +445,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjects(CmsDbContext dbc, String ouFqn) throws CmsDataAccessException;
+    List<CmsProject> readProjects(CmsDbContext dbc, String ouFqn) throws CmsDataAccessException;
 
     /**
      * Returns all projects, which are accessible by a group.<p>
@@ -455,7 +456,7 @@ public interface I_CmsProjectDriver {
      * @return a Vector of projects
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException;
+    List<CmsProject> readProjectsForGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException;
 
     /**
      * Returns all projects, which are manageable by a group.<p>
@@ -466,7 +467,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException;
+    List<CmsProject> readProjectsForManagerGroup(CmsDbContext dbc, CmsGroup group) throws CmsDataAccessException;
 
     /**
      * Reads all projects which are owned by a specified user.<p>
@@ -478,7 +479,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException;
+    List<CmsProject> readProjectsForUser(CmsDbContext dbc, CmsUser user) throws CmsDataAccessException;
 
     /**
      * Reads a single publish job identified by its publish history id.<p>
@@ -502,7 +503,8 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readPublishJobs(CmsDbContext dbc, long startTime, long endTime) throws CmsDataAccessException;
+    List<CmsPublishJobInfoBean> readPublishJobs(CmsDbContext dbc, long startTime, long endTime)
+    throws CmsDataAccessException;
 
     /**
      * Reads the publish list assigned to a publish job.<p>
@@ -534,7 +536,8 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId) throws CmsDataAccessException;
+    List<org.opencms.db.CmsPublishedResource> readPublishedResources(CmsDbContext dbc, CmsUUID publishHistoryId)
+    throws CmsDataAccessException;
 
     /**
      * Returns the parameters of a resource in the table of all published template resources.<p>
@@ -553,13 +556,13 @@ public interface I_CmsProjectDriver {
      * 
      * @param dbc the current database context
      * @param parameterResources flag for reading resources with parameters (1) or without (0)
-     * @param timestamp the timestamp information
+     * @param timestamp the time stamp information
      * 
      * @return a list of template resources as <code>{@link String}</code> objects
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp)
+    List<String> readStaticExportResources(CmsDbContext dbc, int parameterResources, long timestamp)
     throws CmsDataAccessException;
 
     /**
@@ -586,7 +589,7 @@ public interface I_CmsProjectDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writeLocks(CmsDbContext dbc, List locks) throws CmsDataAccessException;
+    void writeLocks(CmsDbContext dbc, List<CmsLock> locks) throws CmsDataAccessException;
 
     /**
      * Writes an already existing project.<p>

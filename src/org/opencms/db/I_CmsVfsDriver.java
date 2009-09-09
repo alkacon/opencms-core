@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:18 $
- * Version: $Revision: 1.124 $
+ * Date   : $Date: 2009/09/09 14:26:32 $
+ * Version: $Revision: 1.124.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.124 $
+ * @version $Revision: 1.124.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -346,7 +346,7 @@ public interface I_CmsVfsDriver {
      * @return a list of all sub folders or sub files
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readChildResources(
+    List<CmsResource> readChildResources(
         CmsDbContext dbc,
         CmsProject currentProject,
         CmsResource resource,
@@ -434,7 +434,8 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readPropertyDefinitions(CmsDbContext dbc, CmsUUID projectId) throws CmsDataAccessException;
+    List<CmsPropertyDefinition> readPropertyDefinitions(CmsDbContext dbc, CmsUUID projectId)
+    throws CmsDataAccessException;
 
     /**
      * Reads a property object from the database specified by it's key name mapped to a resource.<p>
@@ -469,7 +470,8 @@ public interface I_CmsVfsDriver {
      * @return a list with CmsProperty objects containing both the structure and resource value of the property
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readPropertyObjects(CmsDbContext dbc, CmsProject project, CmsResource resource) throws CmsDataAccessException;
+    List<CmsProperty> readPropertyObjects(CmsDbContext dbc, CmsProject project, CmsResource resource)
+    throws CmsDataAccessException;
 
     /**
      * Reads all relations with the given filter for the given resource.<p>
@@ -483,7 +485,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, CmsRelationFilter filter)
+    List<CmsRelation> readRelations(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, CmsRelationFilter filter)
     throws CmsDataAccessException;
 
     /**
@@ -525,7 +527,7 @@ public interface I_CmsVfsDriver {
      * @return a list with all resources that where read
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readResources(CmsDbContext dbc, CmsUUID currentProject, CmsResourceState state, int mode)
+    List<CmsResource> readResources(CmsDbContext dbc, CmsUUID currentProject, CmsResourceState state, int mode)
     throws CmsDataAccessException;
 
     /**
@@ -539,7 +541,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readResourcesForPrincipalACE(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    List<CmsResource> readResourcesForPrincipalACE(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
     throws CmsDataAccessException;
 
     /**
@@ -558,7 +560,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readResourcesForPrincipalAttr(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    List<CmsResource> readResourcesForPrincipalAttr(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
     throws CmsDataAccessException;
 
     /**
@@ -581,7 +583,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readResourcesWithProperty(
+    List<CmsResource> readResourcesWithProperty(
         CmsDbContext dbc,
         CmsUUID projectId,
         CmsUUID propertyDefinition,
@@ -619,7 +621,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readResourceTree(
+    List<CmsResource> readResourceTree(
         CmsDbContext dbc,
         CmsUUID projectId,
         String parent,
@@ -647,7 +649,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readSiblings(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, boolean includeDeleted)
+    List<CmsResource> readSiblings(CmsDbContext dbc, CmsUUID projectId, CmsResource resource, boolean includeDeleted)
     throws CmsDataAccessException;
 
     /**
@@ -664,7 +666,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    Map readVersions(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, CmsUUID structureId)
+    Map<String, Integer> readVersions(CmsDbContext dbc, CmsUUID projectId, CmsUUID resourceId, CmsUUID structureId)
     throws CmsDataAccessException;
 
     /**
@@ -805,7 +807,7 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    void writePropertyObjects(CmsDbContext dbc, CmsProject project, CmsResource resource, List properties)
+    void writePropertyObjects(CmsDbContext dbc, CmsProject project, CmsResource resource, List<CmsProperty> properties)
     throws CmsDataAccessException;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2009/09/09 14:26:36 $
+ * Version: $Revision: 1.27.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import java.util.StringTokenizer;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.27.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,22 +94,19 @@ public class CmsAccessControlEntry {
      * 
      * The 'overwrite all' ace in first place, the 'all others' ace in second place.<p>
      */
-    public static final Comparator COMPARATOR_ACE = new Comparator() {
+    public static final Comparator<CmsAccessControlEntry> COMPARATOR_ACE = new Comparator<CmsAccessControlEntry>() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object ace1, Object ace2) {
+        public int compare(CmsAccessControlEntry ace1, CmsAccessControlEntry ace2) {
 
             if (ace1 == ace2) {
                 return 0;
             }
-            if ((ace1 instanceof CmsAccessControlEntry) && (ace2 instanceof CmsAccessControlEntry)) {
-                CmsUUID id1 = ((CmsAccessControlEntry)ace1).getPrincipal();
-                CmsUUID id2 = ((CmsAccessControlEntry)ace2).getPrincipal();
-                return COMPARATOR_PRINCIPALS.compare(id1, id2);
-            }
-            return 0;
+            CmsUUID id1 = (ace1).getPrincipal();
+            CmsUUID id2 = (ace2).getPrincipal();
+            return COMPARATOR_PRINCIPALS.compare(id1, id2);
         }
     };
 
@@ -120,42 +117,36 @@ public class CmsAccessControlEntry {
      * 
      * The 'overwrite all' ace in first place, the 'all others' ace in second place.<p>
      */
-    public static final Comparator COMPARATOR_PRINCIPALS = new Comparator() {
+    public static final Comparator<CmsUUID> COMPARATOR_PRINCIPALS = new Comparator<CmsUUID>() {
 
         /**
          * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
          */
-        public int compare(Object ace1, Object ace2) {
+        public int compare(CmsUUID id1, CmsUUID id2) {
 
-            if (ace1 == ace2) {
+            if (id1 == id2) {
                 return 0;
             }
-            if ((ace1 instanceof CmsUUID) && (ace2 instanceof CmsUUID)) {
-                CmsUUID id1 = ((CmsUUID)ace1);
-                CmsUUID id2 = ((CmsUUID)ace2);
-
-                if (id1.equals(id2)) {
-                    return 0;
-                } else if (id1.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
+            if (id1.equals(id2)) {
+                return 0;
+            } else if (id1.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
+                return -1;
+            } else if (id1.equals(PRINCIPAL_ALL_OTHERS_ID)) {
+                if (id2.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
+                    return 1;
+                } else {
                     return -1;
-                } else if (id1.equals(PRINCIPAL_ALL_OTHERS_ID)) {
-                    if (id2.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                } else if (id2.equals(PRINCIPAL_ALL_OTHERS_ID)) {
-                    if (id1.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
-                        return -1;
-                    } else {
-                        return 1;
-                    }
-                } else if (id2.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
+                }
+            } else if (id2.equals(PRINCIPAL_ALL_OTHERS_ID)) {
+                if (id1.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
+                    return -1;
+                } else {
                     return 1;
                 }
-                return id1.compareTo(id2);
+            } else if (id2.equals(PRINCIPAL_OVERWRITE_ALL_ID)) {
+                return 1;
             }
-            return 0;
+            return id1.compareTo(id2);
         }
     };
 
@@ -306,6 +297,7 @@ public class CmsAccessControlEntry {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -434,6 +426,7 @@ public class CmsAccessControlEntry {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         if (m_permissions != null) {
@@ -521,7 +514,8 @@ public class CmsAccessControlEntry {
      */
     public void setFlagsForPrincipal(I_CmsPrincipal principal) {
 
-        setFlags(principal.isGroup() ? CmsAccessControlEntry.ACCESS_FLAGS_GROUP
+        setFlags(principal.isGroup()
+        ? CmsAccessControlEntry.ACCESS_FLAGS_GROUP
         : CmsAccessControlEntry.ACCESS_FLAGS_USER);
     }
 
@@ -539,6 +533,7 @@ public class CmsAccessControlEntry {
      * Returns the String representation of this access control entry object.<p>
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         return "[Ace:] "

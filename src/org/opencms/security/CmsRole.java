@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2009/09/08 12:52:24 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2009/09/09 14:26:37 $
+ * Version: $Revision: 1.21.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -74,7 +74,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.21.2.1 $ 
+ * @version $Revision: 1.21.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,10 +116,10 @@ public final class CmsRole {
     private static final List<CmsRole> SYSTEM_ROLES;
 
     /** The child roles of this role. */
-    private final List m_children = new ArrayList();
+    private final List<CmsRole> m_children = new ArrayList<CmsRole>();
 
     /** The distinct group names of this role. */
-    private List m_distictGroupNames = new ArrayList();
+    private List<String> m_distictGroupNames = new ArrayList<String>();
 
     /** The name of the group this role is mapped to in the OpenCms database.*/
     private final String m_groupName;
@@ -282,9 +282,9 @@ public final class CmsRole {
     public static CmsRole valueOfGroupName(String groupName) {
 
         String groupOu = CmsOrganizationalUnit.getParentFqn(groupName);
-        Iterator it = SYSTEM_ROLES.iterator();
+        Iterator<CmsRole> it = SYSTEM_ROLES.iterator();
         while (it.hasNext()) {
-            CmsRole role = (CmsRole)it.next();
+            CmsRole role = it.next();
             // direct check
             if (groupName.equals(role.getGroupName())) {
                 return role.forOrgUnit(groupOu);
@@ -308,9 +308,9 @@ public final class CmsRole {
      */
     public static CmsRole valueOfId(CmsUUID roleId) {
 
-        Iterator it = SYSTEM_ROLES.iterator();
+        Iterator<CmsRole> it = SYSTEM_ROLES.iterator();
         while (it.hasNext()) {
-            CmsRole role = (CmsRole)it.next();
+            CmsRole role = it.next();
             if (roleId.equals(role.getId())) {
                 return role;
             }
@@ -328,9 +328,9 @@ public final class CmsRole {
     public static CmsRole valueOfRoleName(String roleName) {
 
         String roleOu = CmsOrganizationalUnit.getParentFqn(roleName);
-        Iterator it = SYSTEM_ROLES.iterator();
+        Iterator<CmsRole> it = SYSTEM_ROLES.iterator();
         while (it.hasNext()) {
-            CmsRole role = (CmsRole)it.next();
+            CmsRole role = it.next();
             // direct check
             if (roleName.equals(role.getRoleName())) {
                 return role.forOrgUnit(roleOu);
@@ -407,6 +407,7 @@ public final class CmsRole {
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -459,12 +460,12 @@ public final class CmsRole {
      * 
      * @return all sub roles as a list of {@link CmsRole} objects
      */
-    public List getChildren(boolean recursive) {
+    public List<CmsRole> getChildren(boolean recursive) {
 
-        List children = new ArrayList();
-        Iterator itChildren = m_children.iterator();
+        List<CmsRole> children = new ArrayList<CmsRole>();
+        Iterator<CmsRole> itChildren = m_children.iterator();
         while (itChildren.hasNext()) {
-            CmsRole child = (CmsRole)itChildren.next();
+            CmsRole child = itChildren.next();
             if (child.isOrganizationalUnitIndependent()) {
                 child = child.forOrgUnit(null);
             } else {
@@ -520,7 +521,7 @@ public final class CmsRole {
      * 
      * @return the distinct group names of this role
      */
-    public List getDistinctGroupNames() {
+    public List<String> getDistinctGroupNames() {
 
         return m_distictGroupNames;
     }
@@ -630,6 +631,7 @@ public final class CmsRole {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_roleName.hashCode()
@@ -659,6 +661,7 @@ public final class CmsRole {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();
@@ -681,16 +684,16 @@ public final class CmsRole {
      * 
      * @return a set of all roles group names
      */
-    private Set getAllGroupNames() {
+    private Set<String> getAllGroupNames() {
 
-        Set distinctGroups = new HashSet();
+        Set<String> result = new HashSet<String>();
         // add role group name
-        distinctGroups.add(getGroupName());
+        result.add(getGroupName());
         if (getParentRole() != null) {
             // add parent roles group names
-            distinctGroups.addAll(getParentRole().getAllGroupNames());
+            result.addAll(getParentRole().getAllGroupNames());
         }
-        return distinctGroups;
+        return result;
     }
 
     /**
@@ -700,8 +703,8 @@ public final class CmsRole {
     private void initialize() {
 
         // calculate the distinct groups of this role
-        Set distinctGroups = new HashSet();
-        distinctGroups.addAll(getAllGroupNames());
-        m_distictGroupNames = Collections.unmodifiableList(new ArrayList(distinctGroups));
+        Set<String> distinctGroups = new HashSet<String>(getAllGroupNames());
+        // by using a set first we eliminate duplicate names
+        m_distictGroupNames = Collections.unmodifiableList(new ArrayList<String>(distinctGroups));
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2009/09/01 09:23:31 $
- * Version: $Revision: 1.69.2.4 $
+ * Date   : $Date: 2009/09/09 14:26:31 $
+ * Version: $Revision: 1.69.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,6 +65,7 @@ import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
@@ -104,7 +105,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.69.2.4 $ 
+ * @version $Revision: 1.69.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -250,6 +251,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Cache for user groups. */
     private Map m_userGroupsCache;
+
+    /** Cache for user lists. */
+    private Map<String, List<CmsUser>> m_userListCache;
 
     /** The vfs memory cache map. */
     private Map m_vfsObjectCache;
@@ -773,9 +777,20 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * @param key the cache key
      * @param userGroups the list of user groups to cache
      */
-    public void cacheUserGroups(String key, List userGroups) {
+    public void cacheUserGroups(String key, List<CmsGroup> userGroups) {
 
         m_userGroupsCache.put(key, userGroups);
+    }
+
+    /**
+     * Caches the given list of users under the given cache key.<p>
+     * 
+     * @param key the cache key
+     * @param userGroups the list of user groups to cache
+     */
+    public void cacheUserList(String key, List<CmsUser> userList) {
+
+        m_userListCache.put(key, userList);
     }
 
     /**
@@ -1327,7 +1342,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the project resources list cached with the given cache key
      */
-    public List getCachedProjectResources(String key) {
+    public List<CmsResource> getCachedProjectResources(String key) {
 
         return (List)m_projectResourcesCache.get(key);
     }
@@ -1354,7 +1369,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the property list cached with the given cache key
      */
-    public List getCachedPropertyList(String key) {
+    public List<CmsProperty> getCachedPropertyList(String key) {
 
         if (!m_cachePropertyList) {
             return null;
@@ -1369,7 +1384,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the published resources list cached with the given cache key
      */
-    public List getCachedPublishedResources(String cacheKey) {
+    public List<CmsPublishedResource> getCachedPublishedResources(String cacheKey) {
 
         return (List)m_publishedResourcesCache.get(cacheKey);
     }
@@ -1434,7 +1449,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the resource list cached with the given cache key
      */
-    public List getCachedResourceList(String key) {
+    public List<CmsResource> getCachedResourceList(String key) {
 
         if (!m_cacheResourceList) {
             return null;
@@ -1461,7 +1476,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return list of roles
      */
-    public List getCachedRoleList(String key) {
+    public List<CmsRole> getCachedRoleList(String key) {
 
         return (List)m_roleListsCache.get(key);
     }
@@ -1485,9 +1500,21 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return the user groups list cached with the given cache key
      */
-    public List getCachedUserGroups(String key) {
+    public List<CmsGroup> getCachedUserGroups(String key) {
 
         return (List)m_userGroupsCache.get(key);
+    }
+
+    /**
+     * Returns the user list cached with the given cache key or <code>null</code> if not found.<p>
+     * 
+     * @param key the cache key to look for
+     * 
+     * @return the user groups list cached with the given cache key
+     */
+    public List<CmsUser> getCachedUserList(String key) {
+
+        return m_userListCache.get(key);
     }
 
     /**

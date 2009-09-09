@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsExportPointDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:17 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2009/09/09 14:26:33 $
+ * Version: $Revision: 1.25.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -47,7 +48,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.25.2.1 $
  * 
  * @since 6.0.0
  */
@@ -57,23 +58,23 @@ public class CmsExportPointDriver {
     private static final Log LOG = CmsLog.getLog(CmsExportPointDriver.class);
 
     /** The export points resolved to a lookup map. */
-    private HashMap m_exportpointLookupMap;
+    private Map<String, String> m_exportpointLookupMap;
 
     /** The configured export points. */
-    private Set m_exportpoints;
+    private Set<CmsExportPoint> m_exportpoints;
 
     /**
      * Constructor for a CmsExportPointDriver.<p>
      *
      * @param exportpoints the list of export points
      */
-    public CmsExportPointDriver(Set exportpoints) {
+    public CmsExportPointDriver(Set<CmsExportPoint> exportpoints) {
 
         m_exportpoints = exportpoints;
-        m_exportpointLookupMap = new HashMap();
-        Iterator i = m_exportpoints.iterator();
+        m_exportpointLookupMap = new HashMap<String, String>();
+        Iterator<CmsExportPoint> i = m_exportpoints.iterator();
         while (i.hasNext()) {
-            CmsExportPoint point = (CmsExportPoint)i.next();
+            CmsExportPoint point = i.next();
             if (point.getDestinationPath() != null) {
                 // otherwise this point is not valid, but must be kept for serializing the configuration
                 m_exportpointLookupMap.put(point.getUri(), point.getDestinationPath());
@@ -130,9 +131,9 @@ public class CmsExportPointDriver {
      */
     public String getExportPoint(String rootPath) {
 
-        Iterator i = getExportPointPaths().iterator();
+        Iterator<String> i = getExportPointPaths().iterator();
         while (i.hasNext()) {
-            String point = (String)i.next();
+            String point = i.next();
             if (rootPath.startsWith(point)) {
                 return point;
             }
@@ -145,7 +146,7 @@ public class CmsExportPointDriver {
      * 
      * @return the set of all VFS paths that are exported as an export point
      */
-    public Set getExportPointPaths() {
+    public Set<String> getExportPointPaths() {
 
         return m_exportpointLookupMap.keySet();
     }
@@ -174,7 +175,7 @@ public class CmsExportPointDriver {
     private File getExportPointFile(String rootPath, String exportpoint) {
 
         StringBuffer exportpath = new StringBuffer(128);
-        exportpath.append((String)m_exportpointLookupMap.get(exportpoint));
+        exportpath.append(m_exportpointLookupMap.get(exportpoint));
         exportpath.append(rootPath.substring(exportpoint.length()));
         return new File(exportpath.toString());
     }
@@ -199,10 +200,12 @@ public class CmsExportPointDriver {
                 folder = file.getParentFile();
             }
             // make sure the parent folder exists
-            if (! folder.exists()) {
+            if (!folder.exists()) {
                 boolean success = folder.mkdirs();
                 if (!success) {
-                    LOG.error(Messages.get().getBundle().key(Messages.LOG_CREATE_FOLDER_FAILED_1, folder.getAbsolutePath()));
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.LOG_CREATE_FOLDER_FAILED_1,
+                        folder.getAbsolutePath()));
                 }
             }
             if (content != null) {

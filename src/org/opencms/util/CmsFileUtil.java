@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2009/06/04 14:29:04 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2009/09/09 14:26:36 $
+ * Version: $Revision: 1.34.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import java.util.Locale;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.34.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -655,7 +655,7 @@ public final class CmsFileUtil {
      * 
      * @see #removeRedundantResources(List)
      */
-    public static List removeRedundancies(List resourcenames) {
+    public static List<String> removeRedundancies(List resourcenames) {
 
         if ((resourcenames == null) || (resourcenames.isEmpty())) {
             return new ArrayList();
@@ -705,27 +705,27 @@ public final class CmsFileUtil {
      * 
      * @see #removeRedundancies(List)
      */
-    public static List removeRedundantResources(List resources) {
+    public static List<CmsResource> removeRedundantResources(List<CmsResource> resources) {
 
         if ((resources == null) || (resources.isEmpty())) {
-            return new ArrayList();
+            return new ArrayList<CmsResource>();
         }
         if (resources.size() == 1) {
             // if there is only one resource in the list, there can be no redundancies
-            return new ArrayList(resources);
+            return new ArrayList<CmsResource>(resources);
         }
         // check all resources and see if a parent folder name is contained
-        List result = new ArrayList(resources.size());
-        List base = new ArrayList(resources);
+        List<CmsResource> result = new ArrayList<CmsResource>(resources.size());
+        List<CmsResource> base = new ArrayList<CmsResource>(resources);
         Collections.sort(base);
-        Iterator i = base.iterator();
+        Iterator<CmsResource> i = base.iterator();
         while (i.hasNext()) {
             // check all folders in the list
-            CmsResource resource = (CmsResource)i.next();
+            CmsResource resource = i.next();
             boolean valid = true;
             for (int j = (result.size() - 1); j >= 0; j--) {
                 // check if this resource is indirectly contained because a parent folder is contained
-                CmsResource check = (CmsResource)result.get(j);
+                CmsResource check = result.get(j);
                 if ((check.isFolder() && resource.getRootPath().startsWith(check.getRootPath()))
                     || resource.getRootPath().equals(check.getRootPath())) {
                     valid = false;

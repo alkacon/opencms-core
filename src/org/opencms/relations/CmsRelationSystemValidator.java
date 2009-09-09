@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/relations/CmsRelationSystemValidator.java,v $
- * Date   : $Date: 2009/06/04 14:29:53 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2009/09/09 14:26:37 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Michael Moossen
  *   
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.3.0 
  */
@@ -107,7 +107,7 @@ public class CmsRelationSystemValidator {
      *          (<code>{@link org.opencms.relations.CmsRelation}}</code> objects) 
      *          keyed by root paths
      */
-    public Map validateResources(CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report) {
+    public Map<String, CmsRelation> validateResources(CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report) {
 
         // check if progress should be set in the thread
         CmsProgressThread thread = null;

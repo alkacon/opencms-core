@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2009/07/08 11:11:36 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2009/09/09 14:26:33 $
+ * Version: $Revision: 1.42.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.42.2.1 $
  * 
  * @since 6.0.0
  */
@@ -304,14 +304,14 @@ public class CmsImportFolder {
                     CmsFile file = m_cms.readFile(res);
                     byte[] contents = file.getContents();
                     try {
-                        m_cms.replaceResource(filename, res.getTypeId(), buffer, Collections.EMPTY_LIST);
+                        m_cms.replaceResource(filename, res.getTypeId(), buffer, new ArrayList<CmsProperty>(0));
                     } catch (CmsSecurityException e) {
                         // in case of not enough permissions, try to create a plain text file
                         m_cms.replaceResource(
                             filename,
                             CmsResourceTypePlain.getStaticTypeId(),
                             buffer,
-                            Collections.EMPTY_LIST);
+                            new ArrayList<CmsProperty>(0));
                     } catch (CmsDbSqlException sqlExc) {
                         // SQL error, probably the file is too large for the database settings, restore content
                         file.setContents(contents);
@@ -327,7 +327,7 @@ public class CmsImportFolder {
                     if (title.lastIndexOf('.') != -1) {
                         title = title.substring(0, title.lastIndexOf('.'));
                     }
-                    List properties = new ArrayList(1);
+                    List<CmsProperty> properties = new ArrayList<CmsProperty>(1);
                     CmsProperty titleProp = new CmsProperty();
                     titleProp.setName(CmsPropertyDefinition.PROPERTY_TITLE);
                     if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {

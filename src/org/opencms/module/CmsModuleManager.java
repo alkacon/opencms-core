@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:43 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2009/09/09 14:26:36 $
+ * Version: $Revision: 1.44.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.44.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,7 +92,7 @@ public class CmsModuleManager {
     private static final Log LOG = CmsLog.getLog(CmsModuleManager.class);
 
     /** The list of module export points. */
-    private Set m_moduleExportPoints;
+    private Set<CmsExportPoint> m_moduleExportPoints;
 
     /** The map of configured modules. */
     private Map m_modules;
@@ -716,7 +716,7 @@ public class CmsModuleManager {
      * @return the (immutable) list of configured module export points
      * @see CmsExportPoint
      */
-    public Set getExportPoints() {
+    public Set<CmsExportPoint> getExportPoints() {
 
         return m_moduleExportPoints;
     }
@@ -738,7 +738,7 @@ public class CmsModuleManager {
      * 
      * @return the set of names of all the installed modules
      */
-    public Set getModuleNames() {
+    public Set<String> getModuleNames() {
 
         synchronized (m_modules) {
             return new HashSet(m_modules.keySet());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2009/09/08 12:52:22 $
- * Version: $Revision: 1.91.2.1 $
+ * Date   : $Date: 2009/09/09 14:26:35 $
+ * Version: $Revision: 1.91.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.91.2.1 $ 
+ * @version $Revision: 1.91.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -196,7 +196,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
     private Map m_galleries;
 
     /** Contains all folders that should be labeled if siblings exist. */
-    private List m_labelSiteFolders;
+    private List<String> m_labelSiteFolders;
 
     /** List of installed workplace locales, sorted ascending. */
     private List m_locales;
@@ -880,7 +880,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
      * 
      * @return a list of site folders which generate labeled links
      */
-    public List getLabelSiteFolders() {
+    public List<String> getLabelSiteFolders() {
 
         return m_labelSiteFolders;
     }

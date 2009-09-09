@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2009/06/04 14:29:09 $
- * Version: $Revision: 1.166 $
+ * Date   : $Date: 2009/09/09 14:26:35 $
+ * Version: $Revision: 1.166.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,10 +32,9 @@
 package org.opencms.file;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
-import org.opencms.db.CmsPublishList;
+import org.opencms.db.CmsPublishedResource;
 import org.opencms.db.CmsResourceState;
 import org.opencms.db.CmsSecurityManager;
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.history.CmsHistoryPrincipal;
 import org.opencms.file.history.CmsHistoryProject;
 import org.opencms.file.history.I_CmsHistoryResource;
@@ -47,9 +46,9 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.relations.CmsRelation;
 import org.opencms.relations.CmsRelationFilter;
 import org.opencms.relations.CmsRelationType;
-import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
@@ -57,15 +56,14 @@ import org.opencms.security.CmsOrganizationalUnit;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
-import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -96,7 +94,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.166 $
+ * @version $Revision: 1.166.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -148,50 +146,6 @@ public final class CmsObject {
     public void addUserToGroup(String username, String groupname) throws CmsException {
 
         m_securityManager.addUserToGroup(m_context, username, groupname, false);
-    }
-
-    /**
-     * Creates a new web user.<p>
-     * 
-     * A web user has no access to the workplace but is able to access personalized
-     * functions controlled by the OpenCms.<br>
-     * 
-     * Moreover, a web user can be created by any user, the intention being that
-     * a "Guest" user can create a personalized account for himself.<p>
-     *
-     * @param name the name for the new web user
-     * @param password the password for the user
-     * @param group the default group name for the user
-     * @param description the description for the user
-     * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user
-     * 
-     * @return the newly created user
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated there are no more web users, use a user without any role!
-     */
-    public CmsUser addWebUser(String name, String password, String group, String description, Map additionalInfos)
-    throws CmsException {
-
-        CmsUser user = m_securityManager.createUser(m_context, name, password, description, additionalInfos);
-        addUserToGroup(name, group);
-        return user;
-    }
-
-    /**
-     * Creates a backup of the current project.<p>
-     * 
-     * @param versionId the version of the backup
-     * @param publishDate the date of publishing
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated Use {@link #writeHistoryProject(int,long)} instead
-     */
-    public void backupProject(int versionId, long publishDate) throws CmsException {
-
-        writeHistoryProject(versionId, publishDate);
     }
 
     /**
@@ -361,7 +315,7 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      */
-    public List changeResourcesInFolderWithProperty(
+    public List<CmsResource> changeResourcesInFolderWithProperty(
         String resourcename,
         String property,
         String oldValue,
@@ -376,38 +330,6 @@ public final class CmsObject {
             oldValue,
             newValue,
             recursive);
-    }
-
-    /**
-     * Checks if the given base publish list can be published by the current user.<p>
-     * 
-     * @param publishList the base publish list to check
-     * 
-     * @throws CmsException in case the publish permissions are not granted
-     * 
-     * @deprecated notice that checking is no longer possible from the CmsObject
-     */
-    public void checkPublishPermissions(CmsPublishList publishList) throws CmsException {
-
-        m_securityManager.checkPublishPermissions(m_context, publishList);
-    }
-
-    /**
-     * Checks if the user of this OpenCms context is a member of the given role.<p>
-     *  
-     * This method can only be used for roles that are not organizational unit dependent.<p>
-     *  
-     * @param role the role to check
-     * 
-     * @throws CmsRoleViolationException if the user does not have the required role permissions
-     * 
-     * @see CmsRole#isOrganizationalUnitIndependent()
-     *      
-     * @deprecated use {@link OpenCms#getRoleManager()} methods instead
-     */
-    public void checkRole(CmsRole role) throws CmsRoleViolationException {
-
-        OpenCms.getRoleManager().checkRole(this, role);
     }
 
     /**
@@ -500,27 +422,6 @@ public final class CmsObject {
     }
 
     /**
-     * Copies a resource.<p>
-     * 
-     * The copied resource will always be locked to the current user
-     * after the copy operation.<p>
-     * 
-     * @param source the name of the resource to copy (full path)
-     * @param destination the name of the copy destination (full path)
-     * @param siblingMode indicates how to handle siblings during copy
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws CmsIllegalArgumentException if the <code>destination</code> argument is null or of length 0
-     * 
-     * @deprecated use {@link #copyResource(String, String, CmsResource.CmsResourceCopyMode)} method instead
-     */
-    public void copyResource(String source, String destination, int siblingMode)
-    throws CmsException, CmsIllegalArgumentException {
-
-        copyResource(source, destination, CmsResource.CmsResourceCopyMode.valueOf(siblingMode));
-    }
-
-    /**
      * Copies a resource to the current project of the user.<p>
      * 
      * This is used to extend the current users project with the
@@ -550,22 +451,6 @@ public final class CmsObject {
     public int countLockedResources(CmsUUID id) throws CmsException {
 
         return m_securityManager.countLockedResources(m_context, id);
-    }
-
-    /**
-     * Counts the locked resources in a project.<p>
-     *
-     * @param id the id of the project
-     * 
-     * @return the number of locked resources in this project
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link #countLockedResources(CmsUUID)} instead
-     */
-    public int countLockedResources(int id) throws CmsException {
-
-        return countLockedResources(m_securityManager.getProjectId(m_context, id));
     }
 
     /**
@@ -650,35 +535,6 @@ public final class CmsObject {
     }
 
     /**
-     * Creates a new project.<p>
-     *
-     * @param name the name of the project to create
-     * @param description the description for the new project
-     * @param groupname the name of the project user group
-     * @param managergroupname the name of the project manager group
-     * @param projecttype the type of the project (normal or temporary)
-     * 
-     * @return the created project
-     * 
-     * @throws CmsException if operation was not successful
-     * @deprecated use {@link #createProject(String,String,String,String,CmsProject.CmsProjectType)} method instead
-     */
-    public CmsProject createProject(
-        String name,
-        String description,
-        String groupname,
-        String managergroupname,
-        int projecttype) throws CmsException {
-
-        return createProject(
-            name,
-            description,
-            groupname,
-            managergroupname,
-            CmsProject.CmsProjectType.valueOf(projecttype));
-    }
-
-    /**
      * Creates a property definition.<p>
      *
      * Property definitions are valid for all resource types.<p>
@@ -710,7 +566,7 @@ public final class CmsObject {
      */
     public CmsResource createResource(String resourcename, int type) throws CmsException, CmsIllegalArgumentException {
 
-        return createResource(resourcename, type, new byte[0], Collections.EMPTY_LIST);
+        return createResource(resourcename, type, new byte[0], new ArrayList<CmsProperty>(0));
     }
 
     /**
@@ -727,7 +583,7 @@ public final class CmsObject {
      * @throws CmsException if something goes wrong
      * @throws CmsIllegalArgumentException if the <code>resourcename</code> argument is null or of length 0
      */
-    public CmsResource createResource(String resourcename, int type, byte[] content, List properties)
+    public CmsResource createResource(String resourcename, int type, byte[] content, List<CmsProperty> properties)
     throws CmsException, CmsIllegalArgumentException {
 
         return getResourceType(type).createResource(this, m_securityManager, resourcename, content, properties);
@@ -744,7 +600,8 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsResource createSibling(String source, String destination, List properties) throws CmsException {
+    public CmsResource createSibling(String source, String destination, List<CmsProperty> properties)
+    throws CmsException {
 
         CmsResource resource = readResource(source, CmsResourceFilter.IGNORE_EXPIRATION);
         return getResourceType(resource).createSibling(this, m_securityManager, resource, destination, properties);
@@ -774,7 +631,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsUser createUser(String userFqn, String password, String description, Map additionalInfos)
+    public CmsUser createUser(String userFqn, String password, String description, Map<String, Object> additionalInfos)
     throws CmsException {
 
         return m_securityManager.createUser(m_context, userFqn, password, description, additionalInfos);
@@ -790,36 +647,6 @@ public final class CmsObject {
     public void deleteAllStaticExportPublishedResources(int linkType) throws CmsException {
 
         m_securityManager.deleteAllStaticExportPublishedResources(m_context, linkType);
-    }
-
-    /**
-     * Deletes the versions from the backup tables that are older then the given time stamp  
-     * and/or number of remaining versions.<p>
-     * 
-     * The number of versions always wins, i.e. if the given time stamp would delete more versions 
-     * than given in the versions parameter, the time stamp will be ignored. <p>
-     * 
-     * Deletion will delete file header, content and properties. <p>
-     * 
-     * @param timestamp time stamp which defines the date after which backup resources must be deleted.
-     *                  This parameter must be 0 if the backup should be deleted by number of version
-     * @param versions the number of versions per file which should kept in the system. 
-     * @param report the report for output logging
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use {@link #deleteHistoricalVersions(int, int, long, I_CmsReport)} instead,
-     *             notice that there is no longer possible to delete historical versions by date
-     */
-    public void deleteBackups(long timestamp, int versions, I_CmsReport report) throws CmsException {
-
-        if (timestamp != 0) {
-            if (versions == 0) {
-                // use default value
-                versions = OpenCms.getSystemInfo().getHistoryVersions();
-            }
-        }
-        deleteHistoricalVersions(versions, versions, timestamp, report);
     }
 
     /**
@@ -853,10 +680,6 @@ public final class CmsObject {
     /**
      * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
      * 
-     * @deprecated this method has been replaced by <code>{@link #deleteHistoricalVersions(int, int, long, I_CmsReport)}</code> 
-     *      because it works globally (not site - dependent) and the folder argument is misleading. 
-     * 
-     * @param folderName will not be used as this operation is global (this method is deprecated due to the misleading signature) 
      * @param versionsToKeep number of versions to keep, is ignored if negative 
      * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
      * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
@@ -864,38 +687,10 @@ public final class CmsObject {
      * 
      * @throws CmsException if operation was not successful
      */
-    public void deleteHistoricalVersions(
-        String folderName,
-        int versionsToKeep,
-        int versionsDeleted,
-        long timeDeleted,
-        I_CmsReport report) throws CmsException {
+    public void deleteHistoricalVersions(int versionsToKeep, int versionsDeleted, long timeDeleted, I_CmsReport report)
+    throws CmsException {
 
-       deleteHistoricalVersions(versionsToKeep, versionsDeleted, timeDeleted, report);
-    }
-    
-    /**
-     * Deletes the versions from the history tables, keeping the given number of versions per resource.<p>
-     * 
-     * @param versionsToKeep number of versions to keep, is ignored if negative 
-     * @param versionsDeleted number of versions to keep for deleted resources, is ignored if negative
-     * @param timeDeleted deleted resources older than this will also be deleted, is ignored if negative
-     * @param report the report for output logging
-     * 
-     * @throws CmsException if operation was not successful
-     */
-    public void deleteHistoricalVersions(
-        int versionsToKeep,
-        int versionsDeleted,
-        long timeDeleted,
-        I_CmsReport report) throws CmsException {
-
-        m_securityManager.deleteHistoricalVersions(
-            m_context,
-            versionsToKeep,
-            versionsDeleted,
-            timeDeleted,
-            report);
+        m_securityManager.deleteHistoricalVersions(m_context, versionsToKeep, versionsDeleted, timeDeleted, report);
     }
 
     /**
@@ -910,41 +705,6 @@ public final class CmsObject {
     public void deleteProject(CmsUUID id) throws CmsException {
 
         m_securityManager.deleteProject(m_context, id);
-    }
-
-    /**
-     * Deletes a project.<p>
-     *
-     * All resources inside the project have to be be reset to their online state.<p>
-     * 
-     * @param id the id of the project to delete
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link #deleteProject(CmsUUID)} instead
-     */
-    public void deleteProject(int id) throws CmsException {
-
-        deleteProject(m_securityManager.getProjectId(m_context, id));
-    }
-
-    /**
-     * Deletes a property for a file or folder.<p>
-     *
-     * @param resourcename the name of a resource for which the property should be deleted
-     * @param key the name of the property
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use <code>{@link #writePropertyObject(String, CmsProperty)}</code> instead.
-     */
-    public void deleteProperty(String resourcename, String key) throws CmsException {
-
-        CmsProperty property = new CmsProperty();
-        property.setName(key);
-        property.setStructureValue(CmsProperty.DELETE_VALUE);
-
-        writePropertyObject(resourcename, property);
     }
 
     /**
@@ -993,24 +753,6 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).deleteResource(this, m_securityManager, resource, siblingMode);
-    }
-
-    /**
-     * Deletes a resource given its name.<p>
-     * 
-     * The <code>siblingMode</code> parameter controls how to handle siblings 
-     * during the delete operation.<br>
-     * 
-     * @param resourcename the name of the resource to delete (full path)
-     * @param siblingMode indicates how to handle siblings of the deleted resource
-     *
-     * @throws CmsException if something goes wrong
-     *      
-     * @deprecated use {@link #deleteResource(String, CmsResource.CmsResourceDeleteMode)} method instead
-     */
-    public void deleteResource(String resourcename, int siblingMode) throws CmsException {
-
-        deleteResource(resourcename, CmsResource.CmsResourceDeleteMode.valueOf(siblingMode));
     }
 
     /**
@@ -1064,20 +806,6 @@ public final class CmsObject {
     public void deleteUser(String username) throws CmsException {
 
         m_securityManager.deleteUser(m_context, username);
-    }
-
-    /**
-     * Deletes a web user.<p>
-     *
-     * @param userId the id of the user to be deleted
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated there are no more web users, use a user without any role!
-     */
-    public void deleteWebUser(CmsUUID userId) throws CmsException {
-
-        m_securityManager.deleteUser(m_context, userId);
     }
 
     /**
@@ -1142,7 +870,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getAccessControlEntries(String resourceName) throws CmsException {
+    public List<CmsAccessControlEntry> getAccessControlEntries(String resourceName) throws CmsException {
 
         return getAccessControlEntries(resourceName, true);
     }
@@ -1157,7 +885,8 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getAccessControlEntries(String resourceName, boolean getInherited) throws CmsException {
+    public List<CmsAccessControlEntry> getAccessControlEntries(String resourceName, boolean getInherited)
+    throws CmsException {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
         return m_securityManager.getAccessControlEntries(m_context, res, getInherited);
@@ -1196,36 +925,6 @@ public final class CmsObject {
     }
 
     /**
-     * Returns all projects which are owned by the current user or which are 
-     * accessible for the group of the user.<p>
-     *
-     * @return a list of objects of type <code>{@link CmsProject}</code>
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link org.opencms.security.CmsOrgUnitManager#getAllAccessibleProjects(CmsObject, String, boolean) OpenCms.getOrgUnitManager().getAllAccessibleProjects(CmsObject, String, boolean)} instead
-     */
-    public List getAllAccessibleProjects() throws CmsException {
-
-        return OpenCms.getOrgUnitManager().getAllAccessibleProjects(this, "", true);
-    }
-
-    /**
-     * Returns a list with all projects from history.<p>
-     *
-     * @return list of <code>{@link CmsHistoryProject}</code> objects 
-     *           with all projects from history.
-     *
-     * @throws CmsException  if operation was not successful
-     * 
-     * @deprecated Use {@link #getAllHistoricalProjects()} instead
-     */
-    public List getAllBackupProjects() throws CmsException {
-
-        return getAllHistoricalProjects();
-    }
-
-    /**
      * Returns a list with all projects from history.<p>
      *
      * @return list of <code>{@link CmsHistoryProject}</code> objects 
@@ -1233,54 +932,9 @@ public final class CmsObject {
      *
      * @throws CmsException  if operation was not successful
      */
-    public List getAllHistoricalProjects() throws CmsException {
+    public List<CmsHistoryProject> getAllHistoricalProjects() throws CmsException {
 
         return m_securityManager.getAllHistoricalProjects(m_context);
-    }
-
-    /**
-     * Returns all projects which are owned by the current user or which are manageable
-     * for the group of the user.<p>
-     *
-     * @return a list of objects of type <code>{@link CmsProject}</code>
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link org.opencms.security.CmsOrgUnitManager#getAllManageableProjects(CmsObject, String, boolean) OpenCms.getOrgUnitManager().getAllManageableProjects(CmsObject, String, boolean)} instead
-     */
-    public List getAllManageableProjects() throws CmsException {
-
-        return OpenCms.getOrgUnitManager().getAllManageableProjects(this, "", true);
-    }
-
-    /**
-     * Returns the next version id for the published backup resources.<p>
-     *
-     * @return int the new version id
-     * 
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated this concept has been abandoned for OpenCms version 7
-     */
-    public int getBackupTagId() throws CmsException {
-
-        return ((CmsHistoryProject)getAllHistoricalProjects().get(0)).getPublishTag() + 1;
-    }
-
-    /**
-     * Returns all child groups of a group.<p>
-     *
-     * @param groupname the name of the group
-     * 
-     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
-     * 
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link #getChildren(String, boolean)} with <code>false</code> instead.
-     */
-    public List getChild(String groupname) throws CmsException {
-
-        return getChildren(groupname, false);
     }
 
     /**
@@ -1293,43 +947,9 @@ public final class CmsObject {
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getChildren(String groupname, boolean includeSubChildren) throws CmsException {
+    public List<CmsGroup> getChildren(String groupname, boolean includeSubChildren) throws CmsException {
 
         return m_securityManager.getChildren(m_context, groupname, includeSubChildren);
-    }
-
-    /**
-     * Returns all child groups of a group.<p>
-     * 
-     * This method also returns all sub-child groups of the current group.<p>
-     * 
-     * @param groupname the name of the group
-     * 
-     * @return a list of all child <code>{@link CmsGroup}</code> objects or <code>null</code>
-     * 
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link #getChildren(String, boolean)} with <code>true</code> instead.
-     */
-    public List getChilds(String groupname) throws CmsException {
-
-        return getChildren(groupname, true);
-    }
-
-    /**
-     * Returns all groups to which a given user directly belongs.<p>
-     *
-     * @param username the name of the user to get all groups for
-     * 
-     * @return a list of <code>{@link CmsGroup}</code> objects
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link #getGroupsOfUser(String, boolean)} instead
-     */
-    public List getDirectGroupsOfUser(String username) throws CmsException {
-
-        return getGroupsOfUser(username, true);
     }
 
     /**
@@ -1346,7 +966,7 @@ public final class CmsObject {
      * 
      * @see #getFilesInFolder(String, CmsResourceFilter)
      */
-    public List getFilesInFolder(String resourcename) throws CmsException {
+    public List<CmsResource> getFilesInFolder(String resourcename) throws CmsException {
 
         return getFilesInFolder(resourcename, CmsResourceFilter.DEFAULT);
     }
@@ -1365,40 +985,10 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getFilesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
+    public List<CmsResource> getFilesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.readChildResources(m_context, resource, filter, false, true);
-    }
-
-    /**
-     * Returns all groups.<p>
-     *
-     * @return a list of all <code>{@link CmsGroup}</code> objects
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link org.opencms.security.CmsOrgUnitManager#getGroups(CmsObject, String, boolean) OpenCms.getOrgUnitManager().getGroups(CmsObject, String, boolean)} instead
-     */
-    public List getGroups() throws CmsException {
-
-        return OpenCms.getOrgUnitManager().getGroups(this, "", true);
-    }
-
-    /**
-     * Returns all the groups the given user, directly or indirectly, belongs to.<p>
-     *
-     * @param username the name of the user
-     * 
-     * @return a list of <code>{@link CmsGroup}</code> objects
-     * 
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link #getGroupsOfUser(String, boolean)} instead
-     */
-    public List getGroupsOfUser(String username) throws CmsException {
-
-        return getGroupsOfUser(username, false);
     }
 
     /**
@@ -1411,7 +1001,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getGroupsOfUser(String username, boolean directGroupsOnly) throws CmsException {
+    public List<CmsGroup> getGroupsOfUser(String username, boolean directGroupsOnly) throws CmsException {
 
         return getGroupsOfUser(username, directGroupsOnly, true);
     }
@@ -1427,7 +1017,8 @@ public final class CmsObject {
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getGroupsOfUser(String username, boolean directGroupsOnly, boolean includeOtherOus) throws CmsException {
+    public List<CmsGroup> getGroupsOfUser(String username, boolean directGroupsOnly, boolean includeOtherOus)
+    throws CmsException {
 
         return getGroupsOfUser(username, directGroupsOnly, includeOtherOus, m_context.getRemoteAddress());
     }
@@ -1444,28 +1035,15 @@ public final class CmsObject {
      * 
      * @throws CmsException if operation was not successful
      */
-    public List getGroupsOfUser(String username, boolean directGroupsOnly, boolean includeOtherOus, String remoteAddress)
-    throws CmsException {
+    public List<CmsGroup> getGroupsOfUser(
+        String username,
+        boolean directGroupsOnly,
+        boolean includeOtherOus,
+        String remoteAddress) throws CmsException {
 
-        return m_securityManager.getGroupsOfUser(m_context, username, (includeOtherOus ? ""
+        return m_securityManager.getGroupsOfUser(m_context, username, (includeOtherOus
+        ? ""
         : CmsOrganizationalUnit.getParentFqn(username)), includeOtherOus, false, directGroupsOnly, remoteAddress);
-    }
-
-    /**
-     * Returns the groups of a user filtered by the specified IP address.<p>
-     *
-     * @param username the name of the user
-     * @param remoteAddress the IP address to filter the groups in the result list
-     * 
-     * @return a list of <code>{@link CmsGroup}</code> objects filtered by the specified IP address
-     * 
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link #getGroupsOfUser(String, boolean, boolean, String)} instead
-     */
-    public List getGroupsOfUser(String username, String remoteAddress) throws CmsException {
-
-        return getGroupsOfUser(username, false, false, remoteAddress);
     }
 
     /**
@@ -1511,7 +1089,7 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      */
-    public List getLockedResources(String foldername, CmsLockFilter filter) throws CmsException {
+    public List<String> getLockedResources(String foldername, CmsLockFilter filter) throws CmsException {
 
         CmsResource resource = readResource(foldername, CmsResourceFilter.ALL);
         return m_securityManager.getLockedResources(m_context, resource, filter);
@@ -1586,88 +1164,6 @@ public final class CmsObject {
     }
 
     /**
-     * Returns a publish list with all new/changed/deleted resources of the current (offline)
-     * project that actually get published.<p>
-     * 
-     * @return a publish list
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject) getPublishList(CmsObject)}</code> instead
-     */
-    public CmsPublishList getPublishList() throws CmsException {
-
-        return OpenCms.getPublishManager().getPublishList(this);
-    }
-
-    /**
-     * Returns a publish list with all new/changed/deleted resources of the current (offline)
-     * project that actually get published for a direct publish of a single resource.<p>
-     * 
-     * @param directPublishResource the resource which will be directly published
-     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
-     *                      published resource should also get published.
-     * 
-     * @return a publish list
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject, CmsResource, boolean) getPublishList(CmsObject, CmsResource, boolean)}</code> instead
-     */
-    public CmsPublishList getPublishList(CmsResource directPublishResource, boolean directPublishSiblings)
-    throws CmsException {
-
-        return OpenCms.getPublishManager().getPublishList(this, directPublishResource, directPublishSiblings);
-    }
-
-    /**
-     * Returns a publish list with all new/changed/deleted resources of the current (offline)
-     * project that actually get published for a direct publish of a List of resources.<p>
-     * 
-     * @param directPublishResources the resources which will be directly published
-     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
-     *                      published resources should also get published.
-     * 
-     * @return a publish list
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject, List, boolean) getPublishList(CmsObject, List, boolean)}</code> instead
-     */
-    public CmsPublishList getPublishList(List directPublishResources, boolean directPublishSiblings)
-    throws CmsException {
-
-        return OpenCms.getPublishManager().getPublishList(this, directPublishResources, directPublishSiblings, true);
-    }
-
-    /**
-     * Returns a publish list with all new/changed/deleted resources of the current (offline)
-     * project that actually get published for a direct publish of a List of resources.<p>
-     * 
-     * @param directPublishResources the {@link CmsResource} objects which will be directly published
-     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
-     *                      published resources should also get published.
-     * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
-     * 
-     * @return a publish list
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#getPublishList(CmsObject, List, boolean, boolean) getPublishList(CmsObject, List, boolean)}</code> instead
-     */
-    public CmsPublishList getPublishList(
-        List directPublishResources,
-        boolean directPublishSiblings,
-        boolean publishSubResources) throws CmsException {
-
-        return OpenCms.getPublishManager().getPublishList(
-            this,
-            directPublishResources,
-            directPublishSiblings,
-            publishSubResources);
-    }
-
-    /**
      * Returns all relations for the given resource matching the given filter.<p> 
      * 
      * You should have view/read permissions on the given resource.<p>
@@ -1684,7 +1180,8 @@ public final class CmsObject {
      * 
      * @see CmsSecurityManager#getRelationsForResource(CmsRequestContext, CmsResource, CmsRelationFilter)
      */
-    public List getRelationsForResource(CmsResource resource, CmsRelationFilter filter) throws CmsException {
+    public List<CmsRelation> getRelationsForResource(CmsResource resource, CmsRelationFilter filter)
+    throws CmsException {
 
         return m_securityManager.getRelationsForResource(m_context, resource, filter);
     }
@@ -1706,7 +1203,7 @@ public final class CmsObject {
      * 
      * @see CmsSecurityManager#getRelationsForResource(CmsRequestContext, CmsResource, CmsRelationFilter)
      */
-    public List getRelationsForResource(String resourceName, CmsRelationFilter filter) throws CmsException {
+    public List<CmsRelation> getRelationsForResource(String resourceName, CmsRelationFilter filter) throws CmsException {
 
         return getRelationsForResource(readResource(resourceName, CmsResourceFilter.ALL), filter);
     }
@@ -1744,8 +1241,10 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public Set getResourcesForPrincipal(CmsUUID principalId, CmsPermissionSet permissions, boolean includeAttr)
-    throws CmsException {
+    public Set<CmsResource> getResourcesForPrincipal(
+        CmsUUID principalId,
+        CmsPermissionSet permissions,
+        boolean includeAttr) throws CmsException {
 
         return m_securityManager.getResourcesForPrincipal(getRequestContext(), principalId, permissions, includeAttr);
     }
@@ -1767,39 +1266,10 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getResourcesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
+    public List<CmsResource> getResourcesInFolder(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.readChildResources(m_context, resource, filter, true, true);
-    }
-
-    /**
-     * Returns a list with all sub resources of the given parent folder (and all of it's subfolders) 
-     * that have been modified in the given time range.<p>
-     * 
-     * The result list is descending sorted (newest resource first).<p>
-     *
-     * @param folder the folder to get the sub resources from
-     * @param starttime the begin of the time range
-     * @param endtime the end of the time range
-     * 
-     * @return a list with all <code>{@link CmsResource}</code> objects 
-     *               that have been modified in the given time range.
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link #readResources(String, CmsResourceFilter)} and create a filter 
-     *      based on {@link CmsResourceFilter#IGNORE_EXPIRATION}
-     *      using {@link CmsResourceFilter#addRequireLastModifiedAfter(long)} and
-     *      {@link CmsResourceFilter#addRequireLastModifiedBefore(long)} instead
-     */
-    public List getResourcesInTimeRange(String folder, long starttime, long endtime) throws CmsException {
-
-        CmsResourceFilter filter = CmsResourceFilter.IGNORE_EXPIRATION;
-        filter = filter.addRequireLastModifiedAfter(starttime);
-        filter = filter.addRequireLastModifiedBefore(endtime);
-
-        return readResources(folder, filter);
     }
 
     /**
@@ -1840,7 +1310,7 @@ public final class CmsObject {
      * 
      * @see #getSubFolders(String, CmsResourceFilter)
      */
-    public List getSubFolders(String resourcename) throws CmsException {
+    public List<CmsResource> getSubFolders(String resourcename) throws CmsException {
 
         return getSubFolders(resourcename, CmsResourceFilter.DEFAULT);
     }
@@ -1859,24 +1329,10 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List getSubFolders(String resourcename, CmsResourceFilter filter) throws CmsException {
+    public List<CmsResource> getSubFolders(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.readChildResources(m_context, resource, filter, true, false);
-    }
-
-    /**
-     * Returns all users.<p>
-     *
-     * @return a list of all <code>{@link CmsUser}</code> objects
-     * 
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link org.opencms.security.CmsOrgUnitManager#getUsers(CmsObject, String, boolean) OpenCms.getOrgUnitManager().getUsersForOrganizationalUnit(CmsObject, String, boolean)} instead
-     */
-    public List getUsers() throws CmsException {
-
-        return OpenCms.getOrgUnitManager().getUsers(this, "", true);
     }
 
     /**
@@ -1890,7 +1346,7 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      */
-    public List getUsersOfGroup(String groupname) throws CmsException {
+    public List<CmsUser> getUsersOfGroup(String groupname) throws CmsException {
 
         return getUsersOfGroup(groupname, true);
     }
@@ -1907,7 +1363,7 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      */
-    public List getUsersOfGroup(String groupname, boolean includeOtherOus) throws CmsException {
+    public List<CmsUser> getUsersOfGroup(String groupname, boolean includeOtherOus) throws CmsException {
 
         return m_securityManager.getUsersOfGroup(m_context, groupname, includeOtherOus, false, false);
     }
@@ -1956,52 +1412,6 @@ public final class CmsObject {
     }
 
     /**
-     * Checks if the given resource or the current project can be published by the current user 
-     * using his current OpenCms context.<p>
-     * 
-     * If the resource parameter is <code>null</code>, then the current project is checked,
-     * otherwise the resource is checked for direct publish permissions.<p>
-     * 
-     * @param resourcename the direct publish resource name (optional, if null only the current project is checked)
-     * 
-     * @return <code>true</code>, if the current user can direct publish the given resource in his current context
-     * 
-     * @deprecated notice that checking is no longer possible from the CmsObject
-     */
-    public boolean hasPublishPermissions(String resourcename) {
-
-        CmsResource resource = null;
-        if (resourcename != null) {
-            // resource name is optional
-            try {
-                resource = readResource(resourcename, CmsResourceFilter.ALL);
-                checkPublishPermissions(new CmsPublishList(Collections.singletonList(resource), false));
-            } catch (CmsException e) {
-                // if any exception (e.g. security) occurs the result is false
-                return false;
-            }
-        }
-        // no exception means permissions are granted
-        return true;
-    }
-
-    /**
-     * Checks if the user of the current OpenCms context 
-     * is a member of at last one of the roles in the given role set.<p>
-     *  
-     * @param role the role to check
-     * 
-     * @return <code>true</code> if the user of the current OpenCms context is at a member of at last 
-     *      one of the roles in the given role set
-     *      
-     * @deprecated use {@link OpenCms#getRoleManager()} methods instead
-     */
-    public boolean hasRole(CmsRole role) {
-
-        return OpenCms.getRoleManager().hasRole(this, role);
-    }
-
-    /**
      * Writes a list of access control entries as new access control entries of a given resource.<p>
      * 
      * Already existing access control entries of this resource are removed before.<p>
@@ -2011,7 +1421,8 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void importAccessControlEntries(CmsResource resource, List acEntries) throws CmsException {
+    public void importAccessControlEntries(CmsResource resource, List<CmsAccessControlEntry> acEntries)
+    throws CmsException {
 
         m_securityManager.importAccessControlEntries(m_context, resource, acEntries);
     }
@@ -2050,8 +1461,11 @@ public final class CmsObject {
      * 
      * @see CmsObject#moveToLostAndFound(String)
      */
-    public CmsResource importResource(String resourcename, CmsResource resource, byte[] content, List properties)
-    throws CmsException {
+    public CmsResource importResource(
+        String resourcename,
+        CmsResource resource,
+        byte[] content,
+        List<CmsProperty> properties) throws CmsException {
 
         return getResourceType(resource).importResource(
             this,
@@ -2088,7 +1502,7 @@ public final class CmsObject {
         String email,
         int flags,
         long dateCreated,
-        Map additionalInfos) throws CmsException {
+        Map<String, Object> additionalInfos) throws CmsException {
 
         return m_securityManager.importUser(
             m_context,
@@ -2101,63 +1515,6 @@ public final class CmsObject {
             flags,
             dateCreated,
             additionalInfos);
-    }
-
-    /**
-     * Creates a new user by import.<p>
-     * 
-     * @param id the id of the user
-     * @param name the new name for the user
-     * @param password the new password for the user
-     * @param description the description for the user
-     * @param firstname the first name of the user
-     * @param lastname the last name of the user
-     * @param email the email of the user
-     * @param address the address of the user
-     * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
-     * @param additionalInfos the additional user infos
-     * 
-     * @return the imported user
-     *
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use {@link #importUser(String, String, String, String, String, String, int, long, Map)} instead
-     */
-    public CmsUser importUser(
-        String id,
-        String name,
-        String password,
-        String description,
-        String firstname,
-        String lastname,
-        String email,
-        String address,
-        int flags,
-        Map additionalInfos) throws CmsException {
-
-        Map info = new HashMap();
-        if (additionalInfos != null) {
-            info.putAll(additionalInfos);
-        }
-        if (description != null) {
-            info.put(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, description);
-        }
-        if (address != null) {
-            info.put(CmsUserSettings.ADDITIONAL_INFO_ADDRESS, address);
-        }
-        return importUser(id, name, password, firstname, lastname, email, flags, System.currentTimeMillis(), info);
-    }
-
-    /**
-     * Checks if the current user has role access to <code>{@link CmsRole#ROOT_ADMIN}</code>.<p>
-     *
-     * @return <code>true</code>, if the current user has role access to <code>{@link CmsRole#ROOT_ADMIN}</code>
-     * 
-     * @deprecated use <code>{@link #hasRole(CmsRole)}</code> or <code>{@link #checkRole(CmsRole)}</code> instead
-     */
-    public boolean isAdmin() {
-
-        return hasRole(CmsRole.ROOT_ADMIN);
     }
 
     /**
@@ -2199,23 +1556,6 @@ public final class CmsObject {
     public void lockResource(String resourcename) throws CmsException {
 
         lockResource(resourcename, CmsLockType.EXCLUSIVE);
-    }
-
-    /**
-     * Locks a resource.<p>
-     *
-     * The <code>mode</code> parameter controls what kind of lock is used.<br>
-     * 
-     * @param resourcename the name of the resource to lock (full path)
-     * @param mode flag indicating the mode for the lock
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use {@link #lockResource(String)} or {@link #lockResourceTemporary(String)} instead
-     */
-    public void lockResource(String resourcename, int mode) throws CmsException {
-
-        lockResource(resourcename, CmsLockType.valueOf(mode));
     }
 
     /**
@@ -2275,23 +1615,6 @@ public final class CmsObject {
         fireEvent(I_CmsEventListener.EVENT_LOGIN_USER, newUser);
         // return the users login name
         return newUser.getName();
-    }
-
-    /**
-     * Logs a web user into the Cms, if the password is correct.
-     *
-     * @param username the name of the user
-     * @param password the password of the user
-     * 
-     * @return the name of the logged in user
-     *
-     * @throws CmsException if the login was not successful
-     * 
-     * @deprecated there are no more web users, use a user without any role!
-     */
-    public String loginWebUser(String username, String password) throws CmsException {
-
-        return loginUser(username, password, m_context.getRemoteAddress());
     }
 
     /**
@@ -2364,147 +1687,6 @@ public final class CmsObject {
     }
 
     /**
-     * Publishes the current project, printing messages to a shell report.<p>
-     *
-     * @return the publish history id of the published project
-     * 
-     * @throws Exception if something goes wrong
-     * 
-     * @see CmsShellReport
-     * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishProject(CmsObject) publishProject(CmsObject)}</code> instead
-     */
-    public CmsUUID publishProject() throws Exception {
-
-        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishProject(
-            this,
-            new CmsShellReport(m_context.getLocale()));
-        OpenCms.getPublishManager().waitWhileRunning();
-        return publishHistoryId;
-    }
-
-    /**
-     * Publishes the current project.<p>
-     *
-     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
-     * 
-     * @return the publish history id of the published project
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishProject(CmsObject, I_CmsReport) publishProject(CmsObject, I_CmsReport)}</code> instead
-     */
-    public CmsUUID publishProject(I_CmsReport report) throws CmsException {
-
-        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishProject(
-            this,
-            report,
-            OpenCms.getPublishManager().getPublishList(this));
-        OpenCms.getPublishManager().waitWhileRunning();
-        return publishHistoryId;
-    }
-
-    /**
-     * Publishes the resources of a specified publish list.<p>
-     * 
-     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
-     * @param publishList a publish list
-     * 
-     * @return the publish history id of the published project
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see #getPublishList()
-     * @see #getPublishList(CmsResource, boolean)
-     * @see #getPublishList(List, boolean)
-     * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishProject(CmsObject, I_CmsReport, CmsPublishList) publishProject(CmsObject, I_CmsReport, CmsPublishList)}</code> instead
-     */
-    public CmsUUID publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
-
-        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishProject(this, report, publishList);
-        OpenCms.getPublishManager().waitWhileRunning();
-        return publishHistoryId;
-    }
-
-    /**
-     * Direct publishes a specified resource.<p>
-     * 
-     * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
-     * @param directPublishResource a <code>{@link CmsResource}</code> that gets directly published; 
-     *                          or <code>null</code> if an entire project gets published.
-     * @param directPublishSiblings if a <code>{@link CmsResource}</code> that should get published directly is 
-     *                          provided as an argument, all eventual siblings of this resource 
-     *                          get publish too, if this flag is <code>true</code>.
-     * 
-     * @return the publish history id of the published project
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see #publishResource(String)
-     * @see #publishResource(String, boolean, I_CmsReport)
-     * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishProject(CmsObject, I_CmsReport, CmsResource, boolean) publishProject(CmsObject, I_CmsReport, CmsResource, boolean)}</code> instead
-     */
-    public CmsUUID publishProject(I_CmsReport report, CmsResource directPublishResource, boolean directPublishSiblings)
-    throws CmsException {
-
-        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishProject(
-            this,
-            report,
-            OpenCms.getPublishManager().getPublishList(this, directPublishResource, directPublishSiblings));
-        OpenCms.getPublishManager().waitWhileRunning();
-        return publishHistoryId;
-    }
-
-    /**
-     * Publishes a single resource, printing messages to a shell report.<p>
-     * 
-     * The siblings of the resource will not be published.<p>
-     *
-     * @param resourcename the name of the resource to be published
-     * 
-     * @return the publish history id of the published project
-     * 
-     * @throws Exception if something goes wrong
-     * 
-     * @see CmsShellReport
-     * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishResource(CmsObject, String) publishResource(CmsObject, String)}</code> instead
-     */
-    public CmsUUID publishResource(String resourcename) throws Exception {
-
-        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishResource(
-            this,
-            resourcename,
-            false,
-            new CmsShellReport(m_context.getLocale()));
-        OpenCms.getPublishManager().waitWhileRunning();
-        return publishHistoryId;
-    }
-
-    /**
-     * Publishes a single resource.<p>
-     * 
-     * @param resourcename the name of the resource to be published
-     * @param publishSiblings if <code>true</code>, all siblings of the resource are also published
-     * @param report the report to write the progress information to
-     * 
-     * @return the publish history id of the published project
-     * 
-     * @throws Exception if something goes wrong
-     * 
-     * @deprecated use <code>{@link OpenCms#getPublishManager()}.{@link org.opencms.publish.CmsPublishManager#publishResource(CmsObject, String, boolean, I_CmsReport) publishResource(CmsObject, String, boolean, I_CmsReport)}</code> instead
-     */
-    public CmsUUID publishResource(String resourcename, boolean publishSiblings, I_CmsReport report) throws Exception {
-
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
-        CmsUUID publishHistoryId = OpenCms.getPublishManager().publishProject(this, report, resource, publishSiblings);
-        OpenCms.getPublishManager().waitWhileRunning();
-        return publishHistoryId;
-    }
-
-    /**
      * Reads all historical versions of a resource.<br>
      * 
      * The reading excludes the file content, if the resource is a file.<p>
@@ -2515,31 +1697,10 @@ public final class CmsObject {
      *
      * @throws CmsException if operation was not successful
      */
-    public List readAllAvailableVersions(String resourceName) throws CmsException {
+    public List<I_CmsHistoryResource> readAllAvailableVersions(String resourceName) throws CmsException {
 
         CmsResource resource = readResource(resourceName, CmsResourceFilter.ALL);
         return m_securityManager.readAllAvailableVersions(m_context, resource);
-    }
-
-    /**
-     * Reads all file headers of a file.<br>
-     * 
-     * This method returns a list with the history of all file headers, i.e.
-     * the file headers of a file, independent of the project they were attached to.<br>
-     *
-     * The reading excludes the file content.<p>
-     *
-     * @param filename the name of the file to be read
-     *
-     * @return a list of file headers, as <code>{@link I_CmsHistoryResource}</code> objects, read from the Cms
-     *
-     * @throws CmsException  if operation was not successful
-     * 
-     * @deprecated Use {@link #readAllAvailableVersions(String)} instead
-     */
-    public List readAllBackupFileHeaders(String filename) throws CmsException {
-
-        return readAllAvailableVersions(filename);
     }
 
     /**
@@ -2549,7 +1710,7 @@ public final class CmsObject {
      *
      * @throws CmsException if something goes wrong
      */
-    public List readAllPropertyDefinitions() throws CmsException {
+    public List<CmsPropertyDefinition> readAllPropertyDefinitions() throws CmsException {
 
         return m_securityManager.readAllPropertyDefinitions(m_context);
     }
@@ -2587,83 +1748,6 @@ public final class CmsObject {
     public CmsFolder readAncestor(String resourcename, int type) throws CmsException {
 
         return readAncestor(resourcename, CmsResourceFilter.requireType(type));
-    }
-
-    /**
-     * Returns a file from the history.<br>
-     * 
-     * The reading includes the file content.<p>
-     *
-     * @param structureId the structure id of the file to be read
-     * @param publishTag the tag id of the resource
-     *
-     * @return the file read
-     *
-     * @throws CmsException if the user has not the rights to read the file, or 
-     *                      if the file couldn't be read.
-     *                      
-     * @deprecated use {@link #readResourceByPublishTag(CmsUUID, int)} or {@link #readResource(CmsUUID, int)} instead, 
-     *             but notice that the <code>publishTag != version</code>
-     *             and there is no possibility to access to a historical entry with just the filename.
-     */
-    public I_CmsHistoryResource readBackupFile(CmsUUID structureId, int publishTag) throws CmsException {
-
-        return readResourceByPublishTag(structureId, publishTag);
-    }
-
-    /**
-     * Returns a resource from the historical archive.<br>
-     * 
-     * The reading includes the file content, if the resource is a file.<p>
-     *
-     * @param filename the path of the file to be read
-     * @param publishTag the publish tag
-     *
-     * @return the file read
-     *
-     * @throws CmsException if the user has not the rights to read the file, or 
-     *                      if the file couldn't be read.
-     *                      
-     * @deprecated use {@link #readResource(CmsUUID, int)} instead, 
-     *             but notice that the <code>publishTag != version</code>
-     *             and there is no possibility to access to an historical entry with just the filename.
-     */
-    public I_CmsHistoryResource readBackupFile(String filename, int publishTag) throws CmsException {
-
-        CmsResource resource = readResource(filename, CmsResourceFilter.ALL);
-        return readResourceByPublishTag(resource.getStructureId(), publishTag);
-    }
-
-    /**
-     * Returns a backup project.<p>
-     *
-     * @param tagId the tag of the backup project to be read
-     * 
-     * @return the requested backup project
-     * 
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated Use {@link #readHistoryProject(int)} instead
-     */
-    public CmsHistoryProject readBackupProject(int tagId) throws CmsException {
-
-        return readHistoryProject(tagId);
-    }
-
-    /**
-     * Reads the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource.<p>
-     * 
-     * @param resource the backup resource to read the properties from
-     * 
-     * @return the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated Use {@link #readHistoryPropertyObjects(I_CmsHistoryResource)} instead
-     */
-    public List readBackupPropertyObjects(I_CmsHistoryResource resource) throws CmsException {
-
-        return readHistoryPropertyObjects(resource);
     }
 
     /**
@@ -2720,7 +1804,7 @@ public final class CmsObject {
      * @see #readResource(CmsUUID, int)
      * @see #readResources(String, CmsResourceFilter, boolean)
      */
-    public List readDeletedResources(String resourcename, boolean readTree) throws CmsException {
+    public List<I_CmsHistoryResource> readDeletedResources(String resourcename, boolean readTree) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.readDeletedResources(m_context, resource, readTree);
@@ -2816,23 +1900,6 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, filter);
         return readFile(resource);
-    }
-
-    /**
-     * Reads a resource from the VFS,
-     * using the <code>{@link CmsResourceFilter#DEFAULT}</code> filter.<p> 
-     *
-     * @param resourcename the name of the resource to read (full current site relative path)
-     *
-     * @return the file resource that was read
-     *
-     * @throws CmsException if something goes wrong
-     *
-     * @deprecated use <code>{@link #readResource(String, CmsResourceFilter)}</code> instead.
-     */
-    public CmsResource readFileHeader(String resourcename) throws CmsException {
-
-        return readResource(resourcename, CmsResourceFilter.DEFAULT);
     }
 
     /**
@@ -2973,7 +2040,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readHistoryPropertyObjects(I_CmsHistoryResource resource) throws CmsException {
+    public List<CmsProperty> readHistoryPropertyObjects(I_CmsHistoryResource resource) throws CmsException {
 
         return m_securityManager.readHistoryPropertyObjects(m_context, resource);
     }
@@ -3014,7 +2081,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readPath(String path, CmsResourceFilter filter) throws CmsException {
+    public List<CmsResource> readPath(String path, CmsResourceFilter filter) throws CmsException {
 
         return m_securityManager.readPath(m_context, addSiteRoot(path), filter);
     }
@@ -3031,22 +2098,6 @@ public final class CmsObject {
     public CmsProject readProject(CmsUUID id) throws CmsException {
 
         return m_securityManager.readProject(id);
-    }
-
-    /**
-     * Reads the project with the given id.<p>
-     *
-     * @param id the id of the project
-     * 
-     * @return the project with the given id
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link #readProject(CmsUUID)} instead
-     */
-    public CmsProject readProject(int id) throws CmsException {
-
-        return readProject(m_securityManager.getProjectId(m_context, id));
     }
 
     /**
@@ -3073,7 +2124,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readProjectResources(CmsProject project) throws CmsException {
+    public List<String> readProjectResources(CmsProject project) throws CmsException {
 
         return m_securityManager.readProjectResources(m_context, project);
     }
@@ -3096,152 +2147,9 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readProjectView(CmsUUID projectId, CmsResourceState state) throws CmsException {
+    public List<CmsResource> readProjectView(CmsUUID projectId, CmsResourceState state) throws CmsException {
 
         return m_securityManager.readProjectView(m_context, projectId, state);
-    }
-
-    /**
-     * @see #readProjectView(CmsUUID, CmsResourceState)
-     * 
-     * @param projectId the id of the project to read the file resources for
-     * @param state the resource state to match
-     *
-     * @return all <code>{@link CmsResource}</code>s of a project that match a given criteria from the VFS
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use {@link #readProjectView(CmsUUID, CmsResourceState)} instead
-     */
-    public List readProjectView(int projectId, CmsResourceState state) throws CmsException {
-
-        return readProjectView(m_securityManager.getProjectId(m_context, projectId), state);
-    }
-
-    /**
-     * Reads all resources of a project that match a given state from the VFS.<p>
-     * 
-     * 
-     * @param projectId the id of the project to read the file resources for
-     * @param state the resource state to match
-     *
-     * @return all <code>{@link CmsResource}</code>s of a project that match a given criteria from the VFS
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use {@link #readProjectView(CmsUUID, CmsResourceState)} instead
-     */
-    public List readProjectView(int projectId, int state) throws CmsException {
-
-        return readProjectView(m_securityManager.getProjectId(m_context, projectId), CmsResourceState.valueOf(state));
-    }
-
-    /**
-     * Reads the (compound) values of all properties mapped to a specified resource.<p>
-     * 
-     * @param resourcePath the resource to look up the property for
-     * 
-     * @return a map of <code>String</code> objects representing all properties of the resource
-     * 
-     * @throws CmsException in case there where problems reading the properties
-     * 
-     * @deprecated use <code>{@link #readPropertyObjects(String, boolean)}</code> instead.
-     */
-    public Map readProperties(String resourcePath) throws CmsException {
-
-        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
-        List properties = m_securityManager.readPropertyObjects(m_context, resource, false);
-        return CmsProperty.toMap(properties);
-    }
-
-    /**
-     * Reads the (compound) values of all properties mapped to a specified resource
-     * with optional direcory upward cascading.<p>
-     * 
-     * @param resourcePath the resource to look up the property for
-     * @param search if <code>true</code>, the properties will also be looked up on all parent folders and the results will be merged, if <code>false</code> not (ie. normal property lookup)
-     * 
-     * @return Map of <code>String</code> objects representing all properties of the resource
-     * 
-     * @throws CmsException in case there where problems reading the properties
-     * 
-     * @deprecated use <code>{@link #readPropertyObjects(String, boolean)}</code> instead.
-     */
-    public Map readProperties(String resourcePath, boolean search) throws CmsException {
-
-        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
-        List properties = m_securityManager.readPropertyObjects(m_context, resource, search);
-        return CmsProperty.toMap(properties);
-    }
-
-    /**
-     * Reads the (compound) value of a property mapped to a specified resource.<p>
-     *
-     * @param resourcePath the resource to look up the property for
-     * @param property the name of the property to look up
-     * 
-     * @return the value of the property found, <code>null</code> if nothing was found
-     * 
-     * @throws CmsException in case there where problems reading the property
-     * 
-     * @see CmsProperty#getValue()
-     * 
-     * @deprecated use <code>{@link #readPropertyObject(String, String, boolean)}</code> instead.
-     */
-    public String readProperty(String resourcePath, String property) throws CmsException {
-
-        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
-        CmsProperty value = m_securityManager.readPropertyObject(m_context, resource, property, false);
-        return value.isNullProperty() ? null : value.getValue();
-    }
-
-    /**
-     * Reads the (compound) value of a property mapped to a specified resource 
-     * with optional direcory upward cascading.<p>
-     * 
-     * @param resourcePath the resource to look up the property for
-     * @param property the name of the property to look up
-     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if false not (ie. normal property lookup)
-     * 
-     * @return the value of the property found, <code>null</code> if nothing was found
-     * 
-     * @throws CmsException in case there where problems reading the property
-     * 
-     * @see CmsProperty#getValue()
-     * 
-     * @deprecated use <code>{@link #readPropertyObject(String, String, boolean)}</code> instead.
-     */
-    public String readProperty(String resourcePath, String property, boolean search) throws CmsException {
-
-        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
-        CmsProperty value = m_securityManager.readPropertyObject(m_context, resource, property, search);
-        return value.isNullProperty() ? null : value.getValue();
-    }
-
-    /**
-     * Reads the (compound) value of a property mapped to a specified resource 
-     * with optional directory upward cascading, a default value will be returned if the property 
-     * is not found on the resource (or it's parent folders in case search is set to <code>true</code>).<p>
-     * 
-     * @param resourcePath the resource to look up the property for
-     * @param property the name of the property to look up
-     * @param search if <code>true</code>, the property will be looked up on all parent folders if it is not attached to the the resource, if <code>false</code> not (ie. normal property lookup)
-     * @param propertyDefault a default value that will be returned if the property was not found on the selected resource
-     * 
-     * @return the value of the property found, if nothing was found the value of the <code>propertyDefault</code> parameter is returned
-     * 
-     * @throws CmsException in case there where problems reading the property
-     * 
-     * @see CmsProperty#getValue()
-     * 
-     * @deprecated use <code>{@link #readPropertyObject(String, String, boolean)}</code> instead.
-     */
-    public String readProperty(String resourcePath, String property, boolean search, String propertyDefault)
-    throws CmsException {
-
-        CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
-        CmsProperty value = m_securityManager.readPropertyObject(m_context, resource, property, search);
-        return value.isNullProperty() ? propertyDefault : value.getValue();
     }
 
     /**
@@ -3328,7 +2236,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readPropertyObjects(CmsResource resource, boolean search) throws CmsException {
+    public List<CmsProperty> readPropertyObjects(CmsResource resource, boolean search) throws CmsException {
 
         return m_securityManager.readPropertyObjects(m_context, resource, search);
     }
@@ -3356,7 +2264,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readPropertyObjects(String resourcePath, boolean search) throws CmsException {
+    public List<CmsProperty> readPropertyObjects(String resourcePath, boolean search) throws CmsException {
 
         CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
         return m_securityManager.readPropertyObjects(m_context, resource, search);
@@ -3371,7 +2279,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
+    public List<CmsPublishedResource> readPublishedResources(CmsUUID publishHistoryId) throws CmsException {
 
         return m_securityManager.readPublishedResources(m_context, publishHistoryId);
     }
@@ -3530,29 +2438,6 @@ public final class CmsObject {
     }
 
     /**
-     * Reads an historical resource in the current project with the given publish tag 
-     * from the historical archive.<p>
-     * 
-     * @param structureId the structure id of the resource to restore from the archive
-     * @param publishTag the publish tag of the resource
-     * 
-     * @return the file in the current project with the given publish tag from the historical 
-     *         archive, or {@link CmsVfsResourceNotFoundException} if not found 
-     *
-     * @throws CmsException if something goes wrong
-     * 
-     * @see #readResource(CmsUUID, int)
-     * 
-     * @deprecated use {@link #readResource(CmsUUID, int)} instead
-     *             but notice that the <code>publishTag != version</code>
-     */
-    public I_CmsHistoryResource readResourceByPublishTag(CmsUUID structureId, int publishTag) throws CmsException {
-
-        CmsResource resource = readResource(structureId, CmsResourceFilter.IGNORE_EXPIRATION);
-        return m_securityManager.readResourceForPublishTag(m_context, resource, publishTag);
-    }
-
-    /**
      * Reads all resources below the given path matching the filter criteria, 
      * including the full tree below the path.<p>
      * 
@@ -3565,7 +2450,7 @@ public final class CmsObject {
      * 
      * @see #readResources(String, CmsResourceFilter, boolean)
      */
-    public List readResources(String resourcename, CmsResourceFilter filter) throws CmsException {
+    public List<CmsResource> readResources(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         return readResources(resourcename, filter, true);
     }
@@ -3583,7 +2468,8 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readResources(String resourcename, CmsResourceFilter filter, boolean readTree) throws CmsException {
+    public List<CmsResource> readResources(String resourcename, CmsResourceFilter filter, boolean readTree)
+    throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         return m_securityManager.readResources(m_context, resource, filter, readTree);
@@ -3603,7 +2489,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readResourcesWithProperty(String propertyDefinition) throws CmsException {
+    public List<CmsResource> readResourcesWithProperty(String propertyDefinition) throws CmsException {
 
         return readResourcesWithProperty("/", propertyDefinition);
     }
@@ -3623,7 +2509,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readResourcesWithProperty(String path, String propertyDefinition) throws CmsException {
+    public List<CmsResource> readResourcesWithProperty(String path, String propertyDefinition) throws CmsException {
 
         return readResourcesWithProperty(path, propertyDefinition, null);
     }
@@ -3648,7 +2534,8 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readResourcesWithProperty(String path, String propertyDefinition, String value) throws CmsException {
+    public List<CmsResource> readResourcesWithProperty(String path, String propertyDefinition, String value)
+    throws CmsException {
 
         CmsResource resource = readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
         return m_securityManager.readResourcesWithProperty(
@@ -3680,8 +2567,11 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readResourcesWithProperty(String path, String propertyDefinition, String value, CmsResourceFilter filter)
-    throws CmsException {
+    public List<CmsResource> readResourcesWithProperty(
+        String path,
+        String propertyDefinition,
+        String value,
+        CmsResourceFilter filter) throws CmsException {
 
         CmsResource resource = readResource(path, CmsResourceFilter.IGNORE_EXPIRATION);
         return m_securityManager.readResourcesWithProperty(m_context, resource, propertyDefinition, value, filter);
@@ -3696,7 +2586,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public Set readResponsiblePrincipals(CmsResource resource) throws CmsException {
+    public Set<I_CmsPrincipal> readResponsiblePrincipals(CmsResource resource) throws CmsException {
 
         return m_securityManager.readResponsiblePrincipals(m_context, resource);
     }
@@ -3710,7 +2600,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public Set readResponsibleUsers(CmsResource resource) throws CmsException {
+    public Set<CmsUser> readResponsibleUsers(CmsResource resource) throws CmsException {
 
         return m_securityManager.readResponsibleUsers(m_context, resource);
     }
@@ -3728,7 +2618,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readSiblings(String resourcename, CmsResourceFilter filter) throws CmsException {
+    public List<CmsResource> readSiblings(String resourcename, CmsResourceFilter filter) throws CmsException {
 
         CmsResource resource = readResource(resourcename, filter);
         return m_securityManager.readSiblings(m_context, resource, filter);
@@ -3759,7 +2649,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readStaticExportResources(int parameterResources, long timestamp) throws CmsException {
+    public List<String> readStaticExportResources(int parameterResources, long timestamp) throws CmsException {
 
         return m_securityManager.readStaticExportResources(m_context, parameterResources, timestamp);
     }
@@ -3807,41 +2697,6 @@ public final class CmsObject {
      * @throws CmsException if operation was not successful
      */
     public CmsUser readUser(String username, String password) throws CmsException {
-
-        return m_securityManager.readUser(m_context, username, password);
-    }
-
-    /**
-     * Returns a web user.<p>
-     *
-     * @param username the user name of the web user that is to be read
-     * 
-     * @return the web user
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated there are no more web users, use a user without any role!
-     */
-    public CmsUser readWebUser(String username) throws CmsException {
-
-        return m_securityManager.readUser(m_context, username);
-    }
-
-    /**
-     * Returns a web user if the password for the user is correct.<p>
-     *
-     * If the user/password pair is not valid a <code>{@link CmsException}</code> is thrown.<p>
-     *
-     * @param username the user name of the user that is to be read
-     * @param password the password of the user that is to be read
-     * 
-     * @return a web user
-     *
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated there are no more web users, use a user without any role!
-     */
-    public CmsUser readWebUser(String username, String password) throws CmsException {
 
         return m_securityManager.readUser(m_context, username, password);
     }
@@ -3904,7 +2759,8 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void replaceResource(String resourcename, int type, byte[] content, List properties) throws CmsException {
+    public void replaceResource(String resourcename, int type, byte[] content, List<CmsProperty> properties)
+    throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).replaceResource(this, m_securityManager, resource, type, content, properties);
@@ -3922,25 +2778,6 @@ public final class CmsObject {
     public void restoreDeletedResource(CmsUUID structureId) throws CmsException {
 
         m_securityManager.restoreDeletedResource(m_context, structureId);
-    }
-
-    /**
-     * Restores a file in the current project with a version from the backup archive.<p>
-     * 
-     * @param resourcename the name of the resource to restore from the archive (full current site relative path)
-     * @param publishTag the desired tag ID of the resource
-     *
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use {@link #restoreResourceVersion(CmsUUID, int)} instead,
-     *             but notice that the <code>publishTag != version</code>
-     *             and there is no possibility to access to an historical entry with just the filename.
-     */
-    public void restoreResourceBackup(String resourcename, int publishTag) throws CmsException {
-
-        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        I_CmsHistoryResource history = readResourceByPublishTag(resource.getStructureId(), publishTag);
-        restoreResourceVersion(resource.getStructureId(), history.getVersion());
     }
 
     /**
@@ -4079,62 +2916,6 @@ public final class CmsObject {
     }
 
     /**
-     * Changes the time stamp information of a resource.<p>
-     * 
-     * This method is used to set the "last modified" date
-     * of a resource, the "release" date of a resource, 
-     * and also the "expire" date of a resource.<p>
-     * 
-     * @param resourcename the name of the resource to change (full current site relative path)
-     * @param dateLastModified time stamp the new time stamp of the changed resource
-     * @param dateReleased the new release date of the changed resource, 
-     *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
-     * @param dateExpired the new expire date of the changed resource. 
-     *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
-     * @param recursive if this operation is to be applied recursively to all resources in a folder
-     * 
-     * @deprecated use <code>{@link #setDateLastModified(String, long, boolean)}</code>, 
-     *                 <code>{@link #setDateReleased(String, long, boolean)}</code> or
-     *                 <code>{@link #setDateExpired(String, long, boolean)}</code> instead
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public void touch(String resourcename, long dateLastModified, long dateReleased, long dateExpired, boolean recursive)
-    throws CmsException {
-
-        if (dateReleased != CmsResource.TOUCH_DATE_UNCHANGED) {
-            setDateReleased(resourcename, dateReleased, recursive);
-        }
-        if (dateExpired != CmsResource.TOUCH_DATE_UNCHANGED) {
-            setDateExpired(resourcename, dateExpired, recursive);
-        }
-        if (dateLastModified != CmsResource.TOUCH_DATE_UNCHANGED) {
-            setDateLastModified(resourcename, dateLastModified, recursive);
-        }
-    }
-
-    /**
-     * Undeletes a resource (this is the same operation as "undo changes").<p>
-     * 
-     * Only resources that have already been published once can be undeleted,
-     * if a "new" resource is deleted it can not be undeleted.<p>
-     * 
-     * Internally, this method undoes all changes to a resource by restoring 
-     * the version from the online project, that is to the state of last 
-     * publishing.<p>
-     * 
-     * @param resourcename the name of the resource to undelete (full path)
-     *
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use {@link #undeleteResource(String,boolean)} methods instead
-     */
-    public void undeleteResource(String resourcename) throws CmsException {
-
-        undeleteResource(resourcename, false);
-    }
-
-    /**
      * Undeletes a resource.<p>
      * 
      * Only resources that have already been published once can be undeleted,
@@ -4151,26 +2932,6 @@ public final class CmsObject {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
         getResourceType(resource).undelete(this, m_securityManager, resource, recursive);
-    }
-
-    /**
-     * Undoes all changes to a resource by restoring the version from the 
-     * online project to the current offline project.<p>
-     * 
-     * @param resourcename the name of the resource to undo the changes for (full path)
-     * @param recursive if this operation is to be applied recursively to all resources in a folder
-     *
-     * @throws CmsException if something goes wrong
-     * 
-     * @deprecated use {@link #undoChanges(String,CmsResource.CmsResourceUndoMode)} methods instead
-     */
-    public void undoChanges(String resourcename, boolean recursive) throws CmsException {
-
-        if (recursive) {
-            undoChanges(resourcename, CmsResource.UNDO_CONTENT_RECURSIVE);
-        } else {
-            undoChanges(resourcename, CmsResource.UNDO_CONTENT);
-        }
     }
 
     /**
@@ -4203,20 +2964,6 @@ public final class CmsObject {
     public void unlockProject(CmsUUID id) throws CmsException {
 
         m_securityManager.unlockProject(m_context, id);
-    }
-
-    /**
-     * Unlocks all resources of a project.
-     *
-     * @param id the id of the project to be unlocked
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use {@link #unlockProject(CmsUUID)} instead
-     */
-    public void unlockProject(int id) throws CmsException {
-
-        unlockProject(m_securityManager.getProjectId(m_context, id));
     }
 
     /**
@@ -4286,21 +3033,6 @@ public final class CmsObject {
     }
 
     /**
-     * Writes a file-header.<p>
-     *
-     * @param file the file to write
-     *
-     * @throws CmsException if resource type is set to folder, or
-     *                      if the user has not the rights to write the file header.
-     *                      
-     * @deprecated use {@link #writeResource(CmsResource)} instead
-     */
-    public void writeFileHeader(CmsFile file) throws CmsException {
-
-        writeResource(file);
-    }
-
-    /**
      * Writes an already existing group.<p>
      *
      * The group has to be a valid OpenCms group.<br>
@@ -4347,81 +3079,6 @@ public final class CmsObject {
     }
 
     /**
-     * Writes a couple of properties as structure values for a file or folder.
-     *
-     * @param resourceName the resource-name of which the Property has to be set
-     * @param properties a map with property-definitions and property values as Strings
-     * 
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use <code>{@link #writePropertyObjects(String, List)}</code> instead.
-     */
-    public void writeProperties(String resourceName, Map properties) throws CmsException {
-
-        writePropertyObjects(resourceName, CmsProperty.toList(properties));
-    }
-
-    /**
-     * Writes a couple of Properties for a file or folder.
-     *
-     * @param name the resource-name of which the Property has to be set
-     * @param properties a map with property-definitions and property values as Strings
-     * @param addDefinition flag to indicate if unknown definitions should be added
-     * 
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use <code>{@link #writePropertyObjects(String, List)}</code> instead.
-     */
-    public void writeProperties(String name, Map properties, boolean addDefinition) throws CmsException {
-
-        writePropertyObjects(name, CmsProperty.setAutoCreatePropertyDefinitions(
-            CmsProperty.toList(properties),
-            addDefinition));
-    }
-
-    /**
-     * Writes a property as a structure value for a file or folder.<p>
-     *
-     * @param resourceName the resource-name for which the property will be set
-     * @param key the property definition name
-     * @param value the value for the property to be set
-     * 
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use <code>{@link #writePropertyObject(String, CmsProperty)}</code> instead.
-     */
-    public void writeProperty(String resourceName, String key, String value) throws CmsException {
-
-        CmsProperty property = new CmsProperty();
-        property.setName(key);
-        property.setStructureValue(value);
-
-        writePropertyObject(resourceName, property);
-    }
-
-    /**
-     * Writes a property for a file or folder.<p>
-     *
-     * @param resourcename the resource-name for which the property will be set
-     * @param key the property-definition name
-     * @param value the value for the property to be set
-     * @param addDefinition flag to indicate if unknown definitions should be added
-     * 
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated use <code>{@link #writePropertyObject(String, CmsProperty)}</code> instead.
-     */
-    public void writeProperty(String resourcename, String key, String value, boolean addDefinition) throws CmsException {
-
-        CmsProperty property = new CmsProperty();
-        property.setName(key);
-        property.setStructureValue(value);
-        property.setAutoCreatePropertyDefinition(addDefinition);
-
-        writePropertyObject(resourcename, property);
-    }
-
-    /**
      * Writes a property for a specified resource.<p>
      * 
      * @param resourcename the name of resource with complete path
@@ -4447,7 +3104,7 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public void writePropertyObjects(String resourcename, List properties) throws CmsException {
+    public void writePropertyObjects(String resourcename, List<CmsProperty> properties) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         getResourceType(resource).writePropertyObjects(this, m_securityManager, resource, properties);
@@ -4505,27 +3162,6 @@ public final class CmsObject {
      * @throws CmsException if operation was not successful
      */
     public void writeUser(CmsUser user) throws CmsException {
-
-        m_securityManager.writeUser(m_context, user);
-    }
-
-    /**
-     * Updates the user information of a web user.<br>
-     * 
-     * Only a web user can be updated this way.<p>
-     *
-     * The user id has to be a valid OpenCms user id.<br>
-     * 
-     * The user with the given id will be completely overridden
-     * by the given data.<p>
-     *
-     * @param user the user to be written
-     *
-     * @throws CmsException if operation was not successful
-     * 
-     * @deprecated there are no more web users, use a user without any role!
-     */
-    public void writeWebUser(CmsUser user) throws CmsException {
 
         m_securityManager.writeUser(m_context, user);
     }

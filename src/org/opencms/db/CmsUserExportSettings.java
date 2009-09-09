@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserExportSettings.java,v $
- * Date   : $Date: 2009/06/04 14:29:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/09 14:26:32 $
+ * Version: $Revision: 1.5.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,24 +39,24 @@ import java.util.List;
  * 
  * @author Raphael Schnuck
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.5.2.1 $
  * 
  * @since 6.5.6
  */
 public class CmsUserExportSettings {
 
     /** The list of export values. */
-    private List m_columns;
+    private List<String> m_columns;
 
     /** The separator used in export file. */
     private String m_separator;
 
     /**
-     *Public constructor.<p>
+     * Public constructor.<p>
      */
     public CmsUserExportSettings() {
 
-        m_columns = new ArrayList();
+        m_columns = new ArrayList<String>();
     }
 
     /**
@@ -65,7 +65,7 @@ public class CmsUserExportSettings {
      * @param separator the seperator to use during import
      * @param columns the columns to export
      */
-    public CmsUserExportSettings(String separator, List columns) {
+    public CmsUserExportSettings(String separator, List<String> columns) {
 
         m_separator = separator;
         m_columns = columns;
@@ -86,7 +86,7 @@ public class CmsUserExportSettings {
      *
      * @return the list of export columns
      */
-    public List getColumns() {
+    public List<String> getColumns() {
 
         return m_columns;
     }
@@ -106,7 +106,7 @@ public class CmsUserExportSettings {
      *
      * @param columns the export columns to set
      */
-    public void setColumns(List columns) {
+    public void setColumns(List<String> columns) {
 
         m_columns = columns;
     }

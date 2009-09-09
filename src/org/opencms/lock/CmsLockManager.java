@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2009/09/09 14:26:36 $
+ * Version: $Revision: 1.50.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.50.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -237,7 +237,7 @@ public final class CmsLockManager {
      * 
      * @throws CmsException if something goes wrong 
      */
-    public List getLocks(CmsDbContext dbc, String resourceName, CmsLockFilter filter) throws CmsException {
+    public List<CmsLock> getLocks(CmsDbContext dbc, String resourceName, CmsLockFilter filter) throws CmsException {
 
         List locks = new ArrayList();
         Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();

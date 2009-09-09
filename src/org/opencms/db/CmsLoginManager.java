@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsLoginManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/09/09 14:26:33 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,6 +41,7 @@ import org.opencms.security.Messages;
 
 import java.util.Date;
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Provides functions used to check the validity of a user login.<p>
@@ -56,7 +57,7 @@ import java.util.Hashtable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.11.2.1 $
  * 
  * @since 6.0.0
  */
@@ -153,7 +154,7 @@ public class CmsLoginManager {
     protected int m_maxBadAttempts;
 
     /** The storage for the bad login attempts. */
-    protected Hashtable m_storage;
+    protected Map<String, CmsUserData> m_storage;
 
     /** The login message, setting this may also disable logins for non-Admin users. */
     private CmsLoginMessage m_loginMessage;
@@ -171,7 +172,7 @@ public class CmsLoginManager {
             // otherwise the invalid login storage is sisabled
             m_disableMinutes = disableMinutes;
             m_disableMillis = disableMinutes * 60 * 1000;
-            m_storage = new Hashtable();
+            m_storage = new Hashtable<String, CmsUserData>();
         }
     }
 
@@ -211,7 +212,7 @@ public class CmsLoginManager {
 
         String key = createStorageKey(userName, remoteAddress);
         // look up the user in the storage
-        CmsUserData userData = (CmsUserData)m_storage.get(key);
+        CmsUserData userData = m_storage.get(key);
         if ((userData != null) && (userData.isDisabled())) {
             // threshold of invalid logins is reached
             throw new CmsUserDisabledException(Messages.get().container(
@@ -323,7 +324,7 @@ public class CmsLoginManager {
 
         String key = createStorageKey(userName, remoteAddress);
         // look up the user in the storage
-        CmsUserData userData = (CmsUserData)m_storage.get(key);
+        CmsUserData userData = m_storage.get(key);
         if (userData != null) {
             // user data already contained in storage
             userData.increaseInvalidLoginCount();

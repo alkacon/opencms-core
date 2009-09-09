@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2009/06/04 14:29:17 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2009/09/09 14:26:33 $
+ * Version: $Revision: 1.51.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -60,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.51.2.1 $
  * 
  * @since 6.0.0
  */
@@ -177,7 +177,8 @@ public final class CmsDbPool {
      * @return String the URL to access the created DBCP pool
      * @throws Exception if the pool could not be initialized
      */
-    public static PoolingDriver createDriverManagerConnectionPool(Map configuration, String key) throws Exception {
+    public static PoolingDriver createDriverManagerConnectionPool(Map<String, Object> configuration, String key)
+    throws Exception {
 
         ExtendedProperties config;
         if (configuration instanceof ExtendedProperties) {
@@ -256,8 +257,10 @@ public final class CmsDbPool {
         byte whenStmtsExhaustedAction = GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW;
         if (whenStmtsExhaustedActionValue != null) {
             whenStmtsExhaustedActionValue = whenStmtsExhaustedActionValue.trim();
-            whenStmtsExhaustedAction = ("block".equalsIgnoreCase(whenStmtsExhaustedActionValue)) ? GenericKeyedObjectPool.WHEN_EXHAUSTED_BLOCK
-            : ("fail".equalsIgnoreCase(whenStmtsExhaustedActionValue)) ? GenericKeyedObjectPool.WHEN_EXHAUSTED_FAIL
+            whenStmtsExhaustedAction = ("block".equalsIgnoreCase(whenStmtsExhaustedActionValue))
+            ? GenericKeyedObjectPool.WHEN_EXHAUSTED_BLOCK
+            : ("fail".equalsIgnoreCase(whenStmtsExhaustedActionValue))
+            ? GenericKeyedObjectPool.WHEN_EXHAUSTED_FAIL
             : GenericKeyedObjectPool.WHEN_EXHAUSTED_GROW;
         }
 
@@ -352,7 +355,7 @@ public final class CmsDbPool {
                     con.close();
                 }
             }
-        } while (!connect && connectionTests < connectionAttempts);
+        } while (!connect && (connectionTests < connectionAttempts));
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_JDBC_POOL_2, poolUrl, jdbcUrl));
@@ -379,9 +382,9 @@ public final class CmsDbPool {
      * 
      * @return a list of database pool names
      */
-    public static List getDbPoolUrls(ExtendedProperties configuration) {
+    public static List<String> getDbPoolUrls(ExtendedProperties configuration) {
 
-        List dbPoolNames = new ArrayList();
+        List<String> dbPoolNames = new ArrayList<String>();
         String[] driverPoolNames = configuration.getStringArray(CmsDriverManager.CONFIGURATION_DB + ".pools");
 
         for (int i = 0; i < driverPoolNames.length; i++) {

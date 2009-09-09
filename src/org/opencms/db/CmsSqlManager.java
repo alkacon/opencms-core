@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSqlManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:18 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2009/09/09 14:26:32 $
+ * Version: $Revision: 1.14.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.14.2.1 $
  * 
  * @since 6.0.0
  */
@@ -109,7 +109,7 @@ public class CmsSqlManager {
      * 
      * @return a list of database connection pool names
      */
-    public List getDbPoolUrls() {
+    public List<String> getDbPoolUrls() {
 
         return CmsDbPool.getDbPoolUrls(m_driverManager.getPropertyConfiguration());
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsHistoryDriver.java,v $
- * Date   : $Date: 2009/06/04 14:29:40 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2009/09/09 14:26:35 $
+ * Version: $Revision: 1.18.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz  
  * @author Michael Moossen
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.18.2.1 $
  * 
  * @since 6.9.1
  */
@@ -308,7 +308,6 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
         }
     }
 
-   
     /**
      * @see org.opencms.db.I_CmsHistoryDriver#getAllDeletedEntries(org.opencms.db.CmsDbContext)
      */
@@ -344,6 +343,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
      * @see org.opencms.db.I_CmsHistoryDriver#getAllNotDeletedEntries(org.opencms.db.CmsDbContext)
      */
     public List getAllNotDeletedEntries(CmsDbContext dbc) throws CmsDataAccessException {
+
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet res = null;
@@ -1010,7 +1010,7 @@ public class CmsHistoryDriver implements I_CmsDriver, I_CmsHistoryDriver {
     /**
      * @see org.opencms.db.I_CmsHistoryDriver#readProjectResources(org.opencms.db.CmsDbContext, int)
      */
-    public List readProjectResources(CmsDbContext dbc, int publishTag) throws CmsDataAccessException {
+    public List<String> readProjectResources(CmsDbContext dbc, int publishTag) throws CmsDataAccessException {
 
         PreparedStatement stmt = null;
         Connection conn = null;

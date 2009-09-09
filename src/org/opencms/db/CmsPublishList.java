@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2009/06/04 14:29:17 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/09/09 14:26:34 $
+ * Version: $Revision: 1.31.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.I_CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.31.2.1 $
  * 
  * @since 6.0.0
  * 
@@ -88,17 +89,29 @@ public class CmsPublishList implements Externalizable {
     /** Length of a serialized uuid. */
     private static final int UUID_LENGTH = CmsUUID.getNullUUID().toByteArray().length;
 
-    /** The list of deleted Cms folder resources to be published.<p> */
-    private List m_deletedFolderList;
+    /** The list of deleted folder resources to be published.<p> */
+    private List<CmsResource> m_deletedFolderList;
+
+    /** The list of deleted folder UUIDs to be published for later retrieval.<p> */
+    private List<CmsUUID> m_deletedFolderUUIDs;
 
     /** The list of direct publish resources. */
-    private List m_directPublishResources;
+    private List<CmsResource> m_directPublishResources;
 
-    /** The list of new/changed/deleted Cms file resources to be published.<p> */
-    private List m_fileList;
+    /** The list of direct publish resource UUIDs to be published for later retrieval.<p> */
+    private List<CmsUUID> m_directPublishResourceUUIDs;
 
-    /** The list of new/changed Cms folder resources to be published.<p> */
-    private List m_folderList;
+    /** The list of new/changed/deleted file resources to be published.<p> */
+    private List<CmsResource> m_fileList;
+
+    /** The list of new/changed/deleted file resource UUIDs to be published for later retrieval.<p> */
+    private List<CmsUUID> m_fileUUIDs;
+
+    /** The list of new/changed folder resources to be published.<p> */
+    private List<CmsResource> m_folderList;
+
+    /** The list of new/changed folder resource UUIDs to be published for later retrieval.<p> */
+    private List<CmsUUID> m_folderUUIDs;
 
     /** Flag to indicate if the list needs to be revived. */
     private boolean m_needsRevive;
@@ -150,7 +163,7 @@ public class CmsPublishList implements Externalizable {
      * @param directPublishResources a list of <code>{@link CmsResource}</code> instances to be published directly
      * @param publishSiblings indicates if all siblings of the selected resources should be published
      */
-    public CmsPublishList(List directPublishResources, boolean publishSiblings) {
+    public CmsPublishList(List<CmsResource> directPublishResources, boolean publishSiblings) {
 
         this(null, directPublishResources, publishSiblings, true);
     }
@@ -162,7 +175,7 @@ public class CmsPublishList implements Externalizable {
      * @param publishSiblings indicates if all siblings of the selected resources should be published
      * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
      */
-    public CmsPublishList(List directPublishResources, boolean publishSiblings, boolean publishSubResources) {
+    public CmsPublishList(List<CmsResource> directPublishResources, boolean publishSiblings, boolean publishSubResources) {
 
         this(null, directPublishResources, publishSiblings, publishSubResources);
     }
@@ -177,13 +190,13 @@ public class CmsPublishList implements Externalizable {
      */
     private CmsPublishList(
         CmsProject project,
-        List directPublishResources,
+        List<CmsResource> directPublishResources,
         boolean publishSiblings,
         boolean publishSubResources) {
 
-        m_fileList = new ArrayList();
-        m_folderList = new ArrayList();
-        m_deletedFolderList = new ArrayList();
+        m_fileList = new ArrayList<CmsResource>();
+        m_folderList = new ArrayList<CmsResource>();
+        m_deletedFolderList = new ArrayList<CmsResource>();
         m_publishHistoryId = new CmsUUID();
         m_publishSiblings = publishSiblings;
         m_publishSubResources = publishSubResources;
@@ -200,14 +213,14 @@ public class CmsPublishList implements Externalizable {
      * 
      * @return a list of {@link CmsResource} objects
      */
-    public List getAllResources() {
+    public List<CmsResource> getAllResources() {
 
-        List all = new ArrayList();
+        List<CmsResource> all = new ArrayList<CmsResource>();
         all.addAll(m_folderList);
         all.addAll(m_fileList);
         all.addAll(m_deletedFolderList);
 
-        Collections.sort(all, CmsResource.COMPARE_ROOT_PATH);
+        Collections.sort(all, I_CmsResource.COMPARE_ROOT_PATH);
         return Collections.unmodifiableList(all);
     }
 
@@ -216,7 +229,7 @@ public class CmsPublishList implements Externalizable {
      * 
      * @return a list of folder resources with the desired state
      */
-    public List getDeletedFolderList() {
+    public List<CmsResource> getDeletedFolderList() {
 
         if (m_needsRevive) {
             return null;
@@ -233,7 +246,7 @@ public class CmsPublishList implements Externalizable {
      * 
      * @return the list of resources that should be published for a "direct" publish operation, or <code>null</code>
      */
-    public List getDirectPublishResources() {
+    public List<CmsResource> getDirectPublishResources() {
 
         if (m_needsRevive) {
             return null;
@@ -247,7 +260,7 @@ public class CmsPublishList implements Externalizable {
      * 
      * @return the list with the Cms file resources in this publish list
      */
-    public List getFileList() {
+    public List<CmsResource> getFileList() {
 
         if (m_needsRevive) {
             return null;
@@ -261,7 +274,7 @@ public class CmsPublishList implements Externalizable {
      * 
      * @return the list with the new/changed Cms file resources in this publish list
      */
-    public List getFolderList() {
+    public List<CmsResource> getFolderList() {
 
         if (m_needsRevive) {
             return null;
@@ -337,13 +350,13 @@ public class CmsPublishList implements Externalizable {
         m_publishSiblings = (in.readInt() != 0);
         m_publishSubResources = (in.readInt() != 0);
         // read the list of direct published resources
-        m_directPublishResources = internalReadUUIDList(in);
+        m_directPublishResourceUUIDs = internalReadUUIDList(in);
         // read the list of published files
-        m_fileList = internalReadUUIDList(in);
+        m_fileUUIDs = internalReadUUIDList(in);
         // read the list of published folders
-        m_folderList = internalReadUUIDList(in);
+        m_folderUUIDs = internalReadUUIDList(in);
         // read the list of deleted folders
-        m_deletedFolderList = internalReadUUIDList(in);
+        m_deletedFolderUUIDs = internalReadUUIDList(in);
         // set revive flag to indicate that resource lists must be revived
         m_needsRevive = true;
     }
@@ -357,16 +370,16 @@ public class CmsPublishList implements Externalizable {
 
         if (m_needsRevive) {
             if (m_directPublishResources != null) {
-                m_directPublishResources = internalReadResourceList(cms, m_directPublishResources);
+                m_directPublishResources = internalReadResourceList(cms, m_directPublishResourceUUIDs);
             }
             if (m_fileList != null) {
-                m_fileList = internalReadResourceList(cms, m_fileList);
+                m_fileList = internalReadResourceList(cms, m_fileUUIDs);
             }
             if (m_folderList != null) {
-                m_folderList = internalReadResourceList(cms, m_folderList);
+                m_folderList = internalReadResourceList(cms, m_folderUUIDs);
             }
             if (m_deletedFolderList != null) {
-                m_deletedFolderList = internalReadResourceList(cms, m_deletedFolderList);
+                m_deletedFolderList = internalReadResourceList(cms, m_deletedFolderUUIDs);
             }
             m_needsRevive = false;
         }
@@ -389,6 +402,7 @@ public class CmsPublishList implements Externalizable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer result = new StringBuffer();
@@ -421,8 +435,8 @@ public class CmsPublishList implements Externalizable {
         // write the list of direct publish resources by writing the uuid of each resource
         if (m_directPublishResources != null) {
             out.writeInt(m_directPublishResources.size());
-            for (Iterator i = m_directPublishResources.iterator(); i.hasNext();) {
-                out.write(((CmsResource)i.next()).getStructureId().toByteArray());
+            for (Iterator<CmsResource> i = m_directPublishResources.iterator(); i.hasNext();) {
+                out.write((i.next()).getStructureId().toByteArray());
             }
         } else {
             out.writeInt(NIL);
@@ -430,8 +444,8 @@ public class CmsPublishList implements Externalizable {
         // write the list of published files by writing the uuid of each resource
         if (m_fileList != null) {
             out.writeInt(m_fileList.size());
-            for (Iterator i = m_fileList.iterator(); i.hasNext();) {
-                out.write(((CmsResource)i.next()).getStructureId().toByteArray());
+            for (Iterator<CmsResource> i = m_fileList.iterator(); i.hasNext();) {
+                out.write((i.next()).getStructureId().toByteArray());
             }
         } else {
             out.writeInt(NIL);
@@ -439,8 +453,8 @@ public class CmsPublishList implements Externalizable {
         // write the list of published folders by writing the uuid of each resource
         if (m_folderList != null) {
             out.writeInt(m_folderList.size());
-            for (Iterator i = m_folderList.iterator(); i.hasNext();) {
-                out.write(((CmsResource)i.next()).getStructureId().toByteArray());
+            for (Iterator<CmsResource> i = m_folderList.iterator(); i.hasNext();) {
+                out.write((i.next()).getStructureId().toByteArray());
             }
         } else {
             out.writeInt(NIL);
@@ -448,8 +462,8 @@ public class CmsPublishList implements Externalizable {
         // write the list of deleted folders by writing the uuid of each resource
         if (m_deletedFolderList != null) {
             out.writeInt(m_deletedFolderList.size());
-            for (Iterator i = m_deletedFolderList.iterator(); i.hasNext();) {
-                out.write(((CmsResource)i.next()).getStructureId().toByteArray());
+            for (Iterator<CmsResource> i = m_deletedFolderList.iterator(); i.hasNext();) {
+                out.write((i.next()).getStructureId().toByteArray());
             }
         } else {
             out.writeInt(NIL);
@@ -505,18 +519,19 @@ public class CmsPublishList implements Externalizable {
      * 
      * @throws IllegalArgumentException if one of the resources is unchanged
      */
-    protected void addAll(Collection resources, boolean check) throws IllegalArgumentException {
+    protected void addAll(Collection<CmsResource> resources, boolean check) throws IllegalArgumentException {
 
         // it is essential that this method is only visible within the db package!
-        Iterator i = resources.iterator();
+        Iterator<CmsResource> i = resources.iterator();
         while (i.hasNext()) {
-            add((CmsResource)i.next(), check);
+            add(i.next(), check);
         }
     }
 
     /**
      * @see java.lang.Object#finalize()
      */
+    @Override
     protected void finalize() throws Throwable {
 
         try {
@@ -543,17 +558,17 @@ public class CmsPublishList implements Externalizable {
 
         if (m_folderList != null) {
             // ensure folders are sorted starting with parent folders
-            Collections.sort(m_folderList, CmsResource.COMPARE_ROOT_PATH);
+            Collections.sort(m_folderList, I_CmsResource.COMPARE_ROOT_PATH);
         }
 
         if (m_fileList != null) {
             // ensure files are sorted starting with files in parent folders
-            Collections.sort(m_fileList, CmsResource.COMPARE_ROOT_PATH);
+            Collections.sort(m_fileList, I_CmsResource.COMPARE_ROOT_PATH);
         }
 
         if (m_deletedFolderList != null) {
             // ensure deleted folders are sorted starting with child folders
-            Collections.sort(m_deletedFolderList, CmsResource.COMPARE_ROOT_PATH);
+            Collections.sort(m_deletedFolderList, I_CmsResource.COMPARE_ROOT_PATH);
             Collections.reverse(m_deletedFolderList);
         }
     }
@@ -577,18 +592,18 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
-     * Builds a list of <code>CmsResource</code> instances from a list of resource structure ids.<p>
+     * Builds a list of <code>CmsResource</code> instances from a list of resource structure IDs.<p>
      * 
      * @param cms a cms object
-     * @param uuidList the list of structure ids
+     * @param uuidList the list of structure IDs
      * @return a list of <code>CmsResource</code> instances
      */
-    private List internalReadResourceList(CmsObject cms, List uuidList) {
+    private List<CmsResource> internalReadResourceList(CmsObject cms, List<CmsUUID> uuidList) {
 
-        List resList = new ArrayList(uuidList.size());
-        for (Iterator i = uuidList.iterator(); i.hasNext();) {
+        List<CmsResource> resList = new ArrayList<CmsResource>(uuidList.size());
+        for (Iterator<CmsUUID> i = uuidList.iterator(); i.hasNext();) {
             try {
-                CmsResource res = cms.readResource((CmsUUID)i.next(), CmsResourceFilter.ALL);
+                CmsResource res = cms.readResource(i.next(), CmsResourceFilter.ALL);
                 resList.add(res);
             } catch (CmsException exc) {
                 LOG.error(exc);
@@ -613,20 +628,20 @@ public class CmsPublishList implements Externalizable {
     }
 
     /**
-     * Reads a sequence of UUIDs from an objetc input and builds a list of <code>CmsResource</code> instances from it.<p>
+     * Reads a sequence of UUIDs from an object input and builds a list of <code>CmsResource</code> instances from it.<p>
      * 
      * @param in the object input
      * @return a list of <code>{@link CmsResource}</code> instances
      * 
      * @throws IOException if something goes wrong 
      */
-    private List internalReadUUIDList(ObjectInput in) throws IOException {
+    private List<CmsUUID> internalReadUUIDList(ObjectInput in) throws IOException {
 
-        List result = null;
+        List<CmsUUID> result = null;
 
         int i = in.readInt();
         if (i >= 0) {
-            result = new ArrayList();
+            result = new ArrayList<CmsUUID>();
             while (i > 0) {
                 result.add(internalReadUUID(in));
                 i--;

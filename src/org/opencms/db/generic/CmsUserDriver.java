@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2009/07/08 11:11:36 $
- * Version: $Revision: 1.129 $
+ * Date   : $Date: 2009/09/09 14:26:36 $
+ * Version: $Revision: 1.129.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -101,7 +101,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.129 $
+ * @version $Revision: 1.129.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -455,7 +455,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         long lastlogin,
         int flags,
         long dateCreated,
-        Map additionalInfos) throws CmsDataAccessException {
+        Map<String, Object> additionalInfos) throws CmsDataAccessException {
 
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -2058,7 +2058,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         if (parentOu != null) {
             parentGroup = parentOu + OpenCms.getDefaultUsers().getGroupUsers();
         }
-        String groupDescription = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouDescription) ? CmsMacroResolver.localizedKeyMacro(
+        String groupDescription = (CmsStringUtil.isNotEmptyOrWhitespaceOnly(ouDescription)
+        ? CmsMacroResolver.localizedKeyMacro(
             Messages.GUI_DEFAULTGROUP_OU_USERS_DESCRIPTION_1,
             new String[] {ouDescription})
         : CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTGROUP_ROOT_USERS_DESCRIPTION_0, null));
@@ -2111,9 +2112,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             0,
             I_CmsPrincipal.FLAG_ENABLED,
             0,
-            Collections.singletonMap(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, CmsMacroResolver.localizedKeyMacro(
-                Messages.GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0,
-                null)));
+            Collections.singletonMap(
+                CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
+                (Object)CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_GUEST_DESCRIPTION_0, null)));
         createUserInGroup(dbc, guest.getId(), guests.getId());
 
         CmsUser admin = createUser(
@@ -2127,9 +2128,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             0,
             I_CmsPrincipal.FLAG_ENABLED,
             0,
-            Collections.singletonMap(CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION, CmsMacroResolver.localizedKeyMacro(
-                Messages.GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0,
-                null)));
+            Collections.singletonMap(
+                CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
+                (Object)CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_ADMIN_DESCRIPTION_0, null)));
         createUserInGroup(dbc, admin.getId(), CmsUUID.getConstantUUID(CmsRole.ROOT_ADMIN.getGroupName()));
         createUserInGroup(dbc, admin.getId(), CmsUUID.getConstantUUID(administratorsGroup));
 
@@ -2149,7 +2150,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 0,
                 Collections.singletonMap(
                     CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
-                    CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_EXPORT_DESCRIPTION_0, null)));
+                    (Object)CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_EXPORT_DESCRIPTION_0, null)));
             createUserInGroup(dbc, export.getId(), guests.getId());
         }
 
@@ -2170,7 +2171,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 0,
                 Collections.singletonMap(
                     CmsUserSettings.ADDITIONAL_INFO_DESCRIPTION,
-                    CmsMacroResolver.localizedKeyMacro(Messages.GUI_DEFAULTUSER_ROOT_DELETED_DESCRIPTION_0, null)));
+                    (Object)CmsMacroResolver.localizedKeyMacro(
+                        Messages.GUI_DEFAULTUSER_ROOT_DELETED_DESCRIPTION_0,
+                        null)));
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -2225,7 +2228,8 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         int flags = (resource.getFlags() & ~CmsResource.FLAG_INTERNAL); // remove the internal flag
         String projectId = m_driverManager.readPropertyObject(dbc, resource, ORGUNIT_PROPERTY_PROJECTID, false).getStructureValue();
         // create the object
-        return new CmsOrganizationalUnit(resource.getStructureId(), name, description, flags, (projectId == null ? null
+        return new CmsOrganizationalUnit(resource.getStructureId(), name, description, flags, (projectId == null
+        ? null
         : new CmsUUID(projectId)));
     }
 
@@ -2587,18 +2591,18 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    protected void internalWriteUserInfos(CmsDbContext dbc, CmsUUID userId, Map additionalInfo)
+    protected void internalWriteUserInfos(CmsDbContext dbc, CmsUUID userId, Map<String, Object> additionalInfo)
     throws CmsDataAccessException {
 
         deleteUserInfos(dbc, userId);
         if (additionalInfo == null) {
             return;
         }
-        Iterator itEntries = additionalInfo.entrySet().iterator();
+        Iterator<Map.Entry<String, Object>> itEntries = additionalInfo.entrySet().iterator();
         while (itEntries.hasNext()) {
-            Map.Entry entry = (Map.Entry)itEntries.next();
+            Map.Entry<String, Object> entry = itEntries.next();
             if ((entry.getKey() != null) && (entry.getValue() != null)) {
-                writeUserInfo(dbc, userId, (String)entry.getKey(), entry.getValue());
+                writeUserInfo(dbc, userId, entry.getKey(), entry.getValue());
             }
         }
     }
