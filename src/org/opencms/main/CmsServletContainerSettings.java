@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsServletContainerSettings.java,v $
- * Date   : $Date: 2009/08/27 12:45:26 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2009/09/09 10:15:33 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.A_CmsModeStringEnumeration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 7.0.5 
  */
@@ -144,7 +144,7 @@ public class CmsServletContainerSettings {
      */
     private static final String REQUEST_ERROR_PAGE_ATTRIBUTE_WEBLOGIC = "weblogic.servlet.errorPage";
 
-    /** Constant name to identify Resin servers. */
+    /** Constant name to identify GlassFish servers. */
     // 2.1: "Sun GlassFish Enterprise Server v2.1"
     private static final String SERVLET_CONTAINER_GLASSFISH = "GlassFish";
 
