@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2009/09/08 16:41:03 $
- * Version: $Revision: 1.1119.2.3 $
+ * Date   : $Date: 2009/09/09 10:41:30 $
+ * Version: $Revision: 1.1119.2.4 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Management System
@@ -30,6 +30,8 @@ OpenCms 7.5.1 - month day, 2009
 ! Added option to hide "Advanced" button of customized property dialog depending on the current users groups
 ! Added search dialog to all galleries
 ! Added functionality to publish resources at specified date (publish schedule)
+! Added support for servlet container Sun GlassFish Enterprise Server v2.1
+! Added support for servlet container GlassFish/v3 (preview release, builds later than 25-Aug-2009)
 ! Added feature #1636: SMPT ports are now configurable 
 * Fixed issue #1743: Cached users for groups are not invalidated when writing user
 * Fixed issue #1739: Deleted or moved project resources cannot be removed from project

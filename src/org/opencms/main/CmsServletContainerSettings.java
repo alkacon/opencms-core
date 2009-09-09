@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsServletContainerSettings.java,v $
- * Date   : $Date: 2009/06/04 14:29:37 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2009/09/09 10:41:31 $
+ * Version: $Revision: 1.4.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -38,7 +38,7 @@ import org.opencms.util.A_CmsModeStringEnumeration;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.4.2.1 $ 
  * 
  * @since 7.0.5 
  */
@@ -49,6 +49,9 @@ public class CmsServletContainerSettings {
      */
     public static final class CmsServletContainerCfgMode extends A_CmsModeStringEnumeration {
 
+        /** Version id required for safe serialization. */
+        private static final long serialVersionUID = -8191582624108081577L;
+
         /** Auto configuration mode. */
         protected static final CmsServletContainerCfgMode MODE_AUTO = new CmsServletContainerCfgMode("auto");
 
@@ -57,9 +60,6 @@ public class CmsServletContainerSettings {
 
         /** No set configuration mode. */
         protected static final CmsServletContainerCfgMode MODE_NONE = new CmsServletContainerCfgMode("none");
-
-        /** Version id required for safe serialization. */
-        private static final long serialVersionUID = -8191582624108081577L;
 
         /**
          * Private constructor.<p>
@@ -144,6 +144,10 @@ public class CmsServletContainerSettings {
      */
     private static final String REQUEST_ERROR_PAGE_ATTRIBUTE_WEBLOGIC = "weblogic.servlet.errorPage";
 
+    /** Constant name to identify GlassFish servers. */
+    // 2.1: "Sun GlassFish Enterprise Server v2.1"
+    private static final String SERVLET_CONTAINER_GLASSFISH = "GlassFish";
+
     /** Constant name to identify Resin servers. */
     private static final String SERVLET_CONTAINER_RESIN = "Resin";
 
@@ -198,6 +202,7 @@ public class CmsServletContainerSettings {
         m_servletThrowsException = true;
         m_servletThrowsException &= (m_servletContainerName.indexOf(SERVLET_CONTAINER_RESIN) < 0);
         m_servletThrowsException &= (m_servletContainerName.indexOf(SERVLET_CONTAINER_WEBLOGIC) < 0);
+        m_servletThrowsException &= (m_servletContainerName.indexOf(SERVLET_CONTAINER_GLASSFISH) < 0);
 
         // the flush flex response behavior
         m_preventResponseFlush = false;
@@ -305,11 +310,11 @@ public class CmsServletContainerSettings {
         m_requestErrorPageAttribute = requestErrorPageAttribute;
     }
 
-    /**
-     * Sets if the servlet can throw an exception if initialization fails.<p>
-     *
-     * @param servletThrowsException the flag to set
-     */
+   /**
+    * Sets if the servlet can throw an exception if initialization fails.<p>
+    *
+    * @param servletThrowsException the flag to set
+    */
     public void setServletThrowsException(boolean servletThrowsException) {
 
         m_servletThrowsException = servletThrowsException;
