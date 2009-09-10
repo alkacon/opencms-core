@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2009/08/20 11:07:45 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2009/09/10 14:12:28 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -477,9 +477,9 @@ public class CmsListColumnDefinition {
         // sort order marker
         if (isSorted) {
             if (nextOrder == CmsListOrderEnum.ORDER_ASCENDING) {
-                sortArrow = "<img src='" + CmsWorkplace.getSkinUri() + ICON_UP + "' alt=''>&nbsp;";
-            } else {
                 sortArrow = "<img src='" + CmsWorkplace.getSkinUri() + ICON_DOWN + "' alt=''>&nbsp;";
+            } else {
+                sortArrow = "<img src='" + CmsWorkplace.getSkinUri() + ICON_UP + "' alt=''>&nbsp;";
             }
         }
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
