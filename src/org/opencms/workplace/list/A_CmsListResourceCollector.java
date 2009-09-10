@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListResourceCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:25 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2009/09/10 16:26:22 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -34,6 +34,7 @@ package org.opencms.workplace.list;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
@@ -57,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.1.0 
  */
@@ -125,7 +126,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object arg0) {
+    public int compareTo(I_CmsResourceCollector arg0) {
 
         return 0;
     }
@@ -167,7 +168,7 @@ public abstract class A_CmsListResourceCollector implements I_CmsListResourceCol
      */
     public String getDefaultCollectorName() {
 
-        return (String)getCollectorNames().get(0);
+        return getCollectorNames().get(0);
     }
 
     /**

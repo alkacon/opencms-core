@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2009/07/10 14:33:14 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2009/09/10 16:26:22 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.16.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -88,15 +88,12 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     /**
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(Object obj) {
+    public int compareTo(I_CmsResourceCollector obj) {
 
         if (obj == this) {
             return 0;
         }
-        if (obj instanceof I_CmsResourceCollector) {
-            return getOrder() - ((I_CmsResourceCollector)obj).getOrder();
-        }
-        return 0;
+        return getOrder() - obj.getOrder();
     }
 
     /**

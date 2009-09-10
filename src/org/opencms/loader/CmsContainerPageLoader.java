@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Attic/CmsContainerPageLoader.java,v $
- * Date   : $Date: 2009/08/27 14:46:19 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2009/09/10 16:26:20 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -49,7 +49,7 @@ import javax.servlet.ServletRequest;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 7.6
  */
@@ -106,6 +106,7 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
     /**
      * @see org.opencms.loader.A_CmsXmlDocumentLoader#getTemplatePropertyDefinition()
      */
+    @Override
     protected String getTemplatePropertyDefinition() {
 
         return CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS;
@@ -114,6 +115,7 @@ public class CmsContainerPageLoader extends A_CmsXmlDocumentLoader {
     /**
      * @see org.opencms.loader.A_CmsXmlDocumentLoader#unmarshalXmlDocument(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest)
      */
+    @Override
     protected I_CmsXmlDocument unmarshalXmlDocument(CmsObject cms, CmsResource resource, ServletRequest req)
     throws CmsException {
 

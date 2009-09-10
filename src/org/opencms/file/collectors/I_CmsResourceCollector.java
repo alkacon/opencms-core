@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/I_CmsResourceCollector.java,v $
- * Date   : $Date: 2009/06/04 14:29:24 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/09/10 16:26:22 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -42,18 +42,18 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.13.2.1 $
  * 
  * @since 6.0.0 
  */
-public interface I_CmsResourceCollector extends Comparable {
+public interface I_CmsResourceCollector extends Comparable<I_CmsResourceCollector> {
 
     /**
      * Returns a list of all collector names (Strings) this collector implementation supports.<p>
      * 
      * @return a list of all collector names this collector implementation supports
      */
-    List getCollectorNames();
+    List<String> getCollectorNames();
 
     /**
      * Returns the link that must be executed when a user clicks on the direct edit

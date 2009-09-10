@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2009/09/09 14:26:31 $
- * Version: $Revision: 1.69.2.5 $
+ * Date   : $Date: 2009/09/10 16:26:21 $
+ * Version: $Revision: 1.69.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.69.2.5 $ 
+ * @version $Revision: 1.69.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -187,7 +187,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     private Map m_localeCache;
 
     /** Cache for the resource locks. */
-    private Map m_lockCache;
+    private Map<String, CmsLock> m_lockCache;
 
     /** The number of times the log entry was written. */
     private int m_logCount;
@@ -250,7 +250,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
     private Map m_userCache;
 
     /** Cache for user groups. */
-    private Map m_userGroupsCache;
+    private Map<String, List<CmsGroup>> m_userGroupsCache;
 
     /** Cache for user lists. */
     private Map<String, List<CmsUser>> m_userListCache;
@@ -786,7 +786,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * Caches the given list of users under the given cache key.<p>
      * 
      * @param key the cache key
-     * @param userGroups the list of user groups to cache
+     * @param userList the list of users to cache
      */
     public void cacheUserList(String key, List<CmsUser> userList) {
 
@@ -1105,6 +1105,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public void flushUserGroups() {
 
+        m_userListCache.clear();
         m_userGroupsCache.clear();
     }
 
@@ -1171,9 +1172,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return a list of {@link String} objects
      */
-    public List getAllCachedLockPaths() {
+    public List<String> getAllCachedLockPaths() {
 
-        return new ArrayList(m_lockCache.keySet());
+        return new ArrayList<String>(m_lockCache.keySet());
     }
 
     /**
@@ -1181,9 +1182,9 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      * 
      * @return a list of {@link CmsLock} objects
      */
-    public List getAllCachedLocks() {
+    public List<CmsLock> getAllCachedLocks() {
 
-        return new ArrayList(m_lockCache.values());
+        return new ArrayList<CmsLock>(m_lockCache.values());
     }
 
     /**
@@ -1284,7 +1285,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public CmsLock getCachedLock(String rootPath) {
 
-        return (CmsLock)m_lockCache.get(rootPath);
+        return m_lockCache.get(rootPath);
     }
 
     /**
@@ -1502,7 +1503,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     public List<CmsGroup> getCachedUserGroups(String key) {
 
-        return (List)m_userGroupsCache.get(key);
+        return m_userGroupsCache.get(key);
     }
 
     /**
@@ -1691,6 +1692,11 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         lruMap = new LRUMap(cacheSettings.getUserCacheSize());
         m_userCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".userCache", lruMap);
+
+        // user list cache
+        lruMap = new LRUMap(cacheSettings.getUserCacheSize());
+        m_userListCache = Collections.synchronizedMap(lruMap);
+        register(CmsDriverManager.class.getName() + ".userListCache", lruMap);
 
         // group cache
         lruMap = new LRUMap(cacheSettings.getGroupCacheSize());

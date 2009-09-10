@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsConstantMap.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2009/09/10 16:26:22 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,6 +33,7 @@ package org.opencms.util;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,30 +43,36 @@ import java.util.Set;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.3.2.1 $ 
  * 
  * @since 7.0.2
+ * 
+ * @param <K> the type of keys maintained by this map
+ * @param <V> the type of mapped values
  */
-public class CmsConstantMap implements Map {
+@SuppressWarnings("unchecked")
+public class CmsConstantMap<K, V> implements Map<K, V> {
 
     /** Constant Map that always returns {@link Boolean#FALSE}.*/
-    public static final Map CONSTANT_BOOLEAN_FALSE_MAP = new CmsConstantMap(Boolean.FALSE);
+    public static final Map<String, Boolean> CONSTANT_BOOLEAN_FALSE_MAP = new CmsConstantMap<String, Boolean>(
+        Boolean.FALSE);
 
     /** Constant Map that always returns {@link Boolean#TRUE}.*/
-    public static final Map CONSTANT_BOOLEAN_TRUE_MAP = new CmsConstantMap(Boolean.TRUE);
+    public static final Map<String, Boolean> CONSTANT_BOOLEAN_TRUE_MAP = new CmsConstantMap<String, Boolean>(
+        Boolean.TRUE);
 
     /** Constant Map that always returns an empty list. */
-    public static final Map CONSTANT_EMPTY_LIST_MAP = new CmsConstantMap(Collections.EMPTY_LIST);
+    public static final Map<String, List<Object>> CONSTANT_EMPTY_LIST_MAP = new CmsConstantMap(Collections.EMPTY_LIST);
 
     /** The constant Object this map always returns. */
-    private Object m_constant;
+    private V m_constant;
 
     /**
      * Creates a new constant Map.<p> 
      * 
      * @param constant the constant to return for all {@link #get(Object)} calls.<p>
      */
-    public CmsConstantMap(Object constant) {
+    public CmsConstantMap(V constant) {
 
         m_constant = constant;
     }
@@ -98,14 +105,15 @@ public class CmsConstantMap implements Map {
     /**
      * @see java.util.Map#entrySet()
      */
-    public Set entrySet() {
+    public Set<Map.Entry<K, V>> entrySet() {
 
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -120,7 +128,7 @@ public class CmsConstantMap implements Map {
     /**
      * @see java.util.Map#get(java.lang.Object)
      */
-    public Object get(Object key) {
+    public V get(Object key) {
 
         return m_constant;
     }
@@ -128,6 +136,7 @@ public class CmsConstantMap implements Map {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_constant.hashCode();
@@ -144,15 +153,15 @@ public class CmsConstantMap implements Map {
     /**
      * @see java.util.Map#keySet()
      */
-    public Set keySet() {
+    public Set<K> keySet() {
 
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     /**
      * @see java.util.Map#put(java.lang.Object, java.lang.Object)
      */
-    public Object put(Object arg0, Object arg1) {
+    public V put(Object arg0, Object arg1) {
 
         return null;
     }
@@ -160,7 +169,7 @@ public class CmsConstantMap implements Map {
     /**
      * @see java.util.Map#putAll(java.util.Map)
      */
-    public void putAll(Map arg0) {
+    public void putAll(Map<? extends K, ? extends V> arg0) {
 
         // NOOP
     }
@@ -168,7 +177,7 @@ public class CmsConstantMap implements Map {
     /**
      * @see java.util.Map#remove(java.lang.Object)
      */
-    public Object remove(Object key) {
+    public V remove(Object key) {
 
         return m_constant;
     }
@@ -184,7 +193,7 @@ public class CmsConstantMap implements Map {
     /**
      * @see java.util.Map#values()
      */
-    public Collection values() {
+    public Collection<V> values() {
 
         return Collections.singletonList(m_constant);
     }

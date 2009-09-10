@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2009/06/04 14:29:08 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2009/09/10 16:26:20 $
+ * Version: $Revision: 1.55.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -46,7 +46,7 @@ import javax.servlet.ServletRequest;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.55.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,6 +77,7 @@ public class CmsXmlPageLoader extends A_CmsXmlDocumentLoader {
     /**
      * @see org.opencms.loader.A_CmsXmlDocumentLoader#unmarshalXmlDocument(org.opencms.file.CmsObject, org.opencms.file.CmsResource, javax.servlet.ServletRequest)
      */
+    @Override
     protected I_CmsXmlDocument unmarshalXmlDocument(CmsObject cms, CmsResource resource, ServletRequest req)
     throws CmsException {
 
@@ -86,6 +87,7 @@ public class CmsXmlPageLoader extends A_CmsXmlDocumentLoader {
     /**
      * @see org.opencms.loader.A_CmsXmlDocumentLoader#getTemplatePropertyDefinition()
      */
+    @Override
     protected String getTemplatePropertyDefinition() {
 
         return CmsPropertyDefinition.PROPERTY_TEMPLATE;

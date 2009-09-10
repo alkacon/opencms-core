@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockFilter.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/10 16:26:21 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -43,7 +43,7 @@ import java.util.Set;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.5.4 
  */
@@ -77,7 +77,7 @@ public final class CmsLockFilter implements Cloneable {
     private boolean m_sharedExclusive;
 
     /** The types to filter. */
-    private Set m_types = new HashSet();
+    private Set<CmsLockType> m_types = new HashSet<CmsLockType>();
 
     /** If set the filter restricts the result excluding locks not lockable by the given user. */
     private CmsUser m_notLockableByUser;
@@ -99,12 +99,13 @@ public final class CmsLockFilter implements Cloneable {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsLockFilter filter = new CmsLockFilter(false);
         filter.m_includeChildren = m_includeChildren;
         filter.m_includeParents = m_includeParents;
-        filter.m_types = new HashSet(m_types);
+        filter.m_types = new HashSet<CmsLockType>(m_types);
         filter.m_ownedByUserId = m_ownedByUserId;
         filter.m_notOwnedByUserId = m_notOwnedByUserId;
         filter.m_projectId = m_projectId;
@@ -288,7 +289,7 @@ public final class CmsLockFilter implements Cloneable {
      *
      * @return the types to filter
      */
-    public Set getTypes() {
+    public Set<CmsLockType> getTypes() {
 
         return Collections.unmodifiableSet(m_types);
     }
@@ -373,6 +374,7 @@ public final class CmsLockFilter implements Cloneable {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer str = new StringBuffer(128);

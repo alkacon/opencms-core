@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:47 $
- * Version: $Revision: 1.134 $
+ * Date   : $Date: 2009/09/10 16:26:20 $
+ * Version: $Revision: 1.134.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.134 $ 
+ * @version $Revision: 1.134.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,7 +199,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     private List m_exportFolders;
 
     /** The additional http headers for the static export. */
-    private List m_exportHeaders;
+    private List<String> m_exportHeaders;
 
     /** List of all resources that have the "exportname" property set. */
     private Map m_exportnameResources;
@@ -956,7 +956,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @return the list of http export headers
      */
-    public List getExportHeaders() {
+    public List<String> getExportHeaders() {
 
         return Collections.unmodifiableList(m_exportHeaders);
     }

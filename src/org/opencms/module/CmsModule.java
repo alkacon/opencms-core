@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2009/06/04 14:29:43 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2009/09/10 16:26:22 $
+ * Version: $Revision: 1.34.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -32,6 +32,7 @@
 package org.opencms.module;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -58,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.34.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -149,7 +150,7 @@ public class CmsModule implements Comparable {
     private List m_resources;
 
     /** The list of additional resource types. */
-    private List m_resourceTypes;
+    private List<I_CmsResourceType> m_resourceTypes;
 
     /** The name of the user who installed this module. */
     private String m_userInstalled;
@@ -573,7 +574,7 @@ public class CmsModule implements Comparable {
      *
      * @return the list of additional resource types that belong to this module
      */
-    public List getResourceTypes() {
+    public List<I_CmsResourceType> getResourceTypes() {
 
         return m_resourceTypes;
     }

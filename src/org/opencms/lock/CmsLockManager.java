@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2009/09/09 14:26:36 $
- * Version: $Revision: 1.50.2.1 $
+ * Date   : $Date: 2009/09/10 16:26:21 $
+ * Version: $Revision: 1.50.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import java.util.Map;
  * @author Andreas Zahner  
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.50.2.1 $ 
+ * @version $Revision: 1.50.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -136,9 +136,9 @@ public final class CmsLockManager {
         // handle collisions with exclusive locked sub-resources in case of a folder
         if (resource.isFolder() && newLock.getSystemLock().isUnlocked()) {
             String resourceName = resource.getRootPath();
-            Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
+            Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
             while (itLocks.hasNext()) {
-                CmsLock lock = (CmsLock)itLocks.next();
+                CmsLock lock = itLocks.next();
                 String lockedPath = lock.getResourceName();
                 if (lockedPath.startsWith(resourceName) && !lockedPath.equals(resourceName)) {
                     unlockResource(lockedPath, false);
@@ -157,9 +157,9 @@ public final class CmsLockManager {
     public int countExclusiveLocksInProject(CmsProject project) {
 
         int count = 0;
-        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
+        Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
-            CmsLock lock = (CmsLock)itLocks.next();
+            CmsLock lock = itLocks.next();
             if (lock.getEditionLock().isInProject(project)) {
                 count++;
             }
@@ -211,7 +211,7 @@ public final class CmsLockManager {
         CmsLock lock = getDirectLock(resource.getRootPath());
         if ((lock == null) && includeSiblings) {
             // check if siblings are exclusively locked
-            List siblings = internalReadSiblings(dbc, resource);
+            List<CmsResource> siblings = internalReadSiblings(dbc, resource);
             lock = getSiblingsLock(siblings, resource.getRootPath());
         }
         if (lock == null) {
@@ -239,10 +239,10 @@ public final class CmsLockManager {
      */
     public List<CmsLock> getLocks(CmsDbContext dbc, String resourceName, CmsLockFilter filter) throws CmsException {
 
-        List locks = new ArrayList();
-        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
+        List<CmsLock> locks = new ArrayList<CmsLock>();
+        Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
-            CmsLock lock = (CmsLock)itLocks.next();
+            CmsLock lock = itLocks.next();
             if (filter.isSharedExclusive()) {
                 CmsResource resource;
                 try {
@@ -252,9 +252,9 @@ public final class CmsLockManager {
                     continue;
                 }
                 if (resource.getSiblingCount() > 1) {
-                    Iterator itSiblings = internalReadSiblings(dbc, resource).iterator();
+                    Iterator<CmsResource> itSiblings = internalReadSiblings(dbc, resource).iterator();
                     while (itSiblings.hasNext()) {
-                        CmsResource sibling = (CmsResource)itSiblings.next();
+                        CmsResource sibling = itSiblings.next();
                         CmsLock siblingLock = internalSiblingLock(lock, sibling.getRootPath());
                         if (filter.match(resourceName, siblingLock)) {
                             locks.add(siblingLock);
@@ -286,9 +286,9 @@ public final class CmsLockManager {
         if (resource == null) {
             return false;
         }
-        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
+        Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
-            CmsLock lock = (CmsLock)itLocks.next();
+            CmsLock lock = itLocks.next();
             if (lock.getSystemLock().isUnlocked()) {
                 // only system locks matter here
                 continue;
@@ -311,9 +311,9 @@ public final class CmsLockManager {
                     continue;
                 }
                 if (lockedResource.getSiblingCount() > 1) {
-                    Iterator itSiblings = internalReadSiblings(dbc, lockedResource).iterator();
+                    Iterator<CmsResource> itSiblings = internalReadSiblings(dbc, lockedResource).iterator();
                     while (itSiblings.hasNext()) {
-                        CmsResource sibling = (CmsResource)itSiblings.next();
+                        CmsResource sibling = itSiblings.next();
                         CmsLock siblingLock = internalSiblingLock(lock, sibling.getRootPath());
                         if (siblingLock.getResourceName().startsWith(resource.getRootPath())) {
                             return true;
@@ -358,11 +358,11 @@ public final class CmsLockManager {
 
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
             // read the locks only if the wizard is not enabled
-            Map lockCache = new HashMap();
-            List locks = m_driverManager.getProjectDriver().readLocks(dbc);
-            Iterator itLocks = locks.iterator();
+            Map<String, CmsLock> lockCache = new HashMap<String, CmsLock>();
+            List<CmsLock> locks = m_driverManager.getProjectDriver().readLocks(dbc);
+            Iterator<CmsLock> itLocks = locks.iterator();
             while (itLocks.hasNext()) {
-                CmsLock lock = (CmsLock)itLocks.next();
+                CmsLock lock = itLocks.next();
                 internalLockResource(lock, lockCache);
             }
             OpenCms.getMemoryMonitor().flushLocks(lockCache);
@@ -400,9 +400,9 @@ public final class CmsLockManager {
      */
     public void removeLocks(CmsUUID userId) {
 
-        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
+        Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
-            CmsLock currentLock = (CmsLock)itLocks.next();
+            CmsLock currentLock = itLocks.next();
             boolean editLock = currentLock.getEditionLock().getUserId().equals(userId);
             boolean sysLock = currentLock.getSystemLock().getUserId().equals(userId);
             if (editLock) {
@@ -459,9 +459,9 @@ public final class CmsLockManager {
             if (resource.isFolder()) {
                 // in case of a folder, remove any exclusive locks on sub-resources that probably have
                 // been upgraded from an inherited lock when the user edited a resource                
-                Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
+                Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
                 while (itLocks.hasNext()) {
-                    String lockedPath = ((CmsLock)itLocks.next()).getResourceName();
+                    String lockedPath = (itLocks.next()).getResourceName();
                     if (lockedPath.startsWith(resourcename) && !lockedPath.equals(resourcename)) {
                         // remove the exclusive locked sub-resource
                         unlockResource(lockedPath, false);
@@ -476,12 +476,12 @@ public final class CmsLockManager {
         }
 
         if (lock.getType().isSharedExclusive()) {
-            List locks = OpenCms.getMemoryMonitor().getAllCachedLockPaths();
+            List<String> locks = OpenCms.getMemoryMonitor().getAllCachedLockPaths();
             // when a resource with a shared lock gets unlocked, fetch all siblings of the resource 
             // to the same content record to identify the exclusive locked sibling
-            List siblings = internalReadSiblings(dbc, resource);
+            List<CmsResource> siblings = internalReadSiblings(dbc, resource);
             for (int i = 0; i < siblings.size(); i++) {
-                CmsResource sibling = (CmsResource)siblings.get(i);
+                CmsResource sibling = siblings.get(i);
                 if (locks.contains(sibling.getRootPath())) {
                     // remove the exclusive locked sibling
                     if (removeSystemLock) {
@@ -509,9 +509,9 @@ public final class CmsLockManager {
      */
     public void removeResourcesInProject(CmsUUID projectId, boolean removeSystemLocks) {
 
-        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
+        Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
-            CmsLock currentLock = (CmsLock)itLocks.next();
+            CmsLock currentLock = itLocks.next();
             if (removeSystemLocks && currentLock.getSystemLock().getProjectId().equals(projectId)) {
                 unlockResource(currentLock.getResourceName(), true);
             }
@@ -530,9 +530,9 @@ public final class CmsLockManager {
      */
     public void removeTempLocks(CmsUUID userId) {
 
-        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
+        Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
-            CmsLock currentLock = (CmsLock)itLocks.next();
+            CmsLock currentLock = itLocks.next();
             if (currentLock.isTemporary() && currentLock.getUserId().equals(userId)) {
                 unlockResource(currentLock.getResourceName(), false);
             }
@@ -542,18 +542,19 @@ public final class CmsLockManager {
     /** 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer();
 
         // bring the list of locked resources into a human readable order first
-        List lockedResources = OpenCms.getMemoryMonitor().getAllCachedLocks();
+        List<CmsLock> lockedResources = OpenCms.getMemoryMonitor().getAllCachedLocks();
         Collections.sort(lockedResources);
 
         // iterate all locks
-        Iterator itLocks = lockedResources.iterator();
+        Iterator<CmsLock> itLocks = lockedResources.iterator();
         while (itLocks.hasNext()) {
-            CmsLock lock = (CmsLock)itLocks.next();
+            CmsLock lock = itLocks.next();
             buf.append(lock).append("\n");
         }
         return buf.toString();
@@ -575,7 +576,7 @@ public final class CmsLockManager {
             && m_runningInServlet // only if started in run level 4 
             && OpenCms.getMemoryMonitor().requiresPersistency()) { // only if persistency is required
 
-            List locks = OpenCms.getMemoryMonitor().getAllCachedLocks();
+            List<CmsLock> locks = OpenCms.getMemoryMonitor().getAllCachedLocks();
             m_driverManager.getProjectDriver().writeLocks(dbc, locks);
             m_isDirty = false;
         }
@@ -648,9 +649,9 @@ public final class CmsLockManager {
      */
     private CmsLock getParentFolderLock(String resourceName) {
 
-        Iterator itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
+        Iterator<CmsLock> itLocks = OpenCms.getMemoryMonitor().getAllCachedLocks().iterator();
         while (itLocks.hasNext()) {
-            CmsLock lock = (CmsLock)itLocks.next();
+            CmsLock lock = itLocks.next();
             if (lock.getResourceName().endsWith("/")
                 && resourceName.startsWith(lock.getResourceName())
                 && !resourceName.equals(lock.getResourceName())) {
@@ -692,10 +693,10 @@ public final class CmsLockManager {
      * 
      * @return the indirect lock of the resource or the null lock
      */
-    private CmsLock getSiblingsLock(List siblings, String resourcename) {
+    private CmsLock getSiblingsLock(List<CmsResource> siblings, String resourcename) {
 
         for (int i = 0; i < siblings.size(); i++) {
-            CmsResource sibling = (CmsResource)siblings.get(i);
+            CmsResource sibling = siblings.get(i);
             CmsLock exclusiveLock = getDirectLock(sibling.getRootPath());
             if (exclusiveLock != null) {
                 // a sibling is already locked 
@@ -715,13 +716,13 @@ public final class CmsLockManager {
      * 
      * @throws CmsLockException if the lock is not compatible with the current lock 
      */
-    private void internalLockResource(CmsLock lock, Map locks) throws CmsLockException {
+    private void internalLockResource(CmsLock lock, Map<String, CmsLock> locks) throws CmsLockException {
 
         CmsLock currentLock = null;
         if (locks == null) {
             currentLock = OpenCms.getMemoryMonitor().getCachedLock(lock.getResourceName());
         } else {
-            currentLock = (CmsLock)locks.get(lock.getResourceName());
+            currentLock = locks.get(lock.getResourceName());
         }
         if (currentLock != null) {
             if (currentLock.getSystemLock().equals(lock) || currentLock.getEditionLock().equals(lock)) {
@@ -766,11 +767,15 @@ public final class CmsLockManager {
      * 
      * @throws CmsException if something goes wrong
      */
-    private List internalReadSiblings(CmsDbContext dbc, CmsResource resource) throws CmsException {
+    private List<CmsResource> internalReadSiblings(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
         // reading siblings using the DriverManager methods while the lock state is checked would
         // result in an infinite loop, therefore we must access the VFS driver directly
-        List siblings = m_driverManager.getVfsDriver().readSiblings(dbc, dbc.currentProject().getUuid(), resource, true);
+        List<CmsResource> siblings = m_driverManager.getVfsDriver().readSiblings(
+            dbc,
+            dbc.currentProject().getUuid(),
+            resource,
+            true);
         siblings.remove(resource);
         return siblings;
     }

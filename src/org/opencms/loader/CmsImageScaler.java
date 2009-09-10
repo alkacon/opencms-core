@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageScaler.java,v $
- * Date   : $Date: 2009/06/10 12:31:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2009/09/10 16:26:19 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.15.2.1 $
  * 
  * @since 6.2.0
  */
@@ -78,7 +78,7 @@ public class CmsImageScaler {
     public static final String FILTER_SHADOW = "shadow";
 
     /** The supported image filter names. */
-    public static final List FILTERS = Arrays.asList(new String[] {FILTER_GRAYSCALE, FILTER_SHADOW});
+    public static final List<String> FILTERS = Arrays.asList(new String[] {FILTER_GRAYSCALE, FILTER_SHADOW});
 
     /** The (optional) parameter used for sending the scale information of an image in the http request. */
     public static final String PARAM_SCALE = "__scale";
@@ -144,7 +144,7 @@ public class CmsImageScaler {
     private int m_cropY;
 
     /** The list of image filter names (Strings) to apply. */
-    private List m_filters;
+    private List<String> m_filters;
 
     /** The target height (required). */
     private int m_height;
@@ -210,20 +210,6 @@ public class CmsImageScaler {
             // set height / width to default of -1
             init();
         }
-    }
-
-    /**
-     * Creates a new image scaler that is a rescale from the original size to the given scaler.<p> 
-     * 
-     * @param original the scaler that holds the original image dimensions
-     * @param target the image scaler to be used for rescaling this image scaler
-     * 
-     * @deprecated use {@link #getReScaler(CmsImageScaler)} on the <code>original</code> scaler instead
-     */
-    public CmsImageScaler(CmsImageScaler original, CmsImageScaler target) {
-
-        CmsImageScaler scaler = original.getReScaler(target);
-        initValuesFrom(scaler);
     }
 
     /**
@@ -333,6 +319,7 @@ public class CmsImageScaler {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     public Object clone() {
 
         CmsImageScaler clone = new CmsImageScaler();
@@ -499,7 +486,7 @@ public class CmsImageScaler {
      * 
      * @return the list of image filter names (Strings) to be applied to the image
      */
-    public List getFilters() {
+    public List<String> getFilters() {
 
         return m_filters;
     }
@@ -512,9 +499,9 @@ public class CmsImageScaler {
     public String getFiltersString() {
 
         StringBuffer result = new StringBuffer();
-        Iterator i = m_filters.iterator();
+        Iterator<String> i = m_filters.iterator();
         while (i.hasNext()) {
-            String filter = (String)i.next();
+            String filter = i.next();
             result.append(filter);
             if (i.hasNext()) {
                 result.append(':');
@@ -763,6 +750,7 @@ public class CmsImageScaler {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return toString().hashCode();
@@ -863,12 +851,12 @@ public class CmsImageScaler {
         m_cropWidth = -1;
         m_cropHeigt = -1;
 
-        List tokens = CmsStringUtil.splitAsList(parameters, ',');
-        Iterator it = tokens.iterator();
+        List<String> tokens = CmsStringUtil.splitAsList(parameters, ',');
+        Iterator<String> it = tokens.iterator();
         String k;
         String v;
         while (it.hasNext()) {
-            String t = (String)it.next();
+            String t = it.next();
             // extract key and value
             k = null;
             v = null;
@@ -994,9 +982,9 @@ public class CmsImageScaler {
             Color color = getColor();
 
             if (!m_filters.isEmpty()) {
-                Iterator i = m_filters.iterator();
+                Iterator<String> i = m_filters.iterator();
                 while (i.hasNext()) {
-                    String filter = (String)i.next();
+                    String filter = i.next();
                     if (FILTER_GRAYSCALE.equals(filter)) {
                         // add a gray scale filter
                         GrayscaleFilter grayscaleFilter = new GrayscaleFilter();
@@ -1132,15 +1120,15 @@ public class CmsImageScaler {
      */
     public void setFilters(String value) {
 
-        m_filters = new ArrayList();
-        List filters = CmsStringUtil.splitAsList(value, ':');
-        Iterator i = filters.iterator();
+        m_filters = new ArrayList<String>();
+        List<String> filters = CmsStringUtil.splitAsList(value, ':');
+        Iterator<String> i = filters.iterator();
         while (i.hasNext()) {
-            String filter = (String)i.next();
+            String filter = i.next();
             filter = filter.trim().toLowerCase();
-            Iterator j = FILTERS.iterator();
+            Iterator<String> j = FILTERS.iterator();
             while (j.hasNext()) {
-                String candidate = (String)j.next();
+                String candidate = j.next();
                 if (candidate.startsWith(filter)) {
                     // found a matching filter
                     addFilter(candidate);
@@ -1276,6 +1264,7 @@ public class CmsImageScaler {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         if (m_scaleParameters != null) {
@@ -1368,7 +1357,7 @@ public class CmsImageScaler {
         m_cropHeigt = -1;
         m_cropWidth = -1;
         m_color = Color.WHITE;
-        m_filters = new ArrayList();
+        m_filters = new ArrayList<String>();
         m_maxBlurSize = CmsImageLoader.getMaxBlurSize();
     }
 
@@ -1409,7 +1398,7 @@ public class CmsImageScaler {
         m_renderMode = source.m_renderMode;
         m_quality = source.m_quality;
         m_color = source.m_color;
-        m_filters = new ArrayList(source.m_filters);
+        m_filters = new ArrayList<String>(source.m_filters);
         m_maxBlurSize = source.m_maxBlurSize;
         m_cropHeigt = source.m_cropHeigt;
         m_cropWidth = source.m_cropWidth;

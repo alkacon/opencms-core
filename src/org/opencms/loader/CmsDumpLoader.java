@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2009/06/04 14:29:08 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2009/09/10 16:26:19 $
+ * Version: $Revision: 1.72.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,8 +54,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.ExtendedProperties;
-
 /**
  * Dump loader for binary or other unprocessed resource types.<p>
  * 
@@ -64,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.72 $ 
+ * @version $Revision: 1.72.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,14 +75,14 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     private static long m_clientCacheMaxAge;
 
     /** The resource loader configuration. */
-    private Map m_configuration;
+    private Map<String, String> m_configuration;
 
     /**
      * The constructor of the class is empty and does nothing.<p>
      */
     public CmsDumpLoader() {
 
-        m_configuration = new TreeMap();
+        m_configuration = new TreeMap<String, String>();
     }
 
     /**
@@ -129,8 +127,8 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
         // output must be generated
         if ((req != null) && (res != null)) {
             // overwrite headers if set as default
-            for (Iterator i = OpenCms.getStaticExportManager().getExportHeaders().listIterator(); i.hasNext();) {
-                String header = (String)i.next();
+            for (Iterator<String> i = OpenCms.getStaticExportManager().getExportHeaders().listIterator(); i.hasNext();) {
+                String header = i.next();
 
                 // set header only if format is "key: value"
                 String[] parts = CmsStringUtil.splitAsArray(header, ':');
@@ -150,7 +148,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      * 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         // return the configuration in an immutable form
         return Collections.unmodifiableMap(m_configuration);
@@ -181,10 +179,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void initConfiguration() {
 
-        ExtendedProperties config = new ExtendedProperties();
-        config.putAll(m_configuration);
-
-        String maxAge = config.getString("client.cache.maxage");
+        String maxAge = m_configuration.get("client.cache.maxage");
         if (maxAge == null) {
             m_clientCacheMaxAge = -1;
         } else {

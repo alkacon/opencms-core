@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/A_CmsXmlDocumentLoader.java,v $
- * Date   : $Date: 2009/06/04 14:29:08 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2009/09/10 16:26:20 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.2.0 
  */
@@ -122,7 +122,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
         I_CmsXmlDocument doc = unmarshalXmlDocument(cms, resource, req);
 
         // check the page locales
-        List locales = doc.getLocales(element);
+        List<Locale> locales = doc.getLocales(element);
         if (locales.isEmpty()) {
             // selected element is not available in any locale
             return null;
@@ -167,7 +167,7 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
      * 
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
-    public Map getConfiguration() {
+    public Map<String, String> getConfiguration() {
 
         return null;
     }

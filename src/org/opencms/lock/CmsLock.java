@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2009/06/04 14:29:52 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2009/09/10 16:26:21 $
+ * Version: $Revision: 1.32.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -45,14 +45,14 @@ import org.opencms.util.CmsUUID;
  * @author Andreas Zahner 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.32.2.1 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.file.CmsObject#getLock(org.opencms.file.CmsResource)
  * @see org.opencms.lock.CmsLockManager
  */
-public class CmsLock {
+public class CmsLock implements Comparable<CmsLock> {
 
     /** The shared null lock object. */
     private static final CmsLock NULL_LOCK = new CmsLock(
@@ -103,11 +103,20 @@ public class CmsLock {
     }
 
     /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(CmsLock other) {
+
+        return m_resourceName.compareTo(other.m_resourceName);
+    }
+
+    /**
      * Compares this lock to the specified object.<p>
      * 
      * @param obj the object to compare to
      * @return true if and only if member values of this CmsLock are the same with the compared CmsLock 
      */
+    @Override
     public boolean equals(Object obj) {
 
         if (obj == this) {
@@ -202,6 +211,7 @@ public class CmsLock {
     /**
      * @see java.lang.Object#hashCode()
      */
+    @Override
     public int hashCode() {
 
         return m_project.hashCode() + m_resourceName.hashCode() + m_userId.hashCode() + m_type.hashCode();
@@ -410,6 +420,7 @@ public class CmsLock {
      * 
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
 
         StringBuffer buf = new StringBuffer();
@@ -434,6 +445,7 @@ public class CmsLock {
     /**
      * @see java.lang.Object#clone()
      */
+    @Override
     protected Object clone() {
 
         CmsLock lock = new CmsLock(m_resourceName, m_userId, m_project, m_type);

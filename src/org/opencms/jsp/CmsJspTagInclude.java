@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2009/06/04 14:29:01 $
- * Version: $Revision: 1.46 $
+ * Date   : $Date: 2009/09/10 16:26:22 $
+ * Version: $Revision: 1.46.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.46 $ 
+ * @version $Revision: 1.46.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -203,23 +203,6 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
 
         // resolve possible relative URI
         target = CmsLinkManager.getAbsoluteUri(target, controller.getCurrentRequest().getElementUri());
-
-        try {
-            // now resolve additional include extensions that might be required for special loader implementations
-            target = OpenCms.getResourceManager().resolveIncludeExtensions(
-                target,
-                element,
-                editable,
-                paramMap,
-                req,
-                res);
-            // check if the target actually exists in the OpenCms VFS
-            controller.getCmsObject().readResource(target);
-        } catch (CmsException e) {
-            // store exception in controller and discontinue
-            controller.setThrowable(e, target);
-            throw new JspException(e);
-        }
 
         // include direct edit "start" element (if enabled)
         boolean directEditOpen = editable
