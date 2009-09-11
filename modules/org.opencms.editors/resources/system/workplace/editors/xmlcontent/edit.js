@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2009/09/04 15:22:43 $
- * Version: $Revision: 1.15.2.2 $
+ * Date   : $Date: 2009/09/11 09:10:12 $
+ * Version: $Revision: 1.15.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -214,6 +214,9 @@ function opensmallwin(url, name, w, h) {
 // add an optional element to the currently edited content
 function addElement(elemName, insertAfter, addOptions) {
 	setLastPosition();
+	if (addOptions == null) {
+		 addOptions = "";
+	}
 	addOptions = decodeURIComponent(addOptions);
 	if (addOptions != "" && addOptions != "[]") {
     var optionalElements = eval(addOptions);
