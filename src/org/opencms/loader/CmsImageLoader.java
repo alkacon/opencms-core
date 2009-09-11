@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2009/08/20 11:31:34 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2009/09/11 07:49:39 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.2.0 
  */
@@ -282,6 +282,7 @@ public class CmsImageLoader extends CmsDumpLoader implements I_CmsEventListener 
     @Override
     public void initConfiguration() {
 
+        super.initConfiguration();
         if (CmsStringUtil.isEmpty(m_imageRepositoryFolder)) {
             m_imageRepositoryFolder = IMAGE_REPOSITORY_DEFAULT;
         }
