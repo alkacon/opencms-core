@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsLoginManager.java,v $
- * Date   : $Date: 2009/06/04 14:29:18 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2009/09/11 12:29:49 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -56,7 +56,7 @@ import java.util.Hashtable;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -340,7 +340,7 @@ public class CmsLoginManager {
      * @param userName the name of the user
      * @param remoteAddress the remore address (IP) from which the login attempt was made
      */
-    protected void removeInvalidLogins(String userName, String remoteAddress) {
+    public void removeInvalidLogins(String userName, String remoteAddress) {
 
         if (m_maxBadAttempts < 0) {
             // invalid login storage is disabled
