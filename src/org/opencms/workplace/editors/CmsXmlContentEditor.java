@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2009/09/04 15:22:39 $
- * Version: $Revision: 1.86.2.1 $
+ * Date   : $Date: 2009/09/11 14:25:47 $
+ * Version: $Revision: 1.86.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.86.2.1 $ 
+ * @version $Revision: 1.86.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,6 +124,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /** Action for new file creation. */
     public static final int ACTION_NEW = 158;
 
+    /** Action that sub choices should be determined. */
+    public static final int ACTION_SUBCHOICES = 159;
+
     /** Indicates that the content should be checked before executing the direct edit action. */
     public static final String EDITOR_ACTION_CHECK = "check";
 
@@ -144,6 +147,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** Indicates a new file should be created. */
     public static final String EDITOR_ACTION_NEW = CmsDirectEditButtonSelection.VALUE_NEW;
+
+    /** Indicates that sub choices should be determined. */
+    public static final String EDITOR_ACTION_SUBCHOICES = "subchoices";
 
     /** Indicates that the contents of the current locale should be copied to other locales. */
     public static final String EDITOR_COPYLOCALE = "copylocale";
@@ -289,6 +295,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * 
      * @param forceUnlock if true, the resource will be unlocked anyway
      */
+    @Override
     public void actionClear(boolean forceUnlock) {
 
         // delete the temporary file        
@@ -392,6 +399,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
+    @Override
     public void actionExit() throws IOException, JspException, ServletException {
 
         if (getAction() == ACTION_CANCEL) {
@@ -487,7 +495,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             CmsFile templateFile = getCms().readFile(templateFileName, CmsResourceFilter.IGNORE_EXPIRATION);
 
             CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCloneCms(), templateFile);
-            Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
+            Locale locale = OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
 
             // now create a new XML content based on the templates content definition            
             CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
@@ -592,6 +600,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionSave()
      */
+    @Override
     public void actionSave() throws JspException {
 
         actionSave(getElementLocale());
@@ -676,18 +685,43 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             if (CmsStringUtil.isNotEmpty(getParamChoiceElement())) {
                 // we have to add a choice element, first check if the element to add itself is part of a choice or not
                 boolean choiceType = Boolean.valueOf(getParamChoiceType()).booleanValue();
-                if (!choiceType) {
-                    // this is a choice option to add, remove last element name from xpath
+                I_CmsXmlSchemaType elemType = m_content.getContentDefinition().getSchemaType(elementPath);
+                if (!choiceType || (elemType.isChoiceOption() && elemType.isChoiceType())) {
+                    // this is a choice option or a nested choice type to add, remove last element name from xpath
                     elementPath = CmsXmlUtils.removeLastXpathElement(elementPath);
                 } else {
                     // this is a choice type to add, first create type element
                     m_content.addValue(getCms(), elementPath, getElementLocale(), index);
                     elementPath = CmsXmlUtils.createXpathElement(elementPath, index + 1);
+                    // all eventual following elements to create have to be at first position
                     index = 0;
                 }
-                // create the path to the choice element
-                elementPath += "/" + getParamChoiceElement();
+                // check if there are nested choice elements to add
+                if (CmsXmlUtils.isDeepXpath(getParamChoiceElement())) {
+                    // create all missing elements except the last one
+                    String pathToChoice = CmsXmlUtils.removeLastXpathElement(getParamChoiceElement());
+                    String newPath = elementPath;
+                    while (CmsStringUtil.isNotEmpty(pathToChoice)) {
+                        String createElement = CmsXmlUtils.getFirstXpathElement(pathToChoice);
+                        newPath = CmsXmlUtils.concatXpath(newPath, createElement);
+                        pathToChoice = CmsXmlUtils.isDeepXpath(pathToChoice)
+                        ? CmsXmlUtils.removeFirstXpathElement(pathToChoice)
+                        : null;
+                        I_CmsXmlContentValue newVal = m_content.addValue(getCms(), newPath, getElementLocale(), index);
+                        newPath = newVal.getPath();
+                        // all eventual following elements to create have to be at first position
+                        index = 0;
+                    }
+                    // create the path to the last choice element
+                    elementPath = CmsXmlUtils.concatXpath(
+                        newPath,
+                        CmsXmlUtils.getLastXpathElement(getParamChoiceElement()));
+                } else {
+                    // create the path to the choice element
+                    elementPath += "/" + getParamChoiceElement();
+                }
             }
+            // add the value
             m_content.addValue(getCms(), elementPath, getElementLocale(), index);
         }
 
@@ -707,6 +741,61 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
+     * Returns the JSON array with information about the choices of a given element.<p>
+     * 
+     * The returned array is only filled if the given element has choice options, otherwise an empty array is returned.<br/>
+     * Note: the first array element is an object containing information if the element itself is a choice type,
+     * the following elements are the choice option items.<p>
+     * 
+     * @param elementName the element name to check (complete xpath)
+     * @param choiceType flag indicating if the given element name represents a choice type or not
+     * @param checkChoice flag indicating if the element name should be checked if it is a choice option and choice type
+     * 
+     * @return the JSON array with information about the choices of a given element
+     */
+    public JSONArray buildElementChoices(String elementName, boolean choiceType, boolean checkChoice) {
+
+        JSONArray choiceElements = new JSONArray();
+        String choiceName = elementName;
+        I_CmsXmlSchemaType elemType = m_content.getContentDefinition().getSchemaType(elementName);
+        if (checkChoice && elemType.isChoiceOption() && elemType.isChoiceType()) {
+            // the element itself is a choice option and again a choice type, remove the last element to get correct choices
+            choiceName = CmsXmlUtils.removeLastXpathElement(elementName);
+        }
+        // use xpath to get choice information        
+        if (m_content.hasChoiceOptions(choiceName, getElementLocale())) {
+            // we have choice options, first add information about type to create
+            JSONObject info = new JSONObject();
+            try {
+                // put information if element is a choice type
+                info.put("choicetype", choiceType);
+                choiceElements.put(info);
+                // get the available choice options for the choice element
+                List<I_CmsXmlSchemaType> options = m_content.getChoiceOptions(choiceName, getElementLocale());
+                for (Iterator<I_CmsXmlSchemaType> i = options.iterator(); i.hasNext();) {
+                    // add the available element options
+                    I_CmsXmlSchemaType type = i.next();
+                    JSONObject option = new JSONObject();
+                    String key = A_CmsWidget.LABEL_PREFIX
+                        + type.getContentDefinition().getInnerName()
+                        + "."
+                        + type.getName();
+                    // add element name, label and help info
+                    option.put("name", type.getName());
+                    option.put("label", keyDefault(key, type.getName()));
+                    option.put("help", keyDefault(key + A_CmsWidget.HELP_POSTFIX, ""));
+                    // add info if the choice itself is a (sub) choice type
+                    option.put("subchoice", type.isChoiceType());
+                    choiceElements.put(option);
+                }
+            } catch (JSONException e) {
+                // ignore, should not happen
+            }
+        }
+        return choiceElements;
+    }
+
+    /**
      * Builds the HTML String for the element language selector.<p>
      * 
      * This method has to use the resource request parameter because the temporary file is
@@ -721,6 +810,26 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
+     * Returns the available sub choices for a nested choice element.<p>
+     * 
+     * @return the available sub choices for a nested choice element as JSON array string
+     */
+    public String buildSubChoices() {
+
+        String elementPath = getParamElementName();
+
+        // we have to add a choice element, first check if the element to add itself is part of a choice or not
+        boolean choiceType = Boolean.valueOf(getParamChoiceType()).booleanValue();
+        I_CmsXmlSchemaType elemType = m_content.getContentDefinition().getSchemaType(elementPath);
+        if (!choiceType || (elemType.isChoiceOption() && elemType.isChoiceType())) {
+            // this is a choice option or a nested choice type to add, remove last element name from xpath
+            elementPath = CmsXmlUtils.removeLastXpathElement(elementPath);
+        }
+        elementPath = CmsXmlUtils.concatXpath(elementPath, getParamChoiceElement());
+        return buildElementChoices(elementPath, choiceType, false).toString();
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidgetDialog#getButtonStyle()
      */
     public int getButtonStyle() {
@@ -731,6 +840,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /**
      * @see org.opencms.workplace.editors.CmsEditor#getEditorResourceUri()
      */
+    @Override
     public String getEditorResourceUri() {
 
         return getSkinUri() + "editors/" + EDITOR_TYPE + "/";
@@ -887,8 +997,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             while (i.hasNext()) {
                 // get the value of the widget
                 String key = i.next();
-                I_CmsXmlContentValue value = (I_CmsXmlContentValue)getWidgetCollector().getValues().get(key);
-                I_CmsWidget widget = (I_CmsWidget)getWidgetCollector().getWidgets().get(key);
+                I_CmsXmlContentValue value = getWidgetCollector().getValues().get(key);
+                I_CmsWidget widget = getWidgetCollector().getWidgets().get(key);
                 result.append(widget.getDialogHtmlEnd(getCms(), this, (I_CmsWidgetParameter)value));
 
             }
@@ -910,9 +1020,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
-     * Generates the javascript includes for the used widgets in the editor form.<p>
+     * Generates the JavaScript includes for the used widgets in the editor form.<p>
      * 
-     * @return the javascript includes for the used widgets
+     * @return the JavaScript includes for the used widgets
      * @throws JspException if including the error page fails
      */
     public String getXmlEditorIncludes() throws JspException {
@@ -952,9 +1062,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
-     * Generates the javascript initialization calls for the used widgets in the editor form.<p>
+     * Generates the JavaScript initialization calls for the used widgets in the editor form.<p>
      * 
-     * @return the javascript initialization calls for the used widgets
+     * @return the JavaScript initialization calls for the used widgets
      * @throws JspException if including the error page fails
      */
     public String getXmlEditorInitCalls() throws JspException {
@@ -984,6 +1094,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         StringBuffer result = new StringBuffer(1024);
 
+        // first create JS for eventual tabs
         StringBuffer tabs = new StringBuffer(512);
         if (m_content.getContentDefinition().getContentHandler().getTabs().size() > 0) {
             // we have some tabs defined, initialize them using JQuery
@@ -1000,6 +1111,17 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             tabs.append("\t}\n");
         }
 
+        // create JS for UI dialog
+        result.append("var dialogTitleAddChoice = \"");
+        result.append(key(Messages.GUI_EDITOR_XMLCONTENT_CHOICE_ADD_HL_0));
+        result.append("\";\n");
+        result.append("var dialogTitleAddSubChoice = \"");
+        result.append(key(Messages.GUI_EDITOR_XMLCONTENT_CHOICE_SUB_ADD_HL_0));
+        result.append("\";\n");
+        result.append("var vfsPathEditorForm = \"");
+        result.append(getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp"));
+        result.append("\";\n");
+        result.append("if (jQuery) {\n");
         result.append("$(document).ready(function(){\n");
         result.append(tabs);
         result.append("\t$(\"#xmladdelementdialog\").dialog({\n");
@@ -1008,12 +1130,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         result.append("\",\n");
         result.append("\t\tautoOpen: false,\n");
         result.append("\t\tbgiframe: true,\n");
+        result.append("\t\tminHeight: 150,\n");
+        result.append("\t\tminWidth: 300,\n");
+        result.append("\t\twidth: 360,\n");
         result.append("\t\tmodal: true,\n");
         result.append("\t\tbuttons: {  \"");
         result.append(key(org.opencms.workplace.Messages.GUI_DIALOG_BUTTON_CANCEL_0));
         result.append("\": function() { $(this).dialog(\"close\"); } }\n");
         result.append("\t});\n");
         result.append("});\n");
+        result.append("}\n");
 
         try {
             // iterate over unique widgets from collector
@@ -1168,6 +1294,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /**
      * @see org.opencms.workplace.tools.CmsToolDialog#useNewStyle()
      */
+    @Override
     public boolean useNewStyle() {
 
         return false;
@@ -1176,6 +1303,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /**
      * @see org.opencms.workplace.editors.CmsEditor#commitTempFile()
      */
+    @Override
     protected void commitTempFile() throws CmsException {
 
         super.commitTempFile();
@@ -1188,6 +1316,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * 
      * Not necessary for the xmlcontent editor.<p>
      */
+    @Override
     protected void initContent() {
 
         // nothing to be done for the xmlcontent editor form
@@ -1226,6 +1355,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
+    @Override
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
@@ -1262,6 +1392,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             setAction(ACTION_SAVEEXIT);
         } else if (EDITOR_EXIT.equals(getParamAction())) {
             setAction(ACTION_EXIT);
+        } else if (EDITOR_ACTION_SUBCHOICES.equals(getParamAction())) {
+            setAction(ACTION_SUBCHOICES);
         } else if (EDITOR_CLOSEBROWSER.equals(getParamAction())) {
             // closed browser window accidentally, unlock resource and delete temporary file
             actionClear(true);
@@ -1420,19 +1552,16 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     /**
      * Returns the HTML for the element operation buttons add, move, remove.<p>
      * 
-     * @param elementName name of the element
+     * @param value the value for which the buttons are generated
      * @param index the index of the element
      * @param addElement if true, the button to add an element is shown
      * @param removeElement if true, the button to remove an element is shown
      * @return the HTML for the element operation buttons
      */
-    private String buildElementButtons(
-        String elementName,
-        I_CmsXmlContentValue value,
-        boolean addElement,
-        boolean removeElement) {
+    private String buildElementButtons(I_CmsXmlContentValue value, boolean addElement, boolean removeElement) {
 
         StringBuffer jsCall = new StringBuffer(512);
+        String elementName = CmsXmlUtils.removeXpathIndex(value.getPath());
 
         // indicates if at least one button is active
         boolean buttonPresent = false;
@@ -1484,37 +1613,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         }
         jsCall.append(", ");
 
-        JSONArray newElements = new JSONArray();
-        // use xpath to get choice information
-        if (m_content.hasChoiceOptions(elementName + "[" + (index + 1) + "]", getElementLocale())) {
-            // we have choice options, first add information about type to create
-            JSONObject info = new JSONObject();
-            try {
-                // put information if element is a choice type
-                info.put("choicetype", value.isChoiceType());
-                newElements.put(info);
-                List<I_CmsXmlSchemaType> options = m_content.getChoiceOptions(
-                    elementName + "[" + (index + 1) + "]",
-                    getElementLocale());
-                for (Iterator<I_CmsXmlSchemaType> i = options.iterator(); i.hasNext();) {
-                    // add the available element options
-                    I_CmsXmlSchemaType type = i.next();
-                    JSONObject option = new JSONObject();
-                    String label = keyDefault(A_CmsWidget.LABEL_PREFIX
-                        + type.getContentDefinition().getInnerName()
-                        + "."
-                        + type.getName(), type.getName());
-                    option.put("name", type.getName());
-                    option.put("label", label);
-                    boolean isChoice = m_content.getContentDefinition().getSchemaType(
-                        elementName + "/" + type.getName()).isChoiceType();
-                    option.put("ischoice", isChoice);
-                    newElements.put(option);
-                }
-            } catch (JSONException e) {
-                // ignore, should not happen
-            }
-        }
+        JSONArray newElements = buildElementChoices(elementName, value.isChoiceType(), true);
         jsCall.append("'").append(CmsEncoder.escape(newElements.toString(), CmsEncoder.ENCODING_UTF_8)).append("'");
         jsCall.append(");");
 
@@ -1737,8 +1836,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 if (useTabs) {
                     // check if a tab is starting with this element
                     for (int tabIndex = 0; tabIndex < contentDefinition.getContentHandler().getTabs().size(); tabIndex++) {
-                        CmsXmlContentTab checkTab = (CmsXmlContentTab)contentDefinition.getContentHandler().getTabs().get(
-                            tabIndex);
+                        CmsXmlContentTab checkTab = contentDefinition.getContentHandler().getTabs().get(tabIndex);
                         if (checkTab.getStartName().equals(type.getName())) {
                             // a tab is starting, add block element
                             if (tabOpened) {
@@ -1923,7 +2021,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     }
 
                     // append element operation (add, remove, move) buttons if required
-                    result.append(buildElementButtons(pathPrefix + value.getName(), value, addValue, removeValue));
+                    result.append(buildElementButtons(value, addValue, removeValue));
 
                     // close row
                     result.append("</tr>\n");

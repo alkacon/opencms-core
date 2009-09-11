@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2009/09/11 09:10:12 $
- * Version: $Revision: 1.15.2.3 $
+ * Date   : $Date: 2009/09/11 14:25:48 $
+ * Version: $Revision: 1.15.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -30,7 +30,7 @@
  */
 
 //------------------------------------------------------//
-// Script for xml content editor
+// Script for XML content editor
 //------------------------------------------------------//
 
 // Searches for a frame by the specified name. Will only return siblings or ancestors.
@@ -214,40 +214,65 @@ function opensmallwin(url, name, w, h) {
 // add an optional element to the currently edited content
 function addElement(elemName, insertAfter, addOptions) {
 	setLastPosition();
-	if (addOptions == null) {
-		 addOptions = "";
-	}
+  var _form = document.EDITOR;
+  _form.elementname.value = elemName;
+  _form.elementindex.value = insertAfter;
+  if (_form.choiceelement) {
+    _form.choiceelement.value = "";
+  }
+  if (addOptions == null) {
+	 addOptions = "";
+  }
 	addOptions = decodeURIComponent(addOptions);
 	if (addOptions != "" && addOptions != "[]") {
     var optionalElements = eval(addOptions);
     var choiceType = optionalElements[0].choicetype;
-    var addHtml = "";
-    for (var i=1; i<optionalElements.length; i++) {
-      var currOption = optionalElements[i];
-      addHtml += "<div style=\"cursor: pointer; border: 1px solid white; margin: 6px 0; padding: 3px;\" onclick=\"addChoiceElement('";
-      addHtml += elemName + "', " + insertAfter + ", '" + currOption.name + "', '" + choiceType + "');";
-      addHtml += "\">";
-      addHtml += currOption.label  + "</div>";
-    }
-    $("#xmladdelementdialog").html(addHtml);
-    $("#xmladdelementdialog").dialog('open');
+    _form.choicetype.value = choiceType;
+    $("#xmladdelementdialog").html(buildChoiceDialogOptions(optionalElements));
+    $("#xmladdelementdialog").dialog("option", "title", dialogTitleAddChoice);
+    $("#xmladdelementdialog").dialog("open");
   } else {
-  	var _form = document.EDITOR;
-  	_form.elementname.value = elemName;
-  	_form.elementindex.value = insertAfter;
   	buttonAction(5);
 	}
 }
 
-function addChoiceElement(elemName, insertAfter, choiceElement, choiceType) {
+// adds the selected choice element or gets sub choices for the selected elements
+function addChoiceElement(choiceElement, subChoice) {
   var _form = document.EDITOR;
-  _form.elementname.value = elemName;
-  _form.elementindex.value = insertAfter;
   _form.choiceelement.value = choiceElement;
-  _form.choicetype.value = choiceType;
-  //if (confirm("Element: " + elemName + "\nInsert after: " + insertAfter + "\nChoice Element: " + choiceElement + "\nChoice Type: " + choiceType)) {
+  if (subChoice == true) {
+    $.post(vfsPathEditorForm, { action: actionSubChoices, resource: _form.resource.value, tempfile: _form.tempfile.value, elementname: _form.elementname.value, elementindex: _form.elementindex.value, choiceelement: choiceElement, choicetype: _form.choicetype.value}, function(data){ buildChoiceDialog(data); });
+  } else {
     buttonAction(5);
-  //}
+  }
+}
+
+// creates the dialog to select sub choice options
+function buildChoiceDialog(data) {
+  $("#xmladdelementdialog").dialog("close");
+  $("#xmladdelementdialog").html(buildChoiceDialogOptions(eval(data)));
+  $("#xmladdelementdialog").dialog("option", "title", dialogTitleAddSubChoice);
+  $("#xmladdelementdialog").dialog("open");
+}
+
+//creates the HTML for the dialog to select the choice options
+function buildChoiceDialogOptions(optionalElements) {
+  var addHtml = "";
+  for (var i=1; i<optionalElements.length; i++) {
+    var currOption = optionalElements[i];
+    var optName = currOption.name;
+    if (document.EDITOR.choiceelement.value != "") {
+      optName = document.EDITOR.choiceelement.value + "/" +optName;
+    }
+    addHtml += "<div class=\"xmlChoiceItem\" onclick=\"addChoiceElement('";
+    addHtml += optName + "', " + currOption.subchoice + ");";
+    addHtml += "\">" + currOption.label;
+    if (currOption.help != "") {
+      addHtml += "<div class=\"xmlChoiceHelp\">" + currOption.help + "</div>";
+    }
+    addHtml += "</div>";
+  }
+  return addHtml;
 }
 
 // move an element in currently edited content

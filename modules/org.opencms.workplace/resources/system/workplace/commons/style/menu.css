@@ -1085,6 +1085,27 @@ body.dialogadmin {
 	font-size: 8pt;
 }
 
+div.xmlChoiceItem {
+	cursor: pointer;
+	background-color: Window;
+	border: 1px solid ButtonShadow;
+	margin: 6px 0;
+	padding: 4px;
+	font-weight: bold;
+}
+
+div.xmlChoiceHelp {
+	padding-top: 2px;
+	color: GrayText;
+	font-style: italic;
+	font-weight: normal;
+}
+
+div.xmlChoiceItem:hover, div.xmlChoiceItem:hover div.xmlChoiceHelp {
+	background-color: #a8adb4;
+	color: HighlightText;
+}
+
 .textInput {<%
 	if (style != NEW_ADMIN) { %>
 	width: 100%;

@@ -1,4 +1,4 @@
-	<%@ page import="
+<%@page import="
 	org.opencms.workplace.editors.*,
 	org.opencms.workplace.*,
 	org.opencms.jsp.*"
@@ -23,6 +23,12 @@ case CmsEditor.ACTION_PREVIEW:
 //////////////////// ACTION: preview the content
 
 	wp.actionPreview();
+
+break;
+case CmsXmlContentEditor.ACTION_SUBCHOICES:
+//////////////////// ACTION: get the sub choices
+
+	out.print(wp.buildSubChoices());
 
 break;
 case CmsEditor.ACTION_EXIT:
@@ -198,6 +204,7 @@ var actionMoveElementUp = "<%= CmsXmlContentEditor.EDITOR_ACTION_ELEMENT_MOVE_UP
 var actionCorrectXml = "<%= CmsXmlContentEditor.EDITOR_CORRECTIONCONFIRMED %>";
 var actionDeleteLocale = "<%= CmsEditor.EDITOR_DELETELOCALE %>";
 var actionCopyLocale = "<%= CmsXmlContentEditor.EDITOR_COPYLOCALE %>";
+var actionSubChoices = "<%= CmsXmlContentEditor.EDITOR_ACTION_SUBCHOICES %>";
 
 // Localized button labels
 var LANG_BT_DELETE = "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0) %>";
