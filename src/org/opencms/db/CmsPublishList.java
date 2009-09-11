@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2009/09/09 14:26:34 $
- * Version: $Revision: 1.31.2.1 $
+ * Date   : $Date: 2009/09/11 11:13:38 $
+ * Version: $Revision: 1.31.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.31.2.1 $
+ * @version $Revision: 1.31.2.2 $
  * 
  * @since 6.0.0
  * 
@@ -369,16 +369,16 @@ public class CmsPublishList implements Externalizable {
     public void revive(CmsObject cms) {
 
         if (m_needsRevive) {
-            if (m_directPublishResources != null) {
+            if (m_directPublishResourceUUIDs != null) {
                 m_directPublishResources = internalReadResourceList(cms, m_directPublishResourceUUIDs);
             }
-            if (m_fileList != null) {
+            if (m_fileUUIDs != null) {
                 m_fileList = internalReadResourceList(cms, m_fileUUIDs);
             }
-            if (m_folderList != null) {
+            if (m_folderUUIDs != null) {
                 m_folderList = internalReadResourceList(cms, m_folderUUIDs);
             }
-            if (m_deletedFolderList != null) {
+            if (m_deletedFolderUUIDs != null) {
                 m_deletedFolderList = internalReadResourceList(cms, m_deletedFolderUUIDs);
             }
             m_needsRevive = false;

@@ -15,13 +15,13 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsChoiceTest2Element">
-		<xsd:choice maxOccurs="5">
-			<xsd:element name="String" type="OpenCmsString" />
-			<xsd:element name="DateTime" type="OpenCmsDateTime" />
-			<xsd:element name="Html" type="OpenCmsHtml" />
-			<xsd:element name="ChoiceTestA" type="OpenCmsChoiceTestsA" />			
+		<xsd:choice minOccurs="0" maxOccurs="5">
+			<xsd:element name="String" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="DateTime" type="OpenCmsDateTime" minOccurs="0" />
+			<xsd:element name="Html" type="OpenCmsHtml" minOccurs="0" />
+			<xsd:element name="ChoiceTestA" type="OpenCmsChoiceTestsA" minOccurs="0" />			
 			<xsd:element name="ChoiceTestC" type="OpenCmsChoiceTestsC" minOccurs="0" />			
-			<xsd:element name="Color" type="OpenCmsColor" />
+			<xsd:element name="Color" type="OpenCmsColor" minOccurs="0" />
 		</xsd:choice>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>

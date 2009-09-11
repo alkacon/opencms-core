@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2009/09/10 16:26:21 $
- * Version: $Revision: 1.69.2.6 $
+ * Date   : $Date: 2009/09/11 11:13:37 $
+ * Version: $Revision: 1.69.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -68,6 +68,7 @@ import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPermissionHandler;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsMapGenericWrapper;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.PrintfFormat;
@@ -105,7 +106,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.69.2.6 $ 
+ * @version $Revision: 1.69.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1659,7 +1660,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         // create and register all system caches
 
         // temporary xml entities cache
-        LRUMap xmlTemporaryCache = new LRUMap(128);
+        Map xmlTemporaryCache = CmsMapGenericWrapper.createLRUMap(128);
         m_xmlTemporaryEntityCache = Collections.synchronizedMap(xmlTemporaryCache);
         register(CmsXmlEntityResolver.class.getName() + ".xmlEntityTemporaryCache", m_xmlTemporaryEntityCache);
 
@@ -1669,7 +1670,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsXmlEntityResolver.class.getName() + ".xmlEntityPermanentCache", m_xmlPermanentEntityCache);
 
         // xml content definitions cache
-        LRUMap contentDefinitionsCache = new LRUMap(64);
+        Map contentDefinitionsCache = CmsMapGenericWrapper.createLRUMap(64);
         m_contentDefinitionsCache = Collections.synchronizedMap(contentDefinitionsCache);
         register(CmsXmlEntityResolver.class.getName() + ".contentDefinitionsCache", m_contentDefinitionsCache);
 
@@ -1684,42 +1685,42 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsLocaleManager.class.getName(), map);
 
         // permissions cache
-        LRUMap lruMap = new LRUMap(cacheSettings.getPermissionCacheSize());
+        Map lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getPermissionCacheSize());
         m_permissionCache = Collections.synchronizedMap(lruMap);
         register(CmsSecurityManager.class.getName(), lruMap);
 
         // user cache
-        lruMap = new LRUMap(cacheSettings.getUserCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getUserCacheSize());
         m_userCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".userCache", lruMap);
 
         // user list cache
-        lruMap = new LRUMap(cacheSettings.getUserCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getUserCacheSize());
         m_userListCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".userListCache", lruMap);
 
         // group cache
-        lruMap = new LRUMap(cacheSettings.getGroupCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getGroupCacheSize());
         m_groupCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".groupCache", lruMap);
 
         // organizational unit cache
-        lruMap = new LRUMap(cacheSettings.getOrgUnitCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getOrgUnitCacheSize());
         m_orgUnitCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".orgUnitCache", lruMap);
 
         // user groups list cache
-        lruMap = new LRUMap(cacheSettings.getUserGroupsCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getUserGroupsCacheSize());
         m_userGroupsCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".userGroupsCache", lruMap);
 
         // project cache
-        lruMap = new LRUMap(cacheSettings.getProjectCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getProjectCacheSize());
         m_projectCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".projectCache", lruMap);
 
         // project resources cache cache
-        lruMap = new LRUMap(cacheSettings.getProjectResourcesCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getProjectResourcesCacheSize());
         m_projectResourcesCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".projectResourcesCache", lruMap);
 
@@ -1735,51 +1736,51 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
         register(CmsPublishQueue.class.getName() + ".publishQueue", buffer);
 
         // resource cache
-        lruMap = new LRUMap(cacheSettings.getResourceCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getResourceCacheSize());
         m_resourceCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".resourceCache", lruMap);
 
         // roles cache
-        lruMap = new LRUMap(cacheSettings.getRolesCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getRolesCacheSize());
         m_rolesCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".rolesCache", lruMap);
 
         // role lists cache
-        lruMap = new LRUMap(cacheSettings.getRolesCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getRolesCacheSize());
         m_roleListsCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".roleListsCache", lruMap);
 
         // resource list cache
-        lruMap = new LRUMap(cacheSettings.getResourcelistCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getResourcelistCacheSize());
         m_resourceListCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".resourceListCache", lruMap);
 
         // property cache
-        lruMap = new LRUMap(cacheSettings.getPropertyCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getPropertyCacheSize());
         m_propertyCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".propertyCache", lruMap);
 
         // property list cache
-        lruMap = new LRUMap(cacheSettings.getPropertyListsCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getPropertyListsCacheSize());
         m_propertyListCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".propertyListCache", lruMap);
 
         // published resources list cache
-        lruMap = new LRUMap(5);
+        lruMap = CmsMapGenericWrapper.createLRUMap(5);
         m_publishedResourcesCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".publishedResourcesCache", lruMap);
 
         // acl cache
-        lruMap = new LRUMap(cacheSettings.getAclCacheSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getAclCacheSize());
         m_accessControlListCache = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".accessControlListCache", lruMap);
 
         // container page caches
-        lruMap = new LRUMap(cacheSettings.getContainerPageOfflineSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
         m_containerPagesOffline = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".containerPagesOffline", lruMap);
 
-        lruMap = new LRUMap(cacheSettings.getContainerPageOfflineSize());
+        lruMap = CmsMapGenericWrapper.createLRUMap(cacheSettings.getContainerPageOfflineSize());
         m_containerPagesOnline = Collections.synchronizedMap(lruMap);
         register(CmsDriverManager.class.getName() + ".containerPagesOnline", lruMap);
 

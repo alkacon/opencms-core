@@ -12,7 +12,7 @@
 	</xsd:complexType>
 
 	<xsd:complexType name="OpenCmsChoiceTestsA">
-		<xsd:choice maxOccurs="5" >
+		<xsd:choice minOccurs="0" maxOccurs="5" >
 			<xsd:element name="StringChoice" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="DateTimeChoice" type="OpenCmsDateTime" minOccurs="0" />
 		</xsd:choice>

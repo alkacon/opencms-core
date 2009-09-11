@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2009/09/07 06:05:04 $
- * Version: $Revision: 1.44.2.2 $
+ * Date   : $Date: 2009/09/11 11:13:37 $
+ * Version: $Revision: 1.44.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -69,7 +69,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44.2.2 $ 
+ * @version $Revision: 1.44.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -582,7 +582,7 @@ public class CmsXmlContentDefinition implements Cloneable {
                             Messages.ERR_EL_BAD_ATTRIBUTE_3,
                             element.getUniquePath(),
                             XSD_ATTRIBUTE_MIN_OCCURS,
-                            minOccursStr));
+                            minOccursStr == null ? "1" : minOccursStr));
                     }
                 }
                 String maxOccursStr = typeSequenceElement.attributeValue(XSD_ATTRIBUTE_MAX_OCCURS);
@@ -607,12 +607,12 @@ public class CmsXmlContentDefinition implements Cloneable {
                     sequenceType = SequenceType.SINGLE_CHOICE;
                 } else {
                     // this is a multiple choice sequence
-                    if ((minOccurs < 1) || (minOccurs > choiceMaxOccurs)) {
+                    if (minOccurs > choiceMaxOccurs) {
                         throw new CmsXmlException(Messages.get().container(
                             Messages.ERR_EL_BAD_ATTRIBUTE_3,
                             element.getUniquePath(),
                             XSD_ATTRIBUTE_MIN_OCCURS,
-                            minOccursStr));
+                            minOccursStr == null ? "1" : minOccursStr));
                     }
                     sequenceType = SequenceType.MULTIPLE_CHOICE;
                 }
@@ -643,29 +643,23 @@ public class CmsXmlContentDefinition implements Cloneable {
             while (i.hasNext()) {
                 Element typeElement = i.next();
                 if (sequenceType != SequenceType.SEQUENCE) {
-                    // in case of xsd:choice, need to make sure "minOccurs" is 0,
-                    // otherwise default XML content creation would not work
+                    // in case of xsd:choice, need to make sure "minOccurs" for all type elements is 0
                     String minOccursStr = typeElement.attributeValue(XSD_ATTRIBUTE_MIN_OCCURS);
                     int minOccurs = 1;
                     if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(minOccursStr)) {
                         try {
                             minOccurs = Integer.parseInt(minOccursStr.trim());
                         } catch (NumberFormatException e) {
-                            // this will trigger an exception below
-                            minOccurs = 2;
+                            // ignore
                         }
                     }
-                    // we allow minOccurs values of "1" but overwrite this with "0"
-                    if ((minOccurs < 0) || (minOccurs > 1)) {
+                    // minOccurs must be "0"
+                    if (minOccurs != 0) {
                         throw new CmsXmlException(Messages.get().container(
                             Messages.ERR_EL_BAD_ATTRIBUTE_3,
                             typeElement.getUniquePath(),
                             XSD_ATTRIBUTE_MIN_OCCURS,
-                            minOccursStr));
-                    }
-                    if (true || (sequenceType == SequenceType.SINGLE_CHOICE)) {
-                        // overwrite the minOccurs value from the XML for single choice options
-                        typeElement.addAttribute(XSD_ATTRIBUTE_MIN_OCCURS, "0");
+                            minOccursStr == null ? "1" : minOccursStr));
                     }
                 }
                 // create the type with the type manager

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2009/06/04 14:33:46 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2009/09/11 11:13:35 $
+ * Version: $Revision: 1.24.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -37,13 +37,13 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsMapGenericWrapper;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 /**
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -177,7 +177,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
             if (part == null) {
                 // part not found, get the content of the JSP element and put it to the Map store
                 part = jsp.getContent(target, element, jsp.getRequestContext().getLocale());
-                if (part != null && !part.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION)) {
+                if ((part != null) && !part.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION)) {
                     // add part to map if a valid content was found
                     addPart(partKey, part);
                 } else {
@@ -243,7 +243,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      */
     private synchronized Map initPartsMap() {
 
-        LRUMap cacheParts = new LRUMap(512);
+        Map cacheParts = CmsMapGenericWrapper.createLRUMap(512);
         Map oldParts = m_parts;
         m_parts = Collections.synchronizedMap(cacheParts);
         if (oldParts != null) {

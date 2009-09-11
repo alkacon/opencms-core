@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2009/09/08 14:18:26 $
- * Version: $Revision: 1.75.2.3 $
+ * Date   : $Date: 2009/09/11 11:13:36 $
+ * Version: $Revision: 1.75.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -92,7 +92,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz
  * 
- * @version $Revision: 1.75.2.3 $ 
+ * @version $Revision: 1.75.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -637,9 +637,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         if (!isCheckingPermissions()) {
             result.put(PERMISSIONS, String.valueOf(m_checkPermissions));
         }
-        if (!isCheckingTimeRange()) {
-            result.put(TIME_RANGE, String.valueOf(m_checkTimeRange));
-        }
+        // always write time range check parameter because of logic change in OpenCms 8.0
+        result.put(TIME_RANGE, String.valueOf(m_checkTimeRange));
         // set the index writer parameter if required 
         if (m_luceneMaxMergeDocs != null) {
             result.put(LUCENE_MAX_MERGE_DOCS, String.valueOf(m_luceneMaxMergeDocs));

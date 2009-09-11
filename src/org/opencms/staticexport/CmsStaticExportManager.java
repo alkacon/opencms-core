@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2009/09/10 16:26:20 $
- * Version: $Revision: 1.134.2.1 $
+ * Date   : $Date: 2009/09/11 11:13:36 $
+ * Version: $Revision: 1.134.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -55,6 +55,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsMapGenericWrapper;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -78,7 +79,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 /**
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.134.2.1 $ 
+ * @version $Revision: 1.134.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -1527,22 +1527,22 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             }
         }
 
-        LRUMap lruMap1 = new LRUMap(2048);
+        Map lruMap1 = CmsMapGenericWrapper.createLRUMap(2048);
         m_cacheOnlineLinks = Collections.synchronizedMap(lruMap1);
         // map must be of type "LRUMap" so that memory monitor can acecss all information
         OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheOnlineLinks", lruMap1);
 
-        LRUMap lruMap2 = new LRUMap(2048);
+        Map lruMap2 = CmsMapGenericWrapper.createLRUMap(2048);
         m_cacheExportUris = Collections.synchronizedMap(lruMap2);
         // map must be of type "LRUMap" so that memory monitor can acecss all information
         OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheExportUris", lruMap2);
 
-        LRUMap lruMap3 = new LRUMap(2048);
+        Map lruMap3 = CmsMapGenericWrapper.createLRUMap(2048);
         m_cacheSecureLinks = Collections.synchronizedMap(lruMap3);
         // map must be of type "LRUMap" so that memory monitor can acecss all information
         OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheSecureLinks", lruMap3);
 
-        LRUMap lruMap4 = new LRUMap(2048);
+        Map lruMap4 = CmsMapGenericWrapper.createLRUMap(2048);
         m_cacheExportLinks = Collections.synchronizedMap(lruMap4);
         // map must be of type "LRUMap" so that memory monitor can acecss all information
         OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_cacheExportLinks", lruMap4);

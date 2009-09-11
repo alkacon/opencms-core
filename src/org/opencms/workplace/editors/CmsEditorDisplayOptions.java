@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2009/07/03 10:36:00 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2009/09/11 11:13:38 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,6 +39,7 @@ import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsMapGenericWrapper;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -47,7 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.logging.Log;
 
 /**
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,8 +109,8 @@ public class CmsEditorDisplayOptions {
     public CmsEditorDisplayOptions() {
 
         // initialize members
-        m_userMappings = new LRUMap(SIZE_USERENTRIES);
-        m_loadedConfigurations = new LRUMap(SIZE_CONFIGURATIONFILES);
+        m_userMappings = CmsMapGenericWrapper.createLRUMap(SIZE_USERENTRIES);
+        m_loadedConfigurations = CmsMapGenericWrapper.createLRUMap(SIZE_CONFIGURATIONFILES);
     }
 
     /**

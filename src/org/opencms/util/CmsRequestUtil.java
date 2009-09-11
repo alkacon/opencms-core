@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2009/06/04 14:29:05 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2009/09/11 11:13:36 $
+ * Version: $Revision: 1.30.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.30.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -206,7 +206,7 @@ public final class CmsRequestUtil {
      * 
      * @return the URL with the given parameter appended
      */
-    public static String appendParameters(String url, Map params, boolean encode) {
+    public static String appendParameters(String url, Map<String, String[]> params, boolean encode) {
 
         if (CmsStringUtil.isEmpty(url)) {
             return null;
@@ -225,13 +225,13 @@ public final class CmsRequestUtil {
             result.append(URL_DELIMITER);
         }
         // ensure all values are of type String[]
-        Map newParams = createParameterMap(params);
-        Iterator i = newParams.entrySet().iterator();
+        Iterator<Map.Entry<String, String[]>> i = params.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            String key = (String)entry.getKey();
+            Map.Entry<String, String[]> entry = i.next();
+            String key = entry.getKey();
             Object value = entry.getValue();
-            String[] values = (String[])value;
+            // generics where added later, so make sure that the value really is a String[]
+            String[] values = value instanceof String[] ? (String[])value : new String[] {value.toString()};
             for (int j = 0; j < values.length; j++) {
                 String strValue = values[j];
                 if (encode) {
@@ -261,19 +261,19 @@ public final class CmsRequestUtil {
      * @param params the map of parameters to create a parameter map from
      * @return the created parameter map, all values will be instances of <code>String[]</code>
      */
-    public static Map createParameterMap(Map params) {
+    public static Map<String, String[]> createParameterMap(Map<String, Object> params) {
 
         if (params == null) {
             return null;
         }
-        HashMap result = new HashMap();
-        Iterator i = params.entrySet().iterator();
+        Map<String, String[]> result = new HashMap<String, String[]>();
+        Iterator<Map.Entry<String, Object>> i = params.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            String key = (String)entry.getKey();
+            Map.Entry<String, ?> entry = i.next();
+            String key = entry.getKey();
             Object values = entry.getValue();
             if (values instanceof String[]) {
-                result.put(key, values);
+                result.put(key, (String[])values);
             } else {
                 if (values != null) {
                     result.put(key, new String[] {values.toString()});
@@ -295,11 +295,11 @@ public final class CmsRequestUtil {
      * @param query the query to parse
      * @return the parameter map created from the query
      */
-    public static Map createParameterMap(String query) {
+    public static Map<String, String[]> createParameterMap(String query) {
 
         if (CmsStringUtil.isEmpty(query)) {
             // empty query
-            return new HashMap();
+            return new HashMap<String, String[]>();
         }
         if (query.charAt(0) == URL_DELIMITER.charAt(0)) {
             // remove leading '?' if required
@@ -307,7 +307,7 @@ public final class CmsRequestUtil {
         }
         // cut along the different parameters
         String[] params = CmsStringUtil.splitAsArray(query, PARAMETER_DELIMITER);
-        HashMap parameters = new HashMap(params.length);
+        Map<String, String[]> parameters = new HashMap<String, String[]>(params.length);
         for (int i = 0; i < params.length; i++) {
             String key = null;
             String value = null;
@@ -327,7 +327,7 @@ public final class CmsRequestUtil {
             }
             // now make sure the values are of type String[]
             if (key != null) {
-                String[] values = (String[])parameters.get(key);
+                String[] values = parameters.get(key);
                 if (values == null) {
                     // this is the first value, create new array
                     values = new String[] {value};
@@ -357,12 +357,12 @@ public final class CmsRequestUtil {
     public static String encodeParams(HttpServletRequest req) {
 
         StringBuffer result = new StringBuffer(512);
-        Map params = req.getParameterMap();
-        Iterator i = params.entrySet().iterator();
+        Map<String, String[]> params = req.getParameterMap();
+        Iterator<Map.Entry<String, String[]>> i = params.entrySet().iterator();
         while (i.hasNext()) {
-            Map.Entry entry = (Map.Entry)i.next();
-            String param = (String)entry.getKey();
-            String[] values = (String[])entry.getValue();
+            Map.Entry<String, String[]> entry = i.next();
+            String param = entry.getKey();
+            String[] values = entry.getValue();
             for (int j = 0; j < values.length; j++) {
                 result.append(param);
                 result.append("=");
@@ -422,7 +422,7 @@ public final class CmsRequestUtil {
 
         // clear the current parameters
         CmsUriSplitter uri = new CmsUriSplitter(target);
-        Map params = createParameterMap(uri.getQuery());
+        Map<String, String[]> params = createParameterMap(uri.getQuery());
         forwardRequest(uri.getPrefix(), params, req, res);
     }
 
@@ -442,8 +442,11 @@ public final class CmsRequestUtil {
      * @throws IOException in case the forwarding fails
      * @throws ServletException in case the forwarding fails
      */
-    public static void forwardRequest(String target, Map params, HttpServletRequest req, HttpServletResponse res)
-    throws IOException, ServletException {
+    public static void forwardRequest(
+        String target,
+        Map<String, String[]> params,
+        HttpServletRequest req,
+        HttpServletResponse res) throws IOException, ServletException {
 
         // cast the request back to a flex request so the parameter map can be accessed
         CmsFlexRequest f_req = (CmsFlexRequest)req;
@@ -518,7 +521,7 @@ public final class CmsRequestUtil {
         }
         return result;
     }
-    
+
     /**
      * Returns the link without parameters from a String that is formatted for a GET request.<p>
      * 
@@ -526,7 +529,7 @@ public final class CmsRequestUtil {
      * @return the URL without any parameters
      */
     public static String getRequestLink(String url) {
-        
+
         if (CmsStringUtil.isEmpty(url)) {
             return null;
         }
@@ -535,7 +538,7 @@ public final class CmsRequestUtil {
             return url.substring(0, pos);
         }
         return url;
-        
+
     }
 
     /**
@@ -567,7 +570,7 @@ public final class CmsRequestUtil {
      * @return the list of <code>{@link FileItem}</code> extracted from the multipart request,
      *      or <code>null</code> if the request was not of type <code>multipart/form-data</code>
      */
-    public static List readMultipartFileItems(HttpServletRequest request) {
+    public static List<FileItem> readMultipartFileItems(HttpServletRequest request) {
 
         if (!ServletFileUpload.isMultipartContent(request)) {
             return null;
@@ -580,9 +583,9 @@ public final class CmsRequestUtil {
         ServletFileUpload fu = new ServletFileUpload(factory);
         // set encoding to correctly handle special chars (e.g. in filenames)
         fu.setHeaderEncoding(request.getCharacterEncoding());
-        List result = new ArrayList();
+        List<FileItem> result = new ArrayList<FileItem>();
         try {
-            List items = fu.parseRequest(request);
+            List<FileItem> items = fu.parseRequest(request);
             if (items != null) {
                 result = items;
             }
@@ -603,12 +606,12 @@ public final class CmsRequestUtil {
      * 
      * @see #readMultipartFileItems(HttpServletRequest)
      */
-    public static Map readParameterMapFromMultiPart(String encoding, List multiPartFileItems) {
+    public static Map<String, String[]> readParameterMapFromMultiPart(String encoding, List<FileItem> multiPartFileItems) {
 
-        Map parameterMap = new HashMap();
-        Iterator i = multiPartFileItems.iterator();
+        Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+        Iterator<FileItem> i = multiPartFileItems.iterator();
         while (i.hasNext()) {
-            FileItem item = (FileItem)i.next();
+            FileItem item = i.next();
             String name = item.getFieldName();
             String value = null;
             if ((name != null) && (item.getName() == null)) {
@@ -622,7 +625,7 @@ public final class CmsRequestUtil {
                 if (parameterMap.containsKey(name)) {
 
                     // append value to parameter values array
-                    String[] oldValues = (String[])parameterMap.get(name);
+                    String[] oldValues = parameterMap.get(name);
                     String[] newValues = new String[oldValues.length + 1];
                     System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
                     newValues[oldValues.length] = value;

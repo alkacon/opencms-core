@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2009/09/07 07:10:14 $
- * Version: $Revision: 1.64.2.4 $
+ * Date   : $Date: 2009/09/11 11:13:35 $
+ * Version: $Revision: 1.64.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -93,7 +93,7 @@ import org.dom4j.Element;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.64.2.4 $ 
+ * @version $Revision: 1.64.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -1388,7 +1388,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         String defFormatter = root.attributeValue(APPINFO_ATTR_DEFAULT);
         m_formatters.put(DEFAULT_FORMATTER_TYPE, defFormatter);
 
-        Iterator<Element> itFormatter = root.elementIterator(APPINFO_FORMATTER);
+        Iterator<Element> itFormatter = CmsXmlGenericWrapper.elementIterator(root, APPINFO_FORMATTER);
         while (itFormatter.hasNext()) {
             // iterate all "formatter" elements in the "formatters" node
             Element element = itFormatter.next();
@@ -2098,7 +2098,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 while (itWidgets.hasNext()) {
                     Map.Entry<String, I_CmsXmlContentValue> entry = itWidgets.next();
                     String xpath = entry.getKey();
-                    I_CmsWidget widget = (I_CmsWidget)widgetCollector.getWidgets().get(xpath);
+                    I_CmsWidget widget = widgetCollector.getWidgets().get(xpath);
                     if (!(widget instanceof CmsCategoryWidget)) {
                         // ignore other values than categories
                         continue;

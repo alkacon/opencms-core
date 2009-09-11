@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentWidgetVisitor.java,v $
- * Date   : $Date: 2009/06/04 14:29:35 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2009/09/11 11:13:38 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,14 +66,14 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
     /** The locale to get the values from. */
     private Locale m_locale;
 
-    /** The unique widgets found in the xml content.  */
-    private List m_uniqueWidgets;
+    /** The unique widgets found in the XML content.  */
+    private List<I_CmsWidget> m_uniqueWidgets;
 
     /** The values corresponding to the found widgets. */
-    private Map m_values;
+    private Map<String, I_CmsXmlContentValue> m_values;
 
-    /** The widgets found in the xml content. */
-    private Map m_widgets;
+    /** The widgets found in the XML content. */
+    private Map<String, I_CmsWidget> m_widgets;
 
     /**
      * Creates a new widget collector node visitor.<p> 
@@ -120,7 +120,7 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
      * 
      * @return all simple values that were found in the content
      */
-    public Map getValues() {
+    public Map<String, I_CmsXmlContentValue> getValues() {
 
         return m_values;
     }
@@ -132,7 +132,7 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
      * 
      * @return all widgets that were found in the content
      */
-    public Map getWidgets() {
+    public Map<String, I_CmsWidget> getWidgets() {
 
         return m_widgets;
     }
@@ -183,9 +183,9 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
     private void initialize(Locale locale) {
 
         // start with a new instance of the widgets and unique widgets
-        m_widgets = new HashMap(25);
-        m_uniqueWidgets = new ArrayList(12);
-        m_values = new HashMap(25);
+        m_widgets = new HashMap<String, I_CmsWidget>(25);
+        m_uniqueWidgets = new ArrayList<I_CmsWidget>(12);
+        m_values = new HashMap<String, I_CmsXmlContentValue>(25);
         // store Locale to use when collecting the widgets
         m_locale = locale;
     }

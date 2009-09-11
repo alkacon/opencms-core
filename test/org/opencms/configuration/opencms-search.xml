@@ -171,6 +171,7 @@
 				<sources>
 					<source>source1</source>
 				</sources>		
+                <param name="org.opencms.search.CmsSearchIndex.checkTimeRange">true</param>                
 			</index>
 			<index>
 				<name>Offline project (VFS)</name>

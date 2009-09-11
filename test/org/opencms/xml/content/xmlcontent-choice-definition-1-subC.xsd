@@ -13,8 +13,8 @@
 
 	<xsd:complexType name="OpenCmsChoiceTestsC">
 		<xsd:choice minOccurs="0">
-			<xsd:element name="NameChoiceC" type="OpenCmsString" maxOccurs="5" />
-			<xsd:element name="HtmlChoiceC" type="OpenCmsHtml" maxOccurs="5" />
+			<xsd:element name="NameChoiceC" type="OpenCmsString" minOccurs="0" maxOccurs="5" />
+			<xsd:element name="HtmlChoiceC" type="OpenCmsHtml" minOccurs="0" maxOccurs="5" />
 		</xsd:choice>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>		
 	</xsd:complexType>

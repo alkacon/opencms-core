@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspContentAccessBean.java,v $
- * Date   : $Date: 2009/09/10 16:26:22 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2009/09/11 11:13:38 $
+ * Version: $Revision: 1.9.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -39,20 +39,19 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsConstantMap;
+import org.opencms.util.CmsMapGenericWrapper;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.page.CmsXmlPageFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections.Transformer;
-import org.apache.commons.collections.map.LazyMap;
 
 /**
  * Allows access to the individual elements of an XML content, usually used inside a loop of a 
@@ -63,7 +62,7 @@ import org.apache.commons.collections.map.LazyMap;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.9.2.1 $ 
+ * @version $Revision: 1.9.2.2 $ 
  * 
  * @since 7.0.2
  * 
@@ -100,7 +99,7 @@ public class CmsJspContentAccessBean {
             Locale locale = CmsJspElFunctions.convertLocale(input);
             Map<String, Boolean> result;
             if (getRawContent().hasLocale(locale)) {
-                result = lazyMap(new CmsHasValueTransformer(locale));
+                result = CmsMapGenericWrapper.createLazyMap(new CmsHasValueTransformer(locale));
             } else {
                 result = CmsConstantMap.CONSTANT_BOOLEAN_FALSE_MAP;
             }
@@ -167,7 +166,7 @@ public class CmsJspContentAccessBean {
             Locale locale = CmsJspElFunctions.convertLocale(input);
             Map<String, List<Object>> result;
             if (getRawContent().hasLocale(locale)) {
-                result = lazyMap(new CmsValueListTransformer(locale));
+                result = CmsMapGenericWrapper.createLazyMap(new CmsValueListTransformer(locale));
             } else {
                 result = CmsConstantMap.CONSTANT_EMPTY_LIST_MAP;
             }
@@ -189,7 +188,7 @@ public class CmsJspContentAccessBean {
             Locale locale = CmsLocaleManager.getLocale(String.valueOf(input));
             Map<String, CmsJspContentAccessValueWrapper> result;
             if (getRawContent().hasLocale(locale)) {
-                result = lazyMap(new CmsValueTransformer(locale));
+                result = CmsMapGenericWrapper.createLazyMap(new CmsValueTransformer(locale));
             } else {
                 result = CONSTANT_NULL_VALUE_WRAPPER_MAP;
             }
@@ -342,21 +341,6 @@ public class CmsJspContentAccessBean {
     }
 
     /**
-     * Provides a wrapper to access the {@link LazyMap} functionality that avoids warnings with Java 1.5 generic code.<p> 
-     * 
-     * @param <K> the type of keys maintained by the returned map
-     * @param <V> the type of mapped values
-     * @param T the transformer to use for the Lazy Map
-     * 
-     * @return a lazy decorated map of the required type
-     */
-    @SuppressWarnings("unchecked")
-    public static final <K, V> Map<K, V> lazyMap(Transformer T) {
-
-        return LazyMap.decorate(new HashMap<K, V>(), T);
-    }
-
-    /**
      * Returns the OpenCms user context this bean was initialized with.<p>
      * 
      * @return the OpenCms user context this bean was initialized with
@@ -424,7 +408,7 @@ public class CmsJspContentAccessBean {
     public Map<String, Boolean> getHasLocale() {
 
         if (m_hasLocale == null) {
-            m_hasLocale = lazyMap(new CmsHasLocaleTransformer());
+            m_hasLocale = CmsMapGenericWrapper.createLazyMap(new CmsHasLocaleTransformer());
         }
         return m_hasLocale;
     }
@@ -455,7 +439,7 @@ public class CmsJspContentAccessBean {
     public Map<String, Map<String, Boolean>> getHasLocaleValue() {
 
         if (m_hasLocaleValue == null) {
-            m_hasLocaleValue = lazyMap(new CmsHasLocaleValueTransformer());
+            m_hasLocaleValue = CmsMapGenericWrapper.createLazyMap(new CmsHasLocaleValueTransformer());
         }
         return m_hasLocaleValue;
     }
@@ -519,7 +503,7 @@ public class CmsJspContentAccessBean {
     public Map<String, List<String>> getLocaleNames() {
 
         if (m_localeNames == null) {
-            m_localeNames = lazyMap(new CmsLocaleNamesTransformer());
+            m_localeNames = CmsMapGenericWrapper.createLazyMap(new CmsLocaleNamesTransformer());
         }
         return m_localeNames;
     }
@@ -545,7 +529,7 @@ public class CmsJspContentAccessBean {
     public Map<String, Map<String, CmsJspContentAccessValueWrapper>> getLocaleValue() {
 
         if (m_localeValue == null) {
-            m_localeValue = lazyMap(new CmsLocaleValueTransformer());
+            m_localeValue = CmsMapGenericWrapper.createLazyMap(new CmsLocaleValueTransformer());
         }
         return m_localeValue;
     }
@@ -573,7 +557,7 @@ public class CmsJspContentAccessBean {
     public Map<String, Map<String, List<CmsJspContentAccessValueWrapper>>> getLocaleValueList() {
 
         if (m_localeValueList == null) {
-            m_localeValueList = lazyMap(new CmsLocaleValueListTransformer());
+            m_localeValueList = CmsMapGenericWrapper.createLazyMap(new CmsLocaleValueListTransformer());
         }
         return m_localeValueList;
     }
