@@ -142,19 +142,28 @@ function checkUrl(strValue) {
 }
 
 /**
-* If a user forgets to insert a protocol at the beginning of the URL,
+* If a user forgets to insert a protocol or mailto: prefix at the beginning of the URL,
 * (eg. just "www.server.com" instead of "http://www.server.com"),
-* MSHTML will treat this as a relative URL at the current server. This
+* the editor will treat this as a relative URL at the current server. This
 * is not wanted in almost 99% of all cases, so the input value is checked
-* and the user is warned in case the URL looks like a server string without protocol.
+* and the user is warned in case the URL looks like a server string without protocol
+* or an email address without prefix.
 */
 function checkLinkUrl() {
 	var url = document.forms["NEU"].elements["neulink"];
+	// check if URL is an email
+	var pattern=/^([a-zA-Z0-9_.-])+@([a-zA-Z0-9_.-])+\.([a-zA-Z])+([a-zA-Z])+/;
+	if(pattern.test(url.value)){
+		if (confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_CONFIRMEMAIL_0)%>")) {
+			url.value = "mailto:" + url.value;
+			return;
+		}
+	}
 	if (checkUrl(url.value)) {
-	    var conf = confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_CONFIRMHTTP_0)%>");
-    	if (conf) {
-        	url.value = "http://" + url.value;
-    	}
+		var conf = confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_CONFIRMHTTP_0)%>");
+	    	if (conf) {
+	        	url.value = "http://" + url.value;
+	    	}
 	}
 }
 
